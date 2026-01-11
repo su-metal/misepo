@@ -1,0 +1,211 @@
+import "server-only";
+import { GoogleGenAI, Type } from "@google/genai";
+import {
+  GenerationConfig,
+  Platform,
+  StoreProfile,
+  GoogleMapPurpose,
+  RiskTier,
+} from "../types";
+
+// Define the schema for structured output (Array of strings)
+const contentSchema = {
+  type: Type.ARRAY,
+  items: { type: Type.STRING },
+};
+
+const getModelName = (isPro: boolean) => {
+  return "gemini-2.5-flash";
+};
+
+// Comprehensive Symbol Palette
+const DECORATION_PALETTE = `
+【Special Symbol Palette (Monochrome Text Symbols)】
+- Hearts/Stars: ❤︎ ❣︎ ❦ ❧ ღ ʚ♥ɞ ⸜❤︎⸝ ෆ ̖́- ಇ ✩ ✪ ✬ ✭ ✮ ✯ ✰ 𖤐˒˒ ꙳ ᛭ * ⸝⋆ ✦ ✧ ✡
+- Flowers/Plants: 𖤣 𖥧 𖥣 𖡡 ❀ ✿ ❉ ❊ ❋ ✻ ✼ ✽ ✾ ⁂ 𓍯 𖦊 ✲ 𖣔 𖡼 ꕤ ꕥ ❁ ✤ ꔛꕤ*｡ﾟ 𖠰 𖥍 𖣰 𖥸 𖦥 𖦞 𖢇 𖧡 ☘︎
+- Expressions/Faces: ☻︎ ☺︎ ☹︎ ◡̈ ⍤ ⍥ Ü ᵕ̈* ⍩ ᐖ ӫ ・ᴗ・ ⍨ ʘʘ ˙꒳​˙ °-° °ㅁ° ⚆ ˃́ꇴ˂ 𖦹‎
+- Animals: 𓃰 𓃱 𓃲 𓃟 𓃠 𓄅 𓃒 𓃗 𓃘 𓃙 𓃜 𓃥 𓃦 𓃵 𓅛 𓅸 𐂂 𓇼 𓆡 𓆛 ᗦ↞◃ 𓅓 𓄿 𓆑 𓅱 𓅿 𓅺 𓎤𓅮
+- Humans/Action: 𓀫 𓀠 𓀡 𓀤 𓁉 ꐕ 𐀪𐁑 𖠋𐀪 𖦔𖠋
+- Arrows: ⇝ ☜╮ ⥿ ⥱ ⇸ ⟲ ⥄ ⥳ ⇍ ↯︎ ⇰ ↬ ➴⡱ ↖︎ ↗︎ ↘︎ ↙︎
+- Frame Pairs (MUST USE AS PAIR): 𓊆 𓊇 ˚.꒰ ꒱.˚ 〖 〗 ☾ ☽ ˹ ˼ ⌜ ⌟ ❮ ❯ ˗ˏˋ ˎˊ˗ ❝ ❞ (e.g. ˗ˏˋ Title ˎˊ˗)
+- Lines/Dividers: ✄————— ｷ ﾘ ﾄ ﾘ —————✄ ✁┈┈┈┈┈┈┈┈┈┈ ✼••┈┈┈┈••✼••┈┈┈┈••✼ ｡.｡:+* ﾟ ゜ﾟ +:｡.｡:+ ﾟ ゜ﾟ +:｡.｡ ♔∴∵∴♔∴∵∴♔∴∵∴♔ ♩.•¨•.¸¸♩.•*¨*•.¸¸ 𓈒 𓏸 𓐍 𓂃 𓈒𓏸 𓂃◌𓈒𓐍 𓈒 ꔛ ০ ﻌﻌﻌ ꕀ 〰️ ꔚ ꕁ ╍ ⌇ ﹏ ￤ 　 𓂃
+- Life/Daily: ☀︎ ☼ ☁︎ ☂︎ ☃
+`;
+
+const KEYWORDS = {
+  legal: /(訴える|弁護士|消費者センター|警察|労基|監督署|違法|法的)/,
+  safetyHygiene: /(食中毒|異物|虫|カビ|腹痛|下痢|吐き気|アレルギー|火傷|怪我|危険|衛生|不衛生|汚い)/,
+  strongComplaint: /(詐欺|ぼったくり|最悪|二度と行かない|金返せ|返金|許せない|拡散|通報|口コミ消せ)/,
+  abuse: /(バカ|馬鹿|クソ|死ね|潰れろ|ゴミ|カス)/,
+  commonNeg: /(態度(が|も)?悪|不快|失礼|待たされた|高い|冷めて|まずい|美味しくない|遅い)/,
+};
+
+interface RiskAnalysisResult {
+  score: number;
+  tier: RiskTier;
+  signals: string[];
+}
+
+const scoreRisk = (starRating: number, text: string): RiskAnalysisResult => {
+  let score = 0;
+  const signals: string[] = [];
+
+  switch (starRating) {
+    case 1: score += 40; break;
+    case 2: score += 20; break;
+    case 3: score += 10; break;
+  }
+
+  if (KEYWORDS.legal.test(text)) { score += 50; signals.push("法的リスク/公的機関への言及"); }
+  if (KEYWORDS.safetyHygiene.test(text)) { score += 40; signals.push("衛生・安全に関する指摘"); }
+  if (KEYWORDS.strongComplaint.test(text)) { score += 30; signals.push("強い苦情・返金要求"); }
+  if (KEYWORDS.abuse.test(text)) { score += 20; signals.push("攻撃的・暴言"); }
+  if (KEYWORDS.commonNeg.test(text)) { score += 10; signals.push("一般的な不満"); }
+
+  let tier: RiskTier = "low";
+  if (score >= 80) tier = "critical";
+  else if (score >= 50) tier = "high";
+  else if (score >= 30) tier = "medium";
+
+  return { score, tier, signals };
+};
+
+function getServerAI() {
+  const apiKey = process.env.GEMINI_API_KEY; // ← サーバ専用。NEXT_PUBLICは使わない
+  if (!apiKey) throw new Error("Missing API_KEY in server env (.env.local)");
+  return new GoogleGenAI({ apiKey });
+}
+
+export const generateContent = async (
+  profile: StoreProfile,
+  config: GenerationConfig,
+  isPro: boolean
+): Promise<string[]> => {
+  const modelName = getModelName(isPro);
+
+  let systemInstruction = `
+You are a skilled and friendly social media manager for a physical business.
+Your goal is to write engaging, natural, and effective posts for a ${profile.industry} named "${profile.name}" located in ${profile.region}.
+Store Description: ${profile.description || "N/A"}
+Target Audience: Local customers and potential visitors.
+
+**Current Task Configuration:**
+- Platform: ${config.platform}
+- Purpose: ${config.purpose}
+- Tone: ${config.tone} (Formal/Standard/Friendly)
+- Length: ${config.length} (Short/Medium/Long)
+- Language: ${config.language || "Japanese"}
+`;
+
+  if (config.platform === Platform.GoogleMaps) {
+    if (config.starRating) {
+      systemInstruction += `\n- Context: Replying to a customer review with a ${config.starRating}-star rating. Adjust the gratitude/apology level accordingly.`;
+    }
+    if (config.purpose === GoogleMapPurpose.Apology) {
+      systemInstruction += `\n- Focus: Sincere apology, explanation of improvement, and inviting them back.`;
+    }
+  }
+
+  if (config.storeSupplement) {
+    systemInstruction += `\n- Additional Store Info (Use this context): ${config.storeSupplement}`;
+  }
+  if (config.customPrompt) {
+    systemInstruction += `\n- Special User Instruction: ${config.customPrompt}`;
+  }
+  if (config.instagramFooter) {
+    systemInstruction += `\n- Context (Store Info): "${config.instagramFooter}"\nNOTE: Do NOT include this store info footer in your generated output. It will be appended programmatically later. Only use this for context to avoid repeating information.`;
+  }
+
+  const useEmojis = config.includeEmojis !== false;
+
+  systemInstruction += `\n
+**Formatting Rules:**
+1. Generate exactly 1 distinct variation.
+2. Output strictly as a JSON array of strings.
+3. ${useEmojis ? 'Use emojis naturally. Even in "Standard" tone, use emojis moderately (e.g., ✨, 😊, ☕️) to ensure the post isn\'t too dry.' : "Do NOT use emojis."}
+4. ${config.includeSymbols ? `Use text decorations from this palette if appropriate: ${DECORATION_PALETTE}` : "Do NOT use complex text decorations/symbols (like ✧ or ✄), but simple emojis are allowed if enabled."}
+5. ${config.platform === Platform.X && config.xConstraint140 ? "MUST be under 140 characters." : ""}
+6. If Instagram: Use line breaks for readability and add 4-6 relevant hashtags at the bottom.
+7. If Google Maps: Be professional, concise, and do NOT use hashtags.
+
+**Style Constraint (CRITICAL):**
+- **Do NOT combine exclamation marks (! or ！) with emojis at the end of a sentence.**
+- Choose ONLY ONE: either an exclamation mark OR an emoji.
+- BAD: "お待ちしています！✨", "美味しいですよ！😋"
+- GOOD: "お待ちしています！", "お待ちしています✨", "美味しいですよ😋"
+`;
+
+  const userPrompt = `Draft a post based on this input: "${config.inputText}"`;
+
+  const ai = getServerAI();
+
+  const response = await ai.models.generateContent({
+    model: modelName,
+    contents: [{ role: "user", parts: [{ text: userPrompt }] }],
+    config: {
+      systemInstruction,
+      responseMimeType: "application/json",
+      responseSchema: contentSchema,
+      temperature: 0.7,
+      topP: 0.9,
+    },
+  });
+
+  const jsonText = response.text;
+  if (!jsonText) throw new Error("No response from AI");
+
+  const parsed = JSON.parse(jsonText);
+  if (Array.isArray(parsed)) return parsed.map((s) => String(s));
+  return [];
+};
+
+export const refineContent = async (
+  profile: StoreProfile,
+  config: GenerationConfig,
+  currentContent: string,
+  instruction: string
+): Promise<string> => {
+  const modelName = getModelName(true);
+
+  const systemInstruction = `
+You are an AI editor refining a social media post for "${profile.name}".
+Original Platform: ${config.platform}
+Tone: ${config.tone}
+
+**Formatting Rules:**
+1. ${config.platform === Platform.X && config.xConstraint140 ? "MUST be under 140 characters." : ""}
+2. If Instagram: Keep hashtags.
+
+**Style Constraint (CRITICAL):**
+- **Do NOT combine exclamation marks (! or ！) with emojis at the end of a sentence.**
+- Choose ONLY ONE: either an exclamation mark OR an emoji.
+`;
+
+  const userPrompt = `
+Original Post: "${currentContent}"
+Refinement Instruction: "${instruction}"
+
+Output ONLY the refined text (raw string, not JSON).
+`;
+
+  const ai = getServerAI();
+
+  const response = await ai.models.generateContent({
+    model: modelName,
+    contents: [{ role: "user", parts: [{ text: userPrompt }] }],
+    config: {
+      systemInstruction,
+      responseMimeType: "text/plain",
+      temperature: 0.7,
+    },
+  });
+
+  return response.text || currentContent;
+};
+
+export const analyzeRisk = async (
+  starRating: number,
+  reviewText: string
+): Promise<RiskAnalysisResult> => {
+  return scoreRisk(starRating, reviewText);
+};
