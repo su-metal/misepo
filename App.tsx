@@ -1,7 +1,7 @@
-
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import { createClient } from "@/lib/supabase/client";
 import { AppState, StoreProfile, GeneratedPost, Preset } from './types';
 import { GUEST_PROFILE } from './constants';
 import Onboarding from './components/Onboarding';
@@ -16,6 +16,7 @@ import GuestDemoModal from './components/GuestDemoModal';
 import { LockIcon, LogOutIcon } from './components/Icons';
 
 const App: React.FC = () => {
+  const supabase = createClient();
   // --- State Management ---
   const [storeProfile, setStoreProfile] = useState<StoreProfile | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -47,46 +48,68 @@ const App: React.FC = () => {
   const [isTryingToUpgrade, setIsTryingToUpgrade] = useState(false);
   const [upgradeModalStep, setUpgradeModalStep] = useState<'intro' | 'payment'>('intro');
 
-  // --- Persistence Simulation ---
+  // --- Auth & Persistence (Supabase is source of truth for login state) ---
   useEffect(() => {
-    // 1. Check Login Status
-    // Only run on client-side to prevent hydration mismatch
-    if (typeof window !== 'undefined') {
-        const savedLoginState = localStorage.getItem('misepo_is_logged_in');
-        let isUserLoggedIn = false;
-        if (savedLoginState === 'true') {
-        setIsLoggedIn(true);
-        isUserLoggedIn = true;
-        } else {
-        // Not logged in -> Check if guest demo modal has been seen
+    let alive = true;
+
+    const init = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!alive) return;
+
+      const loggedIn = !!session?.user;
+      setIsLoggedIn(loggedIn);
+
+      if (!loggedIn) {
         const hasSeenDemo = localStorage.getItem('misepo_guest_demo_seen');
         if (!hasSeenDemo) {
-            // Show modal only if NOT logged in and NOT seen yet
-            // Delay slightly for better UX
-            setTimeout(() => setShowGuestDemoModal(true), 500);
+          setTimeout(() => setShowGuestDemoModal(true), 500);
         }
-        }
+      }
 
-        // 2. Load Profile (Only if logged in ideally, but strict logic handles UI)
-        const savedProfile = localStorage.getItem('misepo_profile');
-        if (savedProfile) {
+      const savedProfile = localStorage.getItem('misepo_profile');
+      if (savedProfile) {
         setStoreProfile(JSON.parse(savedProfile));
-        }
+      }
 
-        // 3. Load History & Presets
-        const savedHistory = localStorage.getItem('misepo_history');
-        // Only load history if user is logged in
-        if (savedHistory && isUserLoggedIn) {
+      const savedHistory = localStorage.getItem('misepo_history');
+      if (savedHistory && loggedIn) {
         setHistory(JSON.parse(savedHistory));
+      }
+      
+      const savedPresets = localStorage.getItem('misepo_presets');
+      if (savedPresets) setPresets(JSON.parse(savedPresets));
+
+      checkDailyLimit();
+    };
+
+    init();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      const loggedIn = !!session?.user;
+      setIsLoggedIn(loggedIn);
+
+      if (loggedIn) {
+        setShowLoginModal(false);
+
+        localStorage.removeItem('misepo_daily_usage');
+        setDailyUsageCount(0);
+
+        setResetResultsTrigger(prev => prev + 1);
+
+        if (!storeProfile) {
+          setTimeout(() => setShowSettings(true), 300);
         }
-        
-        const savedPresets = localStorage.getItem('misepo_presets');
-        if (savedPresets) setPresets(JSON.parse(savedPresets));
+      } else {
+        setHistory([]);
+        setResetResultsTrigger(prev => prev + 1);
+      }
+    });
 
-        // 4. Check Daily Limit (Applies to both Guest and Free Users)
-        checkDailyLimit();
-    }
-
+    return () => {
+      alive = false;
+      subscription.unsubscribe();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const checkDailyLimit = () => {
@@ -142,31 +165,23 @@ const App: React.FC = () => {
     localStorage.setItem('misepo_presets', JSON.stringify(presets));
   }, [presets]);
 
-  useEffect(() => {
-    localStorage.setItem('misepo_is_logged_in', isLoggedIn.toString());
-  }, [isLoggedIn]);
-
   // --- Handlers ---
-  
-  // Login Handler (Simulated)
-  const handleLogin = () => {
-    setIsLoggedIn(true);
-    // Reset usage on login to give fresh credits for the logged-in session
-    localStorage.removeItem('misepo_daily_usage'); 
-    setDailyUsageCount(0);
-    
-    setResetResultsTrigger(prev => prev + 1); // Trigger result clear
-    setShowLoginModal(false);
-    // After login, if no profile exists, force onboarding
-    if (!storeProfile) {
-      setTimeout(() => setShowSettings(true), 300);
+
+  const handleLoginGoogle = async () => {
+    const origin = window.location.origin;
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: `${origin}/auth/callback` },
+    });
+    if (error) {
+      console.error("Google login error:", error.message);
+      alert("Googleログインに失敗しました。もう一度お試しください。");
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
     setIsLoggedIn(false);
-    localStorage.setItem('misepo_is_logged_in', 'false');
-    setResetResultsTrigger(prev => prev + 1);
   };
 
   const handleOnboardingSave = (profile: StoreProfile) => {
@@ -224,7 +239,6 @@ const App: React.FC = () => {
   const resetProfile = () => {
     // Dev tool profile reset (Reset to Guest)
     localStorage.removeItem('misepo_profile');
-    localStorage.removeItem('misepo_is_logged_in');
     // Also reset the "seen demo" flag so developer can test the flow again
     localStorage.removeItem('misepo_guest_demo_seen');
     
@@ -352,11 +366,11 @@ open11:00-close 17:00
       )}
 
       {/* 3. Login Modal */}
-      <LoginModal 
-        isOpen={showLoginModal}
-        onClose={() => setShowLoginModal(false)}
-        onLogin={handleLogin}
-      />
+        <LoginModal 
+          isOpen={showLoginModal}
+          onClose={() => setShowLoginModal(false)}
+        onLoginGoogle={handleLoginGoogle}
+        />
 
       {/* 4. Upgrade Flow Modal */}
       <UpgradeModal 
