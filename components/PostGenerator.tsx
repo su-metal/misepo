@@ -543,6 +543,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
             profile: storeProfile,
             config,
             isPro,
+            allowGuest: !isLoggedIn,
           }),
         });
 

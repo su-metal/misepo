@@ -11,10 +11,6 @@ export async function POST(req: Request) {
     error: authError,
   } = await supabase.auth.getUser();
 
-  if (authError || !user) {
-    return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
-  }
-
   let body: Record<string, unknown>;
   try {
     body = await req.json();
@@ -23,6 +19,13 @@ export async function POST(req: Request) {
       { ok: false, error: "Invalid JSON body" },
       { status: 400 }
     );
+  }
+
+  const allowGuest = body.allowGuest === true;
+  if (authError || !user) {
+    if (!allowGuest) {
+      return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+    }
   }
 
   const profile = body.profile as StoreProfile | undefined;
@@ -48,7 +51,7 @@ export async function POST(req: Request) {
   }
 
   const isPro = Boolean(body.isPro);
-  console.debug("Generating content for user", user.id);
+  console.debug("Generating content for user", user?.id ?? "guest");
 
   try {
     const result = await generateContent(profile, config, isPro);
