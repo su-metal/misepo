@@ -183,6 +183,17 @@ const INSTA_QUICK_PRESETS: QuickPreset[] = [
   { label: 'お礼・報告', icon: <HandHeartIcon />, tone: Tone.Friendly, length: Length.Medium, purpose: PostPurpose.Story, templateText: '沢山のご来店ありがとうございます！' },
 ];
 
+type TonePreference = {
+  includeEmojis: boolean;
+  includeSymbols: boolean;
+};
+
+const TONE_DEFAULT_PREFERENCES: Record<Tone, TonePreference> = {
+  [Tone.Formal]: { includeEmojis: false, includeSymbols: false },
+  [Tone.Standard]: { includeEmojis: true, includeSymbols: false },
+  [Tone.Friendly]: { includeEmojis: true, includeSymbols: false },
+};
+
 
 const PostGenerator: React.FC<PostGeneratorProps> = ({
   storeProfile,
@@ -236,6 +247,11 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
   const [currentTipIndex, setCurrentTipIndex] = useState(0);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [previewModal, setPreviewModal] = useState<{ platform: Platform, text: string } | null>(null);
+  const tonePreferencesRef = useRef<Record<Tone, TonePreference>>({
+    [Tone.Formal]: { ...TONE_DEFAULT_PREFERENCES[Tone.Formal] },
+    [Tone.Standard]: { ...TONE_DEFAULT_PREFERENCES[Tone.Standard] },
+    [Tone.Friendly]: { ...TONE_DEFAULT_PREFERENCES[Tone.Friendly] },
+  });
 
   // Track active preset context for editing/saving
   const [activePresetContext, setActivePresetContext] = useState<{ label: string, templateText?: string } | null>(null);
@@ -364,8 +380,12 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
     }
   }, [restorePost]);
 
+  useEffect(() => {
+    tonePreferencesRef.current[tone] = { includeEmojis, includeSymbols };
+  }, [tone, includeEmojis, includeSymbols]);
+
   const handleApplyPreset = (preset: Preset) => {
-    setTone(preset.config.tone);
+    handleToneChange(preset.config.tone);
     setLength(preset.config.length);
     if (preset.config.inputText !== undefined) setInputText(preset.config.inputText);
     setLanguage(preset.config.language);
@@ -399,7 +419,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
   };
 
   const handleApplyQuickPreset = (preset: QuickPreset) => {
-    setTone(preset.tone);
+    handleToneChange(preset.tone);
     setLength(preset.length);
     setPostPurpose(preset.purpose);
     // Optional: Set template text if input is empty, or confirm override?
@@ -412,15 +432,22 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
     setActivePresetContext({ label: preset.label, templateText: preset.templateText });
   };
 
-  const handleToneChange = (newTone: Tone) => {
+  const commitCurrentTonePreference = () => {
+    tonePreferencesRef.current[tone] = { includeEmojis, includeSymbols };
+  };
+
+  const applyTonePreference = (newTone: Tone) => {
+    const nextPref =
+      tonePreferencesRef.current[newTone] ?? TONE_DEFAULT_PREFERENCES[newTone];
     setTone(newTone);
-    if (newTone === Tone.Formal) {
-      setIncludeEmojis(false);
-      setIncludeSymbols(false);
-    } else {
-      setIncludeEmojis(true);
-      setIncludeSymbols(false);
-    }
+    setIncludeEmojis(nextPref.includeEmojis);
+    setIncludeSymbols(nextPref.includeSymbols);
+  };
+
+  const handleToneChange = (newTone: Tone) => {
+    if (tone === newTone) return;
+    commitCurrentTonePreference();
+    applyTonePreference(newTone);
   };
 
   const handleToggleMultiGen = () => {
