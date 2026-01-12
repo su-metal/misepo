@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 
 interface DevToolsProps {
   isPro: boolean;
@@ -13,17 +14,22 @@ const DevTools: React.FC<DevToolsProps> = ({ isPro, togglePro, resetUsage, reset
   const [position, setPosition] = useState({ x: 20, y: 20 });
   const [isDragging, setIsDragging] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+  const isMinRef = useRef(isMinimized);
   
   const offset = useRef({ x: 0, y: 0 });
   const ref = useRef<HTMLDivElement>(null);
   const hasMoved = useRef(false);
   const startPos = useRef({ x: 0, y: 0 });
 
-  const handleMouseDown = (e: React.MouseEvent) => {
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     // Prevent drag start if clicking buttons inside the maximized view
     // We allow dragging the minimized view (which acts as a button)
     if (!isMinimized && (e.target as HTMLElement).closest('button')) return;
-    
+
+    if (!isMinimized) {
+      e.preventDefault();
+    }
     setIsDragging(true);
     hasMoved.current = false;
     startPos.current = { x: e.clientX, y: e.clientY };
@@ -35,17 +41,27 @@ const DevTools: React.FC<DevToolsProps> = ({ isPro, togglePro, resetUsage, reset
         y: e.clientY - rect.top
       };
     }
+
+    e.currentTarget.setPointerCapture(e.pointerId);
   };
 
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    isMinRef.current = isMinimized;
+  }, [isMinimized]);
+
+  useEffect(() => {
+    const handlePointerMove = (e: PointerEvent) => {
       if (isDragging) {
         e.preventDefault(); // Prevent text selection
-        
-        // Calculate distance to determine if it's a drag or a click
+
         const dx = e.clientX - startPos.current.x;
         const dy = e.clientY - startPos.current.y;
-        if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
+        const threshold = isMinRef.current ? 8 : 3;
+        if (Math.abs(dx) > threshold || Math.abs(dy) > threshold) {
           hasMoved.current = true;
         }
 
@@ -56,28 +72,37 @@ const DevTools: React.FC<DevToolsProps> = ({ isPro, togglePro, resetUsage, reset
       }
     };
 
-    const handleMouseUp = () => {
+    const handlePointerUp = (e: PointerEvent) => {
       setIsDragging(false);
+      if (isMinRef.current && !hasMoved.current) {
+        setIsMinimized(false);
+      }
+      if (ref.current && ref.current.hasPointerCapture(e.pointerId)) {
+        ref.current.releasePointerCapture(e.pointerId);
+      }
     };
 
     if (isDragging) {
-      window.addEventListener('mousemove', handleMouseMove);
-      window.addEventListener('mouseup', handleMouseUp);
+      window.addEventListener('pointermove', handlePointerMove);
+      window.addEventListener('pointerup', handlePointerUp);
+      window.addEventListener('pointercancel', handlePointerUp);
     }
 
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener('pointermove', handlePointerMove);
+      window.removeEventListener('pointerup', handlePointerUp);
+      window.removeEventListener('pointercancel', handlePointerUp);
     };
-  }, [isDragging]);
+  }, [isDragging, isMinimized]);
 
   const handleMinimizeClick = () => {
-    if (!hasMoved.current) {
-      setIsMinimized(false);
-    }
+    // Always allow expanding from the minimized pill even if the pointer slightly moved
+    setIsMinimized(false);
   };
 
-  return (
+  if (!isMounted) return null;
+
+  return createPortal(
     <div
       ref={ref}
       style={{
@@ -85,9 +110,10 @@ const DevTools: React.FC<DevToolsProps> = ({ isPro, togglePro, resetUsage, reset
         top: `${position.y}px`,
         position: 'fixed',
         zIndex: 9999,
-        cursor: isDragging ? 'grabbing' : 'grab'
+        cursor: isDragging ? 'grabbing' : 'grab',
+        touchAction: 'none'
       }}
-      onMouseDown={handleMouseDown}
+      onPointerDown={handlePointerDown}
       className={`bg-gray-900 text-white shadow-xl border border-gray-700 ${
         // Disable transitions during drag to prevent lag/rubber-banding
         isDragging ? '' : 'transition-all duration-300'
@@ -169,7 +195,8 @@ const DevTools: React.FC<DevToolsProps> = ({ isPro, togglePro, resetUsage, reset
           </div>
         </>
       )}
-    </div>
+    </div>,
+    document.body
   );
 };
 
