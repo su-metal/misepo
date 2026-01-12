@@ -1612,42 +1612,66 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
 
         {createPortal(
           <div className="fixed bottom-0 left-0 right-0 p-4 md:p-3 bg-white/90 backdrop-blur-md border-t border-gray-200 z-[40]">
-            <div className="max-w-[1600px] mx-auto">
-              <button
-                ref={generateButtonRef}
-                onClick={handleGenerate}
-                className="w-full bg-slate-900 hover:bg-indigo-600 text-white font-bold py-4 md:py-3 rounded-xl shadow-xl shadow-slate-200 hover:shadow-indigo-200 transition-all transform hover:-translate-y-0.5 active:translate-y-0 text-xl md:text-lg flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
-                disabled={loading}
-              >
-                {loading ? (
-                  <>
-                    <span className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></span>
-                    <span>作成中...</span>
-                  </>
+          <div className="max-w-[1600px] mx-auto">
+            <button
+              ref={generateButtonRef}
+              onClick={handleGenerate}
+              className="w-full bg-slate-900 hover:bg-indigo-600 text-white font-bold py-4 md:py-3 rounded-xl shadow-xl shadow-slate-200 hover:shadow-indigo-200 transition-all transform hover:-translate-y-0.5 active:translate-y-0 text-xl md:text-lg flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <span className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></span>
+                  <span>作成中...</span>
+                </>
+              ) : (
+                <>
+                  <SparklesIcon className="w-5 h-5" />
+                  <span>
+                    {showGuestTour
+                      ? '投稿文を生成する'
+                      : (!isLoggedIn
+                        ? '登録してクレジットを獲得する'
+                        : (isMap ? '返信を作成する' : '投稿を作成する'))}
+                  </span>
+                </>
+              )}
+            </button>
+            {!isPro && (
+              <div className="text-center mt-2 text-[10px] text-gray-400 font-medium">
+                {isLoggedIn ? (
+                  <div className="flex flex-wrap items-center justify-center gap-3">
+                    <span>
+                      残りクレジット: <span className="text-indigo-600 font-bold">{remainingCredits}回</span> / 5
+                    </span>
+                    {onTryUpgrade && (
+                      <button
+                        onClick={onTryUpgrade}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full border border-indigo-200 text-[10px] font-bold text-indigo-600 hover:border-indigo-400 hover:text-indigo-500 transition-colors"
+                      >
+                        PROにアップグレードする
+                      </button>
+                    )}
+                  </div>
                 ) : (
                   <>
-                    <SparklesIcon className="w-5 h-5" />
-                    <span>
-                      {showGuestTour
-                        ? '投稿文を生成する'
-                        : (!isLoggedIn
-                          ? '登録してクレジットを獲得する'
-                          : (isMap ? '返信を作成する' : '投稿を作成する'))}
-                    </span>
+                    <span>アカウント作成（無料）で利用可能</span>
+                    {onTryUpgrade && (
+                      <div className="mt-1 flex justify-center">
+                        <button
+                          onClick={onTryUpgrade}
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full border border-indigo-200 text-[10px] font-bold text-indigo-600 hover:border-indigo-400 hover:text-indigo-500 transition-colors"
+                        >
+                          PROにアップグレードする
+                        </button>
+                      </div>
+                    )}
                   </>
                 )}
-              </button>
-              {!isPro && (
-                <div className="text-center mt-2 text-[10px] text-gray-400 font-medium">
-                  {isLoggedIn ? (
-                    <>残りクレジット: <span className="text-indigo-600 font-bold">{remainingCredits}回</span> / 本日</>
-                  ) : (
-                    <>アカウント作成（無料）で利用可能</>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>,
+              </div>
+            )}
+          </div>
+        </div>,
           document.body
         )}
 
