@@ -54,6 +54,31 @@ const DevTools: React.FC<DevToolsProps> = ({ isPro, togglePro, resetUsage, reset
   }, [isMinimized]);
 
   useEffect(() => {
+    const clampPosition = () => {
+      if (!ref.current) return;
+      const width = ref.current.offsetWidth;
+      const height = ref.current.offsetHeight;
+      setPosition((prev) => {
+        const maxX = Math.max(0, window.innerWidth - width);
+        const maxY = Math.max(0, window.innerHeight - height);
+        return {
+          x: Math.min(Math.max(0, prev.x), maxX),
+          y: Math.min(Math.max(0, prev.y), maxY),
+        };
+      });
+    };
+
+    clampPosition();
+    window.addEventListener('resize', clampPosition);
+    window.addEventListener('orientationchange', clampPosition);
+
+    return () => {
+      window.removeEventListener('resize', clampPosition);
+      window.removeEventListener('orientationchange', clampPosition);
+    };
+  }, []);
+
+  useEffect(() => {
     const handlePointerMove = (e: PointerEvent) => {
       if (isDragging) {
         e.preventDefault(); // Prevent text selection
