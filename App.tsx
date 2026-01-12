@@ -403,14 +403,15 @@ open11:00-close 17:00
       />
 
       {/* 8. Sidebar (History) */}
-      <HistorySidebar
-        history={history}
-        isPro={isPro}
+      <HistorySidebar 
+        history={history} 
+        isPro={isPro} 
         isLoggedIn={isLoggedIn}
         onSelect={handleHistorySelect}
         isOpen={isSidebarOpen}
         toggleOpen={toggleSidebar}
         onOpenLogin={() => setShowLoginModal(true)}
+        onOpenUpgrade={() => handleTryUpgrade('payment')}
       />
 
       {/* 9. Main Content */}

@@ -11,9 +11,10 @@ interface HistorySidebarProps {
   isOpen: boolean;
   toggleOpen: () => void;
   onOpenLogin: () => void;
+  onOpenUpgrade?: () => void;
 }
 
-const HistorySidebar: React.FC<HistorySidebarProps> = ({ history, isPro, isLoggedIn, onSelect, isOpen, toggleOpen, onOpenLogin }) => {
+const HistorySidebar: React.FC<HistorySidebarProps> = ({ history, isPro, isLoggedIn, onSelect, isOpen, toggleOpen, onOpenLogin, onOpenUpgrade }) => {
   const displayHistory = isPro ? history : history.slice(0, 5);
 
   const getPlatformIcon = (p: Platform) => {
@@ -118,10 +119,19 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({ history, isPro, isLogge
                 ))
               )}
               
-              {!isPro && history.length >= 5 && (
-                <div className="p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl text-center border border-gray-200 mt-4">
-                   <p className="text-xs text-gray-500 mb-2 font-medium">Free plan limit reached</p>
-                   <div className="text-xs font-bold text-amber-600 bg-white/50 py-1 rounded">Upgrade to Pro</div>
+                {!isPro && history.length >= 5 && (
+                <div className="p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl text-center border border-gray-200 mt-4 space-y-2">
+                   <p className="text-xs text-gray-500 mb-0 font-medium">Free plan limit reached</p>
+                   <p className="text-[10px] text-gray-400">Proプランなら履歴表示が無制限です。</p>
+                   <button
+                     onClick={() => {
+                       onOpenUpgrade?.();
+                       if (window.innerWidth < 768) toggleOpen();
+                     }}
+                     className="w-full py-2 text-xs font-bold rounded-xl bg-amber-500 text-white hover:bg-amber-600 transition-colors"
+                   >
+                     PROにアップグレードする
+                   </button>
                 </div>
               )}
             </>
