@@ -119,6 +119,31 @@ export async function POST(req: Request) {
 
   try {
     const result = await generateContent(profile, config, isPro);
+
+    if (userId) {
+      const runType =
+        typeof body.run_type === "string" && body.run_type.trim()
+          ? body.run_type
+          : "generation";
+
+      const inputPayload = { profile, config };
+
+      const { data: runId, error } = await supabaseAdmin.rpc(
+        "save_history_with_cap",
+        {
+          p_app_id: APP_ID,
+          p_user_id: userId,
+          p_run_type: runType,
+          p_is_pro: isPro,
+          p_input: inputPayload, // ← stringifyしない
+          p_output: result, // ← stringifyしない
+          // p_free_cap: 5,       // defaultあるなら省略OK
+        }
+      );
+
+      console.log("save_history_with_cap result:", { runId, error });
+    }
+
     return NextResponse.json({
       ok: true,
       result,

@@ -2,7 +2,17 @@
 
 import React, { useState, useEffect } from 'react';
 import { createClient } from "@/lib/supabase/client";
-import { AppState, StoreProfile, GeneratedPost, Preset } from './types';
+import {
+  AppState,
+  StoreProfile,
+  GeneratedPost,
+  Preset,
+  Platform,
+  Length,
+  Tone,
+  PostPurpose,
+  GoogleMapPurpose,
+} from "./types";
 import { GUEST_PROFILE } from './constants';
 import Onboarding from './components/Onboarding';
 import PostGenerator from './components/PostGenerator';
@@ -121,6 +131,35 @@ const App: React.FC = () => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      setHistory([]);
+      return;
+    }
+
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/me/history", { cache: "no-store" });
+        const data = await res.json();
+        if (!data?.ok || !Array.isArray(data.history)) return;
+    const mapped = data.history.map(mapHistoryEntry);
+    if (process.env.NODE_ENV !== "production") {
+      console.log("history ids:", mapped.map((x) => x.id));
+    }
+        if (!cancelled) {
+          setHistory(mapped);
+        }
+      } catch (err) {
+        console.warn("history fetch failed:", err);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isLoggedIn]);
 
   const checkDailyLimit = () => {
     if (typeof window === 'undefined') return;
@@ -248,6 +287,65 @@ const App: React.FC = () => {
       setDailyUsageCount(newCount);
       localStorage.setItem('misepo_daily_usage', JSON.stringify({ date: today, count: newCount }));
     }
+  };
+
+  const mapHistoryEntry = (entry: any): GeneratedPost => {
+    const createdAt = entry.created_at
+      ? new Date(entry.created_at).getTime()
+      : Date.now();
+
+    const inputPayload = entry.input ?? {};
+    const configSource = inputPayload.config ?? {};
+    const platforms: Platform[] = Array.isArray(configSource.platforms)
+      ? configSource.platforms
+      : configSource.platform
+        ? [configSource.platform]
+        : [Platform.Instagram];
+
+    const purposeValue = configSource.purpose;
+    const postPurpose = Object.values(PostPurpose).includes(purposeValue)
+      ? (purposeValue as PostPurpose)
+      : PostPurpose.Promotion;
+    const gmapPurpose = Object.values(GoogleMapPurpose).includes(purposeValue)
+      ? (purposeValue as GoogleMapPurpose)
+      : GoogleMapPurpose.Auto;
+
+    const toneValue = configSource.tone ?? Tone.Standard;
+    const lengthValue = configSource.length ?? Length.Medium;
+
+    const results =
+      Array.isArray(entry.output?.results) && entry.output.results.length > 0
+        ? entry.output.results
+        : Array.isArray(entry.output)
+          ? entry.output
+          : [];
+
+    const runId = entry.run_id ?? entry.id;
+    if (!runId) {
+      console.warn("History entry missing run_id/id:", entry);
+    }
+
+    return {
+      id: runId ?? `invalid-${createdAt}`,
+      timestamp: createdAt,
+      config: {
+        platforms,
+        postPurpose,
+        gmapPurpose,
+        tone: toneValue,
+        length: lengthValue,
+        inputText: configSource.inputText ?? "",
+        starRating: configSource.starRating ?? null,
+        language: configSource.language,
+        storeSupplement: configSource.storeSupplement,
+        customPrompt: configSource.customPrompt,
+        includeSymbols: configSource.includeSymbols,
+        includeEmojis: configSource.includeEmojis,
+        xConstraint140: configSource.xConstraint140,
+        instagramFooter: configSource.instagramFooter,
+      },
+      results,
+    };
   };
 
   const handleTaskComplete = () => {

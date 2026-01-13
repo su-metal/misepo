@@ -89,34 +89,44 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({ history, isPro, isLogge
                   <p className="text-xs text-gray-400 font-medium">No history yet</p>
                 </div>
               ) : (
-                displayHistory.map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => {
-                      onSelect(item);
-                      if (window.innerWidth < 768) toggleOpen();
-                    }}
-                    className="w-full text-left p-5 md:p-4 rounded-2xl bg-white hover:bg-indigo-50/50 transition-all border border-gray-100 hover:border-indigo-100 group shadow-sm hover:shadow-md"
-                  >
-                    <div className="flex items-center gap-1 mb-2 flex-wrap">
-                      {item.config.platforms.map((p) => (
-                        <span 
-                          key={p} 
-                          className={`flex items-center justify-center w-5 h-5 rounded-full shadow-sm ${getPlatformColor(p)}`}
-                          title={p}
-                        >
-                          {getPlatformIcon(p)}
+                displayHistory.map((item) => {
+                  const firstResult =
+                    item.results?.[0]?.data?.[0] ??
+                    item.results?.find((r) => Array.isArray(r.data) && r.data.length > 0)
+                      ?.data?.[0] ??
+                    "";
+                  const previewText =
+                    firstResult || item.config.inputText || "No preview available";
+
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => {
+                        onSelect(item);
+                        if (window.innerWidth < 768) toggleOpen();
+                      }}
+                      className="w-full text-left p-5 md:p-4 rounded-2xl bg-white hover:bg-indigo-50/50 transition-all border border-gray-100 hover:border-indigo-100 group shadow-sm hover:shadow-md"
+                    >
+                      <div className="flex items-center gap-1 mb-2 flex-wrap">
+                        {item.config.platforms.map((p) => (
+                          <span 
+                            key={p} 
+                            className={`flex items-center justify-center w-5 h-5 rounded-full shadow-sm ${getPlatformColor(p)}`}
+                            title={p}
+                          >
+                            {getPlatformIcon(p)}
+                          </span>
+                        ))}
+                        <span className="ml-auto text-xs md:text-[10px] text-gray-400 font-medium">
+                          {new Date(item.timestamp).toLocaleDateString(undefined, {month:'short', day:'numeric'})}
                         </span>
-                      ))}
-                      <span className="ml-auto text-xs md:text-[10px] text-gray-400 font-medium">
-                        {new Date(item.timestamp).toLocaleDateString(undefined, {month:'short', day:'numeric'})}
-                      </span>
-                    </div>
-                    <p className="text-sm md:text-xs text-gray-600 font-medium line-clamp-2 leading-relaxed">
-                      {item.config.inputText}
-                    </p>
-                  </button>
-                ))
+                      </div>
+                      <p className="text-sm md:text-xs text-gray-600 font-medium line-clamp-2 leading-relaxed">
+                        {previewText}
+                      </p>
+                    </button>
+                  );
+                })
               )}
               
                 {!isPro && history.length >= 5 && (
