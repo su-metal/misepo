@@ -644,27 +644,29 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
     } else {
       setResultGroups(newGroups);
 
-      onGenerateSuccess({
-        id: latestRunId ?? (Date.now().toString() + Math.random().toString().slice(2, 5)),
-        timestamp: Date.now(),
-        config: {
-          platforms: targetPlatforms,
-          postPurpose,
-          gmapPurpose,
-          tone,
-          length,
-          inputText: inputText,
-          starRating: isMap ? starRating : undefined,
-          language: language,
-          storeSupplement: storeSupplement,
-          customPrompt: customPrompt,
-          xConstraint140: xConstraint140,
-          includeSymbols: includeSymbols,
-          includeEmojis: includeEmojis,
-          instagramFooter: (targetPlatforms.includes(Platform.Instagram) && includeFooter) ? storeProfile.instagramFooter : undefined,
-        },
-        results: generatedResults
-      });
+      if (!showGuestTour || isLoggedIn) {
+        onGenerateSuccess({
+          id: latestRunId ?? (Date.now().toString() + Math.random().toString().slice(2, 5)),
+          timestamp: Date.now(),
+          config: {
+            platforms: targetPlatforms,
+            postPurpose,
+            gmapPurpose,
+            tone,
+            length,
+            inputText: inputText,
+            starRating: isMap ? starRating : undefined,
+            language: language,
+            storeSupplement: storeSupplement,
+            customPrompt: customPrompt,
+            xConstraint140: xConstraint140,
+            includeSymbols: includeSymbols,
+            includeEmojis: includeEmojis,
+            instagramFooter: (targetPlatforms.includes(Platform.Instagram) && includeFooter) ? storeProfile.instagramFooter : undefined,
+          },
+          results: generatedResults
+        });
+      }
 
       onTaskComplete();
     }
@@ -688,7 +690,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
       return;
     }
 
-    if (!canGenerateNew && !isPro) {
+    if (!canGenerateNew && !isPro && !(showGuestTour && !isLoggedIn)) {
       if (remainingCredits === 0) {
         if (onOpenLogin && !isLoggedIn) {
           onOpenLogin();

@@ -26,6 +26,72 @@ import GuestDemoModal from './components/GuestDemoModal';
 import { LockIcon, LogOutIcon } from './components/Icons';
 import { useRouter } from 'next/navigation';
 
+const storageKey = (base: string, uid: string | null) =>
+  `misepo:${base}:${uid ?? "guest"}`;
+
+const readFromStorage = <T,>(base: string, uid: string | null): T | null => {
+  if (typeof window === "undefined") return null;
+  const raw = localStorage.getItem(storageKey(base, uid));
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw) as T;
+  } catch (err) {
+    console.warn(`Failed to parse storage key ${base}`, err);
+    return null;
+  }
+};
+
+const writeToStorage = (base: string, uid: string | null, value: any) => {
+  if (typeof window === "undefined") return;
+  const key = storageKey(base, uid);
+  if (value === null || value === undefined) {
+    localStorage.removeItem(key);
+    return;
+  }
+  localStorage.setItem(key, JSON.stringify(value));
+};
+
+const normalizeStoreProfile = (profile: any): StoreProfile | null => {
+  if (!profile || typeof profile !== "object") return null;
+
+  const industry =
+    typeof profile.industry === "string" ? profile.industry : "";
+  const name =
+    typeof profile.store_name === "string"
+      ? profile.store_name
+      : typeof profile.name === "string"
+        ? profile.name
+        : "";
+  const region =
+    typeof profile.area === "string"
+      ? profile.area
+      : typeof profile.region === "string"
+        ? profile.region
+        : "";
+  const description =
+    typeof profile.highlights === "string"
+      ? profile.highlights
+      : typeof profile.description === "string"
+        ? profile.description
+        : "";
+  const instagramFooter =
+    typeof profile.instagram_signature === "string"
+      ? profile.instagram_signature
+      : typeof profile.instagramFooter === "string"
+        ? profile.instagramFooter
+        : "";
+
+  if (!industry || !name) return null;
+
+  return {
+    industry,
+    name,
+    region,
+    description,
+    instagramFooter,
+  };
+};
+
 const App: React.FC = () => {
   const supabase = createClient();
   const router = useRouter();
@@ -62,6 +128,7 @@ const App: React.FC = () => {
 
   // --- Auth & Persistence (Supabase is source of truth for login state) ---
   const [authReady, setAuthReady] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
     let alive = true;
@@ -71,7 +138,9 @@ const App: React.FC = () => {
       if (!alive) return;
 
       const loggedIn = !!session?.user;
+      const currentUserId = session?.user?.id ?? null;
       setIsLoggedIn(loggedIn);
+      setUserId(currentUserId);
       await refreshPlan(loggedIn);
 
       if (!loggedIn) {
@@ -79,11 +148,6 @@ const App: React.FC = () => {
         if (!hasSeenDemo) {
           setTimeout(() => setShowGuestDemoModal(true), 500);
         }
-      }
-
-      const savedProfile = localStorage.getItem('misepo_profile');
-      if (savedProfile) {
-        setStoreProfile(JSON.parse(savedProfile));
       }
 
       const savedHistory = localStorage.getItem('misepo_history');
@@ -103,6 +167,8 @@ const App: React.FC = () => {
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       const loggedIn = !!session?.user;
+      const nextUserId = session?.user?.id ?? null;
+      setUserId(nextUserId);
       setIsLoggedIn(loggedIn);
       if (loggedIn) {
         refreshPlan(true);
@@ -118,7 +184,7 @@ const App: React.FC = () => {
 
         setResetResultsTrigger(prev => prev + 1);
 
-        const savedProfile = localStorage.getItem("misepo_profile");
+        const savedProfile = readFromStorage<StoreProfile>("store_profile", nextUserId);
         if (!savedProfile) {
           setTimeout(() => setShowSettings(true), 300);
         }
@@ -147,6 +213,31 @@ const App: React.FC = () => {
     } catch (err) {
       console.warn("history fetch failed:", err);
       return null;
+    }
+  };
+
+  const fetchStoreProfileFromServer = async () => {
+    if (!userId) return;
+    try {
+      const res = await fetch("/api/me/store-profile", { cache: "no-store" });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (!data?.ok) return;
+      if (data.profile == null) {
+        setStoreProfile(null);
+        return;
+      }
+
+      const normalized = normalizeStoreProfile(data.profile);
+      if (!normalized) {
+        setStoreProfile(null);
+        return;
+      }
+
+      setStoreProfile(normalized);
+      writeToStorage("store_profile", userId, normalized);
+    } catch (err) {
+      console.warn("store profile fetch failed:", err);
     }
   };
 
@@ -231,10 +322,25 @@ const App: React.FC = () => {
 
   useEffect(() => {
     if (!authReady) return;
-    if (storeProfile) {
-      localStorage.setItem('misepo_profile', JSON.stringify(storeProfile));
+
+    if (!userId) {
+      const guestProfile = readFromStorage<StoreProfile>("store_profile", null);
+      setStoreProfile(guestProfile);
+      return;
     }
-  }, [authReady, storeProfile]);
+
+    setStoreProfile(null);
+    const cachedProfile = readFromStorage<StoreProfile>("store_profile", userId);
+    if (cachedProfile) {
+      setStoreProfile(cachedProfile);
+    }
+    fetchStoreProfileFromServer();
+  }, [authReady, userId]);
+
+  useEffect(() => {
+    if (!authReady || !storeProfile) return;
+    writeToStorage("store_profile", userId, storeProfile);
+  }, [authReady, storeProfile, userId]);
 
   useEffect(() => {
     if (!authReady || !isLoggedIn) return;
@@ -264,10 +370,47 @@ const App: React.FC = () => {
     await supabase.auth.signOut();
     setIsLoggedIn(false);
     setIsPro(false);
+    setUserId(null);
   };
 
-  const handleOnboardingSave = (profile: StoreProfile) => {
+  const saveStoreProfileToServer = async (profile: StoreProfile) => {
+    const payload = {
+      industry: profile.industry,
+      store_name: profile.name,
+      area: profile.region || undefined,
+      highlights: profile.description || undefined,
+      instagram_signature: profile.instagramFooter || undefined,
+    };
+
+    const res = await fetch("/api/me/store-profile", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ profile: payload }),
+    });
+
+    const data = await res.json().catch(() => null);
+    if (!res.ok || !data?.ok) {
+      throw new Error(data?.error ?? `store profile save failed (${res.status})`);
+    }
+  };
+
+
+  const handleOnboardingSave = async (profile: StoreProfile) => {
+    if (!isLoggedIn) {
+      alert("ログイン後に保存できます。");
+      return;
+    }
+
     const isInitialSetup = !storeProfile; // Check if this is the first time setup
+
+    try {
+      await saveStoreProfileToServer(profile);
+    } catch (err) {
+      console.error("store profile save failed:", err);
+      alert("保存に失敗しました。時間をおいて再度お試しください。");
+      return;
+    }
+
     setStoreProfile(profile);
     setShowSettings(false);
 
@@ -395,7 +538,7 @@ const App: React.FC = () => {
 
   const resetProfile = () => {
     // Dev tool profile reset (Reset to Guest)
-    localStorage.removeItem('misepo_profile');
+    writeToStorage("store_profile", userId, null);
     // Also reset the "seen demo" flag so developer can test the flow again
     localStorage.removeItem('misepo_guest_demo_seen');
 
@@ -563,9 +706,9 @@ open11:00-close 17:00
       />
 
       {/* 8. Sidebar (History) */}
-      <HistorySidebar 
-        history={history} 
-        isPro={isPro} 
+      <HistorySidebar
+        history={history}
+        isPro={isPro}
         isLoggedIn={isLoggedIn}
         onSelect={handleHistorySelect}
         isOpen={isSidebarOpen}
