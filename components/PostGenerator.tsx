@@ -183,17 +183,6 @@ const INSTA_QUICK_PRESETS: QuickPreset[] = [
   { label: 'お礼・報告', icon: <HandHeartIcon />, tone: Tone.Friendly, length: Length.Medium, purpose: PostPurpose.Story, templateText: '沢山のご来店ありがとうございます！' },
 ];
 
-type TonePreference = {
-  includeEmojis: boolean;
-  includeSymbols: boolean;
-};
-
-const TONE_DEFAULT_PREFERENCES: Record<Tone, TonePreference> = {
-  [Tone.Formal]: { includeEmojis: false, includeSymbols: false },
-  [Tone.Standard]: { includeEmojis: true, includeSymbols: false },
-  [Tone.Friendly]: { includeEmojis: true, includeSymbols: false },
-};
-
 
 const PostGenerator: React.FC<PostGeneratorProps> = ({
   storeProfile,
@@ -230,6 +219,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
   const [customPrompt, setCustomPrompt] = useState('');
   const [includeSymbols, setIncludeSymbols] = useState<boolean>(false);
   const [includeEmojis, setIncludeEmojis] = useState<boolean>(true);
+  const [serverRemainingCredits, setServerRemainingCredits] = useState<number | null>(null);
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
   const [isPresetModalOpen, setIsPresetModalOpen] = useState(false);
   const [refiningKey, setRefiningKey] = useState<string | null>(null);
@@ -247,11 +237,6 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
   const [currentTipIndex, setCurrentTipIndex] = useState(0);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [previewModal, setPreviewModal] = useState<{ platform: Platform, text: string } | null>(null);
-  const tonePreferencesRef = useRef<Record<Tone, TonePreference>>({
-    [Tone.Formal]: { ...TONE_DEFAULT_PREFERENCES[Tone.Formal] },
-    [Tone.Standard]: { ...TONE_DEFAULT_PREFERENCES[Tone.Standard] },
-    [Tone.Friendly]: { ...TONE_DEFAULT_PREFERENCES[Tone.Friendly] },
-  });
 
   // Track active preset context for editing/saving
   const [activePresetContext, setActivePresetContext] = useState<{ label: string, templateText?: string } | null>(null);
@@ -259,10 +244,22 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
   const isMap = platforms.includes(Platform.GoogleMaps);
   const isXOnly = platforms.length === 1 && platforms.includes(Platform.X);
   const MAX_FREE_LIMIT = 5;
-  const remainingCredits = isPro ? 9999 : Math.max(0, MAX_FREE_LIMIT - dailyUsageCount);
-  const canGenerateNew = isPro || (remainingCredits > 0 && !loading);
+  const fallbackRemaining = Math.max(0, MAX_FREE_LIMIT - dailyUsageCount);
+  const remainingCredits = isPro ? 9999 : (serverRemainingCredits ?? fallbackRemaining);
+  const canGenerateNew = (isPro || remainingCredits > 0) && !loading;
   const canRegenerate = isLoggedIn && (isPro || retryCount < 2);
   const hasResults = resultGroups.length > 0;
+  const defaultGenerateLabel = showGuestTour
+    ? '投稿文を生成する'
+    : !isLoggedIn
+      ? '登録してクレジットを獲得する'
+      : isMap
+        ? '返信を作成する'
+        : '投稿を作成する';
+  const generateButtonLabel =
+    (!isPro && isLoggedIn && remainingCredits === 0)
+      ? 'PROにアップグレードする'
+      : defaultGenerateLabel;
 
   useEffect(() => {
     if (isMap && starRating !== null) {
@@ -275,8 +272,27 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
       setPlatforms([Platform.Instagram]);
       setPostPurpose(PostPurpose.Promotion);
       setInputText(DEMO_SAMPLE_TEXT);
+      setServerRemainingCredits(null);
     }
   }, [isLoggedIn]);
+
+  useEffect(() => {
+    if (!isLoggedIn || isPro) return;
+
+    fetch("/api/usage/credits")
+      .then(async (res) => {
+        if (!res.ok) throw new Error("usage fetch failed");
+        return res.json();
+      })
+      .then((data) => {
+        if (data?.ok && typeof data.remaining === "number") {
+          setServerRemainingCredits(data.remaining);
+        }
+      })
+      .catch((err) => {
+        console.warn("Unable to refresh remaining credits:", err);
+      });
+  }, [isLoggedIn, isPro]);
 
   useEffect(() => {
     if (shouldShowTour) {
@@ -380,12 +396,8 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
     }
   }, [restorePost]);
 
-  useEffect(() => {
-    tonePreferencesRef.current[tone] = { includeEmojis, includeSymbols };
-  }, [tone, includeEmojis, includeSymbols]);
-
   const handleApplyPreset = (preset: Preset) => {
-    handleToneChange(preset.config.tone);
+    setTone(preset.config.tone);
     setLength(preset.config.length);
     if (preset.config.inputText !== undefined) setInputText(preset.config.inputText);
     setLanguage(preset.config.language);
@@ -419,7 +431,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
   };
 
   const handleApplyQuickPreset = (preset: QuickPreset) => {
-    handleToneChange(preset.tone);
+    setTone(preset.tone);
     setLength(preset.length);
     setPostPurpose(preset.purpose);
     // Optional: Set template text if input is empty, or confirm override?
@@ -432,22 +444,15 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
     setActivePresetContext({ label: preset.label, templateText: preset.templateText });
   };
 
-  const commitCurrentTonePreference = () => {
-    tonePreferencesRef.current[tone] = { includeEmojis, includeSymbols };
-  };
-
-  const applyTonePreference = (newTone: Tone) => {
-    const nextPref =
-      tonePreferencesRef.current[newTone] ?? TONE_DEFAULT_PREFERENCES[newTone];
-    setTone(newTone);
-    setIncludeEmojis(nextPref.includeEmojis);
-    setIncludeSymbols(nextPref.includeSymbols);
-  };
-
   const handleToneChange = (newTone: Tone) => {
-    if (tone === newTone) return;
-    commitCurrentTonePreference();
-    applyTonePreference(newTone);
+    setTone(newTone);
+    if (newTone === Tone.Formal) {
+      setIncludeEmojis(false);
+      setIncludeSymbols(false);
+    } else {
+      setIncludeEmojis(true);
+      setIncludeSymbols(false);
+    }
   };
 
   const handleToggleMultiGen = () => {
@@ -574,17 +579,20 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
           }),
         });
 
-        const data = await res.json().catch(() => ({}));
+        const data = await res.json();
+        const remaining = typeof data.remaining === "number" ? data.remaining : null;
+        if (remaining !== null) {
+          setServerRemainingCredits(remaining);
+        }
 
         if (!res.ok || !data.ok) {
           if (data?.error === "quota_exceeded") {
-            // ✅ ここでUI表示（とりあえずalertでもOK）
             alert("今週の無料枠を使い切りました。Proにアップグレードすると無制限で使えます。");
-            return; // 例外にしない
+            setServerRemainingCredits(0);
+            return;
           }
-          throw new Error(data?.error ?? "Generate failed");
+          throw new Error(data.error ?? "Generate failed");
         }
-
 
         const content = data.result as string[];
 
@@ -1648,13 +1656,13 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
 
         {createPortal(
           <div className="fixed bottom-0 left-0 right-0 p-4 md:p-3 bg-white/90 backdrop-blur-md border-t border-gray-200 z-[40]">
-            <div className="max-w-[1600px] mx-auto">
-              <button
-                ref={generateButtonRef}
-                onClick={handleGenerate}
-                className="w-full bg-slate-900 hover:bg-indigo-600 text-white font-bold py-4 md:py-3 rounded-xl shadow-xl shadow-slate-200 hover:shadow-indigo-200 transition-all transform hover:-translate-y-0.5 active:translate-y-0 text-xl md:text-lg flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
-                disabled={loading}
-              >
+          <div className="max-w-[1600px] mx-auto">
+            <button
+              ref={generateButtonRef}
+              onClick={handleGenerate}
+              className="w-full bg-slate-900 hover:bg-indigo-600 text-white font-bold py-4 md:py-3 rounded-xl shadow-xl shadow-slate-200 hover:shadow-indigo-200 transition-all transform hover:-translate-y-0.5 active:translate-y-0 text-xl md:text-lg flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
+              disabled={loading}
+            >
                 {loading ? (
                   <>
                     <span className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></span>
@@ -1663,51 +1671,45 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
                 ) : (
                   <>
                     <SparklesIcon className="w-5 h-5" />
-                    <span>
-                      {showGuestTour
-                        ? '投稿文を生成する'
-                        : (!isLoggedIn
-                          ? '登録してクレジットを獲得する'
-                          : (isMap ? '返信を作成する' : '投稿を作成する'))}
-                    </span>
+                    <span>{generateButtonLabel}</span>
                   </>
                 )}
-              </button>
-              {!isPro && (
-                <div className="text-center mt-2 text-[10px] text-gray-400 font-medium">
-                  {isLoggedIn ? (
-                    <div className="flex flex-wrap items-center justify-center gap-3">
-                      <span>
-                        残りクレジット: <span className="text-indigo-600 font-bold">{remainingCredits}回</span> / 5
-                      </span>
-                      {onTryUpgrade && (
+            </button>
+            {!isPro && (
+              <div className="text-center mt-2 text-[10px] text-gray-400 font-medium">
+                {isLoggedIn ? (
+                  <div className="flex flex-wrap items-center justify-center gap-3">
+                    <span>
+                      残りクレジット: <span className="text-indigo-600 font-bold">{remainingCredits}回</span> / 5
+                    </span>
+                    {onTryUpgrade && (
+                      <button
+                        onClick={onTryUpgrade}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full border border-indigo-200 text-[10px] font-bold text-indigo-600 hover:border-indigo-400 hover:text-indigo-500 transition-colors"
+                      >
+                        PROにアップグレードする
+                      </button>
+                    )}
+                  </div>
+                ) : (
+                  <>
+                    <span>アカウント作成（無料）で利用可能</span>
+                    {onTryUpgrade && (
+                      <div className="mt-1 flex justify-center">
                         <button
                           onClick={onTryUpgrade}
                           className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full border border-indigo-200 text-[10px] font-bold text-indigo-600 hover:border-indigo-400 hover:text-indigo-500 transition-colors"
                         >
                           PROにアップグレードする
                         </button>
-                      )}
-                    </div>
-                  ) : (
-                    <>
-                      <span>アカウント作成（無料）で利用可能</span>
-                      {onTryUpgrade && (
-                        <div className="mt-1 flex justify-center">
-                          <button
-                            onClick={onTryUpgrade}
-                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full border border-indigo-200 text-[10px] font-bold text-indigo-600 hover:border-indigo-400 hover:text-indigo-500 transition-colors"
-                          >
-                            PROにアップグレードする
-                          </button>
-                        </div>
-                      )}
-                    </>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>,
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+        </div>,
           document.body
         )}
 

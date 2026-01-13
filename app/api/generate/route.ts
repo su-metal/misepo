@@ -28,7 +28,6 @@ export async function POST(req: Request) {
 
   const allowGuest = body.allowGuest === true;
 
-  // ゲスト許可のときは「isPro=false」で固定し、クレジット消費もしない（=体験版）
   const userId = user?.id ?? null;
   const isGuest = !userId;
 
@@ -40,11 +39,12 @@ export async function POST(req: Request) {
   }
 
   const profile = body.profile as StoreProfile | undefined;
-  if (!profile)
+  if (!profile) {
     return NextResponse.json(
       { ok: false, error: "Missing profile" },
       { status: 400 }
     );
+  }
   if (typeof profile.industry !== "string" || !profile.industry.trim()) {
     return NextResponse.json(
       { ok: false, error: "Missing profile.industry" },
@@ -53,14 +53,15 @@ export async function POST(req: Request) {
   }
 
   const config = body.config as GenerationConfig | undefined;
-  if (!config)
+  if (!config) {
     return NextResponse.json(
       { ok: false, error: "Missing generation config" },
       { status: 400 }
     );
+  }
 
-  // ✅ isPro はクライアントを信じない（DBから決める）
   let isPro = false;
+  let remainingCredits: number | null = null;
 
   if (!isGuest) {
     const { data: ent, error: entErr } = await supabaseAdmin
@@ -79,15 +80,14 @@ export async function POST(req: Request) {
 
     isPro = ent?.plan === "pro" && ent?.status === "active";
 
-    // ✅ Free（ログイン済）だけクレジット消費
     if (!isPro) {
       const { data: rpcData, error: rpcErr } = await supabaseAdmin.rpc(
         "consume_weekly_credits",
         {
           p_app_id: APP_ID,
           p_user_id: userId,
-          p_cost: 1,
-          p_weekly_cap: 5,
+          p_cost: COST,
+          p_weekly_cap: WEEKLY_CAP,
         }
       );
 
@@ -99,13 +99,15 @@ export async function POST(req: Request) {
       }
 
       const row = Array.isArray(rpcData) ? rpcData[0] : rpcData;
+      remainingCredits = row?.out_balance ?? null;
 
       if (!row?.ok) {
         return NextResponse.json(
           {
             ok: false,
             error: "quota_exceeded",
-            balance: row?.out_balance ?? 0,
+            balance: remainingCredits ?? 0,
+            remaining: 0,
           },
           { status: 402 }
         );
@@ -117,7 +119,12 @@ export async function POST(req: Request) {
 
   try {
     const result = await generateContent(profile, config, isPro);
-    return NextResponse.json({ ok: true, result, isPro }); // isPro を返すとUI側が楽
+    return NextResponse.json({
+      ok: true,
+      result,
+      isPro,
+      remaining: isPro ? null : remainingCredits,
+    });
   } catch (e: any) {
     console.error("Generation error:", e);
     return NextResponse.json(
