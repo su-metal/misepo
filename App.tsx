@@ -329,7 +329,7 @@ open11:00-close 17:00
     setIsTryingToUpgrade(true);
   };
 
-  const handleConfirmUpgrade = async () => {
+  const handleConfirmUpgrade = async (plan: "monthly" | "yearly" = "monthly") => {
     if (!isLoggedIn) {
       setIsTryingToUpgrade(false);
       setShowLoginModal(true);
@@ -337,7 +337,11 @@ open11:00-close 17:00
     }
 
     try {
-      const res = await fetch("/api/billing/checkout", { method: "POST" });
+      const res = await fetch("/api/billing/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan }),
+      });
       const data = await res.json().catch(() => null);
 
       if (!res.ok || !data?.ok || !data?.url) {
@@ -345,6 +349,7 @@ open11:00-close 17:00
         return;
       }
 
+      setIsTryingToUpgrade(false);
       window.location.href = data.url;
     } catch (err) {
       console.error("checkout error:", err);
