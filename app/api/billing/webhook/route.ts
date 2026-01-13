@@ -4,6 +4,12 @@ import { supabaseAdmin } from "@/lib/supabase/admin";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
+const PROMO_KEY = "intro_monthly_1000off";
+const STARTER_COUPON =
+  process.env.STRIPE_COUPON_STARTER_MONTHLY ??
+  process.env.STRIPE_COUPON_FIRST_MONTH_1000OFF ??
+  null;
+
 export async function POST(req: Request) {
   const sig = req.headers.get("stripe-signature");
   if (!sig)
@@ -134,6 +140,32 @@ export async function POST(req: Request) {
       });
     }
 
+    if (event.type === "invoice.payment_succeeded") {
+      const invoice = event.data.object as Stripe.Invoice;
+      const { userId, appId } = await resolveUserFromInvoice(invoice, fallbackAppId);
+      if (userId) {
+        const isPromoApplied = isIntroPromo(invoice);
+        if (isPromoApplied && appId) {
+          await recordPromotion({
+            userId,
+            appId,
+            promoKey: PROMO_KEY,
+            stripeCustomerId:
+              typeof invoice.customer === "string"
+                ? invoice.customer
+                : invoice.customer?.id ?? null,
+            stripeSubscriptionId: getInvoiceSubscriptionId(invoice),
+            stripeInvoiceId: invoice.id,
+            stripeEventId: event.id,
+            metadata: {
+              ...invoice.metadata,
+              coupon_ids: extractCouponIdsFromInvoice(invoice),
+            },
+          });
+        }
+      }
+    }
+
     return NextResponse.json({ ok: true });
   } catch (e: any) {
     console.error("webhook error:", e);
@@ -174,4 +206,108 @@ async function upsertEntitlement(params: {
     .upsert(payload, { onConflict: "user_id,app_id" });
 
   if (error) throw new Error(error.message);
+}
+
+async function resolveUserFromInvoice(
+  invoice: Stripe.Invoice,
+  fallbackAppId: string
+): Promise<{ userId: string | null; appId: string }> {
+  let userId: string | null = invoice.metadata?.user_id ?? null;
+  let appId = invoice.metadata?.app_id ?? fallbackAppId;
+
+  if (!userId && invoice.lines?.data?.length) {
+    for (const line of invoice.lines.data) {
+      if (line.metadata?.user_id) {
+        userId = line.metadata.user_id;
+        appId = line.metadata.app_id ?? appId;
+        break;
+      }
+    }
+  }
+
+  if (!userId) {
+    const subscriptionId = getInvoiceSubscriptionId(invoice);
+    if (subscriptionId) {
+      const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+      userId = subscription?.metadata?.user_id ?? userId;
+      appId = subscription?.metadata?.app_id ?? appId;
+    }
+  }
+
+  return { userId, appId };
+}
+
+function isIntroPromo(invoice: Stripe.Invoice) {
+  const couponApplied =
+    STARTER_COUPON !== null &&
+    extractCouponIdsFromInvoice(invoice).some((couponId) => couponId === STARTER_COUPON);
+
+  const metadataPromo =
+    invoice.metadata?.promo_key === PROMO_KEY ||
+    invoice.lines?.data?.some((line) => line.metadata?.promo_key === PROMO_KEY);
+
+  const discountAmount =
+    (invoice.total_discount_amounts ?? []).some((entry) => (entry?.amount ?? 0) > 0) &&
+    invoice.metadata?.promo_key === PROMO_KEY;
+
+  return couponApplied || metadataPromo || discountAmount;
+}
+
+async function recordPromotion(params: {
+  userId: string;
+  appId: string;
+  promoKey: string;
+  stripeCustomerId: string | null;
+  stripeSubscriptionId: string | null;
+  stripeInvoiceId: string;
+  stripeEventId: string;
+  metadata: Record<string, unknown>;
+}) {
+  const { error } = await supabaseAdmin
+    .from("promotion_redemptions")
+    .insert(
+      {
+        app_id: params.appId,
+        user_id: params.userId,
+        promo_key: params.promoKey,
+        stripe_customer_id: params.stripeCustomerId,
+        stripe_subscription_id: params.stripeSubscriptionId,
+        stripe_invoice_id: params.stripeInvoiceId,
+        stripe_event_id: params.stripeEventId,
+        metadata: params.metadata,
+      },
+      ({ onConflict: "app_id,user_id,promo_key", ignoreDuplicates: true } as any)
+    );
+
+  if (error) throw new Error(error.message);
+}
+
+function getInvoiceSubscriptionId(invoice: Stripe.Invoice) {
+  const subscriptionField = (invoice as any).subscription;
+  return typeof subscriptionField === "string"
+    ? subscriptionField
+    : subscriptionField?.id ?? null;
+}
+
+function extractCouponIdsFromInvoice(invoice: Stripe.Invoice): string[] {
+  const discounts = (invoice as any).discounts;
+  if (!Array.isArray(discounts)) {
+    return [];
+  }
+
+  const ids = discounts.flatMap((discount: any): string[] => {
+    if (!discount) return [];
+    if (typeof discount === "string") return [];
+
+    const coupon = discount.coupon;
+    if (!coupon) return [];
+
+    if (typeof coupon === "string") {
+      return [coupon];
+    }
+
+    return coupon?.id ? [coupon.id] : [];
+  });
+
+  return Array.from(new Set(ids));
 }
