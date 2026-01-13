@@ -4,13 +4,12 @@ import { createPortal } from 'react-dom';
 
 interface DevToolsProps {
   isPro: boolean;
-  togglePro: () => void;
   resetUsage: () => void;
   resetProfile: () => void;
   simulateRegisteredUser: () => void;
 }
 
-const DevTools: React.FC<DevToolsProps> = ({ isPro, togglePro, resetUsage, resetProfile, simulateRegisteredUser }) => {
+const DevTools: React.FC<DevToolsProps> = ({ isPro, resetUsage, resetProfile, simulateRegisteredUser }) => {
   const [position, setPosition] = useState({ x: 20, y: 20 });
   const [isDragging, setIsDragging] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
@@ -171,16 +170,15 @@ const DevTools: React.FC<DevToolsProps> = ({ isPro, togglePro, resetUsage, reset
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">Plan Status</span>
-              <button
-                onClick={togglePro}
-                className={`text-xs px-2 py-1 rounded font-bold transition-colors ${
-                  isPro 
-                    ? 'bg-gradient-to-r from-amber-400 to-amber-600 text-black shadow-[0_0_10px_rgba(251,191,36,0.5)]' 
-                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+              <span
+                className={`text-xs px-2 py-1 rounded font-bold ${
+                  isPro
+                    ? 'bg-gradient-to-r from-amber-400 to-amber-600 text-black shadow-[0_0_10px_rgba(251,191,36,0.5)]'
+                    : 'bg-gray-700 text-gray-300'
                 }`}
               >
                 {isPro ? 'PRO' : 'FREE'}
-              </button>
+              </span>
             </div>
 
             <div className="flex items-center justify-between pt-2 border-t border-gray-700">

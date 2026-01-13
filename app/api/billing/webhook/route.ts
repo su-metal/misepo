@@ -77,10 +77,12 @@ export async function POST(req: Request) {
           ? "canceled"
           : "past_due";
 
+      const plan = status === "active" ? "pro" : "free";
+
       await upsertEntitlement({
         userId,
         appId,
-        plan: "pro",
+        plan,
         status,
         expiresAt,
         billingRef: subId,

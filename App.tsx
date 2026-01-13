@@ -58,6 +58,7 @@ const App: React.FC = () => {
 
       const loggedIn = !!session?.user;
       setIsLoggedIn(loggedIn);
+      await refreshPlan(loggedIn);
 
       if (!loggedIn) {
         const hasSeenDemo = localStorage.getItem('misepo_guest_demo_seen');
@@ -87,6 +88,11 @@ const App: React.FC = () => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       const loggedIn = !!session?.user;
       setIsLoggedIn(loggedIn);
+      if (loggedIn) {
+        refreshPlan(true);
+      } else {
+        setIsPro(false);
+      }
 
       if (loggedIn) {
         setShowLoginModal(false);
@@ -141,6 +147,26 @@ const App: React.FC = () => {
     }
   };
 
+  const refreshPlan = async (loggedInOverride?: boolean) => {
+    const canFetch = loggedInOverride ?? isLoggedIn;
+    if (!canFetch) {
+      setIsPro(false);
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/me/plan");
+      if (!res.ok) {
+        setIsPro(false);
+        return;
+      }
+      const data = await res.json();
+      setIsPro(!!data?.isPro);
+    } catch (err) {
+      console.warn("plan refresh failed:", err);
+    }
+  };
+
   // Re-check limit if Pro status changes
   useEffect(() => {
     if (isPro) {
@@ -184,6 +210,7 @@ const App: React.FC = () => {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     setIsLoggedIn(false);
+    setIsPro(false);
   };
 
   const handleOnboardingSave = (profile: StoreProfile) => {
@@ -246,6 +273,7 @@ const App: React.FC = () => {
 
     setStoreProfile(null);
     setIsLoggedIn(false);
+    setIsPro(false);
     setHistory([]); // Clear history state on reset
     setShowSettings(false);
     // Also reset usage for convenience
@@ -289,30 +317,6 @@ open11:00-close 17:00
     setPresets(prev => prev.filter(p => p.id !== id));
   };
 
-  const togglePro = () => {
-    const nextIsPro = !isPro;
-    setIsPro(nextIsPro);
-
-    if (nextIsPro) {
-      // When switching to Pro via DevTools, auto-skip demo and ensure production environment
-      setShowGuestDemoModal(false);
-      setShouldShowTour(false);
-
-      if (!isLoggedIn) {
-        setIsLoggedIn(true);
-        setDailyUsageCount(0); // Pro has no limit
-        if (!storeProfile) {
-          setStoreProfile({
-            industry: 'その他',
-            name: 'Dev Pro Store',
-            region: 'Dev Region',
-            description: 'Activated via DevTools'
-          });
-        }
-      }
-    }
-  };
-
   const toggleSidebar = () => setIsSidebarOpen(prev => !prev);
 
   const handleHistorySelect = (post: GeneratedPost) => {
@@ -325,10 +329,27 @@ open11:00-close 17:00
     setIsTryingToUpgrade(true);
   };
 
-  const handleConfirmUpgrade = () => {
-    setIsPro(true);
-    setIsTryingToUpgrade(false);
-    setDailyUsageCount(0); // Pro has no limit
+  const handleConfirmUpgrade = async () => {
+    if (!isLoggedIn) {
+      setIsTryingToUpgrade(false);
+      setShowLoginModal(true);
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/billing/checkout", { method: "POST" });
+      const data = await res.json().catch(() => null);
+
+      if (!res.ok || !data?.ok || !data?.url) {
+        alert(data?.error ?? `checkout failed (${res.status})`);
+        return;
+      }
+
+      window.location.href = data.url;
+    } catch (err) {
+      console.error("checkout error:", err);
+      alert("checkout failed");
+    }
   };
 
   // Guest Demo Modal Handler
@@ -396,7 +417,6 @@ open11:00-close 17:00
       {/* 7. Dev Tools (Floating) */}
       <DevTools
         isPro={isPro}
-        togglePro={togglePro}
         resetUsage={resetUsage}
         resetProfile={resetProfile}
         simulateRegisteredUser={handleSimulateRegisteredUser}
