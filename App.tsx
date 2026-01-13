@@ -14,9 +14,11 @@ import LoginModal from './components/LoginModal';
 import OnboardingSuccess from './components/OnboardingSuccess';
 import GuestDemoModal from './components/GuestDemoModal';
 import { LockIcon, LogOutIcon } from './components/Icons';
+import { useRouter } from 'next/navigation';
 
 const App: React.FC = () => {
   const supabase = createClient();
+  const router = useRouter();
   // --- State Management ---
   const [storeProfile, setStoreProfile] = useState<StoreProfile | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -329,6 +331,11 @@ open11:00-close 17:00
     setIsTryingToUpgrade(true);
   };
 
+  const handleManageSubscription = () => {
+    setShowSettings(false);
+    router.push("/billing/manage");
+  };
+
   const handleConfirmUpgrade = async (plan: "monthly" | "yearly" = "monthly") => {
     if (!isLoggedIn) {
       setIsTryingToUpgrade(false);
@@ -383,6 +390,8 @@ open11:00-close 17:00
           onSave={handleOnboardingSave}
           initialProfile={storeProfile}
           onCancel={storeProfile ? () => setShowSettings(false) : undefined} // Allow cancel only if profile exists (edit mode)
+          showSubscriptionLink={isLoggedIn && isPro}
+          onManageSubscription={handleManageSubscription}
         />
       )}
 

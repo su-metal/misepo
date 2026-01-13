@@ -78,6 +78,10 @@ export async function POST(req: Request) {
           : "past_due";
 
       const plan = status === "active" ? "pro" : "free";
+      const customerId =
+        typeof sub?.customer === "string"
+          ? sub.customer
+          : sub?.customer?.id ?? null;
 
       await upsertEntitlement({
         userId,
@@ -86,6 +90,7 @@ export async function POST(req: Request) {
         status,
         expiresAt,
         billingRef: subId,
+        customerId,
       });
     }
 
@@ -113,6 +118,10 @@ export async function POST(req: Request) {
           : "past_due";
 
       const plan = status === "active" ? "pro" : "free";
+      const customerId =
+        typeof sub?.customer === "string"
+          ? sub.customer
+          : sub?.customer?.id ?? null;
 
       await upsertEntitlement({
         userId,
@@ -121,6 +130,7 @@ export async function POST(req: Request) {
         status,
         expiresAt,
         billingRef: sub?.id ?? null,
+        customerId,
       });
     }
 
@@ -141,21 +151,27 @@ async function upsertEntitlement(params: {
   status: string;
   expiresAt: string | null;
   billingRef: string | null;
+  customerId?: string | null;
 }) {
   const { userId, appId, plan, status, expiresAt, billingRef } = params;
 
-  const { error } = await supabaseAdmin.from("entitlements").upsert(
-    {
-      user_id: userId,
-      app_id: appId,
-      plan,
-      status,
-      expires_at: expiresAt,
-      billing_provider: "stripe",
-      billing_reference_id: billingRef,
-    },
-    { onConflict: "user_id,app_id" }
-  );
+  const payload: Record<string, unknown> = {
+    user_id: userId,
+    app_id: appId,
+    plan,
+    status,
+    expires_at: expiresAt,
+    billing_provider: "stripe",
+    billing_reference_id: billingRef,
+  };
+
+  if (params.customerId !== undefined) {
+    payload.stripe_customer_id = params.customerId;
+  }
+
+  const { error } = await supabaseAdmin
+    .from("entitlements")
+    .upsert(payload, { onConflict: "user_id,app_id" });
 
   if (error) throw new Error(error.message);
 }
