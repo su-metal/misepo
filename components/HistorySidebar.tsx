@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { GeneratedPost, Platform } from '../types';
+import { GeneratedPost, Platform, GeneratedResult } from '../types';
 import { XIcon, InstagramIcon, GoogleMapsIcon, LockIcon } from './Icons';
 
 interface HistorySidebarProps {
@@ -89,22 +89,40 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({ history, isPro, isLogge
                 </div>
               ) : (
                 displayHistory.map((item) => {
-                  const pickFirstText = (results: unknown): string => {
-                    // 1) string[] の場合
-                    if (Array.isArray(results) && typeof results[0] === "string") {
-                      return results[0];
+                  const pickFirstText = (results: GeneratedResult[] | unknown): string => {
+                    if (Array.isArray(results) && results.length > 0) {
+                      const group = (results as GeneratedResult[]).find(
+                        (group) => group && Array.isArray(group.data) && group.data.length > 0
+                      );
+
+                      if (group) {
+                        const validEntry = group.data.find(
+                          (entry) => typeof entry === "string" && entry.trim()
+                        );
+                        if (typeof validEntry === "string") {
+                          return validEntry;
+                        }
+
+                        const fallback = group.data[0];
+                        if (typeof fallback === "string") {
+                          return fallback;
+                        }
+                      }
+
+                      const firstRaw = results[0];
+                      if (typeof firstRaw === "string") {
+                        return firstRaw;
+                      }
                     }
 
-                    // 2) string 単体の場合
                     if (typeof results === "string") {
                       return results;
                     }
 
-                    // 3) その他は空
                     return "";
                   };
 
-                  const firstResult = pickFirstText((item as any).results);
+                  const firstResult = pickFirstText(item.results);
                   const previewText =
                     (firstResult && firstResult.trim()) ||
                     item.config.inputText ||

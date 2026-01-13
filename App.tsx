@@ -332,12 +332,21 @@ const App: React.FC = () => {
     const toneValue = configSource.tone ?? Tone.Standard;
     const lengthValue = configSource.length ?? Length.Medium;
 
-    const results =
-      Array.isArray(entry.output?.results) && entry.output.results.length > 0
+    const platformForGroup: Platform = platforms[0] ?? Platform.Instagram;
+
+    const outputStrings: string[] = Array.isArray(entry.output)
+      ? entry.output
+      : Array.isArray(entry.output?.results)
         ? entry.output.results
-        : Array.isArray(entry.output)
-          ? entry.output
-          : [];
+        : [];
+
+    const results = [
+      {
+        platform: platformForGroup,
+        data: outputStrings,
+      },
+    ];
+
 
     const runId = entry.run_id ?? entry.id;
     if (!runId) {
