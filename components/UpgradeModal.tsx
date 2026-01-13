@@ -208,7 +208,7 @@ const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose, onConfirmU
                       onClick={handleConfirm}
                       className="w-full bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-bold py-5 md:py-4 rounded-xl hover:from-indigo-500 hover:to-blue-500 transition-all shadow-lg shadow-indigo-200 transform hover:-translate-y-0.5 active:translate-y-0 text-xl md:text-base"
                     >
-                      スターター特典で始める
+                      {selectedPlan === "yearly" ? "年額プランで始める" : "スターター特典で始める"}
                     </button>
                     <p className="text-[10px] text-gray-400 text-center mt-4">
                       いつでもキャンセル可能です。

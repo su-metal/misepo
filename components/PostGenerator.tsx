@@ -1694,16 +1694,6 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
                 ) : (
                   <>
                     <span>アカウント作成（無料）で利用可能</span>
-                    {onTryUpgrade && (
-                      <div className="mt-1 flex justify-center">
-                        <button
-                          onClick={onTryUpgrade}
-                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full border border-indigo-200 text-[10px] font-bold text-indigo-600 hover:border-indigo-400 hover:text-indigo-500 transition-colors"
-                        >
-                          PROにアップグレードする
-                        </button>
-                      </div>
-                    )}
                   </>
                 )}
               </div>
