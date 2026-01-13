@@ -1,5 +1,6 @@
-"use client";
+ "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
@@ -73,6 +74,12 @@ export default function BillingManagePage() {
         {portalLoading ? "ポータルを準備中…" : "サブスクを管理（解約）する"}
       </button>
       {error && <p className="text-sm text-red-500 mt-3">{error}</p>}
+      <Link
+        href="/"
+        className="mt-4 inline-flex w-full justify-center rounded-xl border border-gray-200 bg-white py-3 text-sm font-bold text-gray-700 transition hover:border-gray-300 hover:bg-gray-50"
+      >
+        トップに戻る
+      </Link>
       <p className="text-xs text-gray-400 mt-4">
         解約後は webhook で権利が更新され、しばらくして Pro 判定が自動で解除されます。
       </p>
