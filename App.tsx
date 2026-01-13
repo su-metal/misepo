@@ -155,8 +155,13 @@ const App: React.FC = () => {
         setHistory(JSON.parse(savedHistory));
       }
 
-      const savedPresets = localStorage.getItem('misepo_presets');
-      if (savedPresets) setPresets(JSON.parse(savedPresets));
+      const savedPresets = readFromStorage<Preset[]>(
+        "presets",
+        loggedIn ? currentUserId : null
+      );
+      if (Array.isArray(savedPresets)) {
+        setPresets(savedPresets);
+      }
 
       checkDailyLimit();
 
@@ -191,6 +196,7 @@ const App: React.FC = () => {
 
       } else {
         setHistory([]);
+        setPresets([]);
         setResetResultsTrigger(prev => prev + 1);
       }
     });
@@ -349,8 +355,24 @@ const App: React.FC = () => {
 
   useEffect(() => {
     if (!authReady) return;
-    localStorage.setItem('misepo_presets', JSON.stringify(presets));
-  }, [authReady, presets]);
+
+    if (!userId) {
+      const guestPresets = readFromStorage<Preset[]>("presets", null);
+      setPresets(Array.isArray(guestPresets) ? guestPresets : []);
+      return;
+    }
+
+    setPresets([]);
+    const cachedPresets = readFromStorage<Preset[]>("presets", userId);
+    if (Array.isArray(cachedPresets)) {
+      setPresets(cachedPresets);
+    }
+  }, [authReady, userId]);
+
+  useEffect(() => {
+    if (!authReady) return;
+    writeToStorage("presets", userId, presets);
+  }, [authReady, presets, userId]);
 
   // --- Handlers ---
 
