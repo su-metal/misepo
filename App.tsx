@@ -61,6 +61,8 @@ const App: React.FC = () => {
   const [upgradeModalStep, setUpgradeModalStep] = useState<'intro' | 'payment'>('intro');
 
   // --- Auth & Persistence (Supabase is source of truth for login state) ---
+  const [authReady, setAuthReady] = useState(false);
+
   useEffect(() => {
     let alive = true;
 
@@ -93,6 +95,8 @@ const App: React.FC = () => {
       if (savedPresets) setPresets(JSON.parse(savedPresets));
 
       checkDailyLimit();
+
+      setAuthReady(true);
     };
 
     init();
@@ -132,7 +136,22 @@ const App: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const fetchHistoryFromServer = async (): Promise<GeneratedPost[] | null> => {
+    try {
+      const res = await fetch("/api/me/history", { cache: "no-store" });
+      const data = await res.json();
+      if (!data?.ok || !Array.isArray(data.history)) {
+        return null;
+      }
+      return data.history.map(mapHistoryEntry);
+    } catch (err) {
+      console.warn("history fetch failed:", err);
+      return null;
+    }
+  };
+
   useEffect(() => {
+    if (!authReady) return;
     if (!isLoggedIn) {
       setHistory([]);
       return;
@@ -140,26 +159,19 @@ const App: React.FC = () => {
 
     let cancelled = false;
     (async () => {
-      try {
-        const res = await fetch("/api/me/history", { cache: "no-store" });
-        const data = await res.json();
-        if (!data?.ok || !Array.isArray(data.history)) return;
-    const mapped = data.history.map(mapHistoryEntry);
-    if (process.env.NODE_ENV !== "production") {
-      console.log("history ids:", mapped.map((x) => x.id));
-    }
-        if (!cancelled) {
-          setHistory(mapped);
+      const mapped = await fetchHistoryFromServer();
+      if (!cancelled && mapped) {
+        if (process.env.NODE_ENV !== "production") {
+          console.log("history ids:", mapped.map((x) => x.id));
         }
-      } catch (err) {
-        console.warn("history fetch failed:", err);
+        setHistory(mapped);
       }
     })();
 
     return () => {
       cancelled = true;
     };
-  }, [isLoggedIn]);
+  }, [authReady, isLoggedIn]);
 
   const checkDailyLimit = () => {
     if (typeof window === 'undefined') return;
@@ -218,21 +230,21 @@ const App: React.FC = () => {
   }, [isPro]);
 
   useEffect(() => {
+    if (!authReady) return;
     if (storeProfile) {
       localStorage.setItem('misepo_profile', JSON.stringify(storeProfile));
     }
-  }, [storeProfile]);
+  }, [authReady, storeProfile]);
 
   useEffect(() => {
-    // Only save history if logged in
-    if (isLoggedIn) {
-      localStorage.setItem('misepo_history', JSON.stringify(history));
-    }
-  }, [history, isLoggedIn]);
+    if (!authReady || !isLoggedIn) return;
+    localStorage.setItem('misepo_history', JSON.stringify(history));
+  }, [authReady, history, isLoggedIn]);
 
   useEffect(() => {
+    if (!authReady) return;
     localStorage.setItem('misepo_presets', JSON.stringify(presets));
-  }, [presets]);
+  }, [authReady, presets]);
 
   // --- Handlers ---
 
@@ -269,7 +281,14 @@ const App: React.FC = () => {
   };
 
   const handleGenerateSuccess = (newPost: GeneratedPost) => {
-    setHistory(prev => [newPost, ...prev]);
+    if (isLoggedIn) {
+      (async () => {
+        const mapped = await fetchHistoryFromServer();
+        if (mapped) {
+          setHistory(mapped);
+        }
+      })();
+    }
 
     // Apply limit tracking to anyone who is NOT Pro
     if (!isPro) {

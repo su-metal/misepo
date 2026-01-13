@@ -62,6 +62,7 @@ export async function POST(req: Request) {
 
   let isPro = false;
   let remainingCredits: number | null = null;
+  let savedRunId: string | null = null;
 
   if (!isGuest) {
     const { data: ent, error: entErr } = await supabaseAdmin
@@ -128,7 +129,7 @@ export async function POST(req: Request) {
 
       const inputPayload = { profile, config };
 
-      const { data: runId, error } = await supabaseAdmin.rpc(
+      const { data: rpcData, error: rpcErr } = await supabaseAdmin.rpc(
         "save_history_with_cap",
         {
           p_app_id: APP_ID,
@@ -141,7 +142,25 @@ export async function POST(req: Request) {
         }
       );
 
-      console.log("save_history_with_cap result:", { runId, error });
+      const normalized = Array.isArray(rpcData) ? rpcData[0] : rpcData;
+      if (normalized) {
+        if (typeof normalized === "string") {
+          savedRunId = normalized;
+        } else if (typeof normalized === "object") {
+          savedRunId =
+            typeof normalized.run_id === "string"
+              ? normalized.run_id
+              : typeof normalized.id === "string"
+                ? normalized.id
+                : null;
+        }
+      }
+
+      console.log("save_history_with_cap result:", {
+        rpcData,
+        rpcErr,
+        savedRunId,
+      });
     }
 
     return NextResponse.json({
@@ -149,6 +168,7 @@ export async function POST(req: Request) {
       result,
       isPro,
       remaining: isPro ? null : remainingCredits,
+      run_id: savedRunId,
     });
   } catch (e: any) {
     console.error("Generation error:", e);

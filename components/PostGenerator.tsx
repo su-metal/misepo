@@ -551,6 +551,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
     const newGroups: ResultGroup[] = [];
     const generatedResults: GeneratedResult[] = [];
     let errorCount = 0;
+    let latestRunId: string | null = null;
 
     for (const p of targetPlatforms) {
       const isMapAndStarred = p === Platform.GoogleMaps && (starRating !== null);
@@ -595,6 +596,15 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
         }
 
         const content = data.result as string[];
+        let runIdFromApi: string | null = null;
+        if (typeof data.run_id === "string") {
+          runIdFromApi = data.run_id;
+        } else if (typeof data.run_id === "number") {
+          runIdFromApi = data.run_id.toString();
+        }
+        if (runIdFromApi) {
+          latestRunId = runIdFromApi;
+        }
 
         let finalContent = content;
         if (p === Platform.Instagram && includeFooter && storeProfile.instagramFooter) {
@@ -635,7 +645,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
       setResultGroups(newGroups);
 
       onGenerateSuccess({
-        id: Date.now().toString() + Math.random().toString().slice(2, 5),
+        id: latestRunId ?? (Date.now().toString() + Math.random().toString().slice(2, 5)),
         timestamp: Date.now(),
         config: {
           platforms: targetPlatforms,
