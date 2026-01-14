@@ -144,16 +144,25 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({ history, isPro, isLogge
                       }}
                     className="w-full text-left p-5 md:p-4 rounded-2xl bg-white hover:bg-indigo-50/50 transition-all border border-gray-100 hover:border-indigo-100 group shadow-sm hover:shadow-md relative"
                   >
-                      <button
+                      <span
+                        role="button"
+                        tabIndex={0}
                         onClick={(e) => {
                           e.stopPropagation();
                           onDelete(item.id);
                         }}
-                        className="absolute top-3 right-3 text-gray-400 hover:text-red-500 bg-white/90 p-1 rounded-full focus:outline-none"
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            onDelete(item.id);
+                          }
+                        }}
+                        className="absolute top-3 right-3 text-gray-400 hover:text-red-500 bg-white/90 p-1 rounded-full focus:outline-none cursor-pointer"
                         aria-label="Delete history"
                       >
                         <TrashIcon className="w-4 h-4" />
-                      </button>
+                      </span>
                       <div className="flex items-center gap-1 mb-2 flex-wrap">
                         {item.config.platforms.map((p) => (
                           <span

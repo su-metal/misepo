@@ -128,39 +128,42 @@ export async function POST(req: Request) {
           : "generation";
 
       const inputPayload = { profile, config };
+      const shouldSaveHistory = body.save_history !== false;
 
-      const { data: rpcData, error: rpcErr } = await supabaseAdmin.rpc(
-        "save_history_with_cap",
-        {
-          p_app_id: APP_ID,
-          p_user_id: userId,
-          p_run_type: runType,
-          p_is_pro: isPro,
-          p_input: inputPayload, // ← stringifyしない
-          p_output: result, // ← stringifyしない
-          // p_free_cap: 5,       // defaultあるなら省略OK
-        }
-      );
+      if (shouldSaveHistory) {
+        const { data: rpcData, error: rpcErr } = await supabaseAdmin.rpc(
+          "save_history_with_cap",
+          {
+            p_app_id: APP_ID,
+            p_user_id: userId,
+            p_run_type: runType,
+            p_is_pro: isPro,
+            p_input: inputPayload, // ← stringifyしない
+            p_output: result, // ← stringifyしない
+            // p_free_cap: 5,       // defaultあるなら省略OK
+          }
+        );
 
-      const normalized = Array.isArray(rpcData) ? rpcData[0] : rpcData;
-      if (normalized) {
-        if (typeof normalized === "string") {
-          savedRunId = normalized;
-        } else if (typeof normalized === "object") {
-          savedRunId =
-            typeof normalized.run_id === "string"
-              ? normalized.run_id
-              : typeof normalized.id === "string"
-                ? normalized.id
-                : null;
+        const normalized = Array.isArray(rpcData) ? rpcData[0] : rpcData;
+        if (normalized) {
+          if (typeof normalized === "string") {
+            savedRunId = normalized;
+          } else if (typeof normalized === "object") {
+            savedRunId =
+              typeof normalized.run_id === "string"
+                ? normalized.run_id
+                : typeof normalized.id === "string"
+                  ? normalized.id
+                  : null;
+          }
         }
+
+        console.log("save_history_with_cap result:", {
+          rpcData,
+          rpcErr,
+          savedRunId,
+        });
       }
-
-      console.log("save_history_with_cap result:", {
-        rpcData,
-        rpcErr,
-        savedRunId,
-      });
     }
 
     return NextResponse.json({

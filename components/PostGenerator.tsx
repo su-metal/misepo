@@ -561,11 +561,44 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
     });
   };
 
+  const saveAggregatedHistory = async (payload: {
+    profile: StoreProfile;
+    config: GeneratedPost["config"];
+    result: GeneratedResult[];
+    isPro: boolean;
+    runType: string;
+  }) => {
+    try {
+      const res = await fetch("/api/me/history", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          profile: payload.profile,
+          config: payload.config,
+          result: payload.result,
+          is_pro: payload.isPro,
+          run_type: payload.runType,
+        }),
+      });
+      const data = await res.json().catch(() => null);
+      if (res.ok && data?.ok) {
+        if (typeof data.run_id === "string") return data.run_id;
+        if (typeof data.run_id === "number") return data.run_id.toString();
+      }
+    } catch (err) {
+      console.error("save aggregated history failed:", err);
+    }
+
+    return null;
+  };
+
   const performGeneration = async (
     targetPlatforms: Platform[],
     baseConfig: Partial<GenerationConfig>,
     isRegeneration: boolean = false
   ) => {
+    const skipHistoryForCombined = targetPlatforms.length > 1;
+    const runType = "generation";
     setLoading(true);
     if (!isRegeneration) {
       setResultGroups([]);
@@ -576,6 +609,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
     const generatedResults: GeneratedResult[] = [];
     let errorCount = 0;
     let latestRunId: string | null = null;
+    let aggregatedHistoryId: string | null = null;
 
     for (const p of targetPlatforms) {
       const isMapAndStarred = p === Platform.GoogleMaps && (starRating !== null);
@@ -601,6 +635,8 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
             config,
             isPro,
             allowGuest: !isLoggedIn,
+            save_history: !skipHistoryForCombined,
+            run_type: runType,
           }),
         });
 
@@ -669,26 +705,40 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
       setResultGroups(newGroups);
 
       if (!showGuestTour || isLoggedIn) {
+        const historyConfig = {
+          platforms: targetPlatforms,
+          postPurpose,
+          gmapPurpose,
+          tone,
+          length,
+          inputText: inputText,
+          starRating: isMap ? starRating : undefined,
+          language: language,
+          storeSupplement: storeSupplement,
+          customPrompt: customPrompt,
+          xConstraint140: xConstraint140,
+          includeSymbols: includeSymbols,
+          includeEmojis: includeEmojis,
+          instagramFooter: (targetPlatforms.includes(Platform.Instagram) && includeFooter) ? storeProfile.instagramFooter : undefined,
+        };
+
+        if (skipHistoryForCombined && isLoggedIn) {
+          aggregatedHistoryId = await saveAggregatedHistory({
+            profile: storeProfile,
+            config: historyConfig,
+            result: generatedResults,
+            isPro,
+            runType,
+          });
+        }
+
+        const finalId = aggregatedHistoryId ?? latestRunId ?? (Date.now().toString() + Math.random().toString().slice(2, 5));
+
         onGenerateSuccess({
-          id: latestRunId ?? (Date.now().toString() + Math.random().toString().slice(2, 5)),
+          id: finalId,
           timestamp: Date.now(),
-          config: {
-            platforms: targetPlatforms,
-            postPurpose,
-            gmapPurpose,
-            tone,
-            length,
-            inputText: inputText,
-            starRating: isMap ? starRating : undefined,
-            language: language,
-            storeSupplement: storeSupplement,
-            customPrompt: customPrompt,
-            xConstraint140: xConstraint140,
-            includeSymbols: includeSymbols,
-            includeEmojis: includeEmojis,
-            instagramFooter: (targetPlatforms.includes(Platform.Instagram) && includeFooter) ? storeProfile.instagramFooter : undefined,
-          },
-          results: generatedResults
+          config: historyConfig,
+          results: generatedResults,
         });
       }
 

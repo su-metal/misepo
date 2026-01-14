@@ -472,6 +472,31 @@ const App: React.FC = () => {
     }
   };
 
+  const normalizePlatform = (value: unknown): Platform => {
+    if (typeof value === "string") {
+      const match = Object.values(Platform).find((v) => v === value);
+      if (match) return match;
+    }
+    return Platform.Instagram;
+  };
+
+  const normalizeResults = (raw: any): GeneratedResult[] => {
+    if (!raw) return [];
+
+    const candidates = Array.isArray(raw)
+      ? raw
+      : Array.isArray(raw.results)
+        ? raw.results
+        : [];
+
+    return candidates
+      .filter((item) => item && Array.isArray(item.data))
+      .map((item) => ({
+        platform: normalizePlatform(item.platform),
+        data: item.data.map((text: any) => (typeof text === "string" ? text : String(text))),
+      }));
+  };
+
   const mapHistoryEntry = (entry: any): GeneratedPost => {
     const createdAt = entry.created_at
       ? new Date(entry.created_at).getTime()
@@ -498,16 +523,11 @@ const App: React.FC = () => {
 
     const platformForGroup: Platform = platforms[0] ?? Platform.Instagram;
 
-    const outputStrings: string[] = Array.isArray(entry.output)
-      ? entry.output
-      : Array.isArray(entry.output?.results)
-        ? entry.output.results
-        : [];
-
-    const results = [
+    const historyResults = normalizeResults(entry.output ?? entry.output?.results ?? entry);
+    const results = historyResults.length > 0 ? historyResults : [
       {
         platform: platformForGroup,
-        data: outputStrings,
+        data: [],
       },
     ];
 
