@@ -140,10 +140,10 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({ history, isPro, isLogge
                       key={item.id}
                       onClick={() => {
                         onSelect(item);
-                        if (window.innerWidth < 768) toggleOpen();
+                        toggleOpen();
                       }}
-                    className="w-full text-left p-5 md:p-4 rounded-2xl bg-white hover:bg-indigo-50/50 transition-all border border-gray-100 hover:border-indigo-100 group shadow-sm hover:shadow-md relative"
-                  >
+                      className="w-full text-left p-5 md:p-4 rounded-2xl bg-white hover:bg-indigo-50/50 transition-all border border-gray-100 hover:border-indigo-100 group shadow-sm hover:shadow-md relative"
+                    >
                       <span
                         role="button"
                         tabIndex={0}

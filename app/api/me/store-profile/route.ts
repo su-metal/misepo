@@ -5,6 +5,29 @@ import { createClient } from "@/lib/supabase/server";
 const APP_ID = "misepo";
 const PROFILE_KEY = "store_profile";
 
+export async function GET() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
+  if (error || !user) return NextResponse.json({ ok: false, error: "unauthorized" }, { status: 401 });
+
+  const { data, error: selectErr } = await supabase
+    .from("app_user_profiles")
+    .select("profile_data")
+    .eq("app_id", APP_ID)
+    .eq("user_id", user.id)
+    .eq("profile_key", PROFILE_KEY)
+    .maybeSingle();
+
+  if (selectErr) {
+    return NextResponse.json({ ok: false, error: selectErr.message }, { status: 500 });
+  }
+
+  return NextResponse.json({ ok: true, profile: data?.profile_data ?? null });
+}
+
 export async function POST(req: Request) {
   const supabase = await createClient();
   const { data: { user }, error } = await supabase.auth.getUser();

@@ -6,6 +6,7 @@ import {
   AppState,
   StoreProfile,
   GeneratedPost,
+  GeneratedResult,
   Preset,
   Platform,
   Length,
@@ -480,21 +481,51 @@ const App: React.FC = () => {
     return Platform.Instagram;
   };
 
-  const normalizeResults = (raw: any): GeneratedResult[] => {
+  const normalizeResults = (
+    raw: any,
+    fallbackPlatform: Platform
+  ): GeneratedResult[] => {
     if (!raw) return [];
 
-    const candidates = Array.isArray(raw)
+    const asArray = Array.isArray(raw)
       ? raw
       : Array.isArray(raw.results)
         ? raw.results
         : [];
 
-    return candidates
-      .filter((item) => item && Array.isArray(item.data))
-      .map((item) => ({
-        platform: normalizePlatform(item.platform),
-        data: item.data.map((text: any) => (typeof text === "string" ? text : String(text))),
-      }));
+    const extracted = asArray
+      .map((item) => {
+        if (item && Array.isArray(item.data)) {
+          return {
+            platform: normalizePlatform(item.platform ?? fallbackPlatform),
+            data: item.data.map((text: any) => (typeof text === "string" ? text : String(text))),
+          };
+        }
+        return null;
+      })
+      .filter((item) => item !== null) as GeneratedResult[];
+
+    if (extracted.length > 0) return extracted;
+
+    if (Array.isArray(raw) && raw.every((item) => typeof item === "string")) {
+      return [
+        {
+          platform: fallbackPlatform,
+          data: raw.map((text) => String(text)),
+        },
+      ];
+    }
+
+    if (Array.isArray(raw.results) && raw.results.every((item) => typeof item === "string")) {
+      return [
+        {
+          platform: fallbackPlatform,
+          data: raw.results.map((text: any) => String(text)),
+        },
+      ];
+    }
+
+    return [];
   };
 
   const mapHistoryEntry = (entry: any): GeneratedPost => {
@@ -523,7 +554,10 @@ const App: React.FC = () => {
 
     const platformForGroup: Platform = platforms[0] ?? Platform.Instagram;
 
-    const historyResults = normalizeResults(entry.output ?? entry.output?.results ?? entry);
+    const historyResults = normalizeResults(
+      entry.output ?? entry.output?.results ?? entry,
+      platformForGroup
+    );
     const results = historyResults.length > 0 ? historyResults : [
       {
         platform: platformForGroup,

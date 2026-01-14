@@ -1,13 +1,18 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { supabaseAdmin } from "@/lib/supabase/admin";
 
 const APP_ID = "misepo";
 
-export async function DELETE(
-  _req: Request,
-  { params }: { params: { id: string } }
-) {
-  if (!params?.id) {
+type HistoryParams = {
+  params: { id: string } | Promise<{ id: string }>;
+};
+
+export async function DELETE(_req: Request, context: HistoryParams) {
+  const { params } = context;
+  const resolvedParams = typeof params?.then === "function" ? await params : params;
+  const id = resolvedParams?.id;
+  if (!id) {
     return NextResponse.json({ ok: false, error: "missing_id" }, { status: 400 });
   }
 
@@ -21,12 +26,12 @@ export async function DELETE(
     return NextResponse.json({ ok: false, error: "unauthorized" }, { status: 401 });
   }
 
-  const { error: deleteErr } = await supabase
+  const { error: deleteErr } = await supabaseAdmin
     .from("ai_runs")
     .delete()
     .eq("app_id", APP_ID)
     .eq("user_id", user.id)
-    .eq("id", params.id);
+    .eq("id", id);
 
   if (deleteErr) {
     return NextResponse.json({ ok: false, error: deleteErr.message }, { status: 500 });

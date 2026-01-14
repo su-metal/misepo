@@ -1179,10 +1179,10 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
             )}
           </div>
 
-          <div className="flex-1 p-6 md:p-5 grid grid-cols-1 lg:[grid-template-columns:320px_minmax(0,_1fr)] xl:[grid-template-columns:320px_minmax(0,_1fr)_360px] gap-6 overflow-visible lg:overflow-hidden">
+          <div className="flex-1 p-6 md:p-5 grid grid-cols-1 lg:[grid-template-columns:400px_minmax(0,_1fr)] xl:[grid-template-columns:420px_minmax(0,_1fr)_360px] gap-6 overflow-visible lg:overflow-hidden">
 
             {/* LEFT COLUMN: Settings */}
-            <div className="space-y-4 lg:overflow-y-auto pr-1 scrollbar-hide lg:w-[320px] lg:flex-shrink-0 transition-all duration-500">
+            <div className="space-y-4 lg:overflow-y-auto pr-1 scrollbar-hide lg:w-[400px] lg:flex-shrink-0 transition-all duration-500">
 
               {/* QUICK PRESETS (Added Feature) */}
               {!isMap && isLoggedIn && !isMultiGenMode && (
