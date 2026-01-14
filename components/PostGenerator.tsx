@@ -1714,8 +1714,8 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
         </div>
 
         {createPortal(
-          <div className="fixed bottom-0 left-0 right-0 p-4 md:p-3 bg-white/90 backdrop-blur-md border-t border-gray-200 z-[40]">
-          <div className="max-w-[1600px] mx-auto">
+        <div className="fixed bottom-0 left-0 right-0 p-4 md:p-3 bg-white/90 backdrop-blur-md border-t border-gray-200 z-[40]">
+          <div className="w-full max-w-[1100px] mx-auto px-2 md:px-0">
             <button
               ref={generateButtonRef}
               onClick={handleGenerate}
