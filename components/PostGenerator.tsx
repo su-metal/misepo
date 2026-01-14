@@ -1129,10 +1129,10 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
             )}
           </div>
 
-          <div className="flex-1 p-6 md:p-5 grid grid-cols-1 lg:grid-cols-12 gap-6 overflow-visible lg:overflow-hidden">
+          <div className="flex-1 p-6 md:p-5 grid grid-cols-1 lg:[grid-template-columns:320px_minmax(0,_1fr)] xl:[grid-template-columns:320px_minmax(0,_1fr)_360px] gap-6 overflow-visible lg:overflow-hidden">
 
             {/* LEFT COLUMN: Settings */}
-            <div className={`space-y-4 lg:overflow-y-auto pr-1 scrollbar-hide ${hasResults ? 'lg:col-span-3' : 'lg:col-span-4'} transition-all duration-500`}>
+            <div className="space-y-4 lg:overflow-y-auto pr-1 scrollbar-hide lg:w-[320px] lg:flex-shrink-0 transition-all duration-500">
 
               {/* QUICK PRESETS (Added Feature) */}
               {!isMap && isLoggedIn && !isMultiGenMode && (
@@ -1406,7 +1406,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
             </div>
 
             {/* MIDDLE COLUMN: Input & Advanced */}
-            <div className={`flex flex-col gap-4 lg:h-full ${hasResults ? 'lg:col-span-5' : 'lg:col-span-8'} transition-all duration-500`}>
+            <div className="flex flex-col gap-4 flex-1 lg:h-full transition-all duration-500">
               {shouldShowFreeLimit ? (
                 <div className="w-full py-10">
                   <FreeLimitReached
@@ -1537,7 +1537,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
 
             {/* RIGHT COLUMN: Results */}
             {hasResults && (
-              <div className="lg:col-span-4 h-full flex flex-col animate-in slide-in-from-right fade-in duration-700">
+              <div className="lg:col-start-2 xl:col-start-3 h-full flex flex-col animate-in slide-in-from-right fade-in duration-700 lg:flex-shrink-0 xl:w-[360px]">
                 <div ref={resultsRef} className="space-y-6 lg:overflow-y-auto pr-1 scrollbar-hide lg:max-h-full pb-4 md:pb-0">
                   <div className="flex items-center justify-between sticky top-0 bg-white/95 backdrop-blur-sm z-10 py-2 border-b border-gray-100">
                     <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
@@ -1545,9 +1545,10 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
                     </h2>
                   </div>
 
-                  {resultGroups.map((group, gIdx) => (
-                    <div key={gIdx} className="space-y-4">
-                      <div className="flex items-center gap-2 px-2">
+                  <div className={`grid gap-6 ${resultGroups.length > 1 ? 'lg:grid-cols-2 xl:grid-cols-1' : 'grid-cols-1'}`}>
+                    {resultGroups.map((group, gIdx) => (
+                      <div key={gIdx} className="space-y-4">
+                        <div className="flex items-center gap-2 px-2">
                         <span className={`p-1.5 rounded-lg text-white ${group.platform === Platform.X ? 'bg-black' :
                           group.platform === Platform.Instagram ? 'bg-gradient-to-tr from-yellow-500 via-pink-500 to-purple-500' :
                             'bg-green-600'
@@ -1557,7 +1558,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
                         <h3 className="font-bold text-lg text-gray-700">{group.platform}</h3>
                       </div>
 
-                      <div className="flex flex-col gap-6 max-w-[420px] w-full mx-auto">
+                      <div className="flex flex-col gap-6 w-full">
                         {(Array.isArray(group?.data) ? group.data : []).map((res, iIdx) => (
                           <div key={`${gIdx}-${iIdx}`} className={`group bg-white rounded-3xl p-6 shadow-sm border border-gray-100 transition-all duration-300 flex flex-col relative overflow-hidden ${refiningKey === `${gIdx}-${iIdx}` ? 'ring-2 ring-amber-400 shadow-amber-100' : 'hover:shadow-xl hover:border-indigo-100'}`}>
                             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-indigo-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
@@ -1710,6 +1711,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
                       </div>
                     </div>
                   ))}
+                  </div>
                 </div>
               </div>
             )}
