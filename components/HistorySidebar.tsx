@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { GeneratedPost, Platform, GeneratedResult } from '../types';
-import { XIcon, InstagramIcon, GoogleMapsIcon, LockIcon } from './Icons';
+import { XIcon, InstagramIcon, GoogleMapsIcon, LockIcon, TrashIcon } from './Icons';
 
 interface HistorySidebarProps {
   history: GeneratedPost[];
@@ -12,10 +12,11 @@ interface HistorySidebarProps {
   toggleOpen: () => void;
   onOpenLogin: () => void;
   onOpenUpgrade?: () => void;
+  onDelete: (id: string) => void;
 }
 
 const HistorySidebar: React.FC<HistorySidebarProps> = ({ history, isPro, isLoggedIn, onSelect, isOpen, toggleOpen, onOpenLogin, onOpenUpgrade }) => {
-  const displayHistory = isPro ? history : history.slice(0, 5);
+  const displayHistory = isPro ? history : history.slice(0, 3);
 
   const getPlatformIcon = (p: Platform) => {
     switch (p) {
@@ -49,12 +50,19 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({ history, isPro, isLogge
         className={`fixed md:relative top-0 left-0 h-full bg-white/90 backdrop-blur-xl md:bg-white border-r border-gray-100 w-72 transform transition-transform duration-300 ease-out z-50 flex flex-col shadow-2xl md:shadow-none ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
           }`}
       >
-        <div className="p-6 border-b border-gray-100 flex items-center justify-between">
-          <h2 className="font-bold text-gray-800 tracking-tight">History</h2>
-          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${!isLoggedIn ? 'bg-gray-100 text-gray-400' : isPro ? 'bg-amber-100 text-amber-700' : 'bg-gray-100 text-gray-500'}`}>
-            {!isLoggedIn ? 'GUEST' : isPro ? 'PRO' : `${displayHistory.length}/5`}
-          </span>
-        </div>
+          <div className="p-6 border-b border-gray-100 flex items-center justify-between">
+            <h2 className="font-bold text-gray-800 tracking-tight">History</h2>
+            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${!isLoggedIn ? 'bg-gray-100 text-gray-400' : isPro ? 'bg-amber-100 text-amber-700' : 'bg-gray-100 text-gray-500'}`}>
+              {!isLoggedIn ? 'GUEST' : isPro ? 'PRO' : `${displayHistory.length}/3`}
+            </span>
+            <button
+              onClick={toggleOpen}
+              className="text-gray-400 hover:text-gray-600 ml-2"
+              aria-label="Close history"
+            >
+              <XIcon className="w-4 h-4" />
+            </button>
+          </div>
 
         <div className="flex-1 overflow-y-auto p-4 scrollbar-hide space-y-3">
           {!isLoggedIn ? (
@@ -135,8 +143,18 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({ history, isPro, isLogge
                         onSelect(item);
                         if (window.innerWidth < 768) toggleOpen();
                       }}
-                      className="w-full text-left p-5 md:p-4 rounded-2xl bg-white hover:bg-indigo-50/50 transition-all border border-gray-100 hover:border-indigo-100 group shadow-sm hover:shadow-md"
-                    >
+                    className="w-full text-left p-5 md:p-4 rounded-2xl bg-white hover:bg-indigo-50/50 transition-all border border-gray-100 hover:border-indigo-100 group shadow-sm hover:shadow-md relative"
+                  >
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onDelete(item.id);
+                        }}
+                        className="absolute top-3 right-3 text-gray-400 hover:text-red-500 bg-white/90 p-1 rounded-full focus:outline-none"
+                        aria-label="Delete history"
+                      >
+                        <TrashIcon className="w-4 h-4" />
+                      </button>
                       <div className="flex items-center gap-1 mb-2 flex-wrap">
                         {item.config.platforms.map((p) => (
                           <span
@@ -159,7 +177,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({ history, isPro, isLogge
                 })
               )}
 
-              {!isPro && history.length >= 5 && (
+              {!isPro && history.length >= 3 && (
                 <div className="p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl text-center border border-gray-200 mt-4 space-y-2">
                   <p className="text-xs text-gray-500 mb-0 font-medium">Free plan limit reached</p>
                   <p className="text-[10px] text-gray-400">Proプランなら履歴表示が無制限です。</p>

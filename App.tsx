@@ -615,6 +615,23 @@ open11:00-close 17:00
     setRestorePost(post);
   };
 
+  const handleDeleteHistory = async (id: string) => {
+    try {
+      const res = await fetch(`/api/me/history/${id}`, { method: "DELETE" });
+      const data = await res.json().catch(() => null);
+      if (!res.ok || !data?.ok) {
+        throw new Error(data?.error ?? "delete failed");
+      }
+      setHistory((prev) => prev.filter((item) => item.id !== id));
+      if (restorePost?.id === id) {
+        setRestorePost(null);
+      }
+    } catch (err) {
+      console.warn("history delete failed:", err);
+      alert("履歴の削除に失敗しました。時間をおいて再度お試しください。");
+    }
+  };
+
   // Upgrade Flow Handlers
   const handleTryUpgrade = (step: 'intro' | 'payment' = 'intro') => {
     setUpgradeModalStep(step);
@@ -720,16 +737,17 @@ open11:00-close 17:00
       />
 
       {/* 8. Sidebar (History) */}
-      <HistorySidebar
-        history={history}
-        isPro={isPro}
-        isLoggedIn={isLoggedIn}
-        onSelect={handleHistorySelect}
-        isOpen={isSidebarOpen}
-        toggleOpen={toggleSidebar}
-        onOpenLogin={() => setShowLoginModal(true)}
-        onOpenUpgrade={() => handleTryUpgrade('payment')}
-      />
+        <HistorySidebar
+          history={history}
+          isPro={isPro}
+          isLoggedIn={isLoggedIn}
+          onSelect={handleHistorySelect}
+          isOpen={isSidebarOpen}
+          toggleOpen={toggleSidebar}
+          onOpenLogin={() => setShowLoginModal(true)}
+          onOpenUpgrade={() => handleTryUpgrade('payment')}
+          onDelete={handleDeleteHistory}
+        />
 
       {/* 9. Main Content */}
       <div className="flex-1 flex flex-col h-screen overflow-hidden relative">
