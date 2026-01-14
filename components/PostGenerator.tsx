@@ -928,7 +928,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
 
   return (
     <>
-      <div className="max-w-[1600px] mx-auto md:min-h-full flex flex-col pb-32 md:pb-20 relative">
+      <div className="w-full mx-auto md:min-h-full flex flex-col pb-32 md:pb-20 relative">
 
         {/* Guest Tour Overlay */}
         <GuestTour

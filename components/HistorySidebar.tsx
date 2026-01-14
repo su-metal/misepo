@@ -41,14 +41,13 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({ history, isPro, isLogge
       {/* Mobile Toggle Overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 md:hidden"
+          className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
           onClick={toggleOpen}
         />
       )}
 
       <div
-        className={`fixed md:relative top-0 left-0 h-full bg-white/90 backdrop-blur-xl md:bg-white border-r border-gray-100 w-72 transform transition-transform duration-300 ease-out z-50 flex flex-col shadow-2xl md:shadow-none ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
-          }`}
+        className={`fixed top-0 left-0 h-full bg-white/90 backdrop-blur-xl border-r border-gray-100 w-72 transform transition-transform duration-300 ease-out z-50 flex flex-col shadow-2xl ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}
       >
           <div className="p-6 border-b border-gray-100 flex items-center justify-between">
             <h2 className="font-bold text-gray-800 tracking-tight">History</h2>

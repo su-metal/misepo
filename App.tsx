@@ -814,9 +814,18 @@ open11:00-close 17:00
         {/* Desktop Header */}
         <div className="hidden md:block px-6 py-3 z-10">
           <div className="max-w-[1600px] mx-auto w-full flex items-center justify-between">
-            <div>
-              <h1 className="text-xl font-black tracking-tighter text-slate-800 leading-none">Mise<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Po</span><span className="text-amber-500">.</span></h1>
-              <p className="text-[10px] font-bold text-slate-500 mt-0.5 whitespace-nowrap">お店のポストを丸っとおまかせ</p>
+            <div className="flex items-center gap-4">
+              <button
+                onClick={toggleSidebar}
+                className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-gray-200 text-sm font-bold text-gray-600 hover:bg-gray-100 transition"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="18" x2="21" y2="18" /></svg>
+                <span>履歴</span>
+              </button>
+              <div>
+                <h1 className="text-xl font-black tracking-tighter text-slate-800 leading-none">Mise<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Po</span><span className="text-amber-500">.</span></h1>
+                <p className="text-[10px] font-bold text-slate-500 mt-0.5 whitespace-nowrap">お店のポストを丸っとおまかせ</p>
+              </div>
             </div>
 
             <div className="flex items-center gap-4">
