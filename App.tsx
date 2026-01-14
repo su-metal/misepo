@@ -50,6 +50,16 @@ const writeToStorage = (base: string, uid: string | null, value: any) => {
   localStorage.setItem(key, JSON.stringify(value));
 };
 
+const hasShownStartBonus = (uid: string | null) => {
+  if (typeof window === "undefined") return false;
+  return !!localStorage.getItem(storageKey("start_bonus", uid));
+};
+
+const markStartBonusShown = (uid: string | null) => {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(storageKey("start_bonus", uid), "true");
+};
+
 const normalizeStoreProfile = (profile: any): StoreProfile | null => {
   if (!profile || typeof profile !== "object") return null;
 
@@ -164,7 +174,7 @@ const App: React.FC = () => {
 
     init();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       const loggedIn = !!session?.user;
       const nextUserId = session?.user?.id ?? null;
       setUserId(nextUserId);
@@ -185,6 +195,10 @@ const App: React.FC = () => {
 
         const savedProfile = readFromStorage<StoreProfile>("store_profile", nextUserId);
         // Do not auto-open onboarding even if profile missing
+        if (event === "SIGNED_IN" && !hasShownStartBonus(nextUserId)) {
+          setShowOnboardingSuccess(true);
+          markStartBonusShown(nextUserId);
+        }
 
       } else {
         setHistory([]);
@@ -415,8 +429,6 @@ const App: React.FC = () => {
       return;
     }
 
-    const isInitialSetup = !storeProfile; // Check if this is the first time setup
-
     try {
       await saveStoreProfileToServer(profile);
     } catch (err) {
@@ -429,12 +441,6 @@ const App: React.FC = () => {
     setShowSettings(false);
 
     setResetResultsTrigger(prev => prev + 1);
-
-    // Show Success Screen only if it's the initial setup and user is NOT already logged in (Guest flow)
-    // or if the user is just setting it up for the first time regardless of login state (providing a nice welcome)
-    if (isInitialSetup) {
-      setShowOnboardingSuccess(true);
-    }
   };
 
   const handleGenerateSuccess = (newPost: GeneratedPost) => {
