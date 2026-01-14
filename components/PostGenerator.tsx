@@ -1557,7 +1557,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
                         <h3 className="font-bold text-lg text-gray-700">{group.platform}</h3>
                       </div>
 
-                      <div className="flex flex-col gap-6">
+                      <div className="flex flex-col gap-6 max-w-[420px] w-full mx-auto">
                         {(Array.isArray(group?.data) ? group.data : []).map((res, iIdx) => (
                           <div key={`${gIdx}-${iIdx}`} className={`group bg-white rounded-3xl p-6 shadow-sm border border-gray-100 transition-all duration-300 flex flex-col relative overflow-hidden ${refiningKey === `${gIdx}-${iIdx}` ? 'ring-2 ring-amber-400 shadow-amber-100' : 'hover:shadow-xl hover:border-indigo-100'}`}>
                             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-indigo-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>

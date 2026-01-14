@@ -15,7 +15,7 @@ interface HistorySidebarProps {
   onDelete: (id: string) => void;
 }
 
-const HistorySidebar: React.FC<HistorySidebarProps> = ({ history, isPro, isLoggedIn, onSelect, isOpen, toggleOpen, onOpenLogin, onOpenUpgrade }) => {
+const HistorySidebar: React.FC<HistorySidebarProps> = ({ history, isPro, isLoggedIn, onSelect, isOpen, toggleOpen, onOpenLogin, onOpenUpgrade, onDelete }) => {
   const displayHistory = isPro ? history : history.slice(0, 3);
 
   const getPlatformIcon = (p: Platform) => {
