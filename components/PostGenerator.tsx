@@ -497,7 +497,6 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
 
     if (p === Platform.GoogleMaps) {
       setPlatforms([Platform.GoogleMaps]);
-      setResultGroups([]);
       setRefiningKey(null);
       setIsMultiGenMode(false);
       return;
@@ -505,7 +504,6 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
 
     if (platforms.includes(Platform.GoogleMaps)) {
       setPlatforms([p]);
-      setResultGroups([]);
       setRefiningKey(null);
       setIsMultiGenMode(false);
       return;
