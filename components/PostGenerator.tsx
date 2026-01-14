@@ -18,6 +18,7 @@ import {
 import SocialPreview from './SocialPreview';
 import PresetModal from './PresetModal';
 import GuestTour from './GuestTour';
+import FreeLimitReached from './FreeLimitReached';
 
 interface PostGeneratorProps {
   storeProfile: StoreProfile;
@@ -249,6 +250,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
   const remainingCredits = isPro ? 9999 : (serverRemainingCredits ?? fallbackRemaining);
   const canGenerateNew = (isPro || remainingCredits > 0) && !loading;
   const canRegenerate = isLoggedIn && (isPro || retryCount < 2);
+  const shouldShowFreeLimit = isLoggedIn && !isPro && remainingCredits <= 0;
   const hasResults = resultGroups.length > 0;
   const defaultGenerateLabel = showGuestTour
     ? '投稿文を生成する'
@@ -1414,122 +1416,132 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
 
             {/* MIDDLE COLUMN: Input & Advanced */}
             <div className={`flex flex-col gap-4 lg:h-full ${hasResults ? 'lg:col-span-5' : 'lg:col-span-8'} transition-all duration-500`}>
-
-              <div
-                ref={inputContainerRef}
-                className="flex-1 bg-white p-1 rounded-3xl border border-gray-200 focus-within:ring-4 focus-within:ring-indigo-500/10 focus-within:border-indigo-400 transition-all shadow-sm relative min-h-[200px]"
-              >
-                <div className="h-full flex flex-col p-4 md:p-6">
-                  <label className="block text-base md:text-sm font-bold text-gray-700 mb-3 flex items-center justify-between shrink-0">
-                    <span>{isMap ? 'お客様の口コミ内容' : '投稿したいトピック・内容'}</span>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-normal text-gray-400 bg-gray-100 px-2 py-1 rounded-full">必須</span>
-                    </div>
-                  </label>
-                  <div className="relative flex-1 flex flex-col">
-                    <textarea
-                      value={inputText}
-                      onChange={(e) => setInputText(e.target.value)}
-                      disabled={(!canGenerateNew && isLoggedIn)}
-                      placeholder={isMap
-                        ? "例: ランチセットが美味しかったです。ただ、提供に少し時間がかかったのが残念でした。"
-                        : "例: 明日から秋限定の栗パフェを始めます。値段は1200円。1日限定20食です。"
-                      }
-                      className="w-full flex-1 bg-transparent border-0 text-base leading-relaxed placeholder-gray-300 focus:ring-0 resize-none pr-8 pb-8 text-gray-700 disabled:opacity-100 disabled:text-gray-700 disabled:cursor-not-allowed"
-                    />
-                    {isLoggedIn && (
-                      <InputControlButtons
-                        value={inputText}
-                        onUpdate={setInputText}
-                        onClear={() => setInputText('')}
-                        className="absolute bottom-0 right-0"
-                      />
-                    )}
-                  </div>
+              {shouldShowFreeLimit ? (
+                <div className="w-full py-10">
+                  <FreeLimitReached
+                    onUpgrade={onTryUpgrade ?? (() => {})}
+                    remaining={remainingCredits}
+                  />
                 </div>
-              </div>
-
-              <div className="border border-amber-100/50 rounded-2xl bg-gradient-to-br from-amber-50 to-orange-50 overflow-hidden shadow-sm transition-all shrink-0">
-                <button
-                  onClick={() => setIsAdvancedOpen(!isAdvancedOpen)}
-                  disabled={!isLoggedIn}
-                  className={`w-full flex items-center justify-between p-4 transition-colors ${!isLoggedIn ? 'opacity-60 cursor-not-allowed bg-gray-50' : 'hover:bg-amber-100/30'}`}
-                >
-                  <div className="flex items-center gap-2">
-                    <div className={`p-1 rounded-md shadow-sm ${!isLoggedIn ? 'bg-gray-400 text-white' : 'bg-amber-400 text-white'}`}>
-                      {!isLoggedIn ? <LockIcon /> : <CrownIcon />}
-                    </div>
-                    <span className={`text-xs font-extrabold tracking-wider ${!isLoggedIn ? 'text-gray-500' : 'text-amber-800'}`}>
-                      詳細設定 {!isLoggedIn && '(Login Required)'}
-                    </span>
-                  </div>
-                  {isLoggedIn && <ChevronDownIcon className={`w-4 h-4 text-amber-700 transition-transform duration-300 ${isAdvancedOpen ? 'rotate-180' : ''}`} />}
-                </button>
-
-                {isAdvancedOpen && isLoggedIn && (
-                  <div className="relative">
-                    <div className="p-4 pt-0 space-y-5 animate-in slide-in-from-top-1 duration-300">
-                      <div className="space-y-3">
-                        <div>
-                          <label className="block text-xs font-bold text-amber-800/70 mb-1.5">出力言語</label>
-                          <div className="relative">
-                            <select
-                              value={language}
-                              onChange={(e) => setLanguage(e.target.value)}
-                              className="w-full p-2.5 bg-white/80 border-0 rounded-xl text-sm font-medium text-amber-900 shadow-sm focus:ring-2 focus:ring-amber-400 appearance-none pl-3 pr-8"
-                            >
-                              {LANGUAGES.map(l => <option key={l.value} value={l.value}>{l.label}</option>)}
-                            </select>
-                            <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                              <svg className="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-                            </div>
-                          </div>
+              ) : (
+                <>
+                  <div
+                    ref={inputContainerRef}
+                    className="flex-1 bg-white p-1 rounded-3xl border border-gray-200 focus-within:ring-4 focus-within:ring-indigo-500/10 focus-within:border-indigo-400 transition-all shadow-sm relative min-h-[200px]"
+                  >
+                    <div className="h-full flex flex-col p-4 md:p-6">
+                      <label className="block text-base md:text-sm font-bold text-gray-700 mb-3 flex items-center justify-between shrink-0">
+                        <span>{isMap ? 'お客様の口コミ内容' : '投稿したいトピック・内容'}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-normal text-gray-400 bg-gray-100 px-2 py-1 rounded-full">必須</span>
                         </div>
-
-                        {isMap && (
-                          <div className="pt-2">
-                            <label className="block text-xs font-bold text-amber-800/70 mb-1.5">店舗側の補足・事情 (任意)</label>
-                            <div className="relative">
-                              <textarea
-                                value={storeSupplement}
-                                onChange={(e) => setStoreSupplement(e.target.value)}
-                                placeholder="例: 機器トラブルで提供が遅れました... (AIがこの事情を汲んで文章を作成します)"
-                                rows={2}
-                                className="w-full bg-white/80 border-0 p-3 rounded-xl text-sm text-gray-700 focus:ring-2 focus:ring-amber-400 placeholder-amber-700/30 pr-16 resize-none"
-                              />
-                              <InputControlButtons
-                                value={storeSupplement}
-                                onUpdate={setStoreSupplement}
-                                onClear={() => setStoreSupplement('')}
-                                className="absolute bottom-2 right-2"
-                              />
-                            </div>
-                          </div>
+                      </label>
+                      <div className="relative flex-1 flex flex-col">
+                        <textarea
+                          value={inputText}
+                          onChange={(e) => setInputText(e.target.value)}
+                          disabled={(!canGenerateNew && isLoggedIn)}
+                          placeholder={isMap
+                            ? "例: ランチセットが美味しかったです。ただ、提供に少し時間がかかったのが残念でした。"
+                            : "例: 明日から秋限定の栗パフェを始めます。値段は1200円。1日限定20食です。"
+                          }
+                          className="w-full flex-1 bg-transparent border-0 text-base leading-relaxed placeholder-gray-300 focus:ring-0 resize-none pr-8 pb-8 text-gray-700 disabled:opacity-100 disabled:text-gray-700 disabled:cursor-not-allowed"
+                        />
+                        {isLoggedIn && (
+                          <InputControlButtons
+                            value={inputText}
+                            onUpdate={setInputText}
+                            onClear={() => setInputText('')}
+                            className="absolute bottom-0 right-0"
+                          />
                         )}
-
-                        <div className="pt-2">
-                          <label className="block text-xs font-bold text-amber-800/70 mb-1.5">AIへのカスタムプロンプト (任意)</label>
-                          <div className="relative">
-                            <input
-                              type="text"
-                              value={customPrompt}
-                              onChange={(e) => setCustomPrompt(e.target.value)}
-                              placeholder="例: 絵文字多めで、テンション高く..."
-                              className="w-full bg-white/80 border-0 p-3 rounded-xl text-sm text-gray-700 focus:ring-2 focus:ring-amber-400 placeholder-amber-700/30 pr-16"
-                            />
-                            <InputControlButtons
-                              value={customPrompt}
-                              onUpdate={setCustomPrompt}
-                              onClear={() => setCustomPrompt('')}
-                              className="absolute top-1/2 -translate-y-1/2 right-2"
-                            />
-                          </div>
-                        </div>
                       </div>
                     </div>
                   </div>
-                )}
-              </div>
+
+                  <div className="border border-amber-100/50 rounded-2xl bg-gradient-to-br from-amber-50 to-orange-50 overflow-hidden shadow-sm transition-all shrink-0">
+                    <button
+                      onClick={() => setIsAdvancedOpen(!isAdvancedOpen)}
+                      disabled={!isLoggedIn}
+                      className={`w-full flex items-center justify-between p-4 transition-colors ${!isLoggedIn ? 'opacity-60 cursor-not-allowed bg-gray-50' : 'hover:bg-amber-100/30'}`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <div className={`p-1 rounded-md shadow-sm ${!isLoggedIn ? 'bg-gray-400 text-white' : 'bg-amber-400 text-white'}`}>
+                          {!isLoggedIn ? <LockIcon /> : <CrownIcon />}
+                        </div>
+                        <span className={`text-xs font-extrabold tracking-wider ${!isLoggedIn ? 'text-gray-500' : 'text-amber-800'}`}>
+                          詳細設定 {!isLoggedIn && '(Login Required)'}
+                        </span>
+                      </div>
+                      {isLoggedIn && <ChevronDownIcon className={`w-4 h-4 text-amber-700 transition-transform duration-300 ${isAdvancedOpen ? 'rotate-180' : ''}`} />}
+                    </button>
+
+                    {isAdvancedOpen && isLoggedIn && (
+                      <div className="relative">
+                        <div className="p-4 pt-0 space-y-5 animate-in slide-in-from-top-1 duration-300">
+                          <div className="space-y-3">
+                            <div>
+                              <label className="block text-xs font-bold text-amber-800/70 mb-1.5">出力言語</label>
+                              <div className="relative">
+                                <select
+                                  value={language}
+                                  onChange={(e) => setLanguage(e.target.value)}
+                                  className="w-full p-2.5 bg-white/80 border-0 rounded-xl text-sm font-medium text-amber-900 shadow-sm focus:ring-2 focus:ring-amber-400 appearance-none pl-3 pr-8"
+                                >
+                                  {LANGUAGES.map(l => <option key={l.value} value={l.value}>{l.label}</option>)}
+                                </select>
+                                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                  <svg className="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </div>
+                              </div>
+                            </div>
+
+                            {isMap && (
+                              <div className="pt-2">
+                                <label className="block text-xs font-bold text-amber-800/70 mb-1.5">店舗側の補足・事情 (任意)</label>
+                                <div className="relative">
+                                  <textarea
+                                    value={storeSupplement}
+                                    onChange={(e) => setStoreSupplement(e.target.value)}
+                                    placeholder="例: 機器トラブルで提供が遅れました... (AIがこの事情を汲んで文章を作成します)"
+                                    rows={2}
+                                    className="w-full bg-white/80 border-0 p-3 rounded-xl text-sm text-gray-700 focus:ring-2 focus:ring-amber-400 placeholder-amber-700/30 pr-16 resize-none"
+                                  />
+                                  <InputControlButtons
+                                    value={storeSupplement}
+                                    onUpdate={setStoreSupplement}
+                                    onClear={() => setStoreSupplement('')}
+                                    className="absolute bottom-2 right-2"
+                                  />
+                                </div>
+                              </div>
+                            )}
+
+                            <div className="pt-2">
+                              <label className="block text-xs font-bold text-amber-800/70 mb-1.5">AIへのカスタムプロンプト (任意)</label>
+                              <div className="relative">
+                                <input
+                                  type="text"
+                                  value={customPrompt}
+                                  onChange={(e) => setCustomPrompt(e.target.value)}
+                                  placeholder="例: 絵文字多めで、テンション高く..."
+                                  className="w-full bg-white/80 border-0 p-3 rounded-xl text-sm text-gray-700 focus:ring-2 focus:ring-amber-400 placeholder-amber-700/30 pr-16"
+                                />
+                                <InputControlButtons
+                                  value={customPrompt}
+                                  onUpdate={setCustomPrompt}
+                                  onClear={() => setCustomPrompt('')}
+                                  className="absolute top-1/2 -translate-y-1/2 right-2"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
             </div>
 
             {/* RIGHT COLUMN: Results */}
