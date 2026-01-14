@@ -2,10 +2,12 @@
 import React, { useState, useEffect } from 'react';
 import { CloseIcon } from './Icons';
 
+type PlanOption = "monthly" | "yearly";
+
 interface UpgradeModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirmUpgrade: () => void;
+  onConfirmUpgrade: (plan: PlanOption) => void;
   initialStep?: 'intro' | 'payment';
 }
 
@@ -15,11 +17,13 @@ const CheckCircleIcon = ({ className = "w-4 h-4" }: { className?: string }) => (
 
 const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose, onConfirmUpgrade, initialStep = 'intro' }) => {
   const [step, setStep] = useState<'intro' | 'payment'>(initialStep);
+  const [selectedPlan, setSelectedPlan] = useState<PlanOption>("monthly");
 
   useEffect(() => {
     if (isOpen) {
       setStep(initialStep);
       document.body.style.overflow = 'hidden';
+      setSelectedPlan("monthly");
     } else {
       document.body.style.overflow = 'unset';
     }
@@ -27,6 +31,26 @@ const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose, onConfirmU
       document.body.style.overflow = 'unset';
     };
   }, [isOpen, initialStep]);
+
+  const handlePlanSelect = (plan: PlanOption) => {
+    setSelectedPlan(plan);
+  };
+
+  const handleConfirm = () => {
+    onConfirmUpgrade(selectedPlan);
+  };
+
+  const yearlyCardClasses = `border-2 p-4 rounded-xl relative group cursor-pointer transition-all ${
+    selectedPlan === "yearly"
+      ? "border-indigo-500 bg-white shadow-lg shadow-indigo-100"
+      : "border-transparent hover:border-indigo-100 bg-slate-50"
+  }`;
+
+  const monthlyCardClasses = `border-2 p-4 rounded-xl relative cursor-pointer transition-all ${
+    selectedPlan === "monthly"
+      ? "border-indigo-500 bg-white shadow-lg shadow-indigo-100 ring-4 ring-indigo-500/10"
+      : "border-transparent bg-white hover:border-indigo-100"
+  }`;
 
   if (!isOpen) return null;
 
@@ -141,7 +165,10 @@ const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose, onConfirmU
                     
                     <div className="space-y-4 mb-8">
                       {/* Yearly Plan */}
-                      <div className="border-2 border-transparent hover:border-indigo-100 bg-slate-50 p-4 rounded-xl relative group cursor-pointer transition-all">
+                      <div
+                        className={yearlyCardClasses}
+                        onClick={() => handlePlanSelect("yearly")}
+                      >
                         <div className="flex justify-between items-center mb-1">
                            <span className="font-bold text-gray-700">年額プラン</span>
                            <span className="bg-gray-200 text-gray-600 text-[10px] font-bold px-2 py-0.5 rounded">2ヶ月分お得</span>
@@ -154,9 +181,9 @@ const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose, onConfirmU
                       </div>
 
                       {/* Monthly Plan (Recommended) */}
-                      <div 
-                        className="border-2 border-indigo-500 bg-white p-4 rounded-xl relative cursor-pointer shadow-lg shadow-indigo-100 ring-4 ring-indigo-500/10"
-                        onClick={onConfirmUpgrade}
+                      <div
+                        className={monthlyCardClasses}
+                        onClick={() => handlePlanSelect("monthly")}
                       >
                          <div className="absolute -top-3 left-1/2 md:left-auto md:right-4 -translate-x-1/2 md:translate-x-0 bg-amber-500 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-sm">
                            スターター特典
@@ -178,10 +205,10 @@ const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose, onConfirmU
                     </div>
 
                     <button
-                      onClick={onConfirmUpgrade}
+                      onClick={handleConfirm}
                       className="w-full bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-bold py-5 md:py-4 rounded-xl hover:from-indigo-500 hover:to-blue-500 transition-all shadow-lg shadow-indigo-200 transform hover:-translate-y-0.5 active:translate-y-0 text-xl md:text-base"
                     >
-                      スターター特典で始める
+                      {selectedPlan === "yearly" ? "年額プランで始める" : "スターター特典で始める"}
                     </button>
                     <p className="text-[10px] text-gray-400 text-center mt-4">
                       いつでもキャンセル可能です。

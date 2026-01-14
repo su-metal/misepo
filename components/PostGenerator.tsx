@@ -18,6 +18,7 @@ import {
 import SocialPreview from './SocialPreview';
 import PresetModal from './PresetModal';
 import GuestTour from './GuestTour';
+import FreeLimitReached from './FreeLimitReached';
 
 interface PostGeneratorProps {
   storeProfile: StoreProfile;
@@ -219,6 +220,8 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
   const [customPrompt, setCustomPrompt] = useState('');
   const [includeSymbols, setIncludeSymbols] = useState<boolean>(false);
   const [includeEmojis, setIncludeEmojis] = useState<boolean>(true);
+  const [toneDecorations, setToneDecorations] = useState<Partial<Record<Tone, { includeEmojis: boolean; includeSymbols: boolean }>>>({});
+  const [serverRemainingCredits, setServerRemainingCredits] = useState<number | null>(null);
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
   const [isPresetModalOpen, setIsPresetModalOpen] = useState(false);
   const [refiningKey, setRefiningKey] = useState<string | null>(null);
@@ -238,15 +241,17 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
   const [previewModal, setPreviewModal] = useState<{ platform: Platform, text: string } | null>(null);
 
   // Track active preset context for editing/saving
-  const [activePresetContext, setActivePresetContext] = useState<{ label: string, templateText?: string } | null>(null);
-
   const isMap = platforms.includes(Platform.GoogleMaps);
   const isXOnly = platforms.length === 1 && platforms.includes(Platform.X);
   const MAX_FREE_LIMIT = 5;
-  const remainingCredits = isPro ? 9999 : Math.max(0, MAX_FREE_LIMIT - dailyUsageCount);
-  const canGenerateNew = isPro || (remainingCredits > 0 && !loading);
+  const fallbackRemaining = Math.max(0, MAX_FREE_LIMIT - dailyUsageCount);
+  const remainingCredits = isPro ? 9999 : (serverRemainingCredits ?? fallbackRemaining);
+  const canGenerateNew = (isPro || remainingCredits > 0) && !loading;
   const canRegenerate = isLoggedIn && (isPro || retryCount < 2);
+  const shouldShowFreeLimit = isLoggedIn && !isPro && remainingCredits <= 0;
+  const shouldShowProHint = !isPro && !shouldShowFreeLimit && remainingCredits > 0;
   const hasResults = resultGroups.length > 0;
+  const generateButtonLabel = '投稿を生成する';
 
   useEffect(() => {
     if (isMap && starRating !== null) {
@@ -255,12 +260,42 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
   }, [starRating, isMap]);
 
   useEffect(() => {
+    const defaultDecorations = {
+      includeEmojis: tone !== Tone.Formal,
+      includeSymbols: false
+    };
+    const override = toneDecorations[tone];
+    const next = override ?? defaultDecorations;
+    setIncludeEmojis(next.includeEmojis);
+    setIncludeSymbols(next.includeSymbols);
+  }, [tone, toneDecorations]);
+
+  useEffect(() => {
     if (!isLoggedIn) {
       setPlatforms([Platform.Instagram]);
       setPostPurpose(PostPurpose.Promotion);
       setInputText(DEMO_SAMPLE_TEXT);
+      setServerRemainingCredits(null);
     }
   }, [isLoggedIn]);
+
+  useEffect(() => {
+    if (!isLoggedIn || isPro) return;
+
+    fetch("/api/usage/credits")
+      .then(async (res) => {
+        if (!res.ok) throw new Error("usage fetch failed");
+        return res.json();
+      })
+      .then((data) => {
+        if (data?.ok && typeof data.remaining === "number") {
+          setServerRemainingCredits(data.remaining);
+        }
+      })
+      .catch((err) => {
+        console.warn("Unable to refresh remaining credits:", err);
+      });
+  }, [isLoggedIn, isPro]);
 
   useEffect(() => {
     if (shouldShowTour) {
@@ -326,10 +361,23 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
       setLanguage(restorePost.config.language || 'Japanese');
       setStoreSupplement(restorePost.config.storeSupplement || '');
       setCustomPrompt(restorePost.config.customPrompt || '');
+      const defaultDecorations = {
+        includeEmojis: restorePost.config.tone !== Tone.Formal,
+        includeSymbols: false
+      };
+      const restoredIncludeSymbols = restorePost.config.includeSymbols ?? defaultDecorations.includeSymbols;
+      const restoredIncludeEmojis = restorePost.config.includeEmojis ?? defaultDecorations.includeEmojis;
       setXConstraint140(restorePost.config.xConstraint140 !== undefined ? restorePost.config.xConstraint140 : true);
-      setIncludeSymbols(restorePost.config.includeSymbols !== undefined ? restorePost.config.includeSymbols : false);
-      setIncludeEmojis(restorePost.config.includeEmojis !== undefined ? restorePost.config.includeEmojis : true);
+      setIncludeSymbols(restoredIncludeSymbols);
+      setIncludeEmojis(restoredIncludeEmojis);
       setIncludeFooter(!!restorePost.config.instagramFooter);
+      setToneDecorations(prev => ({
+        ...prev,
+        [restorePost.config.tone]: {
+          includeEmojis: restoredIncludeEmojis,
+          includeSymbols: restoredIncludeSymbols
+        }
+      }));
 
       const reconstructedGroups: ResultGroup[] = restorePost.results.map(r => {
         const pConfig: GenerationConfig = {
@@ -365,37 +413,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
   }, [restorePost]);
 
   const handleApplyPreset = (preset: Preset) => {
-    setTone(preset.config.tone);
-    setLength(preset.config.length);
-    if (preset.config.inputText !== undefined) setInputText(preset.config.inputText);
-    setLanguage(preset.config.language);
-    setCustomPrompt(preset.config.customPrompt);
-    setStoreSupplement(preset.config.storeSupplement);
-    setXConstraint140(preset.config.xConstraint140 !== undefined ? preset.config.xConstraint140 : true);
-    setIncludeSymbols(preset.config.includeSymbols !== undefined ? preset.config.includeSymbols : false);
-    setIncludeEmojis(preset.config.includeEmojis !== undefined ? preset.config.includeEmojis : true);
-
-    if (preset.config.targetPlatform) {
-      if (preset.config.targetPlatform === Platform.GoogleMaps) {
-        setPlatforms([Platform.GoogleMaps]);
-        setIsMultiGenMode(false);
-        if (preset.config.gmapPurpose) {
-          setGmapPurpose(preset.config.gmapPurpose);
-        }
-        setStarRating(preset.config.starRating || null);
-      } else {
-        if (platforms.includes(Platform.GoogleMaps)) {
-          setResultGroups([]);
-        }
-        setPlatforms([preset.config.targetPlatform]);
-        setIsMultiGenMode(false);
-        if (preset.config.postPurpose) {
-          setPostPurpose(preset.config.postPurpose);
-        }
-      }
-    }
-
-    setActivePresetContext({ label: preset.name, templateText: preset.config.inputText });
+    setCustomPrompt(preset.config.customPrompt ?? '');
   };
 
   const handleApplyQuickPreset = (preset: QuickPreset) => {
@@ -409,18 +427,10 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
       setInputText(preset.templateText);
     }
 
-    setActivePresetContext({ label: preset.label, templateText: preset.templateText });
   };
 
   const handleToneChange = (newTone: Tone) => {
     setTone(newTone);
-    if (newTone === Tone.Formal) {
-      setIncludeEmojis(false);
-      setIncludeSymbols(false);
-    } else {
-      setIncludeEmojis(true);
-      setIncludeSymbols(false);
-    }
   };
 
   const handleToggleMultiGen = () => {
@@ -441,7 +451,6 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
 
     if (p === Platform.GoogleMaps) {
       setPlatforms([Platform.GoogleMaps]);
-      setResultGroups([]);
       setRefiningKey(null);
       setIsMultiGenMode(false);
       return;
@@ -449,7 +458,6 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
 
     if (platforms.includes(Platform.GoogleMaps)) {
       setPlatforms([p]);
-      setResultGroups([]);
       setRefiningKey(null);
       setIsMultiGenMode(false);
       return;
@@ -505,11 +513,44 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
     });
   };
 
+  const saveAggregatedHistory = async (payload: {
+    profile: StoreProfile;
+    config: GeneratedPost["config"];
+    result: GeneratedResult[];
+    isPro: boolean;
+    runType: string;
+  }) => {
+    try {
+      const res = await fetch("/api/me/history", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          profile: payload.profile,
+          config: payload.config,
+          result: payload.result,
+          is_pro: payload.isPro,
+          run_type: payload.runType,
+        }),
+      });
+      const data = await res.json().catch(() => null);
+      if (res.ok && data?.ok) {
+        if (typeof data.run_id === "string") return data.run_id;
+        if (typeof data.run_id === "number") return data.run_id.toString();
+      }
+    } catch (err) {
+      console.error("save aggregated history failed:", err);
+    }
+
+    return null;
+  };
+
   const performGeneration = async (
     targetPlatforms: Platform[],
     baseConfig: Partial<GenerationConfig>,
     isRegeneration: boolean = false
   ) => {
+    const skipHistoryForCombined = targetPlatforms.length > 1;
+    const runType = "generation";
     setLoading(true);
     if (!isRegeneration) {
       setResultGroups([]);
@@ -519,6 +560,8 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
     const newGroups: ResultGroup[] = [];
     const generatedResults: GeneratedResult[] = [];
     let errorCount = 0;
+    let latestRunId: string | null = null;
+    let aggregatedHistoryId: string | null = null;
 
     for (const p of targetPlatforms) {
       const isMapAndStarred = p === Platform.GoogleMaps && (starRating !== null);
@@ -543,13 +586,37 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
             profile: storeProfile,
             config,
             isPro,
+            allowGuest: !isLoggedIn,
+            save_history: !skipHistoryForCombined,
+            run_type: runType,
           }),
         });
 
         const data = await res.json();
-        if (!res.ok || !data.ok) throw new Error(data.error ?? "Generate failed");
+        const remaining = typeof data.remaining === "number" ? data.remaining : null;
+        if (remaining !== null) {
+          setServerRemainingCredits(remaining);
+        }
+
+        if (!res.ok || !data.ok) {
+          if (data?.error === "quota_exceeded") {
+            alert("今週の無料枠を使い切りました。Proにアップグレードすると無制限で使えます。");
+            setServerRemainingCredits(0);
+            return;
+          }
+          throw new Error(data.error ?? "Generate failed");
+        }
 
         const content = data.result as string[];
+        let runIdFromApi: string | null = null;
+        if (typeof data.run_id === "string") {
+          runIdFromApi = data.run_id;
+        } else if (typeof data.run_id === "number") {
+          runIdFromApi = data.run_id.toString();
+        }
+        if (runIdFromApi) {
+          latestRunId = runIdFromApi;
+        }
 
         let finalContent = content;
         if (p === Platform.Instagram && includeFooter && storeProfile.instagramFooter) {
@@ -589,10 +656,8 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
     } else {
       setResultGroups(newGroups);
 
-      onGenerateSuccess({
-        id: Date.now().toString() + Math.random().toString().slice(2, 5),
-        timestamp: Date.now(),
-        config: {
+      if (!showGuestTour || isLoggedIn) {
+        const historyConfig = {
           platforms: targetPlatforms,
           postPurpose,
           gmapPurpose,
@@ -607,9 +672,27 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
           includeSymbols: includeSymbols,
           includeEmojis: includeEmojis,
           instagramFooter: (targetPlatforms.includes(Platform.Instagram) && includeFooter) ? storeProfile.instagramFooter : undefined,
-        },
-        results: generatedResults
-      });
+        };
+
+        if (skipHistoryForCombined && isLoggedIn) {
+          aggregatedHistoryId = await saveAggregatedHistory({
+            profile: storeProfile,
+            config: historyConfig,
+            result: generatedResults,
+            isPro,
+            runType,
+          });
+        }
+
+        const finalId = aggregatedHistoryId ?? latestRunId ?? (Date.now().toString() + Math.random().toString().slice(2, 5));
+
+        onGenerateSuccess({
+          id: finalId,
+          timestamp: Date.now(),
+          config: historyConfig,
+          results: generatedResults,
+        });
+      }
 
       onTaskComplete();
     }
@@ -633,7 +716,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
       return;
     }
 
-    if (!canGenerateNew && !isPro) {
+    if (!canGenerateNew && !isPro && !(showGuestTour && !isLoggedIn)) {
       if (remainingCredits === 0) {
         if (onOpenLogin && !isLoggedIn) {
           onOpenLogin();
@@ -847,7 +930,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
 
   return (
     <>
-      <div className="max-w-[1600px] mx-auto md:min-h-full flex flex-col pb-32 md:pb-20 relative">
+      <div className="w-full mx-auto md:min-h-full flex flex-col pb-32 md:pb-20 relative">
 
         {/* Guest Tour Overlay */}
         <GuestTour
@@ -870,15 +953,8 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
           onDelete={onDeletePreset}
           onApply={handleApplyPreset}
           currentConfig={{
-            tone, length, inputText, language,
-            storeSupplement, customPrompt, includeSymbols, includeEmojis, xConstraint140,
-            targetPlatform: platforms[0],
-            gmapPurpose,
-            postPurpose,
-            starRating
+            customPrompt,
           }}
-          initialPresetName={activePresetContext?.label}
-          initialTemplateText={activePresetContext?.templateText}
         />
 
         {/* Preview Modal */}
@@ -1048,10 +1124,10 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
             )}
           </div>
 
-          <div className="flex-1 p-6 md:p-5 grid grid-cols-1 lg:grid-cols-12 gap-6 overflow-visible lg:overflow-hidden">
+          <div className="flex-1 p-6 md:p-5 grid grid-cols-1 lg:[grid-template-columns:400px_minmax(0,_1fr)] xl:[grid-template-columns:420px_minmax(0,_1fr)_360px] gap-6 overflow-visible lg:overflow-hidden">
 
             {/* LEFT COLUMN: Settings */}
-            <div className={`space-y-4 lg:overflow-y-auto pr-1 scrollbar-hide ${hasResults ? 'lg:col-span-3' : 'lg:col-span-4'} transition-all duration-500`}>
+            <div className="space-y-4 lg:overflow-y-auto pr-1 scrollbar-hide lg:w-[400px] lg:flex-shrink-0 transition-all duration-500">
 
               {/* QUICK PRESETS (Added Feature) */}
               {!isMap && isLoggedIn && !isMultiGenMode && (
@@ -1249,7 +1325,15 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
                       onClick={() => {
                         const next = !includeEmojis;
                         setIncludeEmojis(next);
-                        if (next) setIncludeSymbols(false);
+                        const nextSymbols = next ? false : includeSymbols;
+                        setIncludeSymbols(nextSymbols);
+                        setToneDecorations(prev => ({
+                          ...prev,
+                          [tone]: {
+                            includeEmojis: next,
+                            includeSymbols: nextSymbols
+                          }
+                        }));
                       }}
                       disabled={!isLoggedIn}
                       className={`p-2.5 rounded-xl border flex flex-col items-start gap-2 relative transition-all ${includeEmojis
@@ -1270,7 +1354,15 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
                       onClick={() => {
                         const next = !includeSymbols;
                         setIncludeSymbols(next);
-                        if (next) setIncludeEmojis(false);
+                        const nextEmojis = next ? false : includeEmojis;
+                        setIncludeEmojis(nextEmojis);
+                        setToneDecorations(prev => ({
+                          ...prev,
+                          [tone]: {
+                            includeEmojis: nextEmojis,
+                            includeSymbols: next
+                          }
+                        }));
                       }}
                       disabled={!isLoggedIn}
                       className={`p-2.5 rounded-xl border flex flex-col items-start gap-2 relative transition-all ${includeSymbols
@@ -1309,128 +1401,138 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
             </div>
 
             {/* MIDDLE COLUMN: Input & Advanced */}
-            <div className={`flex flex-col gap-4 lg:h-full ${hasResults ? 'lg:col-span-5' : 'lg:col-span-8'} transition-all duration-500`}>
-
-              <div
-                ref={inputContainerRef}
-                className="flex-1 bg-white p-1 rounded-3xl border border-gray-200 focus-within:ring-4 focus-within:ring-indigo-500/10 focus-within:border-indigo-400 transition-all shadow-sm relative min-h-[200px]"
-              >
-                <div className="h-full flex flex-col p-4 md:p-6">
-                  <label className="block text-base md:text-sm font-bold text-gray-700 mb-3 flex items-center justify-between shrink-0">
-                    <span>{isMap ? 'お客様の口コミ内容' : '投稿したいトピック・内容'}</span>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-normal text-gray-400 bg-gray-100 px-2 py-1 rounded-full">必須</span>
-                    </div>
-                  </label>
-                  <div className="relative flex-1 flex flex-col">
-                    <textarea
-                      value={inputText}
-                      onChange={(e) => setInputText(e.target.value)}
-                      disabled={(!canGenerateNew && isLoggedIn)}
-                      placeholder={isMap
-                        ? "例: ランチセットが美味しかったです。ただ、提供に少し時間がかかったのが残念でした。"
-                        : "例: 明日から秋限定の栗パフェを始めます。値段は1200円。1日限定20食です。"
-                      }
-                      className="w-full flex-1 bg-transparent border-0 text-base leading-relaxed placeholder-gray-300 focus:ring-0 resize-none pr-8 pb-8 text-gray-700 disabled:opacity-100 disabled:text-gray-700 disabled:cursor-not-allowed"
-                    />
-                    {isLoggedIn && (
-                      <InputControlButtons
-                        value={inputText}
-                        onUpdate={setInputText}
-                        onClear={() => setInputText('')}
-                        className="absolute bottom-0 right-0"
-                      />
-                    )}
-                  </div>
+            <div className="flex flex-col gap-4 flex-1 lg:h-full transition-all duration-500">
+              {shouldShowFreeLimit ? (
+                <div className="w-full py-10">
+                  <FreeLimitReached
+                    onUpgrade={onTryUpgrade ?? (() => {})}
+                    remaining={remainingCredits}
+                  />
                 </div>
-              </div>
-
-              <div className="border border-amber-100/50 rounded-2xl bg-gradient-to-br from-amber-50 to-orange-50 overflow-hidden shadow-sm transition-all shrink-0">
-                <button
-                  onClick={() => setIsAdvancedOpen(!isAdvancedOpen)}
-                  disabled={!isLoggedIn}
-                  className={`w-full flex items-center justify-between p-4 transition-colors ${!isLoggedIn ? 'opacity-60 cursor-not-allowed bg-gray-50' : 'hover:bg-amber-100/30'}`}
-                >
-                  <div className="flex items-center gap-2">
-                    <div className={`p-1 rounded-md shadow-sm ${!isLoggedIn ? 'bg-gray-400 text-white' : 'bg-amber-400 text-white'}`}>
-                      {!isLoggedIn ? <LockIcon /> : <CrownIcon />}
-                    </div>
-                    <span className={`text-xs font-extrabold tracking-wider ${!isLoggedIn ? 'text-gray-500' : 'text-amber-800'}`}>
-                      詳細設定 {!isLoggedIn && '(Login Required)'}
-                    </span>
-                  </div>
-                  {isLoggedIn && <ChevronDownIcon className={`w-4 h-4 text-amber-700 transition-transform duration-300 ${isAdvancedOpen ? 'rotate-180' : ''}`} />}
-                </button>
-
-                {isAdvancedOpen && isLoggedIn && (
-                  <div className="relative">
-                    <div className="p-4 pt-0 space-y-5 animate-in slide-in-from-top-1 duration-300">
-                      <div className="space-y-3">
-                        <div>
-                          <label className="block text-xs font-bold text-amber-800/70 mb-1.5">出力言語</label>
-                          <div className="relative">
-                            <select
-                              value={language}
-                              onChange={(e) => setLanguage(e.target.value)}
-                              className="w-full p-2.5 bg-white/80 border-0 rounded-xl text-sm font-medium text-amber-900 shadow-sm focus:ring-2 focus:ring-amber-400 appearance-none pl-3 pr-8"
-                            >
-                              {LANGUAGES.map(l => <option key={l.value} value={l.value}>{l.label}</option>)}
-                            </select>
-                            <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                              <svg className="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-                            </div>
-                          </div>
+              ) : (
+                <>
+                  <div
+                    ref={inputContainerRef}
+                    className="flex-1 bg-white p-1 rounded-3xl border border-gray-200 focus-within:ring-4 focus-within:ring-indigo-500/10 focus-within:border-indigo-400 transition-all shadow-sm relative min-h-[200px]"
+                  >
+                    <div className="h-full flex flex-col p-4 md:p-6">
+                      <label className="block text-base md:text-sm font-bold text-gray-700 mb-3 flex items-center justify-between shrink-0">
+                        <span>{isMap ? 'お客様の口コミ内容' : '投稿したいトピック・内容'}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-normal text-gray-400 bg-gray-100 px-2 py-1 rounded-full">必須</span>
                         </div>
-
-                        {isMap && (
-                          <div className="pt-2">
-                            <label className="block text-xs font-bold text-amber-800/70 mb-1.5">店舗側の補足・事情 (任意)</label>
-                            <div className="relative">
-                              <textarea
-                                value={storeSupplement}
-                                onChange={(e) => setStoreSupplement(e.target.value)}
-                                placeholder="例: 機器トラブルで提供が遅れました... (AIがこの事情を汲んで文章を作成します)"
-                                rows={2}
-                                className="w-full bg-white/80 border-0 p-3 rounded-xl text-sm text-gray-700 focus:ring-2 focus:ring-amber-400 placeholder-amber-700/30 pr-16 resize-none"
-                              />
-                              <InputControlButtons
-                                value={storeSupplement}
-                                onUpdate={setStoreSupplement}
-                                onClear={() => setStoreSupplement('')}
-                                className="absolute bottom-2 right-2"
-                              />
-                            </div>
-                          </div>
+                      </label>
+                      <div className="relative flex-1 flex flex-col">
+                        <textarea
+                          value={inputText}
+                          onChange={(e) => setInputText(e.target.value)}
+                          disabled={(!canGenerateNew && isLoggedIn)}
+                          placeholder={isMap
+                            ? "例: ランチセットが美味しかったです。ただ、提供に少し時間がかかったのが残念でした。"
+                            : "例: 明日から秋限定の栗パフェを始めます。値段は1200円。1日限定20食です。"
+                          }
+                          className="w-full flex-1 bg-transparent border-0 text-base leading-relaxed placeholder-gray-300 focus:ring-0 resize-none pr-8 pb-8 text-gray-700 disabled:opacity-100 disabled:text-gray-700 disabled:cursor-not-allowed"
+                        />
+                        {isLoggedIn && (
+                          <InputControlButtons
+                            value={inputText}
+                            onUpdate={setInputText}
+                            onClear={() => setInputText('')}
+                            className="absolute bottom-0 right-0"
+                          />
                         )}
-
-                        <div className="pt-2">
-                          <label className="block text-xs font-bold text-amber-800/70 mb-1.5">AIへのカスタムプロンプト (任意)</label>
-                          <div className="relative">
-                            <input
-                              type="text"
-                              value={customPrompt}
-                              onChange={(e) => setCustomPrompt(e.target.value)}
-                              placeholder="例: 絵文字多めで、テンション高く..."
-                              className="w-full bg-white/80 border-0 p-3 rounded-xl text-sm text-gray-700 focus:ring-2 focus:ring-amber-400 placeholder-amber-700/30 pr-16"
-                            />
-                            <InputControlButtons
-                              value={customPrompt}
-                              onUpdate={setCustomPrompt}
-                              onClear={() => setCustomPrompt('')}
-                              className="absolute top-1/2 -translate-y-1/2 right-2"
-                            />
-                          </div>
-                        </div>
                       </div>
                     </div>
                   </div>
-                )}
-              </div>
+
+                  <div className="border border-amber-100/50 rounded-2xl bg-gradient-to-br from-amber-50 to-orange-50 overflow-hidden shadow-sm transition-all shrink-0">
+                    <button
+                      onClick={() => setIsAdvancedOpen(!isAdvancedOpen)}
+                      disabled={!isLoggedIn}
+                      className={`w-full flex items-center justify-between p-4 transition-colors ${!isLoggedIn ? 'opacity-60 cursor-not-allowed bg-gray-50' : 'hover:bg-amber-100/30'}`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <div className={`p-1 rounded-md shadow-sm ${!isLoggedIn ? 'bg-gray-400 text-white' : 'bg-amber-400 text-white'}`}>
+                          {!isLoggedIn ? <LockIcon /> : <CrownIcon />}
+                        </div>
+                        <span className={`text-xs font-extrabold tracking-wider ${!isLoggedIn ? 'text-gray-500' : 'text-amber-800'}`}>
+                          詳細設定 {!isLoggedIn && '(Login Required)'}
+                        </span>
+                      </div>
+                      {isLoggedIn && <ChevronDownIcon className={`w-4 h-4 text-amber-700 transition-transform duration-300 ${isAdvancedOpen ? 'rotate-180' : ''}`} />}
+                    </button>
+
+                    {isAdvancedOpen && isLoggedIn && (
+                      <div className="relative">
+                        <div className="p-4 pt-0 space-y-5 animate-in slide-in-from-top-1 duration-300">
+                          <div className="space-y-3">
+                            <div>
+                              <label className="block text-xs font-bold text-amber-800/70 mb-1.5">出力言語</label>
+                              <div className="relative">
+                                <select
+                                  value={language}
+                                  onChange={(e) => setLanguage(e.target.value)}
+                                  className="w-full p-2.5 bg-white/80 border-0 rounded-xl text-sm font-medium text-amber-900 shadow-sm focus:ring-2 focus:ring-amber-400 appearance-none pl-3 pr-8"
+                                >
+                                  {LANGUAGES.map(l => <option key={l.value} value={l.value}>{l.label}</option>)}
+                                </select>
+                                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                  <svg className="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </div>
+                              </div>
+                            </div>
+
+                            {isMap && (
+                              <div className="pt-2">
+                                <label className="block text-xs font-bold text-amber-800/70 mb-1.5">店舗側の補足・事情 (任意)</label>
+                                <div className="relative">
+                                  <textarea
+                                    value={storeSupplement}
+                                    onChange={(e) => setStoreSupplement(e.target.value)}
+                                    placeholder="例: 機器トラブルで提供が遅れました... (AIがこの事情を汲んで文章を作成します)"
+                                    rows={2}
+                                    className="w-full bg-white/80 border-0 p-3 rounded-xl text-sm text-gray-700 focus:ring-2 focus:ring-amber-400 placeholder-amber-700/30 pr-16 resize-none"
+                                  />
+                                  <InputControlButtons
+                                    value={storeSupplement}
+                                    onUpdate={setStoreSupplement}
+                                    onClear={() => setStoreSupplement('')}
+                                    className="absolute bottom-2 right-2"
+                                  />
+                                </div>
+                              </div>
+                            )}
+
+                            <div className="pt-2">
+                              <label className="block text-xs font-bold text-amber-800/70 mb-1.5">AIへのカスタムプロンプト (任意)</label>
+                              <div className="relative">
+                                <input
+                                  type="text"
+                                  value={customPrompt}
+                                  onChange={(e) => setCustomPrompt(e.target.value)}
+                                  placeholder="例: 絵文字多めで、テンション高く..."
+                                  className="w-full bg-white/80 border-0 p-3 rounded-xl text-sm text-gray-700 focus:ring-2 focus:ring-amber-400 placeholder-amber-700/30 pr-16"
+                                />
+                                <InputControlButtons
+                                  value={customPrompt}
+                                  onUpdate={setCustomPrompt}
+                                  onClear={() => setCustomPrompt('')}
+                                  className="absolute top-1/2 -translate-y-1/2 right-2"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
             </div>
 
             {/* RIGHT COLUMN: Results */}
             {hasResults && (
-              <div className="lg:col-span-4 h-full flex flex-col animate-in slide-in-from-right fade-in duration-700">
+              <div className="lg:col-start-2 xl:col-start-3 h-full flex flex-col animate-in slide-in-from-right fade-in duration-700 lg:flex-shrink-0 xl:w-[360px]">
                 <div ref={resultsRef} className="space-y-6 lg:overflow-y-auto pr-1 scrollbar-hide lg:max-h-full pb-4 md:pb-0">
                   <div className="flex items-center justify-between sticky top-0 bg-white/95 backdrop-blur-sm z-10 py-2 border-b border-gray-100">
                     <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
@@ -1438,9 +1540,10 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
                     </h2>
                   </div>
 
-                  {resultGroups.map((group, gIdx) => (
-                    <div key={gIdx} className="space-y-4">
-                      <div className="flex items-center gap-2 px-2">
+                  <div className={`grid gap-6 ${resultGroups.length > 1 ? 'lg:grid-cols-2 xl:grid-cols-1' : 'grid-cols-1'}`}>
+                    {resultGroups.map((group, gIdx) => (
+                      <div key={gIdx} className="space-y-4">
+                        <div className="flex items-center gap-2 px-2">
                         <span className={`p-1.5 rounded-lg text-white ${group.platform === Platform.X ? 'bg-black' :
                           group.platform === Platform.Instagram ? 'bg-gradient-to-tr from-yellow-500 via-pink-500 to-purple-500' :
                             'bg-green-600'
@@ -1450,8 +1553,8 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
                         <h3 className="font-bold text-lg text-gray-700">{group.platform}</h3>
                       </div>
 
-                      <div className="flex flex-col gap-6">
-                        {group.data.map((res, iIdx) => (
+                      <div className="flex flex-col gap-6 w-full">
+                        {(Array.isArray(group?.data) ? group.data : []).map((res, iIdx) => (
                           <div key={`${gIdx}-${iIdx}`} className={`group bg-white rounded-3xl p-6 shadow-sm border border-gray-100 transition-all duration-300 flex flex-col relative overflow-hidden ${refiningKey === `${gIdx}-${iIdx}` ? 'ring-2 ring-amber-400 shadow-amber-100' : 'hover:shadow-xl hover:border-indigo-100'}`}>
                             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-indigo-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
 
@@ -1603,6 +1706,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
                       </div>
                     </div>
                   ))}
+                  </div>
                 </div>
               </div>
             )}
@@ -1610,14 +1714,28 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
         </div>
 
         {createPortal(
-          <div className="fixed bottom-0 left-0 right-0 p-4 md:p-3 bg-white/90 backdrop-blur-md border-t border-gray-200 z-[40]">
-            <div className="max-w-[1600px] mx-auto">
-              <button
-                ref={generateButtonRef}
-                onClick={handleGenerate}
-                className="w-full bg-slate-900 hover:bg-indigo-600 text-white font-bold py-4 md:py-3 rounded-xl shadow-xl shadow-slate-200 hover:shadow-indigo-200 transition-all transform hover:-translate-y-0.5 active:translate-y-0 text-xl md:text-lg flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
-                disabled={loading}
-              >
+        <div className="fixed bottom-0 left-0 right-0 p-4 md:p-3 bg-white/90 backdrop-blur-md border-t border-gray-200 z-[40]">
+          <div className="w-full max-w-[1100px] mx-auto px-2 md:px-0">
+            {shouldShowProHint && onTryUpgrade && (
+              <div className="text-xs text-slate-500 text-center mb-2 flex flex-wrap items-center justify-center gap-2">
+                <span>Proなら生成回数が無制限になります</span>
+                <button
+                  onClick={onTryUpgrade}
+                  className="text-indigo-600 font-bold hover:underline focus:outline-none"
+                >
+                  Proプランを見る
+                </button>
+              </div>
+            )}
+            <button
+            ref={generateButtonRef}
+            onClick={() => {
+              if (loading || shouldShowFreeLimit) return;
+              handleGenerate();
+            }}
+            className="w-full bg-slate-900 hover:bg-indigo-600 text-white font-bold py-4 md:py-3 rounded-xl shadow-xl shadow-slate-200 hover:shadow-indigo-200 transition-all transform hover:-translate-y-0.5 active:translate-y-0 text-xl md:text-lg flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
+            disabled={loading || shouldShowFreeLimit}
+          >
                 {loading ? (
                   <>
                     <span className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></span>
@@ -1626,27 +1744,27 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
                 ) : (
                   <>
                     <SparklesIcon className="w-5 h-5" />
-                    <span>
-                      {showGuestTour
-                        ? '投稿文を生成する'
-                        : (!isLoggedIn
-                          ? '登録してクレジットを獲得する'
-                          : (isMap ? '返信を作成する' : '投稿を作成する'))}
-                    </span>
+                    <span>{generateButtonLabel}</span>
                   </>
                 )}
-              </button>
-              {!isPro && (
-                <div className="text-center mt-2 text-[10px] text-gray-400 font-medium">
-                  {isLoggedIn ? (
-                    <>残りクレジット: <span className="text-indigo-600 font-bold">{remainingCredits}回</span> / 本日</>
-                  ) : (
-                    <>アカウント作成（無料）で利用可能</>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>,
+            </button>
+            {!isPro && !shouldShowFreeLimit && (
+              <div className="text-center mt-2 text-[10px] text-gray-400 font-medium">
+                {isLoggedIn ? (
+                  <div className="flex flex-wrap items-center justify-center gap-3">
+                    <span>
+                      残りクレジット: <span className="text-indigo-600 font-bold">{remainingCredits}回</span> / 5
+                    </span>
+                  </div>
+                ) : (
+                  <>
+                    <span>アカウント作成（無料）で利用可能</span>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+        </div>,
           document.body
         )}
 
