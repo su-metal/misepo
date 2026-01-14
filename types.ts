@@ -97,22 +97,9 @@ export interface GeneratedPost {
 export interface Preset {
   id: string;
   name: string;
-  config: {
-    tone?: Tone;
-    length?: Length;
-    inputText?: string; // Added: Template text
-    language?: string;
-    storeSupplement?: string;
-    customPrompt?: string;
-    includeSymbols?: boolean;
-    includeEmojis?: boolean;
-    xConstraint140?: boolean;
-    // New fields for Platform specificity
-    targetPlatform?: Platform;
-    gmapPurpose?: GoogleMapPurpose;
-    postPurpose?: PostPurpose;
-    starRating?: number | null; // Added
-  };
+  custom_prompt: string | null;
+  is_pinned: boolean;
+  pinned_at: string | null;
 }
 
 export interface AppState {

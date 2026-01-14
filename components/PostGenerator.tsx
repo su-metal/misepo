@@ -27,8 +27,7 @@ interface PostGeneratorProps {
   dailyUsageCount: number;
   isPro: boolean;
   presets: Preset[];
-  onSavePreset: (preset: Preset) => void;
-  onDeletePreset: (id: string) => void;
+  refreshPresets: () => Promise<void>;
   onGenerateSuccess: (post: GeneratedPost) => void;
   retryCount: number;
   onTaskComplete: () => void;
@@ -66,13 +65,6 @@ const ExternalLinkIcon = () => (
 const EyeIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></svg>
 );
-const SunIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5" /><path d="M12 1v2" /><path d="M12 21v2" /><path d="M4.22 4.22l1.42 1.42" /><path d="M18.36 18.36l1.42 1.42" /><path d="M1 12h2" /><path d="M21 12h2" /><path d="M4.22 19.78l1.42-1.42" /><path d="M18.36 5.64l1.42-1.42" /></svg>
-);
-const CoffeeIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 8h1a4 4 0 1 1 0 8h-1" /><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z" /><line x1="6" x2="6" y1="2" y2="4" /><line x1="10" x2="10" y1="2" y2="4" /><line x1="14" x2="14" y1="2" y2="4" /></svg>
-);
-
 const getPlatformIcon = (p: Platform) => {
   switch (p) {
     case Platform.X: return <XIcon className="w-4 h-4" />;
@@ -162,28 +154,7 @@ const CharCounter: React.FC<{ platform: Platform; text: string; config?: Generat
   );
 };
 
-// --- Quick Presets Configuration ---
-type QuickPreset = {
-  label: string;
-  icon: React.ReactNode;
-  tone: Tone;
-  length: Length;
-  purpose: PostPurpose;
-  templateText?: string;
-};
-
-const X_QUICK_PRESETS: QuickPreset[] = [
-  { label: 'おはよう', icon: <SunIcon />, tone: Tone.Friendly, length: Length.Short, purpose: PostPurpose.Story, templateText: 'おはようございます！今日も元気に営業中です☀️' },
-  { label: '空席あり', icon: <MegaphoneIcon />, tone: Tone.Standard, length: Length.Short, purpose: PostPurpose.Promotion, templateText: '【空席情報】今ならお席ご案内可能です！お近くの方はぜひ。' },
-  { label: '問いかけ', icon: <ChatHeartIcon />, tone: Tone.Friendly, length: Length.Short, purpose: PostPurpose.Engagement, templateText: '皆さんはどちらが好きですか？コメントで教えてください！' },
-];
-
-const INSTA_QUICK_PRESETS: QuickPreset[] = [
-  { label: '本日の様子', icon: <CoffeeIcon />, tone: Tone.Friendly, length: Length.Medium, purpose: PostPurpose.Story, templateText: '今日の店内の様子をお届けします✨' },
-  { label: '新メニュー', icon: <SparklesIcon />, tone: Tone.Standard, length: Length.Medium, purpose: PostPurpose.Promotion, templateText: '新作メニューのご紹介です🍽️ こだわりのポイントは...' },
-  { label: 'お礼・報告', icon: <HandHeartIcon />, tone: Tone.Friendly, length: Length.Medium, purpose: PostPurpose.Story, templateText: '沢山のご来店ありがとうございます！' },
-];
-
+// --- Quick Presets are driven by DB presets (pinned only) ---
 
 const PostGenerator: React.FC<PostGeneratorProps> = ({
   storeProfile,
@@ -192,8 +163,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
   dailyUsageCount,
   isPro,
   presets,
-  onSavePreset,
-  onDeletePreset,
+  refreshPresets,
   onGenerateSuccess,
   retryCount,
   onTaskComplete,
@@ -252,6 +222,14 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
   const shouldShowProHint = !isPro && !shouldShowFreeLimit && remainingCredits > 0;
   const hasResults = resultGroups.length > 0;
   const generateButtonLabel = '投稿を生成する';
+  const quickPresets = presets
+    .filter((preset) => preset.is_pinned === true)
+    .sort((a, b) => {
+      const aTime = Date.parse(a.pinned_at ?? "");
+      const bTime = Date.parse(b.pinned_at ?? "");
+      return (isNaN(aTime) ? 0 : aTime) - (isNaN(bTime) ? 0 : bTime);
+    })
+    .slice(0, 3);
 
   useEffect(() => {
     if (isMap && starRating !== null) {
@@ -413,20 +391,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
   }, [restorePost]);
 
   const handleApplyPreset = (preset: Preset) => {
-    setCustomPrompt(preset.config.customPrompt ?? '');
-  };
-
-  const handleApplyQuickPreset = (preset: QuickPreset) => {
-    setTone(preset.tone);
-    setLength(preset.length);
-    setPostPurpose(preset.purpose);
-    // Optional: Set template text if input is empty, or confirm override?
-    // For now, only set if empty to avoid accidental loss, or maybe user wants it as template.
-    // Let's set it if empty.
-    if (!inputText.trim() && preset.templateText) {
-      setInputText(preset.templateText);
-    }
-
+    setCustomPrompt(preset.custom_prompt ?? '');
   };
 
   const handleToneChange = (newTone: Tone) => {
@@ -925,9 +890,6 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
     </button>
   );
 
-  const showPresetsInX = platforms.includes(Platform.X);
-  const showPresetsInInsta = !showPresetsInX && platforms.includes(Platform.Instagram);
-
   return (
     <>
       <div className="w-full mx-auto md:min-h-full flex flex-col pb-32 md:pb-20 relative">
@@ -949,8 +911,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
           isOpen={isPresetModalOpen}
           onClose={() => setIsPresetModalOpen(false)}
           presets={presets}
-          onSave={onSavePreset}
-          onDelete={onDeletePreset}
+          refreshPresets={refreshPresets}
           onApply={handleApplyPreset}
           currentConfig={{
             customPrompt,
@@ -1132,53 +1093,29 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
               {/* QUICK PRESETS (Added Feature) */}
               {!isMap && isLoggedIn && !isMultiGenMode && (
                 <div className="space-y-2 mb-4">
-                  {platforms.includes(Platform.X) && (
-                    <div className="space-y-1">
-                      <div className="flex items-center justify-between px-1">
-                        <div className="flex items-center gap-1.5">
-                          <XIcon className="w-3 h-3 text-gray-400" />
-                          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">X Quick Sets</span>
-                        </div>
-                        {showPresetsInX && presetsButton}
-                      </div>
-                      <div className="grid grid-cols-3 gap-2">
-                        {X_QUICK_PRESETS.map((qp, idx) => (
-                          <button
-                            key={`x-qp-${idx}`}
-                            onClick={() => handleApplyQuickPreset(qp)}
-                            className="bg-white border border-gray-100 hover:border-black/20 hover:bg-gray-50 rounded-xl p-2 flex flex-col items-center justify-center gap-1 transition-all shadow-sm"
-                          >
-                            <div className="p-1.5 bg-gray-100 rounded-full text-gray-600">{qp.icon}</div>
-                            <span className="text-[10px] font-bold text-gray-600">{qp.label}</span>
-                          </button>
-                        ))}
-                      </div>
+                  <div className="flex items-center justify-between px-1">
+                    <div className="flex items-center gap-1.5">
+                      <SparklesIcon className="w-3 h-3 text-amber-400" />
+                      <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Quick Presets</span>
                     </div>
-                  )}
-
-                  {platforms.includes(Platform.Instagram) && (
-                    <div className="space-y-1 mt-3">
-                      <div className="flex items-center justify-between px-1">
-                        <div className="flex items-center gap-1.5">
-                          <InstagramIcon className="w-3 h-3 text-pink-400" />
-                          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Insta Quick Sets</span>
+                    {presetsButton}
+                  </div>
+                  <div className="grid grid-cols-3 gap-2">
+                    {quickPresets.map((preset) => (
+                      <button
+                        key={`qp-${preset.id}`}
+                        onClick={() => handleApplyPreset(preset)}
+                        className="bg-white border border-gray-100 hover:border-amber-200 hover:bg-amber-50/30 rounded-xl p-2 flex flex-col items-center justify-center gap-1 transition-all shadow-sm"
+                      >
+                        <div className="p-1.5 bg-amber-50 rounded-full text-amber-500">
+                          <BookmarkIcon className="w-3 h-3" />
                         </div>
-                        {showPresetsInInsta && presetsButton}
-                      </div>
-                      <div className="grid grid-cols-3 gap-2">
-                        {INSTA_QUICK_PRESETS.map((qp, idx) => (
-                          <button
-                            key={`insta-qp-${idx}`}
-                            onClick={() => handleApplyQuickPreset(qp)}
-                            className="bg-white border border-gray-100 hover:border-pink-200 hover:bg-pink-50/30 rounded-xl p-2 flex flex-col items-center justify-center gap-1 transition-all shadow-sm"
-                          >
-                            <div className="p-1.5 bg-pink-50 rounded-full text-pink-500">{qp.icon}</div>
-                            <span className="text-[10px] font-bold text-gray-600">{qp.label}</span>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+                        <span className="text-[10px] font-bold text-gray-600">
+                          {preset.name}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
               )}
 

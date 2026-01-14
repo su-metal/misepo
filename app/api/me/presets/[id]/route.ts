@@ -5,20 +5,13 @@ const APP_ID = "misepo";
 
 interface PresetUpdate {
   name?: string;
-  purpose?: string;
-  tone?: string;
-  length?: string;
-  emoji_mode?: boolean;
-  symbol_mode?: boolean;
-  x_140_limit?: boolean;
-  input_template?: string | null;
   custom_prompt?: string | null;
-  writer_persona?: string | null;
+  is_pinned?: boolean;
 }
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const supabase = await createClient();
   const {
@@ -30,7 +23,7 @@ export async function PATCH(
     return NextResponse.json({ ok: false, error: "unauthorized" });
   }
 
-  const presetId = params.id;
+  const { id: presetId } = await params;
 
   let body: PresetUpdate;
   try {
@@ -39,9 +32,91 @@ export async function PATCH(
     return NextResponse.json({ ok: false, error: "invalid payload" });
   }
 
+  const wantsPin = body.is_pinned === true;
+  const wantsUnpin = body.is_pinned === false;
+
+  const updateFields: Record<string, unknown> = {};
+  if (body.name !== undefined) updateFields.name = body.name;
+  if (body.custom_prompt !== undefined) updateFields.custom_prompt = body.custom_prompt;
+
+  if (wantsPin) {
+    const { data: pinned, error: pinnedErr } = await supabase
+      .from("user_presets")
+      .select("id, pinned_at")
+      .eq("app_id", APP_ID)
+      .eq("user_id", user.id)
+      .eq("is_pinned", true)
+      .neq("id", presetId)
+      .order("pinned_at", { ascending: true });
+
+    if (pinnedErr) {
+      return NextResponse.json({ ok: false, error: pinnedErr.message });
+    }
+
+    if ((pinned ?? []).length >= 3) {
+      const oldest = pinned[0];
+      if (oldest?.id) {
+        const { error: unpinErr } = await supabase
+          .from("user_presets")
+          .update({ is_pinned: false, pinned_at: null })
+          .eq("id", oldest.id)
+          .eq("app_id", APP_ID)
+          .eq("user_id", user.id);
+
+        if (unpinErr) {
+          return NextResponse.json({ ok: false, error: unpinErr.message });
+        }
+      }
+    }
+
+    const pinPayload = {
+      ...updateFields,
+      is_pinned: true,
+      pinned_at: new Date().toISOString(),
+    };
+
+    const { error: pinErr } = await supabase
+      .from("user_presets")
+      .update(pinPayload)
+      .eq("id", presetId)
+      .eq("app_id", APP_ID)
+      .eq("user_id", user.id);
+
+    if (pinErr) {
+      return NextResponse.json({ ok: false, error: pinErr.message });
+    }
+
+    return NextResponse.json({ ok: true });
+  }
+
+  if (wantsUnpin) {
+    const unpinPayload = {
+      ...updateFields,
+      is_pinned: false,
+      pinned_at: null,
+    };
+
+    const { error: unpinErr } = await supabase
+      .from("user_presets")
+      .update(unpinPayload)
+      .eq("id", presetId)
+      .eq("app_id", APP_ID)
+      .eq("user_id", user.id);
+
+    if (unpinErr) {
+      return NextResponse.json({ ok: false, error: unpinErr.message });
+    }
+
+    return NextResponse.json({ ok: true });
+  }
+
+  if (Object.keys(updateFields).length === 0) {
+    return NextResponse.json({ ok: true });
+  }
+
   const { error: updateErr } = await supabase
     .from("user_presets")
-    .update(body)
+    .update(updateFields)
     .eq("id", presetId)
     .eq("app_id", APP_ID)
     .eq("user_id", user.id);
@@ -55,7 +130,7 @@ export async function PATCH(
 
 export async function DELETE(
   _req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const supabase = await createClient();
   const {
@@ -67,7 +142,7 @@ export async function DELETE(
     return NextResponse.json({ ok: false, error: "unauthorized" });
   }
 
-  const presetId = params.id;
+  const { id: presetId } = await params;
 
   const { error: deleteErr } = await supabase
     .from("user_presets")
