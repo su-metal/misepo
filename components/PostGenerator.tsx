@@ -219,6 +219,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
   const [customPrompt, setCustomPrompt] = useState('');
   const [includeSymbols, setIncludeSymbols] = useState<boolean>(false);
   const [includeEmojis, setIncludeEmojis] = useState<boolean>(true);
+  const [toneDecorations, setToneDecorations] = useState<Partial<Record<Tone, { includeEmojis: boolean; includeSymbols: boolean }>>>({});
   const [serverRemainingCredits, setServerRemainingCredits] = useState<number | null>(null);
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
   const [isPresetModalOpen, setIsPresetModalOpen] = useState(false);
@@ -266,6 +267,17 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
       setGmapPurpose(GoogleMapPurpose.Auto);
     }
   }, [starRating, isMap]);
+
+  useEffect(() => {
+    const defaultDecorations = {
+      includeEmojis: tone !== Tone.Formal,
+      includeSymbols: false
+    };
+    const override = toneDecorations[tone];
+    const next = override ?? defaultDecorations;
+    setIncludeEmojis(next.includeEmojis);
+    setIncludeSymbols(next.includeSymbols);
+  }, [tone, toneDecorations]);
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -358,10 +370,23 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
       setLanguage(restorePost.config.language || 'Japanese');
       setStoreSupplement(restorePost.config.storeSupplement || '');
       setCustomPrompt(restorePost.config.customPrompt || '');
+      const defaultDecorations = {
+        includeEmojis: restorePost.config.tone !== Tone.Formal,
+        includeSymbols: false
+      };
+      const restoredIncludeSymbols = restorePost.config.includeSymbols ?? defaultDecorations.includeSymbols;
+      const restoredIncludeEmojis = restorePost.config.includeEmojis ?? defaultDecorations.includeEmojis;
       setXConstraint140(restorePost.config.xConstraint140 !== undefined ? restorePost.config.xConstraint140 : true);
-      setIncludeSymbols(restorePost.config.includeSymbols !== undefined ? restorePost.config.includeSymbols : false);
-      setIncludeEmojis(restorePost.config.includeEmojis !== undefined ? restorePost.config.includeEmojis : true);
+      setIncludeSymbols(restoredIncludeSymbols);
+      setIncludeEmojis(restoredIncludeEmojis);
       setIncludeFooter(!!restorePost.config.instagramFooter);
+      setToneDecorations(prev => ({
+        ...prev,
+        [restorePost.config.tone]: {
+          includeEmojis: restoredIncludeEmojis,
+          includeSymbols: restoredIncludeSymbols
+        }
+      }));
 
       const reconstructedGroups: ResultGroup[] = restorePost.results.map(r => {
         const pConfig: GenerationConfig = {
@@ -404,8 +429,21 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
     setCustomPrompt(preset.config.customPrompt);
     setStoreSupplement(preset.config.storeSupplement);
     setXConstraint140(preset.config.xConstraint140 !== undefined ? preset.config.xConstraint140 : true);
-    setIncludeSymbols(preset.config.includeSymbols !== undefined ? preset.config.includeSymbols : false);
-    setIncludeEmojis(preset.config.includeEmojis !== undefined ? preset.config.includeEmojis : true);
+    const defaultDecorations = {
+      includeEmojis: preset.config.tone !== Tone.Formal,
+      includeSymbols: false
+    };
+    const presetIncludeSymbols = preset.config.includeSymbols ?? defaultDecorations.includeSymbols;
+    const presetIncludeEmojis = preset.config.includeEmojis ?? defaultDecorations.includeEmojis;
+    setIncludeSymbols(presetIncludeSymbols);
+    setIncludeEmojis(presetIncludeEmojis);
+    setToneDecorations(prev => ({
+      ...prev,
+      [preset.config.tone]: {
+        includeEmojis: presetIncludeEmojis,
+        includeSymbols: presetIncludeSymbols
+      }
+    }));
 
     if (preset.config.targetPlatform) {
       if (preset.config.targetPlatform === Platform.GoogleMaps) {
@@ -446,13 +484,6 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
 
   const handleToneChange = (newTone: Tone) => {
     setTone(newTone);
-    if (newTone === Tone.Formal) {
-      setIncludeEmojis(false);
-      setIncludeSymbols(false);
-    } else {
-      setIncludeEmojis(true);
-      setIncludeSymbols(false);
-    }
   };
 
   const handleToggleMultiGen = () => {
@@ -1306,7 +1337,15 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
                       onClick={() => {
                         const next = !includeEmojis;
                         setIncludeEmojis(next);
-                        if (next) setIncludeSymbols(false);
+                        const nextSymbols = next ? false : includeSymbols;
+                        setIncludeSymbols(nextSymbols);
+                        setToneDecorations(prev => ({
+                          ...prev,
+                          [tone]: {
+                            includeEmojis: next,
+                            includeSymbols: nextSymbols
+                          }
+                        }));
                       }}
                       disabled={!isLoggedIn}
                       className={`p-2.5 rounded-xl border flex flex-col items-start gap-2 relative transition-all ${includeEmojis
@@ -1327,7 +1366,15 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
                       onClick={() => {
                         const next = !includeSymbols;
                         setIncludeSymbols(next);
-                        if (next) setIncludeEmojis(false);
+                        const nextEmojis = next ? false : includeEmojis;
+                        setIncludeEmojis(nextEmojis);
+                        setToneDecorations(prev => ({
+                          ...prev,
+                          [tone]: {
+                            includeEmojis: nextEmojis,
+                            includeSymbols: next
+                          }
+                        }));
                       }}
                       disabled={!isLoggedIn}
                       className={`p-2.5 rounded-xl border flex flex-col items-start gap-2 relative transition-all ${includeSymbols
