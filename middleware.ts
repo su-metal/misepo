@@ -4,9 +4,11 @@ import { createServerClient } from "@supabase/ssr";
 
 export async function middleware(req: NextRequest) {
   // NextResponse を先に作る（ここにCookieを書き戻す）
-  let res = NextResponse.next({
+  const baseResponse = NextResponse.next({
     request: { headers: req.headers },
   });
+
+  const pendingCookies: Array<{ name: string; value: string; options?: any }> = [];
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -20,28 +22,37 @@ export async function middleware(req: NextRequest) {
           cookiesToSet.forEach(({ name, value, options }) => {
             // req側も更新（後続処理で整合性を取るため）
             req.cookies.set(name, value);
-            // resに書き戻し
-            res.cookies.set(name, value, options);
+            pendingCookies.push({ name, value, options });
           });
         },
       },
     }
   );
 
-  // これを呼ぶことで、期限切れ/更新が必要なセッションCookieが res に反映される
   const { data: { user } } = await supabase.auth.getUser();
+
+  const applyPendingCookies = (response: NextResponse) => {
+    pendingCookies.forEach(({ name, value, options }) => {
+      response.cookies.set(name, value, options);
+    });
+    return response;
+  };
+
+  const pathname = req.nextUrl.pathname;
+  if (!user && pathname === '/') {
+    const redirectUrl = new URL('/start', req.url);
+    return applyPendingCookies(NextResponse.redirect(redirectUrl, 307));
+  }
 
   if (user) {
     const protectedPaths = ['/start', '/login', '/signup'];
-    if (protectedPaths.includes(req.nextUrl.pathname)) {
+    if (protectedPaths.includes(pathname)) {
       const redirectUrl = new URL('/', req.url);
-      res.headers.set('location', redirectUrl.toString());
-      res.status = 307;
-      return res;
+      return applyPendingCookies(NextResponse.redirect(redirectUrl, 307));
     }
   }
 
-  return res;
+  return applyPendingCookies(baseResponse);
 }
 
 // 静的ファイル等は除外（無駄な呼び出しを避ける）
