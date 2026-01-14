@@ -98,12 +98,12 @@ export interface Preset {
   id: string;
   name: string;
   config: {
-    tone: Tone;
-    length: Length;
+    tone?: Tone;
+    length?: Length;
     inputText?: string; // Added: Template text
-    language: string;
-    storeSupplement: string;
-    customPrompt: string;
+    language?: string;
+    storeSupplement?: string;
+    customPrompt?: string;
     includeSymbols?: boolean;
     includeEmojis?: boolean;
     xConstraint140?: boolean;

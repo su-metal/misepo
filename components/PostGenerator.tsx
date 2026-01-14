@@ -241,8 +241,6 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
   const [previewModal, setPreviewModal] = useState<{ platform: Platform, text: string } | null>(null);
 
   // Track active preset context for editing/saving
-  const [activePresetContext, setActivePresetContext] = useState<{ label: string, templateText?: string } | null>(null);
-
   const isMap = platforms.includes(Platform.GoogleMaps);
   const isXOnly = platforms.length === 1 && platforms.includes(Platform.X);
   const MAX_FREE_LIMIT = 5;
@@ -415,50 +413,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
   }, [restorePost]);
 
   const handleApplyPreset = (preset: Preset) => {
-    setTone(preset.config.tone);
-    setLength(preset.config.length);
-    if (preset.config.inputText !== undefined) setInputText(preset.config.inputText);
-    setLanguage(preset.config.language);
-    setCustomPrompt(preset.config.customPrompt);
-    setStoreSupplement(preset.config.storeSupplement);
-    setXConstraint140(preset.config.xConstraint140 !== undefined ? preset.config.xConstraint140 : true);
-    const defaultDecorations = {
-      includeEmojis: preset.config.tone !== Tone.Formal,
-      includeSymbols: false
-    };
-    const presetIncludeSymbols = preset.config.includeSymbols ?? defaultDecorations.includeSymbols;
-    const presetIncludeEmojis = preset.config.includeEmojis ?? defaultDecorations.includeEmojis;
-    setIncludeSymbols(presetIncludeSymbols);
-    setIncludeEmojis(presetIncludeEmojis);
-    setToneDecorations(prev => ({
-      ...prev,
-      [preset.config.tone]: {
-        includeEmojis: presetIncludeEmojis,
-        includeSymbols: presetIncludeSymbols
-      }
-    }));
-
-    if (preset.config.targetPlatform) {
-      if (preset.config.targetPlatform === Platform.GoogleMaps) {
-        setPlatforms([Platform.GoogleMaps]);
-        setIsMultiGenMode(false);
-        if (preset.config.gmapPurpose) {
-          setGmapPurpose(preset.config.gmapPurpose);
-        }
-        setStarRating(preset.config.starRating || null);
-      } else {
-        if (platforms.includes(Platform.GoogleMaps)) {
-          setResultGroups([]);
-        }
-        setPlatforms([preset.config.targetPlatform]);
-        setIsMultiGenMode(false);
-        if (preset.config.postPurpose) {
-          setPostPurpose(preset.config.postPurpose);
-        }
-      }
-    }
-
-    setActivePresetContext({ label: preset.name, templateText: preset.config.inputText });
+    setCustomPrompt(preset.config.customPrompt ?? '');
   };
 
   const handleApplyQuickPreset = (preset: QuickPreset) => {
@@ -472,7 +427,6 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
       setInputText(preset.templateText);
     }
 
-    setActivePresetContext({ label: preset.label, templateText: preset.templateText });
   };
 
   const handleToneChange = (newTone: Tone) => {
@@ -999,15 +953,8 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
           onDelete={onDeletePreset}
           onApply={handleApplyPreset}
           currentConfig={{
-            tone, length, inputText, language,
-            storeSupplement, customPrompt, includeSymbols, includeEmojis, xConstraint140,
-            targetPlatform: platforms[0],
-            gmapPurpose,
-            postPurpose,
-            starRating
+            customPrompt,
           }}
-          initialPresetName={activePresetContext?.label}
-          initialTemplateText={activePresetContext?.templateText}
         />
 
         {/* Preview Modal */}
