@@ -251,6 +251,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
   const canGenerateNew = (isPro || remainingCredits > 0) && !loading;
   const canRegenerate = isLoggedIn && (isPro || retryCount < 2);
   const shouldShowFreeLimit = isLoggedIn && !isPro && remainingCredits <= 0;
+  const shouldShowProHint = !isPro && !shouldShowFreeLimit && remainingCredits > 0;
   const hasResults = resultGroups.length > 0;
   const generateButtonLabel = '投稿を生成する';
 
@@ -1717,8 +1718,19 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
 
         {createPortal(
         <div className="fixed bottom-0 left-0 right-0 p-4 md:p-3 bg-white/90 backdrop-blur-md border-t border-gray-200 z-[40]">
-        <div className="w-full max-w-[1100px] mx-auto px-2 md:px-0">
-          <button
+          <div className="w-full max-w-[1100px] mx-auto px-2 md:px-0">
+            {shouldShowProHint && onTryUpgrade && (
+              <div className="text-xs text-slate-500 text-center mb-2 flex flex-wrap items-center justify-center gap-2">
+                <span>Proなら生成回数が無制限になります</span>
+                <button
+                  onClick={onTryUpgrade}
+                  className="text-indigo-600 font-bold hover:underline focus:outline-none"
+                >
+                  Proプランを見る
+                </button>
+              </div>
+            )}
+            <button
             ref={generateButtonRef}
             onClick={() => {
               if (loading || shouldShowFreeLimit) return;
@@ -1739,21 +1751,13 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
                   </>
                 )}
             </button>
-            {!isPro && (
+            {!isPro && !shouldShowFreeLimit && (
               <div className="text-center mt-2 text-[10px] text-gray-400 font-medium">
                 {isLoggedIn ? (
                   <div className="flex flex-wrap items-center justify-center gap-3">
                     <span>
                       残りクレジット: <span className="text-indigo-600 font-bold">{remainingCredits}回</span> / 5
                     </span>
-                    {!shouldShowFreeLimit && onTryUpgrade && (
-                      <button
-                        onClick={onTryUpgrade}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full border border-indigo-200 text-[10px] font-bold text-indigo-600 hover:border-indigo-400 hover:text-indigo-500 transition-colors"
-                      >
-                        PROにアップグレードする
-                      </button>
-                    )}
                   </div>
                 ) : (
                   <>
