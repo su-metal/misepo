@@ -19,7 +19,6 @@ import PostGenerator from './components/PostGenerator';
 import HistorySidebar from './components/HistorySidebar';
 import DevTools from './components/DevTools';
 import UpgradeModal from './components/UpgradeModal';
-import GuideModal from './components/GuideModal';
 import LoginModal from './components/LoginModal';
 import OnboardingSuccess from './components/OnboardingSuccess';
 import GuestDemoModal from './components/GuestDemoModal';
@@ -105,11 +104,11 @@ const App: React.FC = () => {
   // UI State
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const [showGuide, setShowGuide] = useState(false);
+  const [, setShowGuide] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showOnboardingSuccess, setShowOnboardingSuccess] = useState(false);
   const [showGuestDemoModal, setShowGuestDemoModal] = useState(false);
-  const [shouldShowTour, setShouldShowTour] = useState(false);
+  const shouldShowTour = false;
 
   // Triggers
   const [resetResultsTrigger, setResetResultsTrigger] = useState(0);
@@ -143,12 +142,7 @@ const App: React.FC = () => {
       setUserId(currentUserId);
       await refreshPlan(loggedIn);
 
-      if (!loggedIn) {
-        const hasSeenDemo = localStorage.getItem('misepo_guest_demo_seen');
-        if (!hasSeenDemo) {
-          setTimeout(() => setShowGuestDemoModal(true), 500);
-        }
-      }
+      // No automatic guest demo modal anymore
 
       const savedHistory = localStorage.getItem('misepo_history');
       if (savedHistory && loggedIn) {
@@ -190,9 +184,7 @@ const App: React.FC = () => {
         setResetResultsTrigger(prev => prev + 1);
 
         const savedProfile = readFromStorage<StoreProfile>("store_profile", nextUserId);
-        if (!savedProfile) {
-          setTimeout(() => setShowSettings(true), 300);
-        }
+        // Do not auto-open onboarding even if profile missing
 
       } else {
         setHistory([]);
@@ -659,7 +651,6 @@ open11:00-close 17:00
   const handleCloseGuestDemoModal = () => {
     setShowGuestDemoModal(false);
     localStorage.setItem('misepo_guest_demo_seen', 'true');
-    setShouldShowTour(true);
   };
 
   // Hydration safety check
@@ -680,7 +671,7 @@ open11:00-close 17:00
         <Onboarding
           onSave={handleOnboardingSave}
           initialProfile={storeProfile}
-          onCancel={storeProfile ? () => setShowSettings(false) : undefined} // Allow cancel only if profile exists (edit mode)
+          onCancel={() => setShowSettings(false)}
           showSubscriptionLink={isLoggedIn && isPro}
           onManageSubscription={handleManageSubscription}
         />
@@ -706,12 +697,6 @@ open11:00-close 17:00
         onClose={() => setIsTryingToUpgrade(false)}
         onConfirmUpgrade={handleConfirmUpgrade}
         initialStep={upgradeModalStep}
-      />
-
-      {/* 5. Guide Modal */}
-      <GuideModal
-        isOpen={showGuide}
-        onClose={() => setShowGuide(false)}
       />
 
       {/* 6. Guest Demo Modal (NEW - First time only) */}
