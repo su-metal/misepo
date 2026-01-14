@@ -29,7 +29,17 @@ export async function middleware(req: NextRequest) {
   );
 
   // これを呼ぶことで、期限切れ/更新が必要なセッションCookieが res に反映される
-  await supabase.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (user) {
+    const protectedPaths = ['/start', '/login', '/signup'];
+    if (protectedPaths.includes(req.nextUrl.pathname)) {
+      const redirectUrl = new URL('/', req.url);
+      res.headers.set('location', redirectUrl.toString());
+      res.status = 307;
+      return res;
+    }
+  }
 
   return res;
 }
