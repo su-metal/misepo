@@ -24,9 +24,9 @@ export default function StartPage() {
   return (
     <main className="min-h-screen bg-[#F8FAFC] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md bg-white border border-gray-100 rounded-3xl shadow-xl p-8 text-center">
-        <h1 className="text-3xl font-black text-slate-800 mb-4">MisePoへようこそ</h1>
-        <p className="text-sm text-slate-500 mb-8 leading-relaxed">
-          AIが店舗の投稿を自動生成します。まずはアカウントを作成・ログインしてはじめましょう。
+        <h1 className="text-3xl font-black text-slate-800 mb-3">MisePo 入口</h1>
+        <p className="text-sm text-slate-500 mb-6 leading-relaxed">
+          ここからログイン・新規登録して、店舗専用AI広報スタッフをスタートしてください。
         </p>
 
         <div className="space-y-4">

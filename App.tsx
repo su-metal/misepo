@@ -399,6 +399,7 @@ const App: React.FC = () => {
     setIsLoggedIn(false);
     setIsPro(false);
     setUserId(null);
+    router.push('/start');
   };
 
   const saveStoreProfileToServer = async (profile: StoreProfile) => {
@@ -736,6 +737,20 @@ open11:00-close 17:00
         {/* Decorative Background Blob */}
         <div className="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-indigo-100 rounded-full mix-blend-multiply filter blur-3xl opacity-50 pointer-events-none animate-blob"></div>
         <div className="absolute top-0 left-0 -mt-20 -ml-20 w-96 h-96 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-50 pointer-events-none animate-blob animation-delay-2000"></div>
+
+        {!isLoggedIn && (
+          <div className="relative z-20 w-full max-w-[1600px] mx-auto px-4 py-2">
+            <div className="flex items-center justify-between rounded-lg bg-gradient-to-r from-amber-50 to-white border border-amber-200 px-4 py-2 text-xs text-slate-700 shadow-sm">
+              <span>入口ページは <strong className="text-amber-600">/start</strong> です</span>
+              <button
+                onClick={() => router.push('/start')}
+                className="text-amber-600 font-bold hover:underline"
+              >
+                /startへ
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Mobile Header */}
         <div className="md:hidden bg-white/80 backdrop-blur-md p-4 flex items-center justify-between z-10 border-b border-gray-100">
