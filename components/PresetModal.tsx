@@ -65,6 +65,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
   const limitReached = presets.length >= 5 && !selectedPresetId;
   const isSaveDisabled = isSaving || !name.trim() || limitReached;
+  const isCreatingNew = selectedPresetId === null;
 
   const handleSave = async () => {
     const trimmedName = name.trim();
@@ -120,6 +121,14 @@ const PresetModal: React.FC<PresetModalProps> = ({
     setSelectedPresetId(preset.id);
     setName(preset.name);
     setCustomPrompt(preset.custom_prompt ?? '');
+    setErrorMessage(null);
+  };
+
+  const handleStartNew = () => {
+    if (limitReached) return;
+    setSelectedPresetId(null);
+    setName('');
+    setCustomPrompt('');
     setErrorMessage(null);
   };
 
@@ -199,10 +208,26 @@ const PresetModal: React.FC<PresetModalProps> = ({
         {/* LEFT COLUMN: Presets List */}
         <div className="md:w-1/3 bg-slate-50 border-r border-gray-100 flex flex-col shrink-0 h-[200px] md:h-auto">
           <div className="p-4 border-b border-gray-100 bg-white sticky top-0 z-10">
-            <h3 className="font-bold text-slate-700 flex items-center gap-2">
-              <BookmarkIcon className="w-4 h-4 text-amber-500" />
-              保存済みプリセット
-            </h3>
+            <div className="flex items-center justify-between gap-2">
+              <h3 className="font-bold text-slate-700 flex items-center gap-2">
+                <BookmarkIcon className="w-4 h-4 text-amber-500" />
+                保存済みプリセット
+              </h3>
+              <div className="flex flex-col items-end gap-1">
+                <button
+                  type="button"
+                  onClick={handleStartNew}
+                  disabled={limitReached}
+                  className={`px-3 py-1.5 rounded-full text-xs font-bold transition-colors border ${limitReached ? 'border-gray-300 text-gray-400 cursor-not-allowed' : 'border-amber-100 bg-white text-amber-600 hover:bg-amber-50'}`}
+                  title={limitReached ? '保存済みプリセットは最大5件です' : '新しいプリセットを作成'}
+                >
+                  ＋ 新規作成
+                </button>
+                {limitReached && (
+                  <span className="text-[10px] text-gray-400">最大5件まで保存できます</span>
+                )}
+              </div>
+            </div>
           </div>
           <div className="flex-1 overflow-y-auto p-3 space-y-2">
             {presets.length === 0 ? (
@@ -273,7 +298,14 @@ const PresetModal: React.FC<PresetModalProps> = ({
               <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
                 <SaveIcon className="w-4 h-4" />
               </div>
-              <h2 className="font-bold text-lg text-slate-800">プリセット設定</h2>
+              <h2 className="font-bold text-lg text-slate-800 flex items-center gap-2">
+                プリセット設定
+                {isCreatingNew && (
+                  <span className="text-xs font-bold text-amber-600 tracking-wider">
+                    新規作成中
+                  </span>
+                )}
+              </h2>
             </div>
             <button
               onClick={onClose}
