@@ -252,17 +252,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
   const canRegenerate = isLoggedIn && (isPro || retryCount < 2);
   const shouldShowFreeLimit = isLoggedIn && !isPro && remainingCredits <= 0;
   const hasResults = resultGroups.length > 0;
-  const defaultGenerateLabel = showGuestTour
-    ? '投稿文を生成する'
-    : !isLoggedIn
-      ? '登録してクレジットを獲得する'
-      : isMap
-        ? '返信を作成する'
-        : '投稿を作成する';
-  const generateButtonLabel =
-    (!isPro && isLoggedIn && remainingCredits === 0)
-      ? 'PROにアップグレードする'
-      : defaultGenerateLabel;
+  const generateButtonLabel = '投稿を生成する';
 
   useEffect(() => {
     if (isMap && starRating !== null) {
@@ -1727,13 +1717,16 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
 
         {createPortal(
         <div className="fixed bottom-0 left-0 right-0 p-4 md:p-3 bg-white/90 backdrop-blur-md border-t border-gray-200 z-[40]">
-          <div className="w-full max-w-[1100px] mx-auto px-2 md:px-0">
-            <button
-              ref={generateButtonRef}
-              onClick={handleGenerate}
-              className="w-full bg-slate-900 hover:bg-indigo-600 text-white font-bold py-4 md:py-3 rounded-xl shadow-xl shadow-slate-200 hover:shadow-indigo-200 transition-all transform hover:-translate-y-0.5 active:translate-y-0 text-xl md:text-lg flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
-              disabled={loading}
-            >
+        <div className="w-full max-w-[1100px] mx-auto px-2 md:px-0">
+          <button
+            ref={generateButtonRef}
+            onClick={() => {
+              if (loading || shouldShowFreeLimit) return;
+              handleGenerate();
+            }}
+            className="w-full bg-slate-900 hover:bg-indigo-600 text-white font-bold py-4 md:py-3 rounded-xl shadow-xl shadow-slate-200 hover:shadow-indigo-200 transition-all transform hover:-translate-y-0.5 active:translate-y-0 text-xl md:text-lg flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
+            disabled={loading || shouldShowFreeLimit}
+          >
                 {loading ? (
                   <>
                     <span className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></span>
@@ -1753,7 +1746,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
                     <span>
                       残りクレジット: <span className="text-indigo-600 font-bold">{remainingCredits}回</span> / 5
                     </span>
-                    {onTryUpgrade && (
+                    {!shouldShowFreeLimit && onTryUpgrade && (
                       <button
                         onClick={onTryUpgrade}
                         className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full border border-indigo-200 text-[10px] font-bold text-indigo-600 hover:border-indigo-400 hover:text-indigo-500 transition-colors"
