@@ -128,6 +128,38 @@ const AutoResizingTextarea = ({
   );
 };
 
+const clampPresetName = (name: string, maxWidth = 40) => {
+  let width = 0;
+  let truncated = "";
+  for (const char of Array.from(name)) {
+    const code = char.codePointAt(0) ?? 0;
+    const isHalfWidth = code <= 0x7f;
+    const delta = isHalfWidth ? 1 : 2;
+    if (width + delta > maxWidth) {
+      return `${truncated}…`;
+    }
+    truncated += char;
+    width += delta;
+  }
+  return truncated;
+};
+
+const enforcePresetNameValue = (value: string, maxWidth = 20) => {
+  let width = 0;
+  let result = "";
+  for (const char of Array.from(value)) {
+    const code = char.codePointAt(0) ?? 0;
+    const isHalfWidth = code <= 0x7f;
+    const delta = isHalfWidth ? 1 : 2;
+    if (width + delta > maxWidth) {
+      break;
+    }
+    result += char;
+    width += delta;
+  }
+  return result;
+};
+
 const CharCounter: React.FC<{ platform: Platform; text: string; config?: GenerationConfig }> = ({ platform, text, config }) => {
   const length = text.length;
   let limit: number | null = null;
@@ -209,6 +241,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
   const [currentTipIndex, setCurrentTipIndex] = useState(0);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [previewModal, setPreviewModal] = useState<{ platform: Platform, text: string } | null>(null);
+  const [activeQuickPreset, setActiveQuickPreset] = useState<string | null>(null);
 
   // Track active preset context for editing/saving
   const isMap = platforms.includes(Platform.GoogleMaps);
@@ -385,6 +418,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
 
   const handleApplyPreset = (preset: Preset) => {
     setCustomPrompt(preset.custom_prompt ?? '');
+    setActiveQuickPreset(preset.id);
   };
 
   const handleToneChange = (newTone: Tone) => {
@@ -1089,20 +1123,36 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
                     {presetsButton}
                   </div>
                   <div className="grid grid-cols-3 gap-2">
-                    {quickPresets.map((preset) => (
-                      <button
-                        key={`qp-${preset.id}`}
-                        onClick={() => handleApplyPreset(preset)}
-                        className="bg-white border border-gray-100 hover:border-amber-200 hover:bg-amber-50/30 rounded-xl p-2 flex flex-col items-center justify-center gap-1 transition-all shadow-sm"
-                      >
-                        <div className="p-1.5 bg-amber-50 rounded-full text-amber-500">
-                          <BookmarkIcon className="w-3 h-3" />
-                        </div>
-                        <span className="text-[10px] font-bold text-gray-600">
-                          {preset.name}
-                        </span>
-                      </button>
-                    ))}
+                    {quickPresets.map((preset) => {
+                      const isActive = activeQuickPreset === preset.id;
+                      return (
+                        <button
+                          key={`qp-${preset.id}`}
+                          type="button"
+                          onClick={() => handleApplyPreset(preset)}
+                          aria-pressed={isActive}
+                          className={`bg-white border rounded-xl p-2 flex flex-col items-center justify-center gap-1 transition-all duration-200 shadow-sm transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 focus-visible:ring-offset-2 ${isActive
+                            ? 'border-amber-300 bg-amber-50 shadow-lg shadow-amber-200/70 scale-[1.01]'
+                            : 'border-gray-100 hover:border-amber-200 hover:bg-amber-50/40 hover:-translate-y-1'
+                            } active:translate-y-0.5 active:scale-[0.96]`}
+                        >
+                          <div className={`p-1.5 rounded-full text-amber-500 transition-colors ${isActive ? 'bg-amber-100' : 'bg-amber-50'}`}>
+                            <BookmarkIcon className="w-3 h-3" />
+                          </div>
+                          <span
+                            className={`text-[10px] font-bold leading-tight ${isActive ? 'text-amber-700' : 'text-gray-600'} max-w-[70px] text-center`}
+                            style={{
+                              display: '-webkit-box',
+                              WebkitLineClamp: 2,
+                              WebkitBoxOrient: 'vertical',
+                              overflow: 'hidden',
+                            }}
+                          >
+                            {clampPresetName(preset.name, 20)}
+                          </span>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               )}

@@ -106,6 +106,22 @@ const SortablePresetRow: React.FC<{
   );
 };
 
+const MAX_SAVE_NAME_WIDTH = 40;
+
+const enforceSaveNameWidth = (value: string, maxWidth: number = MAX_SAVE_NAME_WIDTH) => {
+  let width = 0;
+  let truncated = '';
+  for (const char of Array.from(value)) {
+    const code = char.codePointAt(0) ?? 0;
+    const isHalfWidth = code <= 0x7f;
+    const delta = isHalfWidth ? 1 : 2;
+    if (width + delta > maxWidth) break;
+    truncated += char;
+    width += delta;
+  }
+  return truncated;
+};
+
 const PresetModal: React.FC<PresetModalProps> = ({
   isOpen,
   onClose,
@@ -221,7 +237,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
   const handleLoadPreset = (preset: Preset) => {
     setSelectedPresetId(preset.id);
-    setName(preset.name);
+    setName(enforceSaveNameWidth(preset.name));
     setCustomPrompt(preset.custom_prompt ?? '');
     setErrorMessage(null);
     setOrderError(null);
@@ -431,7 +447,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
             <input
               type="text"
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => setName(enforceSaveNameWidth(e.target.value))}
               placeholder="例: フレンドリーなペルソナ"
               className="w-full px-5 py-4 bg-slate-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-amber-400 focus:border-transparent outline-none text-base text-slate-700 placeholder-gray-300 transition-all shadow-sm"
             />
