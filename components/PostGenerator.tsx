@@ -154,7 +154,7 @@ const CharCounter: React.FC<{ platform: Platform; text: string; config?: Generat
   );
 };
 
-// --- Quick Presets are driven by DB presets (pinned only) ---
+// --- Quick Presets are the top-ranked presets by user order ---
 
 const PostGenerator: React.FC<PostGeneratorProps> = ({
   storeProfile,
@@ -222,14 +222,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
   const shouldShowProHint = !isPro && !shouldShowFreeLimit && remainingCredits > 0;
   const hasResults = resultGroups.length > 0;
   const generateButtonLabel = '投稿を生成する';
-  const quickPresets = presets
-    .filter((preset) => preset.is_pinned === true)
-    .sort((a, b) => {
-      const aTime = Date.parse(a.pinned_at ?? "");
-      const bTime = Date.parse(b.pinned_at ?? "");
-      return (isNaN(aTime) ? 0 : aTime) - (isNaN(bTime) ? 0 : bTime);
-    })
-    .slice(0, 3);
+  const quickPresets = presets.slice(0, 3);
 
   useEffect(() => {
     if (isMap && starRating !== null) {

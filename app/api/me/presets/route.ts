@@ -7,8 +7,7 @@ interface Preset {
   id?: string;
   name: string;
   custom_prompt?: string;
-  is_pinned?: boolean;
-  pinned_at?: string | null;
+  sort_order?: number;
 }
 
 export async function GET() {
@@ -26,10 +25,11 @@ export async function GET() {
 
   const { data, error: fetchErr } = await supabase
     .from("user_presets")
-    .select("id,name,custom_prompt,is_pinned,pinned_at,created_at,updated_at")
+    .select("id,name,custom_prompt,sort_order,created_at,updated_at")
     .eq("app_id", APP_ID)
     .eq("user_id", user.id)
-    .order("created_at", { ascending: false });
+    .order("sort_order", { ascending: true })
+    .order("created_at", { ascending: true });
 
   console.log("[presets GET] user.id=", user.id, "fetchErr=", fetchErr?.message ?? null, "rows=", (data ?? []).length);
 
@@ -45,22 +45,19 @@ export async function GET() {
         name: "店長（丁寧・公式）",
         custom_prompt:
           "あなたはこの店舗の店長です。\n落ち着いた丁寧な敬語で、信頼感と安心感を重視して発信してください。\n公式アカウントとして、不快感を与えない表現を優先し、事実ベースで簡潔にまとめてください。",
-        is_pinned: true,
-        pinned_at: now,
+        sort_order: 1,
       },
       {
         name: "アルバイト・スタッフ（親しみ）",
         custom_prompt:
           "あなたはこの店舗で働く20代のアルバイトスタッフです。\n親しみやすく、やわらかい口調で日常の様子を伝えてください。\n少しくだけた表現や感情を含めても構いませんが、下品にならないよう注意してください。",
-        is_pinned: true,
-        pinned_at: now,
+        sort_order: 2,
       },
       {
         name: "広報・マーケ担当（整理）",
         custom_prompt:
           "あなたはこの店舗の広報・マーケティング担当です。\n情報が一目で伝わるよう、要点を整理して分かりやすく発信してください。\nキャンペーン内容や特徴、メリットを端的にまとめ、読み手が行動しやすい文章を意識してください。",
-        is_pinned: true,
-        pinned_at: now,
+        sort_order: 3,
       },
     ];
 
@@ -133,19 +130,13 @@ export async function POST(req: Request) {
     user_id: user.id,
     name: body.name,
     custom_prompt: body.custom_prompt ?? null,
-    is_pinned: body.is_pinned ?? false,
-    pinned_at:
-      body.is_pinned && body.pinned_at
-        ? body.pinned_at
-        : body.is_pinned
-        ? new Date().toISOString()
-        : null,
+    sort_order: (count ?? 0) + 1,
   };
 
   const { data, error: insertErr } = await supabase
     .from("user_presets")
     .insert(insertPayload)
-    .select("id,name,custom_prompt,is_pinned,pinned_at,created_at,updated_at")
+    .select("id,name,custom_prompt,sort_order,created_at,updated_at")
     .single();
 
   if (insertErr) {

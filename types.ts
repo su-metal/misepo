@@ -98,8 +98,7 @@ export interface Preset {
   id: string;
   name: string;
   custom_prompt: string | null;
-  is_pinned: boolean;
-  pinned_at: string | null;
+  sort_order: number;
 }
 
 export interface AppState {
