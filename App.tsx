@@ -23,6 +23,7 @@ import UpgradeModal from './components/UpgradeModal';
 import LoginModal from './components/LoginModal';
 import OnboardingSuccess from './components/OnboardingSuccess';
 import GuestDemoModal from './components/GuestDemoModal';
+import GuideModal from './components/GuideModal';
 import { LockIcon, LogOutIcon } from './components/Icons';
 import { useRouter } from 'next/navigation';
 
@@ -115,7 +116,7 @@ const App: React.FC = () => {
   // UI State
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const [, setShowGuide] = useState(false);
+  const [showGuide, setShowGuide] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showOnboardingSuccess, setShowOnboardingSuccess] = useState(false);
   const [showGuestDemoModal, setShowGuestDemoModal] = useState(false);
@@ -930,6 +931,7 @@ open11:00-close 17:00
           />
         </main>
       </div>
+      <GuideModal isOpen={showGuide} onClose={() => setShowGuide(false)} />
     </div>
   );
 };
