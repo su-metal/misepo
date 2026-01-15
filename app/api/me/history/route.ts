@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { supabaseAdmin } from "@/lib/supabase/admin";
+import { env } from "@/lib/env";
 
-const APP_ID = "misepo";
+const APP_ID = env.APP_ID;
 
 export async function GET() {
   const supabase = await createClient();

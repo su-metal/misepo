@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { supabaseAdmin } from "@/lib/supabase/admin";
+import { env } from "@/lib/env";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -34,7 +35,7 @@ export async function POST(req: Request) {
     );
   }
 
-  const fallbackAppId = process.env.APP_ID!;
+  const fallbackAppId = env.APP_ID;
 
   // --- Stripe webhook dedupe（二重処理防止） ---
   const { error: dedupeErr } = await supabaseAdmin

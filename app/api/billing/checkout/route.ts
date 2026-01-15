@@ -2,17 +2,18 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { createClient } from "@/lib/supabase/server";
 import { supabaseAdmin } from "@/lib/supabase/admin";
+import { env } from "@/lib/env";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 type Plan = "monthly" | "yearly";
 const PROMO_KEY = "intro_monthly_1000off";
+const APP_ID = env.APP_ID;
 
 export async function POST(req: Request) {
   try {
     if (!process.env.STRIPE_SECRET_KEY) throw new Error("missing STRIPE_SECRET_KEY");
     if (!process.env.NEXT_PUBLIC_APP_URL) throw new Error("missing NEXT_PUBLIC_APP_URL");
-    if (!process.env.APP_ID) throw new Error("missing APP_ID");
     if (!process.env.STRIPE_PRICE_MONTHLY_ID)
       throw new Error("missing STRIPE_PRICE_MONTHLY_ID");
     if (!process.env.STRIPE_PRICE_YEARLY_ID)
@@ -34,7 +35,7 @@ export async function POST(req: Request) {
     }
 
     const userId = data.user.id;
-    const appId = process.env.APP_ID!;
+    const appId = APP_ID;
     const successUrl = `${process.env.NEXT_PUBLIC_APP_URL}/billing/success`;
     const cancelUrl = `${process.env.NEXT_PUBLIC_APP_URL}/billing/cancel`;
 

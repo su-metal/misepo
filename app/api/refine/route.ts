@@ -3,6 +3,11 @@ import { NextResponse } from "next/server";
 import { refineContent } from "@/services/geminiService";
 import type { StoreProfile, GenerationConfig } from "@/types";
 import { createClient } from "@/lib/supabase/server";
+import { supabaseAdmin } from "@/lib/supabase/admin";
+import { env } from "@/lib/env";
+
+const COST = 1;
+const WEEKLY_CAP = 5;
 
 export async function POST(req: Request) {
   const supabase = await createClient();
@@ -65,6 +70,36 @@ export async function POST(req: Request) {
 
   console.debug("Refining content for user", user.id);
 
+  const { data: rpcData, error: rpcErr } = await supabaseAdmin.rpc(
+    "consume_weekly_credits",
+    {
+      p_app_id: env.APP_ID,
+      p_user_id: user.id,
+      p_cost: COST,
+      p_weekly_cap: WEEKLY_CAP,
+    }
+  );
+
+  if (rpcErr) {
+    return NextResponse.json(
+      { ok: false, error: rpcErr.message },
+      { status: 500 }
+    );
+  }
+
+  const creditRow = Array.isArray(rpcData) ? rpcData[0] : rpcData;
+
+  if (!creditRow?.ok) {
+    return NextResponse.json(
+      {
+        ok: false,
+        error: "quota_exceeded",
+        balance: creditRow?.out_balance ?? 0,
+        remaining: 0,
+      },
+      { status: 402 }
+    );
+  }
   try {
     const result = await refineContent(profile, config, currentContent, instruction);
     return NextResponse.json({ ok: true, result });

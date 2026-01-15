@@ -4,8 +4,9 @@ import { generateContent } from "@/services/geminiService";
 import type { StoreProfile, GenerationConfig } from "@/types";
 import { createClient } from "@/lib/supabase/server";
 import { supabaseAdmin } from "@/lib/supabase/admin";
+import { env } from "@/lib/env";
 
-const APP_ID = process.env.APP_ID!;
+const APP_ID = env.APP_ID;
 const COST = 1; // 生成1回 = 1クレジット
 const WEEKLY_CAP = 5;
 

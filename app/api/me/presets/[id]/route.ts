@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { env } from "@/lib/env";
 
-const APP_ID = "misepo";
+const APP_ID = env.APP_ID;
 
 interface PresetUpdate {
   name?: string;

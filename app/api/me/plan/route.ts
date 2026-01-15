@@ -2,8 +2,9 @@ import { NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { supabaseAdmin } from "@/lib/supabase/admin";
+import { env } from "@/lib/env";
 
-const APP_ID = process.env.APP_ID!;
+const APP_ID = env.APP_ID;
 
 export async function GET() {
   // 1) ログイン中ユーザーを取得（cookieから）
