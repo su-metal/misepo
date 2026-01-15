@@ -18,26 +18,19 @@ import {
 import SocialPreview from './SocialPreview';
 import PresetModal from './PresetModal';
 import GuestTour from './GuestTour';
-import FreeLimitReached from './FreeLimitReached';
 
 interface PostGeneratorProps {
   storeProfile: StoreProfile;
   isLoggedIn: boolean;
   onOpenLogin: () => void;
-  dailyUsageCount: number;
-  isPro: boolean;
   presets: Preset[];
   refreshPresets: () => Promise<void>;
   onGenerateSuccess: (post: GeneratedPost) => void;
-  retryCount: number;
   onTaskComplete: () => void;
-  onRetryComplete: () => void;
   restorePost?: GeneratedPost | null;
-  onTryUpgrade?: () => void;
   onOpenGuide?: () => void;
   resetResultsTrigger?: number;
   shouldShowTour?: boolean;
-  onConsumeCredit: () => void;
 }
 
 interface ResultGroup {
@@ -192,20 +185,14 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
   storeProfile,
   isLoggedIn,
   onOpenLogin,
-  dailyUsageCount,
-  isPro,
   presets,
   refreshPresets,
   onGenerateSuccess,
-  retryCount,
   onTaskComplete,
-  onRetryComplete,
   restorePost,
-  onTryUpgrade,
   onOpenGuide,
   resetResultsTrigger,
-  shouldShowTour,
-  onConsumeCredit
+  shouldShowTour
 }) => {
   const [platforms, setPlatforms] = useState<Platform[]>([Platform.Instagram]);
   const [isMultiGenMode, setIsMultiGenMode] = useState<boolean>(false);
@@ -223,7 +210,6 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
   const [includeSymbols, setIncludeSymbols] = useState<boolean>(false);
   const [includeEmojis, setIncludeEmojis] = useState<boolean>(true);
   const [toneDecorations, setToneDecorations] = useState<Partial<Record<Tone, { includeEmojis: boolean; includeSymbols: boolean }>>>({});
-  const [serverRemainingCredits, setServerRemainingCredits] = useState<number | null>(null);
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
   const [isPresetModalOpen, setIsPresetModalOpen] = useState(false);
   const [refiningKey, setRefiningKey] = useState<string | null>(null);
@@ -247,13 +233,6 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
   // Track active preset context for editing/saving
   const isMap = platforms.includes(Platform.GoogleMaps);
   const isXOnly = platforms.length === 1 && platforms.includes(Platform.X);
-  const MAX_FREE_LIMIT = 5;
-  const fallbackRemaining = Math.max(0, MAX_FREE_LIMIT - dailyUsageCount);
-  const remainingCredits = isPro ? 9999 : (serverRemainingCredits ?? fallbackRemaining);
-  const canGenerateNew = (isPro || remainingCredits > 0) && !loading;
-  const canRegenerate = isLoggedIn && (isPro || retryCount < 2);
-  const shouldShowFreeLimit = isLoggedIn && !isPro && remainingCredits <= 0;
-  const shouldShowProHint = !isPro && !shouldShowFreeLimit && remainingCredits > 0;
   const hasResults = resultGroups.length > 0;
   const generateButtonLabel = '投稿を生成する';
   const quickPresets = presets.slice(0, 3);
@@ -288,27 +267,8 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
       setPlatforms([Platform.Instagram]);
       setPostPurpose(PostPurpose.Promotion);
       setInputText(DEMO_SAMPLE_TEXT);
-      setServerRemainingCredits(null);
     }
   }, [isLoggedIn]);
-
-  useEffect(() => {
-    if (!isLoggedIn || isPro) return;
-
-    fetch("/api/usage/credits")
-      .then(async (res) => {
-        if (!res.ok) throw new Error("usage fetch failed");
-        return res.json();
-      })
-      .then((data) => {
-        if (data?.ok && typeof data.remaining === "number") {
-          setServerRemainingCredits(data.remaining);
-        }
-      })
-      .catch((err) => {
-        console.warn("Unable to refresh remaining credits:", err);
-      });
-  }, [isLoggedIn, isPro]);
 
   useEffect(() => {
     if (shouldShowTour) {
@@ -519,7 +479,6 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
     profile: StoreProfile;
     config: GeneratedPost["config"];
     result: GeneratedResult[];
-    isPro: boolean;
     runType: string;
   }) => {
     try {
@@ -530,7 +489,6 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
           profile: payload.profile,
           config: payload.config,
           result: payload.result,
-          is_pro: payload.isPro,
           run_type: payload.runType,
         }),
       });
@@ -587,7 +545,6 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
           body: JSON.stringify({
             profile: storeProfile,
             config,
-            isPro,
             allowGuest: !isLoggedIn,
             save_history: !skipHistoryForCombined,
             run_type: runType,
@@ -595,17 +552,8 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
         });
 
         const data = await res.json();
-        const remaining = typeof data.remaining === "number" ? data.remaining : null;
-        if (remaining !== null) {
-          setServerRemainingCredits(remaining);
-        }
 
         if (!res.ok || !data.ok) {
-          if (data?.error === "quota_exceeded") {
-            alert("今週の無料枠を使い切りました。Proにアップグレードすると無制限で使えます。");
-            setServerRemainingCredits(0);
-            return;
-          }
           throw new Error(data.error ?? "Generate failed");
         }
 
@@ -654,7 +602,6 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
           return updated;
         });
       }
-      onRetryComplete();
     } else {
       setResultGroups(newGroups);
 
@@ -681,7 +628,6 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
             profile: storeProfile,
             config: historyConfig,
             result: generatedResults,
-            isPro,
             runType,
           });
         }
@@ -718,20 +664,6 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
       return;
     }
 
-    if (!canGenerateNew && !isPro && !(showGuestTour && !isLoggedIn)) {
-      if (remainingCredits === 0) {
-        if (onOpenLogin && !isLoggedIn) {
-          onOpenLogin();
-          return;
-        }
-        if (isLoggedIn && onTryUpgrade) {
-          onTryUpgrade();
-          return;
-        }
-      }
-      return;
-    }
-
     if (!inputText.trim()) {
       alert('テキストを入力してください');
       return;
@@ -753,7 +685,8 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
   };
 
   const handleRegenerateAll = async (force: boolean = false) => {
-    if (!force && (!canRegenerate || resultGroups.length === 0)) return;
+    if (!force && (!isLoggedIn && !showGuestTour)) return;
+    if (!force && resultGroups.length === 0) return;
 
     const baseConfig = {
       tone,
@@ -771,7 +704,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
   };
 
   const handleRegenerateSingle = async (group: ResultGroup) => {
-    if (!canRegenerate) return;
+    if (!isLoggedIn && !showGuestTour) return;
     const baseConfig = {
       tone,
       length,
@@ -788,12 +721,6 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
 
   const handleRefine = async (groupIndex: number, itemIndex: number) => {
     if (!refineText.trim()) return;
-
-    // Check credit limit for Refine in Free plan
-    if (!isPro && remainingCredits <= 0) {
-      if (onTryUpgrade) onTryUpgrade();
-      return;
-    }
 
     setRefiningLoading(true);
     const group = resultGroups[groupIndex];
@@ -824,11 +751,6 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
         newGroups[groupIndex] = { ...newGroups[groupIndex], data: newData };
         return newGroups;
       });
-
-      // Consume credit for Free users
-      if (!isPro) {
-        onConsumeCredit();
-      }
 
       setRefiningKey(null);
       setRefineText("");
@@ -1387,15 +1309,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
 
             {/* MIDDLE COLUMN: Input & Advanced */}
             <div className="flex flex-col gap-4 flex-1 lg:h-full transition-all duration-500">
-              {shouldShowFreeLimit ? (
-                <div className="w-full py-10">
-                  <FreeLimitReached
-                    onUpgrade={onTryUpgrade ?? (() => {})}
-                    remaining={remainingCredits}
-                  />
-                </div>
-              ) : (
-                <>
+              <>
                   <div
                     ref={inputContainerRef}
                     className="flex-1 bg-white p-1 rounded-3xl border border-gray-200 focus-within:ring-4 focus-within:ring-indigo-500/10 focus-within:border-indigo-400 transition-all shadow-sm relative min-h-[200px]"
@@ -1411,12 +1325,11 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
                         <textarea
                           value={inputText}
                           onChange={(e) => setInputText(e.target.value)}
-                          disabled={(!canGenerateNew && isLoggedIn)}
                           placeholder={isMap
                             ? "例: ランチセットが美味しかったです。ただ、提供に少し時間がかかったのが残念でした。"
                             : "例: 明日から秋限定の栗パフェを始めます。値段は1200円。1日限定20食です。"
                           }
-                          className="w-full flex-1 bg-transparent border-0 text-base leading-relaxed placeholder-gray-300 focus:ring-0 resize-none pr-8 pb-8 text-gray-700 disabled:opacity-100 disabled:text-gray-700 disabled:cursor-not-allowed"
+                          className="w-full flex-1 bg-transparent border-0 text-base leading-relaxed placeholder-gray-300 focus:ring-0 resize-none pr-8 pb-8 text-gray-700"
                         />
                         {isLoggedIn && (
                           <InputControlButtons
@@ -1510,8 +1423,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
                       </div>
                     )}
                   </div>
-                </>
-              )}
+              </>
             </div>
 
             {/* RIGHT COLUMN: Results */}
@@ -1593,16 +1505,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
                                   className="w-full text-sm bg-white border border-amber-200 rounded-lg p-2 mb-2 focus:ring-2 focus:ring-amber-400 focus:border-transparent outline-none"
                                   rows={2}
                                 />
-                                <div className="flex justify-between items-center mt-2">
-                                  {!isPro && (
-                                    <span className={`text-[10px] font-bold px-2 py-1 rounded-full border flex items-center gap-1 ${remainingCredits > 0 ? 'text-amber-600 bg-amber-50 border-amber-100' : 'text-red-500 bg-red-50 border-red-100'}`}>
-                                      {remainingCredits > 0 ? (
-                                        <>✨ 1クレジット消費 (残: {remainingCredits})</>
-                                      ) : (
-                                        <>⚠️ クレジット不足</>
-                                      )}
-                                    </span>
-                                  )}
+                                <div className="flex justify-end items-center mt-2">
                                   <div className="flex justify-end gap-2 ml-auto">
                                     <button
                                       onClick={() => toggleRefinePanel(gIdx, iIdx)}
@@ -1612,7 +1515,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
                                     </button>
                                     <button
                                       onClick={() => handleRefine(gIdx, iIdx)}
-                                      disabled={refiningLoading || !refineText.trim() || (!isPro && remainingCredits <= 0)}
+                                      disabled={refiningLoading || !refineText.trim()}
                                       className="px-3 py-1.5 text-xs font-bold bg-amber-500 text-white rounded-lg hover:bg-amber-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
                                     >
                                       {refiningLoading ? (
@@ -1644,7 +1547,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
                                   ) : (
                                     <RotateCcwIcon />
                                   )}
-                                  {(!isLoggedIn || (!isPro && retryCount >= 0)) ? `Retry${!isPro && isLoggedIn ? ` (${Math.max(0, 2 - retryCount)})` : ''}` : 'Retry'}
+                                  Retry
                                 </button>
 
                                 <button
@@ -1656,19 +1559,6 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
                                   Refine
                                 </button>
                               </div>
-
-                              {!isPro && isLoggedIn && (
-                                <div className="flex items-center justify-end gap-3 px-1 mt-0.5 mb-1">
-                                  <span className={`text-[10px] font-medium flex items-center gap-1 ${retryCount >= 2 ? 'text-red-400' : 'text-gray-400'}`}>
-                                    <RotateCcwIcon className="w-3 h-3" />
-                                    Retry: 残り{Math.max(0, 2 - retryCount)}回
-                                  </span>
-                                  <span className={`text-[10px] font-medium flex items-center gap-1 ${remainingCredits === 0 ? 'text-red-400' : 'text-gray-400'}`}>
-                                    <MagicWandIcon className="w-3 h-3" />
-                                    Refine: 1クレジット消費
-                                  </span>
-                                </div>
-                              )}
 
                               <button
                                 onClick={() => !isLoggedIn ? null : handleShare(group.platform, res)}
@@ -1700,25 +1590,14 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
         {createPortal(
         <div className="fixed bottom-0 left-0 right-0 p-4 md:p-3 bg-white/90 backdrop-blur-md border-t border-gray-200 z-[40]">
           <div className="w-full max-w-[1100px] mx-auto px-2 md:px-0">
-            {shouldShowProHint && onTryUpgrade && (
-              <div className="text-xs text-slate-500 text-center mb-2 flex flex-wrap items-center justify-center gap-2">
-                <span>Proなら生成回数が無制限になります</span>
-                <button
-                  onClick={onTryUpgrade}
-                  className="text-indigo-600 font-bold hover:underline focus:outline-none"
-                >
-                  Proプランを見る
-                </button>
-              </div>
-            )}
             <button
             ref={generateButtonRef}
             onClick={() => {
-              if (loading || shouldShowFreeLimit) return;
+              if (loading) return;
               handleGenerate();
             }}
             className="w-full bg-slate-900 hover:bg-indigo-600 text-white font-bold py-4 md:py-3 rounded-xl shadow-xl shadow-slate-200 hover:shadow-indigo-200 transition-all transform hover:-translate-y-0.5 active:translate-y-0 text-xl md:text-lg flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
-            disabled={loading || shouldShowFreeLimit}
+            disabled={loading}
           >
                 {loading ? (
                   <>
@@ -1732,21 +1611,6 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
                   </>
                 )}
             </button>
-            {!isPro && !shouldShowFreeLimit && (
-              <div className="text-center mt-2 text-[10px] text-gray-400 font-medium">
-                {isLoggedIn ? (
-                  <div className="flex flex-wrap items-center justify-center gap-3">
-                    <span>
-                      残りクレジット: <span className="text-indigo-600 font-bold">{remainingCredits}回</span> / 5
-                    </span>
-                  </div>
-                ) : (
-                  <>
-                    <span>アカウント作成（無料）で利用可能</span>
-                  </>
-                )}
-              </div>
-            )}
           </div>
         </div>,
           document.body

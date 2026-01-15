@@ -52,12 +52,12 @@ export interface GenerationConfig {
   // New: Google Maps Star Rating (1-5)
   starRating?: number | null;
 
-  // Pro features
+  // Optional output controls
   language?: string;
   storeSupplement?: string; // Google Maps only
   customPrompt?: string;
-  
-  // Decoration Control (Pro features)
+
+  // Decoration Control
   includeSymbols?: boolean; // e.g., ✦, ▷
   includeEmojis?: boolean; // e.g., ✨, 😊
   
@@ -102,7 +102,6 @@ export interface Preset {
 }
 
 export interface AppState {
-  isPro: boolean;
   storeProfile: StoreProfile | null;
   history: GeneratedPost[];
   presets: Preset[];

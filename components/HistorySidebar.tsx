@@ -5,18 +5,16 @@ import { XIcon, InstagramIcon, GoogleMapsIcon, LockIcon, TrashIcon } from './Ico
 
 interface HistorySidebarProps {
   history: GeneratedPost[];
-  isPro: boolean;
   isLoggedIn: boolean;
   onSelect: (post: GeneratedPost) => void;
   isOpen: boolean;
   toggleOpen: () => void;
   onOpenLogin: () => void;
-  onOpenUpgrade?: () => void;
   onDelete: (id: string) => void;
 }
 
-const HistorySidebar: React.FC<HistorySidebarProps> = ({ history, isPro, isLoggedIn, onSelect, isOpen, toggleOpen, onOpenLogin, onOpenUpgrade, onDelete }) => {
-  const displayHistory = isPro ? history : history.slice(0, 3);
+const HistorySidebar: React.FC<HistorySidebarProps> = ({ history, isLoggedIn, onSelect, isOpen, toggleOpen, onOpenLogin, onDelete }) => {
+  const displayHistory = history;
 
   const getPlatformIcon = (p: Platform) => {
     switch (p) {
@@ -51,9 +49,6 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({ history, isPro, isLogge
       >
           <div className="p-6 border-b border-gray-100 flex items-center justify-between">
             <h2 className="font-bold text-gray-800 tracking-tight">History</h2>
-            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${!isLoggedIn ? 'bg-gray-100 text-gray-400' : isPro ? 'bg-amber-100 text-amber-700' : 'bg-gray-100 text-gray-500'}`}>
-              {!isLoggedIn ? 'GUEST' : isPro ? 'PRO' : `${displayHistory.length}/3`}
-            </span>
             <button
               onClick={toggleOpen}
               className="text-gray-400 hover:text-gray-600 ml-2"
@@ -71,7 +66,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({ history, isPro, isLogge
               </div>
               <h3 className="text-sm font-bold text-gray-700 mb-2">履歴の保存</h3>
               <p className="text-xs text-gray-500 mb-6 leading-relaxed">
-                ユーザー登録（無料）すると<br />
+                ユーザー登録すると<br />
                 作成した投稿が自動で<br />
                 履歴に保存されます。
               </p>
@@ -185,21 +180,6 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({ history, isPro, isLogge
                 })
               )}
 
-              {!isPro && history.length >= 3 && (
-                <div className="p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl text-center border border-gray-200 mt-4 space-y-2">
-                  <p className="text-xs text-gray-500 mb-0 font-medium">Free plan limit reached</p>
-                  <p className="text-[10px] text-gray-400">Proプランなら履歴表示が無制限です。</p>
-                  <button
-                    onClick={() => {
-                      onOpenUpgrade?.();
-                      if (window.innerWidth < 768) toggleOpen();
-                    }}
-                    className="w-full py-2 text-xs font-bold rounded-xl bg-amber-500 text-white hover:bg-amber-600 transition-colors"
-                  >
-                    PROにアップグレードする
-                  </button>
-                </div>
-              )}
             </>
           )}
         </div>

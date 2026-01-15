@@ -3,13 +3,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 
 interface DevToolsProps {
-  isPro: boolean;
-  resetUsage: () => void;
   resetProfile: () => void;
   simulateRegisteredUser: () => void;
 }
 
-const DevTools: React.FC<DevToolsProps> = ({ isPro, resetUsage, resetProfile, simulateRegisteredUser }) => {
+const DevTools: React.FC<DevToolsProps> = ({ resetProfile, simulateRegisteredUser }) => {
   const [position, setPosition] = useState({ x: 20, y: 20 });
   const [isDragging, setIsDragging] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
@@ -168,29 +166,6 @@ const DevTools: React.FC<DevToolsProps> = ({ isPro, resetUsage, resetProfile, si
           </div>
           
           <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">Plan Status</span>
-              <span
-                className={`text-xs px-2 py-1 rounded font-bold ${
-                  isPro
-                    ? 'bg-gradient-to-r from-amber-400 to-amber-600 text-black shadow-[0_0_10px_rgba(251,191,36,0.5)]'
-                    : 'bg-gray-700 text-gray-300'
-                }`}
-              >
-                {isPro ? 'PRO' : 'FREE'}
-              </span>
-            </div>
-
-            <div className="flex items-center justify-between pt-2 border-t border-gray-700">
-              <span className="text-sm font-medium">Usage Limit</span>
-              <button
-                onClick={resetUsage}
-                className="text-xs px-2 py-1 rounded font-bold bg-gray-700 text-gray-300 hover:bg-white hover:text-black transition-colors"
-              >
-                RESET
-              </button>
-            </div>
-
             <div className="flex items-center justify-between pt-2 border-t border-gray-700">
               <span className="text-sm font-medium">Demo Data</span>
               <button

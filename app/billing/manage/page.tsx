@@ -81,7 +81,7 @@ export default function BillingManagePage() {
         トップに戻る
       </Link>
       <p className="text-xs text-gray-400 mt-4">
-        解約後は webhook で権利が更新され、しばらくして Pro 判定が自動で解除されます。
+        解約後は webhook で権利が更新され、利用期間の終了後にアクセスが停止します。
       </p>
     </main>
   );

@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { createClient } from "@/lib/supabase/client";
 import {
-  AppState,
   StoreProfile,
   GeneratedPost,
   GeneratedResult,
@@ -19,7 +18,6 @@ import Onboarding from './components/Onboarding';
 import PostGenerator from './components/PostGenerator';
 import HistorySidebar from './components/HistorySidebar';
 import DevTools from './components/DevTools';
-import UpgradeModal from './components/UpgradeModal';
 import LoginModal from './components/LoginModal';
 import OnboardingSuccess from './components/OnboardingSuccess';
 import GuestDemoModal from './components/GuestDemoModal';
@@ -109,7 +107,7 @@ const App: React.FC = () => {
   // --- State Management ---
   const [storeProfile, setStoreProfile] = useState<StoreProfile | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [isPro, setIsPro] = useState<boolean>(false);
+  const [canUseApp, setCanUseApp] = useState<boolean | null>(null);
   const [history, setHistory] = useState<GeneratedPost[]>([]);
   const [presets, setPresets] = useState<Preset[]>([]);
 
@@ -127,15 +125,6 @@ const App: React.FC = () => {
 
   // Restoration State
   const [restorePost, setRestorePost] = useState<GeneratedPost | null>(null);
-
-  // --- Limits Management ---
-  const [retryCount, setRetryCount] = useState(0);
-  // Replaced guestLimitReached boolean with dailyUsageCount number
-  const [dailyUsageCount, setDailyUsageCount] = useState(0);
-
-  // --- Upgrade Flow State ---
-  const [isTryingToUpgrade, setIsTryingToUpgrade] = useState(false);
-  const [upgradeModalStep, setUpgradeModalStep] = useState<'intro' | 'payment'>('intro');
 
   // --- Auth & Persistence (Supabase is source of truth for login state) ---
   const [authReady, setAuthReady] = useState(false);
@@ -161,8 +150,6 @@ const App: React.FC = () => {
         setHistory(JSON.parse(savedHistory));
       }
 
-      checkDailyLimit();
-
       setAuthReady(true);
     };
 
@@ -176,14 +163,11 @@ const App: React.FC = () => {
       if (loggedIn) {
         refreshPlan(true);
       } else {
-        setIsPro(false);
+        setCanUseApp(null);
       }
 
       if (loggedIn) {
         setShowLoginModal(false);
-
-        localStorage.removeItem('misepo_daily_usage');
-        setDailyUsageCount(0);
 
         setResetResultsTrigger(prev => prev + 1);
 
@@ -302,61 +286,35 @@ const App: React.FC = () => {
     };
   }, [authReady, isLoggedIn]);
 
-  const checkDailyLimit = () => {
-    if (typeof window === 'undefined') return;
-
-    const today = new Date().toDateString(); // e.g. "Mon Jan 01 2024"
-    const stored = localStorage.getItem('misepo_daily_usage');
-
-    if (stored) {
-      try {
-        const data = JSON.parse(stored);
-        if (data.date === today) {
-          setDailyUsageCount(typeof data.count === 'number' ? data.count : 0);
-        } else {
-          // New day, reset count
-          localStorage.setItem('misepo_daily_usage', JSON.stringify({ date: today, count: 0 }));
-          setDailyUsageCount(0);
-        }
-      } catch (e) {
-        // Error parsing, reset
-        setDailyUsageCount(0);
-        localStorage.setItem('misepo_daily_usage', JSON.stringify({ date: today, count: 0 }));
-      }
-    } else {
-      // No data
-      setDailyUsageCount(0);
-    }
-  };
-
   const refreshPlan = async (loggedInOverride?: boolean) => {
     const canFetch = loggedInOverride ?? isLoggedIn;
     if (!canFetch) {
-      setIsPro(false);
+      setCanUseApp(null);
       return;
     }
 
     try {
-      const res = await fetch("/api/me/plan");
+      const res = await fetch("/api/me/plan", { cache: "no-store" });
       if (!res.ok) {
-        setIsPro(false);
+        setCanUseApp(false);
         return;
       }
       const data = await res.json();
-      setIsPro(!!data?.isPro);
+      setCanUseApp(
+        typeof data?.canUseApp === "boolean" ? data.canUseApp : !!data?.isPro
+      );
     } catch (err) {
       console.warn("plan refresh failed:", err);
+      setCanUseApp(false);
     }
   };
 
-  // Re-check limit if Pro status changes
   useEffect(() => {
-    if (isPro) {
-      setDailyUsageCount(0); // Pro has no limit constraints
-    } else {
-      checkDailyLimit();
+    if (!authReady) return;
+    if (isLoggedIn && canUseApp === false) {
+      router.replace("/start");
     }
-  }, [isPro]);
+  }, [authReady, isLoggedIn, canUseApp, router]);
 
   useEffect(() => {
     if (!authReady) return;
@@ -412,7 +370,6 @@ const App: React.FC = () => {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     setIsLoggedIn(false);
-    setIsPro(false);
     setUserId(null);
     router.push('/start');
   };
@@ -467,23 +424,6 @@ const App: React.FC = () => {
           setHistory(mapped);
         }
       })();
-    }
-
-    // Apply limit tracking to anyone who is NOT Pro
-    if (!isPro) {
-      const today = new Date().toDateString();
-      const newCount = dailyUsageCount + 1;
-      setDailyUsageCount(newCount);
-      localStorage.setItem('misepo_daily_usage', JSON.stringify({ date: today, count: newCount }));
-    }
-  };
-
-  const handleConsumeCredit = () => {
-    if (!isPro) {
-      const today = new Date().toDateString();
-      const newCount = dailyUsageCount + 1;
-      setDailyUsageCount(newCount);
-      localStorage.setItem('misepo_daily_usage', JSON.stringify({ date: today, count: newCount }));
     }
   };
 
@@ -608,22 +548,7 @@ const App: React.FC = () => {
     };
   };
 
-  const handleTaskComplete = () => {
-    setRetryCount(0); // Reset retry count for new task
-  };
-
-  const handleRetryComplete = () => {
-    if (!isPro) {
-      setRetryCount(prev => prev + 1);
-    }
-  };
-
-  const resetUsage = () => {
-    // Dev tool reset
-    localStorage.removeItem('misepo_daily_usage');
-    setDailyUsageCount(0);
-    setRetryCount(0);
-  };
+  const handleTaskComplete = () => {};
 
   const resetProfile = () => {
     // Dev tool profile reset (Reset to Guest)
@@ -633,11 +558,8 @@ const App: React.FC = () => {
 
     setStoreProfile(null);
     setIsLoggedIn(false);
-    setIsPro(false);
     setHistory([]); // Clear history state on reset
     setShowSettings(false);
-    // Also reset usage for convenience
-    resetUsage();
 
     // Trigger the demo modal again after a short delay since we are back to guest mode
     setTimeout(() => setShowGuestDemoModal(true), 500);
@@ -661,8 +583,6 @@ open11:00-close 17:00
     };
     setStoreProfile(demoProfile);
     setIsLoggedIn(true);
-    setDailyUsageCount(0); // Reset for demo
-    localStorage.removeItem('misepo_daily_usage');
     setShowSettings(false);
     setShowLoginModal(false);
     setShowGuestDemoModal(false); // Ensure demo modal is closed
@@ -691,44 +611,6 @@ open11:00-close 17:00
     }
   };
 
-  // Upgrade Flow Handlers
-  const handleTryUpgrade = (step: 'intro' | 'payment' = 'intro') => {
-    setUpgradeModalStep(step);
-    setIsTryingToUpgrade(true);
-  };
-
-  const handleManageSubscription = () => {
-    setShowSettings(false);
-    router.push("/billing/manage");
-  };
-
-  const handleConfirmUpgrade = async (plan: "monthly" | "yearly" = "monthly") => {
-    if (!isLoggedIn) {
-      setIsTryingToUpgrade(false);
-      setShowLoginModal(true);
-      return;
-    }
-
-    try {
-      const res = await fetch("/api/billing/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan }),
-      });
-      const data = await res.json().catch(() => null);
-
-      if (!res.ok || !data?.ok || !data?.url) {
-        alert(data?.error ?? `checkout failed (${res.status})`);
-        return;
-      }
-
-      setIsTryingToUpgrade(false);
-      window.location.href = data.url;
-    } catch (err) {
-      console.error("checkout error:", err);
-      alert("checkout failed");
-    }
-  };
 
   // Guest Demo Modal Handler
   const handleCloseGuestDemoModal = () => {
@@ -755,8 +637,6 @@ open11:00-close 17:00
           onSave={handleOnboardingSave}
           initialProfile={storeProfile}
           onCancel={() => setShowSettings(false)}
-          showSubscriptionLink={isLoggedIn && isPro}
-          onManageSubscription={handleManageSubscription}
         />
       )}
 
@@ -774,14 +654,6 @@ open11:00-close 17:00
         onLoginGoogle={handleLoginGoogle}
       />
 
-      {/* 4. Upgrade Flow Modal */}
-      <UpgradeModal
-        isOpen={isTryingToUpgrade}
-        onClose={() => setIsTryingToUpgrade(false)}
-        onConfirmUpgrade={handleConfirmUpgrade}
-        initialStep={upgradeModalStep}
-      />
-
       {/* 6. Guest Demo Modal (NEW - First time only) */}
       {showGuestDemoModal && (
         <GuestDemoModal onClose={handleCloseGuestDemoModal} />
@@ -789,8 +661,6 @@ open11:00-close 17:00
 
       {/* 7. Dev Tools (Floating) */}
       <DevTools
-        isPro={isPro}
-        resetUsage={resetUsage}
         resetProfile={resetProfile}
         simulateRegisteredUser={handleSimulateRegisteredUser}
       />
@@ -798,13 +668,11 @@ open11:00-close 17:00
       {/* 8. Sidebar (History) */}
         <HistorySidebar
           history={history}
-          isPro={isPro}
           isLoggedIn={isLoggedIn}
           onSelect={handleHistorySelect}
           isOpen={isSidebarOpen}
           toggleOpen={toggleSidebar}
           onOpenLogin={() => setShowLoginModal(true)}
-          onOpenUpgrade={() => handleTryUpgrade('payment')}
           onDelete={handleDeleteHistory}
         />
 
@@ -929,20 +797,14 @@ open11:00-close 17:00
             storeProfile={storeProfile || GUEST_PROFILE}
             isLoggedIn={isLoggedIn}
             onOpenLogin={() => setShowLoginModal(true)}
-            dailyUsageCount={dailyUsageCount}
-            isPro={isPro}
-          presets={presets}
-          refreshPresets={refreshPresets}
-          onGenerateSuccess={handleGenerateSuccess}
-            retryCount={retryCount}
+            presets={presets}
+            refreshPresets={refreshPresets}
+            onGenerateSuccess={handleGenerateSuccess}
             onTaskComplete={handleTaskComplete}
-            onRetryComplete={handleRetryComplete}
             restorePost={restorePost}
-            onTryUpgrade={() => handleTryUpgrade('payment')}
             onOpenGuide={() => setShowGuide(true)}
             resetResultsTrigger={resetResultsTrigger}
             shouldShowTour={shouldShowTour}
-            onConsumeCredit={handleConsumeCredit}
           />
         </main>
       </div>

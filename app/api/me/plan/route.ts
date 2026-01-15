@@ -5,10 +5,11 @@ import { supabaseAdmin } from "@/lib/supabase/admin";
 import { env } from "@/lib/env";
 
 const APP_ID = env.APP_ID;
+const NO_STORE_HEADERS = { "Cache-Control": "no-store" };
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export async function GET() {
-  // 1) ログイン中ユーザーを取得（cookieから）
   const cookieStore = await cookies();
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -16,71 +17,99 @@ export async function GET() {
     {
       cookies: {
         getAll: () => cookieStore.getAll(),
-        setAll: () => {}, // GETなので未使用
+        setAll: () => {},
       },
     }
   );
 
   const { data: userData, error: userErr } = await supabase.auth.getUser();
   if (userErr || !userData.user) {
-    return NextResponse.json({ ok: false, error: "unauthorized" }, { status: 401 });
+    return NextResponse.json(
+      { ok: false, error: "unauthorized" },
+      { status: 401, headers: NO_STORE_HEADERS }
+    );
   }
 
   const userId = userData.user.id;
 
-  // 2) entitlements を読む（app_id + user_id）
   const { data: ent, error: readErr } = await supabaseAdmin
     .from("entitlements")
-    .select("plan,status,expires_at")
+    .select("plan,status,expires_at,trial_ends_at")
     .eq("app_id", APP_ID)
     .eq("user_id", userId)
     .maybeSingle();
 
   if (readErr) {
-    return NextResponse.json({ ok: false, error: readErr.message }, { status: 500 });
+    return NextResponse.json(
+      { ok: false, error: readErr.message },
+      { status: 500, headers: NO_STORE_HEADERS }
+    );
   }
 
-  // 3) 無ければ「free」を作る（このAPIを叩いたら必ず1行になる）
+  // entitlements が無い場合は inactive を作成し、canUseApp は必ず false
   if (!ent) {
     const { data: created, error: createErr } = await supabaseAdmin
       .from("entitlements")
-      .insert({
-        app_id: APP_ID,
-        user_id: userId,
-        plan: "free",
-        status: "active",
-        expires_at: null,
-      })
-      .select("plan,status,expires_at")
+      .upsert(
+        {
+          app_id: APP_ID,
+          user_id: userId,
+          plan: "free", // 互換のため残してOK（判定には使わない）
+          status: "inactive",
+          expires_at: null,
+          trial_ends_at: null,
+        },
+        { onConflict: "user_id,app_id" }
+      )
+      .select("plan,status,expires_at,trial_ends_at")
       .single();
 
     if (createErr) {
-      return NextResponse.json({ ok: false, error: createErr.message }, { status: 500 });
+      return NextResponse.json(
+        { ok: false, error: createErr.message },
+        { status: 500, headers: NO_STORE_HEADERS }
+      );
     }
 
-    return NextResponse.json({
-      ok: true,
-      app_id: APP_ID,
-      plan: created.plan,
-      status: created.status,
-      expires_at: created.expires_at,
-      isPro: false,
-    });
+    return NextResponse.json(
+      {
+        ok: true,
+        app_id: APP_ID,
+        plan: created.plan,
+        status: created.status,
+        expires_at: created.expires_at,
+        trial_ends_at: created.trial_ends_at,
+        canUseApp: false,
+        isPro: false, // 互換（徐々に消してOK）
+      },
+      { headers: NO_STORE_HEADERS }
+    );
   }
 
-  // 4) Pro判定（plan=pro AND status=active AND (expires_at future or null)）
-  const now = new Date();
-  const expiresAt = ent.expires_at ? new Date(ent.expires_at) : null;
-  const isActive = ent.status === "active";
-  const notExpired = !expiresAt || expiresAt.getTime() > now.getTime();
-  const isPro = ent.plan === "pro" && isActive && notExpired;
+  const nowMs = Date.now();
+  const trialEndsMs = ent.trial_ends_at ? new Date(ent.trial_ends_at).getTime() : null;
+  const expiresMs = ent.expires_at ? new Date(ent.expires_at).getTime() : null;
 
-  return NextResponse.json({
-    ok: true,
-    app_id: APP_ID,
-    plan: ent.plan,
-    status: ent.status,
-    expires_at: ent.expires_at,
-    isPro,
-  });
+  const isTrial = trialEndsMs !== null && trialEndsMs > nowMs;
+  const isPaidActive =
+    ent.status === "active" && (expiresMs === null || expiresMs > nowMs);
+
+  const canUseApp = isTrial || isPaidActive;
+
+  // 互換（残っているUI向け）。今後は削除してOK。
+  const isPro = canUseApp;
+
+  return NextResponse.json(
+    {
+      ok: true,
+      app_id: APP_ID,
+      plan: ent.plan,
+      status: ent.status,
+      expires_at: ent.expires_at,
+      trial_ends_at: ent.trial_ends_at,
+      canUseApp,
+      isPro,
+    },
+    { headers: NO_STORE_HEADERS }
+  );
 }

@@ -7,16 +7,12 @@ interface OnboardingProps {
   onSave: (profile: StoreProfile) => void;
   initialProfile?: StoreProfile | null;
   onCancel?: () => void;
-  showSubscriptionLink?: boolean;
-  onManageSubscription?: () => void;
 }
 
 const Onboarding: React.FC<OnboardingProps> = ({
   onSave,
   initialProfile,
   onCancel,
-  showSubscriptionLink,
-  onManageSubscription,
 }) => {
   const [industry, setIndustry] = useState<string>(INDUSTRIES[0]);
   const [name, setName] = useState<string>('');
@@ -222,18 +218,6 @@ const Onboarding: React.FC<OnboardingProps> = ({
                 className="w-full px-5 py-4 md:px-4 md:py-3 rounded-xl bg-white border border-transparent focus:border-pink-300 focus:ring-4 focus:ring-pink-500/10 outline-none transition-all resize-none placeholder-slate-400 text-base md:text-sm text-slate-800 leading-relaxed"
               />
             </div>
-
-            {showSubscriptionLink && onManageSubscription && (
-              <div className="px-8 md:px-12">
-                <button
-                  type="button"
-                  onClick={onManageSubscription}
-                  className="w-full text-left text-sm font-bold text-indigo-600 hover:text-indigo-500 transition-colors"
-                >
-                  サブスクを管理（解約・支払い方法）
-                </button>
-              </div>
-            )}
 
             {/* Actions */}
             <div className="pt-6 border-t border-slate-100 flex gap-4 sticky bottom-0 bg-white/95 backdrop-blur-sm md:static">

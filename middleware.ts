@@ -45,7 +45,7 @@ export async function middleware(req: NextRequest) {
   }
 
   if (user) {
-    const protectedPaths = ['/start', '/login', '/signup'];
+    const protectedPaths = ['/login', '/signup'];
     if (protectedPaths.includes(pathname)) {
       const redirectUrl = new URL('/', req.url);
       return applyPendingCookies(NextResponse.redirect(redirectUrl, 307));

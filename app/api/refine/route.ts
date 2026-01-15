@@ -5,9 +5,9 @@ import type { StoreProfile, GenerationConfig } from "@/types";
 import { createClient } from "@/lib/supabase/server";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { env } from "@/lib/env";
+import { computeCanUseApp } from "@/lib/entitlements/canUseApp";
 
-const COST = 1;
-const WEEKLY_CAP = 5;
+const APP_ID = env.APP_ID;
 
 export async function POST(req: Request) {
   const supabase = await createClient();
@@ -18,6 +18,51 @@ export async function POST(req: Request) {
 
   if (authError || !user) {
     return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { data: ent, error: entErr } = await supabaseAdmin
+    .from("entitlements")
+    .select("status,expires_at,trial_ends_at")
+    .eq("app_id", APP_ID)
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (entErr) {
+    return NextResponse.json({ ok: false, error: entErr.message }, { status: 500 });
+  }
+
+  let effectiveEnt = ent ?? null;
+  if (!effectiveEnt) {
+    const { data: created, error: createErr } = await supabaseAdmin
+      .from("entitlements")
+      .upsert(
+        {
+          app_id: APP_ID,
+          user_id: user.id,
+          plan: "free",
+          status: "inactive",
+          expires_at: null,
+          trial_ends_at: null,
+        },
+        { onConflict: "user_id,app_id" }
+      )
+      .select("status,expires_at,trial_ends_at")
+      .single();
+
+    if (createErr) {
+      return NextResponse.json(
+        { ok: false, error: createErr.message },
+        { status: 500 }
+      );
+    }
+
+    effectiveEnt = created;
+  }
+
+  const canUseApp = computeCanUseApp(effectiveEnt);
+
+  if (!canUseApp) {
+    return NextResponse.json({ ok: false, error: "access_denied" }, { status: 403 });
   }
 
   let body: Record<string, unknown>;
@@ -70,36 +115,6 @@ export async function POST(req: Request) {
 
   console.debug("Refining content for user", user.id);
 
-  const { data: rpcData, error: rpcErr } = await supabaseAdmin.rpc(
-    "consume_weekly_credits",
-    {
-      p_app_id: env.APP_ID,
-      p_user_id: user.id,
-      p_cost: COST,
-      p_weekly_cap: WEEKLY_CAP,
-    }
-  );
-
-  if (rpcErr) {
-    return NextResponse.json(
-      { ok: false, error: rpcErr.message },
-      { status: 500 }
-    );
-  }
-
-  const creditRow = Array.isArray(rpcData) ? rpcData[0] : rpcData;
-
-  if (!creditRow?.ok) {
-    return NextResponse.json(
-      {
-        ok: false,
-        error: "quota_exceeded",
-        balance: creditRow?.out_balance ?? 0,
-        remaining: 0,
-      },
-      { status: 402 }
-    );
-  }
   try {
     const result = await refineContent(profile, config, currentContent, instruction);
     return NextResponse.json({ ok: true, result });

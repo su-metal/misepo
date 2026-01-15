@@ -14,7 +14,7 @@ const contentSchema = {
   items: { type: Type.STRING },
 };
 
-const getModelName = (isPro: boolean) => {
+const getModelName = () => {
   return "gemini-2.5-flash";
 };
 
@@ -98,10 +98,9 @@ function getServerAI() {
 
 export const generateContent = async (
   profile: StoreProfile,
-  config: GenerationConfig,
-  isPro: boolean
+  config: GenerationConfig
 ): Promise<string[]> => {
-  const modelName = getModelName(isPro);
+  const modelName = getModelName();
   const maxRetries = 3;
   const charLimit = 140;
   const isXWith140Limit = config.platform === Platform.X && config.xConstraint140;
@@ -252,7 +251,7 @@ export const refineContent = async (
   currentContent: string,
   instruction: string
 ): Promise<string> => {
-  const modelName = getModelName(true);
+  const modelName = getModelName();
 
   const buildSystemInstruction = () => {
     const platformConstraint =

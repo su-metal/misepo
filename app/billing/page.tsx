@@ -26,7 +26,7 @@ export default function BillingPage() {
 
   return (
     <main style={{ padding: 24 }}>
-      <h1>Proプラン</h1>
+      <h1>ご利用開始</h1>
       <button onClick={goCheckout}>Stripeで支払う（テスト）</button>
       <p style={{ marginTop: 16 }}>
         <a href="/billing/manage">サブスク管理・解約はこちら</a>

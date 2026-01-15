@@ -46,7 +46,7 @@ const OnboardingSuccess: React.FC<OnboardingSuccessProps> = ({ onDismiss }) => {
             さっそく投稿を作ってみましょう！
           </p>
 
-          {/* Credit Grant Card */}
+          {/* Next Step Card */}
           <div className="w-full bg-gradient-to-r from-indigo-50 to-blue-50 border border-indigo-100 rounded-2xl p-5 mb-8 flex items-center gap-4 relative overflow-hidden group">
              <div className="absolute right-0 top-0 w-16 h-full bg-gradient-to-l from-white/50 to-transparent"></div>
              
@@ -55,12 +55,11 @@ const OnboardingSuccess: React.FC<OnboardingSuccessProps> = ({ onDismiss }) => {
              </div>
              
              <div className="text-left">
-                <div className="text-[10px] font-bold text-indigo-400 uppercase tracking-wider mb-0.5">Start Bonus</div>
+                <div className="text-[10px] font-bold text-indigo-400 uppercase tracking-wider mb-0.5">Start Guide</div>
                 <div className="text-sm font-bold text-slate-700">
-                  投稿作成クレジット
-                  <span className="text-lg text-indigo-600 ml-1">5回分</span>
+                  最初の投稿を作ってみましょう
                 </div>
-                <div className="text-[10px] text-slate-500">付与しました</div>
+                <div className="text-[10px] text-slate-500">すぐに作成できます</div>
              </div>
           </div>
 

@@ -76,40 +76,28 @@ export async function POST(req: Request) {
 
       const sub: any = await stripe.subscriptions.retrieve(subId);
 
-      // ✅ CHANGE: cancel_at を優先して expires_at を埋める
-      const expiresUnix: number | undefined =
-        (sub?.cancel_at ?? sub?.data?.cancel_at) ??
-        (sub?.current_period_end ?? sub?.data?.current_period_end);
-
-      const expiresAt = expiresUnix
-        ? new Date(expiresUnix * 1000).toISOString()
-        : null;
-
-      const status =
-        sub?.status === "active" || sub?.status === "trialing"
-          ? "active"
-          : sub?.status === "canceled"
-          ? "canceled"
-          : "past_due";
-
-      const plan = status === "active" ? "pro" : "free";
       const customerId =
-        typeof sub?.customer === "string"
-          ? sub.customer
-          : sub?.customer?.id ?? null;
+        typeof session?.customer === "string"
+          ? session.customer
+          : session?.customer?.id ??
+            (typeof sub?.customer === "string"
+              ? sub.customer
+              : sub?.customer?.id ?? null);
 
       await upsertEntitlement({
         userId,
         appId,
-        plan,
-        status,
-        expiresAt,
+        plan: "pro",
+        status: sub?.status ?? "inactive",
+        expiresAt: getExpiresAt(sub),
+        trialEndsAt: getTrialEndsAt(sub),
         billingRef: subId,
         customerId,
       });
     }
 
     if (
+      event.type === "customer.subscription.created" ||
       event.type === "customer.subscription.updated" ||
       event.type === "customer.subscription.deleted"
     ) {
@@ -121,25 +109,6 @@ export async function POST(req: Request) {
       if (!userId)
         throw new Error("user_id not found in subscription metadata");
 
-      // ✅ CHANGE: cancel_at を優先して expires_at を埋める（解約予約の本体）
-      const expiresUnix: number | undefined =
-        (sub?.cancel_at ?? sub?.data?.cancel_at) ??
-        (sub?.current_period_end ?? sub?.data?.current_period_end);
-
-      const expiresAt = expiresUnix
-        ? new Date(expiresUnix * 1000).toISOString()
-        : null;
-
-      const status =
-        sub?.status === "active"
-          ? "active"
-          : sub?.status === "canceled"
-          ? "canceled"
-          : "past_due";
-
-      // 「期間終了までPro」なら、status=active の間は pro のままでOK
-      const plan = status === "active" ? "pro" : "free";
-
       const customerId =
         typeof sub?.customer === "string"
           ? sub.customer
@@ -148,9 +117,10 @@ export async function POST(req: Request) {
       await upsertEntitlement({
         userId,
         appId,
-        plan,
-        status,
-        expiresAt, // ✅ ここが null だったのを埋められる
+        plan: "pro",
+        status: sub?.status ?? "inactive",
+        expiresAt: getExpiresAt(sub),
+        trialEndsAt: getTrialEndsAt(sub),
         billingRef: sub?.id ?? null,
         customerId,
       });
@@ -195,16 +165,33 @@ export async function POST(req: Request) {
   }
 }
 
+function toIso(unixSeconds?: number | null) {
+  if (typeof unixSeconds !== "number") return null;
+  return new Date(unixSeconds * 1000).toISOString();
+}
+
+function getExpiresAt(sub: any) {
+  const cancelAt = sub?.cancel_at ?? sub?.data?.cancel_at;
+  const currentPeriodEnd = sub?.current_period_end ?? sub?.data?.current_period_end;
+  return toIso(cancelAt ?? currentPeriodEnd);
+}
+
+function getTrialEndsAt(sub: any) {
+  const trialEnd = sub?.trial_end ?? sub?.data?.trial_end;
+  return toIso(trialEnd);
+}
+
 async function upsertEntitlement(params: {
   userId: string;
   appId: string;
   plan: "free" | "pro";
   status: string;
   expiresAt: string | null;
+  trialEndsAt?: string | null;
   billingRef: string | null;
   customerId?: string | null;
 }) {
-  const { userId, appId, plan, status, expiresAt, billingRef } = params;
+  const { userId, appId, plan, status, expiresAt, billingRef, trialEndsAt } = params;
 
   const payload: Record<string, unknown> = {
     user_id: userId,
@@ -212,6 +199,7 @@ async function upsertEntitlement(params: {
     plan,
     status,
     expires_at: expiresAt,
+    trial_ends_at: trialEndsAt ?? null,
     billing_provider: "stripe",
     billing_reference_id: billingRef,
   };
