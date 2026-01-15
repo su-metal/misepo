@@ -1481,12 +1481,11 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
                             <div className="pt-2">
                               <label className="block text-xs font-bold text-amber-800/70 mb-1.5">AIへのカスタムプロンプト (任意)</label>
                               <div className="relative">
-                                <input
-                                  type="text"
+                                <AutoResizingTextarea
                                   value={customPrompt}
                                   onChange={(e) => setCustomPrompt(e.target.value)}
                                   placeholder="例: 絵文字多めで、テンション高く..."
-                                  className="w-full bg-white/80 border-0 p-3 rounded-xl text-sm text-gray-700 focus:ring-2 focus:ring-amber-400 placeholder-amber-700/30 pr-16"
+                                  className="w-full bg-white/80 border-0 p-3 rounded-xl text-sm text-gray-700 focus:ring-2 focus:ring-amber-400 placeholder-amber-700/30 pr-16 resize-none"
                                 />
                                 <InputControlButtons
                                   value={customPrompt}
