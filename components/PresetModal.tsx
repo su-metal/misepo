@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import {
   DndContext,
@@ -120,6 +120,33 @@ const enforceSaveNameWidth = (value: string, maxWidth: number = MAX_SAVE_NAME_WI
     width += delta;
   }
   return truncated;
+};
+
+const AutoResizingTextarea: React.FC<{
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+  className?: string;
+}> = ({ value, onChange, placeholder, className }) => {
+  const ref = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (!ref.current) return;
+    ref.current.style.height = 'auto';
+    ref.current.style.height = `${ref.current.scrollHeight}px`;
+  }, [value]);
+
+  return (
+    <textarea
+      ref={ref}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      placeholder={placeholder}
+      className={className}
+      rows={1}
+      style={{ overflow: 'hidden' }}
+    />
+  );
 };
 
 const PresetModal: React.FC<PresetModalProps> = ({
@@ -457,12 +484,11 @@ const PresetModal: React.FC<PresetModalProps> = ({
             <label className="block text-xs font-bold text-amber-700 mb-2">
               発信者ペルソナ (Prompt)
             </label>
-            <textarea
+            <AutoResizingTextarea
               value={customPrompt}
-              onChange={(e) => setCustomPrompt(e.target.value)}
+              onChange={setCustomPrompt}
               placeholder="例: 店長として丁寧に。/ 20代アルバイトの親しみある口調で。"
-              rows={5}
-              className="w-full px-5 py-4 bg-amber-50/60 border border-amber-100 rounded-xl focus:bg-white focus:ring-2 focus:ring-amber-300 focus:border-transparent outline-none text-base text-slate-700 placeholder-amber-500 transition-all resize-none shadow-sm"
+              className="w-full px-5 py-4 bg-amber-50/60 border border-amber-100 rounded-xl focus:bg-white focus:ring-2 focus:ring-amber-300 focus:border-transparent outline-none text-base text-slate-700 placeholder-amber-500 transition-all shadow-sm"
             />
             <p className="text-[11px] text-gray-400 mt-2">
               ここで指定した文体でAIが出力を整えます。
