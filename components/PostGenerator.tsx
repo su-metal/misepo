@@ -998,20 +998,15 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
         )}
 
         {/* Header Area */}
-        <div className="flex justify-between items-center px-2 mb-3 shrink-0">
-          <div className="flex items-center gap-2">
-            {!isLoggedIn ? (
-              <span className="bg-gray-200 text-gray-600 px-3 py-1 rounded-full text-xs font-bold shadow-sm flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-gray-400"></span>
-                Guest Demo
-              </span>
-            ) : (
-              <span className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-xs font-bold shadow-sm flex items-center gap-1 border border-indigo-200">
-                <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
-                {storeProfile.name} Mode {(!isPro) && `(${remainingCredits}/${MAX_FREE_LIMIT})`}
-              </span>
-            )}
-          </div>
+          <div className="flex justify-between items-center px-2 mb-3 shrink-0">
+            <div className="flex items-center gap-2">
+              {!isLoggedIn ? (
+                <span className="bg-gray-200 text-gray-600 px-3 py-1 rounded-full text-xs font-bold shadow-sm flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-gray-400"></span>
+                  Guest Demo
+                </span>
+              ) : null}
+            </div>
 
           <button
             onClick={onOpenGuide}
