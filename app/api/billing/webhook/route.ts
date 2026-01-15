@@ -3,6 +3,8 @@ import Stripe from "stripe";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { env } from "@/lib/env";
 
+// ✅ CHANGE: Buffer を確実に使えるよう Node runtime 固定
+export const runtime = "nodejs";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -74,9 +76,14 @@ export async function POST(req: Request) {
 
       const sub: any = await stripe.subscriptions.retrieve(subId);
 
-      const cpe: number | undefined =
-        sub?.current_period_end ?? sub?.data?.current_period_end;
-      const expiresAt = cpe ? new Date(cpe * 1000).toISOString() : null;
+      // ✅ CHANGE: cancel_at を優先して expires_at を埋める
+      const expiresUnix: number | undefined =
+        (sub?.cancel_at ?? sub?.data?.cancel_at) ??
+        (sub?.current_period_end ?? sub?.data?.current_period_end);
+
+      const expiresAt = expiresUnix
+        ? new Date(expiresUnix * 1000).toISOString()
+        : null;
 
       const status =
         sub?.status === "active" || sub?.status === "trialing"
@@ -114,9 +121,14 @@ export async function POST(req: Request) {
       if (!userId)
         throw new Error("user_id not found in subscription metadata");
 
-      const cpe: number | undefined =
-        sub?.current_period_end ?? sub?.data?.current_period_end;
-      const expiresAt = cpe ? new Date(cpe * 1000).toISOString() : null;
+      // ✅ CHANGE: cancel_at を優先して expires_at を埋める（解約予約の本体）
+      const expiresUnix: number | undefined =
+        (sub?.cancel_at ?? sub?.data?.cancel_at) ??
+        (sub?.current_period_end ?? sub?.data?.current_period_end);
+
+      const expiresAt = expiresUnix
+        ? new Date(expiresUnix * 1000).toISOString()
+        : null;
 
       const status =
         sub?.status === "active"
@@ -125,7 +137,9 @@ export async function POST(req: Request) {
           ? "canceled"
           : "past_due";
 
+      // 「期間終了までPro」なら、status=active の間は pro のままでOK
       const plan = status === "active" ? "pro" : "free";
+
       const customerId =
         typeof sub?.customer === "string"
           ? sub.customer
@@ -136,7 +150,7 @@ export async function POST(req: Request) {
         appId,
         plan,
         status,
-        expiresAt,
+        expiresAt, // ✅ ここが null だったのを埋められる
         billingRef: sub?.id ?? null,
         customerId,
       });
@@ -144,7 +158,10 @@ export async function POST(req: Request) {
 
     if (event.type === "invoice.payment_succeeded") {
       const invoice = event.data.object as Stripe.Invoice;
-      const { userId, appId } = await resolveUserFromInvoice(invoice, fallbackAppId);
+      const { userId, appId } = await resolveUserFromInvoice(
+        invoice,
+        fallbackAppId
+      );
       if (userId) {
         const isPromoApplied = isIntroPromo(invoice);
         if (isPromoApplied && appId) {
@@ -231,8 +248,8 @@ async function resolveUserFromInvoice(
     const subscriptionId = getInvoiceSubscriptionId(invoice);
     if (subscriptionId) {
       const subscription = await stripe.subscriptions.retrieve(subscriptionId);
-      userId = subscription?.metadata?.user_id ?? userId;
-      appId = subscription?.metadata?.app_id ?? appId;
+      userId = (subscription as any)?.metadata?.user_id ?? userId;
+      appId = (subscription as any)?.metadata?.app_id ?? appId;
     }
   }
 
@@ -242,15 +259,18 @@ async function resolveUserFromInvoice(
 function isIntroPromo(invoice: Stripe.Invoice) {
   const couponApplied =
     STARTER_COUPON !== null &&
-    extractCouponIdsFromInvoice(invoice).some((couponId) => couponId === STARTER_COUPON);
+    extractCouponIdsFromInvoice(invoice).some(
+      (couponId) => couponId === STARTER_COUPON
+    );
 
   const metadataPromo =
     invoice.metadata?.promo_key === PROMO_KEY ||
     invoice.lines?.data?.some((line) => line.metadata?.promo_key === PROMO_KEY);
 
   const discountAmount =
-    (invoice.total_discount_amounts ?? []).some((entry) => (entry?.amount ?? 0) > 0) &&
-    invoice.metadata?.promo_key === PROMO_KEY;
+    (invoice.total_discount_amounts ?? []).some(
+      (entry) => (entry?.amount ?? 0) > 0
+    ) && invoice.metadata?.promo_key === PROMO_KEY;
 
   return couponApplied || metadataPromo || discountAmount;
 }

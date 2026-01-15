@@ -189,9 +189,24 @@ const App: React.FC = () => {
 
         const savedProfile = readFromStorage<StoreProfile>("store_profile", nextUserId);
         // Do not auto-open onboarding even if profile missing
-        if (event === "SIGNED_IN" && !hasShownStartBonus(nextUserId)) {
-          setShowOnboardingSuccess(true);
-          markStartBonusShown(nextUserId);
+        if (event === "SIGNED_IN") {
+          const metadata = session?.user?.user_metadata ?? {};
+          const hasSeenStartBonus = Boolean(metadata.start_bonus_shown);
+          if (!hasSeenStartBonus && !hasShownStartBonus(nextUserId)) {
+            setShowOnboardingSuccess(true);
+            markStartBonusShown(nextUserId);
+            void (async () => {
+              const { error } = await supabase.auth.updateUser({
+                data: {
+                  ...metadata,
+                  start_bonus_shown: true,
+                },
+              });
+              if (error) {
+                console.error("[onboarding] failed to mark start bonus:", error.message);
+              }
+            })();
+          }
         }
 
       } else {
