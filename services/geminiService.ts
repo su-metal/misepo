@@ -8,7 +8,7 @@ import {
   RiskTier,
 } from "../types";
 
-// Define the schema for structured output (Array of strings)
+// Response schema that enforces a JSON array of strings.
 const contentSchema = {
   type: Type.ARRAY,
   items: { type: Type.STRING },
@@ -18,7 +18,6 @@ const getModelName = (isPro: boolean) => {
   return "gemini-2.5-flash";
 };
 
-// Comprehensive Symbol Palette
 const DECORATION_PALETTE = `
 【Special Symbol Palette (Monochrome Text Symbols)】
 - Hearts/Stars: ❤︎ ❣︎ ❦ ❧ ღ ʚ♥ɞ ⸜❤︎⸝ ෆ ̖́- ಇ ✩ ✪ ✬ ✭ ✮ ✯ ✰ 𖤐˒˒ ꙳ ᛭ * ⸝⋆ ✦ ✧ ✡
@@ -51,88 +50,37 @@ const scoreRisk = (starRating: number, text: string): RiskAnalysisResult => {
   const signals: string[] = [];
 
   switch (starRating) {
-    case 1: score += 40; break;
-    case 2: score += 20; break;
-    case 3: score += 10; break;
+    case 1:
+      score += 40;
+      break;
+    case 2:
+      score += 20;
+      break;
+    case 3:
+      score += 10;
+      break;
   }
 
-  if (KEYWORDS.legal.test(text)) { score += 50; signals.push("法的リスク/公的機関への言及"); }
-  if (KEYWORDS.safetyHygiene.test(text)) { score += 40; signals.push("衛生・安全に関する指摘"); }
-  if (KEYWORDS.strongComplaint.test(text)) { score += 30; signals.push("強い苦情・返金要求"); }
-  if (KEYWORDS.abuse.test(text)) { score += 20; signals.push("攻撃的・暴言"); }
-  if (KEYWORDS.commonNeg.test(text)) { score += 10; signals.push("一般的な不満"); }
-
-  let tier: RiskTier = "low";
-  if (score >= 80) tier = "critical";
-  else if (score >= 50) tier = "high";
-  else if (score >= 30) tier = "medium";
-
-  return { score, tier, signals };
-};
-
-import "server-only";
-import { GoogleGenAI, Type } from "@google/genai";
-import {
-  GenerationConfig,
-  Platform,
-  StoreProfile,
-  GoogleMapPurpose,
-  RiskTier,
-} from "../types";
-
-// Define the schema for structured output (Array of strings)
-const contentSchema = {
-  type: Type.ARRAY,
-  items: { type: Type.STRING },
-};
-
-const getModelName = (isPro: boolean) => {
-  return "gemini-2.5-flash";
-};
-
-// Comprehensive Symbol Palette
-const DECORATION_PALETTE = `
-【Special Symbol Palette (Monochrome Text Symbols)】
-- Hearts/Stars: ❤︎ ❣︎ ❦ ❧ ღ ʚ♥ɞ ⸜❤︎⸝ ෆ ̖́- ಇ ✩ ✪ ✬ ✭ ✮ ✯ ✰ 𖤐˒˒ ꙳ ᛭ * ⸝⋆ ✦ ✧ ✡
-- Flowers/Plants: 𖤣 𖥧 𖥣 𖡡 ❀ ✿ ❉ ❊ ❋ ✻ ✼ ✽ ✾ ⁂ 𓍯 𖦊 ✲ 𖣔 𖡼 ꕤ ꕥ ❁ ✤ ꔛꕤ*｡ﾟ 𖠰 𖥍 𖣰 𖥸 𖦥 𖦞 𖢇 𖧡 ☘︎
-- Expressions/Faces: ☻︎ ☺︎ ☹︎ ◡̈ ⍤ ⍥ Ü ᵕ̈* ⍩ ᐖ ӫ ・ᴗ・ ⍨ ʘʘ ˙꒳​˙ °-° °ㅁ° ⚆ ˃́ꇴ˂ 𖦹‎
-- Animals: 𓃰 𓃱 𓃲 𓃟 𓃠 𓄅 𓃒 𓃗 𓃘 𓃙 𓃜 𓃥 𓃦 𓃵 𓅛 𓅸 𐂂 𓇼 𓆡 𓆛 ᗦ↞◃ 𓅓 𓄿 𓆑 𓅱 𓅿 𓅺 𓎤𓅮
-- Humans/Action: 𓀫 𓀠 𓀡 𓀤 𓁉 ꐕ 𐀪𐁑 𖠋𐀪 𖦔𖠋
-- Arrows: ⇝ ☜╮ ⥿ ⥱ ⇸ ⟲ ⥄ ⥳ ⇍ ↯︎ ⇰ ↬ ➴⡱ ↖︎ ↗︎ ↘︎ ↙︎
-- Frame Pairs (MUST USE AS PAIR): 𓊆 𓊇 ˚.꒰ ꒱.˚ 〖 〗 ☾ ☽ ˹ ˼ ⌜ ⌟ ❮ ❯ ˗ˏˋ ˎˊ˗ ❝ ❞ (e.g. ˗ˏˋ Title ˎˊ˗)
-- Lines/Dividers: ✄————— ｷ ﾘ ﾄ ﾘ —————✄ ✁┈┈┈┈┈┈┈┈┈┈ ✼••┈┈┈┈••✼••┈┈┈┈••✼ ｡.｡:+* ﾟ ゜ﾟ +:｡.｡:+ ﾟ ゜ﾟ +:｡.｡ ♔∴∵∴♔∴∵∴♔∴∵∴♔ ♩.•¨•.¸¸♩.•*¨*•.¸¸ 𓈒 𓏸 𓐍 𓂃 𓈒𓏸 𓂃◌𓈒𓐍 𓈒 ꔛ ০ ﻌﻌﻌ ꕀ 〰️ ꔚ ꕁ ╍ ⌇ ﹏ ￤ 　 𓂃
-- Life/Daily: ☀︎ ☼ ☁︎ ☂︎ ☃
-`;
-
-const KEYWORDS = {
-  legal: /(訴える|弁護士|消費者センター|警察|労基|監督署|違法|法的)/,
-  safetyHygiene: /(食中毒|異物|虫|カビ|腹痛|下痢|吐き気|アレルギー|火傷|怪我|危険|衛生|不衛生|汚い)/,
-  strongComplaint: /(詐欺|ぼったくり|最悪|二度と行かない|金返せ|返金|許せない|拡散|通報|口コミ消せ)/,
-  abuse: /(バカ|馬鹿|クソ|死ね|潰れろ|ゴミ|カス)/,
-  commonNeg: /(態度(が|も)?悪|不快|失礼|待たされた|高い|冷めて|まずい|美味しくない|遅い)/,
-};
-
-interface RiskAnalysisResult {
-  score: number;
-  tier: RiskTier;
-  signals: string[];
-}
-
-const scoreRisk = (starRating: number, text: string): RiskAnalysisResult => {
-  let score = 0;
-  const signals: string[] = [];
-
-  switch (starRating) {
-    case 1: score += 40; break;
-    case 2: score += 20; break;
-    case 3: score += 10; break;
+  if (KEYWORDS.legal.test(text)) {
+    score += 50;
+    signals.push("法的リスク/公的機関への言及");
   }
-
-  if (KEYWORDS.legal.test(text)) { score += 50; signals.push("法的リスク/公的機関への言及"); }
-  if (KEYWORDS.safetyHygiene.test(text)) { score += 40; signals.push("衛生・安全に関する指摘"); }
-  if (KEYWORDS.strongComplaint.test(text)) { score += 30; signals.push("強い苦情・返金要求"); }
-  if (KEYWORDS.abuse.test(text)) { score += 20; signals.push("攻撃的・暴言"); }
-  if (KEYWORDS.commonNeg.test(text)) { score += 10; signals.push("一般的な不満"); }
+  if (KEYWORDS.safetyHygiene.test(text)) {
+    score += 40;
+    signals.push("衛生・安全に関する指摘");
+  }
+  if (KEYWORDS.strongComplaint.test(text)) {
+    score += 30;
+    signals.push("強い苦情・返金要求");
+  }
+  if (KEYWORDS.abuse.test(text)) {
+    score += 20;
+    signals.push("攻撃的・暴言");
+  }
+  if (KEYWORDS.commonNeg.test(text)) {
+    score += 10;
+    signals.push("一般的な不満");
+  }
 
   let tier: RiskTier = "low";
   if (score >= 80) tier = "critical";
@@ -189,12 +137,13 @@ Target Audience: Local customers and potential visitors.
       systemInstruction += `\n- Special User Instruction: ${config.customPrompt}`;
     }
     if (config.instagramFooter) {
-      systemInstruction += `\n- Context (Store Info): "${config.instagramFooter}"\nNOTE: Do NOT include this store info footer in your generated output. It will be appended programmatically later. Only use this for context to avoid repeating information.`;
+      systemInstruction += `\n- Context (Store Info): "${config.instagramFooter}"
+NOTE: Do NOT include this store info footer in your generated output. It will be appended programmatically later. Only use this for context to avoid repeating information.`;
     }
 
     const useEmojis = config.includeEmojis !== false;
 
-    systemInstruction += `\n
+    systemInstruction += `
 **Formatting Rules:**
 1. Generate exactly 1 distinct variation.
 2. Output strictly as a JSON array of strings.
@@ -211,6 +160,34 @@ Target Audience: Local customers and potential visitors.
 - GOOD: "お待ちしています！", "お待ちしています✨", "美味しいですよ😋"
 `;
     return systemInstruction;
+  };
+
+  const buildUserPrompt = () => {
+    const lines = [
+      `Base Input: ${config.inputText.trim() || "N/A"}`,
+      `Project Goal: Write a ${config.length} ${config.platform} post.`,
+      `Tone: ${config.tone}`,
+      `Purpose: ${config.purpose}`,
+    ];
+
+    if (config.platform === Platform.GoogleMaps && typeof config.starRating === "number") {
+      lines.push(`Context: ${config.starRating}-star review response.`);
+    }
+    if (config.storeSupplement) {
+      lines.push(`Additional store details: ${config.storeSupplement}`);
+    }
+    if (config.customPrompt) {
+      lines.push(`Custom instruction: ${config.customPrompt}`);
+    }
+    if (config.includeSymbols) {
+      lines.push("Decoration preference: Complex symbols allowed.");
+    }
+    if (config.includeEmojis === false) {
+      lines.push("Decoration preference: Avoid emojis.");
+    }
+
+    lines.push("Output requirement: Respond strictly in JSON array format.");
+    return lines.join("\n");
   };
 
   const ai = getServerAI();
@@ -233,31 +210,79 @@ Target Audience: Local customers and potential visitors.
     if (!jsonText) throw new Error("No response from AI");
 
     const parsed = JSON.parse(jsonText);
+    if (!Array.isArray(parsed)) {
+      throw new Error("AI response was not an array");
+    }
+
+    return parsed.map((item) => {
+      if (typeof item === "string") {
+        return item.trim();
+      }
+      if (item === null || item === undefined) {
+        return "";
+      }
+      return String(item).trim();
+    });
+  };
+
+  const userPrompt = buildUserPrompt();
+
+  for (let attempt = 1; attempt <= maxRetries; attempt += 1) {
+    try {
+      const generated = await attemptGeneration(userPrompt);
+      if (generated.some((text) => text.length > 0)) {
+        return generated;
+      }
+      if (attempt === maxRetries) {
+        return generated;
+      }
+    } catch (error) {
+      if (attempt === maxRetries) {
+        throw error;
+      }
+    }
+  }
+
+  return [];
+};
+
+export const refineContent = async (
+  profile: StoreProfile,
+  config: GenerationConfig,
+  currentContent: string,
+  instruction: string
 ): Promise<string> => {
   const modelName = getModelName(true);
 
-  const systemInstruction = `
+  const buildSystemInstruction = () => {
+    const platformConstraint =
+      config.platform === Platform.X && config.xConstraint140
+        ? "1. MUST be under 140 characters."
+        : "";
+
+    return `
 You are an AI editor refining a social media post for "${profile.name}".
 Original Platform: ${config.platform}
 Tone: ${config.tone}
 
 **Formatting Rules:**
-1. ${config.platform === Platform.X && config.xConstraint140 ? "MUST be under 140 characters." : ""}
-2. If Instagram: Keep hashtags.
+${platformConstraint ? `${platformConstraint}\n2. If Instagram: keep hashtags.` : "1. If Instagram: keep hashtags."}
 
 **Style Constraint (CRITICAL):**
 - **Do NOT combine exclamation marks (! or ！) with emojis at the end of a sentence.**
 - Choose ONLY ONE: either an exclamation mark OR an emoji.
 `;
+  };
 
-  const userPrompt = `
-Original Post: "${currentContent}"
-Refinement Instruction: "${instruction}"
-
-Output ONLY the refined text (raw string, not JSON).
-`;
+  const userPrompt = [
+    `Original Post: ${JSON.stringify(currentContent)}`,
+    `Refinement Instruction: ${JSON.stringify(instruction)}`,
+    "",
+    "Output ONLY the refined text (raw string, not JSON).",
+  ].join("\n");
 
   const ai = getServerAI();
+  const systemInstruction = buildSystemInstruction();
 
   const response = await ai.models.generateContent({
     model: modelName,
@@ -269,7 +294,7 @@ Output ONLY the refined text (raw string, not JSON).
     },
   });
 
-  return response.text || currentContent;
+  return (response.text || currentContent).trim();
 };
 
 export const analyzeRisk = async (
