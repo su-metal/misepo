@@ -3,6 +3,7 @@ import Stripe from "stripe";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { env } from "@/lib/env";
 
+
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 const PROMO_KEY = "intro_monthly_1000off";
@@ -19,7 +20,7 @@ export async function POST(req: Request) {
       { status: 400 }
     );
 
-  const rawBody = await req.text();
+  const rawBody = Buffer.from(await req.arrayBuffer());
 
   let event: Stripe.Event;
   try {
