@@ -242,6 +242,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [previewModal, setPreviewModal] = useState<{ platform: Platform, text: string } | null>(null);
   const [activeQuickPreset, setActiveQuickPreset] = useState<string | null>(null);
+  const [visiblePlatform, setVisiblePlatform] = useState<Platform>(Platform.Instagram);
 
   // Track active preset context for editing/saving
   const isMap = platforms.includes(Platform.GoogleMaps);
@@ -256,6 +257,14 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
   const hasResults = resultGroups.length > 0;
   const generateButtonLabel = '投稿を生成する';
   const quickPresets = presets.slice(0, 3);
+  const visibleResultGroups = resultGroups.filter((group) => group.platform === visiblePlatform);
+  const hasVisibleResults = visibleResultGroups.length > 0;
+
+  useEffect(() => {
+    if (!platforms.includes(visiblePlatform)) {
+      setVisiblePlatform(platforms[0]);
+    }
+  }, [platforms, visiblePlatform]);
 
   useEffect(() => {
     if (isMap && starRating !== null) {
@@ -440,6 +449,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
 
   const handlePlatformToggle = (p: Platform) => {
     if (!isLoggedIn && p !== Platform.Instagram) return;
+    setVisiblePlatform(p);
 
     if (p === Platform.GoogleMaps) {
       setPlatforms([Platform.GoogleMaps]);
@@ -1113,7 +1123,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
             <div className="space-y-4 lg:overflow-y-auto pr-1 scrollbar-hide lg:w-[400px] lg:flex-shrink-0 transition-all duration-500">
 
               {/* QUICK PRESETS (Added Feature) */}
-              {!isMap && isLoggedIn && !isMultiGenMode && (
+              {!isMap && isLoggedIn && (
                 <div className="space-y-2 mb-4">
                   <div className="flex items-center justify-between px-1">
                     <div className="flex items-center gap-1.5">
@@ -1505,7 +1515,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
             </div>
 
             {/* RIGHT COLUMN: Results */}
-            {hasResults && (
+            {hasVisibleResults && (
               <div className="lg:col-start-2 xl:col-start-3 h-full flex flex-col animate-in slide-in-from-right fade-in duration-700 lg:flex-shrink-0 xl:w-[360px]">
                 <div ref={resultsRef} className="space-y-6 lg:overflow-y-auto pr-1 scrollbar-hide lg:max-h-full pb-4 md:pb-0">
                   <div className="flex items-center justify-between sticky top-0 bg-white/95 backdrop-blur-sm z-10 py-2 border-b border-gray-100">
@@ -1514,8 +1524,8 @@ const PostGenerator: React.FC<PostGeneratorProps> = ({
                     </h2>
                   </div>
 
-                  <div className={`grid gap-6 ${resultGroups.length > 1 ? 'lg:grid-cols-2 xl:grid-cols-1' : 'grid-cols-1'}`}>
-                    {resultGroups.map((group, gIdx) => (
+                  <div className={`grid gap-6 ${visibleResultGroups.length > 1 ? 'lg:grid-cols-2 xl:grid-cols-1' : 'grid-cols-1'}`}>
+                    {visibleResultGroups.map((group, gIdx) => (
                       <div key={gIdx} className="space-y-4">
                         <div className="flex items-center gap-2 px-2">
                         <span className={`p-1.5 rounded-lg text-white ${group.platform === Platform.X ? 'bg-black' :
