@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { supabaseAdmin } from "@/lib/supabase/admin";
+import { env } from "@/lib/env";
 
-const APP_ID = process.env.APP_ID!;
+const APP_ID = env.APP_ID;
 const WEEKLY_CAP = 5;
 
 export async function GET() {

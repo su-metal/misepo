@@ -1,24 +1,17 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { env } from "@/lib/env";
 
-const APP_ID = "misepo";
+const APP_ID = env.APP_ID;
 
 interface PresetUpdate {
   name?: string;
-  purpose?: string;
-  tone?: string;
-  length?: string;
-  emoji_mode?: boolean;
-  symbol_mode?: boolean;
-  x_140_limit?: boolean;
-  input_template?: string | null;
   custom_prompt?: string | null;
-  writer_persona?: string | null;
 }
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const supabase = await createClient();
   const {
@@ -30,7 +23,7 @@ export async function PATCH(
     return NextResponse.json({ ok: false, error: "unauthorized" });
   }
 
-  const presetId = params.id;
+  const { id: presetId } = await params;
 
   let body: PresetUpdate;
   try {
@@ -39,9 +32,17 @@ export async function PATCH(
     return NextResponse.json({ ok: false, error: "invalid payload" });
   }
 
+  const updateFields: Record<string, unknown> = {};
+  if (body.name !== undefined) updateFields.name = body.name;
+  if (body.custom_prompt !== undefined) updateFields.custom_prompt = body.custom_prompt;
+
+  if (Object.keys(updateFields).length === 0) {
+    return NextResponse.json({ ok: true });
+  }
+
   const { error: updateErr } = await supabase
     .from("user_presets")
-    .update(body)
+    .update(updateFields)
     .eq("id", presetId)
     .eq("app_id", APP_ID)
     .eq("user_id", user.id);
@@ -55,7 +56,7 @@ export async function PATCH(
 
 export async function DELETE(
   _req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const supabase = await createClient();
   const {
@@ -67,7 +68,7 @@ export async function DELETE(
     return NextResponse.json({ ok: false, error: "unauthorized" });
   }
 
-  const presetId = params.id;
+  const { id: presetId } = await params;
 
   const { error: deleteErr } = await supabase
     .from("user_presets")

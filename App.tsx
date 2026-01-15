@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { createClient } from "@/lib/supabase/client";
 import {
   AppState,
@@ -23,6 +23,7 @@ import UpgradeModal from './components/UpgradeModal';
 import LoginModal from './components/LoginModal';
 import OnboardingSuccess from './components/OnboardingSuccess';
 import GuestDemoModal from './components/GuestDemoModal';
+import GuideModal from './components/GuideModal';
 import { LockIcon, LogOutIcon } from './components/Icons';
 import { useRouter } from 'next/navigation';
 
@@ -115,7 +116,7 @@ const App: React.FC = () => {
   // UI State
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const [, setShowGuide] = useState(false);
+  const [showGuide, setShowGuide] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showOnboardingSuccess, setShowOnboardingSuccess] = useState(false);
   const [showGuestDemoModal, setShowGuestDemoModal] = useState(false);
@@ -160,14 +161,6 @@ const App: React.FC = () => {
         setHistory(JSON.parse(savedHistory));
       }
 
-      const savedPresets = readFromStorage<Preset[]>(
-        "presets",
-        loggedIn ? currentUserId : null
-      );
-      if (Array.isArray(savedPresets)) {
-        setPresets(savedPresets);
-      }
-
       checkDailyLimit();
 
       setAuthReady(true);
@@ -196,9 +189,24 @@ const App: React.FC = () => {
 
         const savedProfile = readFromStorage<StoreProfile>("store_profile", nextUserId);
         // Do not auto-open onboarding even if profile missing
-        if (event === "SIGNED_IN" && !hasShownStartBonus(nextUserId)) {
-          setShowOnboardingSuccess(true);
-          markStartBonusShown(nextUserId);
+        if (event === "SIGNED_IN") {
+          const metadata = session?.user?.user_metadata ?? {};
+          const hasSeenStartBonus = Boolean(metadata.start_bonus_shown);
+          if (!hasSeenStartBonus && !hasShownStartBonus(nextUserId)) {
+            setShowOnboardingSuccess(true);
+            markStartBonusShown(nextUserId);
+            void (async () => {
+              const { error } = await supabase.auth.updateUser({
+                data: {
+                  ...metadata,
+                  start_bonus_shown: true,
+                },
+              });
+              if (error) {
+                console.error("[onboarding] failed to mark start bonus:", error.message);
+              }
+            })();
+          }
         }
 
       } else {
@@ -253,6 +261,23 @@ const App: React.FC = () => {
       console.warn("store profile fetch failed:", err);
     }
   };
+
+  const refreshPresets = useCallback(async () => {
+    if (!authReady || !isLoggedIn || !userId) return;
+
+    try {
+      const res = await fetch("/api/me/presets", { cache: "no-store" });
+      const data = await res.json().catch(() => null);
+      if (res.ok && data?.ok && Array.isArray(data.presets)) {
+        setPresets(data.presets);
+      } else if (data?.ok === false) {
+        console.warn("Unable to load presets:", data.error ?? res.status);
+        setPresets([]);
+      }
+    } catch (err) {
+      console.warn("presets fetch failed:", err);
+    }
+  }, [authReady, isLoggedIn, userId]);
 
   useEffect(() => {
     if (!authReady) return;
@@ -356,30 +381,19 @@ const App: React.FC = () => {
   }, [authReady, storeProfile, userId]);
 
   useEffect(() => {
-    if (!authReady || !isLoggedIn) return;
-    localStorage.setItem('misepo_history', JSON.stringify(history));
-  }, [authReady, history, isLoggedIn]);
-
-  useEffect(() => {
     if (!authReady) return;
-
-    if (!userId) {
-      const guestPresets = readFromStorage<Preset[]>("presets", null);
-      setPresets(Array.isArray(guestPresets) ? guestPresets : []);
+    if (isLoggedIn) {
+      refreshPresets();
       return;
     }
 
     setPresets([]);
-    const cachedPresets = readFromStorage<Preset[]>("presets", userId);
-    if (Array.isArray(cachedPresets)) {
-      setPresets(cachedPresets);
-    }
-  }, [authReady, userId]);
+  }, [authReady, isLoggedIn, refreshPresets]);
 
   useEffect(() => {
-    if (!authReady) return;
-    writeToStorage("presets", userId, presets);
-  }, [authReady, presets, userId]);
+    if (!authReady || !isLoggedIn) return;
+    localStorage.setItem('misepo_history', JSON.stringify(history));
+  }, [authReady, history, isLoggedIn]);
 
   // --- Handlers ---
 
@@ -654,15 +668,6 @@ open11:00-close 17:00
     setShowGuestDemoModal(false); // Ensure demo modal is closed
   };
 
-  // Preset Handlers
-  const handleSavePreset = (preset: Preset) => {
-    setPresets(prev => [...prev, preset]);
-  };
-
-  const handleDeletePreset = (id: string) => {
-    setPresets(prev => prev.filter(p => p.id !== id));
-  };
-
   const toggleSidebar = () => setIsSidebarOpen(prev => !prev);
 
   const handleHistorySelect = (post: GeneratedPost) => {
@@ -926,10 +931,9 @@ open11:00-close 17:00
             onOpenLogin={() => setShowLoginModal(true)}
             dailyUsageCount={dailyUsageCount}
             isPro={isPro}
-            presets={presets}
-            onSavePreset={handleSavePreset}
-            onDeletePreset={handleDeletePreset}
-            onGenerateSuccess={handleGenerateSuccess}
+          presets={presets}
+          refreshPresets={refreshPresets}
+          onGenerateSuccess={handleGenerateSuccess}
             retryCount={retryCount}
             onTaskComplete={handleTaskComplete}
             onRetryComplete={handleRetryComplete}
@@ -942,6 +946,7 @@ open11:00-close 17:00
           />
         </main>
       </div>
+      <GuideModal isOpen={showGuide} onClose={() => setShowGuide(false)} />
     </div>
   );
 };

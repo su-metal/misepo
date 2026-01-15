@@ -1,17 +1,17 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { supabaseAdmin } from "@/lib/supabase/admin";
+import { env } from "@/lib/env";
 
-const APP_ID = "misepo";
+const APP_ID = env.APP_ID;
 
 type HistoryParams = {
-  params: { id: string } | Promise<{ id: string }>;
+  params: Promise<{ id: string }>;
 };
 
 export async function DELETE(_req: Request, context: HistoryParams) {
   const { params } = context;
-  const resolvedParams = typeof params?.then === "function" ? await params : params;
-  const id = resolvedParams?.id;
+  const { id } = await params;
   if (!id) {
     return NextResponse.json({ ok: false, error: "missing_id" }, { status: 400 });
   }

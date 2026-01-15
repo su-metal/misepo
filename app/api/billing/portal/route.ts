@@ -2,9 +2,10 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { createClient } from "@/lib/supabase/server";
 import { supabaseAdmin } from "@/lib/supabase/admin";
+import { env } from "@/lib/env";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-const APP_ID = process.env.APP_ID!;
+const APP_ID = env.APP_ID;
 const RETURN_URL = process.env.NEXT_PUBLIC_APP_URL
   ? `${process.env.NEXT_PUBLIC_APP_URL.replace(/\/$/, "")}/`
   : null;

@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase/admin";
+import { env } from "@/lib/env";
 
 const isDev = process.env.NODE_ENV !== "production";
-const appId = process.env.APP_ID!;
+const appId = env.APP_ID;
 const token = process.env.DEV_FORCE_PLAN_TOKEN;
 
 export async function POST(req: Request) {
