@@ -1,4 +1,5 @@
 export type EntitlementLike = {
+  plan?: string | null;
   status: string | null;
   expires_at: string | null;
   trial_ends_at: string | null;
@@ -14,5 +15,6 @@ export function computeCanUseApp(ent: EntitlementLike): boolean {
   const isPaidLike = ent.status === "active" || ent.status === "trialing";
   const isPaidActive = isPaidLike && (expiresMs === null || expiresMs > nowMs);
 
+  // Strict check: Only Active Paid subscription or Valid Trial allowed.
   return isTrial || isPaidActive;
 }
