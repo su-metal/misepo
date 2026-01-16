@@ -19,3 +19,9 @@ View your app in AI Studio: https://ai.studio/apps/drive/1W9ais2FuyeXL_6xDKdImjG
 3. Run the app:
    `npm run dev`
 # misepo
+
+## Starter promotion tracking
+
+- Run `docs/migration_promotion_redemptions.sql` (or equivalent Supabase migration) before enabling checkout to create the `promotion_redemptions` table that tracks the first-time monthly coupon.
+- First monthly checkout (plan=monthly) should still receive the 980円 price and create one row in `promotion_redemptions`. Replay the checkout and the webhook successfully records the redemption.
+- Subsequent monthly checkouts for the same user/app must hit the 1980円 price, and the `promotion_redemptions` table stays at a single row. Annual checkouts never insert a redemption.
