@@ -32,8 +32,8 @@ export const PlatformSelector: React.FC<PlatformSelectorProps> = ({
             {/* Header: Platform Choice */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h3 className="text-[10px] font-black text-orange-400 uppercase tracking-[0.3em] mb-1">Target Engine</h3>
-                    <p className="text-xs font-black text-white/50">プラットフォーム選択</p>
+                    <h3 className="text-[10px] font-black text-orange-500 uppercase tracking-[0.3em] mb-1">Target Engine</h3>
+                    <p className="text-xs font-black text-stone-400">プラットフォーム選択</p>
                 </div>
                 <button
                     onClick={onToggleMultiGen}
@@ -41,14 +41,14 @@ export const PlatformSelector: React.FC<PlatformSelectorProps> = ({
                         group flex items-center gap-2 px-4 py-2 rounded-2xl border text-[10px] font-black tracking-widest transition-all
                         ${isMultiGen
                             ? 'bg-orange-600 border-orange-500 text-white shadow-lg shadow-orange-900/40'
-                            : 'bg-white/5 border-white/5 text-stone-500 hover:border-white/10 hover:text-stone-300'}
+                            : 'bg-stone-100 border-stone-200 text-stone-500 hover:border-stone-300 hover:text-stone-700'}
                     `}
                 >
                     <SparklesIcon className={`w-3.5 h-3.5 ${isMultiGen ? "text-white" : "text-orange-500"}`} />
                     <span>BATCH MODE</span>
                     <div className={`
                         w-6 h-3.5 rounded-full relative transition-colors duration-300
-                        ${isMultiGen ? 'bg-orange-400' : 'bg-stone-700'}
+                        ${isMultiGen ? 'bg-orange-400' : 'bg-stone-300'}
                     `}>
                         <div className={`
                             absolute top-0.5 w-2.5 h-2.5 bg-white rounded-full transition-all duration-300
@@ -69,17 +69,17 @@ export const PlatformSelector: React.FC<PlatformSelectorProps> = ({
                             className={`
                                 relative flex flex-col items-center justify-center gap-3 p-5 rounded-[2rem] border transition-all duration-500 group
                                 ${isSelected
-                                    ? 'bg-gradient-to-br from-orange-600/20 to-orange-900/20 border-orange-500/50 shadow-2xl shadow-orange-900/20'
-                                    : 'bg-white/5 border-white/5 hover:border-white/10 hover:bg-white/10'}
+                                    ? 'bg-gradient-to-br from-orange-50 to-orange-100/50 border-orange-500/30 shadow-xl shadow-orange-100'
+                                    : 'bg-stone-50/50 border-stone-100/50 hover:border-stone-200 hover:bg-white'}
                             `}
                         >
                             <div className={`
                                 w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-500
-                                ${isSelected ? 'bg-orange-600 text-white shadow-xl shadow-orange-900/40' : 'bg-stone-800 text-stone-500 group-hover:text-stone-300'}
+                                ${isSelected ? 'bg-orange-600 text-white shadow-xl shadow-orange-600/30' : 'bg-stone-100 text-stone-400 group-hover:bg-stone-200 group-hover:text-stone-600'}
                             `}>
                                 {getPlatformIcon(p)}
                             </div>
-                            <span className={`text-[10px] font-black tracking-widest uppercase ${isSelected ? 'text-white' : 'text-stone-500 group-hover:text-stone-400'}`}>
+                            <span className={`text-[10px] font-black tracking-widest uppercase ${isSelected ? 'text-orange-600' : 'text-stone-500 group-hover:text-stone-700'}`}>
                                 {p}
                             </span>
 
@@ -98,13 +98,13 @@ export const PlatformSelector: React.FC<PlatformSelectorProps> = ({
 
             {/* Presets Module */}
             {quickPresets.length > 0 && (
-                <div className="pt-4 border-t border-white/5">
+                <div className="pt-4 border-t border-stone-100">
                     <div className="flex items-center justify-between mb-4">
-                        <span className="text-[9px] font-black text-stone-500 uppercase tracking-[0.3em]">Presets Library</span>
+                        <span className="text-[9px] font-black text-stone-400 uppercase tracking-[0.3em]">Presets Library</span>
                         <div className="flex gap-1">
-                            <div className="w-1 h-1 rounded-full bg-stone-700"></div>
-                            <div className="w-1 h-1 rounded-full bg-stone-700"></div>
-                            <div className="w-1 h-1 rounded-full bg-stone-700"></div>
+                            <div className="w-1 h-1 rounded-full bg-stone-200"></div>
+                            <div className="w-1 h-1 rounded-full bg-stone-200"></div>
+                            <div className="w-1 h-1 rounded-full bg-stone-100"></div>
                         </div>
                     </div>
                     <div className="grid grid-cols-3 gap-2 w-full">
@@ -117,13 +117,13 @@ export const PlatformSelector: React.FC<PlatformSelectorProps> = ({
                                     className={`
                                         group relative overflow-hidden w-full px-2 py-3 rounded-xl text-xs font-black tracking-widest transition-all duration-300
                                         ${isActive
-                                            ? 'bg-white text-stone-900 shadow-xl'
-                                            : 'bg-white/5 text-stone-500 border border-white/5 hover:border-white/10 hover:text-stone-300'}
+                                            ? 'bg-orange-600 text-white shadow-lg shadow-orange-200'
+                                            : 'bg-stone-50 text-stone-500 border border-stone-100 hover:border-stone-200 hover:text-stone-800'}
                                     `}
                                 >
                                     <span className="relative z-10 block truncate w-full text-center">{ps.name.toUpperCase()}</span>
                                     {isActive && (
-                                        <div className="absolute inset-0 bg-gradient-to-r from-orange-500/20 to-purple-500/20"></div>
+                                        <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-orange-600"></div>
                                     )}
                                 </button>
                             );

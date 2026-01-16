@@ -110,9 +110,7 @@ export async function GET() {
   const isPro = canUseApp;
 
   // --- Check Trial Eligibility ---
-  // Eligible if: never had pro plan, never had a trial redemption
-  const isCurrentlyFree = ent.plan === "free";
-  
+  // Eligible if: never redeemed trial before (removed plan check)
   const { data: trialRedemption } = await supabaseAdmin
     .from("promotion_redemptions")
     .select("id")
@@ -121,7 +119,7 @@ export async function GET() {
     .eq("promo_key", "trial_7days")
     .maybeSingle();
 
-  const eligibleForTrial = isCurrentlyFree && !trialRedemption;
+  const eligibleForTrial = !trialRedemption;
 
   return NextResponse.json(
     {

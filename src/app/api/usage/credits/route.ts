@@ -33,7 +33,8 @@ export async function GET() {
     return NextResponse.json({ ok: false, error: entErr.message }, { status: 500 });
   }
 
-  const isPro = ent?.plan === "pro" && ent?.status === "active";
+  // Pro status check (removed plan dependency)
+  const isPro = ent?.status === "active" || ent?.status === "trialing";
   if (isPro) {
     return NextResponse.json({ ok: true, isPro: true, remaining: null });
   }

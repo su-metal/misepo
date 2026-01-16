@@ -6,9 +6,30 @@ import { useStartFlow } from "@/hooks/useStartFlow";
 function StartPageContent() {
   const {
     loading,
+    isLoggedIn,
     eligibleForTrial,
+    isRedirecting,
+    intent,
     startGoogleLogin
   } = useStartFlow();
+
+  // Show full-screen loader when:
+  // 1. Redirecting to checkout, OR
+  // 2. Intent is trial and user is logged in (about to redirect)
+  if (isRedirecting || (intent === "trial" && isLoggedIn)) {
+    return (
+      <main className="min-h-screen bg-stone-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-flex items-center gap-3 px-6 py-4 bg-white/60 backdrop-blur-3xl border border-white/40 rounded-2xl shadow-xl">
+            <div className="w-3 h-3 bg-orange-500 rounded-full animate-bounce"></div>
+            <span className="text-sm font-black text-stone-600 uppercase tracking-widest">
+              Redirecting to checkout...
+            </span>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-stone-50 text-stone-800 flex items-center justify-center px-4 py-12 relative overflow-hidden selection:bg-orange-200">

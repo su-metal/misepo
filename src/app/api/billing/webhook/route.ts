@@ -84,6 +84,31 @@ export async function POST(req: Request) {
               ? sub.customer
               : sub?.customer?.id ?? null);
 
+      // ---- Prevent Duplicate Subscriptions ----
+      // Check if customer already has other active subscriptions
+      if (customerId) {
+        const existingSubs = await stripe.subscriptions.list({
+          customer: customerId,
+          status: "active",
+          limit: 10,
+        });
+
+        // If multiple active subscriptions exist, cancel older ones
+        const activeSubs = existingSubs.data.filter((s) => s.id !== subId);
+        if (activeSubs.length > 0) {
+          console.log(`[webhook] Found ${activeSubs.length} duplicate subscription(s) for customer ${customerId}`);
+          
+          for (const oldSub of activeSubs) {
+            try {
+              await stripe.subscriptions.cancel(oldSub.id);
+              console.log(`[webhook] Cancelled duplicate subscription: ${oldSub.id}`);
+            } catch (cancelErr: any) {
+              console.error(`[webhook] Failed to cancel subscription ${oldSub.id}:`, cancelErr.message);
+            }
+          }
+        }
+      }
+
       await upsertEntitlement({
         userId,
         appId,

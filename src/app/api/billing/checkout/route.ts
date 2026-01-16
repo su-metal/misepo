@@ -38,6 +38,7 @@ export async function POST(req: Request) {
     }
 
     const userId = data.user.id;
+    const userEmail = data.user.email; // Get user email
     const appId = APP_ID;
     const successUrl = `${process.env.NEXT_PUBLIC_APP_URL}/billing/success`;
     const cancelUrl = `${process.env.NEXT_PUBLIC_APP_URL}/billing/cancel`;
@@ -109,6 +110,7 @@ export async function POST(req: Request) {
     let customerId = entitlement?.stripe_customer_id ?? null;
     if (!customerId) {
       const customer = await stripe.customers.create({
+        email: userEmail, // Set user email
         metadata: { user_id: userId, app_id: appId },
       });
       customerId = customer.id;
@@ -137,12 +139,9 @@ export async function POST(req: Request) {
     const TRIAL_PROMO_KEY = "trial_7days";
     let trialDaysToApply = 0;
 
-    // A "new user" for trial purposes is someone who:
-    // 1. Is currently on the 'free' plan (has never completed a pro checkout before)
-    // 2. Has no record in promotion_redemptions for 'trial_7days'
-    const isCurrentlyFree = !entitlement || entitlement.plan === "free";
-
-    if (TRIAL_DAYS > 0 && isCurrentlyFree) {
+    // Trial eligibility: user has never redeemed trial before
+    // (removed plan check - now only checks redemption history)
+    if (TRIAL_DAYS > 0) {
       const { data: trialRedemption, error: trialRedemptionErr } = await supabaseAdmin
         .from("promotion_redemptions")
         .select("id")

@@ -56,11 +56,8 @@ export async function GET() {
     effectiveEnt = created;
   }
 
-  const canUseApp = computeCanUseApp(effectiveEnt);
-
-  if (!canUseApp) {
-    return NextResponse.json({ ok: false, error: "access_denied" }, { status: 403 });
-  }
+  // Allow all logged-in users to view their history
+  // (removed strict canUseApp check to support trial and free users)
 
   let query = supabase
     .from("ai_runs")

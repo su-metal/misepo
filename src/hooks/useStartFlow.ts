@@ -11,6 +11,7 @@ export function useStartFlow() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [canUseApp, setCanUseApp] = useState<boolean | null>(null);
   const [eligibleForTrial, setEligibleForTrial] = useState<boolean>(true);
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   const intent = (searchParams.get("intent") as "trial" | "login") ?? "login";
 
@@ -26,6 +27,7 @@ export function useStartFlow() {
   };
 
   const goCheckout = useCallback(async () => {
+    setIsRedirecting(true);
     const res = await fetch("/api/billing/checkout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -38,6 +40,7 @@ export function useStartFlow() {
     } else if (data?.error === "already_active") {
       router.replace("/");
     } else {
+      setIsRedirecting(false);
       alert(data?.error ?? "Checkout failed");
     }
   }, [router]);
@@ -85,6 +88,7 @@ export function useStartFlow() {
     canUseApp,
     eligibleForTrial,
     intent,
+    isRedirecting,
     startGoogleLogin,
     goCheckout
   };
