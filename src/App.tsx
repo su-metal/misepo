@@ -164,7 +164,7 @@ function App() {
   const handleDeleteHistory = async (id: string) => {
     setHistory(prev => prev.filter(h => h.id !== id));
     if (isLoggedIn) {
-      await fetch(`/api/me/history?id=${id}`, { method: 'DELETE' });
+      await fetch(`/api/me/history/${id}`, { method: 'DELETE' });
     }
   };
 
@@ -193,13 +193,14 @@ function App() {
         onDelete={handleDeleteHistory}
         isLoggedIn={isLoggedIn}
         onOpenLogin={() => router.push('/start')}
+        onOpenGuide={() => setShowGuide(true)}
+        onOpenSettings={() => setShowOnboarding(true)}
+        onLogout={logout}
+        storeProfile={storeProfile}
       />
 
       <div className="flex-1 flex flex-col min-w-0">
-        <MobileHeader onOpenSidebar={() => setIsSidebarOpen(true)} />
-
         <main className="flex-1 overflow-y-auto overflow-x-hidden">
-
           <PostGenerator
             storeProfile={storeProfile!}
             isLoggedIn={isLoggedIn}
@@ -207,12 +208,13 @@ function App() {
             presets={presets}
             refreshPresets={fetchPresets}
             onGenerateSuccess={handleGenerateSuccess}
-            onTaskComplete={() => { /* no-op to prevent duplicate fetch race condition */ }}
+            onTaskComplete={() => { /* no-op */ }}
             restorePost={activeHistoryItem}
             onOpenGuide={() => setShowGuide(true)}
             onOpenSettings={() => setShowOnboarding(true)}
             onOpenHistory={() => setIsSidebarOpen(true)}
             onLogout={logout}
+            plan={plan}
           />
         </main>
       </div>

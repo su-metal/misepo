@@ -59,14 +59,20 @@ export async function GET() {
   // Allow all logged-in users to view their history
   // (removed strict canUseApp check to support trial and free users)
 
-  let query = supabase
+  // Query through ai_runs with join to ai_run_records (foreign key relationship)
+  console.log("[HISTORY FETCH] Querying:", { app_id: APP_ID, user_id: user.id });
+  
+  const { data, error: historyErr } = await supabaseAdmin
     .from("ai_runs")
     .select("id, run_type, created_at, ai_run_records(input, output)")
     .eq("app_id", APP_ID)
     .eq("user_id", user.id)
     .order("created_at", { ascending: false });
 
-  const { data, error: historyErr } = await query;
+  console.log("[HISTORY FETCH] Result:", { 
+    count: data?.length ?? 0, 
+    error: historyErr?.message ?? null,
+  });
 
   if (historyErr) {
     return NextResponse.json({ ok: false, error: historyErr.message });
@@ -78,11 +84,10 @@ export async function GET() {
       : row.ai_run_records;
 
     return {
-      id: row.id,                    // Mapped to 'id' (was run_id)
-      run_type: row.run_type,
+      id: row.id,
       created_at: row.created_at,
-      config: rec?.input ?? {},      // Mapped to 'config' (was input)
-      result: rec?.output ?? [],     // Mapped to 'result' (was output)
+      config: rec?.input ?? {},
+      result: rec?.output ?? [],
     };
   });
 
@@ -172,35 +177,35 @@ export async function POST(req: Request) {
       ? body.run_type
       : "generation";
 
-  const { data: rpcData, error: rpcErr } = await supabaseAdmin.rpc(
-    "save_history_with_cap",
-    {
-      p_app_id: APP_ID,
-      p_user_id: user.id,
-      p_run_type: runType,
-      p_input: { profile, config },
-      p_output: result,
-    }
-  );
+  // Step 1: Create ai_runs record first (required for foreign key)
+  const { data: runData, error: runError } = await supabaseAdmin
+    .from("ai_runs")
+    .insert({
+      app_id: APP_ID,
+      user_id: user.id,
+      run_type: runType,
+    })
+    .select("id")
+    .single();
 
-  if (rpcErr) {
-    return NextResponse.json({ ok: false, error: rpcErr.message }, { status: 500 });
+  if (runError) {
+    return NextResponse.json({ ok: false, error: runError.message }, { status: 500 });
   }
 
-  const normalized = Array.isArray(rpcData) ? rpcData[0] : rpcData;
-  let runId: string | null = null;
-  if (normalized) {
-    if (typeof normalized === "string") {
-      runId = normalized;
-    } else if (typeof normalized === "object") {
-      runId =
-        typeof normalized.run_id === "string"
-          ? normalized.run_id
-          : typeof normalized.id === "string"
-            ? normalized.id
-            : null;
-    }
+  // Step 2: Create ai_run_records with the run_id (include all columns)
+  const { error: recordError } = await supabaseAdmin
+    .from("ai_run_records")
+    .insert({
+      run_id: runData.id,
+      app_id: APP_ID,
+      user_id: user.id,
+      input: { profile, config },
+      output: result,
+    });
+
+  if (recordError) {
+    return NextResponse.json({ ok: false, error: recordError.message }, { status: 500 });
   }
 
-  return NextResponse.json({ ok: true, run_id: runId });
+  return NextResponse.json({ ok: true, run_id: runData.id });
 }

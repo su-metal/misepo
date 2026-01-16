@@ -1,6 +1,6 @@
 import { Platform, Preset } from '../../../types';
 import { getPlatformIcon, clampPresetName } from './utils';
-import { SparklesIcon, BookmarkIcon } from '../../Icons';
+import { SparklesIcon, BookmarkIcon, MoreHorizontalIcon } from '../../Icons';
 
 interface PlatformSelectorProps {
     platforms: Platform[];
@@ -12,6 +12,7 @@ interface PlatformSelectorProps {
     presets: Preset[];
     onApplyPreset: (preset: Preset) => void;
     activePresetId: string | null;
+    onOpenLibrary?: () => void;
 }
 
 export const PlatformSelector: React.FC<PlatformSelectorProps> = ({
@@ -23,7 +24,8 @@ export const PlatformSelector: React.FC<PlatformSelectorProps> = ({
     onSetActivePlatform,
     presets,
     onApplyPreset,
-    activePresetId
+    activePresetId,
+    onOpenLibrary
 }) => {
     const quickPresets = presets.slice(0, 3);
 
@@ -99,13 +101,18 @@ export const PlatformSelector: React.FC<PlatformSelectorProps> = ({
             {/* Presets Module */}
             {quickPresets.length > 0 && (
                 <div className="pt-4 border-t border-stone-100">
-                    <div className="flex items-center justify-between mb-4">
-                        <span className="text-[9px] font-black text-stone-400 uppercase tracking-[0.3em]">Presets Library</span>
-                        <div className="flex gap-1">
-                            <div className="w-1 h-1 rounded-full bg-stone-200"></div>
-                            <div className="w-1 h-1 rounded-full bg-stone-200"></div>
-                            <div className="w-1 h-1 rounded-full bg-stone-100"></div>
+                    <div className="flex items-center justify-between mb-4 px-2">
+                        <div className="flex flex-col">
+                            <span className="text-[9px] font-black text-stone-400 uppercase tracking-[0.3em] mb-0.5">Presets Library</span>
+                            <span className="text-[10px] font-bold text-stone-300 uppercase">Quick Select</span>
                         </div>
+                        <button
+                            onClick={onOpenLibrary}
+                            className="flex items-center gap-2 py-1.5 px-3 rounded-xl bg-orange-50 text-orange-600 hover:bg-orange-600 hover:text-white transition-all shadow-sm shadow-orange-200/50 group"
+                        >
+                            <BookmarkIcon className="w-3 h-3 group-hover:rotate-12 transition-transform" />
+                            <span className="text-[9px] font-black tracking-[0.1em]">MANAGE</span>
+                        </button>
                     </div>
                     <div className="grid grid-cols-3 gap-2 w-full">
                         {quickPresets.map((ps) => {

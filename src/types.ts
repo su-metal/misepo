@@ -101,8 +101,18 @@ export interface Preset {
   sort_order: number;
 }
 
+export interface UserPlan {
+  isPro: boolean;
+  canUseApp: boolean;
+  eligibleForTrial: boolean;
+  plan: string;
+  status: string;
+  trial_ends_at: string | null;
+}
+
 export interface AppState {
   storeProfile: StoreProfile | null;
   history: GeneratedPost[];
   presets: Preset[];
+  plan: UserPlan | null;
 }

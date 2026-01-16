@@ -58,8 +58,13 @@ export function useGeneratorFlow(props: {
   // --- Logic ---
 
   const handleApplyPreset = (preset: Preset) => {
-    setCustomPrompt(preset.custom_prompt ?? '');
-    setActivePresetId(preset.id);
+    if (activePresetId === preset.id) {
+      setCustomPrompt('');
+      setActivePresetId(null);
+    } else {
+      setCustomPrompt(preset.custom_prompt ?? '');
+      setActivePresetId(preset.id);
+    }
   };
 
   const handleStarRatingChange = (rating: number) => {
@@ -350,6 +355,8 @@ export function useGeneratorFlow(props: {
       setLength(restorePost.config.length);
       setInputText(restorePost.config.inputText);
       setStarRating(restorePost.config.starRating ?? null);
+      // Set includeFooter to false since restored results already have footer embedded
+      setIncludeFooter(false);
       
       const reconstructed = restorePost.results.map(r => ({
         platform: r.platform,

@@ -120,7 +120,8 @@ Target Audience: Local customers and potential visitors.
       systemInstruction += `\n- Context (Store Info): "${config.instagramFooter}"\nNOTE: Do NOT include this store info footer in your generated output. It will be appended programmatically later. Only use this for context to avoid repeating information.`;
     }
 
-    const useEmojis = config.includeEmojis !== false;
+    const useEmojis =
+      config.platform === Platform.GoogleMaps ? false : config.includeEmojis !== false;
 
     systemInstruction += `\n
 **Formatting Rules:**
@@ -130,7 +131,7 @@ Target Audience: Local customers and potential visitors.
 4. ${config.includeSymbols ? `Use text decorations from this palette if appropriate: ${DECORATION_PALETTE}` : "Do NOT use complex text decorations/symbols (like ✧ or ✄), but simple emojis are allowed if enabled."}
 5. ${isXWith140Limit ? `CRITICAL: The post MUST be UNDER ${charLimit} characters. This is a hard limit. Count carefully. Aim for 100-130 characters to be safe.` : ""}
 6. If Instagram: Use line breaks for readability and add 4-6 relevant hashtags at the bottom.
-7. If Google Maps: Be professional, concise, and do NOT use hashtags.
+7. If Google Maps: Be professional, concise, and do NOT use hashtags. Do NOT use emojis.
 
 **Style Constraint (CRITICAL):**
 - **Do NOT combine exclamation marks (! or ！) with emojis at the end of a sentence.**
@@ -222,6 +223,7 @@ Tone: ${config.tone}
 **Formatting Rules:**
 1. ${config.platform === Platform.X && config.xConstraint140 ? "MUST be under 140 characters." : ""}
 2. If Instagram: Keep hashtags.
+3. ${config.platform === Platform.GoogleMaps ? "If Google Maps: Do NOT use emojis." : ""}
 
 **Style Constraint (CRITICAL):**
 - **Do NOT combine exclamation marks (! or ！) with emojis at the end of a sentence.**

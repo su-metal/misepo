@@ -213,7 +213,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                     />
                 </div>
 
-                <div className="mt-10 flex items-center justify-between">
+                <div className="mt-10 hidden md:flex items-center justify-between">
                     <div className="hidden sm:flex items-center gap-6">
                         <div className="flex items-center gap-3">
                             <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-orange-500">
