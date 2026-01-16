@@ -62,6 +62,19 @@ export function useGeneratorFlow(props: {
     setActivePresetId(preset.id);
   };
 
+  const handleStarRatingChange = (rating: number) => {
+    setStarRating(rating);
+    // Auto-judgment logic:
+    // 4-5 stars -> Thanks
+    // 1-2 stars -> Apology
+    // 3 stars -> Thanks (usually neutral/minor issues)
+    if (gmapPurpose === GoogleMapPurpose.Auto || gmapPurpose === GoogleMapPurpose.Thanks || gmapPurpose === GoogleMapPurpose.Apology) {
+      if (rating >= 4) setGmapPurpose(GoogleMapPurpose.Thanks);
+      else if (rating <= 2) setGmapPurpose(GoogleMapPurpose.Apology);
+      else setGmapPurpose(GoogleMapPurpose.Thanks);
+    }
+  };
+
   const handlePlatformToggle = (p: Platform) => {
     if (!isLoggedIn && p !== Platform.Instagram) return;
     
@@ -226,6 +239,7 @@ export function useGeneratorFlow(props: {
       });
     }
     onTaskComplete();
+    return true; // Indicate success for scrolling
   };
 
   const handleManualEdit = (gIdx: number, iIdx: number, text: string) => {
@@ -335,6 +349,7 @@ export function useGeneratorFlow(props: {
       setTone(restorePost.config.tone);
       setLength(restorePost.config.length);
       setInputText(restorePost.config.inputText);
+      setStarRating(restorePost.config.starRating ?? null);
       
       const reconstructed = restorePost.results.map(r => ({
         platform: r.platform,
@@ -353,12 +368,39 @@ export function useGeneratorFlow(props: {
     if (resetResultsTrigger) setResultGroups([]);
   }, [resetResultsTrigger]);
 
+  // Real-time footer toggle effect
+  useEffect(() => {
+    const footer = storeProfile.instagramFooter;
+    if (!footer) return;
+
+    setResultGroups(prev => {
+      let changed = false;
+      const next = prev.map(group => {
+        if (group.platform === Platform.Instagram) {
+          const nextData = group.data.map(text => {
+            if (includeFooter) {
+              return insertInstagramFooter(text, footer);
+            } else {
+              return removeInstagramFooter(text, footer);
+            }
+          });
+          if (JSON.stringify(nextData) !== JSON.stringify(group.data)) {
+            changed = true;
+            return { ...group, data: nextData };
+          }
+        }
+        return group;
+      });
+      return changed ? next : prev;
+    });
+  }, [includeFooter, storeProfile.instagramFooter]);
+
   return {
     platforms, setPlatforms,
     isMultiGenMode, setIsMultiGenMode,
     postPurpose, setPostPurpose,
     gmapPurpose, setGmapPurpose,
-    starRating, setStarRating,
+    starRating, onStarRatingChange: handleStarRatingChange,
     tone, setTone,
     length, setLength,
     inputText, setInputText,

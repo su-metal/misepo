@@ -50,7 +50,7 @@ export const GeneratorHeader: React.FC<GeneratorHeaderProps> = ({
                                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                                     <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                                 </span>
-                                <span className="text-[9px] font-black text-emerald-500/80 uppercase tracking-widest">Studio 2026 Ready</span>
+                                <span className="text-[9px] font-black text-emerald-500/80 uppercase tracking-widest">オンライン</span>
                             </div>
                         </div>
                     </div>

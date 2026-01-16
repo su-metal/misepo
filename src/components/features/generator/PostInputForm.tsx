@@ -3,7 +3,7 @@ import { PostPurpose, GoogleMapPurpose, Tone, Length, Platform } from '../../../
 import { AutoResizingTextarea } from './AutoResizingTextarea';
 import {
     MegaphoneIcon, BookOpenIcon, LightbulbIcon, ChatHeartIcon,
-    AutoSparklesIcon, HandHeartIcon, ApologyIcon, InfoIcon, MagicWandIcon, SparklesIcon
+    AutoSparklesIcon, HandHeartIcon, ApologyIcon, InfoIcon, MagicWandIcon, SparklesIcon, EraserIcon
 } from '../../Icons';
 
 interface PostInputFormProps {
@@ -18,6 +18,8 @@ interface PostInputFormProps {
     onLengthChange: (l: Length) => void;
     inputText: string;
     onInputTextChange: (text: string) => void;
+    starRating: number | null;
+    onStarRatingChange: (r: number) => void;
     isGenerating: boolean;
     onGenerate: () => void;
     generateButtonRef?: React.RefObject<HTMLButtonElement>;
@@ -61,6 +63,8 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
     onLengthChange,
     inputText,
     onInputTextChange,
+    starRating,
+    onStarRatingChange,
     isGenerating,
     onGenerate,
     generateButtonRef
@@ -76,9 +80,33 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                     <div className="space-y-4">
                         <div className="flex items-center gap-2">
                             <div className="w-1 h-3 bg-orange-500 rounded-full"></div>
-                            <span className="text-[10px] font-black tracking-[0.3em] text-stone-500 uppercase">Engine Context</span>
+                            <span className="text-[10px] font-black tracking-[0.3em] text-stone-500 uppercase">作成する内容</span>
                         </div>
                         <div className="grid grid-cols-1 gap-2">
+                            {/* Star Rating for Google Maps */}
+                            {isGoogleMaps && (
+                                <div className="mb-6 p-4 bg-orange-50 rounded-2xl border border-orange-100">
+                                    <p className="text-[10px] font-black text-orange-600 uppercase tracking-widest mb-3 flex items-center gap-2">
+                                        <SparklesIcon className="w-3 h-3" />
+                                        Review Rating
+                                    </p>
+                                    <div className="flex justify-between items-center bg-white p-3 rounded-xl border border-orange-200">
+                                        {[1, 2, 3, 4, 5].map((s) => (
+                                            <button
+                                                key={s}
+                                                onClick={() => onStarRatingChange(s)}
+                                                className={`text-2xl transition-all hover:scale-110 active:scale-95 ${s <= (starRating || 0) ? 'text-orange-500 drop-shadow-sm' : 'text-stone-200'}`}
+                                            >
+                                                {s <= (starRating || 0) ? '★' : '☆'}
+                                            </button>
+                                        ))}
+                                    </div>
+                                    <p className="text-[9px] text-orange-400 mt-2 font-bold px-1">
+                                        {starRating ? `${starRating} stars selected. Purpose will be adjusted.` : 'Select the star rating of the review.'}
+                                    </p>
+                                </div>
+                            )}
+
                             {(isGoogleMaps ? GMAP_PURPOSES : PURPOSES).map((p) => (
                                 <button
                                     key={p.id}
@@ -101,7 +129,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                     <div className="space-y-4">
                         <div className="flex items-center gap-2">
                             <div className="w-1 h-3 bg-orange-500 rounded-full"></div>
-                            <span className="text-[10px] font-black tracking-[0.3em] text-stone-500 uppercase">Voice Matrix</span>
+                            <span className="text-[10px] font-black tracking-[0.3em] text-stone-500 uppercase">文章の雰囲気</span>
                         </div>
                         <div className="flex flex-wrap gap-2">
                             {TONES.map((t) => (
@@ -125,7 +153,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                     <div className="space-y-4">
                         <div className="flex items-center gap-2">
                             <div className="w-1 h-3 bg-orange-500 rounded-full"></div>
-                            <span className="text-[10px] font-black tracking-[0.3em] text-stone-500 uppercase">Output Scale</span>
+                            <span className="text-[10px] font-black tracking-[0.3em] text-stone-500 uppercase">文章の長さ</span>
                         </div>
                         <div className="grid grid-cols-3 gap-2">
                             {LENGTHS.map((l) => (
@@ -155,11 +183,24 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                     <div className="w-1 h-1 bg-white"></div>
                 </div>
 
-                <div className="mb-6">
-                    <h2 className="text-[10px] font-black text-orange-500 uppercase tracking-[0.4em] mb-2">Editor Protocol</h2>
-                    <h3 className="text-3xl font-black text-stone-800 tracking-tighter leading-tight italic">
-                        なにを伝えますか？
-                    </h3>
+                <div className="mb-6 flex items-end justify-between">
+                    <div>
+                        <h2 className="text-[10px] font-black text-orange-500 uppercase tracking-[0.4em] mb-2">Editor Protocol</h2>
+                        <h3 className="text-3xl font-black text-stone-800 tracking-tighter leading-tight italic">
+                            今回はどんな内容にしますか？
+                        </h3>
+                    </div>
+
+                    {inputText.length > 0 && (
+                        <button
+                            onClick={() => onInputTextChange('')}
+                            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-stone-100 text-stone-500 hover:bg-orange-50 hover:text-orange-600 transition-all group/clear mb-1"
+                            title="入力をすべて消去"
+                        >
+                            <EraserIcon className="w-4 h-4 group-hover:rotate-12 transition-transform" />
+                            <span className="text-[10px] font-black tracking-widest uppercase">Clear</span>
+                        </button>
+                    )}
                 </div>
 
                 <div className="flex-1 relative group">
@@ -180,7 +221,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                             </div>
                             <div>
                                 <p className="text-[9px] font-black text-stone-400 uppercase tracking-widest">AI Status</p>
-                                <p className="text-[11px] font-black text-stone-800 uppercase tracking-tighter">Engine Optimized</p>
+                                <p className="text-[11px] font-black text-stone-800 uppercase tracking-tighter">AIがお手伝いします</p>
                             </div>
                         </div>
                     </div>
@@ -206,7 +247,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                             ) : (
                                 <>
                                     <SparklesIcon className="w-5 h-5" />
-                                    ACTIVATE ENGINE
+                                    投稿文を作成する
                                 </>
                             )}
                         </span>

@@ -9,6 +9,7 @@ import { PostInputForm } from './features/generator/PostInputForm';
 import { PostResultTabs } from './features/generator/PostResultTabs';
 import GuestTour from './GuestTour';
 import PresetModal from './PresetModal';
+import LoadingModal from './LoadingModal';
 
 interface PostGeneratorProps {
   storeProfile: StoreProfile;
@@ -127,12 +128,15 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
                 onLengthChange={flow.setLength}
                 inputText={flow.inputText}
                 onInputTextChange={flow.setInputText}
+                starRating={flow.starRating}
+                onStarRatingChange={flow.onStarRatingChange}
                 isGenerating={flow.loading}
                 onGenerate={() => {
-                  flow.performGeneration(flow.platforms);
-                  setTimeout(() => {
-                    resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                  }, 500);
+                  flow.performGeneration(flow.platforms).then(() => {
+                    setTimeout(() => {
+                      resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 300);
+                  });
                 }}
                 generateButtonRef={buttonRef}
               />
@@ -158,6 +162,8 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
               onRefineTextChange={flow.setRefineText}
               onPerformRefine={flow.performRefine}
               isRefining={flow.isRefining}
+              includeFooter={flow.includeFooter}
+              onIncludeFooterChange={flow.setIncludeFooter}
             />
           </div>
         </div>
@@ -192,6 +198,8 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
           </div>
         </div>
       )}
+
+      <LoadingModal isOpen={flow.loading} />
     </div>
   );
 };

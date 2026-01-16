@@ -24,6 +24,8 @@ interface PostResultTabsProps {
     onRefineTextChange: (text: string) => void;
     onPerformRefine: (gIdx: number, iIdx: number) => void;
     isRefining: boolean;
+    includeFooter: boolean;
+    onIncludeFooterChange: (val: boolean) => void;
 }
 
 export const PostResultTabs: React.FC<PostResultTabsProps> = ({
@@ -42,7 +44,9 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
     refineText,
     onRefineTextChange,
     onPerformRefine,
-    isRefining
+    isRefining,
+    includeFooter,
+    onIncludeFooterChange
 }) => {
     if (results.length === 0) return null;
 
@@ -77,18 +81,18 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                     <div key={res.platform} className={activeTab === gIdx ? 'block animate-in fade-in slide-in-from-bottom-4 duration-700' : 'hidden'}>
                         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12">
                             <div className="space-y-2">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></div>
-                                    <span className="text-[10px] font-black text-orange-500 uppercase tracking-[0.4em]">Output Protocol Alpha</span>
+                                <div className="flex items-center gap-2 mb-2">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-orange-500"></div>
+                                    <span className="text-[10px] font-black tracking-[0.4em] text-orange-400 uppercase">作成された投稿案</span>
                                 </div>
-                                <h3 className="text-4xl font-black text-stone-800 tracking-tighter italic">{res.platform} <span className="text-stone-400">SOLUTIONS</span></h3>
+                                <h2 className="text-3xl font-black text-stone-800 tracking-tighter italic">投稿案のリスト</h2>
                             </div>
                             <button
                                 onClick={() => onRegenerateSingle(res.platform)}
                                 className="group flex items-center gap-3 px-6 py-4 rounded-2xl bg-white/5 border border-white/5 text-[10px] font-black text-stone-400 hover:border-orange-500/30 hover:text-white transition-all shadow-xl"
                             >
                                 <RotateCcwIcon className="w-4 h-4 group-hover:rotate-180 transition-transform duration-700" />
-                                REGENERATE ENGINE
+                                再作成する
                             </button>
                         </div>
 
@@ -100,18 +104,28 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
 
                                     {/* Card Header: Metadata */}
                                     <div className="p-8 pb-4 flex items-center justify-between relative z-10">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-12 h-12 rounded-2xl bg-stone-100 border border-stone-200 flex items-center justify-center text-stone-600 font-black text-sm italic shadow-inner">
-                                                {String(iIdx + 1).padStart(2, '0')}
+                                        {text.length === 0 ? (
+                                            <div className="text-center space-y-4 max-w-sm px-10">
+                                                <div className="w-20 h-20 rounded-full bg-stone-50 border border-stone-100 flex items-center justify-center text-stone-300 mx-auto">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" /></svg>
+                                                </div>
+                                                <h3 className="text-lg font-black text-stone-800 tracking-tighter">ここに作成した文章が表示されます</h3>
+                                                <p className="text-stone-500 text-sm leading-relaxed font-bold italic">左側のフォームに入力して「投稿文を作成する」ボタンを押してください。</p>
                                             </div>
-                                            <div>
-                                                <p className="text-[9px] font-black text-stone-400 uppercase tracking-widest leading-none mb-1">Variant Identity</p>
-                                                <div className="flex items-center gap-2">
-                                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500/50"></div>
-                                                    <span className="text-[11px] font-black text-stone-500 font-mono">MDL-2026-X{iIdx}</span>
+                                        ) : (
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-12 h-12 rounded-2xl bg-stone-100 border border-stone-200 flex items-center justify-center text-stone-600 font-black text-sm italic shadow-inner">
+                                                    {String(iIdx + 1).padStart(2, '0')}
+                                                </div>
+                                                <div>
+                                                    <p className="text-[9px] font-black text-stone-400 uppercase tracking-widest leading-none mb-1">提案リスト No.</p>
+                                                    <div className="flex items-center gap-2">
+                                                        <div className="w-1.5 h-1.5 rounded-full bg-orange-500/50"></div>
+                                                        <span className="text-[11px] font-black text-stone-500 font-mono">VARIANT-{iIdx + 1}</span>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        )}
                                         <div className="bg-stone-50 px-4 py-2 rounded-xl border border-stone-200 backdrop-blur-md">
                                             <CharCounter
                                                 platform={res.platform}
@@ -128,40 +142,62 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                             value={text}
                                             onChange={(e) => onManualEdit(gIdx, iIdx, e.target.value)}
                                             className="w-full bg-transparent text-stone-800 text-lg md:text-xl leading-relaxed focus:outline-none resize-none placeholder:text-stone-400 font-medium"
+                                            trigger={activeTab}
                                         />
                                     </div>
 
+                                    {/* Instagram Template Toggle - Full Width */}
+                                    {res.platform === Platform.Instagram && (
+                                        <div className="px-8 pb-4 relative z-10">
+                                            <div
+                                                onClick={() => onIncludeFooterChange(!includeFooter)}
+                                                className="flex items-center justify-between p-4 bg-orange-50/50 rounded-2xl border border-orange-100/50 cursor-pointer group transition-all hover:bg-orange-50"
+                                            >
+                                                <div className="space-y-0.5">
+                                                    <p className="text-[9px] font-black text-orange-600 uppercase tracking-widest leading-none mb-1">Instagram Template</p>
+                                                    <p className="text-[10px] text-stone-500 font-black italic">署名テンプレートを挿入</p>
+                                                </div>
+                                                <div
+                                                    className={`relative inline-flex h-5 w-10 items-center rounded-full transition-colors focus:outline-none ${includeFooter ? 'bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.3)]' : 'bg-stone-200'}`}
+                                                >
+                                                    <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform duration-300 ${includeFooter ? 'translate-x-5.5' : 'translate-x-1'}`} />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+
                                     {/* Action Module: Floating Performance Bar */}
                                     <div className="p-8 pt-0 mt-auto relative z-10">
-                                        <div className="bg-white/5 rounded-[2rem] p-2 border border-white/5 backdrop-blur-3xl flex items-center gap-2 shadow-2xl">
+                                        <div className="bg-white/5 rounded-[2.5rem] p-2 border border-white/5 backdrop-blur-3xl grid grid-cols-2 gap-2 shadow-2xl">
                                             <button
                                                 onClick={() => {
                                                     navigator.clipboard.writeText(text);
                                                 }}
-                                                className="flex-1 flex items-center justify-center gap-2 sm:gap-3 py-4 rounded-2xl bg-stone-100 text-[10px] font-black text-stone-500 hover:bg-stone-200 hover:text-stone-900 transition-all uppercase tracking-widest"
+                                                className="flex items-center justify-center gap-2 py-4 rounded-2xl bg-stone-100/80 text-[10px] font-black text-stone-500 hover:bg-stone-200 hover:text-stone-900 transition-all uppercase tracking-widest"
                                             >
                                                 <CopyIcon className="w-4 h-4 shrink-0" />
-                                                <span className="truncate">COPY</span>
+                                                <span className="truncate">コピー</span>
                                             </button>
                                             <button
                                                 onClick={() => setPreviewState({ isOpen: true, platform: res.platform, text })}
-                                                className="flex flex-1 items-center justify-center gap-2 sm:gap-3 py-4 rounded-2xl bg-stone-100 text-[10px] font-black text-stone-500 hover:bg-stone-200 hover:text-stone-900 transition-all uppercase tracking-widest"
+                                                className="flex items-center justify-center gap-2 py-4 rounded-2xl bg-stone-100/80 text-[10px] font-black text-stone-500 hover:bg-stone-200 hover:text-stone-900 transition-all uppercase tracking-widest"
                                             >
                                                 <EyeIcon className="w-4 h-4 shrink-0" />
-                                                <span className="truncate">PREVIEW</span>
+                                                <span className="truncate">プレビュー</span>
                                             </button>
                                             <button
                                                 onClick={() => onRefineToggle(gIdx, iIdx)}
-                                                className={`flex-1 flex items-center justify-center gap-2 sm:gap-3 py-4 rounded-2xl text-[10px] font-black transition-all uppercase tracking-widest ${refiningKey === `${gIdx}-${iIdx}` ? 'bg-orange-600 text-white' : 'bg-stone-900 text-white shadow-xl hover:scale-[1.02]'}`}
+                                                className={`flex items-center justify-center gap-2 py-4 rounded-2xl text-[10px] font-black transition-all uppercase tracking-widest ${refiningKey === `${gIdx}-${iIdx}` ? 'bg-orange-600 text-white' : 'bg-stone-900 text-white shadow-xl hover:scale-[1.02]'}`}
                                             >
                                                 <MagicWandIcon className="w-4 h-4 shrink-0" />
-                                                <span className="truncate">REFINE</span>
+                                                <span className="truncate">AIに修正してもらう</span>
                                             </button>
                                             <button
                                                 onClick={() => onShare(res.platform, text)}
-                                                className="w-14 h-14 flex items-center justify-center rounded-2xl bg-stone-800 text-white hover:bg-orange-600 transition-all group/share"
+                                                className="flex items-center justify-center gap-2 py-4 rounded-2xl bg-stone-800 text-white hover:bg-orange-600 transition-all group/share"
                                             >
-                                                <ExternalLinkIcon className="w-5 h-5 group-hover/share:transtone-x-0.5 group-hover/share:-transtone-y-0.5 transition-transform" />
+                                                <span className="text-[10px] font-black uppercase tracking-widest truncate">SNSで開く</span>
+                                                <ExternalLinkIcon className="w-4 h-4 group-hover/share:transtone-x-0.5 group-hover/share:-transtone-y-0.5 transition-transform" />
                                             </button>
                                         </div>
                                     </div>
@@ -171,8 +207,8 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                         <div className="absolute inset-0 bg-stone-950/95 backdrop-blur-xl z-20 flex flex-col p-10 animate-in fade-in zoom-in duration-500">
                                             <div className="flex-1 overflow-y-auto">
                                                 <div className="mb-8">
-                                                    <h4 className="text-[10px] font-black text-orange-500 uppercase tracking-[0.4em] mb-2">Refinement Protocol</h4>
-                                                    <p className="text-xl font-black text-white italic">どのように調整しますか？</p>
+                                                    <h4 className="text-[10px] font-black text-orange-500 uppercase tracking-[0.4em] mb-2">Refine Post</h4>
+                                                    <p className="text-xl font-black text-white italic">AIへの追加指示（日本語でOK）</p>
                                                 </div>
                                                 <RefinePanel
                                                     refineText={refineText}

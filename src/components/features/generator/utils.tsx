@@ -10,17 +10,29 @@ import {
 export function insertInstagramFooter(text: string, footer: string): string {
     if (!footer) return text;
     const cleanFooter = footer.trim();
-    const cleanOriginal = text.trim();
-    if (cleanOriginal.includes(cleanFooter)) return text;
-    return `${cleanOriginal}\n\n${cleanFooter}`;
+    if (text.includes(cleanFooter)) return text;
+
+    // Detect hashtag block at the end (# followed by anything until end of string, possibly with newlines)
+    const hashtagRegex = /(\n*(\s*#[^\s#]+\s*)+)$/;
+    const match = text.match(hashtagRegex);
+
+    if (match) {
+        const body = text.slice(0, match.index).trimEnd();
+        const hashtags = match[0].trimStart();
+        return `${body}\n\n${cleanFooter}\n\n${hashtags}`;
+    }
+
+    return `${text.trim()}\n\n${cleanFooter}`;
 }
 
 export function removeInstagramFooter(text: string, footer: string): string {
     if (!footer) return text;
     const cleanFooter = footer.trim();
-    // Escape for regex
     const escapedFooter = cleanFooter.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    return text.replace(new RegExp(`\\n\\n${escapedFooter}$`), "").trim();
+
+    // Try middle removal (preceded and followed by newlines)
+    const middleRegex = new RegExp(`\\n*${escapedFooter}\\n*`);
+    return text.replace(middleRegex, "\n\n").trim().replace(/\n{3,}/g, "\n\n");
 }
 
 export function getPlatformIcon(p: Platform) {
