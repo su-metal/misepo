@@ -58,12 +58,11 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
   };
 
   return (
-    <div className="min-h-screen bg-[#020617] text-slate-200 selection:bg-indigo-500/30 overflow-x-hidden">
-      {/* Cosmic Grain & Radiant Glows */}
+    <div className="min-h-screen bg-stone-50 text-stone-800 selection:bg-orange-200 overflow-x-hidden">
+      {/* Radiant Glows (Light Mode) */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute inset-0 opacity-[0.4] mix-blend-overlay" style={{ backgroundImage: 'url("https://grainy-gradients.vercel.app/noise.svg")' }}></div>
-        <div className="absolute -top-[20%] -left-[10%] w-[70%] h-[70%] bg-indigo-600/20 blur-[120px] rounded-full animate-pulse opacity-50"></div>
-        <div className="absolute -bottom-[20%] -right-[10%] w-[60%] h-[60%] bg-purple-600/10 blur-[120px] rounded-full opacity-30"></div>
+        <div className="absolute -top-[20%] -left-[10%] w-[70%] h-[70%] bg-orange-200/40 blur-[120px] rounded-full animate-pulse opacity-50"></div>
+        <div className="absolute -bottom-[20%] -right-[10%] w-[60%] h-[60%] bg-purple-200/30 blur-[120px] rounded-full opacity-30"></div>
       </div>
 
       <div className="max-w-[1400px] mx-auto px-4 sm:px-8 py-8 relative z-10">
@@ -88,7 +87,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
 
           {/* Left Area: Setup & Context Modules (4 Cols) */}
           <div className="lg:col-span-4 space-y-6">
-            <div className="bg-slate-900/40 backdrop-blur-3xl border border-white/5 rounded-[2.5rem] p-1 overflow-hidden shadow-2xl">
+            <div className="bg-white/60 backdrop-blur-xl border border-white/40 rounded-[2.5rem] p-1 overflow-hidden shadow-xl shadow-stone-200/50">
               <div ref={instagramRef as any}>
                 <PlatformSelector
                   platforms={flow.platforms}
@@ -105,9 +104,9 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
             </div>
 
             {/* Quick Context Card (Future Feature Slot) */}
-            <div className="hidden lg:block bg-gradient-to-br from-indigo-600/20 to-transparent border border-white/5 rounded-[2.5rem] p-8 backdrop-blur-xl">
-              <h4 className="text-[10px] font-black tracking-[0.3em] text-indigo-400 mb-2 uppercase">Creative Mindset</h4>
-              <p className="text-sm text-slate-400 leading-relaxed font-bold">
+            <div className="hidden lg:block bg-gradient-to-br from-orange-50 to-white border border-orange-100 rounded-[2.5rem] p-8 backdrop-blur-xl shadow-lg shadow-orange-100/50">
+              <h4 className="text-[10px] font-black tracking-[0.3em] text-orange-500 mb-2 uppercase">Creative Mindset</h4>
+              <p className="text-sm text-stone-500 leading-relaxed font-bold">
                 2026テクノロジーを搭載したAIエディター。SNSプラットフォームに最適化された独自アルゴリズムで、あなたのブランドを加速させます。
               </p>
             </div>
@@ -115,7 +114,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
 
           {/* Right Area: Main Workstation Module (8 Cols) */}
           <div className="lg:col-span-8 space-y-6">
-            <div ref={inputRef} className="bg-slate-900/40 backdrop-blur-3xl border border-white/5 rounded-[3rem] shadow-2xl overflow-hidden transition-all duration-500 hover:border-white/10">
+            <div ref={inputRef} className="bg-white/60 backdrop-blur-xl border border-white/40 rounded-[3rem] shadow-xl shadow-stone-200/50 overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-stone-200/60">
               <PostInputForm
                 platform={flow.platforms[0] || Platform.Instagram}
                 postPurpose={flow.postPurpose}
@@ -186,8 +185,8 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
       )}
 
       {flow.toastMessage && (
-        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 animate-in slide-in-from-bottom-4 duration-300">
-          <div className="bg-slate-900 text-white px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border border-slate-700">
+        <div className="fixed bottom-8 left-1/2 -transtone-x-1/2 z-50 animate-in slide-in-from-bottom-4 duration-300">
+          <div className="bg-stone-900 text-white px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border border-stone-700">
             <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
             <span className="text-sm font-bold">{flow.toastMessage}</span>
           </div>

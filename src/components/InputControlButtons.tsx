@@ -73,7 +73,7 @@ const InputControlButtons: React.FC<InputControlButtonsProps> = ({
     recognition.start();
   };
 
-  const iconClass = dark ? "text-gray-300 hover:text-white" : "text-gray-400 hover:text-indigo-600";
+  const iconClass = dark ? "text-gray-300 hover:text-white" : "text-gray-400 hover:text-orange-600";
   const activeMicClass = "text-red-500 animate-pulse";
 
   return (

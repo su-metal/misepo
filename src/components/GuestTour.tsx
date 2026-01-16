@@ -113,19 +113,19 @@ const GuestTour: React.FC<GuestTourProps> = ({ isOpen, onClose, inputRef, button
   // 上に表示する場合、メッセージテキストの分を含めて少し上にマージンを取る (-130px)
   let tooltipTop = targetRect.top - 130; 
   let tooltipLeft = targetRect.left + (targetRect.width / 2);
-  let arrowClass = "absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white rotate-45"; // デフォルトは矢印が下
+  let arrowClass = "absolute -bottom-2 left-1/2 -transtone-x-1/2 w-4 h-4 bg-white rotate-45"; // デフォルトは矢印が下
 
   if (currentPos === 'bottom') {
      // 余白(PADDING)の分だけさらに下にずらす
      tooltipTop = targetRect.bottom + 20 + PADDING; 
-     arrowClass = "absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white rotate-45"; 
+     arrowClass = "absolute -top-2 left-1/2 -transtone-x-1/2 w-4 h-4 bg-white rotate-45"; 
   } else if (currentPos === 'right') {
      // 右側に表示（PC画面など）
      if (window.innerWidth > 768) {
         tooltipTop = targetRect.top + (targetRect.height / 2) - 40;
         // 余白(PADDING)の分だけさらに右にずらす
         tooltipLeft = targetRect.right + 20 + PADDING; 
-        arrowClass = "absolute top-1/2 -translate-y-1/2 -left-2 w-4 h-4 bg-white rotate-45";
+        arrowClass = "absolute top-1/2 -transtone-y-1/2 -left-2 w-4 h-4 bg-white rotate-45";
      } else {
         // モバイルなら上下にフォールバック（ここではTop扱い）
         tooltipTop = targetRect.top - 130;
@@ -173,7 +173,7 @@ const GuestTour: React.FC<GuestTourProps> = ({ isOpen, onClose, inputRef, button
         className="absolute z-20 flex flex-col items-center transition-all duration-500 ease-in-out pointer-events-none"
         style={tooltipStyle}
       >
-        <div className="bg-white text-slate-800 px-6 py-4 rounded-2xl shadow-2xl relative animate-in fade-in zoom-in-95 duration-300 flex flex-col items-center gap-2">
+        <div className="bg-white text-stone-800 px-6 py-4 rounded-2xl shadow-2xl relative animate-in fade-in zoom-in-95 duration-300 flex flex-col items-center gap-2">
           {/* 吹き出しの三角 */}
           <div className={arrowClass}></div>
           
@@ -182,14 +182,14 @@ const GuestTour: React.FC<GuestTourProps> = ({ isOpen, onClose, inputRef, button
           </p>
           
           {(currentStep as any).subText && (
-            <p className="text-xs text-slate-400 font-medium text-center">
+            <p className="text-xs text-stone-400 font-medium text-center">
               {(currentStep as any).subText}
             </p>
           )}
           
           <div className="flex items-center gap-1 mt-1">
              {steps.map((_, i) => (
-                <div key={i} className={`w-1.5 h-1.5 rounded-full transition-colors ${step === i ? 'bg-indigo-600' : 'bg-gray-200'}`}></div>
+                <div key={i} className={`w-1.5 h-1.5 rounded-full transition-colors ${step === i ? 'bg-orange-600' : 'bg-gray-200'}`}></div>
              ))}
           </div>
         </div>

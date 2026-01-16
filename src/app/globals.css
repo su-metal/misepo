@@ -5,8 +5,8 @@
 
 body {
   font-family: 'Inter', 'Noto Sans JP', sans-serif;
-  background-color: #F8FAFC; /* Slate-50 */
-  color: #1e293b; /* Slate-800 */
+  background-color: #fafaf9; /* Stone-50 */
+  color: #1c1917; /* Stone-900 */
 }
 
 /* Custom Scrollbar */

@@ -38,32 +38,32 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({ history, isLoggedIn, on
       {/* Mobile Toggle Overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-[100] transition-opacity duration-300"
+          className="fixed inset-0 bg-stone-900/20 backdrop-blur-sm z-[9990] transition-opacity duration-300"
           onClick={toggleOpen}
         />
       )}
 
       <div
-        className={`fixed top-0 left-0 h-full bg-[#0F172A] w-80 transform transition-all duration-500 cubic-bezier(0.4, 0, 0.2, 1) z-[110] flex flex-col shadow-[24px_0_80px_rgba(0,0,0,0.4)] overflow-hidden ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}
+        className={`fixed top-0 left-0 h-full bg-white w-80 transform transition-all duration-500 cubic-bezier(0.4, 0, 0.2, 1) z-[9999] flex flex-col shadow-[24px_0_80px_rgba(0,0,0,0.1)] overflow-hidden ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}
       >
         {/* Tech Background Effects */}
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.03] pointer-events-none"></div>
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none"></div>
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.02] pointer-events-none"></div>
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.03)_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none"></div>
 
         {/* Header */}
-        <div className="p-8 border-b border-white/5 flex items-center justify-between relative z-10">
+        <div className="p-8 border-b border-stone-100 flex items-center justify-between relative z-10">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center border border-indigo-500/20">
+            <div className="w-8 h-8 rounded-xl bg-orange-50 text-orange-500 flex items-center justify-center border border-orange-100">
               <HistoryIcon className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="font-black text-white text-lg tracking-tight leading-none">History</h2>
-              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Generation Archive</p>
+              <h2 className="font-black text-stone-800 text-lg tracking-tight leading-none">History</h2>
+              <p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest mt-1">Generation Archive</p>
             </div>
           </div>
           <button
             onClick={toggleOpen}
-            className="w-10 h-10 flex items-center justify-center rounded-2xl bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 transition-all border border-white/5 active:scale-95"
+            className="w-10 h-10 flex items-center justify-center rounded-2xl bg-stone-50 text-stone-400 hover:text-stone-600 hover:bg-stone-100 transition-all border border-stone-100 active:scale-95"
             aria-label="Close history"
           >
             <XIcon className="w-5 h-5" />
@@ -74,12 +74,12 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({ history, isLoggedIn, on
         <div className="flex-1 overflow-y-auto overscroll-contain p-6 relative z-10 space-y-4 no-scrollbar">
           {!isLoggedIn ? (
             <div className="flex flex-col items-center justify-center h-full text-center p-6 space-y-6">
-              <div className="w-20 h-20 bg-indigo-500/10 rounded-[32px] flex items-center justify-center border border-indigo-500/20 text-indigo-400 animate-pulse">
+              <div className="w-20 h-20 bg-orange-50 rounded-[32px] flex items-center justify-center border border-orange-100 text-orange-500 animate-pulse">
                 <LockIcon className="w-10 h-10" />
               </div>
               <div className="space-y-2">
-                <h3 className="text-xl font-black text-white">履歴の保存</h3>
-                <p className="text-sm text-slate-400 font-medium leading-relaxed">
+                <h3 className="text-xl font-black text-stone-800">履歴の保存</h3>
+                <p className="text-sm text-stone-500 font-medium leading-relaxed">
                   作成した内容は自動で保存されます。<br />
                   いつでも振り返りが可能です。
                 </p>
@@ -89,20 +89,20 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({ history, isLoggedIn, on
                   onOpenLogin();
                   if (window.innerWidth < 768) toggleOpen();
                 }}
-                className="w-full py-5 bg-white text-[#0F172A] text-sm font-black rounded-2xl shadow-xl shadow-black/20 hover:bg-slate-100 transition-all active:scale-95 flex items-center justify-center gap-2 group"
+                className="w-full py-5 bg-white text-[#0F172A] text-sm font-black rounded-2xl shadow-xl shadow-black/20 hover:bg-stone-100 transition-all active:scale-95 flex items-center justify-center gap-2 group"
               >
                 ログイン / 登録
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="translate-x-0 group-hover:translate-x-1 transition-transform"><path d="M5 12h14m-7-7 7 7-7 7" /></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="transtone-x-0 group-hover:transtone-x-1 transition-transform"><path d="M5 12h14m-7-7 7 7-7 7" /></svg>
               </button>
             </div>
           ) : (
             <>
               {displayHistory.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-full text-center opacity-40">
-                  <div className="w-16 h-16 bg-white/5 rounded-[24px] flex items-center justify-center mb-4 border border-white/5">
-                    <HistoryIcon className="w-8 h-8 text-slate-500" />
+                  <div className="w-16 h-16 bg-stone-100 rounded-[24px] flex items-center justify-center mb-4 border border-stone-200">
+                    <HistoryIcon className="w-8 h-8 text-stone-400" />
                   </div>
-                  <p className="text-sm text-slate-500 font-black uppercase tracking-widest">No Record Found</p>
+                  <p className="text-sm text-stone-400 font-black uppercase tracking-widest">No Record Found</p>
                 </div>
               ) : (
                 displayHistory.map((item, idx) => {
@@ -156,23 +156,23 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({ history, isLoggedIn, on
                           onSelect(item);
                           toggleOpen();
                         }}
-                        className="w-full text-left p-6 md:p-5 rounded-[28px] bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/10 transition-all group-hover:shadow-[0_8px_32px_rgba(0,0,0,0.3)] group-active:scale-[0.98]"
+                        className="w-full text-left p-6 md:p-5 rounded-[28px] bg-stone-50 border border-stone-100 hover:bg-white hover:border-orange-200 hover:shadow-lg hover:shadow-orange-500/10 transition-all group-active:scale-[0.98]"
                       >
                         <div className="flex items-center gap-1.5 mb-4">
                           {item.config.platforms.map((p) => (
                             <span
                               key={p}
-                              className={`flex items-center justify-center w-5 h-5 rounded-lg shadow-lg ${getPlatformColor(p)} border border-white/10`}
+                              className={`flex items-center justify-center w-5 h-5 rounded-lg shadow-sm ${getPlatformColor(p)} border border-white/20`}
                               title={p}
                             >
                               {getPlatformIcon(p)}
                             </span>
                           ))}
-                          <span className="ml-auto text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                          <span className="ml-auto text-[10px] font-black text-stone-400 uppercase tracking-widest">
                             {new Date(item.timestamp).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                           </span>
                         </div>
-                        <p className="text-xs text-slate-300 font-bold line-clamp-2 leading-relaxed opacity-80 group-hover:opacity-100 transition-opacity">
+                        <p className="text-xs text-stone-600 font-bold line-clamp-2 leading-relaxed opacity-80 group-hover:opacity-100 transition-opacity">
                           {previewText}
                         </p>
                       </button>

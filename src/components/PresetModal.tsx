@@ -68,16 +68,16 @@ const SortablePresetRow: React.FC<{
       <button
         onClick={() => onSelect(preset)}
         className={`flex-1 text-left p-4 pr-14 rounded-2xl border-2 transition-all duration-300 ${isSelected
-            ? 'bg-white/15 border-indigo-500/50 shadow-lg shadow-indigo-950/20'
+            ? 'bg-white/15 border-orange-500/50 shadow-lg shadow-orange-950/20'
             : 'bg-white/5 border-transparent hover:bg-white/10 hover:border-white/10'
           }`}
         type="button"
       >
         <div className="flex items-center gap-3">
-          <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${isSelected ? 'bg-indigo-500 text-white' : 'bg-white/10 text-slate-400 group-hover:bg-white/20'}`}>
+          <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${isSelected ? 'bg-orange-500 text-white' : 'bg-white/10 text-stone-400 group-hover:bg-white/20'}`}>
             <BookmarkIcon className="w-4 h-4" />
           </div>
-          <div className={`font-bold text-sm truncate ${isSelected ? 'text-white' : 'text-slate-400 group-hover:text-slate-200'}`}>
+          <div className={`font-bold text-sm truncate ${isSelected ? 'text-white' : 'text-stone-400 group-hover:text-stone-200'}`}>
             {preset.name}
           </div>
         </div>
@@ -88,7 +88,7 @@ const SortablePresetRow: React.FC<{
           {...attributes}
           {...listeners}
           disabled={isReordering}
-          className="h-8 w-8 rounded-lg bg-white/5 text-slate-500 flex items-center justify-center text-xs hover:bg-white/10 hover:text-white transition-all touch-none active:scale-95"
+          className="h-8 w-8 rounded-lg bg-white/5 text-stone-500 flex items-center justify-center text-xs hover:bg-white/10 hover:text-white transition-all touch-none active:scale-95"
           aria-label="ドラッグして順番を変更"
         >
           <div className="grid grid-cols-2 gap-0.5">
@@ -102,7 +102,7 @@ const SortablePresetRow: React.FC<{
             onDelete(preset);
           }}
           disabled={deletingId === preset.id || isReordering}
-          className="h-8 w-8 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 flex items-center justify-center transition-all disabled:opacity-20"
+          className="h-8 w-8 rounded-lg text-stone-500 hover:text-rose-400 hover:bg-rose-500/10 flex items-center justify-center transition-all disabled:opacity-20"
           aria-label="プリセットを削除"
         >
           <TrashIcon className="w-4 h-4" />
@@ -377,18 +377,18 @@ const PresetModal: React.FC<PresetModalProps> = ({
           <div className="mb-8 flex items-center justify-between gap-4">
             <div className="space-y-1">
               <h3 className="font-black text-xl text-white tracking-tight flex items-center gap-2">
-                <div className="w-1.5 h-6 bg-indigo-500 rounded-full"></div>
+                <div className="w-1.5 h-6 bg-orange-500 rounded-full"></div>
                 PRESETS
               </h3>
-              <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Saved Configurations</p>
+              <p className="text-[10px] font-black text-stone-500 uppercase tracking-widest">Saved Configurations</p>
             </div>
             <button
               type="button"
               onClick={handleStartNew}
               disabled={limitReached}
               className={`p-2 rounded-xl transition-all border-2 flex items-center justify-center ${limitReached
-                  ? 'border-white/5 text-slate-600'
-                  : 'border-white/10 bg-white/5 text-indigo-400 hover:bg-indigo-500 hover:text-white hover:border-indigo-500'
+                  ? 'border-white/5 text-stone-600'
+                  : 'border-white/10 bg-white/5 text-orange-400 hover:bg-orange-500 hover:text-white hover:border-orange-500'
                 }`}
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12h14" /></svg>
@@ -398,8 +398,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
           <div className="flex-1 overflow-y-auto space-y-3 no-scrollbar pb-6">
             {orderedPresets.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-40 text-center space-y-2 opacity-50">
-                <BookmarkIcon className="w-8 h-8 text-slate-700" />
-                <div className="text-[10px] font-black text-slate-600 uppercase tracking-widest">
+                <BookmarkIcon className="w-8 h-8 text-stone-700" />
+                <div className="text-[10px] font-black text-stone-600 uppercase tracking-widest">
                   No Presets Found
                 </div>
               </div>
@@ -447,14 +447,14 @@ const PresetModal: React.FC<PresetModalProps> = ({
       <div
         className={`flex-1 flex flex-col bg-white min-h-0 overflow-hidden h-full ${editVisibilityClass}`}
       >
-        <div className="p-6 md:p-8 border-b border-slate-100 flex items-center justify-between shrink-0">
+        <div className="p-6 md:p-8 border-b border-stone-100 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600 shadow-inner">
+            <div className="w-10 h-10 rounded-2xl bg-orange-50 flex items-center justify-center text-orange-600 shadow-inner">
               <MagicWandIcon className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="font-black text-xl text-slate-900 tracking-tight">プリセット編集</h2>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Configuration Editor</p>
+              <h2 className="font-black text-xl text-stone-900 tracking-tight">プリセット編集</h2>
+              <p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">Configuration Editor</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -462,7 +462,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
               <button
                 type="button"
                 onClick={goToListView}
-                className="md:hidden flex items-center gap-1.5 px-4 py-2 text-xs font-black text-slate-500 bg-slate-100 rounded-full hover:bg-slate-200"
+                className="md:hidden flex items-center gap-1.5 px-4 py-2 text-xs font-black text-stone-500 bg-stone-100 rounded-full hover:bg-stone-200"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
                 BACK
@@ -470,7 +470,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
             )}
             <button
               onClick={onClose}
-              className="p-2.5 hover:bg-rose-50 rounded-2xl text-slate-300 hover:text-rose-500 transition-all active:scale-95"
+              className="p-2.5 hover:bg-rose-50 rounded-2xl text-stone-300 hover:text-rose-500 transition-all active:scale-95"
             >
               <CloseIcon className="w-6 h-6" />
             </button>
@@ -479,7 +479,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
         <div className="flex-1 overflow-y-auto p-8 md:p-12 space-y-10">
           <div className="animate-in slide-in-from-bottom-4 duration-500">
-            <label className="block text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">
+            <label className="block text-[11px] font-black text-stone-400 uppercase tracking-[0.2em] mb-3">
               プリセット名 (Save Name)
             </label>
             <div className="relative group">
@@ -488,39 +488,39 @@ const PresetModal: React.FC<PresetModalProps> = ({
                 value={name}
                 onChange={(e) => setName(enforceSaveNameWidth(e.target.value))}
                 placeholder="例: フレンドリーな店長"
-                className="w-full px-6 py-4.5 bg-slate-50 border-2 border-transparent focus:bg-white focus:border-indigo-500 focus:ring-[8px] focus:ring-indigo-500/5 outline-none rounded-2xl text-base text-slate-800 font-bold placeholder-slate-300 transition-all shadow-sm"
+                className="w-full px-6 py-4.5 bg-stone-50 border-2 border-transparent focus:bg-white focus:border-orange-500 focus:ring-[8px] focus:ring-orange-500/5 outline-none rounded-2xl text-base text-stone-800 font-bold placeholder-stone-300 transition-all shadow-sm"
               />
-              <div className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-200 group-focus-within:text-indigo-400">
+              <div className="absolute right-4 top-1/2 -transtone-y-1/2 text-stone-200 group-focus-within:text-orange-400">
                 <BookmarkIcon className="w-5 h-5" />
               </div>
             </div>
           </div>
 
           <div className="animate-in slide-in-from-bottom-4 duration-500 delay-100">
-            <label className="block text-[11px] font-black text-indigo-400 uppercase tracking-[0.2em] mb-3">
+            <label className="block text-[11px] font-black text-orange-400 uppercase tracking-[0.2em] mb-3">
               発信者ペルソナ (Prompt Instruction)
             </label>
-            <div className="relative p-[1px] rounded-[24px] bg-gradient-to-br from-indigo-500/20 via-slate-100 to-indigo-500/10">
+            <div className="relative p-[1px] rounded-[24px] bg-gradient-to-br from-orange-500/20 via-stone-100 to-orange-500/10">
               <AutoResizingTextarea
                 value={customPrompt}
                 onChange={setCustomPrompt}
                 placeholder="例: 活気のある若手スタッフの口調で、親しみやすく丁寧なタメ口を交えて。"
-                className="w-full px-6 py-6 bg-white border-2 border-transparent focus:border-indigo-500 focus:ring-[8px] focus:ring-indigo-500/5 outline-none rounded-[22px] text-base text-slate-800 font-medium leading-relaxed placeholder-slate-300 transition-all shadow-inner min-h-[140px]"
+                className="w-full px-6 py-6 bg-white border-2 border-transparent focus:border-orange-500 focus:ring-[8px] focus:ring-orange-500/5 outline-none rounded-[22px] text-base text-stone-800 font-medium leading-relaxed placeholder-stone-300 transition-all shadow-inner min-h-[140px]"
               />
             </div>
-            <p className="text-[11px] text-slate-400 font-medium mt-3 leading-relaxed flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
+            <p className="text-[11px] text-stone-400 font-medium mt-3 leading-relaxed flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-orange-400"></span>
               ここで指定した性格や文体がAIの出力に反映されます。
             </p>
           </div>
         </div>
 
-        <div className="p-6 md:p-8 border-t border-slate-100 bg-slate-50/50 flex flex-col md:flex-row items-stretch justify-between gap-4 shrink-0">
+        <div className="p-6 md:p-8 border-t border-stone-100 bg-stone-50/50 flex flex-col md:flex-row items-stretch justify-between gap-4 shrink-0">
           <div className="flex-1 flex flex-col gap-2">
             <button
               onClick={handleSave}
               disabled={isSaveDisabled}
-              className="w-full bg-[#0F172A] hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed text-white px-8 py-5 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center justify-center gap-3 transition-all transform hover:-translate-y-1 active:translate-y-0 shadow-xl shadow-slate-200"
+              className="w-full bg-[#0F172A] hover:bg-stone-800 disabled:opacity-50 disabled:cursor-not-allowed text-white px-8 py-5 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center justify-center gap-3 transition-all transform hover:-transtone-y-1 active:transtone-y-0 shadow-xl shadow-stone-200"
             >
               <SaveIcon className="w-4 h-4" />
               {selectedPresetId ? 'UPDATE PRESET' : 'SAVE TO LIST'}
@@ -529,7 +529,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
           <button
             onClick={handleApplyCurrent}
-            className="flex-[1.2] bg-indigo-600 hover:bg-indigo-700 text-white font-black py-5 px-8 rounded-2xl shadow-xl shadow-indigo-200 transition-all transform hover:-translate-y-1 active:translate-y-0 flex items-center justify-center gap-3 text-sm uppercase tracking-widest"
+            className="flex-[1.2] bg-orange-600 hover:bg-orange-700 text-white font-black py-5 px-8 rounded-2xl shadow-xl shadow-orange-200 transition-all transform hover:-transtone-y-1 active:transtone-y-0 flex items-center justify-center gap-3 text-sm uppercase tracking-widest"
           >
             <MagicWandIcon className="w-4 h-4" />
             Apply Settings
@@ -541,7 +541,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[150] bg-slate-950/80 backdrop-blur-md transition-all duration-300 animate-in fade-in"
+      className="fixed inset-0 z-[150] bg-stone-950/80 backdrop-blur-md transition-all duration-300 animate-in fade-in"
       onClick={onClose}
     >
       <div className="hidden md:flex w-full h-full items-center justify-center">
@@ -558,7 +558,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
           onClick={(e) => e.stopPropagation()}
         >
           <div className="flex justify-center py-3">
-            <span className="block w-12 h-1.5 rounded-full bg-slate-200" />
+            <span className="block w-12 h-1.5 rounded-full bg-stone-200" />
           </div>
           <div className="flex-1 overflow-hidden">{modalBody}</div>
         </div>

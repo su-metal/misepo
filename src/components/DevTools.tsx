@@ -146,7 +146,7 @@ const DevTools: React.FC<DevToolsProps> = ({ resetProfile, simulateRegisteredUse
       {isMinimized ? (
         <div 
           onClick={handleMinimizeClick}
-          className="w-full h-full flex items-center justify-center bg-indigo-600 hover:bg-indigo-500 text-white transition-colors cursor-pointer"
+          className="w-full h-full flex items-center justify-center bg-orange-600 hover:bg-orange-500 text-white transition-colors cursor-pointer"
           title="Expand DevTools (Drag to move)"
           role="button"
         >

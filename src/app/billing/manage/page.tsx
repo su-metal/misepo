@@ -69,7 +69,7 @@ export default function BillingManagePage() {
       <button
         onClick={handleManage}
         disabled={portalLoading}
-        className="w-full bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-bold py-3 rounded-xl shadow-lg shadow-indigo-300 transition hover:opacity-90 disabled:opacity-60"
+        className="w-full bg-gradient-to-r from-orange-600 to-blue-600 text-white font-bold py-3 rounded-xl shadow-lg shadow-orange-300 transition hover:opacity-90 disabled:opacity-60"
       >
         {portalLoading ? "ポータルを準備中…" : "サブスクを管理（解約）する"}
       </button>

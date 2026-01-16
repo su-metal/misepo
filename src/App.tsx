@@ -18,21 +18,21 @@ import { LockIcon, LogOutIcon } from './components/Icons';
 
 // Inline simple components for now
 const MobileHeader = ({ onOpenSidebar }: { onOpenSidebar: () => void }) => (
-  <header className="md:hidden flex items-center justify-between p-4 bg-white border-b border-slate-100 sticky top-0 z-30">
-    <h1 className="text-xl font-black text-slate-800">MisePo</h1>
-    <button onClick={onOpenSidebar} className="p-2 bg-slate-50 rounded-lg text-slate-600">
+  <header className="md:hidden flex items-center justify-between p-4 bg-white border-b border-stone-100 sticky top-0 z-30">
+    <h1 className="text-xl font-black text-stone-800">MisePo</h1>
+    <button onClick={onOpenSidebar} className="p-2 bg-stone-50 rounded-lg text-stone-600">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
     </button>
   </header>
 );
 
 const UpgradeBanner = ({ plan, onUpgrade }: { plan: string, onUpgrade: () => void }) => (
-  <div className="bg-indigo-600 p-4 flex items-center justify-between text-white text-sm">
+  <div className="bg-orange-600 p-4 flex items-center justify-between text-white text-sm">
     <div className="flex items-center gap-2">
-      <span className="bg-indigo-500 px-2 py-0.5 rounded text-[10px] font-bold uppercase">Free Plan</span>
+      <span className="bg-orange-500 px-2 py-0.5 rounded text-[10px] font-bold uppercase">Free Plan</span>
       <span>無料枠をご利用中です。Proプランで作成回数が無制限になります。</span>
     </div>
-    <button onClick={onUpgrade} className="bg-white text-indigo-600 px-4 py-1 rounded-full font-bold text-xs hover:bg-slate-50 transition">
+    <button onClick={onUpgrade} className="bg-white text-orange-600 px-4 py-1 rounded-full font-bold text-xs hover:bg-stone-50 transition">
       Proへアップグレード
     </button>
   </div>
@@ -170,8 +170,8 @@ function App() {
 
   if (authLoading || !initDone) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-slate-50">
-        <div className="w-8 h-8 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
+      <div className="flex items-center justify-center min-h-screen bg-stone-50">
+        <div className="w-8 h-8 border-4 border-orange-200 border-t-orange-600 rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -181,7 +181,7 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 flex">
+    <div className="min-h-screen bg-stone-50 flex">
       <HistorySidebar
         isOpen={isSidebarOpen}
         toggleOpen={() => setIsSidebarOpen(false)}

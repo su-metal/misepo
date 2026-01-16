@@ -23,21 +23,21 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
             <div
-                className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"
+                className="absolute inset-0 bg-stone-900/60 backdrop-blur-sm transition-opacity"
                 onClick={onClose}
             />
 
             <div className="relative w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
                 <div className="flex items-center justify-between p-4 border-b border-gray-100">
-                    <h3 className="text-sm font-bold text-slate-700 flex items-center gap-2">
+                    <h3 className="text-sm font-bold text-stone-700 flex items-center gap-2">
                         {getPlatformIcon(platform)}
                         <span>プレビュー</span>
                     </h3>
                     <button
                         onClick={onClose}
-                        className="p-2 hover:bg-slate-100 rounded-full transition-colors"
+                        className="p-2 hover:bg-stone-100 rounded-full transition-colors"
                     >
-                        <XIcon className="w-5 h-5 text-slate-400" />
+                        <XIcon className="w-5 h-5 text-stone-400" />
                     </button>
                 </div>
 
@@ -165,7 +165,7 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
                 <div className="p-4 bg-white border-t border-gray-100">
                     <button
                         onClick={onClose}
-                        className="w-full py-3 bg-slate-900 text-white rounded-xl font-bold text-sm hover:bg-slate-800 transition-colors"
+                        className="w-full py-3 bg-stone-900 text-white rounded-xl font-bold text-sm hover:bg-stone-800 transition-colors"
                     >
                         閉じる
                     </button>
