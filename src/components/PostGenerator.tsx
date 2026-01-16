@@ -70,11 +70,11 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
   };
 
   return (
-    <div className="min-h-screen bg-stone-50 text-stone-800 selection:bg-orange-200 overflow-x-hidden">
-      {/* Radiant Glows (Light Mode) */}
+    <div className="min-h-screen bg-white text-black overflow-x-hidden">
+      {/* Subtle Ambient Glow */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute -top-[20%] -left-[10%] w-[70%] h-[70%] bg-orange-200/40 blur-[120px] rounded-full animate-pulse opacity-50"></div>
-        <div className="absolute -bottom-[20%] -right-[10%] w-[60%] h-[60%] bg-purple-200/30 blur-[120px] rounded-full opacity-30"></div>
+        <div className="absolute -top-[20%] -left-[10%] w-[70%] h-[70%] bg-gray-100/30 blur-[120px] rounded-full opacity-40"></div>
+        <div className="absolute -bottom-[20%] -right-[10%] w-[60%] h-[60%] blur-[120px] rounded-full opacity-15" style={{ backgroundColor: 'var(--lime)' }}></div>
       </div>
 
       <div className="max-w-[1400px] mx-auto px-4 sm:px-8 py-8 relative z-10">
@@ -93,11 +93,11 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
           <div className="lg:col-span-4 space-y-6">
 
             {/* Plan & Status Card - Distributed from Header */}
-            <div className="bg-white/60 backdrop-blur-xl border border-white/40 rounded-[2.5rem] p-6 shadow-xl shadow-stone-200/50 animate-in fade-in slide-in-from-left-4 duration-700">
+            <div className="bg-white border border-gray-200 rounded-[2.5rem] p-6 shadow-xl shadow-black/5 animate-in fade-in slide-in-from-left-4 duration-700">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h4 className="text-[10px] font-black tracking-[0.3em] text-stone-400 mb-1 uppercase">Account Status</h4>
-                  <p className="text-xl font-black text-stone-800 tracking-tight">
+                  <h4 className="text-[10px] font-black tracking-[0.3em] text-gray-500 mb-1 uppercase">Account Status</h4>
+                  <p className="text-xl font-black text-black tracking-tight">
                     {(() => {
                       const now = Date.now();
                       const trialEndsMs = plan?.trial_ends_at ? new Date(plan.trial_ends_at).getTime() : 0;
@@ -113,8 +113,8 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
                   if (trialEndsMs > now) {
                     return (
                       <div className="relative group">
-                        <div className="absolute inset-0 bg-orange-500 blur-lg opacity-20 group-hover:opacity-40 animate-pulse"></div>
-                        <div className="relative w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center text-white shadow-lg shadow-orange-900/20 rotate-3 transition-transform group-hover:rotate-0">
+                        <div className="absolute inset-0 blur-lg opacity-30 group-hover:opacity-50 animate-pulse bg-lime"></div>
+                        <div className="relative w-12 h-12 rounded-2xl bg-lime flex items-center justify-center text-black shadow-lime rotate-3 transition-transform group-hover:rotate-0">
                           <StarIcon className="w-6 h-6 fill-current" />
                         </div>
                       </div>
@@ -122,7 +122,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
                   }
                   if (plan?.status === 'active') {
                     return (
-                      <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-white shadow-lg shadow-emerald-900/10">
+                      <div className="w-12 h-12 rounded-2xl bg-black flex items-center justify-center text-lime shadow-lg shadow-black/10">
                         <span className="font-black text-xs uppercase">Pro</span>
                       </div>
                     );
@@ -138,28 +138,28 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
                   const days = Math.max(0, Math.ceil((trialEndsMs - now) / (1000 * 60 * 60 * 24)));
                   return (
                     <div className="space-y-3">
-                      <div className="h-1.5 w-full bg-stone-100 rounded-full overflow-hidden">
+                      <div className="h-1.5 w-full bg-gray-200 rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-gradient-to-r from-orange-500 to-amber-400 rounded-full transition-all duration-1000"
+                          className="h-full bg-lime rounded-full transition-all duration-1000"
                           style={{ width: `${(days / 7) * 100}%` }}
                         ></div>
                       </div>
-                      <p className="text-[11px] font-bold text-stone-500 flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-ping"></span>
-                        あと <span className="text-orange-600 font-black">{days}日間</span> 無料でお試しいただけます
+                      <p className="text-[11px] font-bold text-gray-600 flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-lime animate-ping"></span>
+                        あと <span className="text-black font-black">{days}日間</span> 無料でお試しいただけます
                       </p>
                     </div>
                   );
                 }
                 return (
-                  <p className="text-[11px] font-bold text-stone-500 leading-relaxed uppercase tracking-wider">
+                  <p className="text-[11px] font-bold text-gray-600 leading-relaxed uppercase tracking-wider">
                     2026テクノロジー搭載。あなたのブランドをAIで加速させます。
                   </p>
                 );
               })()}
             </div>
 
-            <div className="bg-white/60 backdrop-blur-xl border border-white/40 rounded-[2.5rem] p-1 overflow-hidden shadow-xl shadow-stone-200/50">
+            <div className="bg-white border border-gray-200 rounded-[2.5rem] p-1 overflow-hidden shadow-xl shadow-black/5">
               <div ref={instagramRef as any}>
                 <PlatformSelector
                   platforms={flow.platforms}
@@ -179,7 +179,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
 
           {/* Right Area: Main Workstation Module (8 Cols) */}
           <div className="lg:col-span-8 space-y-6">
-            <div ref={inputRef} className="bg-white/60 backdrop-blur-xl border border-white/40 rounded-[3rem] shadow-xl shadow-stone-200/50 overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-stone-200/60">
+            <div ref={inputRef} className="bg-white border border-gray-200 rounded-[3rem] shadow-xl shadow-black/5 overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-black/10">
               <PostInputForm
                 platform={flow.platforms[0] || Platform.Instagram}
                 postPurpose={flow.postPurpose}
@@ -228,20 +228,20 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
       </div>
 
       {/* Mobile Fixed Generation Footer */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 p-4 bg-white/80 backdrop-blur-xl border-t border-stone-200 z-[90] safe-area-bottom">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 p-4 bg-white/80 backdrop-blur-xl border-t border-gray-200 z-[90] safe-area-bottom">
         <button
           onClick={handleGenerate}
           disabled={flow.loading || !flow.inputText.trim()}
-          className="w-full bg-stone-900 text-white py-4 rounded-xl font-black text-sm uppercase tracking-widest shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 active:scale-95 transition-all"
+          className="w-full bg-black text-white py-4 rounded-xl font-black text-sm uppercase tracking-widest shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 active:scale-95 transition-all"
         >
           {flow.loading ? (
             <>
-              <div className="w-4 h-4 border-2 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-4 h-4 border-2 border-lime border-t-transparent rounded-full animate-spin"></div>
               GENERATING...
             </>
           ) : (
             <>
-              <SparklesIcon className="w-5 h-5 text-orange-400" />
+              <SparklesIcon className="w-5 h-5 text-lime" />
               投稿を作成
             </>
           )}

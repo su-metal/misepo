@@ -79,29 +79,29 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                     {/* Scene Module */}
                     <div className="space-y-4">
                         <div className="flex items-center gap-2">
-                            <div className="w-1 h-3 bg-orange-500 rounded-full"></div>
+                            <div className="w-1 h-3 bg-lime rounded-full"></div>
                             <span className="text-[10px] font-black tracking-[0.3em] text-stone-500 uppercase">作成する内容</span>
                         </div>
                         <div className="grid grid-cols-1 gap-2">
                             {/* Star Rating for Google Maps */}
                             {isGoogleMaps && (
-                                <div className="mb-6 p-4 bg-orange-50 rounded-2xl border border-orange-100">
-                                    <p className="text-[10px] font-black text-orange-600 uppercase tracking-widest mb-3 flex items-center gap-2">
+                                <div className="mb-6 p-4 rounded-2xl border" style={{ backgroundColor: 'rgba(239,255,0,0.1)', borderColor: 'rgba(239,255,0,0.3)' }}>
+                                    <p className="text-[10px] font-black text-lime uppercase tracking-widest mb-3 flex items-center gap-2">
                                         <SparklesIcon className="w-3 h-3" />
                                         Review Rating
                                     </p>
-                                    <div className="flex justify-between items-center bg-white p-3 rounded-xl border border-orange-200">
+                                    <div className="flex justify-between items-center bg-white p-3 rounded-xl border-lime" style={{ borderWidth: '1px', borderColor: 'rgba(239,255,0,0.3)' }}>
                                         {[1, 2, 3, 4, 5].map((s) => (
                                             <button
                                                 key={s}
                                                 onClick={() => onStarRatingChange(s)}
-                                                className={`text-2xl transition-all hover:scale-110 active:scale-95 ${s <= (starRating || 0) ? 'text-orange-500 drop-shadow-sm' : 'text-stone-200'}`}
+                                                className={`text-2xl transition-all hover:scale-110 active:scale-95 ${s <= (starRating || 0) ? 'text-lime drop-shadow-sm' : 'text-gray-200'}`}
                                             >
                                                 {s <= (starRating || 0) ? '★' : '☆'}
                                             </button>
                                         ))}
                                     </div>
-                                    <p className="text-[9px] text-orange-400 mt-2 font-bold px-1">
+                                    <p className="text-[9px] text-lime mt-2 font-bold px-1">
                                         {starRating ? `${starRating} stars selected. Purpose will be adjusted.` : 'Select the star rating of the review.'}
                                     </p>
                                 </div>
@@ -114,7 +114,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                     className={`
                                         flex items-center gap-3 px-5 py-4 rounded-2xl border transition-all duration-300 group
                                         ${(isGoogleMaps ? gmapPurpose : postPurpose) === p.id
-                                            ? 'bg-orange-500 text-white border-orange-500 shadow-xl translate-x-1'
+                                            ? 'bg-lime text-black border-lime shadow-xl translate-x-1'
                                             : 'bg-white border-stone-200 text-stone-500 hover:bg-stone-50 hover:text-stone-800'}
                                     `}
                                 >
@@ -128,7 +128,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                     {/* Tone Module */}
                     <div className="space-y-4">
                         <div className="flex items-center gap-2">
-                            <div className="w-1 h-3 bg-orange-500 rounded-full"></div>
+                            <div className="w-1 h-3 bg-lime rounded-full"></div>
                             <span className="text-[10px] font-black tracking-[0.3em] text-stone-500 uppercase">文章の雰囲気</span>
                         </div>
                         <div className="flex flex-wrap gap-2">
@@ -139,7 +139,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                     className={`
                                         px-4 py-2.5 rounded-xl border text-[10px] font-black tracking-widest transition-all
                                         ${tone === t.id
-                                            ? 'bg-orange-600 border-orange-500 text-white shadow-lg'
+                                            ? 'bg-lime border-lime text-black shadow-lg'
                                             : 'bg-white border-stone-200 text-stone-500 hover:border-stone-300 hover:text-stone-800'}
                                     `}
                                 >
@@ -152,7 +152,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                     {/* Length Module */}
                     <div className="space-y-4">
                         <div className="flex items-center gap-2">
-                            <div className="w-1 h-3 bg-orange-500 rounded-full"></div>
+                            <div className="w-1 h-3 bg-lime rounded-full"></div>
                             <span className="text-[10px] font-black tracking-[0.3em] text-stone-500 uppercase">文章の長さ</span>
                         </div>
                         <div className="grid grid-cols-3 gap-2">
@@ -163,7 +163,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                     className={`
                                         flex flex-col items-center justify-center py-3 rounded-2xl border transition-all
                                         ${length === l.id
-                                            ? 'bg-orange-500 text-white border-orange-500 shadow-lg'
+                                            ? 'bg-lime text-black border-lime shadow-lg'
                                             : 'bg-white border-stone-200 text-stone-500 hover:bg-stone-50'}
                                     `}
                                 >
@@ -185,7 +185,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
 
                 <div className="mb-6 flex items-end justify-between">
                     <div>
-                        <h2 className="text-[10px] font-black text-orange-500 uppercase tracking-[0.4em] mb-2">Editor Protocol</h2>
+                        <h2 className="text-[10px] font-black text-lime uppercase tracking-[0.4em] mb-2">Editor Protocol</h2>
                         <h3 className="text-3xl font-black text-stone-800 tracking-tighter leading-tight italic">
                             今回はどんな内容にしますか？
                         </h3>
@@ -194,7 +194,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                     {inputText.length > 0 && (
                         <button
                             onClick={() => onInputTextChange('')}
-                            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-stone-100 text-stone-500 hover:bg-orange-50 hover:text-orange-600 transition-all group/clear mb-1"
+                            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-black transition-all group/clear mb-1"
                             title="入力をすべて消去"
                         >
                             <EraserIcon className="w-4 h-4 group-hover:rotate-12 transition-transform" />
@@ -204,7 +204,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                 </div>
 
                 <div className="flex-1 relative group">
-                    <div className="absolute inset-0 bg-orange-500/5 blur-[100px] rounded-full opacity-0 group-focus-within:opacity-100 transition-opacity duration-1000"></div>
+                    <div className="absolute inset-0 blur-[100px] rounded-full opacity-0 group-focus-within:opacity-100 transition-opacity duration-1000" style={{ backgroundColor: 'rgba(239,255,0,0.05)' }}></div>
                     <AutoResizingTextarea
                         value={inputText}
                         onChange={(e) => onInputTextChange(e.target.value)}
@@ -216,7 +216,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                 <div className="mt-10 hidden md:flex items-center justify-between">
                     <div className="hidden sm:flex items-center gap-6">
                         <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-orange-500">
+                            <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-lime">
                                 <MagicWandIcon className="w-4 h-4" />
                             </div>
                             <div>
@@ -237,11 +237,11 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                 : 'bg-stone-900 text-white shadow-xl hover:shadow-2xl hover:scale-[1.02] active:scale-95'}
                         `}
                     >
-                        <div className="absolute inset-0 bg-gradient-to-r from-orange-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: 'linear-gradient(90deg, rgba(239,255,0,0.2), rgba(239,255,0,0.1))' }}></div>
                         <span className="relative flex items-center gap-3">
                             {isGenerating ? (
                                 <>
-                                    <div className="w-4 h-4 border-2 border-orange-600 border-t-transparent rounded-full animate-spin"></div>
+                                    <div className="w-4 h-4 border-2 border-lime border-t-transparent rounded-full animate-spin"></div>
                                     GENERATING...
                                 </>
                             ) : (

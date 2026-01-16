@@ -3,11 +3,24 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --lime: #efff00;
+  --lime-light: #f5ff66;
+  --lime-dark: #c4d400;
+}
+
 body {
   font-family: 'Inter', 'Noto Sans JP', sans-serif;
-  background-color: #fafaf9; /* Stone-50 */
-  color: #1c1917; /* Stone-900 */
+  background-color: #ffffff; /* Pure White */
+  color: #000000; /* Pure Black */
 }
+
+/* Lime Color Utilities */
+.bg-lime { background-color: var(--lime) !important; }
+.text-lime { color: var(--lime) !important; }
+.border-lime { border-color: var(--lime) !important; }
+.shadow-lime { box-shadow: 0 10px 25px -5px rgba(239, 255, 0, 0.3) !important; }
+.ring-lime { --tw-ring-color: var(--lime) !important; }
 
 /* Custom Scrollbar */
 .scrollbar-hide::-webkit-scrollbar {

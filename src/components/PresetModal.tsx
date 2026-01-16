@@ -68,13 +68,13 @@ const SortablePresetRow: React.FC<{
       <button
         onClick={() => onSelect(preset)}
         className={`flex-1 text-left p-4 pr-14 rounded-2xl border-2 transition-all duration-300 ${isSelected
-            ? 'bg-white/15 border-orange-500/50 shadow-lg shadow-orange-950/20'
-            : 'bg-white/5 border-transparent hover:bg-white/10 hover:border-white/10'
+          ? 'bg-lime/20 border-lime/50 shadow-lg shadow-lime/10'
+          : 'bg-white/5 border-transparent hover:bg-white/10 hover:border-white/10'
           }`}
         type="button"
       >
         <div className="flex items-center gap-3">
-          <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${isSelected ? 'bg-orange-500 text-white' : 'bg-white/10 text-stone-400 group-hover:bg-white/20'}`}>
+          <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${isSelected ? 'bg-lime text-black' : 'bg-white/10 text-gray-400 group-hover:bg-white/20'}`}>
             <BookmarkIcon className="w-4 h-4" />
           </div>
           <div className={`font-bold text-sm truncate ${isSelected ? 'text-white' : 'text-stone-400 group-hover:text-stone-200'}`}>
@@ -377,7 +377,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
           <div className="mb-8 flex items-center justify-between gap-4">
             <div className="space-y-1">
               <h3 className="font-black text-xl text-white tracking-tight flex items-center gap-2">
-                <div className="w-1.5 h-6 bg-orange-500 rounded-full"></div>
+                <div className="w-1.5 h-6 bg-lime rounded-full"></div>
                 PRESETS
               </h3>
               <p className="text-[10px] font-black text-stone-500 uppercase tracking-widest">Saved Configurations</p>
@@ -387,8 +387,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
               onClick={handleStartNew}
               disabled={limitReached}
               className={`p-2 rounded-xl transition-all border-2 flex items-center justify-center ${limitReached
-                  ? 'border-white/5 text-stone-600'
-                  : 'border-white/10 bg-white/5 text-orange-400 hover:bg-orange-500 hover:text-white hover:border-orange-500'
+                ? 'border-white/5 text-stone-600'
+                : 'border-white/10 bg-white/5 text-lime hover:bg-lime hover:text-black hover:border-lime'
                 }`}
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12h14" /></svg>
@@ -449,7 +449,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
       >
         <div className="p-6 md:p-8 border-b border-stone-100 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-orange-50 flex items-center justify-center text-orange-600 shadow-inner">
+            <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-black shadow-inner" style={{ backgroundColor: 'rgba(239,255,0,0.2)' }}>
               <MagicWandIcon className="w-5 h-5" />
             </div>
             <div>
@@ -488,28 +488,28 @@ const PresetModal: React.FC<PresetModalProps> = ({
                 value={name}
                 onChange={(e) => setName(enforceSaveNameWidth(e.target.value))}
                 placeholder="例: フレンドリーな店長"
-                className="w-full px-6 py-4.5 bg-stone-50 border-2 border-transparent focus:bg-white focus:border-orange-500 focus:ring-[8px] focus:ring-orange-500/5 outline-none rounded-2xl text-base text-stone-800 font-bold placeholder-stone-300 transition-all shadow-sm"
+                className="w-full px-6 py-4.5 bg-gray-50 border-2 border-transparent focus:bg-white focus:border-lime focus:ring-[8px] focus:ring-lime/20 outline-none rounded-2xl text-base text-gray-800 font-bold placeholder-gray-300 transition-all shadow-sm"
               />
-              <div className="absolute right-4 top-1/2 -transtone-y-1/2 text-stone-200 group-focus-within:text-orange-400">
+              <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-200 group-focus-within:text-lime">
                 <BookmarkIcon className="w-5 h-5" />
               </div>
             </div>
           </div>
 
           <div className="animate-in slide-in-from-bottom-4 duration-500 delay-100">
-            <label className="block text-[11px] font-black text-orange-400 uppercase tracking-[0.2em] mb-3">
+            <label className="block text-[11px] font-black text-lime uppercase tracking-[0.2em] mb-3">
               発信者ペルソナ (Prompt Instruction)
             </label>
-            <div className="relative p-[1px] rounded-[24px] bg-gradient-to-br from-orange-500/20 via-stone-100 to-orange-500/10">
+            <div className="relative p-[1px] rounded-[24px] bg-gradient-to-br from-lime/20 via-gray-100 to-lime/10">
               <AutoResizingTextarea
                 value={customPrompt}
                 onChange={setCustomPrompt}
                 placeholder="例: 活気のある若手スタッフの口調で、親しみやすく丁寧なタメ口を交えて。"
-                className="w-full px-6 py-6 bg-white border-2 border-transparent focus:border-orange-500 focus:ring-[8px] focus:ring-orange-500/5 outline-none rounded-[22px] text-base text-stone-800 font-medium leading-relaxed placeholder-stone-300 transition-all shadow-inner min-h-[140px]"
+                className="w-full px-6 py-6 bg-white border-2 border-transparent focus:border-lime focus:ring-[8px] focus:ring-lime/20 outline-none rounded-[22px] text-base text-gray-800 font-medium leading-relaxed placeholder-gray-300 transition-all shadow-inner min-h-[140px]"
               />
             </div>
             <p className="text-[11px] text-stone-400 font-medium mt-3 leading-relaxed flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-orange-400"></span>
+              <span className="w-1.5 h-1.5 rounded-full bg-lime"></span>
               ここで指定した性格や文体がAIの出力に反映されます。
             </p>
           </div>
@@ -529,7 +529,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
           <button
             onClick={handleApplyCurrent}
-            className="flex-[1.2] bg-orange-600 hover:bg-orange-700 text-white font-black py-5 px-8 rounded-2xl shadow-xl shadow-orange-200 transition-all transform hover:-transtone-y-1 active:transtone-y-0 flex items-center justify-center gap-3 text-sm uppercase tracking-widest"
+            className="flex-[1.2] bg-lime hover:opacity-90 text-black font-black py-5 px-8 rounded-2xl shadow-lime transition-all transform hover:-translate-y-1 active:translate-y-0 flex items-center justify-center gap-3 text-sm uppercase tracking-widest"
           >
             <MagicWandIcon className="w-4 h-4" />
             Apply Settings
