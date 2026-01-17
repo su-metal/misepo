@@ -39,10 +39,7 @@ export async function middleware(req: NextRequest) {
   };
 
   const pathname = req.nextUrl.pathname;
-  if (!user && pathname === '/') {
-    const redirectUrl = new URL('/start', req.url);
-    return applyPendingCookies(NextResponse.redirect(redirectUrl, 307));
-  }
+  // ルートパス（/）は LandingPage を表示するためリダイレクトしない
 
   if (user) {
     const protectedPaths = ['/login', '/signup'];
