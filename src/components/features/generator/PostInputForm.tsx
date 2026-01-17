@@ -114,7 +114,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                     >
                         <span className="text-lg">𝕏</span>
                         <span>X (Twitter)</span>
-                        {platform === Platform.X && <div className="absolute top-0 left-0 right-0 h-0.5 bg-indigo-500 rounded-t-xl" />}
+                        {platform === Platform.X && <div className="absolute top-0 left-0 right-0 h-0.5 bg-[#4f46e5] rounded-t-xl" />}
                     </button>
                     <button
                         onClick={() => onSetActivePlatform(Platform.Instagram)}
@@ -147,7 +147,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                 <div className="flex items-center justify-center lg:justify-start gap-2 py-2 lg:py-0 lg:ml-4 lg:pl-4 lg:border-l lg:border-gray-200">
                     <button
                         onClick={onToggleMultiGen}
-                        className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${isMultiGen ? 'bg-indigo-500' : 'bg-gray-200'
+                        className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${isMultiGen ? 'bg-[#4f46e5]' : 'bg-gray-200'
                             }`}
                     >
                         <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform shadow-sm ${isMultiGen ? 'translate-x-5' : 'translate-x-1'
@@ -155,7 +155,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                     </button>
                     <div className="flex flex-col leading-none">
                         <span className="text-[9px] font-bold text-gray-400">同時生成</span>
-                        <span className={`text-[10px] font-black ${isMultiGen ? 'text-indigo-600' : 'text-gray-300'}`}>ON</span>
+                        <span className={`text-[10px] font-black ${isMultiGen ? 'text-[#4f46e5]' : 'text-gray-300'}`}>ON</span>
                     </div>
                 </div>
             </div>
@@ -190,12 +190,12 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                         onClick={() => onApplyPreset(preset)}
                                         className={`
                                             bg-white rounded-[16px] px-3 py-4 flex items-center justify-center border transition-all relative group
-                                            ${activePresetId === preset.id ? 'border-indigo-500 bg-indigo-50/30' : 'border-gray-100 hover:border-indigo-100 hover:shadow-sm'}
+                                            ${activePresetId === preset.id ? 'border-[#4f46e5] bg-[#4f46e5]/10' : 'border-gray-100 hover:border-[#4f46e5]/20 hover:shadow-sm'}
                                         `}
                                     >
-                                        <span className={`text-[10px] font-bold whitespace-nowrap overflow-hidden text-ellipsis group-hover:text-indigo-600 transition-colors ${activePresetId === preset.id ? 'text-indigo-600' : 'text-gray-600'}`}>{preset.name}</span>
+                                        <span className={`text-[10px] font-bold whitespace-nowrap overflow-hidden text-ellipsis group-hover:text-[#4f46e5] transition-colors ${activePresetId === preset.id ? 'text-[#4f46e5]' : 'text-gray-600'}`}>{preset.name}</span>
                                         {activePresetId === preset.id && (
-                                            <div className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-indigo-500" />
+                                            <div className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-[#4f46e5]" />
                                         )}
                                     </button>
                                 ))}
@@ -244,7 +244,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                         {/* Auto-Judgment Mode Badge - Shows when star is selected */}
                         {isGoogleMaps && starRating && (
                             <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-10">
-                                <div className="bg-indigo-500 text-white text-[10px] font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg">
+                                <div className="bg-[#4f46e5] text-white text-[10px] font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg">
                                     <span className="text-xs">✦</span>
                                     <span>自動判定モード固定</span>
                                 </div>
@@ -263,11 +263,11 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                             relative rounded-[24px] p-4 flex flex-col items-center justify-center gap-2 border transition-all aspect-[5/3]
                                             ${isLocked ? 'opacity-40 cursor-not-allowed' : ''}
                                             ${(isGoogleMaps ? gmapPurpose : postPurpose) === p.id
-                                                ? 'bg-[#5B5FEF] border-[#5B5FEF] text-white shadow-[0_0_15px_rgba(91,95,239,0.3)] ring-4 ring-indigo-500/10'
+                                                ? 'bg-[#4f46e5] border-[#4f46e5] text-white shadow-[0_0_15px_rgba(79,70,229,0.3)] ring-4 ring-[#4f46e5]/10'
                                                 : 'bg-white border-gray-100 text-gray-400 hover:bg-gray-50 hover:border-gray-200'}
                                         `}
                                     >
-                                        <div className={`p-2 rounded-full ${(isGoogleMaps ? gmapPurpose : postPurpose) === p.id ? 'bg-indigo-400/30' : 'bg-gray-50'}`}>
+                                        <div className={`p-2 rounded-full ${(isGoogleMaps ? gmapPurpose : postPurpose) === p.id ? 'bg-[#4f46e5]/30' : 'bg-gray-50'}`}>
                                             <div className={`w-5 h-5 ${(isGoogleMaps ? gmapPurpose : postPurpose) === p.id ? 'text-white' : 'text-gray-400'}`}>
                                                 {p.icon}
                                             </div>
@@ -289,7 +289,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                         key={t.id}
                                         onClick={() => onToneChange(t.id)}
                                         className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all ${tone === t.id
-                                            ? 'bg-[#E0E7FF] text-[#4F46E5]'
+                                            ? 'bg-[#4f46e5]/10 text-[#4f46e5]'
                                             : 'text-gray-400 hover:text-gray-600'
                                             }`}
                                     >
@@ -344,10 +344,10 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                             {/* Decoration Card */}
                             <div className={`rounded-2xl p-4 border transition-colors flex flex-col justify-between h-[84px] ${showPhoneticToggle ? 'bg-[#F8FAFC] border-indigo-200' : 'bg-white border-gray-100 shadow-sm shadow-gray-100/50'}`}>
                                 <div className="flex items-center justify-between">
-                                    <span className={`text-[13px] font-bold ${showPhoneticToggle ? 'text-indigo-600' : 'text-gray-400'}`}>装飾記号</span>
+                                    <span className={`text-[13px] font-bold ${showPhoneticToggle ? 'text-[#4f46e5]' : 'text-gray-400'}`}>装飾記号</span>
                                     <button
                                         onClick={() => setShowPhoneticToggle(!showPhoneticToggle)}
-                                        className={`relative inline-flex h-5 w-10 items-center rounded-full transition-colors ${showPhoneticToggle ? 'bg-indigo-500' : 'bg-gray-200'}`}
+                                        className={`relative inline-flex h-5 w-10 items-center rounded-full transition-colors ${showPhoneticToggle ? 'bg-[#4f46e5]' : 'bg-gray-200'}`}
                                     >
                                         <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${showPhoneticToggle ? 'translate-x-5.5' : 'translate-x-1'}`} />
                                     </button>
@@ -436,6 +436,19 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                             </div>
                         )}
                     </div>
+
+                    {/* Generate Button */}
+                    <button
+                        ref={generateButtonRef}
+                        onClick={onGenerate}
+                        disabled={isGenerating}
+                        className={`hidden lg:block w-full py-4 rounded-2xl font-bold text-base transition-all duration-200 ${isGenerating
+                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                            : 'bg-black text-white hover:bg-gray-800 shadow-lg hover:shadow-xl'
+                            }`}
+                    >
+                        {isGenerating ? '生成中...' : '投稿を作成'}
+                    </button>
                 </div>
             </div>
         </div>
