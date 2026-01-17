@@ -52,174 +52,189 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
 
     const [previewState, setPreviewState] = React.useState<{ isOpen: boolean, platform: Platform, text: string } | null>(null);
 
+    const getPlatformTheme = (platform: Platform) => {
+        switch (platform) {
+            case Platform.X:
+                return {
+                    icon: <div className="w-10 h-10 bg-black rounded-full flex items-center justify-center text-white text-xl">𝕏</div>,
+                    label: 'X (Twitter)',
+                    actionColor: 'bg-black hover:bg-gray-900',
+                    actionLabel: 'Xで投稿する',
+                };
+            case Platform.Instagram:
+                return {
+                    icon: (
+                        <div className="w-10 h-10 bg-gradient-to-tr from-[#FFDC80] via-[#FD1D1D] to-[#C13584] rounded-xl flex items-center justify-center text-white">
+                            <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2c2.717 0 3.056.01 4.122.06 1.065.05 1.79.217 2.428.465.66.254 1.216.598 1.772 1.153a4.908 4.908 0 0 1 1.153 1.772c.247.637.415 1.363.465 2.428.047 1.066.06 1.405.06 4.122 0 2.717-.01 3.056-.06 4.122-.05 1.065-.218 1.79-.465 2.428a4.883 4.883 0 0 1-1.153 1.772 4.915 4.915 0 0 1-1.772 1.153c-.637.247-1.363.415-2.428.465-1.066.047-1.405.06-4.122.06-2.717 0-3.056-.01-4.122-.06-1.065-.05-1.79-.218-2.428-.465a4.89 4.89 0 0 1-1.772-1.153 4.904 4.904 0 0 1-1.153-1.772c-.248-.637-.415-1.363-.465-2.428C2.013 15.056 2 14.717 2 12c0-2.717.01-3.056.06-4.122.05-1.066.217-1.79.465-2.428a4.88 4.88 0 0 1 1.153-1.772A4.897 4.897 0 0 1 5.45 2.525c.638-.248 1.362-.415 2.428-.465C8.944 2.013 9.283 2 12 2zm0 5a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm6.5-.25a1.25 1.25 0 1 0-2.5 0 1.25 1.25 0 0 0 2.5 0zM12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6z" />
+                            </svg>
+                        </div>
+                    ),
+                    label: 'Instagram',
+                    extra: (gIdx: number, iIdx: number) => (
+                        <div key="inst-toggle" className="px-6 py-4 bg-[#FFF0F6] rounded-2xl flex items-center justify-between mb-4">
+                            <div className="flex items-center gap-2 text-pink-600 font-bold text-xs">
+                                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2c2.717 0 3.056.01 4.122.06 1.065.05 1.79.217 2.428.465.66.254 1.216.598 1.772 1.153a4.908 4.908 0 0 1 1.153 1.772c.247.637.415 1.363.465 2.428.047 1.066.06 1.405.06 4.122 0 2.717-.01 3.056-.06 4.122-.05 1.065-.218 1.79-.465 2.428a4.883 4.883 0 0 1-1.153 1.772 4.915 4.915 0 0 1-1.772 1.153c-.637.247-1.363.415-2.428.465-1.066.047-1.405.06-4.122.06-2.717 0-3.056-.01-4.122-.06-1.065-.05-1.79-.218-2.428-.465a4.89 4.89 0 0 1-1.772-1.153 4.904 4.904 0 0 1-1.153-1.772c-.248-.637-.415-1.363-.465-2.428C2.013 15.056 2 14.717 2 12c0-2.717.01-3.056.06-4.122.05-1.066.217-1.79.465-2.428a4.88 4.88 0 0 1 1.153-1.772A4.897 4.897 0 0 1 5.45 2.525c.638-.248 1.362-.415 2.428-.465C8.944 2.013 9.283 2 12 2zm0 5a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm6.5-.25a1.25 1.25 0 1 0-2.5 0 1.25 1.25 0 0 0 2.5 0zM12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6z" />
+                                </svg>
+                                <span>定型文（店舗情報）を含める</span>
+                            </div>
+                            <button
+                                onClick={() => onIncludeFooterChange(!includeFooter)}
+                                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${includeFooter ? 'bg-pink-500' : 'bg-gray-200'}`}
+                            >
+                                <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${includeFooter ? 'translate-x-6' : 'translate-x-1'}`} />
+                            </button>
+                        </div>
+                    ),
+                    actionColor: 'bg-gradient-to-r from-[#FF8C37] via-[#DC2743] to-[#BC1888] hover:opacity-90',
+                    actionLabel: 'Instagramを起動',
+                };
+            case Platform.GoogleMaps:
+                return {
+                    icon: (
+                        <div className="w-10 h-10 bg-[#34A853] rounded-xl flex items-center justify-center text-white">
+                            <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                            </svg>
+                        </div>
+                    ),
+                    label: 'Google Maps',
+                    actionColor: 'bg-[#0F9D58] hover:bg-[#0B8043]',
+                    actionLabel: 'Googleマップで返信する',
+                };
+            default:
+                return {
+                    icon: null,
+                    label: platform,
+                    actionColor: 'bg-indigo-600',
+                    actionLabel: '投稿する',
+                };
+        }
+    };
+
     return (
         <>
-            <div className="space-y-12 animate-in fade-in duration-1000">
-                {/* Tab Navigation: The Switcher */}
-                <div className="flex items-center gap-1.5 p-1.5 bg-white/5 border border-white/5 rounded-2xl w-fit mx-auto lg:mx-0">
+            <div className="space-y-8 animate-in fade-in duration-700">
+                {/* Tab Navigation */}
+                <div className="flex items-center gap-2 p-1.5 bg-gray-100 rounded-2xl w-fit mx-auto lg:mx-0 border border-gray-200 shadow-inner">
                     {results.map((res, idx) => (
                         <button
                             key={res.platform}
                             onClick={() => onTabChange(idx)}
                             className={`
-                            flex items-center gap-3 px-6 py-3 rounded-xl text-[10px] font-black tracking-widest transition-all duration-500 shrink-0
+                            flex items-center gap-3 px-6 py-2.5 rounded-xl text-xs font-bold transition-all shrink-0
                             ${activeTab === idx
-                                    ? 'bg-black text-lime shadow-xl shadow-black/20'
-                                    : 'text-stone-500 hover:text-stone-800 hover:bg-stone-100'}
+                                    ? 'bg-white text-gray-900 shadow-sm'
+                                    : 'text-gray-400 hover:text-gray-600 hover:bg-white/50'}
                         `}
                         >
-                            <div className={`${activeTab === idx ? 'text-lime' : 'text-stone-600'}`}>
-                                {getPlatformIcon(res.platform)}
-                            </div>
                             {res.platform.toUpperCase()}
                         </button>
                     ))}
                 </div>
 
-                {/* Results Content: The Blueprint Gallery */}
-                <div className="space-y-16">
-                    {results.map((res, gIdx) => (
-                        <div key={res.platform} className={activeTab === gIdx ? 'block animate-in fade-in slide-in-from-bottom-4 duration-700' : 'hidden'}>
-                            <div className="mb-12">
-                                <div className="space-y-2">
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-lime"></div>
-                                        <span className="text-[10px] font-black tracking-[0.4em] text-lime uppercase">作成された投稿案</span>
-                                    </div>
-                                    <h2 className="text-3xl font-black text-stone-800 tracking-tighter italic">投稿案のリスト</h2>
+                {/* Results Content */}
+                <div className="">
+                    {results.map((res, gIdx) => {
+                        const theme = getPlatformTheme(res.platform);
+                        return (
+                            <div key={res.platform} className={activeTab === gIdx ? 'block animate-in fade-in slide-in-from-bottom-2 duration-500' : 'hidden'}>
+                                {/* Platform Header */}
+                                <div className="flex items-center gap-3 mb-6 px-1">
+                                    {theme.icon}
+                                    <h2 className="text-xl font-bold text-[#111827]">{theme.label}</h2>
                                 </div>
-                            </div>
 
-                            <div className="space-y-10">
-                                {res.data.map((text, iIdx) => (
-                                    <div key={iIdx} className="group relative bg-white/60 backdrop-blur-3xl border border-stone-200 rounded-[3rem] shadow-xl shadow-stone-200/50 transition-all duration-700 hover:shadow-2xl hover:shadow-stone-200/60 flex flex-col min-h-[500px] overflow-hidden">
-                                        {/* Grid-line Background Overlay - Removed as per user request */}
+                                <div className="space-y-8">
+                                    {res.data.map((text, iIdx) => (
+                                        <div key={iIdx} className="group relative bg-white border border-gray-100 rounded-[32px] shadow-sm hover:shadow-md transition-all duration-300 flex flex-col min-h-[400px] overflow-hidden p-8">
+                                            {/* Text Area */}
+                                            <div className="flex-1 mb-6">
+                                                <AutoResizingTextarea
+                                                    value={text}
+                                                    onChange={(e) => onManualEdit(gIdx, iIdx, e.target.value)}
+                                                    className="w-full bg-transparent text-gray-800 text-base leading-relaxed focus:outline-none resize-none placeholder:text-gray-300 font-medium"
+                                                    trigger={activeTab}
+                                                />
+                                            </div>
 
-                                        {/* Card Header: Metadata */}
-                                        <div className="p-8 pb-4 flex items-center justify-between relative z-10">
-                                            {text.length === 0 ? (
-                                                <div className="text-center space-y-4 max-w-sm px-10">
-                                                    <div className="w-20 h-20 rounded-full bg-stone-50 border border-stone-100 flex items-center justify-center text-stone-300 mx-auto">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" /></svg>
-                                                    </div>
-                                                    <h3 className="text-lg font-black text-stone-800 tracking-tighter">ここに作成した文章が表示されます</h3>
-                                                    <p className="text-stone-500 text-sm leading-relaxed font-bold italic">左側のフォームに入力して「投稿文を作成する」ボタンを押してください。</p>
-                                                </div>
-                                            ) : (
-                                                <div className="flex items-center gap-4">
-                                                    <div className="w-12 h-12 rounded-2xl bg-stone-100 border border-stone-200 flex items-center justify-center text-stone-600 font-black text-sm italic shadow-inner">
-                                                        {String(iIdx + 1).padStart(2, '0')}
-                                                    </div>
-                                                    <div>
-                                                        <p className="text-[9px] font-black text-stone-400 uppercase tracking-widest leading-none mb-1">提案リスト No.</p>
-                                                        <div className="flex items-center gap-2">
-                                                            <div className="w-1.5 h-1.5 rounded-full bg-lime/50"></div>
-                                                            <span className="text-[11px] font-black text-stone-500 font-mono">VARIANT-{iIdx + 1}</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            )}
-                                            <div className="bg-stone-50 px-4 py-2 rounded-xl border border-stone-200 backdrop-blur-md">
+                                            {/* Character Count */}
+                                            <div className="flex justify-end mb-6">
                                                 <CharCounter
                                                     platform={res.platform}
                                                     text={text}
                                                     config={{ platform: res.platform } as any}
                                                 />
                                             </div>
-                                        </div>
 
-                                        {/* Content Area: The Blueprint */}
-                                        <div className="p-10 pt-6 flex-1 relative z-10">
-                                            <div className="absolute -left-1 top-0 w-0.5 h-full bg-gradient-to-b from-lime/50 to-transparent"></div>
-                                            <AutoResizingTextarea
-                                                value={text}
-                                                onChange={(e) => onManualEdit(gIdx, iIdx, e.target.value)}
-                                                className="w-full bg-transparent text-stone-800 text-lg md:text-xl leading-relaxed focus:outline-none resize-none placeholder:text-stone-400 font-medium"
-                                                trigger={activeTab}
-                                            />
-                                        </div>
+                                            {/* Platform Specific Extra (e.g. Instagram Toggle) */}
+                                            {theme.extra && theme.extra(gIdx, iIdx)}
 
-                                        {/* Instagram Template Toggle - Full Width */}
-                                        {res.platform === Platform.Instagram && (
-                                            <div className="px-8 pb-4 relative z-10">
-                                                <div
-                                                    onClick={() => onIncludeFooterChange(!includeFooter)}
-                                                    className={`flex items-center justify-between p-4 rounded-2xl border cursor-pointer group transition-all ${includeFooter ? 'bg-black border-black shadow-xl shadow-black/20' : 'bg-stone-50 border-stone-100 hover:bg-stone-100'}`}
+                                            {/* Actions */}
+                                            <div className="space-y-3">
+                                                <button
+                                                    onClick={() => setPreviewState({ isOpen: true, platform: res.platform, text })}
+                                                    className="w-full flex items-center justify-center gap-2 py-4 rounded-[20px] bg-[#F3F6F9] text-sm font-bold text-gray-700 hover:bg-[#EAEFF4] transition-all"
                                                 >
-                                                    <div className="space-y-0.5">
-                                                        <p className={`text-[9px] font-black uppercase tracking-widest leading-none mb-1 ${includeFooter ? 'text-lime' : 'text-stone-400'}`}>Instagram Template</p>
-                                                        <p className={`text-[10px] font-black italic ${includeFooter ? 'text-white/60' : 'text-stone-500'}`}>署名テンプレートを挿入</p>
-                                                    </div>
-                                                    <div
-                                                        className={`relative inline-flex h-5 w-10 items-center rounded-full transition-colors focus:outline-none ${includeFooter ? 'bg-black border border-lime/50' : 'bg-gray-200'}`}
+                                                    <EyeIcon className="w-5 h-5" />
+                                                    <span>プレビューを確認</span>
+                                                </button>
+
+                                                <div className="grid grid-cols-2 gap-3">
+                                                    <button
+                                                        onClick={() => onRegenerateSingle(res.platform)}
+                                                        className="flex items-center justify-center gap-2 py-4 rounded-[20px] border border-gray-100 bg-white text-sm font-bold text-gray-600 hover:bg-gray-50 transition-all"
                                                     >
-                                                        <span className={`inline-block h-3.5 w-3.5 transform rounded-full transition-transform duration-300 ${includeFooter ? 'translate-x-5.5 bg-lime' : 'translate-x-1 bg-white'}`} />
+                                                        <RotateCcwIcon className="w-5 h-5 text-gray-400" />
+                                                        <span>Retry</span>
+                                                    </button>
+                                                    <button
+                                                        onClick={() => onRefineToggle(gIdx, iIdx)}
+                                                        className={`flex items-center justify-center gap-2 py-4 rounded-[20px] border text-sm font-bold transition-all ${refiningKey === `${gIdx}-${iIdx}` ? 'bg-[#5B5FEF] border-[#5B5FEF] text-white shadow-lg' : 'bg-[#FFFBEB] border-[#FEF3C7] text-[#B78822] hover:bg-[#FFF8E1]'}`}
+                                                    >
+                                                        <MagicWandIcon className={`w-5 h-5 ${refiningKey === `${gIdx}-${iIdx}` ? 'text-white' : 'text-[#D9AC42]'}`} />
+                                                        <span>Refine</span>
+                                                    </button>
+                                                </div>
+
+                                                <button
+                                                    onClick={() => onShare(res.platform, text)}
+                                                    className={`w-full flex items-center justify-center gap-2 py-5 rounded-[20px] text-white font-bold text-base transition-all shadow-lg ${theme.actionColor}`}
+                                                >
+                                                    <span>{theme.actionLabel}</span>
+                                                    <ExternalLinkIcon className="w-5 h-5" />
+                                                </button>
+                                            </div>
+
+                                            {/* AI Refinement Overlay */}
+                                            {refiningKey === `${gIdx}-${iIdx}` && (
+                                                <div className="absolute inset-0 bg-[#0F172A]/90 backdrop-blur-md z-20 flex flex-col p-8 animate-in fade-in duration-300 rounded-[32px]">
+                                                    <div className="flex-1 overflow-y-auto">
+                                                        <div className="mb-6">
+                                                            <h4 className="text-xs font-bold text-indigo-400 uppercase tracking-widest mb-1">Refine Post</h4>
+                                                            <p className="text-xl font-bold text-white">AIへの追加指示（日本語でOK）</p>
+                                                        </div>
+                                                        <RefinePanel
+                                                            refineText={refineText}
+                                                            onRefineTextChange={onRefineTextChange}
+                                                            onRefine={() => onPerformRefine(gIdx, iIdx)}
+                                                            onCancel={() => onRefineToggle(gIdx, iIdx)}
+                                                            isRefining={isRefining}
+                                                        />
                                                     </div>
                                                 </div>
-                                            </div>
-                                        )}
-
-                                        {/* Action Module: Floating Performance Bar */}
-                                        <div className="p-8 pt-0 mt-auto relative z-10 grid grid-cols-2 gap-2">
-                                            <button
-                                                onClick={() => {
-                                                    navigator.clipboard.writeText(text);
-                                                }}
-                                                className="flex items-center justify-center gap-2 py-4 rounded-2xl bg-stone-100/80 text-[10px] font-black text-stone-500 hover:bg-stone-200 hover:text-stone-900 transition-all uppercase tracking-widest"
-                                            >
-                                                <CopyIcon className="w-4 h-4 shrink-0" />
-                                                <span className="truncate">コピー</span>
-                                            </button>
-                                            <button
-                                                onClick={() => setPreviewState({ isOpen: true, platform: res.platform, text })}
-                                                className="flex items-center justify-center gap-2 py-4 rounded-2xl bg-stone-100/80 text-[10px] font-black text-stone-500 hover:bg-stone-200 hover:text-stone-900 transition-all uppercase tracking-widest"
-                                            >
-                                                <EyeIcon className="w-4 h-4 shrink-0" />
-                                                <span className="truncate">プレビュー</span>
-                                            </button>
-                                            <button
-                                                onClick={() => onRefineToggle(gIdx, iIdx)}
-                                                className={`flex items-center justify-center gap-2 py-4 rounded-2xl text-[10px] font-black transition-all uppercase tracking-widest ${refiningKey === `${gIdx}-${iIdx}` ? 'bg-lime text-black' : 'bg-black text-white shadow-xl hover:scale-[1.02]'}`}
-                                            >
-                                                <MagicWandIcon className="w-4 h-4 shrink-0" />
-                                                <span className="truncate">AIに修正してもらう</span>
-                                            </button>
-                                            <button
-                                                onClick={() => onShare(res.platform, text)}
-                                                className="flex items-center justify-center gap-2 py-4 rounded-2xl bg-gray-800 text-white hover:bg-lime hover:text-black transition-all group/share"
-                                            >
-                                                <span className="text-[10px] font-black uppercase tracking-widest truncate">SNSで開く</span>
-                                                <ExternalLinkIcon className="w-4 h-4 group-hover/share:transtone-x-0.5 group-hover/share:-transtone-y-0.5 transition-transform" />
-                                            </button>
+                                            )}
                                         </div>
-
-                                        {/* AI Refinement Overlay */}
-                                        {refiningKey === `${gIdx}-${iIdx}` && (
-                                            <div className="absolute inset-0 bg-stone-950/95 backdrop-blur-xl z-20 flex flex-col p-10 animate-in fade-in zoom-in duration-500">
-                                                <div className="flex-1 overflow-y-auto">
-                                                    <div className="mb-8">
-                                                        <h4 className="text-[10px] font-black text-lime uppercase tracking-[0.4em] mb-2">Refine Post</h4>
-                                                        <p className="text-xl font-black text-white italic">AIへの追加指示（日本語でOK）</p>
-                                                    </div>
-                                                    <RefinePanel
-                                                        refineText={refineText}
-                                                        onRefineTextChange={onRefineTextChange}
-                                                        onRefine={() => onPerformRefine(gIdx, iIdx)}
-                                                        onCancel={() => onRefineToggle(gIdx, iIdx)}
-                                                        isRefining={isRefining}
-                                                    />
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-                                ))}
+                                    ))}
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
             </div>
 
-            {/* Preview Modal - Outside animated container to prevent clipping */}
+            {/* Preview Modal */}
             {previewState && (
                 <PostPreviewModal
                     isOpen={previewState.isOpen}
@@ -232,3 +247,4 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
         </>
     );
 };
+
