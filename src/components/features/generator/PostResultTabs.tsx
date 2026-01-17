@@ -160,39 +160,37 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                         )}
 
                                         {/* Action Module: Floating Performance Bar */}
-                                        <div className="p-8 pt-0 mt-auto relative z-10">
-                                            <div className="bg-white/5 rounded-[2.5rem] p-2 border border-white/5 backdrop-blur-3xl grid grid-cols-2 gap-2 shadow-2xl">
-                                                <button
-                                                    onClick={() => {
-                                                        navigator.clipboard.writeText(text);
-                                                    }}
-                                                    className="flex items-center justify-center gap-2 py-4 rounded-2xl bg-stone-100/80 text-[10px] font-black text-stone-500 hover:bg-stone-200 hover:text-stone-900 transition-all uppercase tracking-widest"
-                                                >
-                                                    <CopyIcon className="w-4 h-4 shrink-0" />
-                                                    <span className="truncate">コピー</span>
-                                                </button>
-                                                <button
-                                                    onClick={() => setPreviewState({ isOpen: true, platform: res.platform, text })}
-                                                    className="flex items-center justify-center gap-2 py-4 rounded-2xl bg-stone-100/80 text-[10px] font-black text-stone-500 hover:bg-stone-200 hover:text-stone-900 transition-all uppercase tracking-widest"
-                                                >
-                                                    <EyeIcon className="w-4 h-4 shrink-0" />
-                                                    <span className="truncate">プレビュー</span>
-                                                </button>
-                                                <button
-                                                    onClick={() => onRefineToggle(gIdx, iIdx)}
-                                                    className={`flex items-center justify-center gap-2 py-4 rounded-2xl text-[10px] font-black transition-all uppercase tracking-widest ${refiningKey === `${gIdx}-${iIdx}` ? 'bg-lime text-black' : 'bg-black text-white shadow-xl hover:scale-[1.02]'}`}
-                                                >
-                                                    <MagicWandIcon className="w-4 h-4 shrink-0" />
-                                                    <span className="truncate">AIに修正してもらう</span>
-                                                </button>
-                                                <button
-                                                    onClick={() => onShare(res.platform, text)}
-                                                    className="flex items-center justify-center gap-2 py-4 rounded-2xl bg-gray-800 text-white hover:bg-lime hover:text-black transition-all group/share"
-                                                >
-                                                    <span className="text-[10px] font-black uppercase tracking-widest truncate">SNSで開く</span>
-                                                    <ExternalLinkIcon className="w-4 h-4 group-hover/share:transtone-x-0.5 group-hover/share:-transtone-y-0.5 transition-transform" />
-                                                </button>
-                                            </div>
+                                        <div className="p-8 pt-0 mt-auto relative z-10 grid grid-cols-2 gap-2">
+                                            <button
+                                                onClick={() => {
+                                                    navigator.clipboard.writeText(text);
+                                                }}
+                                                className="flex items-center justify-center gap-2 py-4 rounded-2xl bg-stone-100/80 text-[10px] font-black text-stone-500 hover:bg-stone-200 hover:text-stone-900 transition-all uppercase tracking-widest"
+                                            >
+                                                <CopyIcon className="w-4 h-4 shrink-0" />
+                                                <span className="truncate">コピー</span>
+                                            </button>
+                                            <button
+                                                onClick={() => setPreviewState({ isOpen: true, platform: res.platform, text })}
+                                                className="flex items-center justify-center gap-2 py-4 rounded-2xl bg-stone-100/80 text-[10px] font-black text-stone-500 hover:bg-stone-200 hover:text-stone-900 transition-all uppercase tracking-widest"
+                                            >
+                                                <EyeIcon className="w-4 h-4 shrink-0" />
+                                                <span className="truncate">プレビュー</span>
+                                            </button>
+                                            <button
+                                                onClick={() => onRefineToggle(gIdx, iIdx)}
+                                                className={`flex items-center justify-center gap-2 py-4 rounded-2xl text-[10px] font-black transition-all uppercase tracking-widest ${refiningKey === `${gIdx}-${iIdx}` ? 'bg-lime text-black' : 'bg-black text-white shadow-xl hover:scale-[1.02]'}`}
+                                            >
+                                                <MagicWandIcon className="w-4 h-4 shrink-0" />
+                                                <span className="truncate">AIに修正してもらう</span>
+                                            </button>
+                                            <button
+                                                onClick={() => onShare(res.platform, text)}
+                                                className="flex items-center justify-center gap-2 py-4 rounded-2xl bg-gray-800 text-white hover:bg-lime hover:text-black transition-all group/share"
+                                            >
+                                                <span className="text-[10px] font-black uppercase tracking-widest truncate">SNSで開く</span>
+                                                <ExternalLinkIcon className="w-4 h-4 group-hover/share:transtone-x-0.5 group-hover/share:-transtone-y-0.5 transition-transform" />
+                                            </button>
                                         </div>
 
                                         {/* AI Refinement Overlay */}
