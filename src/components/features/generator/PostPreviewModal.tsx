@@ -36,110 +36,119 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6">
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6 overflow-hidden">
             <div
-                className="absolute inset-0 bg-stone-900/60 backdrop-blur-sm transition-opacity"
+                className="absolute inset-0 bg-stone-100/90 backdrop-blur-md transition-opacity animate-in fade-in duration-300"
                 onClick={onClose}
             />
 
-            <div className="relative w-full max-w-md bg-black rounded-[2rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 border border-lime/20">
-                <div className="flex items-center justify-between p-4 border-b border-white/10">
-                    <h3 className="text-sm font-black text-lime uppercase tracking-widest flex items-center gap-2">
-                        {getPlatformIcon(platform)}
+            <div className="relative w-full max-w-md bg-white rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] overflow-hidden animate-in zoom-in-95 duration-200 border border-stone-100">
+                <div className="flex items-center justify-between p-6 bg-stone-50/50 border-b border-stone-100">
+                    <h3 className="text-[10px] font-black text-stone-400 uppercase tracking-[0.4em] flex items-center gap-3">
+                        <div className="text-stone-600">
+                            {getPlatformIcon(platform)}
+                        </div>
                         <span>Preview</span>
                     </h3>
                     <button
                         onClick={onClose}
-                        className="p-2 hover:bg-stone-100 rounded-full transition-colors"
+                        className="w-8 h-8 flex items-center justify-center rounded-xl bg-white border border-stone-200 text-stone-400 hover:text-stone-800 hover:border-stone-400 transition-all active:scale-90"
                     >
-                        <XIcon className="w-5 h-5 text-lime/50 hover:text-lime transition-colors" />
+                        <XIcon className="w-4 h-4" />
                     </button>
                 </div>
 
-                <div className="p-0 bg-stone-900/50 max-h-[80vh] overflow-y-auto">
+                <div className="p-0 bg-stone-50/30 max-h-[70vh] overflow-y-auto">
                     {/* Platform Specific Preview */}
-                    <div className="flex justify-center p-4">
+                    <div className="flex justify-center p-6 bg-gradient-to-b from-stone-50 to-white">
 
                         {/* Instagram Preview */}
                         {platform === Platform.Instagram && (
-                            <div className="w-full bg-white border border-gray-200 rounded-sm shadow-sm max-w-[370px]">
+                            <div className="w-full bg-white border border-stone-100 rounded-2xl shadow-xl shadow-stone-200/50 max-w-[370px] overflow-hidden">
                                 {/* Header */}
-                                <div className="flex items-center justify-between p-3 border-b border-gray-100">
+                                <div className="flex items-center justify-between p-3 border-b border-stone-50">
                                     <div className="flex items-center gap-2">
-                                        <div className="w-8 h-8 rounded-full bg-black p-[2px] border border-lime/30">
-                                            <div className="w-full h-full rounded-full bg-black border-2 border-transparent" />
+                                        <div className="w-8 h-8 rounded-full bg-stone-100 border border-stone-200 p-[1px]">
+                                            <div className="w-full h-full rounded-full bg-stone-50 flex items-center justify-center text-[10px] font-black text-stone-400 uppercase">
+                                                {(storeProfile.name?.[0] || 'U').toUpperCase()}
+                                            </div>
                                         </div>
                                         <div>
-                                            <div className="text-xs font-bold text-gray-900 leading-none mb-0.5">
+                                            <div className="text-[11px] font-bold text-stone-900 leading-none mb-0.5">
                                                 {storeProfile.name || 'your_account'}
                                             </div>
-                                            <div className="text-[10px] text-gray-500 leading-none">Original Audio</div>
+                                            <div className="text-[9px] text-stone-500 leading-none">Original Audio</div>
                                         </div>
                                     </div>
-                                    <MoreHorizontalIcon className="w-4 h-4 text-gray-600" />
+                                    <MoreHorizontalIcon className="w-4 h-4 text-stone-400" />
                                 </div>
 
                                 {/* Image Placeholder */}
-                                <div className="w-full aspect-square bg-gray-100 flex items-center justify-center text-gray-400">
-                                    <span className="text-xs">Image Area</span>
+                                <div className="w-full aspect-square bg-stone-50 flex flex-col items-center justify-center gap-3 border-y border-stone-50">
+                                    <div className="w-12 h-12 rounded-2xl bg-white border border-stone-100 flex items-center justify-center text-stone-200">
+                                        <ShareIcon className="w-6 h-6" />
+                                    </div>
+                                    <span className="text-[10px] font-black text-stone-300 uppercase tracking-widest">Image Area</span>
                                 </div>
 
                                 {/* Actions */}
-                                <div className="p-3">
-                                    <div className="flex items-center justify-between mb-3">
+                                <div className="p-4">
+                                    <div className="flex items-center justify-between mb-4">
                                         <div className="flex items-center gap-4">
-                                            <HeartIcon className="w-6 h-6 text-gray-800" />
-                                            <MessageCircleIcon className="w-6 h-6 text-gray-800" />
-                                            <SendIcon className="w-6 h-6 text-gray-800" />
+                                            <HeartIcon className="w-6 h-6 text-stone-800" />
+                                            <MessageCircleIcon className="w-6 h-6 text-stone-800" />
+                                            <SendIcon className="w-6 h-6 text-stone-800" />
                                         </div>
-                                        <BookmarkIcon className="w-6 h-6 text-gray-800" />
+                                        <BookmarkIcon className="w-6 h-6 text-stone-800" />
                                     </div>
 
-                                    <div className="text-xs font-bold text-gray-900 mb-2">1,234 likes</div>
+                                    <div className="text-xs font-bold text-stone-900 mb-2">1,234 likes</div>
 
-                                    <div className="text-xs text-gray-900 whitespace-pre-wrap leading-relaxed">
+                                    <div className="text-xs text-stone-800 whitespace-pre-wrap leading-relaxed">
                                         <span className="font-bold mr-2">{storeProfile.name || 'your_account'}</span>
                                         {text}
                                     </div>
-                                    <div className="text-[10px] text-gray-400 mt-2 uppercase">2 hours ago</div>
+                                    <div className="text-[10px] text-stone-400 mt-3 uppercase tracking-wider">2 hours ago</div>
                                 </div>
                             </div>
                         )}
 
                         {/* X (Twitter) Preview */}
                         {platform === Platform.X && (
-                            <div className="w-full bg-white border border-gray-100 rounded-xl shadow-sm p-4 max-w-[370px]">
-                                <div className="flex gap-3">
-                                    <div className="w-10 h-10 rounded-full bg-gray-200 flex-shrink-0" />
+                            <div className="w-full bg-white border border-stone-100 rounded-3xl shadow-xl shadow-stone-200/50 p-5 max-w-[370px]">
+                                <div className="flex gap-4">
+                                    <div className="w-11 h-11 rounded-full bg-stone-100 border border-stone-200 flex items-center justify-center text-[12px] font-black text-stone-400 flex-shrink-0">
+                                        {(storeProfile.name?.[0] || 'U').toUpperCase()}
+                                    </div>
                                     <div className="flex-1 min-w-0">
-                                        <div className="flex items-center justify-between">
-                                            <div className="flex items-center gap-1 truncate">
-                                                <span className="text-sm font-bold text-gray-900 truncate">{storeProfile.name || 'Name'}</span>
-                                                <span className="text-sm text-gray-500 truncate">@{storeProfile.name ? 'store_id' : 'id'}</span>
-                                                <span className="text-sm text-gray-500">· 2h</span>
+                                        <div className="flex items-center justify-between mb-1">
+                                            <div className="flex items-center gap-1.5 truncate">
+                                                <span className="text-[13px] font-bold text-stone-900 truncate">{storeProfile.name || 'Name'}</span>
+                                                <span className="text-[11px] text-stone-400 truncate">@{storeProfile.name ? 'store_id' : 'id'}</span>
+                                                <span className="text-[11px] text-stone-400">· 2h</span>
                                             </div>
-                                            <MoreHorizontalIcon className="w-4 h-4 text-gray-400" />
+                                            <MoreHorizontalIcon className="w-4 h-4 text-stone-300" />
                                         </div>
 
-                                        <div className="mt-1 text-sm text-gray-900 whitespace-pre-wrap leading-relaxed">
+                                        <div className="text-[14px] text-stone-800 whitespace-pre-wrap leading-relaxed">
                                             {text}
                                         </div>
 
-                                        <div className="mt-3 flex items-center justify-between text-gray-500 max-w-xs">
-                                            <div className="flex items-center gap-1 group">
-                                                <MessageCircleIcon className="w-4 h-4" />
-                                                <span className="text-xs">2</span>
+                                        <div className="mt-4 flex items-center justify-between text-stone-400">
+                                            <div className="flex items-center gap-1.5 group">
+                                                <MessageCircleIcon className="w-4 h-4 group-hover:text-blue-500 transition-colors" />
+                                                <span className="text-[11px]">2</span>
+                                            </div>
+                                            <div className="flex items-center gap-1.5 group">
+                                                <RotateCcwIcon className="w-4 h-4 group-hover:text-emerald-500 transition-colors" />
+                                                <span className="text-[11px]">5</span>
+                                            </div>
+                                            <div className="flex items-center gap-1.5 group">
+                                                <HeartIcon className="w-4 h-4 group-hover:text-rose-500 transition-colors" />
+                                                <span className="text-[11px]">12</span>
                                             </div>
                                             <div className="flex items-center gap-1 group">
-                                                <RotateCcwIcon className="w-4 h-4" />
-                                                <span className="text-xs">5</span>
-                                            </div>
-                                            <div className="flex items-center gap-1 group">
-                                                <HeartIcon className="w-4 h-4" />
-                                                <span className="text-xs">12</span>
-                                            </div>
-                                            <div className="flex items-center gap-1 group">
-                                                <ShareIcon className="w-4 h-4" />
+                                                <ShareIcon className="w-4 h-4 group-hover:text-blue-500 transition-colors" />
                                             </div>
                                         </div>
                                     </div>
@@ -149,24 +158,24 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
 
                         {/* Google Maps Preview */}
                         {platform === Platform.GoogleMaps && (
-                            <div className="w-full bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden max-w-[370px]">
-                                <div className="p-4 flex items-start gap-4">
-                                    <div className="w-10 h-10 rounded-full bg-black text-lime border border-lime/20 flex items-center justify-center font-black text-sm flex-shrink-0 shadow-lg shadow-black/20">
+                            <div className="w-full bg-white border border-stone-200 rounded-3xl shadow-xl shadow-stone-200/50 overflow-hidden max-w-[370px]">
+                                <div className="p-5 flex items-start gap-4 bg-stone-50/50">
+                                    <div className="w-11 h-11 rounded-2xl bg-white border border-stone-200 shadow-sm flex items-center justify-center font-black text-stone-700 text-sm flex-shrink-0">
                                         {(storeProfile.name?.[0] || 'S').toUpperCase()}
                                     </div>
                                     <div className="flex-1">
-                                        <div className="text-sm font-medium text-gray-900">{storeProfile.name || 'Your Store Name'}</div>
-                                        <div className="text-xs text-gray-500">Owner · Just now</div>
+                                        <div className="text-sm font-bold text-stone-900">{storeProfile.name || 'Your Store Name'}</div>
+                                        <div className="text-[10px] font-bold text-stone-400 uppercase tracking-widest mt-0.5">Owner · Just now</div>
                                     </div>
-                                    <MoreHorizontalIcon className="w-5 h-5 text-gray-500" />
+                                    <MoreHorizontalIcon className="w-5 h-5 text-stone-300" />
                                 </div>
 
-                                <div className="px-4 pb-4">
-                                    <div className="text-sm text-gray-800 whitespace-pre-wrap leading-relaxed">
+                                <div className="p-6">
+                                    <div className="text-sm text-stone-800 whitespace-pre-wrap leading-relaxed">
                                         {text}
                                     </div>
-                                    <div className="mt-4">
-                                        <button className="px-5 py-2 bg-black text-lime border border-lime/30 text-xs font-black uppercase tracking-widest rounded-full hover:bg-stone-900 transition-colors shadow-lg shadow-black/20">
+                                    <div className="mt-6">
+                                        <button className="w-full py-4 bg-stone-900 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-stone-800 transition-all shadow-xl shadow-black/10 active:scale-95">
                                             Learn more
                                         </button>
                                     </div>
@@ -177,12 +186,12 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
                     </div>
                 </div>
 
-                <div className="p-4 bg-black border-t border-white/10">
+                <div className="p-6 bg-white border-t border-stone-100">
                     <button
                         onClick={onClose}
-                        className="w-full py-3 bg-black text-lime border border-lime/50 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-stone-900 transition-all shadow-xl shadow-black/20"
+                        className="w-full py-4 bg-stone-100 text-stone-900 border border-stone-200 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-stone-200 transition-all active:scale-95 shadow-sm"
                     >
-                        Close
+                        CLOSE PREVIEW
                     </button>
                 </div>
             </div>

@@ -1,23 +1,50 @@
 import React from 'react';
-import { MenuIcon } from '../../Icons';
-import { StoreProfile } from '../../../types';
+import { MenuIcon, StarIcon } from '../../Icons';
+import { StoreProfile, UserPlan } from '../../../types';
 
 interface GeneratorHeaderProps {
     onOpenHistory: () => void;
     storeProfile: StoreProfile;
+    plan: UserPlan;
 }
 
 export const GeneratorHeader: React.FC<GeneratorHeaderProps> = ({
     onOpenHistory,
     storeProfile,
+    plan,
 }) => {
+    const now = Date.now();
+    const trialEndsMs = plan?.trial_ends_at ? new Date(plan.trial_ends_at).getTime() : 0;
+    const isTrial = trialEndsMs > now;
+    const isPro = plan?.status === 'active';
+
     return (
-        <header className="sticky top-4 z-[100] w-full px-4 md:px-0">
+        <header className="sticky top-4 z-[100] w-full">
             <div className="mx-auto max-w-7xl bg-white/60 backdrop-blur-2xl border border-stone-200 rounded-[2rem] p-2 flex items-center justify-between gap-4 shadow-xl shadow-stone-200/50">
 
                 {/* Left: Brand Space */}
-                <div className="flex items-center pl-4 pr-2">
+                <div className="flex items-center gap-3 pl-4 pr-2">
                     <span className="text-xl font-black text-stone-800 tracking-tighter">MisePo</span>
+
+                    {/* Status Badge */}
+                    <div className="flex items-center">
+                        {isTrial ? (
+                            <div className="flex items-center gap-1.5 px-3 py-1 bg-lime/10 border border-lime/20 rounded-full shadow-sm">
+                                <StarIcon className="w-3 h-3 text-lime fill-current animate-pulse" />
+                                <span className="text-[9px] font-black text-lime-700 uppercase tracking-widest">Free Trial</span>
+                            </div>
+                        ) : isPro ? (
+                            <div className="flex items-center gap-1.5 px-3 py-1 bg-stone-900 border border-stone-800 rounded-full shadow-lg shadow-black/10">
+                                <div className="w-1.5 h-1.5 rounded-full bg-lime"></div>
+                                <span className="text-[9px] font-black text-white uppercase tracking-widest">Pro Plan</span>
+                            </div>
+                        ) : (
+                            <div className="flex items-center gap-1.5 px-3 py-1 bg-stone-100 border border-stone-200 rounded-full">
+                                <div className="w-1.5 h-1.5 rounded-full bg-stone-300"></div>
+                                <span className="text-[9px] font-black text-stone-400 uppercase tracking-widest">Free Plan</span>
+                            </div>
+                        )}
+                    </div>
                 </div>
 
                 {/* Right: Consolidated Menu */}

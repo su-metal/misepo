@@ -12,7 +12,7 @@ export async function GET(request: Request) {
     await supabase.auth.exchangeCodeForSession(code);
   }
 
-  const next = searchParams.get("next") ?? "/generate";
+  const next = searchParams.get("next") ?? (intent === "trial" ? "/start" : "/generate");
   const redirectUrl = new URL(next, origin);
   redirectUrl.searchParams.set("intent", intent);
 

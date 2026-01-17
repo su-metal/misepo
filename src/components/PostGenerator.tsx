@@ -83,6 +83,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
           <GeneratorHeader
             onOpenHistory={onOpenHistory || (() => { })}
             storeProfile={storeProfile}
+            plan={plan}
           />
         </div>
 

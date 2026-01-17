@@ -17,7 +17,7 @@ export default function BillingSuccessPage() {
 
   useEffect(() => {
     if (countdown === 0) {
-      router.push('/');
+      router.push('/generate');
     }
   }, [countdown, router]);
 
@@ -55,7 +55,7 @@ export default function BillingSuccessPage() {
           </div>
 
           <button
-            onClick={() => router.push('/')}
+            onClick={() => router.push('/generate')}
             className="w-full py-4 bg-emerald-500 border border-emerald-600 text-white font-black text-xs rounded-2xl hover:bg-emerald-600 transition-all uppercase tracking-widest shadow-lg shadow-emerald-500/20"
           >
             GO TO APP

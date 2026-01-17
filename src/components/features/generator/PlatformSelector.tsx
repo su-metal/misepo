@@ -103,8 +103,8 @@ export const PlatformSelector: React.FC<PlatformSelectorProps> = ({
                 <div className="pt-4 border-t border-stone-100">
                     <div className="flex items-center justify-between mb-4 px-2">
                         <div className="flex flex-col">
-                            <span className="text-[9px] font-black text-stone-400 uppercase tracking-[0.3em] mb-0.5">Presets Library</span>
-                            <span className="text-[10px] font-bold text-stone-300 uppercase">Quick Select</span>
+                            <span className="text-[9px] font-black text-stone-400 uppercase tracking-[0.3em] mb-0.5">プリセットライブラリ</span>
+                            <span className="text-[10px] font-bold text-stone-300 uppercase">クイック選択</span>
                         </div>
                         <button
                             onClick={onOpenLibrary}

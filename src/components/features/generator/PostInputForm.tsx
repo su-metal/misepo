@@ -96,45 +96,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
 
     return (
         <div className="flex flex-col min-h-[600px]">
-            {/* Account Status */}
-            <div className="px-6 py-4 border-b border-stone-100">
-                <div className="flex items-center justify-between">
-                    <div>
-                        <h4 className="text-[10px] font-black tracking-[0.3em] text-gray-500 mb-1 uppercase">Account Status</h4>
-                        <p className="text-lg font-black text-black tracking-tight">
-                            {(() => {
-                                const now = Date.now();
-                                const trialEndsMs = plan?.trial_ends_at ? new Date(plan.trial_ends_at).getTime() : 0;
-                                if (trialEndsMs > now) return 'Free Trial';
-                                if (plan?.status === 'active') return 'Pro Plan';
-                                return 'Free Plan';
-                            })()}
-                        </p>
-                    </div>
-                    {(() => {
-                        const now = Date.now();
-                        const trialEndsMs = plan?.trial_ends_at ? new Date(plan.trial_ends_at).getTime() : 0;
-                        if (trialEndsMs > now) {
-                            return (
-                                <div className="relative group">
-                                    <div className="absolute inset-0 blur-lg opacity-30 group-hover:opacity-50 animate-pulse bg-lime"></div>
-                                    <div className="relative w-10 h-10 rounded-xl bg-lime flex items-center justify-center text-black shadow-lime rotate-3 transition-transform group-hover:rotate-0">
-                                        <StarIcon className="w-5 h-5 fill-current" />
-                                    </div>
-                                </div>
-                            );
-                        }
-                        if (plan?.status === 'active') {
-                            return (
-                                <div className="w-10 h-10 rounded-xl bg-black flex items-center justify-center text-lime shadow-lg shadow-black/10">
-                                    <span className="font-black text-[10px] uppercase">Pro</span>
-                                </div>
-                            );
-                        }
-                        return null;
-                    })()}
-                </div>
-            </div>
+
 
             {/* Compact Platform Selector */}
             <CompactPlatformSelector
@@ -150,8 +112,8 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
             <div className="px-6 py-4 border-b border-stone-100">
                 <div className="flex items-center justify-between mb-3">
                     <div className="flex flex-col">
-                        <span className="text-[9px] font-black text-stone-400 uppercase tracking-[0.3em] mb-0.5">Presets Library</span>
-                        <span className="text-[10px] font-bold text-stone-600 uppercase">Quick Select</span>
+                        <span className="text-[9px] font-black text-stone-400 uppercase tracking-[0.3em] mb-0.5">プリセットライブラリ</span>
+                        <span className="text-[10px] font-bold text-stone-600 uppercase">クイック選択</span>
                     </div>
                     <button
                         onClick={onOpenPresetModal}
@@ -161,7 +123,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                         <svg className="w-3 h-3 group-hover:rotate-12 transition-transform" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <path d="m19 21-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
                         </svg>
-                        <span className="text-[9px] font-black tracking-[0.1em]">MANAGE</span>
+                        <span className="text-[9px] font-black tracking-[0.1em]">プリセット編集</span>
                     </button>
                 </div>
                 <div className="grid grid-cols-3 gap-2 w-full">
