@@ -86,101 +86,19 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
           />
         </div>
 
-        {/* Next-Gen Bento Studio Grid */}
+        {/* 2-Column Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
 
-          {/* Left Area: Setup & Context Modules (4 Cols) */}
-          <div className="lg:col-span-4 space-y-6">
-
-            {/* Plan & Status Card - Distributed from Header */}
-            <div className="bg-white border border-gray-200 rounded-[2.5rem] p-6 shadow-xl shadow-black/5 animate-in fade-in slide-in-from-left-4 duration-700">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h4 className="text-[10px] font-black tracking-[0.3em] text-gray-500 mb-1 uppercase">Account Status</h4>
-                  <p className="text-xl font-black text-black tracking-tight">
-                    {(() => {
-                      const now = Date.now();
-                      const trialEndsMs = plan?.trial_ends_at ? new Date(plan.trial_ends_at).getTime() : 0;
-                      if (trialEndsMs > now) return 'Free Trial';
-                      if (plan?.status === 'active') return 'Pro Plan';
-                      return 'Free Plan';
-                    })()}
-                  </p>
-                </div>
-                {(() => {
-                  const now = Date.now();
-                  const trialEndsMs = plan?.trial_ends_at ? new Date(plan.trial_ends_at).getTime() : 0;
-                  if (trialEndsMs > now) {
-                    return (
-                      <div className="relative group">
-                        <div className="absolute inset-0 blur-lg opacity-30 group-hover:opacity-50 animate-pulse bg-lime"></div>
-                        <div className="relative w-12 h-12 rounded-2xl bg-lime flex items-center justify-center text-black shadow-lime rotate-3 transition-transform group-hover:rotate-0">
-                          <StarIcon className="w-6 h-6 fill-current" />
-                        </div>
-                      </div>
-                    );
-                  }
-                  if (plan?.status === 'active') {
-                    return (
-                      <div className="w-12 h-12 rounded-2xl bg-black flex items-center justify-center text-lime shadow-lg shadow-black/10">
-                        <span className="font-black text-xs uppercase">Pro</span>
-                      </div>
-                    );
-                  }
-                  return null;
-                })()}
-              </div>
-
-              {(() => {
-                const now = Date.now();
-                const trialEndsMs = plan?.trial_ends_at ? new Date(plan.trial_ends_at).getTime() : 0;
-                if (trialEndsMs > now) {
-                  const days = Math.max(0, Math.ceil((trialEndsMs - now) / (1000 * 60 * 60 * 24)));
-                  return (
-                    <div className="space-y-3">
-                      <div className="h-1.5 w-full bg-gray-200 rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-lime rounded-full transition-all duration-1000"
-                          style={{ width: `${(days / 7) * 100}%` }}
-                        ></div>
-                      </div>
-                      <p className="text-[11px] font-bold text-gray-600 flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-lime animate-ping"></span>
-                        あと <span className="text-black font-black">{days}日間</span> 無料でお試しいただけます
-                      </p>
-                    </div>
-                  );
-                }
-                return (
-                  <p className="text-[11px] font-bold text-gray-600 leading-relaxed uppercase tracking-wider">
-                    2026テクノロジー搭載。あなたのブランドをAIで加速させます。
-                  </p>
-                );
-              })()}
-            </div>
-
-            <div className="bg-white border border-gray-200 rounded-[2.5rem] p-1 overflow-hidden shadow-xl shadow-black/5">
-              <div ref={instagramRef as any}>
-                <PlatformSelector
-                  platforms={flow.platforms}
-                  activePlatform={flow.platforms[0] || Platform.Instagram}
-                  isMultiGen={flow.isMultiGenMode}
-                  onPlatformToggle={flow.handlePlatformToggle}
-                  onToggleMultiGen={flow.handleToggleMultiGen}
-                  onSetActivePlatform={(p) => flow.setPlatforms([p])}
-                  presets={presets}
-                  onApplyPreset={flow.handleApplyPreset}
-                  activePresetId={flow.activePresetId}
-                  onOpenLibrary={() => setIsPresetModalOpen(true)}
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Right Area: Main Workstation Module (8 Cols) */}
-          <div className="lg:col-span-8 space-y-6">
+          {/* Left Column: Input Form (8 Cols) */}
+          <div className="lg:col-span-8">
             <div ref={inputRef} className="bg-white border border-gray-200 rounded-[3rem] shadow-xl shadow-black/5 overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-black/10">
               <PostInputForm
+                platforms={flow.platforms}
+                activePlatform={flow.platforms[0] || Platform.Instagram}
+                isMultiGen={flow.isMultiGenMode}
+                onPlatformToggle={flow.handlePlatformToggle}
+                onToggleMultiGen={flow.handleToggleMultiGen}
+                onSetActivePlatform={(p) => flow.setPlatforms([p])}
                 platform={flow.platforms[0] || Platform.Instagram}
                 postPurpose={flow.postPurpose}
                 gmapPurpose={flow.gmapPurpose}
@@ -197,32 +115,39 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
                 isGenerating={flow.loading}
                 onGenerate={handleGenerate}
                 generateButtonRef={buttonRef}
+                plan={plan}
+                presets={presets}
+                activePresetId={flow.activePresetId}
+                onApplyPreset={flow.handleApplyPreset}
+                onOpenPresetModal={() => setIsPresetModalOpen(true)}
               />
             </div>
           </div>
 
-          {/* Bottom Area: Results Module (Full 12 Cols) */}
-          <div ref={resultsRef} className="lg:col-span-12 mt-8 pb-32 md:pb-20">
-            <PostResultTabs
-              results={flow.resultGroups}
-              activeTab={flow.activeTab}
-              onTabChange={flow.setActiveTab}
-              onManualEdit={flow.handleManualEdit}
-              onToggleFooter={flow.handleToggleFooter}
-              onRefine={() => { }}
-              onRegenerateSingle={(p) => flow.performGeneration([p], true)}
-              onShare={flow.handleShare}
-              getShareButtonLabel={getShareButtonLabel}
-              storeProfile={storeProfile}
-              refiningKey={flow.refiningKey}
-              onRefineToggle={flow.handleRefineToggle}
-              refineText={flow.refineText}
-              onRefineTextChange={flow.setRefineText}
-              onPerformRefine={flow.performRefine}
-              isRefining={flow.isRefining}
-              includeFooter={flow.includeFooter}
-              onIncludeFooterChange={flow.setIncludeFooter}
-            />
+          {/* Right Column: Results (4 Cols) */}
+          <div className="lg:col-span-4">
+            <div ref={resultsRef} className="pb-32 md:pb-20">
+              <PostResultTabs
+                results={flow.resultGroups}
+                activeTab={flow.activeTab}
+                onTabChange={flow.setActiveTab}
+                onManualEdit={flow.handleManualEdit}
+                onToggleFooter={flow.handleToggleFooter}
+                onRefine={() => { }}
+                onRegenerateSingle={(p) => flow.performGeneration([p], true)}
+                onShare={flow.handleShare}
+                getShareButtonLabel={getShareButtonLabel}
+                storeProfile={storeProfile}
+                refiningKey={flow.refiningKey}
+                onRefineToggle={flow.handleRefineToggle}
+                refineText={flow.refineText}
+                onRefineTextChange={flow.setRefineText}
+                onPerformRefine={flow.performRefine}
+                isRefining={flow.isRefining}
+                includeFooter={flow.includeFooter}
+                onIncludeFooterChange={flow.setIncludeFooter}
+              />
+            </div>
           </div>
         </div>
       </div>

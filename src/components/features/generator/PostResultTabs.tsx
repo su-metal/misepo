@@ -79,7 +79,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
             <div className="space-y-16">
                 {results.map((res, gIdx) => (
                     <div key={res.platform} className={activeTab === gIdx ? 'block animate-in fade-in slide-in-from-bottom-4 duration-700' : 'hidden'}>
-                        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12">
+                        <div className="mb-12">
                             <div className="space-y-2">
                                 <div className="flex items-center gap-2 mb-2">
                                     <div className="w-1.5 h-1.5 rounded-full bg-lime"></div>
@@ -87,16 +87,9 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                 </div>
                                 <h2 className="text-3xl font-black text-stone-800 tracking-tighter italic">投稿案のリスト</h2>
                             </div>
-                            <button
-                                onClick={() => onRegenerateSingle(res.platform)}
-                                className="group flex items-center gap-3 px-6 py-4 rounded-2xl bg-white/5 border border-white/5 text-[10px] font-black text-gray-400 hover:border-lime/30 hover:text-white transition-all shadow-xl"
-                            >
-                                <RotateCcwIcon className="w-4 h-4 group-hover:rotate-180 transition-transform duration-700" />
-                                再作成する
-                            </button>
                         </div>
 
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                        <div className="space-y-10">
                             {res.data.map((text, iIdx) => (
                                 <div key={iIdx} className="group relative bg-white/60 backdrop-blur-3xl border border-stone-200 rounded-[3rem] shadow-xl shadow-stone-200/50 transition-all duration-700 hover:shadow-2xl hover:shadow-stone-200/60 flex flex-col min-h-[500px] overflow-hidden">
                                     {/* Grid-line Background Overlay */}
