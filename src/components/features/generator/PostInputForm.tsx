@@ -96,16 +96,6 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
 
     return (
         <div className="flex flex-col min-h-[600px]">
-            {/* Compact Platform Selector at the top */}
-            <CompactPlatformSelector
-                platforms={platforms}
-                activePlatform={activePlatform}
-                isMultiGen={isMultiGen}
-                onPlatformToggle={onPlatformToggle}
-                onToggleMultiGen={onToggleMultiGen}
-                onSetActivePlatform={onSetActivePlatform}
-            />
-
             {/* Account Status */}
             <div className="px-6 py-4 border-b border-stone-100">
                 <div className="flex items-center justify-between">
@@ -145,6 +135,16 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                     })()}
                 </div>
             </div>
+
+            {/* Compact Platform Selector */}
+            <CompactPlatformSelector
+                platforms={platforms}
+                activePlatform={activePlatform}
+                isMultiGen={isMultiGen}
+                onPlatformToggle={onPlatformToggle}
+                onToggleMultiGen={onToggleMultiGen}
+                onSetActivePlatform={onSetActivePlatform}
+            />
 
             {/* Presets Library */}
             <div className="px-6 py-4 border-b border-stone-100">
