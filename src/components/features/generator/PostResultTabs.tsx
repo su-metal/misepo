@@ -92,8 +92,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                         <div className="space-y-10">
                             {res.data.map((text, iIdx) => (
                                 <div key={iIdx} className="group relative bg-white/60 backdrop-blur-3xl border border-stone-200 rounded-[3rem] shadow-xl shadow-stone-200/50 transition-all duration-700 hover:shadow-2xl hover:shadow-stone-200/60 flex flex-col min-h-[500px] overflow-hidden">
-                                    {/* Grid-line Background Overlay */}
-                                    <div className="absolute inset-0 opacity-[0.05] pointer-events-none" style={{ backgroundImage: 'linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
+                                    {/* Grid-line Background Overlay - Removed as per user request */}
 
                                     {/* Card Header: Metadata */}
                                     <div className="p-8 pb-4 flex items-center justify-between relative z-10">

@@ -19,9 +19,9 @@ export const CompactPlatformSelector: React.FC<CompactPlatformSelectorProps> = (
     onSetActivePlatform,
 }) => {
     return (
-        <div className="flex items-center justify-between gap-4 px-6 py-4 bg-white border-b border-stone-100">
-            {/* Platform Buttons */}
-            <div className="flex items-center gap-2">
+        <div className="flex flex-col gap-4 p-4 bg-stone-50 border-b border-stone-100">
+            {/* Platform Selection Row */}
+            <div className="flex items-center justify-between gap-2 p-1 bg-stone-100/50 rounded-2xl">
                 {Object.values(Platform).map((p) => {
                     const isSelected = isMultiGen ? platforms.includes(p) : activePlatform === p;
                     return (
@@ -29,16 +29,16 @@ export const CompactPlatformSelector: React.FC<CompactPlatformSelectorProps> = (
                             key={p}
                             onClick={() => isMultiGen ? onPlatformToggle(p) : onSetActivePlatform(p)}
                             className={`
-                                flex items-center gap-2 px-4 py-2.5 rounded-xl border transition-all duration-300
+                                flex-1 flex items-center justify-center gap-2 px-3 py-3 rounded-xl transition-all duration-300
                                 ${isSelected
-                                    ? 'bg-white border-stone-300 shadow-sm'
-                                    : 'bg-stone-50 border-stone-200 hover:bg-white hover:border-stone-300'}
+                                    ? 'bg-black text-white shadow-lg'
+                                    : 'text-stone-400 hover:text-stone-600'}
                             `}
                         >
-                            <div className={`text-lg ${isSelected ? 'text-black' : 'text-stone-400'}`}>
+                            <div className={`text-lg ${isSelected ? 'text-white' : 'text-stone-400'}`}>
                                 {getPlatformIcon(p)}
                             </div>
-                            <span className={`text-xs font-bold ${isSelected ? 'text-black' : 'text-stone-500'}`}>
+                            <span className={`text-[11px] font-bold md:inline ${isSelected ? 'text-white' : 'text-stone-500'} ${p === Platform.GoogleMaps ? 'hidden sm:inline' : ''}`}>
                                 {p === Platform.X ? 'X (Twitter)' : p === Platform.Instagram ? 'Instagram' : 'Google Maps'}
                             </span>
                         </button>
@@ -46,30 +46,26 @@ export const CompactPlatformSelector: React.FC<CompactPlatformSelectorProps> = (
                 })}
             </div>
 
-            {/* Multi-Gen Toggle */}
-            <button
-                onClick={onToggleMultiGen}
-                className={`
-                    flex items-center gap-2 px-4 py-2 rounded-xl border text-xs font-bold transition-all
-                    ${isMultiGen
-                        ? 'bg-stone-800 border-stone-800 text-white'
-                        : 'bg-stone-100 border-stone-200 text-stone-600 hover:bg-stone-200'}
-                `}
-            >
-                <span>同時生成</span>
-                <div className={`
-                    w-8 h-4 rounded-full relative transition-colors
-                    ${isMultiGen ? 'bg-lime' : 'bg-stone-300'}
-                `}>
+            {/* Multi-Gen Toggle Row - Always visible, repositioned for mobile */}
+            <div className="flex justify-center">
+                <button
+                    onClick={onToggleMultiGen}
+                    className="flex items-center gap-3 px-4 py-2 hover:bg-stone-100 rounded-full transition-all group"
+                >
                     <div className={`
-                        absolute top-0.5 w-3 h-3 bg-white rounded-full transition-all
-                        ${isMultiGen ? 'left-4' : 'left-0.5'}
-                    `}></div>
-                </div>
-                <span className="uppercase text-[10px] font-black tracking-wider">
-                    {isMultiGen ? 'ON' : 'OFF'}
-                </span>
-            </button>
+                        w-9 h-5 rounded-full relative transition-colors duration-300
+                        ${isMultiGen ? 'bg-indigo-600' : 'bg-stone-300'}
+                    `}>
+                        <div className={`
+                            absolute top-1 w-3 h-3 bg-white rounded-full transition-all duration-300
+                            ${isMultiGen ? 'left-5' : 'left-1'}
+                        `}></div>
+                    </div>
+                    <span className="text-[11px] font-black text-stone-500 tracking-wider">
+                        同時生成 {isMultiGen ? 'ON' : 'OFF'}
+                    </span>
+                </button>
+            </div>
         </div>
     );
 };
