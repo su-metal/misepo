@@ -26,7 +26,11 @@ interface PostInputFormProps {
     inputText: string;
     onInputTextChange: (text: string) => void;
     starRating: number | null;
-    onStarRatingChange: (r: number) => void;
+    onStarRatingChange: (r: number | null) => void;
+    includeEmojis: boolean;
+    onIncludeEmojisChange: (value: boolean) => void;
+    includeSymbols: boolean;
+    onIncludeSymbolsChange: (value: boolean) => void;
     isGenerating: boolean;
     onGenerate: () => void;
     generateButtonRef?: React.RefObject<HTMLButtonElement>;
@@ -83,6 +87,10 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
     onInputTextChange,
     starRating,
     onStarRatingChange,
+    includeEmojis,
+    onIncludeEmojisChange,
+    includeSymbols,
+    onIncludeSymbolsChange,
     isGenerating,
     onGenerate,
     generateButtonRef,
@@ -92,8 +100,6 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
     onApplyPreset,
     onOpenPresetModal
 }) => {
-    const [showEmojiToggle, setShowEmojiToggle] = React.useState(true);
-    const [showPhoneticToggle, setShowPhoneticToggle] = React.useState(false);
     const [show140LimitToggle, setShow140LimitToggle] = React.useState(true);
     const [showAdvancedSettings, setShowAdvancedSettings] = React.useState(false);
 
@@ -324,14 +330,14 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                         {/* Emoji & Decoration Toggles */}
                         <div className="grid grid-cols-2 gap-3 mt-4">
                             {/* Emoji Card */}
-                            <div className={`rounded-2xl p-4 border transition-colors flex flex-col justify-between h-[84px] ${showEmojiToggle ? 'bg-[#FFFBEB] border-[#FCD34D]' : 'bg-white border-gray-100'}`}>
+                            <div className={`rounded-2xl p-4 border transition-colors flex flex-col justify-between h-[84px] ${includeEmojis ? 'bg-[#FFFBEB] border-[#FCD34D]' : 'bg-white border-gray-100'}`}>
                                 <div className="flex items-center justify-between">
-                                    <span className={`text-[13px] font-bold ${showEmojiToggle ? 'text-[#B45309]' : 'text-gray-400'}`}>絵文字</span>
+                                    <span className={`text-[13px] font-bold ${includeEmojis ? 'text-[#B45309]' : 'text-gray-400'}`}>絵文字</span>
                                     <button
-                                        onClick={() => setShowEmojiToggle(!showEmojiToggle)}
-                                        className={`relative inline-flex h-5 w-10 items-center rounded-full transition-colors ${showEmojiToggle ? 'bg-[#F59E0B]' : 'bg-gray-200'}`}
+                                        onClick={() => onIncludeEmojisChange(!includeEmojis)}
+                                        className={`relative inline-flex h-5 w-10 items-center rounded-full transition-colors ${includeEmojis ? 'bg-[#F59E0B]' : 'bg-gray-200'}`}
                                     >
-                                        <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${showEmojiToggle ? 'translate-x-5.5' : 'translate-x-1'}`} />
+                                        <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${includeEmojis ? 'translate-x-5.5' : 'translate-x-1'}`} />
                                     </button>
                                 </div>
                                 <div className="flex gap-1.5 opacity-80">
@@ -342,14 +348,14 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                             </div>
 
                             {/* Decoration Card */}
-                            <div className={`rounded-2xl p-4 border transition-colors flex flex-col justify-between h-[84px] ${showPhoneticToggle ? 'bg-[#F8FAFC] border-indigo-200' : 'bg-white border-gray-100 shadow-sm shadow-gray-100/50'}`}>
+                            <div className={`rounded-2xl p-4 border transition-colors flex flex-col justify-between h-[84px] ${includeSymbols ? 'bg-[#F8FAFC] border-indigo-200' : 'bg-white border-gray-100 shadow-sm shadow-gray-100/50'}`}>
                                 <div className="flex items-center justify-between">
-                                    <span className={`text-[13px] font-bold ${showPhoneticToggle ? 'text-[#4f46e5]' : 'text-gray-400'}`}>装飾記号</span>
+                                    <span className={`text-[13px] font-bold ${includeSymbols ? 'text-[#4f46e5]' : 'text-gray-400'}`}>装飾記号</span>
                                     <button
-                                        onClick={() => setShowPhoneticToggle(!showPhoneticToggle)}
-                                        className={`relative inline-flex h-5 w-10 items-center rounded-full transition-colors ${showPhoneticToggle ? 'bg-[#4f46e5]' : 'bg-gray-200'}`}
+                                        onClick={() => onIncludeSymbolsChange(!includeSymbols)}
+                                        className={`relative inline-flex h-5 w-10 items-center rounded-full transition-colors ${includeSymbols ? 'bg-[#4f46e5]' : 'bg-gray-200'}`}
                                     >
-                                        <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${showPhoneticToggle ? 'translate-x-5.5' : 'translate-x-1'}`} />
+                                        <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${includeSymbols ? 'translate-x-5.5' : 'translate-x-1'}`} />
                                     </button>
                                 </div>
                                 <div className="flex gap-1.5 opacity-60">

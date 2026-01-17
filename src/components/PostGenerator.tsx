@@ -113,6 +113,10 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
                 onInputTextChange={flow.setInputText}
                 starRating={flow.starRating}
                 onStarRatingChange={flow.onStarRatingChange}
+                includeEmojis={flow.includeEmojis}
+                onIncludeEmojisChange={flow.setIncludeEmojis}
+                includeSymbols={flow.includeSymbols}
+                onIncludeSymbolsChange={flow.setIncludeSymbols}
                 isGenerating={flow.loading}
                 onGenerate={handleGenerate}
                 generateButtonRef={buttonRef}
