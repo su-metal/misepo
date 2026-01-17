@@ -16,13 +16,15 @@ export enum GoogleMapPurpose {
   Auto = 'auto',
   Thanks = 'thanks',
   Apology = 'apology',
-  Clarify = 'clarify'
+  Clarify = 'clarify',
+  Info = 'info'
 }
 
 export enum Tone {
   Formal = 'formal',   // きっちり
   Standard = 'standard', // 標準
-  Friendly = 'friendly'  // 親しみ
+  Friendly = 'friendly',  // 親しみ
+  Casual = 'casual' // もっと親しみ
 }
 
 export enum Length {
