@@ -3,7 +3,8 @@ import { PostPurpose, GoogleMapPurpose, Tone, Length, Platform, Preset, UserPlan
 import { AutoResizingTextarea } from './AutoResizingTextarea';
 import {
     MegaphoneIcon, BookOpenIcon, LightbulbIcon, ChatHeartIcon,
-    AutoSparklesIcon, HandHeartIcon, ApologyIcon, InfoIcon, SparklesIcon
+    AutoSparklesIcon, HandHeartIcon, ApologyIcon, InfoIcon, SparklesIcon,
+    StarIcon, ChevronDownIcon
 } from '../../Icons';
 
 interface PostInputFormProps {
@@ -52,8 +53,8 @@ const GMAP_PURPOSES = [
 
 const TONES = [
     { id: Tone.Formal, label: 'きっちり' },
-    { id: Tone.Friendly, label: '標準' },
-    { id: Tone.Casual, label: '親しみ' },
+    { id: Tone.Standard, label: '標準' },
+    { id: Tone.Friendly, label: '親しみ' },
 ];
 
 const LENGTHS = [
@@ -94,6 +95,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
     const [showEmojiToggle, setShowEmojiToggle] = React.useState(true);
     const [showPhoneticToggle, setShowPhoneticToggle] = React.useState(false);
     const [show140LimitToggle, setShow140LimitToggle] = React.useState(true);
+    const [showAdvancedSettings, setShowAdvancedSettings] = React.useState(false);
 
     const isGoogleMaps = platform === Platform.GoogleMaps;
     const isX = platform === Platform.X;
@@ -272,42 +274,44 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
 
                     {/* Toggles */}
                     <div className="space-y-3">
-                        {/* Emoji Card */}
-                        <div className={`rounded-2xl p-4 border transition-colors flex items-start justify-between ${showEmojiToggle ? 'bg-[#FFFBEB] border-[#FCD34D]' : 'bg-white border-transparent'}`}>
-                            <div className="space-y-2">
-                                <div className={`text-sm font-bold ${showEmojiToggle ? 'text-[#92400E]' : 'text-gray-400'}`}>絵文字</div>
-                                <div className="flex gap-1.5 text-lg">
-                                    <span>✨</span><span>🤩</span><span>👍</span>
+                        {/* Emoji & Decoration Toggles */}
+                        <div className="grid grid-cols-2 gap-3 mt-4">
+                            {/* Emoji Card */}
+                            <div className={`rounded-2xl p-4 border transition-colors flex flex-col justify-between h-[84px] ${showEmojiToggle ? 'bg-[#FFFBEB] border-[#FCD34D]' : 'bg-white border-gray-100'}`}>
+                                <div className="flex items-center justify-between">
+                                    <span className={`text-[13px] font-bold ${showEmojiToggle ? 'text-[#B45309]' : 'text-gray-400'}`}>絵文字</span>
+                                    <button
+                                        onClick={() => setShowEmojiToggle(!showEmojiToggle)}
+                                        className={`relative inline-flex h-5 w-10 items-center rounded-full transition-colors ${showEmojiToggle ? 'bg-[#F59E0B]' : 'bg-gray-200'}`}
+                                    >
+                                        <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${showEmojiToggle ? 'translate-x-5.5' : 'translate-x-1'}`} />
+                                    </button>
+                                </div>
+                                <div className="flex gap-1.5 opacity-80">
+                                    <span>✨</span>
+                                    <span>😋</span>
+                                    <span>👍</span>
                                 </div>
                             </div>
-                            <button
-                                onClick={() => setShowEmojiToggle(!showEmojiToggle)}
-                                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors shrink-0 ${showEmojiToggle ? 'bg-[#F59E0B]' : 'bg-gray-200'
-                                    }`}
-                            >
-                                <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform shadow-sm ${showEmojiToggle ? 'translate-x-6' : 'translate-x-1'
-                                    }`} />
-                            </button>
-                        </div>
 
-                        {/* Decoration Card */}
-                        <div className="bg-white rounded-2xl p-4 border border-transparent flex items-start justify-between">
-                            <div className="space-y-2">
-                                <div className="text-sm font-bold text-gray-500">装飾記号</div>
-                                <div className="flex gap-1.5 text-xs text-indigo-300">
-                                    <span>✦</span><span>▷</span><span>■</span>
+                            {/* Decoration Card */}
+                            <div className={`rounded-2xl p-4 border transition-colors flex flex-col justify-between h-[84px] ${showPhoneticToggle ? 'bg-[#F8FAFC] border-indigo-200' : 'bg-white border-gray-100 shadow-sm shadow-gray-100/50'}`}>
+                                <div className="flex items-center justify-between">
+                                    <span className={`text-[13px] font-bold ${showPhoneticToggle ? 'text-indigo-600' : 'text-gray-400'}`}>装飾記号</span>
+                                    <button
+                                        onClick={() => setShowPhoneticToggle(!showPhoneticToggle)}
+                                        className={`relative inline-flex h-5 w-10 items-center rounded-full transition-colors ${showPhoneticToggle ? 'bg-indigo-500' : 'bg-gray-200'}`}
+                                    >
+                                        <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${showPhoneticToggle ? 'translate-x-5.5' : 'translate-x-1'}`} />
+                                    </button>
+                                </div>
+                                <div className="flex gap-1.5 opacity-60">
+                                    <span>✦</span>
+                                    <span>▷</span>
+                                    <span>■</span>
                                 </div>
                             </div>
-                            <button
-                                onClick={() => setShowPhoneticToggle(!showPhoneticToggle)}
-                                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors shrink-0 ${showPhoneticToggle ? 'bg-indigo-500' : 'bg-gray-200'
-                                    }`}
-                            >
-                                <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform shadow-sm ${showPhoneticToggle ? 'translate-x-6' : 'translate-x-1'
-                                    }`} />
-                            </button>
                         </div>
-
                         {/* 140 Limit Card (Flat) */}
                         {platform === Platform.X && (
                             <div className="bg-[#F3F4F6] rounded-xl px-4 py-3 flex items-center justify-between">
@@ -326,6 +330,49 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                             </div>
                         )}
                     </div>
+
+                    {/* Advanced Settings Accordion */}
+                    <div className="rounded-3xl border border-[#FEF3C7] bg-[#FFFBEB]/30 overflow-hidden">
+                        <button
+                            onClick={() => setShowAdvancedSettings(!showAdvancedSettings)}
+                            className="w-full flex items-center justify-between p-5 cursor-pointer hover:bg-[#FFFBEB] transition-colors"
+                        >
+                            <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-lg bg-[#FCD34D] flex items-center justify-center text-white shadow-sm">
+                                    <StarIcon fill="white" />
+                                </div>
+                                <span className="text-[13px] font-bold text-[#B45309]">詳細設定</span>
+                            </div>
+                            <ChevronDownIcon className={`w-5 h-5 text-[#B45309] transition-transform duration-300 ${showAdvancedSettings ? 'rotate-180' : ''}`} />
+                        </button>
+
+                        {showAdvancedSettings && (
+                            <div className="p-5 pt-0 space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
+                                <div className="space-y-3">
+                                    <label className="text-[13px] font-bold text-[#D97706]/70 px-1">出力言語</label>
+                                    <div className="relative">
+                                        <select className="w-full bg-white border border-gray-100 rounded-2xl p-4 py-3.5 pr-10 text-sm font-bold text-gray-700 appearance-none focus:outline-none focus:border-[#FCD34D] transition-colors shadow-sm">
+                                            <option>日本語</option>
+                                            <option>English</option>
+                                        </select>
+                                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#FCD34D]">
+                                            <ChevronDownIcon className="w-5 h-5" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="space-y-3">
+                                    <label className="text-[13px] font-bold text-[#D97706]/70 px-1">AIへのカスタムプロンプト（任意）</label>
+                                    <div className="relative">
+                                        <input
+                                            type="text"
+                                            placeholder="例：絵文字多めで、テンション高く..."
+                                            className="w-full bg-white border border-gray-100 rounded-2xl p-5 py-4 text-sm text-gray-800 placeholder:text-gray-300 focus:outline-none focus:border-[#FCD34D] transition-colors shadow-sm"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </div>
 
                 {/* Right Main Area */}
@@ -339,14 +386,6 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                             className="flex-1 w-full bg-transparent text-gray-800 text-base leading-relaxed placeholder:text-gray-400 focus:outline-none resize-none"
                         />
                     </div>
-
-                    {/* Advanced Settings Collapse */}
-                    <button className="bg-yellow-100 rounded-2xl px-6 py-3 flex items-center justify-between hover:bg-yellow-200 transition-colors border border-yellow-200">
-                        <span className="text-sm font-bold text-yellow-900">詳細設定</span>
-                        <svg className="w-5 h-5 text-yellow-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </button>
                 </div>
             </div>
         </div>
