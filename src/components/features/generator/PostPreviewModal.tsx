@@ -18,10 +18,25 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
     text,
     storeProfile
 }) => {
+    // Lock body scroll when modal is open
+    React.useEffect(() => {
+        if (isOpen) {
+            document.body.style.overflow = 'hidden';
+            document.body.setAttribute('data-preview-modal-open', 'true');
+        } else {
+            document.body.style.overflow = '';
+            document.body.removeAttribute('data-preview-modal-open');
+        }
+        return () => {
+            document.body.style.overflow = '';
+            document.body.removeAttribute('data-preview-modal-open');
+        };
+    }, [isOpen]);
+
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6">
             <div
                 className="absolute inset-0 bg-stone-900/60 backdrop-blur-sm transition-opacity"
                 onClick={onClose}

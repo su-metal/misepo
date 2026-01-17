@@ -161,3 +161,9 @@ html {
 .animate-fall {
     animation: fall linear infinite;
 }
+
+/* Hide mobile footer when preview modal is open */
+body[data-preview-modal-open="true"] .md\:hidden.fixed.bottom-0 {
+    display: none !important;
+}
+
