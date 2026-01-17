@@ -68,16 +68,16 @@ const SortablePresetRow: React.FC<{
       <button
         onClick={() => onSelect(preset)}
         className={`flex-1 text-left p-4 pr-14 rounded-2xl border-2 transition-all duration-300 ${isSelected
-          ? 'bg-lime/20 border-lime/50 shadow-lg shadow-lime/10'
-          : 'bg-white/5 border-transparent hover:bg-white/10 hover:border-white/10'
+          ? 'bg-black text-white shadow-lg shadow-black/10 border-black'
+          : 'bg-white border-stone-200 hover:border-stone-300 hover:bg-stone-50'
           }`}
         type="button"
       >
         <div className="flex items-center gap-3">
-          <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${isSelected ? 'bg-lime text-black' : 'bg-white/10 text-gray-400 group-hover:bg-white/20'}`}>
+          <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${isSelected ? 'bg-lime text-black shadow-lg shadow-lime/20' : 'bg-stone-100 text-stone-400 group-hover:bg-stone-200'}`}>
             <BookmarkIcon className="w-4 h-4" />
           </div>
-          <div className={`font-bold text-sm truncate ${isSelected ? 'text-white' : 'text-stone-400 group-hover:text-stone-200'}`}>
+          <div className={`font-bold text-sm truncate ${isSelected ? 'text-white' : 'text-stone-700 group-hover:text-black'}`}>
             {preset.name}
           </div>
         </div>
@@ -88,7 +88,7 @@ const SortablePresetRow: React.FC<{
           {...attributes}
           {...listeners}
           disabled={isReordering}
-          className="h-8 w-8 rounded-lg bg-white/5 text-stone-500 flex items-center justify-center text-xs hover:bg-white/10 hover:text-white transition-all touch-none active:scale-95"
+          className={`h-8 w-8 rounded-lg flex items-center justify-center text-xs transition-all touch-none active:scale-95 ${isSelected ? 'bg-white/10 text-white/50 hover:bg-white/20 hover:text-white' : 'bg-stone-100 text-stone-400 hover:bg-stone-200 hover:text-stone-700'}`}
           aria-label="ドラッグして順番を変更"
         >
           <div className="grid grid-cols-2 gap-0.5">
@@ -102,7 +102,7 @@ const SortablePresetRow: React.FC<{
             onDelete(preset);
           }}
           disabled={deletingId === preset.id || isReordering}
-          className="h-8 w-8 rounded-lg text-stone-500 hover:text-rose-400 hover:bg-rose-500/10 flex items-center justify-center transition-all disabled:opacity-20"
+          className={`h-8 w-8 rounded-lg flex items-center justify-center transition-all disabled:opacity-20 ${isSelected ? 'text-white/40 hover:text-rose-400 hover:bg-rose-500/10' : 'text-stone-400 hover:text-rose-500 hover:bg-rose-50'}`}
           aria-label="プリセットを削除"
         >
           <TrashIcon className="w-4 h-4" />
@@ -367,28 +367,27 @@ const PresetModal: React.FC<PresetModalProps> = ({
     <div className="flex w-full h-full flex-col md:flex-row overflow-hidden">
       {/* SIDEBAR: Dark Tech Theme */}
       <div
-        className={`md:w-5/12 lg:w-4/12 bg-black border-r border-white/5 flex flex-col shrink-0 h-full relative overflow-hidden ${listVisibilityClass}`}
+        className={`md:w-5/12 lg:w-4/12 bg-stone-50 border-r border-stone-200 flex flex-col shrink-0 h-full relative overflow-hidden ${listVisibilityClass}`}
       >
         {/* Background Pattern */}
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.03] pointer-events-none"></div>
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none"></div>
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.02)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none"></div>
 
         <div className="relative z-10 p-6 md:p-8 flex flex-col h-full">
           <div className="mb-8 flex items-center justify-between gap-4">
             <div className="space-y-1">
-              <h3 className="font-black text-xl text-white tracking-tight flex items-center gap-2">
-                <div className="w-1.5 h-6 bg-lime rounded-full"></div>
-                PRESETS
+              <h3 className="font-black text-xl text-stone-800 tracking-tight flex items-center gap-2">
+                <div className="w-1.5 h-6 bg-lime rounded-full shadow-sm"></div>
+                プリセット一覧
               </h3>
-              <p className="text-[10px] font-black text-stone-500 uppercase tracking-widest">Saved Configurations</p>
+              <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest">Saved Configurations</p>
             </div>
             <button
               type="button"
               onClick={handleStartNew}
               disabled={limitReached}
               className={`p-2 rounded-xl transition-all border-2 flex items-center justify-center ${limitReached
-                ? 'border-white/5 text-stone-600'
-                : 'border-white/10 bg-white/5 text-lime hover:bg-lime hover:text-black hover:border-lime'
+                ? 'border-stone-100 text-stone-300'
+                : 'border-stone-200 bg-white text-stone-600 hover:bg-black hover:text-lime hover:border-black shadow-sm'
                 }`}
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12h14" /></svg>
@@ -398,9 +397,9 @@ const PresetModal: React.FC<PresetModalProps> = ({
           <div className="flex-1 overflow-y-auto space-y-3 no-scrollbar pb-6">
             {orderedPresets.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-40 text-center space-y-2 opacity-50">
-                <BookmarkIcon className="w-8 h-8 text-stone-700" />
-                <div className="text-[10px] font-black text-stone-600 uppercase tracking-widest">
-                  No Presets Found
+                <BookmarkIcon className="w-8 h-8 text-stone-300" />
+                <div className="text-[10px] font-black text-stone-400 uppercase tracking-widest">
+                  プリセットがありません
                 </div>
               </div>
             ) : (
@@ -465,7 +464,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                 className="md:hidden flex items-center gap-1.5 px-4 py-2 text-xs font-black text-stone-500 bg-stone-100 rounded-full hover:bg-stone-200"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
-                BACK
+                戻る
               </button>
             )}
             <button
@@ -520,19 +519,19 @@ const PresetModal: React.FC<PresetModalProps> = ({
             <button
               onClick={handleSave}
               disabled={isSaveDisabled}
-              className="w-full bg-black hover:bg-stone-900 disabled:opacity-50 disabled:cursor-not-allowed text-lime border border-lime/50 px-8 py-5 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center justify-center gap-3 transition-all transform hover:-transtone-y-1 active:transtone-y-0 shadow-xl shadow-black/50"
+              className="w-full bg-black hover:bg-stone-900 disabled:opacity-50 disabled:cursor-not-allowed text-lime border border-lime/50 px-8 py-5 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center justify-center gap-3 transition-all transform hover:-translate-y-1 active:translate-y-0 shadow-xl shadow-black/20"
             >
               <SaveIcon className="w-4 h-4" />
-              {selectedPresetId ? 'UPDATE PRESET' : 'SAVE TO LIST'}
+              {selectedPresetId ? 'プリセットを更新' : '新規保存'}
             </button>
           </div>
 
           <button
             onClick={handleApplyCurrent}
-            className="flex-[1.2] bg-lime hover:opacity-90 text-black font-black py-5 px-8 rounded-2xl shadow-lime transition-all transform hover:-translate-y-1 active:translate-y-0 flex items-center justify-center gap-3 text-sm uppercase tracking-widest"
+            className="flex-[1.2] bg-lime hover:bg-lime-dark text-black font-black py-5 px-8 rounded-2xl shadow-xl shadow-lime/20 transition-all transform hover:-translate-y-1 active:translate-y-0 flex items-center justify-center gap-3 text-sm uppercase tracking-widest"
           >
             <MagicWandIcon className="w-4 h-4" />
-            Apply Settings
+            設定を適用する
           </button>
         </div>
       </div>
