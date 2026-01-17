@@ -163,7 +163,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
             {/* Main Content */}
             <div className="flex flex-col lg:flex-row flex-1 gap-8 p-6 lg:p-8 lg:overflow-hidden bg-gray-50/30">
                 {/* Left Sidebar */}
-                <div className="w-full lg:w-[400px] flex flex-col gap-6 shrink-0">
+                <div className="w-full lg:w-[400px] flex flex-col gap-6 shrink-0 lg:overflow-y-auto lg:pr-2 scrollbar-hide">
 
                     {/* Quick Sets (Common for X & Instagram) */}
                     {(platform === Platform.X || platform === Platform.Instagram) && (
@@ -208,29 +208,74 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                         </div>
                     )}
 
-                    {/* Purpose Selection */}
-                    <div>
+                    {/* Star Rating Selection - Google Maps Only */}
+                    {isGoogleMaps && (
+                        <div>
+                            <div className="flex items-center justify-between mb-3 px-1">
+                                <h3 className="text-xs font-bold text-gray-400">星評価 (1〜5選択で自動判定)</h3>
+                                {starRating && (
+                                    <button
+                                        onClick={() => onStarRatingChange(null)}
+                                        className="text-[10px] text-gray-500 hover:text-gray-700 font-medium transition-colors"
+                                    >
+                                        リセット
+                                    </button>
+                                )}
+                            </div>
+                            <div className="flex justify-center gap-2 mb-6">
+                                {[1, 2, 3, 4, 5].map((rating) => (
+                                    <button
+                                        key={rating}
+                                        onClick={() => onStarRatingChange(rating)}
+                                        className={`text-4xl transition-all hover:scale-110 ${starRating && rating <= starRating
+                                            ? 'text-[#FCD34D] drop-shadow-sm'
+                                            : 'text-gray-300 hover:text-gray-400'
+                                            }`}
+                                    >
+                                        {starRating && rating <= starRating ? '★' : '☆'}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Purpose Selection with Auto-Judgment Badge */}
+                    <div className="relative">
+                        {/* Auto-Judgment Mode Badge - Shows when star is selected */}
+                        {isGoogleMaps && starRating && (
+                            <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-10">
+                                <div className="bg-indigo-500 text-white text-[10px] font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg">
+                                    <span className="text-xs">✦</span>
+                                    <span>自動判定モード固定</span>
+                                </div>
+                            </div>
+                        )}
                         <h3 className="text-xs font-bold text-gray-400 mb-3 px-1">投稿の目的</h3>
                         <div className="grid grid-cols-2 gap-3">
-                            {(isGoogleMaps ? GMAP_PURPOSES : PURPOSES).map((p) => (
-                                <button
-                                    key={p.id}
-                                    onClick={() => isGoogleMaps ? onGmapPurposeChange(p.id as GoogleMapPurpose) : onPostPurposeChange(p.id as PostPurpose)}
-                                    className={`
-                                        relative rounded-[24px] p-4 flex flex-col items-center justify-center gap-2 border transition-all aspect-[5/3]
-                                        ${(isGoogleMaps ? gmapPurpose : postPurpose) === p.id
-                                            ? 'bg-[#5B5FEF] border-[#5B5FEF] text-white shadow-[0_0_15px_rgba(91,95,239,0.3)] ring-4 ring-indigo-500/10'
-                                            : 'bg-white border-gray-100 text-gray-400 hover:bg-gray-50 hover:border-gray-200'}
-                                    `}
-                                >
-                                    <div className={`p-2 rounded-full ${(isGoogleMaps ? gmapPurpose : postPurpose) === p.id ? 'bg-indigo-400/30' : 'bg-gray-50'}`}>
-                                        <div className={`w-5 h-5 ${(isGoogleMaps ? gmapPurpose : postPurpose) === p.id ? 'text-white' : 'text-gray-400'}`}>
-                                            {p.icon}
+                            {(isGoogleMaps ? GMAP_PURPOSES : PURPOSES).map((p) => {
+                                const isLocked = isGoogleMaps && starRating && gmapPurpose !== p.id;
+                                return (
+                                    <button
+                                        key={p.id}
+                                        onClick={() => !isLocked && (isGoogleMaps ? onGmapPurposeChange(p.id as GoogleMapPurpose) : onPostPurposeChange(p.id as PostPurpose))}
+                                        disabled={isLocked}
+                                        className={`
+                                            relative rounded-[24px] p-4 flex flex-col items-center justify-center gap-2 border transition-all aspect-[5/3]
+                                            ${isLocked ? 'opacity-40 cursor-not-allowed' : ''}
+                                            ${(isGoogleMaps ? gmapPurpose : postPurpose) === p.id
+                                                ? 'bg-[#5B5FEF] border-[#5B5FEF] text-white shadow-[0_0_15px_rgba(91,95,239,0.3)] ring-4 ring-indigo-500/10'
+                                                : 'bg-white border-gray-100 text-gray-400 hover:bg-gray-50 hover:border-gray-200'}
+                                        `}
+                                    >
+                                        <div className={`p-2 rounded-full ${(isGoogleMaps ? gmapPurpose : postPurpose) === p.id ? 'bg-indigo-400/30' : 'bg-gray-50'}`}>
+                                            <div className={`w-5 h-5 ${(isGoogleMaps ? gmapPurpose : postPurpose) === p.id ? 'text-white' : 'text-gray-400'}`}>
+                                                {p.icon}
+                                            </div>
                                         </div>
-                                    </div>
-                                    <span className="text-[11px] font-bold">{p.label}</span>
-                                </button>
-                            ))}
+                                        <span className="text-[11px] font-bold">{p.label}</span>
+                                    </button>
+                                );
+                            })}
                         </div>
                     </div>
 
@@ -333,8 +378,22 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                         )}
                     </div>
 
+                </div>
+
+                {/* Right Main Area */}
+                <div className="flex-1 flex flex-col gap-4">
+                    <div className="flex-1 min-h-[400px] bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col">
+                        <h3 className="text-sm font-bold text-gray-700 mb-4">投稿したいトピック・内容</h3>
+                        <AutoResizingTextarea
+                            value={inputText}
+                            onChange={(e) => onInputTextChange(e.target.value)}
+                            placeholder="明日から秋 of 限定メニューを販売します。旬の食材を使った特別なコースをご用意しました。"
+                            className="flex-1 w-full bg-transparent text-gray-800 text-base leading-relaxed placeholder:text-gray-400 focus:outline-none resize-none"
+                        />
+                    </div>
+
                     {/* Advanced Settings Accordion */}
-                    <div className="rounded-3xl border border-[#FEF3C7] bg-[#FFFBEB]/30 overflow-hidden">
+                    <div className="rounded-3xl border border-[#FEF3C7] bg-[#FFFBEB]/30 overflow-hidden shrink-0">
                         <button
                             onClick={() => setShowAdvancedSettings(!showAdvancedSettings)}
                             className="w-full flex items-center justify-between p-5 cursor-pointer hover:bg-[#FFFBEB] transition-colors"
@@ -350,43 +409,32 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
 
                         {showAdvancedSettings && (
                             <div className="p-5 pt-0 space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
-                                <div className="space-y-3">
-                                    <label className="text-[13px] font-bold text-[#D97706]/70 px-1">出力言語</label>
-                                    <div className="relative">
-                                        <select className="w-full bg-white border border-gray-100 rounded-2xl p-4 py-3.5 pr-10 text-sm font-bold text-gray-700 appearance-none focus:outline-none focus:border-[#FCD34D] transition-colors shadow-sm">
-                                            <option>日本語</option>
-                                            <option>English</option>
-                                        </select>
-                                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#FCD34D]">
-                                            <ChevronDownIcon className="w-5 h-5" />
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="space-y-3">
+                                        <label className="text-[13px] font-bold text-[#D97706]/70 px-1">出力言語</label>
+                                        <div className="relative">
+                                            <select className="w-full bg-white border border-gray-100 rounded-2xl p-4 py-3.5 pr-10 text-sm font-bold text-gray-700 appearance-none focus:outline-none focus:border-[#FCD34D] transition-colors shadow-sm">
+                                                <option>日本語</option>
+                                                <option>English</option>
+                                            </select>
+                                            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#FCD34D]">
+                                                <ChevronDownIcon className="w-5 h-5" />
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div className="space-y-3">
-                                    <label className="text-[13px] font-bold text-[#D97706]/70 px-1">AIへのカスタムプロンプト（任意）</label>
-                                    <div className="relative">
-                                        <input
-                                            type="text"
-                                            placeholder="例：絵文字多めで、テンション高く..."
-                                            className="w-full bg-white border border-gray-100 rounded-2xl p-5 py-4 text-sm text-gray-800 placeholder:text-gray-300 focus:outline-none focus:border-[#FCD34D] transition-colors shadow-sm"
-                                        />
+                                    <div className="space-y-3">
+                                        <label className="text-[13px] font-bold text-[#D97706]/70 px-1">AIへのカスタムプロンプト（任意）</label>
+                                        <div className="relative">
+                                            <input
+                                                type="text"
+                                                placeholder="例：絵文字多めで、テンション高く..."
+                                                className="w-full bg-white border border-gray-100 rounded-2xl p-5 py-4 text-sm text-gray-800 placeholder:text-gray-300 focus:outline-none focus:border-[#FCD34D] transition-colors shadow-sm"
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         )}
-                    </div>
-                </div>
-
-                {/* Right Main Area */}
-                <div className="flex-1 flex flex-col gap-4">
-                    <div className="flex-1 bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col">
-                        <h3 className="text-sm font-bold text-gray-700 mb-4">投稿したいトピック・内容</h3>
-                        <AutoResizingTextarea
-                            value={inputText}
-                            onChange={(e) => onInputTextChange(e.target.value)}
-                            placeholder="明日から秋の限定メニューを販売します。旬の食材を使った特別なコースをご用意しました。"
-                            className="flex-1 w-full bg-transparent text-gray-800 text-base leading-relaxed placeholder:text-gray-400 focus:outline-none resize-none"
-                        />
                     </div>
                 </div>
             </div>
