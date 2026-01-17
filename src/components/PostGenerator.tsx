@@ -71,11 +71,11 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
 
   return (
     <div className="min-h-screen bg-white text-black overflow-x-hidden">
-      {/* Subtle Ambient Glow */}
-      <div className="fixed inset-0 pointer-events-none z-0">
+      {/* Subtle Ambient Glow - Removed as per user request */}
+      {/* <div className="fixed inset-0 pointer-events-none z-0">
         <div className="absolute -top-[20%] -left-[10%] w-[70%] h-[70%] bg-gray-100/30 blur-[120px] rounded-full opacity-40"></div>
         <div className="absolute -bottom-[20%] -right-[10%] w-[60%] h-[60%] blur-[120px] rounded-full opacity-15" style={{ backgroundColor: 'var(--lime)' }}></div>
-      </div>
+      </div> */}
 
       <div className="max-w-[1400px] mx-auto px-4 sm:px-8 py-8 relative z-10">
         {/* Header Module - Floating Glass */}
