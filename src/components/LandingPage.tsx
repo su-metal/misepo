@@ -207,6 +207,32 @@ export default function LandingPage() {
                                     <div className="flex justify-end"><div className="px-4 py-2 bg-slate-900 text-white text-xs font-bold rounded-lg shadow-lg">コピーして投稿</div></div>
                                 </div>
                             </div>
+                            {/* MEOスコア UP! カード - 右上 */}
+                            <div className="absolute -right-8 top-12 bg-white p-4 rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-slate-100 animate-float hidden lg:block z-20">
+                                <div className="flex items-center gap-3">
+                                    <div className="bg-green-100 p-2 rounded-full text-green-600">
+                                        <Icons.CheckCircle size={20} />
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-slate-500 font-bold">MEOスコア</p>
+                                        <p className="text-sm font-black text-slate-900">UP!</p>
+                                    </div>
+                                </div>
+                            </div>
+                            {/* 口コミ返信 完了 カード - 左下 */}
+                            <div className="absolute -left-4 bottom-20 bg-white p-4 rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-slate-100 animate-float-delayed hidden lg:block z-20">
+                                <div className="flex items-center gap-3">
+                                    <div className="bg-yellow-100 p-2 rounded-full text-yellow-600">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="1">
+                                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-slate-500 font-bold">口コミ返信</p>
+                                        <p className="text-sm font-black text-slate-900">完了</p>
+                                    </div>
+                                </div>
+                            </div>
                             <div className="absolute -z-10 top-10 right-10 w-full h-full bg-indigo-600/5 rounded-2xl transform rotate-3 scale-95 border border-indigo-100" />
                         </div>
                     </div>
@@ -335,19 +361,94 @@ export default function LandingPage() {
                             <div className="inline-block px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold mb-3">アプリストア不要</div>
                             <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4 leading-tight">アイコンタップから<br /><span className="text-indigo-600">5秒で投稿完了。</span></h2>
                             <p className="text-base text-gray-600 mb-6 leading-relaxed">MisePoは最新技術「PWA」を採用。ブラウザで開いて「ホーム画面に追加」するだけで、ネイティブアプリを超えるスピードで起動します。</p>
+
+                            {/* 追加機能リスト */}
+                            <div className="space-y-3">
+                                <div className="flex items-start gap-3">
+                                    <div className="bg-indigo-50 p-2 rounded-lg text-indigo-600 mt-1">
+                                        <Icons.Clock />
+                                    </div>
+                                    <div>
+                                        <h3 className="font-bold text-gray-900 text-sm">圧倒的な起動スピード</h3>
+                                        <p className="text-xs text-gray-600">無駄なロード時間ゼロ。お客様の対応の合間にサッと投稿が作れます。</p>
+                                    </div>
+                                </div>
+                                <div className="flex items-start gap-3">
+                                    <div className="bg-indigo-50 p-2 rounded-lg text-indigo-600 mt-1">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                            <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                                            <path d="m9 12 2 2 4-4" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 className="font-bold text-gray-900 text-sm">常に最新バージョン</h3>
+                                        <p className="text-xs text-gray-600">ストアでの更新作業は不要。アクセスするだけで常に最新のAIモデルを利用できます。</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div className="lg:w-1/2 w-full bg-gray-50 rounded-2xl p-5 border border-gray-100">
+                        <div className="lg:w-1/2 w-full bg-gray-50 rounded-2xl p-5 border border-gray-100 shadow-inner">
                             <h3 className="text-center font-bold text-gray-800 mb-4 text-sm">導入はたったの2ステップ</h3>
-                            <div className="grid grid-cols-2 gap-3">
+                            <div className="grid grid-cols-2 gap-3 mb-4">
                                 <div className="bg-white p-3 rounded-lg shadow-sm flex flex-col items-center text-center">
                                     <div className="w-6 h-6 bg-gray-900 text-white rounded-full flex items-center justify-center font-bold text-xs mb-2">1</div>
-                                    <Icons.Smartphone size={20} /><p className="font-bold text-gray-700 text-xs">メニューを開く</p>
+                                    <Icons.Smartphone size={20} />
+                                    <p className="font-bold text-gray-700 text-xs">メニューを開く</p>
+                                    <p className="text-[10px] text-gray-500">Safari / Chrome</p>
                                 </div>
                                 <div className="bg-white p-3 rounded-lg shadow-sm flex flex-col items-center text-center">
                                     <div className="w-6 h-6 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-xs mb-2">2</div>
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="mb-1">
+                                        <rect x="3" y="3" width="18" height="18" rx="2" /><line x1="12" y1="8" x2="12" y2="16" /><line x1="8" y1="12" x2="16" y2="12" />
+                                    </svg>
                                     <p className="font-bold text-gray-700 text-xs">ホーム画面に追加</p>
+                                    <p className="text-[10px] text-gray-500">これだけで完了</p>
                                 </div>
                             </div>
+
+                            {/* スマホモックアップ */}
+                            <div className="relative mx-auto w-40 border-gray-800 bg-gray-800 border-[6px] rounded-[1.2rem] h-[240px] shadow-md flex flex-col overflow-hidden ring-2 ring-gray-100/50">
+                                <div className="flex-1 bg-white relative w-full h-full overflow-hidden flex flex-col">
+                                    {/* ブラウザバー */}
+                                    <div className="h-6 bg-gray-100 flex items-center justify-center border-b border-gray-200 px-2">
+                                        <div className="w-full h-3 bg-gray-200 rounded-md flex items-center px-1">
+                                            <div className="w-1 h-1 bg-gray-400 rounded-full" />
+                                            <div className="ml-1 w-6 h-1 bg-gray-300 rounded-full opacity-50" />
+                                        </div>
+                                    </div>
+                                    {/* コンテンツエリア */}
+                                    <div className="flex-1 p-2 space-y-2 opacity-40">
+                                        <div className="w-full h-12 bg-indigo-200 rounded-md animate-pulse" />
+                                        <div className="space-y-1">
+                                            <div className="w-3/4 h-1 bg-gray-200 rounded" />
+                                            <div className="w-1/2 h-1 bg-gray-200 rounded" />
+                                            <div className="w-full h-1 bg-gray-200 rounded" />
+                                        </div>
+                                        <div className="w-full h-8 bg-gray-100 rounded-md" />
+                                    </div>
+                                    {/* シェアシート */}
+                                    <div className="absolute bottom-0 w-full bg-white rounded-t-lg shadow-[0_-3px_10px_rgba(0,0,0,0.1)] pb-2 transform transition-transform duration-500">
+                                        <div className="flex justify-center py-1"><div className="w-5 h-0.5 bg-gray-300 rounded-full" /></div>
+                                        <div className="px-2 pb-0.5"><p className="text-[8px] font-bold text-gray-400 mb-0.5 uppercase tracking-wider">共有</p></div>
+                                        <div className="px-1 space-y-0.5">
+                                            <div className="flex items-center gap-2 px-2 py-1 text-gray-500">
+                                                <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" /><polyline points="16 6 12 2 8 6" /><line x1="12" y1="2" x2="12" y2="15" /></svg>
+                                                <span className="text-[9px]">送信</span>
+                                            </div>
+                                            <div className="flex items-center gap-2 px-2 py-1 bg-indigo-50 text-indigo-700 rounded-md font-bold border border-indigo-100 mx-0.5 shadow-sm relative overflow-hidden">
+                                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2" /><line x1="12" y1="8" x2="12" y2="16" /><line x1="8" y1="12" x2="16" y2="12" /></svg>
+                                                <span className="text-[9px]">ホーム画面に追加</span>
+                                                <div className="absolute right-1 w-1 h-1 bg-red-500 rounded-full animate-ping" />
+                                            </div>
+                                            <div className="flex items-center gap-2 px-2 py-1 text-gray-500">
+                                                <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="1" /><circle cx="19" cy="12" r="1" /><circle cx="5" cy="12" r="1" /></svg>
+                                                <span className="text-[9px]">その他</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <p className="text-center text-[9px] text-gray-400 mt-2">※画面はイメージです</p>
                         </div>
                     </div>
                 </div>
@@ -439,6 +540,12 @@ export default function LandingPage() {
             <style jsx global>{`
                 html { scroll-behavior: smooth; scroll-padding-top: 80px; }
                 .gradient-text { background: linear-gradient(135deg, #4f46e5 0%, #ec4899 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+                @keyframes float {
+                    0%, 100% { transform: translateY(0px); }
+                    50% { transform: translateY(-10px); }
+                }
+                .animate-float { animation: float 3s ease-in-out infinite; }
+                .animate-float-delayed { animation: float 3s ease-in-out infinite; animation-delay: 1.5s; }
             `}</style>
         </div>
     );
