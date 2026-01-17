@@ -27,14 +27,14 @@ export function useAuth() {
     await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${origin}/auth/callback?intent=${intent}`,
+        redirectTo: `${origin}/auth/callback?intent=${intent}&next=/generate`,
       },
     });
   };
 
   const logout = async () => {
     await supabase.auth.signOut();
-    window.location.reload();
+    window.location.href = '/start';
   };
 
   return { user, loading, loginWithGoogle, logout };

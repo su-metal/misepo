@@ -4,9 +4,9 @@
 @tailwind utilities;
 
 :root {
-  --lime: #efff00;
-  --lime-light: #f5ff66;
-  --lime-dark: #c4d400;
+  --lime: #cafd00;
+  --lime-light: #e1ff66;
+  --lime-dark: #accb00;
 }
 
 body {
@@ -19,7 +19,7 @@ body {
 .bg-lime { background-color: var(--lime) !important; }
 .text-lime { color: var(--lime) !important; }
 .border-lime { border-color: var(--lime) !important; }
-.shadow-lime { box-shadow: 0 10px 25px -5px rgba(239, 255, 0, 0.3) !important; }
+.shadow-lime { box-shadow: 0 10px 25px -5px rgba(202, 253, 0, 0.3) !important; }
 .ring-lime { --tw-ring-color: var(--lime) !important; }
 
 /* Custom Scrollbar */

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/hooks/useAuth';
 
 // Icons
 const Icons = {
@@ -89,6 +90,7 @@ const Icons = {
 
 export default function LandingPage() {
     const router = useRouter();
+    const { loginWithGoogle } = useAuth();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
     const [openFaq, setOpenFaq] = useState<number | null>(null);
@@ -137,8 +139,8 @@ export default function LandingPage() {
                             ))}
                         </nav>
                         <div className="hidden md:flex items-center space-x-3">
-                            <button className="text-slate-600 font-bold hover:text-indigo-600 px-4 py-2 text-sm">ログイン</button>
-                            <button onClick={() => router.push('/generate')} className="bg-slate-900 text-white px-5 py-2.5 rounded-full text-sm font-bold shadow-lg hover:bg-indigo-600 transition-all">無料で始める</button>
+                            <button onClick={() => loginWithGoogle('login')} className="text-slate-600 font-bold hover:text-indigo-600 px-4 py-2 text-sm">ログイン</button>
+                            <button onClick={() => loginWithGoogle('trial')} className="bg-slate-900 text-white px-5 py-2.5 rounded-full text-sm font-bold shadow-lg hover:bg-indigo-600 transition-all">無料で始める</button>
                         </div>
                         <button className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>{isMenuOpen ? <Icons.X /> : <Icons.Menu />}</button>
                     </div>
@@ -148,7 +150,7 @@ export default function LandingPage() {
                         {['お悩み', '機能', 'デモ', '料金'].map((item, i) => (
                             <a key={item} href={['#problem', '#features', '#demo', '#pricing'][i]} className="block px-4 py-3 font-bold text-slate-700 hover:bg-slate-50 rounded-xl" onClick={() => setIsMenuOpen(false)}>{item}</a>
                         ))}
-                        <button onClick={() => router.push('/generate')} className="w-full bg-indigo-600 text-white px-5 py-3.5 rounded-xl font-bold">無料で始める</button>
+                        <button onClick={() => loginWithGoogle('trial')} className="w-full bg-indigo-600 text-white px-5 py-3.5 rounded-xl font-bold">無料で始める</button>
                     </div>
                 )}
             </header>
@@ -330,7 +332,7 @@ export default function LandingPage() {
                         <div className="p-8 md:w-1/2 border-b md:border-b-0 md:border-r border-white/10 flex flex-col bg-slate-900/50">
                             <label className="flex items-center gap-2 text-sm font-bold text-white mb-4">投稿メモを入力</label>
                             <textarea className="w-full h-40 p-4 bg-slate-800/80 border border-slate-700 text-slate-100 rounded-xl focus:outline-none resize-none text-base placeholder:text-slate-500" placeholder={"例：\n・今日は雨だけど元気に営業中\n・新作のいちごタルト始めました\n・数量限定なのでお早めに"} readOnly />
-                            <button onClick={() => router.push('/generate')} className="w-full py-4 mt-6 rounded-xl font-bold flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:shadow-[0_0_20px_rgba(99,102,241,0.5)] transition-all">
+                            <button onClick={() => loginWithGoogle('trial')} className="w-full py-4 mt-6 rounded-xl font-bold flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:shadow-[0_0_20px_rgba(99,102,241,0.5)] transition-all">
                                 <Icons.Sparkles size={20} />AIで文章を生成する
                             </button>
                         </div>
@@ -478,7 +480,7 @@ export default function LandingPage() {
                                         </li>
                                     ))}
                                 </ul>
-                                <button onClick={() => router.push('/generate')} className={`w-full py-4 rounded-xl font-bold transition-all ${plan.recommended ? 'bg-white text-slate-900 hover:bg-slate-100' : 'bg-slate-900 text-white hover:bg-indigo-600'}`}>
+                                <button onClick={() => loginWithGoogle('trial')} className={`w-full py-4 rounded-xl font-bold transition-all ${plan.recommended ? 'bg-white text-slate-900 hover:bg-slate-100' : 'bg-slate-900 text-white hover:bg-indigo-600'}`}>
                                     {plan.name === 'Free' ? '無料で始める' : 'このプランを選択'}
                                 </button>
                             </div>
