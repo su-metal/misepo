@@ -4,9 +4,9 @@
 @tailwind utilities;
 
 :root {
-  --lime: #cafd00;
-  --lime-light: #e1ff66;
-  --lime-dark: #accb00;
+  --lime: #b8e600;
+  --lime-light: #c9f030;
+  --lime-dark: #9acc00;
 }
 
 body {
