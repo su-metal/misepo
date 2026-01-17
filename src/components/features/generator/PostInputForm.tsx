@@ -234,7 +234,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                             relative group overflow-hidden px-10 py-5 rounded-2xl font-black text-sm tracking-[0.2em] uppercase transition-all duration-500
                             ${isGenerating || !inputText.trim()
                                 ? 'bg-stone-100 text-stone-400 cursor-not-allowed opacity-50'
-                                : 'bg-stone-900 text-white shadow-xl hover:shadow-2xl hover:scale-[1.02] active:scale-95'}
+                                : 'bg-black text-lime shadow-xl hover:shadow-2xl hover:scale-[1.02] active:scale-95'}
                         `}
                     >
                         <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: 'linear-gradient(90deg, rgba(239,255,0,0.2), rgba(239,255,0,0.1))' }}></div>

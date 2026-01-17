@@ -232,7 +232,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
         <button
           onClick={handleGenerate}
           disabled={flow.loading || !flow.inputText.trim()}
-          className="w-full bg-black text-white py-4 rounded-xl font-black text-sm uppercase tracking-widest shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 active:scale-95 transition-all"
+          className="w-full bg-black text-lime py-4 rounded-xl font-black text-sm uppercase tracking-widest shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 active:scale-95 transition-all"
         >
           {flow.loading ? (
             <>
