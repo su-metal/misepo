@@ -79,7 +79,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                     {/* Scene Module */}
                     <div className="space-y-4">
                         <div className="flex items-center gap-2">
-                            <div className="w-1 h-3 bg-lime rounded-full"></div>
+                            <div className="w-1 h-3 bg-stone-500 rounded-full"></div>
                             <span className="text-[10px] font-black tracking-[0.3em] text-stone-500 uppercase">作成する内容</span>
                         </div>
                         <div className="grid grid-cols-1 gap-2">
@@ -90,7 +90,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                         <SparklesIcon className="w-3 h-3" />
                                         Review Rating
                                     </p>
-                                    <div className="flex justify-between items-center bg-white p-3 rounded-xl border-lime" style={{ borderWidth: '1px', borderColor: 'rgba(239,255,0,0.3)' }}>
+                                    <div className="flex justify-between items-center bg-black p-3 rounded-xl border border-white/10 shadow-lg shadow-black/20">
                                         {[1, 2, 3, 4, 5].map((s) => (
                                             <button
                                                 key={s}
@@ -114,11 +114,11 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                     className={`
                                         flex items-center gap-3 px-5 py-4 rounded-2xl border transition-all duration-300 group
                                         ${(isGoogleMaps ? gmapPurpose : postPurpose) === p.id
-                                            ? 'bg-lime text-black border-lime shadow-xl translate-x-1'
+                                            ? 'bg-black text-white border-black shadow-xl translate-x-1'
                                             : 'bg-white border-stone-200 text-stone-500 hover:bg-stone-50 hover:text-stone-800'}
                                     `}
                                 >
-                                    <span className="text-lg group-hover:scale-110 transition-transform">{p.icon}</span>
+                                    <span className={`text-lg transition-transform group-hover:scale-110 ${(isGoogleMaps ? gmapPurpose : postPurpose) === p.id ? 'text-white' : ''}`}>{p.icon}</span>
                                     <span className="text-xs font-black tracking-widest uppercase">{p.label}</span>
                                 </button>
                             ))}
@@ -128,7 +128,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                     {/* Tone Module */}
                     <div className="space-y-4">
                         <div className="flex items-center gap-2">
-                            <div className="w-1 h-3 bg-lime rounded-full"></div>
+                            <div className="w-1 h-3 bg-stone-500 rounded-full"></div>
                             <span className="text-[10px] font-black tracking-[0.3em] text-stone-500 uppercase">文章の雰囲気</span>
                         </div>
                         <div className="flex flex-wrap gap-2">
@@ -139,7 +139,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                     className={`
                                         px-4 py-2.5 rounded-xl border text-[10px] font-black tracking-widest transition-all
                                         ${tone === t.id
-                                            ? 'bg-lime border-lime text-black shadow-lg'
+                                            ? 'bg-black border-black text-white shadow-lg'
                                             : 'bg-white border-stone-200 text-stone-500 hover:border-stone-300 hover:text-stone-800'}
                                     `}
                                 >
@@ -152,7 +152,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                     {/* Length Module */}
                     <div className="space-y-4">
                         <div className="flex items-center gap-2">
-                            <div className="w-1 h-3 bg-lime rounded-full"></div>
+                            <div className="w-1 h-3 bg-stone-500 rounded-full"></div>
                             <span className="text-[10px] font-black tracking-[0.3em] text-stone-500 uppercase">文章の長さ</span>
                         </div>
                         <div className="grid grid-cols-3 gap-2">
@@ -163,7 +163,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                     className={`
                                         flex flex-col items-center justify-center py-3 rounded-2xl border transition-all
                                         ${length === l.id
-                                            ? 'bg-lime text-black border-lime shadow-lg'
+                                            ? 'bg-black text-white border-black shadow-lg'
                                             : 'bg-white border-stone-200 text-stone-500 hover:bg-stone-50'}
                                     `}
                                 >
@@ -254,6 +254,6 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                     </button>
                 </div>
             </div>
-        </div>
+        </div >
     );
 };

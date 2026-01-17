@@ -42,15 +42,15 @@ export const PlatformSelector: React.FC<PlatformSelectorProps> = ({
                     className={`
                         group flex items-center gap-2 px-4 py-2 rounded-2xl border text-[10px] font-black tracking-widest transition-all
                         ${isMultiGen
-                            ? 'bg-lime border-lime text-black shadow-lime'
+                            ? 'bg-black border-black text-white shadow-xl shadow-black/20'
                             : 'bg-stone-100 border-stone-200 text-stone-500 hover:border-stone-300 hover:text-stone-700'}
                     `}
                 >
-                    <SparklesIcon className={`w-3.5 h-3.5 ${isMultiGen ? "text-black" : "text-lime"}`} />
+                    <SparklesIcon className={`w-3.5 h-3.5 ${isMultiGen ? "text-white" : "text-lime"}`} />
                     <span>BATCH MODE</span>
                     <div className={`
                         w-6 h-3.5 rounded-full relative transition-colors duration-300
-                        ${isMultiGen ? 'bg-lime' : 'bg-gray-300'}
+                        ${isMultiGen ? 'bg-black' : 'bg-gray-300'}
                     `}>
                         <div className={`
                             absolute top-0.5 w-2.5 h-2.5 bg-white rounded-full transition-all duration-300
@@ -71,13 +71,13 @@ export const PlatformSelector: React.FC<PlatformSelectorProps> = ({
                             className={`
                                 relative flex flex-col items-center justify-center gap-3 p-5 rounded-[2rem] border transition-all duration-500 group
                                 ${isSelected
-                                    ? 'bg-white border-lime shadow-xl shadow-lime/20'
+                                    ? 'bg-white border-black shadow-xl shadow-black/10'
                                     : 'bg-white border-gray-100 hover:border-gray-200 hover:bg-white'}
                             `}
                         >
                             <div className={`
                                 w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-500
-                                ${isSelected ? 'bg-lime text-black shadow-xl shadow-lime/30' : 'bg-gray-100 text-gray-400 group-hover:bg-gray-200 group-hover:text-gray-600'}
+                                ${isSelected ? 'bg-black text-white shadow-xl shadow-black/30' : 'bg-gray-100 text-gray-400 group-hover:bg-gray-200 group-hover:text-gray-600'}
                             `}>
                                 {getPlatformIcon(p)}
                             </div>
@@ -125,13 +125,13 @@ export const PlatformSelector: React.FC<PlatformSelectorProps> = ({
                                     className={`
                                         group relative overflow-hidden w-full px-2 py-3 rounded-xl text-xs font-black tracking-widest transition-all duration-300
                                         ${isActive
-                                            ? 'bg-lime text-black shadow-lime'
+                                            ? 'bg-black text-white border-black shadow-lg shadow-black/20'
                                             : 'bg-stone-50 text-stone-500 border border-stone-100 hover:border-stone-200 hover:text-stone-800'}
                                     `}
                                 >
                                     <span className="relative z-10 block truncate w-full text-center">{ps.name.toUpperCase()}</span>
                                     {isActive && (
-                                        <div className="absolute inset-0 bg-lime"></div>
+                                        <div className="absolute inset-0 bg-black"></div>
                                     )}
                                 </button>
                             );
