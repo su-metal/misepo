@@ -102,10 +102,10 @@ export default function LandingPage() {
     }, []);
 
     const problems = [
-        { icon: <Icons.Clock />, bg: "bg-rose-50", color: "text-rose-500", title: "時間が足りない", desc: "営業終了後は疲れ果てて、SNS投稿を作る気力がない。結局「明日やろう」と先延ばしにしてしまう。" },
-        { icon: <Icons.HelpCircle />, bg: "bg-orange-50", color: "text-orange-500", title: "何を書けばいいかわからない", desc: "「今日のランチ」以外に書くことがない。魅力的な文章表現や、流行りのハッシュタグがわからない。" },
-        { icon: <Icons.Battery />, bg: "bg-amber-50", color: "text-amber-500", title: "アプリの切り替えが面倒", desc: "インスタを開いて、Xを開いて、Googleマップを開いて...。それぞれのアプリを行き来するだけで一苦労。" },
-        { icon: <Icons.TrendingDown />, bg: "bg-slate-100", color: "text-slate-500", title: "外注コストが高い", desc: "MEO対策やSNS運用代行に見積もりをとったら月額3万円〜。個人店には負担が大きすぎる。" },
+        { icon: <Icons.Clock />, bg: "bg-black", color: "text-lime", title: "時間が足りない", desc: "営業終了後は疲れ果てて、SNS投稿を作る気力がない。結局「明日やろう」と先延ばしにしてしまう。" },
+        { icon: <Icons.HelpCircle />, bg: "bg-black", color: "text-lime", title: "何を書けばいいかわからない", desc: "「今日のランチ」以外に書くことがない。魅力的な文章表現や、流行りのハッシュタグがわからない。" },
+        { icon: <Icons.Battery />, bg: "bg-black", color: "text-lime", title: "アプリの切り替えが面倒", desc: "インスタを開いて、Xを開いて、Googleマップを開いて...。それぞれのアプリを行き来するだけで一苦労。" },
+        { icon: <Icons.TrendingDown />, bg: "bg-black", color: "text-lime", title: "外注コストが高い", desc: "MEO対策やSNS運用代行に見積もりをとったら月額3万円〜。個人店には負担が大きすぎる。" },
     ];
 
     const plans = [

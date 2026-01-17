@@ -61,7 +61,7 @@ const GuestTour: React.FC<GuestTourProps> = ({ isOpen, onClose, inputRef, button
   // ターゲットの位置情報を取得して更新
   const updatePosition = () => {
     if (!steps[step] || !steps[step].target || !steps[step].target.current) return;
-    
+
     const currentTarget = steps[step].target.current;
     if (currentTarget) {
       const rect = currentTarget.getBoundingClientRect();
@@ -72,7 +72,7 @@ const GuestTour: React.FC<GuestTourProps> = ({ isOpen, onClose, inputRef, button
   useLayoutEffect(() => {
     if (isOpen && steps[step]) {
       const currentTarget = steps[step].target.current;
-      
+
       // スクロール連動：ステップ変更時にターゲットを画面中央へスムーズスクロール
       if (currentTarget) {
         currentTarget.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -111,36 +111,36 @@ const GuestTour: React.FC<GuestTourProps> = ({ isOpen, onClose, inputRef, button
   const currentStep = steps[step];
   const currentPos = (currentStep as any).position;
   // 上に表示する場合、メッセージテキストの分を含めて少し上にマージンを取る (-130px)
-  let tooltipTop = targetRect.top - 130; 
+  let tooltipTop = targetRect.top - 130;
   let tooltipLeft = targetRect.left + (targetRect.width / 2);
-  let arrowClass = "absolute -bottom-2 left-1/2 -transtone-x-1/2 w-4 h-4 bg-white rotate-45"; // デフォルトは矢印が下
+  let arrowClass = "absolute -bottom-2 left-1/2 -transtone-x-1/2 w-4 h-4 bg-black rotate-45"; // デフォルトは矢印が下
 
   if (currentPos === 'bottom') {
-     // 余白(PADDING)の分だけさらに下にずらす
-     tooltipTop = targetRect.bottom + 20 + PADDING; 
-     arrowClass = "absolute -top-2 left-1/2 -transtone-x-1/2 w-4 h-4 bg-white rotate-45"; 
+    // 余白(PADDING)の分だけさらに下にずらす
+    tooltipTop = targetRect.bottom + 20 + PADDING;
+    arrowClass = "absolute -top-2 left-1/2 -transtone-x-1/2 w-4 h-4 bg-black rotate-45";
   } else if (currentPos === 'right') {
-     // 右側に表示（PC画面など）
-     if (window.innerWidth > 768) {
-        tooltipTop = targetRect.top + (targetRect.height / 2) - 40;
-        // 余白(PADDING)の分だけさらに右にずらす
-        tooltipLeft = targetRect.right + 20 + PADDING; 
-        arrowClass = "absolute top-1/2 -transtone-y-1/2 -left-2 w-4 h-4 bg-white rotate-45";
-     } else {
-        // モバイルなら上下にフォールバック（ここではTop扱い）
-        tooltipTop = targetRect.top - 130;
-     }
+    // 右側に表示（PC画面など）
+    if (window.innerWidth > 768) {
+      tooltipTop = targetRect.top + (targetRect.height / 2) - 40;
+      // 余白(PADDING)の分だけさらに右にずらす
+      tooltipLeft = targetRect.right + 20 + PADDING;
+      arrowClass = "absolute top-1/2 -transtone-y-1/2 -left-2 w-4 h-4 bg-black rotate-45";
+    } else {
+      // モバイルなら上下にフォールバック（ここではTop扱い）
+      tooltipTop = targetRect.top - 130;
+    }
   }
 
   const isLastStep = step === steps.length - 1;
 
   // Render logic for tooltip style
   const tooltipStyle: React.CSSProperties = {
-     top: tooltipTop,
-     left: tooltipLeft,
-     transform: currentPos === 'right' && window.innerWidth > 768 ? 'translateY(0)' : 'translateX(-50%)',
-     width: 'max-content',
-     maxWidth: '90vw'
+    top: tooltipTop,
+    left: tooltipLeft,
+    transform: currentPos === 'right' && window.innerWidth > 768 ? 'translateY(0)' : 'translateX(-50%)',
+    width: 'max-content',
+    maxWidth: '90vw'
   };
 
   return createPortal(
@@ -149,7 +149,7 @@ const GuestTour: React.FC<GuestTourProps> = ({ isOpen, onClose, inputRef, button
         スポットライト効果
         PADDINGの分だけ枠を広げる
       */}
-      <div 
+      <div
         className="absolute transition-all duration-500 ease-in-out pointer-events-none"
         style={{
           top: targetRect.top - PADDING,
@@ -160,43 +160,43 @@ const GuestTour: React.FC<GuestTourProps> = ({ isOpen, onClose, inputRef, button
           borderRadius: step === steps.length - 1 ? '1.25rem' : '1rem', // 少し角丸を大きく
         }}
       />
-      
+
       {/* クリック妨害用の透明レイヤー (Nextへ誘導) */}
-      <div 
-        className="absolute inset-0 z-10" 
-        onClick={handleNext} 
+      <div
+        className="absolute inset-0 z-10"
+        onClick={handleNext}
         title="次へ"
       />
 
       {/* ツールチップ */}
-      <div 
+      <div
         className="absolute z-20 flex flex-col items-center transition-all duration-500 ease-in-out pointer-events-none"
         style={tooltipStyle}
       >
-        <div className="bg-white text-stone-800 px-6 py-4 rounded-2xl shadow-2xl relative animate-in fade-in zoom-in-95 duration-300 flex flex-col items-center gap-2">
+        <div className="bg-black text-lime px-6 py-4 rounded-2xl shadow-2xl relative animate-in fade-in zoom-in-95 duration-300 flex flex-col items-center gap-2 border border-lime/20">
           {/* 吹き出しの三角 */}
           <div className={arrowClass}></div>
-          
+
           <p className="font-bold text-base md:text-lg text-center leading-snug">
             {(currentStep as any).text}
           </p>
-          
+
           {(currentStep as any).subText && (
-            <p className="text-xs text-stone-400 font-medium text-center">
+            <p className="text-xs text-lime/60 font-medium text-center">
               {(currentStep as any).subText}
             </p>
           )}
-          
+
           <div className="flex items-center gap-1 mt-1">
-             {steps.map((_, i) => (
-                <div key={i} className={`w-1.5 h-1.5 rounded-full transition-colors ${step === i ? 'bg-orange-600' : 'bg-gray-200'}`}></div>
-             ))}
+            {steps.map((_, i) => (
+              <div key={i} className={`w-1.5 h-1.5 rounded-full transition-colors ${step === i ? 'bg-lime' : 'bg-stone-700'}`}></div>
+            ))}
           </div>
         </div>
 
         {/* 誘導メッセージ */}
-        <p className={`text-white text-xs font-bold mt-3 animate-pulse drop-shadow-md pointer-events-none ${isLastStep ? 'text-sm text-yellow-300 scale-110' : ''}`}>
-           {isLastStep ? '👇 ボタンをタップして生成！' : '画面をタップして進む'}
+        <p className={`text-white text-xs font-bold mt-3 animate-pulse drop-shadow-md pointer-events-none ${isLastStep ? 'text-sm text-lime scale-110' : ''}`}>
+          {isLastStep ? '👇 ボタンをタップして生成！' : '画面をタップして進む'}
         </p>
       </div>
 

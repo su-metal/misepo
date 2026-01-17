@@ -59,11 +59,11 @@ const Onboarding: React.FC<OnboardingProps> = ({
       <div className="bg-white/80 sm:rounded-[32px] shadow-[0_32px_128px_-32px_rgba(0,0,0,0.5)] w-full max-w-lg md:max-w-6xl md:h-[90vh] h-full sm:max-h-[800px] flex flex-col md:flex-row overflow-hidden relative border border-white/40 backdrop-filter transition-all">
 
         {/* LEFT PANEL: Premium Sidebar */}
-        <div className="md:w-5/12 bg-stone-900 relative p-8 md:p-14 flex flex-col justify-between shrink-0 text-white overflow-hidden group">
-          {/* Warm Sunset Background Effects */}
+        <div className="md:w-5/12 bg-black relative p-8 md:p-14 flex flex-col justify-between shrink-0 text-white overflow-hidden group">
+          {/* Tech Background Effects */}
           <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.2] pointer-events-none mix-blend-overlay"></div>
-          <div className="absolute top-0 right-0 -mr-24 -mt-24 w-96 h-96 bg-orange-600/40 rounded-full blur-[120px] opacity-60 animate-pulse transition-all"></div>
-          <div className="absolute bottom-0 left-0 -ml-24 -mb-24 w-80 h-80 bg-stone-800/50 rounded-full blur-[100px] opacity-30 animate-pulse delay-700"></div>
+          <div className="absolute top-0 right-0 -mr-24 -mt-24 w-96 h-96 bg-lime/10 rounded-full blur-[120px] opacity-40 animate-pulse transition-all"></div>
+          <div className="absolute bottom-0 left-0 -ml-24 -mb-24 w-80 h-80 bg-stone-900/50 rounded-full blur-[100px] opacity-30 animate-pulse delay-700"></div>
 
           {/* Grid Pattern */}
           <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none"></div>
@@ -71,11 +71,11 @@ const Onboarding: React.FC<OnboardingProps> = ({
           <div className="relative z-10 flex flex-col h-full">
             <div className="mb-10 animate-in slide-in-from-top-4 duration-700">
               <div className="flex items-center gap-2 mb-3">
-                <div className="w-1.5 h-1.5 rounded-full bg-orange-500"></div>
-                <span className="text-[10px] font-black tracking-[0.3em] text-orange-400 uppercase">Your Shop Assistant</span>
+                <div className="w-1.5 h-1.5 rounded-full bg-lime"></div>
+                <span className="text-[10px] font-black tracking-[0.3em] text-lime uppercase">Your Shop Assistant</span>
               </div>
               <h1 className="text-4xl font-black tracking-tighter leading-none italic">
-                Mise<span className="text-orange-500">Po</span>
+                Mise<span className="text-lime">Po</span>
               </h1>
             </div>
 
@@ -90,9 +90,9 @@ const Onboarding: React.FC<OnboardingProps> = ({
               </p>
 
               {/* Status Pill */}
-              <div className="inline-flex items-center gap-2 bg-orange-500/10 border border-orange-500/20 rounded-full px-4 py-1.5 animate-in zoom-in-95 duration-700 delay-300">
-                <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-ping"></span>
-                <span className="text-[11px] font-black uppercase tracking-widest text-orange-300">Intelligent Analysis Ready</span>
+              <div className="inline-flex items-center gap-2 bg-lime/10 border border-lime/20 rounded-full px-4 py-1.5 animate-in zoom-in-95 duration-700 delay-300">
+                <span className="w-1.5 h-1.5 rounded-full bg-lime animate-ping"></span>
+                <span className="text-[11px] font-black uppercase tracking-widest text-lime">Intelligent Analysis Ready</span>
               </div>
             </div>
 
@@ -103,7 +103,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
                 { title: 'マルチプラットフォーム', desc: '投稿先ごとの特性を考慮し、一貫性のある発信を自動化。', icon: 'M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z' }
               ].map((feat, i) => (
                 <div key={i} className="flex items-start gap-4 p-5 rounded-[24px] bg-white/5 border border-white/5 backdrop-blur-sm hover:bg-white/10 hover:border-white/10 transition-all cursor-default group/feat">
-                  <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500 shrink-0 shadow-inner group-hover/feat:scale-110 transition-transform">
+                  <div className="w-10 h-10 rounded-xl bg-black border border-lime/20 flex items-center justify-center text-lime shrink-0 shadow-inner group-hover/feat:scale-110 transition-transform">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d={feat.icon} /></svg>
                   </div>
                   <div>
@@ -123,7 +123,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
             {/* Industry Selection */}
             <div className="space-y-6">
               <div className="flex items-center gap-2">
-                <div className="w-1 h-3 bg-orange-500 rounded-full"></div>
+                <div className="w-1 h-3 bg-lime rounded-full"></div>
                 <label className="text-xs font-black text-stone-600 tracking-wider">
                   お店のカテゴリー
                 </label>
@@ -136,8 +136,8 @@ const Onboarding: React.FC<OnboardingProps> = ({
                     onClick={() => setIndustry(ind)}
                     className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all duration-300 border
                       ${industry === ind
-                        ? 'bg-orange-500 border-orange-500 text-white shadow-lg shadow-orange-100'
-                        : 'bg-stone-50 border-stone-100 text-stone-500 hover:border-orange-200 hover:text-orange-600'
+                        ? 'bg-black border-black text-lime shadow-lg shadow-black/20'
+                        : 'bg-stone-50 border-stone-100 text-stone-500 hover:border-lime/30 hover:text-black'
                       }`}
                   >
                     {ind}
@@ -150,7 +150,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
             <div className="grid grid-cols-1 gap-10">
               <div className="space-y-4">
                 <div className="flex items-center gap-2">
-                  <div className="w-1 h-3 bg-orange-500 rounded-full"></div>
+                  <div className="w-1 h-3 bg-lime rounded-full"></div>
                   <label className="text-xs font-black text-stone-600 tracking-wider">
                     店舗名・ブランド名
                   </label>
@@ -161,10 +161,10 @@ const Onboarding: React.FC<OnboardingProps> = ({
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="例：焼きたてパンの店 アン"
-                    className="w-full px-6 py-5 rounded-2xl bg-stone-50 border-2 border-transparent focus:bg-white focus:border-orange-500 focus:ring-4 focus:ring-orange-500/5 outline-none transition-all text-xl text-stone-800 font-bold tracking-tight placeholder:text-stone-300"
+                    className="w-full px-6 py-5 rounded-2xl bg-stone-50 border-2 border-transparent focus:bg-white focus:border-lime focus:ring-4 focus:ring-lime/5 outline-none transition-all text-xl text-stone-800 font-bold tracking-tight placeholder:text-stone-300"
                     required
                   />
-                  <div className="absolute right-6 top-1/2 -translate-y-1/2 text-stone-200 group-focus-within:text-orange-500 transition-colors">
+                  <div className="absolute right-6 top-1/2 -translate-y-1/2 text-stone-200 group-focus-within:text-lime transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
                   </div>
                 </div>
@@ -172,7 +172,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
 
               <div className="space-y-4">
                 <div className="flex items-center gap-2">
-                  <div className="w-1 h-3 bg-orange-500 rounded-full"></div>
+                  <div className="w-1 h-3 bg-lime rounded-full"></div>
                   <label className="text-xs font-black text-stone-600 tracking-wider">
                     活動地域（例：横浜市、目黒区）
                   </label>
@@ -183,9 +183,9 @@ const Onboarding: React.FC<OnboardingProps> = ({
                     value={region}
                     onChange={(e) => setRegion(e.target.value)}
                     placeholder="地名を入れるとより親しみやすい文章になります"
-                    className="w-full px-6 py-5 rounded-2xl bg-stone-50 border-2 border-transparent focus:bg-white focus:border-orange-500 focus:ring-4 focus:ring-orange-500/5 outline-none transition-all text-xl text-stone-800 font-bold tracking-tight placeholder:text-stone-300"
+                    className="w-full px-6 py-5 rounded-2xl bg-stone-50 border-2 border-transparent focus:bg-white focus:border-lime focus:ring-4 focus:ring-lime/5 outline-none transition-all text-xl text-stone-800 font-bold tracking-tight placeholder:text-stone-300"
                   />
-                  <div className="absolute right-6 top-1/2 -translate-y-1/2 text-stone-200 group-focus-within:text-orange-500 transition-colors">
+                  <div className="absolute right-6 top-1/2 -translate-y-1/2 text-stone-200 group-focus-within:text-lime transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
                   </div>
                 </div>
@@ -205,7 +205,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="例：自家焙煎のコーヒー、夜はオーガニックワインを提供、落ち着いたモダンな内装..."
                 rows={5}
-                className="w-full px-6 py-5 rounded-2xl bg-stone-50 border-2 border-transparent focus:bg-white focus:border-orange-500 focus:ring-4 focus:ring-orange-500/5 outline-none transition-all resize-none text-base text-stone-800 font-bold leading-relaxed placeholder:text-stone-300"
+                className="w-full px-6 py-5 rounded-2xl bg-stone-50 border-2 border-transparent focus:bg-white focus:border-lime focus:ring-4 focus:ring-lime/5 outline-none transition-all resize-none text-base text-stone-800 font-bold leading-relaxed placeholder:text-stone-300"
               />
             </div>
 
@@ -248,7 +248,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
               <button
                 type="submit"
                 disabled={name.trim().length < 2}
-                className="flex-[2] relative group overflow-hidden bg-orange-500 text-white font-black py-5 rounded-2xl shadow-xl hover:shadow-2xl hover:bg-orange-600 hover:scale-[1.02] active:scale-95 transition-all duration-500 flex items-center justify-center gap-3 disabled:opacity-50 disabled:pointer-events-none"
+                className="flex-[2] relative group overflow-hidden bg-black text-lime font-black py-5 rounded-2xl shadow-xl hover:shadow-2xl hover:bg-stone-900 hover:scale-[1.02] active:scale-95 transition-all duration-500 flex items-center justify-center gap-3 disabled:opacity-50 disabled:pointer-events-none"
               >
                 <span className="relative z-10 text-sm tracking-widest">{isEditMode ? '設定を保存する' : '設定を完了してはじめる'}</span>
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="relative z-10 group-hover:translate-x-1 transition-transform"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
@@ -261,7 +261,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
         {onCancel && (
           <button
             onClick={onCancel}
-            className="absolute top-8 right-8 hidden md:flex items-center justify-center w-10 h-10 rounded-full bg-white/50 text-stone-400 hover:bg-orange-50 hover:text-orange-500 border border-stone-100 transition-all group/close"
+            className="absolute top-8 right-8 hidden md:flex items-center justify-center w-10 h-10 rounded-full bg-white/50 text-stone-400 hover:bg-lime/10 hover:text-black border border-stone-100 transition-all group/close"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
           </button>

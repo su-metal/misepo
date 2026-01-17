@@ -82,7 +82,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
           {isLoggedIn ? (
             <div className="space-y-6">
               <div className="flex items-center gap-4 p-4 rounded-3xl bg-stone-50 border border-stone-100">
-                <div className="w-12 h-12 rounded-2xl bg-orange-600 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-orange-900/20">
+                <div className="w-12 h-12 rounded-2xl bg-black flex items-center justify-center text-lime font-black text-xl shadow-lg shadow-black/20">
                   {(storeProfile?.name?.[0] || 'S').toUpperCase()}
                 </div>
                 <div>
@@ -95,16 +95,16 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
               <div className="grid grid-cols-2 gap-2">
                 <button
                   onClick={() => { onOpenSettings?.(); toggleOpen(); }}
-                  className="flex flex-col items-center gap-2 p-4 rounded-2xl bg-stone-50 border border-stone-100 hover:border-orange-200 hover:bg-white transition-all group"
+                  className="flex flex-col items-center gap-2 p-4 rounded-2xl bg-stone-50 border border-stone-100 hover:border-lime/30 hover:bg-white transition-all group"
                 >
-                  <ChevronDownIcon className="w-5 h-5 text-stone-400 group-hover:text-orange-500 rotate-180" />
+                  <ChevronDownIcon className="w-5 h-5 text-stone-400 group-hover:text-lime rotate-180" />
                   <span className="text-[10px] font-black text-stone-600 tracking-widest uppercase">Profile</span>
                 </button>
                 <button
                   onClick={() => { onOpenGuide?.(); toggleOpen(); }}
-                  className="flex flex-col items-center gap-2 p-4 rounded-2xl bg-stone-50 border border-stone-100 hover:border-orange-200 hover:bg-white transition-all group"
+                  className="flex flex-col items-center gap-2 p-4 rounded-2xl bg-stone-50 border border-stone-100 hover:border-lime/30 hover:bg-white transition-all group"
                 >
-                  <HelpIcon className="w-5 h-5 text-stone-400 group-hover:text-orange-500" />
+                  <HelpIcon className="w-5 h-5 text-stone-400 group-hover:text-lime" />
                   <span className="text-[10px] font-black text-stone-600 tracking-widest uppercase">Docs</span>
                 </button>
               </div>
@@ -121,7 +121,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
           ) : (
             <button
               onClick={() => { onOpenLogin(); toggleOpen(); }}
-              className="w-full py-5 bg-orange-600 text-white text-sm font-black rounded-2xl shadow-xl shadow-orange-900/20 hover:bg-orange-500 transition-all active:scale-95 flex items-center justify-center gap-2 group"
+              className="w-full py-5 bg-black text-lime text-sm font-black rounded-2xl shadow-xl shadow-black/20 hover:bg-stone-900 transition-all active:scale-95 flex items-center justify-center gap-2 group"
             >
               ログイン / 登録
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="transtone-x-0 group-hover:transtone-x-1 transition-transform"><path d="M5 12h14m-7-7 7 7-7 7" /></svg>
@@ -171,7 +171,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                     >
                       <button
                         onClick={() => { onSelect(item); toggleOpen(); }}
-                        className="w-full text-left p-5 rounded-[2rem] bg-stone-50 border border-stone-100 hover:bg-white hover:border-orange-200 transition-all shadow-sm"
+                        className="w-full text-left p-5 rounded-[2rem] bg-stone-50 border border-stone-100 hover:bg-white hover:border-lime/30 transition-all shadow-sm"
                       >
                         <div className="flex items-center gap-1.5 mb-3">
                           {item.config.platforms.map((p) => (
@@ -204,8 +204,8 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
         {/* Footer: Legal */}
         <div className="p-6 border-t border-stone-100 bg-stone-50/50 relative z-20">
           <div className="flex items-center justify-center gap-6">
-            <a href="/terms" className="text-[10px] font-black text-stone-400 hover:text-orange-600 transition-colors uppercase tracking-widest">Terms</a>
-            <a href="/privacy" className="text-[10px] font-black text-stone-400 hover:text-orange-600 transition-colors uppercase tracking-widest">Privacy</a>
+            <a href="/terms" className="text-[10px] font-black text-stone-400 hover:text-lime transition-colors uppercase tracking-widest">Terms</a>
+            <a href="/privacy" className="text-[10px] font-black text-stone-400 hover:text-lime transition-colors uppercase tracking-widest">Privacy</a>
           </div>
           <p className="text-[9px] font-bold text-stone-300 text-center mt-3 uppercase tracking-widest">© 2026 MisePo Inc.</p>
         </div>

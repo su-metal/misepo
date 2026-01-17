@@ -63,11 +63,11 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                         className={`
                             flex items-center gap-3 px-6 py-3 rounded-xl text-[10px] font-black tracking-widest transition-all duration-500 shrink-0
                             ${activeTab === idx
-                                ? 'bg-orange-600 text-white shadow-xl shadow-orange-500/20'
+                                ? 'bg-black text-lime shadow-xl shadow-black/20'
                                 : 'text-stone-500 hover:text-stone-800 hover:bg-stone-100'}
                         `}
                     >
-                        <div className={`${activeTab === idx ? 'text-orange-600' : 'text-stone-600'}`}>
+                        <div className={`${activeTab === idx ? 'text-lime' : 'text-stone-600'}`}>
                             {getPlatformIcon(res.platform)}
                         </div>
                         {res.platform.toUpperCase()}
@@ -151,16 +151,16 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                         <div className="px-8 pb-4 relative z-10">
                                             <div
                                                 onClick={() => onIncludeFooterChange(!includeFooter)}
-                                                className="flex items-center justify-between p-4 bg-orange-50/50 rounded-2xl border border-orange-100/50 cursor-pointer group transition-all hover:bg-orange-50"
+                                                className={`flex items-center justify-between p-4 rounded-2xl border cursor-pointer group transition-all ${includeFooter ? 'bg-black border-black shadow-xl shadow-black/20' : 'bg-stone-50 border-stone-100 hover:bg-stone-100'}`}
                                             >
                                                 <div className="space-y-0.5">
-                                                    <p className="text-[9px] font-black text-orange-600 uppercase tracking-widest leading-none mb-1">Instagram Template</p>
-                                                    <p className="text-[10px] text-stone-500 font-black italic">署名テンプレートを挿入</p>
+                                                    <p className={`text-[9px] font-black uppercase tracking-widest leading-none mb-1 ${includeFooter ? 'text-lime' : 'text-stone-400'}`}>Instagram Template</p>
+                                                    <p className={`text-[10px] font-black italic ${includeFooter ? 'text-white/60' : 'text-stone-500'}`}>署名テンプレートを挿入</p>
                                                 </div>
                                                 <div
-                                                    className={`relative inline-flex h-5 w-10 items-center rounded-full transition-colors focus:outline-none ${includeFooter ? 'bg-lime shadow-[0_0_8px_rgba(239,255,0,0.3)]' : 'bg-gray-200'}`}
+                                                    className={`relative inline-flex h-5 w-10 items-center rounded-full transition-colors focus:outline-none ${includeFooter ? 'bg-black border border-lime/50' : 'bg-gray-200'}`}
                                                 >
-                                                    <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform duration-300 ${includeFooter ? 'translate-x-5.5' : 'translate-x-1'}`} />
+                                                    <span className={`inline-block h-3.5 w-3.5 transform rounded-full transition-transform duration-300 ${includeFooter ? 'translate-x-5.5 bg-lime' : 'translate-x-1 bg-white'}`} />
                                                 </div>
                                             </div>
                                         </div>

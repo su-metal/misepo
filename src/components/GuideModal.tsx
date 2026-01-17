@@ -46,14 +46,14 @@ const GuideModal: React.FC<GuideModalProps> = ({ isOpen, onClose }) => {
         {/* Header */}
         <div className="p-8 md:p-10 border-b border-stone-100 flex items-center justify-between bg-white/50 backdrop-blur-sm sticky top-0 z-10">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-orange-600 flex items-center justify-center text-white shadow-lg shadow-orange-200">
+            <div className="w-12 h-12 rounded-2xl bg-black flex items-center justify-center text-lime shadow-lg shadow-black/20">
               <MagicWandIcon className="w-6 h-6" />
             </div>
             <div>
               <h2 className="text-2xl font-black text-stone-900 tracking-tight leading-none">
                 使い方ガイド
               </h2>
-              <p className="text-[11px] font-black text-orange-500 uppercase tracking-[0.2em] mt-2">Professional 3-Step Flow</p>
+              <p className="text-[11px] font-black text-lime uppercase tracking-[0.2em] mt-2">Professional 3-Step Flow</p>
             </div>
           </div>
           <button
@@ -71,9 +71,9 @@ const GuideModal: React.FC<GuideModalProps> = ({ isOpen, onClose }) => {
           <section className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Step 1 */}
-              <div className="group relative flex flex-col items-center p-8 rounded-[32px] bg-stone-50 border-2 border-transparent hover:border-orange-500/20 hover:bg-white hover:shadow-2xl hover:shadow-orange-500/5 transition-all duration-500 animate-in slide-in-from-bottom-4">
+              <div className="group relative flex flex-col items-center p-8 rounded-[32px] bg-stone-50 border-2 border-transparent hover:border-lime/20 hover:bg-white hover:shadow-2xl hover:shadow-lime/5 transition-all duration-500 animate-in slide-in-from-bottom-4">
                 <span className="absolute top-4 left-6 text-[10px] font-black text-stone-300 tracking-[0.2em]">01</span>
-                <div className="w-20 h-20 rounded-[24px] bg-white text-orange-600 flex items-center justify-center mb-6 shadow-inner group-hover:scale-110 transition-transform duration-500">
+                <div className="w-20 h-20 rounded-[24px] bg-white text-black flex items-center justify-center mb-6 shadow-inner group-hover:scale-110 transition-transform duration-500">
                   <TapIcon />
                 </div>
                 <h4 className="font-black text-stone-900 text-base mb-2">条件を選ぶ</h4>
@@ -83,9 +83,9 @@ const GuideModal: React.FC<GuideModalProps> = ({ isOpen, onClose }) => {
               </div>
 
               {/* Step 2 */}
-              <div className="group relative flex flex-col items-center p-8 rounded-[32px] bg-stone-50 border-2 border-transparent hover:border-orange-500/20 hover:bg-white hover:shadow-2xl hover:shadow-orange-500/5 transition-all duration-500 animate-in slide-in-from-bottom-4 delay-100">
+              <div className="group relative flex flex-col items-center p-8 rounded-[32px] bg-stone-50 border-2 border-transparent hover:border-lime/20 hover:bg-white hover:shadow-2xl hover:shadow-lime/5 transition-all duration-500 animate-in slide-in-from-bottom-4 delay-100">
                 <span className="absolute top-4 left-6 text-[10px] font-black text-stone-300 tracking-[0.2em]">02</span>
-                <div className="w-20 h-20 rounded-[24px] bg-white text-orange-600 flex items-center justify-center mb-6 shadow-inner group-hover:scale-110 transition-transform duration-500">
+                <div className="w-20 h-20 rounded-[24px] bg-white text-black flex items-center justify-center mb-6 shadow-inner group-hover:scale-110 transition-transform duration-500">
                   <PenIcon />
                 </div>
                 <h4 className="font-black text-stone-900 text-base mb-2">メモを入力</h4>
@@ -95,10 +95,10 @@ const GuideModal: React.FC<GuideModalProps> = ({ isOpen, onClose }) => {
               </div>
 
               {/* Step 3 */}
-              <div className="group relative flex flex-col items-center p-8 rounded-[32px] bg-[#0F172A] text-white shadow-2xl shadow-orange-900/20 transition-all duration-500 animate-in slide-in-from-bottom-4 delay-200">
+              <div className="group relative flex flex-col items-center p-8 rounded-[32px] bg-[#0F172A] text-white shadow-2xl shadow-black/20 transition-all duration-500 animate-in slide-in-from-bottom-4 delay-200">
                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.05] pointer-events-none rounded-[32px]"></div>
                 <span className="absolute top-4 left-6 text-[10px] font-black text-stone-600 tracking-[0.2em]">03</span>
-                <div className="w-20 h-20 rounded-[24px] bg-orange-500 text-white flex items-center justify-center mb-6 shadow-lg shadow-orange-500/20 group-hover:scale-110 transition-transform duration-500">
+                <div className="w-20 h-20 rounded-[24px] bg-lime text-black flex items-center justify-center mb-6 shadow-lg shadow-lime/20 group-hover:scale-110 transition-transform duration-500">
                   <SparklesLargeIcon />
                 </div>
                 <h4 className="font-black text-white text-base mb-2">AIが生成</h4>
@@ -119,8 +119,8 @@ const GuideModal: React.FC<GuideModalProps> = ({ isOpen, onClose }) => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {LOADING_TIPS.map((tip, idx) => (
-                <div key={idx} className="bg-white p-5 rounded-2xl border border-stone-100 shadow-sm flex gap-4 items-start group hover:border-orange-200 transition-colors">
-                  <div className="w-2 h-2 rounded-full bg-orange-400 mt-2 shrink-0 group-hover:scale-150 transition-transform"></div>
+                <div key={idx} className="bg-white p-5 rounded-2xl border border-stone-100 shadow-sm flex gap-4 items-start group hover:border-lime/30 transition-colors">
+                  <div className="w-2 h-2 rounded-full bg-lime mt-2 shrink-0 group-hover:scale-150 transition-transform"></div>
                   <p className="text-xs text-stone-600 font-bold leading-relaxed">
                     {tip.replace('💡 ', '')}
                   </p>

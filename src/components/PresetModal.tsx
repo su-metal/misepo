@@ -367,7 +367,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
     <div className="flex w-full h-full flex-col md:flex-row overflow-hidden">
       {/* SIDEBAR: Dark Tech Theme */}
       <div
-        className={`md:w-5/12 lg:w-4/12 bg-[#0F172A] border-r border-white/5 flex flex-col shrink-0 h-full relative overflow-hidden ${listVisibilityClass}`}
+        className={`md:w-5/12 lg:w-4/12 bg-black border-r border-white/5 flex flex-col shrink-0 h-full relative overflow-hidden ${listVisibilityClass}`}
       >
         {/* Background Pattern */}
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.03] pointer-events-none"></div>
@@ -470,7 +470,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
             )}
             <button
               onClick={onClose}
-              className="p-2.5 hover:bg-rose-50 rounded-2xl text-stone-300 hover:text-rose-500 transition-all active:scale-95"
+              className="p-2.5 hover:bg-lime/10 rounded-2xl text-stone-300 hover:text-lime transition-all active:scale-95"
             >
               <CloseIcon className="w-6 h-6" />
             </button>
@@ -520,7 +520,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
             <button
               onClick={handleSave}
               disabled={isSaveDisabled}
-              className="w-full bg-[#0F172A] hover:bg-stone-800 disabled:opacity-50 disabled:cursor-not-allowed text-white px-8 py-5 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center justify-center gap-3 transition-all transform hover:-transtone-y-1 active:transtone-y-0 shadow-xl shadow-stone-200"
+              className="w-full bg-black hover:bg-stone-900 disabled:opacity-50 disabled:cursor-not-allowed text-lime border border-lime/50 px-8 py-5 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center justify-center gap-3 transition-all transform hover:-transtone-y-1 active:transtone-y-0 shadow-xl shadow-black/50"
             >
               <SaveIcon className="w-4 h-4" />
               {selectedPresetId ? 'UPDATE PRESET' : 'SAVE TO LIST'}

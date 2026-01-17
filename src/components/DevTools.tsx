@@ -13,7 +13,7 @@ const DevTools: React.FC<DevToolsProps> = ({ resetProfile, simulateRegisteredUse
   const [isMinimized, setIsMinimized] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const isMinRef = useRef(isMinimized);
-  
+
   const offset = useRef({ x: 0, y: 0 });
   const ref = useRef<HTMLDivElement>(null);
   const hasMoved = useRef(false);
@@ -139,14 +139,13 @@ const DevTools: React.FC<DevToolsProps> = ({ resetProfile, simulateRegisteredUse
       className={`bg-gray-900 text-white shadow-xl border border-gray-700 ${
         // Disable transitions during drag to prevent lag/rubber-banding
         isDragging ? '' : 'transition-all duration-300'
-      } ${
-        isMinimized ? 'w-12 h-12 rounded-full overflow-hidden' : 'w-48 p-3 rounded-lg opacity-90 hover:opacity-100'
-      }`}
+        } ${isMinimized ? 'w-12 h-12 rounded-full overflow-hidden' : 'w-48 p-3 rounded-lg opacity-90 hover:opacity-100'
+        }`}
     >
       {isMinimized ? (
-        <div 
+        <div
           onClick={handleMinimizeClick}
-          className="w-full h-full flex items-center justify-center bg-orange-600 hover:bg-orange-500 text-white transition-colors cursor-pointer"
+          className="w-full h-full flex items-center justify-center bg-black hover:bg-stone-900 text-lime border border-lime/20 transition-colors cursor-pointer"
           title="Expand DevTools (Drag to move)"
           role="button"
         >
@@ -156,21 +155,21 @@ const DevTools: React.FC<DevToolsProps> = ({ resetProfile, simulateRegisteredUse
         <>
           <div className="flex items-center justify-between mb-2 pb-2 border-b border-gray-700 select-none">
             <span className="text-xs font-bold text-gray-400 tracking-wider">DEV TOOLS</span>
-            <button 
+            <button
               onClick={() => setIsMinimized(true)}
               className="text-gray-500 hover:text-white p-1 rounded hover:bg-gray-800 transition-colors"
               title="Minimize"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12" /></svg>
             </button>
           </div>
-          
+
           <div className="space-y-2">
             <div className="flex items-center justify-between pt-2 border-t border-gray-700">
               <span className="text-sm font-medium">Demo Data</span>
               <button
                 onClick={simulateRegisteredUser}
-                className="text-xs px-2 py-1 rounded font-bold bg-blue-900/40 text-blue-300 hover:bg-blue-600 hover:text-white transition-colors border border-blue-900/50"
+                className="text-[10px] px-2 py-1 rounded font-black bg-black text-lime hover:bg-stone-900 transition-colors border border-lime/30 uppercase tracking-tighter"
               >
                 SET
               </button>
@@ -187,7 +186,7 @@ const DevTools: React.FC<DevToolsProps> = ({ resetProfile, simulateRegisteredUse
               </button>
             </div>
           </div>
-          
+
           <div className="mt-2 text-[10px] text-gray-500 leading-tight select-none pt-2 border-t border-gray-800">
             Drag to move.
           </div>

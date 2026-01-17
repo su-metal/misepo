@@ -27,12 +27,12 @@ const MobileHeader = ({ onOpenSidebar }: { onOpenSidebar: () => void }) => (
 );
 
 const UpgradeBanner = ({ plan, onUpgrade }: { plan: string, onUpgrade: () => void }) => (
-  <div className="bg-orange-600 p-4 flex items-center justify-between text-white text-sm">
+  <div className="bg-black p-4 flex items-center justify-between text-white text-sm border-b border-lime/20 shadow-lg shadow-black/40">
     <div className="flex items-center gap-2">
-      <span className="bg-orange-500 px-2 py-0.5 rounded text-[10px] font-bold uppercase">Free Plan</span>
-      <span>無料枠をご利用中です。Proプランで作成回数が無制限になります。</span>
+      <span className="bg-lime px-2 py-0.5 rounded text-[10px] font-black uppercase text-black">Free Plan</span>
+      <span className="font-bold">無料枠をご利用中です。Proプランで作成回数が無制限になります。</span>
     </div>
-    <button onClick={onUpgrade} className="bg-white text-orange-600 px-4 py-1 rounded-full font-bold text-xs hover:bg-stone-50 transition">
+    <button onClick={onUpgrade} className="bg-lime text-black px-4 py-1.5 rounded-lg font-black text-xs hover:bg-lime-light transition shadow-lg shadow-lime/20">
       Proへアップグレード
     </button>
   </div>
@@ -171,7 +171,7 @@ function App() {
   if (authLoading || !initDone) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-stone-50">
-        <div className="w-8 h-8 border-4 border-orange-200 border-t-orange-600 rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-4 border-stone-200 border-t-black rounded-full animate-spin"></div>
       </div>
     );
   }
