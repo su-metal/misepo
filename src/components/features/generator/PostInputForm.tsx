@@ -195,7 +195,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                         {/* Scene Module */}
                         <div className="space-y-4">
                             <div className="flex items-center gap-2">
-                                <div className="w-1 h-3 bg-stone-500 rounded-full"></div>
+                                <div className="w-1 h-3 bg-lime rounded-full"></div>
                                 <span className="text-[10px] font-black tracking-[0.3em] text-stone-500 uppercase">作成する内容</span>
                             </div>
                             <div className="grid grid-cols-1 gap-2">
@@ -244,7 +244,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                         {/* Tone Module */}
                         <div className="space-y-4">
                             <div className="flex items-center gap-2">
-                                <div className="w-1 h-3 bg-stone-500 rounded-full"></div>
+                                <div className="w-1 h-3 bg-lime rounded-full"></div>
                                 <span className="text-[10px] font-black tracking-[0.3em] text-stone-500 uppercase">文章の雰囲気</span>
                             </div>
                             <div className="flex flex-wrap gap-2">
@@ -268,7 +268,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                         {/* Length Module */}
                         <div className="space-y-4">
                             <div className="flex items-center gap-2">
-                                <div className="w-1 h-3 bg-stone-500 rounded-full"></div>
+                                <div className="w-1 h-3 bg-lime rounded-full"></div>
                                 <span className="text-[10px] font-black tracking-[0.3em] text-stone-500 uppercase">文章の長さ</span>
                             </div>
                             <div className="grid grid-cols-3 gap-2">
