@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 
 // Custom SVG Icons
@@ -132,6 +132,51 @@ const Icons = {
     ),
 };
 
+const CountUp = ({ end, duration = 2000 }: { end: number; duration?: number }) => {
+    const [count, setCount] = useState(0);
+    const nodeRef = useRef(null);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting) {
+                    let startTime: number;
+                    let animationFrame: number;
+
+                    const animate = (timestamp: number) => {
+                        if (!startTime) startTime = timestamp;
+                        const progress = timestamp - startTime;
+                        const percentage = Math.min(progress / duration, 1);
+
+                        // Ease out quart
+                        const easeOut = 1 - Math.pow(1 - percentage, 4);
+
+                        setCount(Math.floor(end * easeOut));
+
+                        if (progress < duration) {
+                            animationFrame = requestAnimationFrame(animate);
+                        } else {
+                            setCount(end);
+                        }
+                    };
+
+                    animationFrame = requestAnimationFrame(animate);
+                    observer.disconnect();
+                }
+            },
+            { threshold: 0.1 }
+        );
+
+        if (nodeRef.current) {
+            observer.observe(nodeRef.current);
+        }
+
+        return () => observer.disconnect();
+    }, [end, duration]);
+
+    return <span ref={nodeRef}>{count}</span>;
+}
+
 export default function LandingPage() {
     const { loginWithGoogle } = useAuth();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -145,8 +190,8 @@ export default function LandingPage() {
     }, []);
 
     const problems = [
-        { icon: <Icons.Clock size={24} className="text-rose-500" />, bg: "bg-rose-50", title: "時間が足りない", desc: "営業終了後は疲れ果てて、SNS投稿を作る気力がない。結局「明日やろう」と先延ばしにしてしまう。" },
         { icon: <Icons.HelpCircle className="text-orange-500" />, bg: "bg-orange-50", title: "何を書けばいいかわからない", desc: "「今日のランチ」以外に書くことがない。魅力的な文章表現や、流行りのハッシュタグがわからない。" },
+        { icon: <Icons.Clock size={24} className="text-rose-500" />, bg: "bg-rose-50", title: "時間が足りない", desc: "営業終了後は疲れ果てて、SNS投稿を作る気力がない。結局「明日やろう」と先延ばしにしてしまう。" },
         { icon: <Icons.BatteryWarning className="text-amber-500" />, bg: "bg-amber-50", title: "アプリの切り替えが面倒", desc: "インスタを開いて、Xを開いて、Googleマップを開いて...。それぞれのアプリを行き来するだけで一苦労。" },
         { icon: <Icons.TrendingDown className="text-slate-500" />, bg: "bg-slate-100", title: "外注コストが高い", desc: "MEO対策やSNS運用代行に見積もりをとったら月額3万円〜。個人店には負担が大きすぎる。" },
     ];
@@ -319,11 +364,12 @@ export default function LandingPage() {
                         <div>
                             <span className="text-indigo-600 font-bold tracking-wider text-sm uppercase mb-2 block">Problem</span>
                             <h2 className="text-3xl md:text-4xl font-black text-slate-900 leading-tight mb-6">
-                                「いいお店」なのに、<br />
-                                <span className="text-slate-400">知られていないだけかもしれない。</span>
+                                「何を投稿すればいい？」<br />
+                                <span className="text-slate-400">毎日のその悩み、もう終わり。</span>
                             </h2>
                             <p className="text-slate-600 text-lg leading-relaxed">
-                                素晴らしい商品やサービスを持っていても、日々の業務に追われて「発信」まで手が回らない。<br />
+                                映える写真、刺さる文章、流行りのハッシュタグ。<br />
+                                変化の激しいトレンドを追いかけ、正解のない投稿を作り続けるのは大変です。<br />
                                 そんなオーナー様の悩みを、MisePoは技術で解決します。
                             </p>
                         </div>
@@ -341,6 +387,86 @@ export default function LandingPage() {
                         ))}
                     </div>
                 </div>
+            </section>
+
+            {/* Market Data (Why Now?) */}
+            <section className="py-24 bg-slate-900 text-white overflow-hidden relative">
+                <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+                    <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-indigo-500/20 rounded-full blur-[100px]" />
+                    <div className="absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] bg-purple-500/20 rounded-full blur-[100px]" />
+                </div>
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                    <div className="text-center mb-20">
+                        <span className="text-indigo-400 font-bold tracking-wider text-sm uppercase mb-3 block">Why MisePo?</span>
+                        <h2 className="text-3xl md:text-5xl font-black mb-6 tracking-tight">
+                            集客の<span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-pink-400">『黄金ルート』</span>を<br className="md:hidden" />逃していませんか？
+                        </h2>
+                        <p className="text-slate-400 text-lg max-w-2xl mx-auto leading-relaxed">
+                            現代の消費者は、Instagramで「発見」し、Googleマップで「決定」します。<br />
+                            この2つのプラットフォームを同時に攻略することが、繁盛店への最短ルートです。
+                        </p>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-8 lg:gap-12 max-w-5xl mx-auto">
+                        {/* Instagram Data */}
+                        <div className="bg-slate-800/50 backdrop-blur-xl rounded-3xl p-8 border border-slate-700 relative group hover:border-pink-500/50 transition-colors duration-500">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-pink-500/20 to-transparent rounded-bl-full opacity-50" />
+                            <div className="flex items-center gap-4 mb-8">
+                                <div className="w-14 h-14 bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-pink-900/20">
+                                    <Icons.Instagram size={28} />
+                                </div>
+                                <div>
+                                    <span className="text-pink-400 font-bold text-sm tracking-wider uppercase">Discovery</span>
+                                    <h3 className="text-2xl font-bold">認知・発見</h3>
+                                </div>
+                            </div>
+                            <div className="mb-6 flex items-baseline gap-2">
+                                <span className="text-6xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400">
+                                    <CountUp end={70} />
+                                </span>
+                                <span className="text-2xl font-bold text-slate-500">%</span>
+                            </div>
+                            <p className="text-xl font-bold mb-3">お店選びの起点</p>
+                            <p className="text-slate-400 leading-relaxed">
+                                グルメ情報の検索において、約7割のユーザーがInstagramを利用。<br />
+                                <span className="text-white font-bold underline decoration-pink-500/50 decoration-2 underline-offset-4">「保存」された投稿</span>が、週末の行き先候補になります。
+                            </p>
+                        </div>
+
+                        {/* Google Maps Data */}
+                        <div className="bg-slate-800/50 backdrop-blur-xl rounded-3xl p-8 border border-slate-700 relative group hover:border-indigo-500/50 transition-colors duration-500">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-indigo-500/20 to-transparent rounded-bl-full opacity-50" />
+                            <div className="flex items-center gap-4 mb-8">
+                                <div className="w-14 h-14 bg-green-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-green-900/20">
+                                    <Icons.MapPin size={28} />
+                                </div>
+                                <div>
+                                    <span className="text-green-400 font-bold text-sm tracking-wider uppercase">Decision</span>
+                                    <h3 className="text-2xl font-bold">決定・来店</h3>
+                                </div>
+                            </div>
+                            <div className="mb-6 flex items-baseline gap-2">
+                                <span className="text-6xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400">
+                                    <CountUp end={73} />
+                                </span>
+                                <span className="text-2xl font-bold text-slate-500">%</span>
+                            </div>
+                            <p className="text-xl font-bold mb-3">来店の決め手</p>
+                            <p className="text-slate-400 leading-relaxed">
+                                マップ検索後の来店率は驚異の高水準。<br />
+                                最後のひと押しは、<span className="text-white font-bold underline decoration-green-500/50 decoration-2 underline-offset-4">丁寧な口コミ返信</span>による「信頼感」です。
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="mt-16 text-center">
+                        <div className="inline-flex items-center gap-2 bg-indigo-600/20 text-indigo-300 px-6 py-3 rounded-full border border-indigo-500/30">
+                            <Icons.CheckCircle size={20} />
+                            <span className="font-bold">MisePoなら、この2つを同時に攻略できます</span>
+                        </div>
+                    </div>
+                </div>
+
             </section>
 
             {/* Features */}
