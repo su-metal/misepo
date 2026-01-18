@@ -194,19 +194,13 @@ export default function LandingPage() {
             // Sticky Hero Animation Logic
             if (heroRef.current) {
                 const rect = heroRef.current.getBoundingClientRect();
+                const scrolled = -rect.top;
+                const totalScrollable = rect.height - window.innerHeight;
 
-                // Mobile: Direct scroll mapping (Parallax effect without pinning)
-                if (window.innerWidth < 1024) {
-                    setHeroAnimationProgress(window.scrollY);
-                }
-                // Desktop: Sticky Scroll mapping
-                else {
-                    const scrolled = -rect.top;
-                    const totalScrollable = rect.height - window.innerHeight;
-                    if (totalScrollable > 0) {
-                        const progressPct = Math.min(Math.max(scrolled / totalScrollable, 0), 1);
-                        setHeroAnimationProgress(progressPct * 400);
-                    }
+                if (totalScrollable > 0) {
+                    const progressPct = Math.min(Math.max(scrolled / totalScrollable, 0), 1);
+                    // Map 0-100% to 0-600 range to finish animation earlier and leave "inertia" buffer
+                    setHeroAnimationProgress(progressPct * 600);
                 }
             }
         };
@@ -284,16 +278,46 @@ export default function LandingPage() {
                 )}
             </header>
 
+            {/* Mobile Hero Text (Static) */}
+            <section className="lg:hidden pt-32 pb-10 px-4 bg-slate-50 text-center relative z-20">
+                <div className="inline-flex items-center gap-2 bg-white border border-indigo-100 px-4 py-1.5 rounded-full text-indigo-600 font-bold text-xs shadow-sm mb-6 animate-fade-in-up">
+                    <span className="relative flex h-2 w-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75" />
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500" />
+                    </span>
+                    <span>総計生成数 10,000件突破</span>
+                </div>
+                <h1 className="text-4xl font-black text-slate-900 leading-[1.15] mb-6 tracking-tight">
+                    店舗の広報は、<br />
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">AIに丸投げする時代。</span>
+                </h1>
+                <p className="text-lg text-slate-600 mb-8 leading-relaxed font-medium">
+                    Googleマップの口コミ返信も、Instagramの投稿文も。<br className="hidden md:block" />
+                    MisePo（ミセポ）なら、たった5秒で「来店したくなる」文章が完成します。
+                </p>
+                <div className="flex flex-col items-center gap-4 justify-center mb-8">
+                    <a href="#demo" onClick={() => loginWithGoogle('trial')} className="w-full px-8 py-4 bg-slate-900 text-white text-base font-bold rounded-xl shadow-xl shadow-slate-200 flex items-center justify-center gap-2 group">
+                        <Icons.Sparkles size={18} className="text-yellow-400 group-hover:animate-pulse" />無料で試してみる
+                    </a>
+                    <a href="#pricing" className="w-full px-8 py-4 bg-white text-slate-700 border border-slate-200 text-base font-bold rounded-xl flex items-center justify-center">料金プラン</a>
+                </div>
+                <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm font-bold text-slate-500">
+                    <div className="flex items-center gap-2"><Icons.CheckCircle size={16} className="text-indigo-500" /><span>クレカ登録不要</span></div>
+                    <div className="flex items-center gap-2"><Icons.CheckCircle size={16} className="text-indigo-500" /><span>アプリDL不要</span></div>
+                    <div className="flex items-center gap-2"><Icons.CheckCircle size={16} className="text-indigo-500" /><span>30秒で開始</span></div>
+                </div>
+            </section>
+
             {/* Hero (Sticky Wrapper) */}
-            <div ref={heroRef} className="relative h-auto lg:h-[250vh] bg-slate-50">
-                <div className="relative lg:sticky lg:top-0 lg:h-screen overflow-hidden flex items-center py-20 lg:py-0">
+            <div ref={heroRef} className="relative h-[350vh] bg-slate-50">
+                <div className="sticky top-0 h-screen overflow-hidden flex items-center justify-center">
                     <div className="absolute inset-0 overflow-hidden pointer-events-none">
                         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[1000px] bg-indigo-100/40 rounded-full blur-[120px] -z-10" />
                         <div className="absolute bottom-0 right-0 w-[800px] h-[800px] bg-purple-100/40 rounded-full blur-[100px] -z-10" />
                     </div>
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
                         <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
-                            <div className="flex-1 text-center lg:text-left max-w-2xl mx-auto lg:mx-0">
+                            <div className="hidden lg:block flex-1 text-center lg:text-left max-w-2xl mx-auto lg:mx-0">
                                 <div className="inline-flex items-center gap-2 bg-white border border-indigo-100 px-4 py-1.5 rounded-full text-indigo-600 font-bold text-xs shadow-sm mb-8 animate-fade-in-up">
                                     <span className="relative flex h-2 w-2">
                                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75" />
