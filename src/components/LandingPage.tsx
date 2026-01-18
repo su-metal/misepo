@@ -218,10 +218,9 @@ export default function LandingPage() {
     const isGenerating = heroAnimationProgress > 450 && heroAnimationProgress < 600; // generating
     const showResult = heroAnimationProgress >= 600;
 
-    // Transfer Phase - MUST complete VERY early
-    // The hero section scrolls out before progress reaches high values
-    // Start transfer at 200, complete by 400 (25% of total)
-    const transferProgress = Math.min(Math.max((heroAnimationProgress - 200) / 200, 0), 1);
+    // Transfer Phase - Start AFTER typing completes (350px)
+    // Typing finishes at 350, so transfer starts at 400
+    const transferProgress = Math.min(Math.max((heroAnimationProgress - 400) / 200, 0), 1);
 
     // Internal Scroll Phase (400px - 800px)
     const internalScrollProgress = Math.min(Math.max((heroAnimationProgress - 400) / 400, 0), 1);
@@ -233,18 +232,17 @@ export default function LandingPage() {
     // console.log('heroAnimationProgress:', heroAnimationProgress, 'transferProgress:', transferProgress);
 
     // Computed Styles for Animation
-    // CENTER PHONE (MisePo): This is what user calls "Instagram phone"
-    // REVERSED: Start tilted+dim, end straight+clear
+    // CENTER PHONE (MisePo): Start STRAIGHT and CLEAR, stay that way
+    // No animation on this phone - it's the main focus
     const centerPhoneStyle = {
-        transform: `scale(${0.85 + transferProgress * 0.15}) translateX(${60 - transferProgress * 60}px) rotate(${12 - transferProgress * 12}deg)`,
-        opacity: 0.6 + transferProgress * 0.4,
-        filter: `blur(${2 - transferProgress * 2}px)`,
+        transform: `scale(1) translateX(0px) rotate(0deg)`,
+        opacity: 1,
+        filter: `blur(0px)`,
     };
 
-    // Left Phone: Start at -12deg, end at 0deg when transferProgress=1
-    // Scale: 0.95 -> 1.35
+    // Left Phone (Instagram): Scale to 1.1x max, center on mobile
     const leftPhoneStyle = {
-        transform: `translate(${transferProgress * 80}px, ${transferProgress * 20}px) rotate(${-12 * (1 - transferProgress)}deg) scale(${0.95 + transferProgress * 0.4})`,
+        transform: `translate(${transferProgress * 50}%, ${transferProgress * 10}px) rotate(${-12 * (1 - transferProgress)}deg) scale(${0.95 + transferProgress * 0.15})`,
         zIndex: transferProgress > 0.3 ? 50 : 20,
     };
 
@@ -460,7 +458,7 @@ export default function LandingPage() {
                                         className="absolute left-0 lg:-left-12 top-12 w-[260px] h-[520px] bg-slate-800 rounded-[2.5rem] border-4 border-slate-800 shadow-xl z-20 origin-bottom-right transition-transform duration-100 ease-linear"
                                         style={leftPhoneStyle}
                                     >
-                                        <div className={`w-full h-full bg-white rounded-[2.2rem] overflow-hidden relative transition-opacity duration-300 ${transferProgress > 0.5 ? 'opacity-100' : 'opacity-90'}`}>
+                                        <div className="w-full h-full bg-white rounded-[2.2rem] overflow-hidden relative">
                                             <div className="bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 h-1.5 w-full absolute top-0" />
                                             {postAppears ? (
                                                 <div className="flex flex-col h-full animate-fade-in bg-white" style={innerContentStyle}>
@@ -497,8 +495,6 @@ export default function LandingPage() {
                                                     </div>
                                                 </div>
                                             )}
-                                            {/* Hide overlay when active */}
-                                            <div className={`absolute inset-0 bg-slate-900/10 pointer-events-none transition-opacity duration-300 ${transferProgress > 0.5 ? 'opacity-0' : 'opacity-100'}`} />
                                         </div>
                                     </div>
 
@@ -507,7 +503,7 @@ export default function LandingPage() {
                                         className="absolute right-0 lg:-right-12 top-24 w-[260px] h-[520px] bg-slate-800 rounded-[2.5rem] border-4 border-slate-800 shadow-xl z-10 origin-bottom-left transition-transform duration-100 ease-linear"
                                         style={rightPhoneStyle}
                                     >
-                                        <div className="w-full h-full bg-white rounded-[2.2rem] overflow-hidden opacity-90 relative">
+                                        <div className="w-full h-full bg-white rounded-[2.2rem] overflow-hidden relative">
                                             <div className="h-32 bg-slate-100 relative mb-8">
                                                 <div className="absolute -bottom-8 left-4 w-16 h-16 rounded-full bg-white border-2 border-white shadow-sm" />
                                             </div>
@@ -527,7 +523,6 @@ export default function LandingPage() {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className="absolute inset-0 bg-slate-900/10 pointer-events-none" />
                                         </div>
                                     </div>
                                 </div>
