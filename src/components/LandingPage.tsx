@@ -5,8 +5,8 @@ import { useAuth } from '@/hooks/useAuth';
 
 // Custom SVG Icons
 const Icons = {
-    Menu: () => (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    Menu: ({ className = "" }: { className?: string }) => (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
             <line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="18" x2="21" y2="18" />
         </svg>
     ),
@@ -25,8 +25,8 @@ const Icons = {
             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" />
         </svg>
     ),
-    Star: ({ size = 20, fill = "none" }: { size?: number; fill?: string }) => (
-        <svg width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth="2">
+    Star: ({ size = 20, fill = "none", className = "" }: { size?: number; fill?: string; className?: string }) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth="2" className={className}>
             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
         </svg>
     ),
@@ -181,13 +181,33 @@ export default function LandingPage() {
     const { loginWithGoogle } = useAuth();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
+    const [scrollProgress, setScrollProgress] = useState(0);
+    const [heroAnimationProgress, setHeroAnimationProgress] = useState(0);
     const [openFaq, setOpenFaq] = useState<number | null>(null);
 
     useEffect(() => {
-        const handleScroll = () => setScrolled(window.scrollY > 20);
+        const handleScroll = () => {
+            const currentScroll = window.scrollY;
+            setScrolled(currentScroll > 20);
+
+            // Hero Animation Logic
+            // 0-100px: Typing
+            // 100-200px: Generating
+            // 200px+: Result
+            const progress = Math.min(Math.max(currentScroll, 0), 400); // Clamp to 0-400 range for animation
+            setHeroAnimationProgress(progress);
+        };
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
+
+    // Animation States derived from progress
+    const typingTextFull = "新作のいちごタルト始めました！\n甘酸っぱい苺とカスタードが相性抜群です🍓";
+    const typingProgress = Math.min(heroAnimationProgress / 150, 1); // 0-150px for typing
+    const currentTypingText = typingTextFull.slice(0, Math.floor(typingTextFull.length * typingProgress));
+
+    const isGenerating = heroAnimationProgress > 150 && heroAnimationProgress < 250; // 150-250px for generating
+    const showResult = heroAnimationProgress >= 250; // 250px+ for result
 
     const problems = [
         { icon: <Icons.HelpCircle className="text-orange-500" />, bg: "bg-orange-50", title: "何を書けばいいかわからない", desc: "「今日のランチ」以外に書くことがない。魅力的な文章表現や、流行りのハッシュタグがわからない。" },
@@ -287,67 +307,111 @@ export default function LandingPage() {
                                 <div className="flex items-center gap-2"><Icons.CheckCircle size={16} className="text-indigo-500" /><span>30秒で開始</span></div>
                             </div>
                         </div>
-                        <div className="flex-1 w-full relative perspective-[2000px] group">
-                            <div className="relative bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden transform transition-all duration-700 ease-out hover:rotate-0 lg:rotate-y-[-12deg] lg:rotate-x-[5deg] lg:hover:scale-105 z-10">
-                                <div className="bg-slate-50 border-b border-slate-100 px-4 py-3 flex items-center gap-2">
-                                    <div className="flex gap-1.5">
-                                        <div className="w-2.5 h-2.5 rounded-full bg-red-400" />
-                                        <div className="w-2.5 h-2.5 rounded-full bg-yellow-400" />
-                                        <div className="w-2.5 h-2.5 rounded-full bg-green-400" />
+                        <div className="flex-1 w-full relative h-[600px] flex items-center justify-center -mr-20 lg:-mr-0">
+                            {/* Detailed phones composition */}
+                            <div className="relative w-[300px] h-[600px] z-10 transition-transform duration-700 hover:scale-105">
+                                {/* Center Main Phone (MisePo) */}
+                                <div className="absolute inset-0 bg-slate-900 rounded-[3rem] border-8 border-slate-900 shadow-2xl overflow-hidden ring-4 ring-slate-900/10 z-30">
+                                    {/* Notch */}
+                                    <div className="absolute top-0 left-1/2 -translate-x-1/2 h-7 w-40 bg-slate-900 rounded-b-2xl z-40" />
+                                    {/* Screen Content */}
+                                    <div className="w-full h-full bg-slate-50 relative flex flex-col pt-10">
+                                        <div className="px-4 pb-4 border-b border-slate-100 flex justify-between items-center bg-white">
+                                            <Icons.Menu className="text-slate-400" />
+                                            <span className="font-bold text-slate-800">New Post</span>
+                                            <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center"><Icons.Sparkles size={16} fill="currentColor" /></div>
+                                        </div>
+                                        <div className="p-4 flex-1">
+                                            <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 mb-4 space-y-3">
+                                                <div className="flex gap-2">
+                                                    <span className="px-2 py-1 bg-indigo-50 text-indigo-600 text-[10px] font-bold rounded">Instagram</span>
+                                                    <span className="px-2 py-1 bg-slate-50 text-slate-400 text-[10px] font-bold rounded">Tone: Casual</span>
+                                                </div>
+                                                <div className={`space-y-2 transition-opacity duration-500 ${isGenerating ? 'opacity-50 pulse' : 'opacity-100'}`}>
+                                                    <div className="text-sm text-slate-700 min-h-[60px] whitespace-pre-wrap font-medium">
+                                                        {currentTypingText}
+                                                        <span className="animate-pulse">|</span>
+                                                    </div>
+                                                </div>
+                                                <div className={`bg-indigo-600 text-white rounded-xl py-3 font-bold text-center shadow-lg shadow-indigo-200 transition-all duration-300 ${isGenerating ? 'scale-95 bg-indigo-500' : ''}`}>
+                                                    {isGenerating ? (
+                                                        <span className="flex items-center justify-center gap-2">
+                                                            <Icons.Sparkles size={16} className="animate-spin" /> 生成中...
+                                                        </span>
+                                                    ) : (
+                                                        "生成する"
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className="ml-4 bg-white border border-slate-200 rounded-md px-3 py-1 text-[10px] text-slate-400 font-mono flex-1 text-center">misepo.app/dashboard</div>
                                 </div>
-                                <div className="p-6 bg-slate-50/50 min-h-[360px]">
-                                    <div className="flex gap-4 mb-6">
-                                        <div className="w-1/3 h-24 bg-gradient-to-br from-pink-500 to-rose-400 rounded-xl shadow-lg p-3 text-white flex flex-col justify-between relative overflow-hidden group-hover:shadow-pink-200 transition-shadow">
-                                            <div className="absolute top-0 right-0 p-2 opacity-20"><Icons.Sparkles size={40} /></div>
-                                            <span className="text-xs font-bold opacity-90">Instagram</span>
-                                            <div className="w-8 h-1 bg-white/40 rounded-full" />
+
+                                {/* AI Result Card (Absolute Overlay) */}
+                                <div className={`absolute left-1/2 top-[280px] -translate-x-1/2 w-[260px] bg-white rounded-xl shadow-2xl border border-indigo-100 p-4 transition-all duration-700 z-50 origin-bottom ${showResult ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-10 scale-90 pointer-events-none'}`}>
+                                    <div className="flex items-center gap-2 mb-3">
+                                        <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 text-white flex items-center justify-center shadow-sm">
+                                            <Icons.Sparkles size={12} fill="currentColor" />
                                         </div>
-                                        <div className="w-1/3 h-24 bg-white border border-slate-200 rounded-xl p-3 flex flex-col justify-between">
-                                            <span className="text-xs font-bold text-slate-400">X (Twitter)</span>
-                                            <div className="w-8 h-1 bg-slate-200 rounded-full" />
+                                        <span className="text-xs font-bold text-slate-800">AIからの提案</span>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <div className="p-2 bg-slate-50 rounded-lg text-xs leading-relaxed text-slate-600">
+                                            🍓 <strong>新作登場！いちごタルト</strong><br />
+                                            サクサクのタルト生地に、溢れんばかりの旬の苺をトッピングしました✨<br />
+                                            #いちごタルト #新作スイーツ
                                         </div>
-                                        <div className="w-1/3 h-24 bg-white border border-slate-200 rounded-xl p-3 flex flex-col justify-between">
-                                            <span className="text-xs font-bold text-slate-400">Google Maps</span>
-                                            <div className="w-8 h-1 bg-slate-200 rounded-full" />
+                                        <div className="flex gap-1 justify-end">
+                                            <div className="px-3 py-1.5 bg-slate-900 text-white text-[10px] font-bold rounded-full shadow-lg">投稿する</div>
                                         </div>
                                     </div>
-                                    <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm mb-4">
-                                        <div className="flex items-center gap-2 mb-3">
-                                            <div className="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center"><Icons.Sparkles size={14} /></div>
-                                            <span className="text-xs font-bold text-slate-700">AI生成結果</span>
+                                </div>
+
+                                {/* Left Phone (Instagram) */}
+                                <div className="absolute left-0 lg:-left-12 top-12 w-[260px] h-[520px] bg-slate-800 rounded-[2.5rem] border-4 border-slate-800 shadow-xl z-20 transform -rotate-12 translate-y-8 opacity-90 scale-95 origin-bottom-right">
+                                    <div className="w-full h-full bg-white rounded-[2.2rem] overflow-hidden opacity-90 relative">
+                                        <div className="bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 h-1.5 w-full absolute top-0" />
+                                        <div className="p-4 pt-12">
+                                            <div className="flex items-center gap-2 mb-4">
+                                                <div className="w-8 h-8 rounded-full bg-gray-200" />
+                                                <div className="h-3 w-20 bg-gray-200 rounded" />
+                                            </div>
+                                            <div className="aspect-square bg-slate-100 rounded-xl mb-3" />
+                                            <div className="space-y-2">
+                                                <div className="h-2 bg-slate-100 w-full rounded" />
+                                                <div className="h-2 bg-slate-100 w-full rounded" />
+                                            </div>
                                         </div>
-                                        <div className="space-y-2">
-                                            <div className="h-2 bg-slate-100 rounded w-3/4" />
-                                            <div className="h-2 bg-slate-100 rounded w-full" />
-                                            <div className="h-2 bg-slate-100 rounded w-5/6" />
-                                        </div>
+                                        <div className="absolute inset-0 bg-slate-900/10 pointer-events-none" />
                                     </div>
-                                    <div className="flex justify-end gap-2">
-                                        <div className="px-4 py-2 bg-slate-900 text-white text-xs font-bold rounded-lg shadow-lg">コピーして投稿</div>
+                                </div>
+
+                                {/* Right Phone (Maps) */}
+                                <div className="absolute right-0 lg:-right-12 top-24 w-[260px] h-[520px] bg-slate-800 rounded-[2.5rem] border-4 border-slate-800 shadow-xl z-10 transform rotate-12 translate-y-16 opacity-80 scale-90 origin-bottom-left">
+                                    <div className="w-full h-full bg-white rounded-[2.2rem] overflow-hidden opacity-90 relative">
+                                        <div className="h-32 bg-slate-100 relative mb-8">
+                                            <div className="absolute -bottom-8 left-4 w-16 h-16 rounded-full bg-white border-2 border-white shadow-sm" />
+                                        </div>
+                                        <div className="px-4">
+                                            <div className="h-4 w-32 bg-slate-200 rounded mb-2" />
+                                            <div className="flex gap-1 mb-4">
+                                                {[1, 2, 3, 4, 5].map(i => <Icons.Star key={i} size={12} fill="#FCD34D" className="text-yellow-400" />)}
+                                                <div className="h-3 w-8 bg-slate-100 rounded ml-2" />
+                                            </div>
+                                            <div className="space-y-3">
+                                                <div className="p-2 border border-slate-100 rounded-lg">
+                                                    <div className="flex gap-2 mb-1">
+                                                        <div className="w-4 h-4 rounded-full bg-slate-200" />
+                                                        <div className="h-2 w-12 bg-slate-200 rounded" />
+                                                    </div>
+                                                    <p className="text-[8px] text-slate-400">とても良いお店でした！</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="absolute inset-0 bg-slate-900/10 pointer-events-none" />
                                     </div>
                                 </div>
                             </div>
-                            <div className="absolute -right-8 top-12 bg-white p-4 rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-slate-100 animate-float hidden lg:block z-20">
-                                <div className="flex items-center gap-3">
-                                    <div className="bg-green-100 p-2 rounded-full text-green-600"><Icons.CheckCircle size={20} /></div>
-                                    <div>
-                                        <p className="text-xs text-slate-500 font-bold">MEOスコア</p>
-                                        <p className="text-sm font-black text-slate-900">UP!</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="absolute -left-4 bottom-20 bg-white p-4 rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-slate-100 animate-float-delayed hidden lg:block z-20">
-                                <div className="flex items-center gap-3">
-                                    <div className="bg-yellow-100 p-2 rounded-full text-yellow-600"><Icons.Star size={20} fill="currentColor" /></div>
-                                    <div>
-                                        <p className="text-xs text-slate-500 font-bold">口コミ返信</p>
-                                        <p className="text-sm font-black text-slate-900">完了</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="absolute -z-10 top-10 right-10 w-full h-full bg-indigo-600/5 rounded-2xl transform rotate-3 scale-95 border border-indigo-100" />
                         </div>
                     </div>
                 </div>
@@ -359,7 +423,7 @@ export default function LandingPage() {
                     <div className="grid lg:grid-cols-2 gap-16 items-center mb-16">
                         <div>
                             <span className="text-indigo-600 font-bold tracking-wider text-sm uppercase mb-2 block">Problem</span>
-                            <h2 className="text-3xl md:text-4xl font-black text-slate-900 leading-tight mb-6">
+                            <h2 className="text-4xl md:text-6xl font-black text-slate-900 leading-tight mb-6">
                                 「何を投稿すればいい？」<br />
                                 <span className="text-slate-400">毎日のその悩み、もう終わり。</span>
                             </h2>
@@ -394,7 +458,7 @@ export default function LandingPage() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     <div className="text-center mb-20">
                         <span className="text-indigo-400 font-bold tracking-wider text-sm uppercase mb-3 block">Why MisePo?</span>
-                        <h2 className="text-3xl md:text-5xl font-black mb-6 tracking-tight">
+                        <h2 className="text-4xl md:text-6xl font-black mb-6 tracking-tight">
                             集客の<span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-pink-400">『黄金ルート』</span>を<br className="md:hidden" />逃していませんか？
                         </h2>
                         <p className="text-slate-400 text-lg max-w-2xl mx-auto leading-relaxed">
@@ -470,7 +534,7 @@ export default function LandingPage() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center max-w-3xl mx-auto mb-16">
                         <span className="text-indigo-600 font-bold tracking-wider text-sm uppercase mb-2 block">All-in-One Platform</span>
-                        <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-6 tracking-tight">
+                        <h2 className="text-4xl md:text-6xl font-black text-slate-900 mb-6 tracking-tight">
                             必要なのは、<br />
                             <span className="gradient-text">このアプリひとつだけ。</span>
                         </h2>
@@ -554,7 +618,7 @@ export default function LandingPage() {
                 </div>
                 <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     <div className="text-center mb-16">
-                        <h2 className="text-3xl md:text-5xl font-black mb-6 tracking-tight">
+                        <h2 className="text-4xl md:text-6xl font-black mb-6 tracking-tight">
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-orange-400">AIの実力</span>を今すぐ体験
                         </h2>
                         <p className="text-slate-300 text-lg">1行のメモから、プロ並みの投稿文が数秒で完成します。</p>
@@ -704,7 +768,7 @@ export default function LandingPage() {
                         {/* Left Column: Value Proposition */}
                         <div className="text-left">
                             <span className="text-indigo-600 font-bold tracking-wider text-sm uppercase mb-4 block">Simple Pricing</span>
-                            <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-6 leading-tight">
+                            <h2 className="text-4xl md:text-6xl font-black text-slate-900 mb-6 leading-tight">
                                 お店の成長に<br />
                                 <span className="text-indigo-600">必要なすべてを。</span>
                             </h2>
