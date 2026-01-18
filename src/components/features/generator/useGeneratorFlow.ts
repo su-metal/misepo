@@ -29,7 +29,7 @@ export function useGeneratorFlow(props: {
   // --- State ---
   const [platforms, setPlatforms] = useState<Platform[]>([Platform.Instagram]);
   const [isMultiGenMode, setIsMultiGenMode] = useState<boolean>(false);
-  const [postPurpose, setPostPurpose] = useState<PostPurpose>(PostPurpose.Promotion);
+  const [postPurpose, setPostPurpose] = useState<PostPurpose>(PostPurpose.Auto);
   const [gmapPurpose, setGmapPurpose] = useState<GoogleMapPurpose>(GoogleMapPurpose.Auto);
   const [starRating, setStarRating] = useState<number | null>(null);
   const [tone, setTone] = useState<Tone>(Tone.Standard);

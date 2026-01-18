@@ -1,22 +1,28 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useImperativeHandle, forwardRef } from 'react';
 
-export function AutoResizingTextarea({
+export const AutoResizingTextarea = forwardRef<
+    HTMLTextAreaElement,
+    {
+        value: string;
+        onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+        className?: string;
+        placeholder?: string;
+        trigger?: any;
+    }
+>(({
     value,
     onChange,
     className,
     placeholder,
     trigger
-}: {
-    value: string;
-    onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-    className?: string;
-    placeholder?: string;
-    trigger?: any;
-}) {
-    const textareaRef = useRef<HTMLTextAreaElement>(null);
+}, ref) => {
+    const internalRef = useRef<HTMLTextAreaElement>(null);
+
+    // Merge forwarded ref and internal ref
+    useImperativeHandle(ref, () => internalRef.current!);
 
     useEffect(() => {
-        const textarea = textareaRef.current;
+        const textarea = internalRef.current;
         if (textarea) {
             textarea.style.height = "auto";
             textarea.style.height = `${textarea.scrollHeight}px`;
@@ -25,7 +31,7 @@ export function AutoResizingTextarea({
 
     return (
         <textarea
-            ref={textareaRef}
+            ref={internalRef}
             value={value}
             onChange={onChange}
             className={className}
@@ -33,4 +39,6 @@ export function AutoResizingTextarea({
             rows={1}
         />
     );
-}
+});
+
+AutoResizingTextarea.displayName = 'AutoResizingTextarea';

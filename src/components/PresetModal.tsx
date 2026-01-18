@@ -199,14 +199,14 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
     setName('');
     setAvatar('👤');
-    setCustomPrompt(currentConfig.customPrompt ?? '');
-    setPostSamples(currentConfig.postSamples || {});
+    setCustomPrompt('');
+    setPostSamples({});
     setSelectedPresetId(null);
     setErrorMessage(null);
     setOrderError(null);
     setMobileView('list');
     refreshPresets().catch(() => { });
-  }, [isOpen, currentConfig.customPrompt, refreshPresets]);
+  }, [isOpen, refreshPresets]);
 
   useEffect(() => {
     if (isOpen) {
@@ -219,7 +219,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
     };
   }, [isOpen]);
 
-  const limitReached = orderedPresets.length >= 5 && !selectedPresetId;
+  const limitReached = orderedPresets.length >= 10 && !selectedPresetId;
   const isSaveDisabled = isSaving || !name.trim() || limitReached;
   const isCreatingNew = selectedPresetId === null;
 
@@ -238,8 +238,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
       const payload = {
         name: trimmedName,
         avatar: avatar,
-        custom_prompt: trimmedPrompt || null,
-        postSamples,
+        custom_prompt: trimmedPrompt, // Send empty string, not null (DB has NOT NULL constraint)
+        // postSamples: postSamples, // Commented out: DB column doesn't exist yet
       };
       const endpoint = selectedPresetId
         ? `/api/me/presets/${selectedPresetId}`
@@ -251,11 +251,10 @@ const PresetModal: React.FC<PresetModalProps> = ({
         body: JSON.stringify(payload),
       });
       const data = await res.json().catch(() => null);
-
       if (!res.ok || data?.ok === false) {
         if (!selectedPresetId && res.status === 409) {
           setErrorMessage(
-            '保存済みプリセットは最大5件です。既存プリセットを編集してください。'
+            '保存済みプリセットは最大10件です。既存プリセットを編集してください。'
           );
         } else {
           setErrorMessage(data?.error ?? '保存に失敗しました。');
@@ -264,6 +263,19 @@ const PresetModal: React.FC<PresetModalProps> = ({
       }
 
       await refreshPresets();
+
+      // If we were editing an active preset, re-apply it to sync the generator UI
+      if (selectedPresetId && onApply) {
+        onApply({
+          id: selectedPresetId,
+          name: trimmedName,
+          avatar: avatar,
+          custom_prompt: trimmedPrompt || null,
+          postSamples,
+          sort_order: 0, // Not critical for apply
+        });
+      }
+
       setName('');
       setAvatar('👤');
       setCustomPrompt('');
@@ -411,6 +423,13 @@ const PresetModal: React.FC<PresetModalProps> = ({
             </button>
           </div>
 
+          <div className="mb-4 bg-indigo-50/50 border border-indigo-100/50 rounded-xl p-3">
+            <p className="text-[10px] text-indigo-500 font-bold leading-relaxed flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse"></span>
+              上位4件が入力画面に表示されます
+            </p>
+          </div>
+
           <div className="flex-1 overflow-y-auto space-y-3 no-scrollbar pb-6">
             {orderedPresets.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-40 text-center space-y-2 opacity-50">
@@ -448,7 +467,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
             {limitReached && (
               <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-3">
                 <p className="text-[10px] text-amber-500 font-bold leading-tight">
-                  保存上限(5件)に達しています。既存の設定を編集してください。
+                  保存上限(10件)に達しています。既存の設定を編集してください。
                 </p>
               </div>
             )}
