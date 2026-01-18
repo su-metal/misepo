@@ -366,8 +366,8 @@ export default function LandingPage() {
                             <span className="text-sm font-bold text-indigo-900">総生成数 10,000件突破</span>
                         </div>
                         <h1 className="text-6xl lg:text-[5.5rem] font-black text-slate-900 tracking-tight leading-[1.1] mb-8">
-                            店舗の広報は、<br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">AIに丸投げする時</span>代。
+                            お店の投稿<br />
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">AIにまかせる時代。</span>
                         </h1>
                         <p className="text-xl text-slate-600 leading-relaxed mb-10 max-w-lg">
                             Googleマップの口コミ返信も、Instagramの投稿文も。<br />
