@@ -234,55 +234,74 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                     </div>
 
                     {/* Persona / Preset Selection (Card Grid) */}
-                    {(platform === Platform.X || platform === Platform.Instagram) && (
-                        <div>
-                            <div className="flex items-center justify-between mb-3 px-1">
+                    <div>
+                        <div className="flex items-center justify-between mb-3 px-1">
+                            <div className="flex items-center gap-1.5 group/hint relative">
                                 <h3 className="text-sm font-bold text-gray-500">投稿者プロフィール</h3>
-                                <button onClick={onOpenPresetModal} className="text-[10px] text-indigo-500 font-bold hover:text-indigo-600 hover:bg-indigo-50 px-2 py-1 rounded-md transition-colors">
-                                    管理
-                                </button>
+                                <div className="text-gray-300 hover:text-indigo-400 cursor-help transition-colors">
+                                    <InfoIcon />
+                                </div>
+
+                                {/* Discovery Tooltip */}
+                                <div className="absolute left-0 bottom-full mb-2 w-64 bg-white/95 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-indigo-50 opacity-0 invisible group-hover/hint:opacity-100 group-hover/hint:visible transition-all duration-300 z-50 pointer-events-none translate-y-1 group-hover/hint:translate-y-0">
+                                    <div className="flex items-center gap-2 mb-1.5">
+                                        <div className="p-1 bg-indigo-50 rounded-lg">
+                                            <SparklesIcon className="w-3.5 h-3.5 text-indigo-500" />
+                                        </div>
+                                        <span className="text-[11px] font-black text-indigo-600 uppercase tracking-tighter">パーソナライズ機能</span>
+                                    </div>
+                                    <p className="text-[11px] text-gray-500 leading-relaxed font-medium">
+                                        プロフィールを設定し、過去の投稿を学習させることで、あなたの店に最適な文体をAIが自動的に再現します。
+                                    </p>
+
+                                    {/* Tooltip Arrow */}
+                                    <div className="absolute left-6 top-full -mt-1 border-[6px] border-transparent border-t-white/95" />
+                                </div>
                             </div>
-                            <div className="grid grid-cols-2 gap-3">
-                                {presets.slice(0, 4).map((preset) => (
-                                    <button
-                                        key={preset.id}
-                                        onClick={() => onApplyPreset(preset)}
-                                        className={`
+                            <button onClick={onOpenPresetModal} className="text-[10px] text-indigo-500 font-bold hover:text-indigo-600 hover:bg-indigo-50 px-2 py-1 rounded-md transition-colors">
+                                管理
+                            </button>
+                        </div>
+                        <div className="grid grid-cols-2 gap-3">
+                            {presets.slice(0, 4).map((preset) => (
+                                <button
+                                    key={preset.id}
+                                    onClick={() => onApplyPreset(preset)}
+                                    className={`
                                             relative py-3.5 px-3 rounded-2xl border transition-all flex flex-col items-center justify-center gap-1.5 group shadow-sm
                                             ${activePresetId === preset.id
-                                                ? 'bg-gradient-to-br from-indigo-50 to-white border-indigo-200 text-indigo-700 shadow-md scale-[1.02] ring-1 ring-indigo-200'
-                                                : 'bg-white border-transparent text-gray-400 hover:border-gray-200 hover:text-gray-600 hover:shadow-md'}
+                                            ? 'bg-gradient-to-br from-indigo-50 to-white border-indigo-200 text-indigo-700 shadow-md scale-[1.02] ring-1 ring-indigo-200'
+                                            : 'bg-white border-transparent text-gray-400 hover:border-gray-200 hover:text-gray-600 hover:shadow-md'}
                                         `}
-                                    >
-                                        <span className={`text-2xl transition-transform duration-300 ${activePresetId === preset.id ? 'scale-110 drop-shadow-sm' : 'group-hover:scale-110'}`}>
-                                            {preset.avatar || "👤"}
-                                        </span>
-                                        <span className={`text-[11px] font-bold text-center leading-tight line-clamp-2 px-1 ${activePresetId === preset.id ? 'text-indigo-700' : ''}`}>
-                                            {preset.name}
-                                        </span>
+                                >
+                                    <span className={`text-2xl transition-transform duration-300 ${activePresetId === preset.id ? 'scale-110 drop-shadow-sm' : 'group-hover:scale-110'}`}>
+                                        {preset.avatar || "👤"}
+                                    </span>
+                                    <span className={`text-[11px] font-bold text-center leading-tight line-clamp-2 px-1 ${activePresetId === preset.id ? 'text-indigo-700' : ''}`}>
+                                        {preset.name}
+                                    </span>
 
-                                        {/* Selection Indicator */}
-                                        {activePresetId === preset.id && (
-                                            <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-indigo-500 shadow-sm" />
-                                        )}
-                                    </button>
-                                ))}
+                                    {/* Selection Indicator */}
+                                    {activePresetId === preset.id && (
+                                        <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-indigo-500 shadow-sm" />
+                                    )}
+                                </button>
+                            ))}
 
-                                {/* Add Button Card: Visible up to 4 total items (Presets + Add) */}
-                                {presets.length < 4 && (
-                                    <button
-                                        onClick={onOpenPresetModal}
-                                        className="relative py-3.5 px-3 rounded-2xl border-2 border-dashed border-gray-100 bg-white/50 text-gray-300 hover:bg-white hover:border-indigo-300 hover:text-indigo-400 transition-all flex flex-col items-center justify-center gap-1.5 shadow-sm active:scale-95"
-                                    >
-                                        <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-indigo-50 transition-colors">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12h14" /></svg>
-                                        </div>
-                                        <span className="text-[10px] font-black uppercase tracking-widest px-1">追加</span>
-                                    </button>
-                                )}
-                            </div>
+                            {/* Add Button Card: Visible up to 4 total items (Presets + Add) */}
+                            {presets.length < 4 && (
+                                <button
+                                    onClick={onOpenPresetModal}
+                                    className="relative py-3.5 px-3 rounded-2xl border-2 border-dashed border-gray-100 bg-white/50 text-gray-300 hover:bg-white hover:border-indigo-300 hover:text-indigo-400 transition-all flex flex-col items-center justify-center gap-1.5 shadow-sm active:scale-95"
+                                >
+                                    <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-indigo-50 transition-colors">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12h14" /></svg>
+                                    </div>
+                                    <span className="text-[10px] font-black uppercase tracking-widest px-1">追加</span>
+                                </button>
+                            )}
                         </div>
-                    )}
+                    </div>
 
 
 
@@ -307,132 +326,34 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                         </div>
                     )}
 
-                    {/* --- ADVANCED MODE ONLY SECTIONS --- */}
-                    {isAdvancedMode && (
-                        <div className="space-y-6 animate-in fade-in slide-in-from-top-4 duration-300">
-                            {/* Purpose Selection - Large Card Grid */}
-                            <div>
-                                <h3 className="text-sm font-bold text-gray-500 mb-3 px-1">投稿の目的</h3>
-                                <div className="grid grid-cols-2 gap-3">
-                                    {(isGoogleMaps ? GMAP_PURPOSES : PURPOSES).map((p) => {
-                                        const isSelected = (isGoogleMaps ? gmapPurpose : postPurpose) === p.id;
-                                        const isLocked = isGoogleMaps && starRating && gmapPurpose !== p.id;
+                    {/* --- BASIC SETTINGS (Manual Control Zone - Upper) --- */}
 
-                                        return (
-                                            <button
-                                                key={p.id}
-                                                onClick={() => !isLocked && (isGoogleMaps ? onGmapPurposeChange(p.id as GoogleMapPurpose) : onPostPurposeChange(p.id as PostPurpose))}
-                                                disabled={isLocked}
-                                                className={`
-                                            relative py-3.5 px-4 rounded-2xl border transition-all flex flex-col items-center justify-center gap-1.5 group
-                                            ${isSelected
-                                                        ? 'bg-gradient-to-br from-indigo-600 to-indigo-700 border-indigo-600 text-white shadow-lg shadow-indigo-200 scale-[1.02]'
-                                                        : 'bg-white border-transparent text-gray-400 hover:border-gray-200 hover:text-gray-600 hover:shadow-md'
-                                                    }
-                                            ${isLocked ? 'opacity-30 cursor-not-allowed' : ''}
-                                        `}
-                                            >
-                                                <span className={`p-2 rounded-full transition-all ${isSelected
-                                                    ? 'bg-white/20 text-white'
-                                                    : 'bg-gray-50 text-gray-400 group-hover:bg-indigo-50 group-hover:text-indigo-500'
-                                                    }`}>
-                                                    <span className="w-5 h-5 block [&>svg]:w-full [&>svg]:h-full">{p.icon}</span>
-                                                </span>
-                                                <span className={`text-[11px] font-bold ${isSelected ? 'text-white' : ''}`}>{p.label}</span>
-
-                                                {/* Visual Indicator for Selection */}
-                                                {isSelected && (
-                                                    <div className="absolute inset-0 rounded-2xl ring-2 ring-indigo-600/20 z-0 pointer-events-none" />
-                                                )}
-                                            </button>
-                                        )
-                                    })}
-                                </div>
+                    {/* Length Selection (Segmented Control) - Always Visible */}
+                    {!isX && (
+                        <div>
+                            <h3 className="text-sm font-bold text-gray-500 mb-3 px-1">文章の長さ</h3>
+                            <div className="flex bg-white p-1 rounded-2xl border border-gray-100 shadow-sm">
+                                {LENGTHS.map((l) => (
+                                    <button
+                                        key={l.id}
+                                        onClick={() => onLengthChange(l.id)}
+                                        className={`flex-1 py-3 rounded-xl text-xs font-bold transition-all ${length === l.id
+                                            ? 'bg-indigo-50 text-indigo-700 shadow-sm ring-1 ring-indigo-100'
+                                            : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50'
+                                            }`}
+                                    >
+                                        {l.label}
+                                    </button>
+                                ))}
                             </div>
-
-                            {/* Length Selection (Segmented Control) */}
-                            {!isX && (
-                                <div>
-                                    <h3 className="text-sm font-bold text-gray-500 mb-3 px-1">文章の長さ</h3>
-                                    <div className="flex bg-white p-1 rounded-2xl border border-gray-100 shadow-sm">
-                                        {LENGTHS.map((l) => (
-                                            <button
-                                                key={l.id}
-                                                onClick={() => onLengthChange(l.id)}
-                                                className={`flex-1 py-3 rounded-xl text-xs font-bold transition-all ${length === l.id
-                                                    ? 'bg-indigo-50 text-indigo-700 shadow-sm ring-1 ring-indigo-100'
-                                                    : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50'
-                                                    }`}
-                                            >
-                                                {l.label}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Features / Toggles (Card Style) */}
-                            {!isGoogleMaps && (
-                                <div className={`pt-2 ${activePresetId ? 'opacity-60' : ''} transition-opacity duration-300`}>
-                                    <div className="flex items-center justify-between px-2 mb-3">
-                                        <h3 className="text-sm font-bold text-gray-500">装飾オプション</h3>
-                                        {activePresetId && (
-                                            <div className="flex items-center gap-1 px-2 py-0.5 bg-indigo-50 rounded-full border border-indigo-100/50">
-                                                <SparklesIcon className="w-2.5 h-2.5 text-indigo-500" />
-                                                <span className="text-[9px] font-black text-indigo-600 uppercase tracking-tighter">Profile Active</span>
-                                            </div>
-                                        )}
-                                    </div>
-                                    <div className={`grid grid-cols-2 gap-3 relative isolate ${activePresetId ? 'cursor-not-allowed select-none' : ''}`}>
-                                        {activePresetId && (
-                                            <div
-                                                className="absolute inset-0 z-20"
-                                                title="プロフィールの文体学習を使用中のため、装飾設定は固定されています"
-                                            />
-                                        )}
-                                        <button
-                                            type="button"
-                                            onClick={() => !activePresetId && onIncludeEmojisChange(!includeEmojis)}
-                                            disabled={!!activePresetId}
-                                            className={`relative p-3 rounded-2xl border transition-all flex flex-col items-center justify-center gap-1 aspect-[16/9] ${includeEmojis
-                                                ? (activePresetId ? 'bg-stone-50 border-stone-100 text-stone-400' : 'bg-orange-50 border-orange-200 text-orange-600 shadow-sm')
-                                                : 'bg-white border-transparent text-gray-400 hover:shadow-md'}`}
-                                        >
-                                            <span className={`text-xl ${activePresetId ? 'grayscale' : ''}`}>😊</span>
-                                            <span className="text-[10px] font-bold">絵文字</span>
-
-                                            {/* Toggle Switch Visual */}
-                                            <div className={`absolute top-2 right-2 w-6 h-3.5 rounded-full transition-colors ${includeEmojis ? (activePresetId ? 'bg-stone-200' : 'bg-orange-400') : 'bg-gray-200'}`}>
-                                                <div className={`absolute top-0.5 left-0.5 w-2.5 h-2.5 bg-white rounded-full transition-transform ${includeEmojis ? 'translate-x-2.5' : ''}`} />
-                                            </div>
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => !activePresetId && onIncludeSymbolsChange(!includeSymbols)}
-                                            disabled={!!activePresetId}
-                                            className={`relative p-3 rounded-2xl border transition-all flex flex-col items-center justify-center gap-1 aspect-[16/9] ${includeSymbols
-                                                ? (activePresetId ? 'bg-stone-50 border-stone-100 text-stone-400' : 'bg-indigo-50 border-indigo-200 text-indigo-600 shadow-sm')
-                                                : 'bg-white border-transparent text-gray-400 hover:shadow-md'}`}
-                                        >
-                                            <span className={`text-xl ${activePresetId ? 'grayscale' : ''}`}>✨</span>
-                                            <span className="text-[10px] font-bold">装飾・特殊文字</span>
-                                            {/* Toggle Switch Visual */}
-                                            <div className={`absolute top-2 right-2 w-6 h-3.5 rounded-full transition-colors ${includeSymbols ? (activePresetId ? 'bg-stone-200' : 'bg-indigo-400') : 'bg-gray-200'}`}>
-                                                <div className={`absolute top-0.5 left-0.5 w-2.5 h-2.5 bg-white rounded-full transition-transform ${includeSymbols ? 'translate-x-2.5' : ''}`} />
-                                            </div>
-                                        </button>
-                                    </div>
-                                    {activePresetId && (
-                                        <p className="mt-2 px-1 text-[10px] text-stone-400 font-medium leading-relaxed">
-                                            ※ 絵文字や記号の使い方も学習データを優先します。
-                                        </p>
-                                    )}
-                                </div>
-                            )}
                         </div>
                     )}
 
-                    {/* Tone Selection (Segmented Control) - Moved to bottom */}
+
+
+                    {/* --- STYLE SETTINGS (AI-Managed / Persona Zone - Lower) --- */}
+
+                    {/* Tone Selection (Segmented Control) - Always Visible (Locked by Profile) */}
                     <div className={`${activePresetId ? 'opacity-60' : ''} transition-opacity duration-300`}>
                         <div className="flex items-center justify-between mb-3 px-1">
                             <h3 className="text-sm font-bold text-gray-500">スタイル設定</h3>
@@ -467,17 +388,110 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                 </button>
                             ))}
                         </div>
-                        {activePresetId && (
-                            <p className="mt-2 px-1 text-[10px] text-stone-400 font-medium leading-relaxed">
-                                ※ プロフィールの学習データを優先するため固定されています。
-                            </p>
-                        )}
                     </div>
+
+                    {/* Decoration Options (Advanced Mode Only, Locked by Profile) */}
+                    {isAdvancedMode && !isGoogleMaps && (
+                        <div className={`${activePresetId ? 'opacity-60' : ''} transition-opacity duration-300`}>
+                            <div className="flex items-center justify-between px-2 mb-3">
+                                <h3 className="text-sm font-bold text-gray-500">装飾オプション</h3>
+                                {activePresetId && (
+                                    <div className="flex items-center gap-1 px-2 py-0.5 bg-indigo-50 rounded-full border border-indigo-100/50">
+                                        <SparklesIcon className="w-2.5 h-2.5 text-indigo-500" />
+                                        <span className="text-[9px] font-black text-indigo-600 uppercase tracking-tighter">Profile Active</span>
+                                    </div>
+                                )}
+                            </div>
+                            <div className={`grid grid-cols-2 gap-3 relative isolate ${activePresetId ? 'cursor-not-allowed select-none' : ''}`}>
+                                {activePresetId && (
+                                    <div
+                                        className="absolute inset-0 z-20"
+                                        title="プロフィールの文体学習を使用中のため、装飾設定は固定されています"
+                                    />
+                                )}
+                                <button
+                                    type="button"
+                                    onClick={() => !activePresetId && onIncludeEmojisChange(!includeEmojis)}
+                                    disabled={!!activePresetId}
+                                    className={`relative p-3 rounded-2xl border transition-all flex flex-col items-center justify-center gap-1 aspect-[16/9] ${includeEmojis
+                                        ? (activePresetId ? 'bg-stone-50 border-stone-100 text-stone-400' : 'bg-orange-50 border-orange-200 text-orange-600 shadow-sm')
+                                        : 'bg-white border-transparent text-gray-400 hover:shadow-md'}`}
+                                >
+                                    <span className={`text-xl ${activePresetId ? 'grayscale' : ''}`}>😊</span>
+                                    <span className="text-[10px] font-bold">絵文字</span>
+
+                                    {/* Toggle Switch Visual */}
+                                    <div className={`absolute top-2 right-2 w-6 h-3.5 rounded-full transition-colors ${includeEmojis ? (activePresetId ? 'bg-stone-200' : 'bg-orange-400') : 'bg-gray-200'}`}>
+                                        <div className={`absolute top-0.5 left-0.5 w-2.5 h-2.5 bg-white rounded-full transition-transform ${includeEmojis ? 'translate-x-2.5' : ''}`} />
+                                    </div>
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => !activePresetId && onIncludeSymbolsChange(!includeSymbols)}
+                                    disabled={!!activePresetId}
+                                    className={`relative p-3 rounded-2xl border transition-all flex flex-col items-center justify-center gap-1 aspect-[16/9] ${includeSymbols
+                                        ? (activePresetId ? 'bg-stone-50 border-stone-100 text-stone-400' : 'bg-indigo-50 border-indigo-200 text-indigo-600 shadow-sm')
+                                        : 'bg-white border-transparent text-gray-400 hover:shadow-md'}`}
+                                >
+                                    <span className={`text-xl ${activePresetId ? 'grayscale' : ''}`}>✨</span>
+                                    <span className="text-[10px] font-bold">装飾・特殊文字</span>
+                                    {/* Toggle Switch Visual */}
+                                    <div className={`absolute top-2 right-2 w-6 h-3.5 rounded-full transition-colors ${includeSymbols ? (activePresetId ? 'bg-stone-200' : 'bg-indigo-400') : 'bg-gray-200'}`}>
+                                        <div className={`absolute top-0.5 left-0.5 w-2.5 h-2.5 bg-white rounded-full transition-transform ${includeSymbols ? 'translate-x-2.5' : ''}`} />
+                                    </div>
+                                </button>
+                            </div>
+                            {activePresetId && (
+                                <p className="mt-2 px-1 text-[10px] text-stone-400 font-medium leading-relaxed">
+                                    ※ 絵文字や記号の使い方も学習データを優先します。
+                                </p>
+                            )}
+                        </div>
+                    )}
+
+
+
+
                 </div>
 
                 {/* Right Main Canvas - Input Only */}
                 <div className="flex-1 order-1 lg:order-2 flex flex-col h-full gap-4">
                     <div className="flex-1 bg-white rounded-3xl p-8 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] border border-white/50 relative overflow-hidden flex flex-col group transition-all hover:shadow-[0_25px_50px_-12px_rgba(79,70,229,0.1)]">
+
+                        {/* Purpose Selection - Horizontal Pills */}
+                        <div className="mb-6 pb-4 border-b border-gray-50/50">
+                            <div className="flex items-center gap-3 mb-3">
+                                <h3 className="text-[10px] font-black text-indigo-400/80 uppercase tracking-widest pl-1">投稿の目的</h3>
+                                <div className="h-[1px] flex-1 bg-gradient-to-r from-gray-100 to-transparent"></div>
+                            </div>
+                            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide -mx-1 px-1">
+                                {(isGoogleMaps ? GMAP_PURPOSES : PURPOSES).map((p) => {
+                                    const isSelected = (isGoogleMaps ? gmapPurpose : postPurpose) === p.id;
+                                    const isLocked = isGoogleMaps && starRating && gmapPurpose !== p.id;
+
+                                    return (
+                                        <button
+                                            key={p.id}
+                                            onClick={() => !isLocked && (isGoogleMaps ? onGmapPurposeChange(p.id as GoogleMapPurpose) : onPostPurposeChange(p.id as PostPurpose))}
+                                            disabled={isLocked}
+                                            className={`
+                                                flex items-center gap-2 px-4 py-2 rounded-full text-[11px] font-bold whitespace-nowrap transition-all border
+                                                ${isSelected
+                                                    ? 'bg-indigo-600 border-indigo-600 text-white shadow-sm shadow-indigo-100'
+                                                    : 'bg-white border-gray-100 text-gray-400 hover:border-gray-300 hover:text-gray-600'
+                                                }
+                                                ${isLocked ? 'opacity-30 cursor-not-allowed' : ''}
+                                            `}
+                                        >
+                                            <span className={`w-3.5 h-3.5 block [&>svg]:w-full [&>svg]:h-full ${isSelected ? 'text-white' : 'text-gray-400'}`}>
+                                                {p.icon}
+                                            </span>
+                                            {p.label}
+                                        </button>
+                                    )
+                                })}
+                            </div>
+                        </div>
 
                         {/* Main Text Area - The "Canvas" */}
                         <div className="flex-1 relative">

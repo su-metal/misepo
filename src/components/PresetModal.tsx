@@ -199,14 +199,14 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
     setName('');
     setAvatar('👤');
-    setCustomPrompt(currentConfig.customPrompt ?? '');
-    setPostSamples(currentConfig.postSamples || {});
+    setCustomPrompt('');
+    setPostSamples({});
     setSelectedPresetId(null);
     setErrorMessage(null);
     setOrderError(null);
     setMobileView('list');
     refreshPresets().catch(() => { });
-  }, [isOpen, currentConfig.customPrompt, refreshPresets]);
+  }, [isOpen, refreshPresets]);
 
   useEffect(() => {
     if (isOpen) {
@@ -238,8 +238,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
       const payload = {
         name: trimmedName,
         avatar: avatar,
-        custom_prompt: trimmedPrompt || null,
-        postSamples,
+        custom_prompt: trimmedPrompt, // Send empty string, not null (DB has NOT NULL constraint)
+        // postSamples: postSamples, // Commented out: DB column doesn't exist yet
       };
       const endpoint = selectedPresetId
         ? `/api/me/presets/${selectedPresetId}`
@@ -251,7 +251,6 @@ const PresetModal: React.FC<PresetModalProps> = ({
         body: JSON.stringify(payload),
       });
       const data = await res.json().catch(() => null);
-
       if (!res.ok || data?.ok === false) {
         if (!selectedPresetId && res.status === 409) {
           setErrorMessage(
@@ -264,6 +263,19 @@ const PresetModal: React.FC<PresetModalProps> = ({
       }
 
       await refreshPresets();
+
+      // If we were editing an active preset, re-apply it to sync the generator UI
+      if (selectedPresetId && onApply) {
+        onApply({
+          id: selectedPresetId,
+          name: trimmedName,
+          avatar: avatar,
+          custom_prompt: trimmedPrompt || null,
+          postSamples,
+          sort_order: 0, // Not critical for apply
+        });
+      }
+
       setName('');
       setAvatar('👤');
       setCustomPrompt('');
