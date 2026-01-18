@@ -136,6 +136,30 @@ const Icons: any = {
             <polyline points="15 3 21 3 21 9" /><polyline points="9 21 3 21 3 15" /><line x1="21" y1="3" x2="14" y2="10" /><line x1="3" y1="21" x2="10" y2="14" />
         </svg>
     ),
+    Home: ({ size = 24 }: { size?: number }) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>
+    ),
+    Search: ({ size = 24 }: { size?: number }) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
+    ),
+    ShoppingBag: ({ size = 24 }: { size?: number }) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" /><line x1="3" y1="6" x2="21" y2="6" /><path d="M16 10a4 4 0 0 1-8 0" /></svg>
+    ),
+    User: ({ size = 24 }: { size?: number }) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
+    ),
+    Bell: ({ size = 24, fill = "none", className = "" }: { size?: number; fill?: string; className?: string }) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth="2" className={className}><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" /><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" /></svg>
+    ),
+    Film: ({ size = 24 }: { size?: number }) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect width="18" height="18" x="3" y="3" rx="2" /><path d="M7 3v18" /><path d="M3 7.5h4" /><path d="M3 12h18" /><path d="M3 16.5h4" /><path d="M17 3v18" /><path d="M17 7.5h4" /><path d="M17 16.5h4" /></svg>
+    ),
+    Compass: ({ size = 24 }: { size?: number }) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" /></svg>
+    ),
+    PlusCircle: ({ size = 24 }: { size?: number }) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="16" /><line x1="8" y1="12" x2="16" y2="12" /></svg>
+    ),
 };
 
 const CountUp = ({ end, duration = 2000 }: { end: number; duration?: number }) => {
@@ -443,42 +467,62 @@ export default function LandingPage() {
                                         : '-translate-x-[100px] translate-y-0 -rotate-12 z-20 opacity-80'
                                     }`}
                             >
-                                <div className="w-full h-full bg-slate-800 rounded-[2.5rem] border-4 border-slate-800 shadow-xl overflow-hidden relative">
-                                    <div className="w-full h-full bg-white relative">
+                                <div className="w-full h-full bg-white rounded-[2.5rem] border-4 border-slate-900 shadow-xl overflow-hidden relative flex flex-col">
+                                    {/* Header */}
+                                    <div className="px-4 py-3 flex items-center justify-between border-b border-gray-100 z-10 bg-white sticky top-0 shrink-0">
+                                        <div className="font-bold text-lg font-script tracking-tighter">Instagram</div>
+                                        <div className="flex gap-4">
+                                            <Icons.Heart size={22} className="text-slate-900" />
+                                            <Icons.MessageCircle size={22} className="text-slate-900" />
+                                        </div>
+                                    </div>
+
+                                    {/* Content Scroll Area */}
+                                    <div className="flex-1 overflow-hidden relative bg-white">
                                         {/* Skeleton Overlay for Waiting State */}
-                                        <div className={`absolute inset-0 bg-white z-20 transition-opacity duration-500 ${isPosted ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-                                            <div className="p-4 space-y-4 h-full">
-                                                <div className="flex items-center gap-3 border-b border-slate-50 pb-3">
-                                                    <div className="w-8 h-8 rounded-full bg-slate-100 animate-pulse" />
+                                        <div className={`absolute inset-0 bg-white z-20 transition-opacity duration-500 flex flex-col ${isPosted ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+                                            <div className="p-4 space-y-4 flex-1">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-8 h-8 rounded-full bg-slate-100 animate-pulse ring-2 ring-white" />
                                                     <div className="w-24 h-3 bg-slate-100 rounded animate-pulse" />
                                                 </div>
                                                 <div className="w-full aspect-square bg-slate-100 rounded animate-pulse" />
                                                 <div className="space-y-3 pt-2">
                                                     <div className="w-3/4 h-3 bg-slate-100 rounded animate-pulse" />
                                                     <div className="w-1/2 h-3 bg-slate-100 rounded animate-pulse" />
-                                                    <div className="w-full h-3 bg-slate-100 rounded animate-pulse" />
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 h-1.5 w-full absolute top-0 z-10" />
-                                        <div className="flex flex-col h-full bg-white transition-transform duration-[2000ms] ease-out" style={isPosted ? innerContentStyle : {}}>
-                                            <div className="px-4 py-4 flex items-center gap-2 border-b border-slate-100 flex-shrink-0 bg-white z-10 sticky top-0">
-                                                <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600"><Icons.Smartphone size={16} /></div>
+
+                                        {/* Real Content */}
+                                        <div className="flex flex-col bg-white transition-transform duration-[2850ms] ease-out" style={isPosted ? innerContentStyle : {}}>
+                                            {/* Story/User Header */}
+                                            <div className="px-3 py-2 flex items-center gap-2">
+                                                <div className="p-[2px] rounded-full bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600">
+                                                    <div className="w-8 h-8 rounded-full bg-white border border-white flex items-center justify-center p-0.5">
+                                                        <div className="w-full h-full rounded-full bg-slate-100 flex items-center justify-center text-indigo-600"><Icons.Smartphone size={14} /></div>
+                                                    </div>
+                                                </div>
                                                 <span className="font-bold text-xs text-slate-900">MisePo Cafe</span>
-                                                <span className="text-[10px] text-slate-400 ml-auto">Just now</span>
+                                                <Icons.MoreHorizontal size={16} className="ml-auto text-slate-400" />
                                             </div>
+
+                                            {/* Image */}
                                             <div className="aspect-square bg-slate-50 relative flex items-center justify-center overflow-hidden flex-shrink-0">
                                                 <div className="text-8xl animate-bounce-slow">🍓</div>
-                                                <div className="absolute bottom-2 right-2 px-2 py-1 bg-black/50 text-white text-[10px] rounded backdrop-blur-sm">1/3</div>
+                                                <div className="absolute bottom-3 right-3 px-2 py-1 bg-black/60 text-white text-[10px] rounded-full backdrop-blur-sm font-medium">1/3</div>
+                                                <div className="absolute bottom-3 left-3 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-sm"><Icons.User size={12} className="text-slate-900" /></div>
                                             </div>
-                                            <div className="p-4 space-y-3 pb-20">
+
+                                            {/* Actions & Caption */}
+                                            <div className="p-3 space-y-2 pb-20">
                                                 <div className="flex justify-between items-center text-slate-800">
                                                     <div className="flex gap-4">
-                                                        <Icons.Heart className="text-red-500 fill-red-500" size={20} />
-                                                        <Icons.MessageCircle size={20} />
-                                                        <Icons.Send size={20} />
+                                                        <Icons.Heart className="text-red-500 fill-red-500 hover:scale-110 transition-transform" size={24} />
+                                                        <Icons.MessageCircle size={24} className="-rotate-90" />
+                                                        <Icons.Send size={24} />
                                                     </div>
-                                                    <Icons.Maximize2 size={20} />
+                                                    <Icons.Bookmark size={24} />
                                                 </div>
                                                 <p className="font-bold text-xs">1,203 likes</p>
                                                 <div className="text-xs space-y-1">
@@ -488,25 +532,104 @@ export default function LandingPage() {
                                                             {generatedResult}
                                                         </span>
                                                     </div>
+                                                    <p className="text-[10px] text-slate-400 uppercase pt-1">2 hours ago</p>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+
+                                    {/* Bottom Nav */}
+                                    <div className="h-12 border-t border-gray-100 bg-white flex justify-around items-center px-2 shrink-0 z-20">
+                                        <Icons.Home size={24} className="text-slate-900" />
+                                        <Icons.Search size={24} className="text-slate-400" />
+                                        <div className="w-6 h-6 border-2 border-slate-900 rounded-md flex items-center justify-center"><Icons.PlusSquare size={14} className="text-slate-900" /></div>
+                                        <Icons.Film size={24} className="text-slate-400" />
+                                        <div className="w-6 h-6 rounded-full bg-slate-200 border border-slate-300" />
+                                    </div>
                                 </div>
                             </div>
 
-                            {/* RIGHT PHONE (Maps - Background) */}
+                            {/* RIGHT PHONE (Google Maps - Background) */}
                             <div
                                 className={`absolute right-[-100px] top-20 w-[260px] h-[520px] transition-all duration-700 ease-in-out
-                                    ${isPosted ? 'translate-x-[30px] opacity-40 scale-90' : 'translate-x-[100px] opacity-80 rotate-12 delay-100'}
+                                    ${isPosted ? 'translate-x-[30px] opacity-40 scale-90' : 'translate-x-[100px] opacity-90 rotate-12 delay-100'}
                                 `}
                             >
-                                <div className="w-full h-full bg-slate-800 rounded-[2.5rem] border-4 border-slate-800 shadow-xl opacity-60 overflow-hidden relative">
-                                    <div className="w-full h-full bg-white opacity-80">
-                                        <div className="h-32 bg-slate-100 relative mb-8" />
-                                        <div className="px-4 space-y-2">
-                                            <div className="h-4 w-20 bg-slate-200 rounded" />
-                                            <div className="h-2 w-full bg-slate-100 rounded" />
+                                <div className="w-full h-full bg-white rounded-[2.5rem] border-4 border-slate-800 shadow-xl overflow-hidden relative flex flex-col font-sans">
+                                    {/* Maps Header */}
+                                    <div className="p-3 bg-white shadow-sm z-20">
+                                        <div className="bg-white border shadow-sm rounded-full px-3 py-2 flex items-center gap-2 mb-2">
+                                            <Icons.ChevronDown size={14} className="text-slate-400 rotate-90" />
+                                            <span className="text-xs text-slate-800 font-medium">Restaurants...</span>
+                                            <div className="ml-auto w-6 h-6 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center text-[10px] font-bold">M</div>
+                                        </div>
+                                        <div className="flex gap-4 overflow-x-hidden text-[10px] font-bold text-slate-500 border-b border-gray-100 pb-2">
+                                            <span>Overview</span>
+                                            <span className="text-green-600 border-b-2 border-green-600 pb-2 -mb-2.5">Updates</span>
+                                            <span>Reviews</span>
+                                            <span>About</span>
+                                        </div>
+                                    </div>
+
+                                    {/* Maps Content (Updates) */}
+                                    <div className="flex-1 bg-gray-50 p-2 overflow-hidden">
+                                        <div className="bg-white rounded-lg p-3 shadow-sm border border-gray-100 mb-3">
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600"><Icons.Smartphone size={14} /></div>
+                                                <div>
+                                                    <div className="text-xs font-bold text-slate-900">MisePo Cafe</div>
+                                                    <div className="text-[9px] text-slate-500">2 days ago</div>
+                                                </div>
+                                                <Icons.MoreHorizontal size={14} className="ml-auto text-slate-300" />
+                                            </div>
+                                            <p className="text-[10px] text-slate-600 leading-relaxed mb-2">
+                                                【春限定】とろける幸せ、いちごタルト解禁🍓 サクサクのクッキ... <span className="text-blue-600">More</span>
+                                            </p>
+                                            <div className="w-full h-24 bg-slate-100 rounded-lg mb-3 overflow-hidden relative">
+                                                <div className="absolute inset-0 flex items-center justify-center text-4xl opacity-50">🍓</div>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <button className="flex-1 py-1.5 border border-slate-200 rounded-full text-[10px] font-bold text-blue-600 flex items-center justify-center gap-1 hover:bg-blue-50">
+                                                    Call
+                                                </button>
+                                                <button className="flex-1 py-1.5 border border-slate-200 rounded-full text-[10px] font-bold text-blue-600 flex items-center justify-center gap-1 hover:bg-blue-50">
+                                                    Share
+                                                </button>
+                                            </div>
+                                        </div>
+                                        {/* Partial next card */}
+                                        <div className="bg-white rounded-lg p-3 shadow-sm border border-gray-100 opacity-50">
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <div className="w-8 h-8 bg-gray-100 rounded-full" />
+                                                <div className="h-3 w-20 bg-gray-100 rounded" />
+                                            </div>
+                                            <div className="h-2 w-full bg-gray-100 rounded mb-1" />
+                                            <div className="h-2 w-2/3 bg-gray-100 rounded" />
+                                        </div>
+                                    </div>
+
+                                    {/* Maps Bottom Nav */}
+                                    <div className="h-12 bg-white border-t border-gray-200 flex justify-between items-center px-4 shrink-0 z-20">
+                                        <div className="flex flex-col items-center gap-0.5 text-slate-400">
+                                            <Icons.MapPin size={18} />
+                                            <span className="text-[8px]">Explore</span>
+                                        </div>
+                                        <div className="flex flex-col items-center gap-0.5 text-slate-400">
+                                            <Icons.Compass size={18} />
+                                            <span className="text-[8px]">Go</span>
+                                        </div>
+                                        <div className="flex flex-col items-center gap-0.5 text-slate-400">
+                                            <Icons.Bookmark size={18} />
+                                            <span className="text-[8px]">Saved</span>
+                                        </div>
+                                        <div className="flex flex-col items-center gap-0.5 text-slate-400">
+                                            <Icons.PlusCircle size={18} />
+                                            <span className="text-[8px]">Contribute</span>
+                                        </div>
+                                        <div className="flex flex-col items-center gap-0.5 text-green-600 relative">
+                                            <Icons.Bell size={18} fill="currentColor" className="text-green-600" />
+                                            <span className="text-[8px] font-bold">Updates</span>
+                                            <div className="absolute top-0 right-1 w-1.5 h-1.5 bg-red-500 rounded-full border border-white" />
                                         </div>
                                     </div>
                                 </div>
