@@ -129,37 +129,38 @@ export async function POST(req: Request) {
       const shouldSaveHistory = body.save_history !== false;
 
       if (shouldSaveHistory) {
-        const { data: rpcData, error: rpcErr } = await supabaseAdmin.rpc(
-          "save_history_with_cap",
-          {
-            p_app_id: APP_ID,
-            p_user_id: userId,
-            p_run_type: runType,
-            p_input: inputPayload, // ← stringifyしない
-            p_output: result, // ← stringifyしない
-            // p_free_cap: 5,       // defaultあるなら省略OK
-          }
-        );
+        // Step 1: Create ai_runs record first (required for foreign key)
+        const { data: runData, error: runError } = await supabaseAdmin
+          .from("ai_runs")
+          .insert({
+            app_id: APP_ID,
+            user_id: userId,
+            run_type: runType,
+          })
+          .select("id")
+          .single();
 
-        const normalized = Array.isArray(rpcData) ? rpcData[0] : rpcData;
-        if (normalized) {
-          if (typeof normalized === "string") {
-            savedRunId = normalized;
-          } else if (typeof normalized === "object") {
-            savedRunId =
-              typeof normalized.run_id === "string"
-                ? normalized.run_id
-                : typeof normalized.id === "string"
-                  ? normalized.id
-                  : null;
+        if (runError) {
+          console.error("[HISTORY SAVE] Failed to create ai_runs:", runError);
+        } else if (runData) {
+          // Step 2: Create ai_run_records with the run_id (include all columns)
+          const { error: recordError } = await supabaseAdmin
+            .from("ai_run_records")
+            .insert({
+              run_id: runData.id,
+              app_id: APP_ID,
+              user_id: userId,
+              input: inputPayload,
+              output: result,
+            });
+
+          if (!recordError) {
+            savedRunId = runData.id;
+            console.log("[HISTORY SAVE] Success:", { savedRunId });
+          } else {
+            console.error("[HISTORY SAVE] Failed to save record:", recordError);
           }
         }
-
-        console.log("save_history_with_cap result:", {
-          rpcData,
-          rpcErr,
-          savedRunId,
-        });
       }
     }
 

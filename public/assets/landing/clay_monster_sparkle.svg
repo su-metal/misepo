@@ -1,0 +1,17 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="clay-star" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3"/>
+      <feSpecularLighting surfaceScale="8" specularConstant="1" specularExponent="20" lighting-color="#ffffff">
+        <fePointLight x="-30" y="-30" z="150"/>
+      </feSpecularLighting>
+      <feComposite in2="SourceAlpha" operator="in"/>
+      <feComposite in="SourceGraphic" operator="arithmetic" k1="0" k2="1" k3="1" k4="0"/>
+    </filter>
+  </defs>
+  <path d="M100 30L115 85L180 100L115 115L100 170L85 115L20 100L85 85L100 30Z" fill="#efff00" filter="url(#clay-star)"/>
+  <!-- One Big Eye -->
+  <circle cx="100" cy="100" r="20" fill="white" filter="url(#clay-star)"/>
+  <circle cx="100" cy="100" r="10" fill="#8c52ff"/>
+  <circle cx="103" cy="97" r="4" fill="white"/>
+</svg>

@@ -15,7 +15,7 @@ import {
   useSortable,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Preset } from '../types';
+import { Preset, Platform } from '../types';
 import {
   CloseIcon,
   BookmarkIcon,
@@ -33,6 +33,7 @@ interface PresetModalProps {
   onApply: (preset: Preset) => void;
   currentConfig: {
     customPrompt: string;
+    postSamples?: { [key in Platform]?: string };
   };
 }
 
@@ -68,16 +69,16 @@ const SortablePresetRow: React.FC<{
       <button
         onClick={() => onSelect(preset)}
         className={`flex-1 text-left p-4 pr-14 rounded-2xl border-2 transition-all duration-300 ${isSelected
-            ? 'bg-white/15 border-orange-500/50 shadow-lg shadow-orange-950/20'
-            : 'bg-white/5 border-transparent hover:bg-white/10 hover:border-white/10'
+          ? 'bg-black text-white shadow-lg shadow-black/10 border-black'
+          : 'bg-white border-stone-200 hover:border-stone-300 hover:bg-stone-50'
           }`}
         type="button"
       >
-        <div className="flex items-center gap-3">
-          <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${isSelected ? 'bg-orange-500 text-white' : 'bg-white/10 text-stone-400 group-hover:bg-white/20'}`}>
-            <BookmarkIcon className="w-4 h-4" />
+        <div className="flex items-center gap-4">
+          <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-3xl transition-all duration-300 ${isSelected ? 'bg-white shadow-inner scale-105' : 'bg-stone-100'}`}>
+            {preset.avatar || "👤"}
           </div>
-          <div className={`font-bold text-sm truncate ${isSelected ? 'text-white' : 'text-stone-400 group-hover:text-stone-200'}`}>
+          <div className={`font-bold text-sm truncate ${isSelected ? 'text-white' : 'text-stone-700 group-hover:text-black'}`}>
             {preset.name}
           </div>
         </div>
@@ -88,7 +89,7 @@ const SortablePresetRow: React.FC<{
           {...attributes}
           {...listeners}
           disabled={isReordering}
-          className="h-8 w-8 rounded-lg bg-white/5 text-stone-500 flex items-center justify-center text-xs hover:bg-white/10 hover:text-white transition-all touch-none active:scale-95"
+          className={`h-8 w-8 rounded-lg flex items-center justify-center text-xs transition-all touch-none active:scale-95 ${isSelected ? 'bg-white/10 text-white/50 hover:bg-white/20 hover:text-white' : 'bg-stone-100 text-stone-400 hover:bg-stone-200 hover:text-stone-700'}`}
           aria-label="ドラッグして順番を変更"
         >
           <div className="grid grid-cols-2 gap-0.5">
@@ -102,7 +103,7 @@ const SortablePresetRow: React.FC<{
             onDelete(preset);
           }}
           disabled={deletingId === preset.id || isReordering}
-          className="h-8 w-8 rounded-lg text-stone-500 hover:text-rose-400 hover:bg-rose-500/10 flex items-center justify-center transition-all disabled:opacity-20"
+          className={`h-8 w-8 rounded-lg flex items-center justify-center transition-all disabled:opacity-20 ${isSelected ? 'text-white/40 hover:text-rose-400 hover:bg-rose-500/10' : 'text-stone-400 hover:text-rose-500 hover:bg-rose-50'}`}
           aria-label="プリセットを削除"
         >
           <TrashIcon className="w-4 h-4" />
@@ -164,7 +165,9 @@ const PresetModal: React.FC<PresetModalProps> = ({
   currentConfig,
 }) => {
   const [name, setName] = useState('');
+  const [avatar, setAvatar] = useState('👤');
   const [customPrompt, setCustomPrompt] = useState('');
+  const [postSamples, setPostSamples] = useState<{ [key in Platform]?: string }>({});
   const [selectedPresetId, setSelectedPresetId] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -195,7 +198,9 @@ const PresetModal: React.FC<PresetModalProps> = ({
     }
 
     setName('');
+    setAvatar('👤');
     setCustomPrompt(currentConfig.customPrompt ?? '');
+    setPostSamples(currentConfig.postSamples || {});
     setSelectedPresetId(null);
     setErrorMessage(null);
     setOrderError(null);
@@ -232,7 +237,9 @@ const PresetModal: React.FC<PresetModalProps> = ({
     try {
       const payload = {
         name: trimmedName,
+        avatar: avatar,
         custom_prompt: trimmedPrompt || null,
+        postSamples,
       };
       const endpoint = selectedPresetId
         ? `/api/me/presets/${selectedPresetId}`
@@ -258,7 +265,9 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
       await refreshPresets();
       setName('');
+      setAvatar('👤');
       setCustomPrompt('');
+      setPostSamples({});
       setSelectedPresetId(null);
     } catch (err) {
       console.error('preset save failed:', err);
@@ -271,7 +280,9 @@ const PresetModal: React.FC<PresetModalProps> = ({
   const handleLoadPreset = (preset: Preset) => {
     setSelectedPresetId(preset.id);
     setName(enforceSaveNameWidth(preset.name));
+    setAvatar(preset.avatar || '👤');
     setCustomPrompt(preset.custom_prompt ?? '');
+    setPostSamples(preset.postSamples || {});
     setErrorMessage(null);
     setOrderError(null);
     setMobileView('edit');
@@ -281,7 +292,9 @@ const PresetModal: React.FC<PresetModalProps> = ({
     if (limitReached) return;
     setSelectedPresetId(null);
     setName('');
+    setAvatar('👤');
     setCustomPrompt('');
+    setPostSamples({});
     setErrorMessage(null);
     setOrderError(null);
     setMobileView('edit');
@@ -303,7 +316,9 @@ const PresetModal: React.FC<PresetModalProps> = ({
       if (selectedPresetId === preset.id) {
         setSelectedPresetId(null);
         setName('');
+        setAvatar('👤');
         setCustomPrompt(currentConfig.customPrompt ?? '');
+        setPostSamples(currentConfig.postSamples || {});
       }
     } catch (err) {
       console.error('preset delete failed:', err);
@@ -317,8 +332,10 @@ const PresetModal: React.FC<PresetModalProps> = ({
     const trimmedPrompt = customPrompt.trim();
     const personaPreset: Preset = {
       id: 'temp',
-      name: 'Persona',
+      name: name || 'Persona',
+      avatar: avatar,
       custom_prompt: trimmedPrompt || null,
+      postSamples,
       sort_order: 0,
     };
     onApply(personaPreset);
@@ -367,28 +384,27 @@ const PresetModal: React.FC<PresetModalProps> = ({
     <div className="flex w-full h-full flex-col md:flex-row overflow-hidden">
       {/* SIDEBAR: Dark Tech Theme */}
       <div
-        className={`md:w-5/12 lg:w-4/12 bg-[#0F172A] border-r border-white/5 flex flex-col shrink-0 h-full relative overflow-hidden ${listVisibilityClass}`}
+        className={`md:w-5/12 lg:w-4/12 bg-stone-50 border-r border-stone-200 flex flex-col shrink-0 h-full relative overflow-hidden ${listVisibilityClass}`}
       >
         {/* Background Pattern */}
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.03] pointer-events-none"></div>
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none"></div>
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.02)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none"></div>
 
         <div className="relative z-10 p-6 md:p-8 flex flex-col h-full">
           <div className="mb-8 flex items-center justify-between gap-4">
             <div className="space-y-1">
-              <h3 className="font-black text-xl text-white tracking-tight flex items-center gap-2">
-                <div className="w-1.5 h-6 bg-orange-500 rounded-full"></div>
-                PRESETS
+              <h3 className="font-black text-xl text-stone-800 tracking-tight flex items-center gap-2">
+                <div className="w-1.5 h-6 bg-lime rounded-full shadow-sm"></div>
+                投稿者プロフィール
               </h3>
-              <p className="text-[10px] font-black text-stone-500 uppercase tracking-widest">Saved Configurations</p>
+              <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest">Sender Profiles</p>
             </div>
             <button
               type="button"
               onClick={handleStartNew}
               disabled={limitReached}
               className={`p-2 rounded-xl transition-all border-2 flex items-center justify-center ${limitReached
-                  ? 'border-white/5 text-stone-600'
-                  : 'border-white/10 bg-white/5 text-orange-400 hover:bg-orange-500 hover:text-white hover:border-orange-500'
+                ? 'border-stone-100 text-stone-300'
+                : 'border-stone-200 bg-white text-stone-600 hover:bg-black hover:text-lime hover:border-black shadow-sm'
                 }`}
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12h14" /></svg>
@@ -398,9 +414,9 @@ const PresetModal: React.FC<PresetModalProps> = ({
           <div className="flex-1 overflow-y-auto space-y-3 no-scrollbar pb-6">
             {orderedPresets.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-40 text-center space-y-2 opacity-50">
-                <BookmarkIcon className="w-8 h-8 text-stone-700" />
-                <div className="text-[10px] font-black text-stone-600 uppercase tracking-widest">
-                  No Presets Found
+                <BookmarkIcon className="w-8 h-8 text-stone-300" />
+                <div className="text-[10px] font-black text-stone-400 uppercase tracking-widest">
+                  プリセットがありません
                 </div>
               </div>
             ) : (
@@ -449,12 +465,12 @@ const PresetModal: React.FC<PresetModalProps> = ({
       >
         <div className="p-6 md:p-8 border-b border-stone-100 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-orange-50 flex items-center justify-center text-orange-600 shadow-inner">
+            <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-black shadow-inner" style={{ backgroundColor: 'rgba(239,255,0,0.2)' }}>
               <MagicWandIcon className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="font-black text-xl text-stone-900 tracking-tight">プリセット編集</h2>
-              <p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">Configuration Editor</p>
+              <h2 className="font-black text-xl text-stone-900 tracking-tight">プロファイルの編集</h2>
+              <p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">Profile Editor</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -465,12 +481,12 @@ const PresetModal: React.FC<PresetModalProps> = ({
                 className="md:hidden flex items-center gap-1.5 px-4 py-2 text-xs font-black text-stone-500 bg-stone-100 rounded-full hover:bg-stone-200"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
-                BACK
+                戻る
               </button>
             )}
             <button
               onClick={onClose}
-              className="p-2.5 hover:bg-rose-50 rounded-2xl text-stone-300 hover:text-rose-500 transition-all active:scale-95"
+              className="p-2.5 hover:bg-lime/10 rounded-2xl text-stone-300 hover:text-lime transition-all active:scale-95"
             >
               <CloseIcon className="w-6 h-6" />
             </button>
@@ -479,39 +495,133 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
         <div className="flex-1 overflow-y-auto p-8 md:p-12 space-y-10">
           <div className="animate-in slide-in-from-bottom-4 duration-500">
-            <label className="block text-[11px] font-black text-stone-400 uppercase tracking-[0.2em] mb-3">
-              プリセット名 (Save Name)
-            </label>
-            <div className="relative group">
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(enforceSaveNameWidth(e.target.value))}
-                placeholder="例: フレンドリーな店長"
-                className="w-full px-6 py-4.5 bg-stone-50 border-2 border-transparent focus:bg-white focus:border-orange-500 focus:ring-[8px] focus:ring-orange-500/5 outline-none rounded-2xl text-base text-stone-800 font-bold placeholder-stone-300 transition-all shadow-sm"
-              />
-              <div className="absolute right-4 top-1/2 -transtone-y-1/2 text-stone-200 group-focus-within:text-orange-400">
-                <BookmarkIcon className="w-5 h-5" />
+            <div className="space-y-8">
+              {/* Profile Name */}
+              <div className="space-y-3">
+                <label className="block text-[11px] font-black text-stone-400 uppercase tracking-[0.2em]">
+                  プロフィール名 (Account Name)
+                </label>
+                <div className="relative group max-w-md">
+                  <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(enforceSaveNameWidth(e.target.value))}
+                    placeholder="例: 店長（公式）"
+                    className="w-full px-6 py-4.5 bg-stone-50 border-2 border-transparent focus:bg-white focus:border-indigo-500 focus:ring-[8px] focus:ring-indigo-500/10 outline-none rounded-2xl text-base text-stone-800 font-bold placeholder-stone-300 transition-all shadow-sm"
+                  />
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 text-stone-200 group-focus-within:text-indigo-500">
+                    <span className="text-xl">{avatar}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Icon Selection */}
+              <div className="space-y-4">
+                <label className="block text-[11px] font-black text-stone-400 uppercase tracking-[0.2em]">
+                  アイコンの選択 (Select Icon)
+                </label>
+                <div className="flex flex-wrap gap-2.5 p-5 bg-stone-50 border border-stone-100 rounded-[32px] shadow-inner-sm">
+                  {[
+                    { e: '👔', l: '店長/公式' },
+                    { e: '👟', l: 'スタッフ' },
+                    { e: '💻', l: '広報/IT' },
+                    { e: '🍳', l: '料理/製作' },
+                    { e: '☕', l: 'カフェ/日常' },
+                    { e: '🏢', l: '店舗/外観' },
+                    { e: '✨', l: 'キラキラ' },
+                    { e: '📣', l: 'お知らせ' },
+                    { e: '🌿', l: 'ナチュラル' },
+                    { e: '💎', l: 'プレミアム' }
+                  ].map((item) => (
+                    <button
+                      key={item.e}
+                      type="button"
+                      onClick={() => setAvatar(item.e)}
+                      title={item.l}
+                      className={`w-12 h-12 flex items-center justify-center text-2xl rounded-2xl transition-all duration-300 ${avatar === item.e ? 'bg-white shadow-lg ring-2 ring-indigo-500 scale-110 z-10' : 'hover:bg-white hover:shadow-md opacity-40 hover:opacity-100'}`}
+                    >
+                      {item.e}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
 
           <div className="animate-in slide-in-from-bottom-4 duration-500 delay-100">
-            <label className="block text-[11px] font-black text-orange-400 uppercase tracking-[0.2em] mb-3">
-              発信者ペルソナ (Prompt Instruction)
+            <label className="block text-[11px] font-black text-indigo-500 uppercase tracking-[0.2em] mb-3">
+              追加の指示プロンプト (Additional Instructions)
             </label>
-            <div className="relative p-[1px] rounded-[24px] bg-gradient-to-br from-orange-500/20 via-stone-100 to-orange-500/10">
+            <div className="relative p-[1px] rounded-[24px] bg-gradient-to-br from-indigo-500/20 via-gray-100 to-indigo-500/10">
               <AutoResizingTextarea
                 value={customPrompt}
                 onChange={setCustomPrompt}
-                placeholder="例: 活気のある若手スタッフの口調で、親しみやすく丁寧なタメ口を交えて。"
-                className="w-full px-6 py-6 bg-white border-2 border-transparent focus:border-orange-500 focus:ring-[8px] focus:ring-orange-500/5 outline-none rounded-[22px] text-base text-stone-800 font-medium leading-relaxed placeholder-stone-300 transition-all shadow-inner min-h-[140px]"
+                placeholder={'例：\n・「ご来店お待ちしております」は使わないでください\n・必ず「#〇〇」のタグをつけてください\n・語尾は「〜だワン！」にしてください'}
+                className="w-full px-6 py-6 bg-white border-2 border-transparent focus:border-indigo-500 focus:ring-[8px] focus:ring-indigo-500/10 outline-none rounded-[22px] text-base text-gray-800 font-medium leading-relaxed placeholder-gray-300 transition-all shadow-inner min-h-[140px]"
               />
             </div>
             <p className="text-[11px] text-stone-400 font-medium mt-3 leading-relaxed flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-orange-400"></span>
-              ここで指定した性格や文体がAIの出力に反映されます。
+              <span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+              文体は「過去の投稿学習」が優先されます。ここは特定のルールや制約を指定するのに便利です。
             </p>
+          </div>
+
+          <div className="animate-in slide-in-from-bottom-4 duration-500 delay-200">
+            <label className="block text-[11px] font-black text-stone-900 uppercase tracking-[0.2em] mb-4">
+              AIプロフィールの育成 (文体学習)
+            </label>
+            <div className="bg-stone-100 rounded-[28px] p-1">
+              {/* Instagram Sample */}
+              <div className="bg-white rounded-[24px] p-5 mb-1">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-6 h-6 rounded-lg bg-pink-100 flex items-center justify-center text-pink-600">
+                    <InstagramIcon className="w-3.5 h-3.5" />
+                  </div>
+                  <span className="text-[10px] font-black text-stone-500 uppercase">Instagram Learning</span>
+                </div>
+                <textarea
+                  value={postSamples[Platform.Instagram] || ''}
+                  onChange={(e) => setPostSamples(prev => ({ ...prev, [Platform.Instagram]: e.target.value }))}
+                  placeholder={'例：\nこんにちは！今日のランチは... 🍝\n---\n新作のケーキが焼き上がりました！ 🍰\n---\n(このように「---」で区切る)'}
+                  rows={4}
+                  className="w-full px-4 py-3 rounded-xl bg-stone-50 border-2 border-transparent focus:bg-white focus:border-pink-500 outline-none transition-all resize-none text-xs text-stone-800 leading-relaxed placeholder-stone-400"
+                />
+              </div>
+
+              {/* X Sample */}
+              <div className="bg-white rounded-[24px] p-5 mb-1">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-6 h-6 rounded-lg bg-stone-900 flex items-center justify-center text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4l11.733 16h4.267l-11.733 -16z" /><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" /></svg>
+                  </div>
+                  <span className="text-[10px] font-black text-stone-500 uppercase">X (Twitter) Learning</span>
+                </div>
+                <textarea
+                  value={postSamples[Platform.X] || ''}
+                  onChange={(e) => setPostSamples(prev => ({ ...prev, [Platform.X]: e.target.value }))}
+                  placeholder="過去の気に入っている投稿を3件ほど貼り付けてください..."
+                  rows={3}
+                  className="w-full px-4 py-3 rounded-xl bg-stone-50 border-2 border-transparent focus:bg-white focus:border-stone-500 outline-none transition-all resize-none text-xs text-stone-800 leading-relaxed placeholder-stone-400"
+                />
+              </div>
+
+              {/* Google Maps Sample */}
+              <div className="bg-white rounded-[24px] p-5">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-6 h-6 rounded-lg bg-blue-500 flex items-center justify-center text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" /></svg>
+                  </div>
+                  <span className="text-[10px] font-black text-stone-500 uppercase">Map Replies Learning</span>
+                </div>
+                <textarea
+                  value={postSamples[Platform.GoogleMaps] || ''}
+                  onChange={(e) => setPostSamples(prev => ({ ...prev, [Platform.GoogleMaps]: e.target.value }))}
+                  placeholder="過去のオーナー返信を3件ほど貼り付けてください..."
+                  rows={3}
+                  className="w-full px-4 py-3 rounded-xl bg-stone-50 border-2 border-transparent focus:bg-white focus:border-blue-500 outline-none transition-all resize-none text-xs text-stone-800 leading-relaxed placeholder-stone-400"
+                />
+              </div>
+            </div>
           </div>
         </div>
 
@@ -520,19 +630,19 @@ const PresetModal: React.FC<PresetModalProps> = ({
             <button
               onClick={handleSave}
               disabled={isSaveDisabled}
-              className="w-full bg-[#0F172A] hover:bg-stone-800 disabled:opacity-50 disabled:cursor-not-allowed text-white px-8 py-5 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center justify-center gap-3 transition-all transform hover:-transtone-y-1 active:transtone-y-0 shadow-xl shadow-stone-200"
+              className="w-full bg-black hover:bg-stone-900 disabled:opacity-50 disabled:cursor-not-allowed text-indigo-400 border border-indigo-500/50 px-8 py-5 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center justify-center gap-3 transition-all transform hover:-translate-y-1 active:translate-y-0 shadow-xl shadow-black/20"
             >
               <SaveIcon className="w-4 h-4" />
-              {selectedPresetId ? 'UPDATE PRESET' : 'SAVE TO LIST'}
+              {selectedPresetId ? '更新して保存' : '新規作成'}
             </button>
           </div>
 
           <button
             onClick={handleApplyCurrent}
-            className="flex-[1.2] bg-orange-600 hover:bg-orange-700 text-white font-black py-5 px-8 rounded-2xl shadow-xl shadow-orange-200 transition-all transform hover:-transtone-y-1 active:transtone-y-0 flex items-center justify-center gap-3 text-sm uppercase tracking-widest"
+            className="flex-[1.2] bg-indigo-600 hover:bg-indigo-700 text-white font-black py-5 px-8 rounded-2xl shadow-xl shadow-indigo-200 transition-all transform hover:-translate-y-1 active:translate-y-0 flex items-center justify-center gap-3 text-sm uppercase tracking-widest"
           >
             <MagicWandIcon className="w-4 h-4" />
-            Apply Settings
+            プロファイルを適用
           </button>
         </div>
       </div>

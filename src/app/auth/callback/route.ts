@@ -12,8 +12,9 @@ export async function GET(request: Request) {
     await supabase.auth.exchangeCodeForSession(code);
   }
 
-  // IMPORTANT: return to /start so intent-based UI works
-  return NextResponse.redirect(
-    `${origin}/start?intent=${encodeURIComponent(intent)}`
-  );
+  const next = searchParams.get("next") ?? (intent === "trial" ? "/start" : "/generate");
+  const redirectUrl = new URL(next, origin);
+  redirectUrl.searchParams.set("intent", intent);
+
+  return NextResponse.redirect(redirectUrl.toString());
 }

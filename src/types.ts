@@ -6,6 +6,7 @@ export enum Platform {
 }
 
 export enum PostPurpose {
+  Auto = 'auto',
   Promotion = 'promotion',
   Story = 'story',
   Educational = 'educational',
@@ -16,13 +17,15 @@ export enum GoogleMapPurpose {
   Auto = 'auto',
   Thanks = 'thanks',
   Apology = 'apology',
-  Clarify = 'clarify'
+  Clarify = 'clarify',
+  Info = 'info'
 }
 
 export enum Tone {
   Formal = 'formal',   // きっちり
   Standard = 'standard', // 標準
-  Friendly = 'friendly'  // 親しみ
+  Friendly = 'friendly',  // 親しみ
+  Casual = 'casual' // もっと親しみ
 }
 
 export enum Length {
@@ -64,6 +67,7 @@ export interface GenerationConfig {
   // Platform specific
   xConstraint140?: boolean; // X (Twitter) only
   instagramFooter?: string; // New: Footer text to append
+  postSamples?: { [key in Platform]?: string }; // Passed from active preset
 }
 
 export interface GeneratedResult {
@@ -97,12 +101,24 @@ export interface GeneratedPost {
 export interface Preset {
   id: string;
   name: string;
+  avatar: string | null;
   custom_prompt: string | null;
+  postSamples?: { [key in Platform]?: string }; // New: Few-shot learning samples per platform
   sort_order: number;
+}
+
+export interface UserPlan {
+  isPro: boolean;
+  canUseApp: boolean;
+  eligibleForTrial: boolean;
+  plan: string;
+  status: string;
+  trial_ends_at: string | null;
 }
 
 export interface AppState {
   storeProfile: StoreProfile | null;
   history: GeneratedPost[];
   presets: Preset[];
+  plan: UserPlan | null;
 }

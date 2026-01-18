@@ -1,12 +1,19 @@
 import React from 'react';
-import { PostPurpose, GoogleMapPurpose, Tone, Length, Platform } from '../../../types';
+import { PostPurpose, GoogleMapPurpose, Tone, Length, Platform, Preset, UserPlan } from '../../../types';
 import { AutoResizingTextarea } from './AutoResizingTextarea';
 import {
     MegaphoneIcon, BookOpenIcon, LightbulbIcon, ChatHeartIcon,
-    AutoSparklesIcon, HandHeartIcon, ApologyIcon, InfoIcon, MagicWandIcon, SparklesIcon
+    AutoSparklesIcon, HandHeartIcon, ApologyIcon, InfoIcon, SparklesIcon,
+    StarIcon, ChevronDownIcon
 } from '../../Icons';
 
 interface PostInputFormProps {
+    platforms: Platform[];
+    activePlatform: Platform;
+    isMultiGen: boolean;
+    onPlatformToggle: (platform: Platform) => void;
+    onToggleMultiGen: () => void;
+    onSetActivePlatform: (platform: Platform) => void;
     platform: Platform;
     postPurpose: PostPurpose;
     gmapPurpose: GoogleMapPurpose;
@@ -18,38 +25,56 @@ interface PostInputFormProps {
     onLengthChange: (l: Length) => void;
     inputText: string;
     onInputTextChange: (text: string) => void;
+    starRating: number | null;
+    onStarRatingChange: (r: number | null) => void;
+    includeEmojis: boolean;
+    onIncludeEmojisChange: (value: boolean) => void;
+    includeSymbols: boolean;
+    onIncludeSymbolsChange: (value: boolean) => void;
     isGenerating: boolean;
     onGenerate: () => void;
     generateButtonRef?: React.RefObject<HTMLButtonElement>;
+    plan: UserPlan;
+    presets: Preset[];
+    activePresetId: string | null;
+    onApplyPreset: (preset: Preset) => void;
+    onOpenPresetModal: () => void;
 }
 
 const PURPOSES = [
-    { id: PostPurpose.Promotion, label: '宣伝', icon: <MegaphoneIcon /> },
-    { id: PostPurpose.Story, label: '日記', icon: <BookOpenIcon /> },
-    { id: PostPurpose.Educational, label: '豆知識', icon: <LightbulbIcon /> },
-    { id: PostPurpose.Engagement, label: '募集', icon: <ChatHeartIcon /> },
+    { id: PostPurpose.Auto, label: '自動', icon: <AutoSparklesIcon /> },
+    { id: PostPurpose.Promotion, label: '宣伝・告知', icon: <MegaphoneIcon /> },
+    { id: PostPurpose.Story, label: 'ストーリー', icon: <BookOpenIcon /> },
+    { id: PostPurpose.Educational, label: 'お役立ち', icon: <LightbulbIcon /> },
+    { id: PostPurpose.Engagement, label: '交流', icon: <ChatHeartIcon /> },
 ];
 
 const GMAP_PURPOSES = [
     { id: GoogleMapPurpose.Auto, label: '自動', icon: <AutoSparklesIcon /> },
     { id: GoogleMapPurpose.Thanks, label: 'お礼', icon: <HandHeartIcon /> },
     { id: GoogleMapPurpose.Apology, label: 'お詫び', icon: <ApologyIcon /> },
-    { id: GoogleMapPurpose.Clarify, label: 'お知らせ', icon: <InfoIcon /> },
+    { id: GoogleMapPurpose.Info, label: '情報', icon: <InfoIcon /> },
 ];
 
 const TONES = [
+    { id: Tone.Formal, label: 'きっちり' },
     { id: Tone.Standard, label: '標準' },
-    { id: Tone.Formal, label: '丁寧' },
     { id: Tone.Friendly, label: '親しみ' },
 ];
 
 const LENGTHS = [
-    { id: Length.Short, label: '短文' },
-    { id: Length.Medium, label: '普通' },
-    { id: Length.Long, label: '長文' },
+    { id: Length.Short, label: '短め' },
+    { id: Length.Medium, label: '標準' },
+    { id: Length.Long, label: '長め' },
 ];
 
 export const PostInputForm: React.FC<PostInputFormProps> = ({
+    platforms,
+    activePlatform,
+    isMultiGen,
+    onPlatformToggle,
+    onToggleMultiGen,
+    onSetActivePlatform,
     platform,
     postPurpose,
     gmapPurpose,
@@ -61,156 +86,423 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
     onLengthChange,
     inputText,
     onInputTextChange,
+    starRating,
+    onStarRatingChange,
+    includeEmojis,
+    onIncludeEmojisChange,
+    includeSymbols,
+    onIncludeSymbolsChange,
     isGenerating,
     onGenerate,
-    generateButtonRef
+    generateButtonRef,
+    plan,
+    presets,
+    activePresetId,
+    onApplyPreset,
+    onOpenPresetModal
 }) => {
+    // Persistent Advanced Mode State
+    const [isAdvancedMode, setIsAdvancedMode] = React.useState(false);
+
+    React.useEffect(() => {
+        const savedMode = localStorage.getItem('misepo_ui_mode');
+        if (savedMode === 'advanced') {
+            setIsAdvancedMode(true);
+        }
+    }, []);
+
+    const toggleMode = (advanced: boolean) => {
+        setIsAdvancedMode(advanced);
+        localStorage.setItem('misepo_ui_mode', advanced ? 'advanced' : 'simple');
+    };
+
+    const [show140LimitToggle, setShow140LimitToggle] = React.useState(true);
+    const [showCustomPrompt, setShowCustomPrompt] = React.useState(false);
+
     const isGoogleMaps = platform === Platform.GoogleMaps;
+    const isX = platform === Platform.X;
+
+    // Default to Auto if previously selected something that doesn't exist or just initialization
+    React.useEffect(() => {
+        if (!isGoogleMaps && !Object.values(PostPurpose).includes(postPurpose)) {
+            onPostPurposeChange(PostPurpose.Auto);
+        }
+    }, [isGoogleMaps, postPurpose, onPostPurposeChange]);
+
 
     return (
-        <div className="flex flex-col lg:grid lg:grid-cols-12 min-h-[600px] divide-y lg:divide-y-0 lg:divide-x divide-stone-200">
-            {/* Sidebar: Engine Configuration (4 Cols) */}
-            <div className="lg:col-span-4 p-8 space-y-10 bg-white/[0.02]">
-                <div className="space-y-8">
-                    {/* Scene Module */}
-                    <div className="space-y-4">
+        <div className="flex flex-col h-auto lg:h-[800px] bg-gradient-to-br from-[#F8FAFC] to-[#EFF6FF]">
+            {/* Platform Tabs & Multi-gen Toggle - Glassmorphism Header */}
+            <div className="flex flex-col lg:flex-row lg:items-center gap-2 px-6 pt-6 pb-2">
+                <div className="flex items-stretch flex-1 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                    <button
+                        onClick={() => onSetActivePlatform(Platform.X)}
+                        className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-bold transition-all relative group
+                            ${platforms.includes(Platform.X)
+                                ? 'bg-white text-gray-900 border-t-2 border-gray-900'
+                                : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50 bg-gray-50/50'
+                            }`}
+                    >
                         <div className="flex items-center gap-2">
-                            <div className="w-1 h-3 bg-orange-500 rounded-full"></div>
-                            <span className="text-[10px] font-black tracking-[0.3em] text-stone-500 uppercase">Engine Context</span>
+                            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" />
+                            </svg>
+                            <span>X (Twitter)</span>
                         </div>
-                        <div className="grid grid-cols-1 gap-2">
-                            {(isGoogleMaps ? GMAP_PURPOSES : PURPOSES).map((p) => (
-                                <button
-                                    key={p.id}
-                                    onClick={() => isGoogleMaps ? onGmapPurposeChange(p.id as GoogleMapPurpose) : onPostPurposeChange(p.id as PostPurpose)}
-                                    className={`
-                                        flex items-center gap-3 px-5 py-4 rounded-2xl border transition-all duration-300 group
-                                        ${(isGoogleMaps ? gmapPurpose : postPurpose) === p.id
-                                            ? 'bg-orange-500 text-white border-orange-500 shadow-xl translate-x-1'
-                                            : 'bg-white border-stone-200 text-stone-500 hover:bg-stone-50 hover:text-stone-800'}
-                                    `}
-                                >
-                                    <span className="text-lg group-hover:scale-110 transition-transform">{p.icon}</span>
-                                    <span className="text-xs font-black tracking-widest uppercase">{p.label}</span>
-                                </button>
-                            ))}
+                    </button>
+                    <div className="w-[1px] bg-gray-100 my-2" />
+                    <button
+                        onClick={() => onSetActivePlatform(Platform.Instagram)}
+                        className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-bold transition-all relative group
+                            ${platforms.includes(Platform.Instagram)
+                                ? 'bg-white text-pink-600 border-t-2 border-pink-500'
+                                : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50 bg-gray-50/50'
+                            }`}
+                    >
+                        <div className="flex items-center gap-2">
+                            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2c2.717 0 3.056.01 4.122.06 1.065.05 1.79.217 2.428.465.66.254 1.216.598 1.772 1.153a4.908 4.908 0 0 1 1.153 1.772c.247.637.415 1.363.465 2.428.047 1.066.06 1.405.06 4.122 0 2.717-.01 3.056-.06 4.122-.05 1.065-.218 1.79-.465 2.428a4.883 4.883 0 0 1-1.153 1.772 4.915 4.915 0 0 1-1.772 1.153c-.637.247-1.363.415-2.428.465-1.066.047-1.405.06-4.122.06-2.717 0-3.056-.01-4.122-.06-1.065-.05-1.79-.218-2.428-.465a4.89 4.89 0 0 1-1.772-1.153 4.904 4.904 0 0 1-1.153-1.772c-.248-.637-.415-1.363-.465-2.428C2.013 15.056 2 14.717 2 12c0-2.717.01-3.056.06-4.122.05-1.066.217-1.79.465-2.428a4.88 4.88 0 0 1 1.153-1.772A4.897 4.897 0 0 1 5.45 2.525c.638-.248 1.362-.415 2.428-.465C8.944 2.013 9.283 2 12 2zm0 5a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm6.5-.25a1.25 1.25 0 1 0-2.5 0 1.25 1.25 0 0 0 2.5 0zM12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6z" />
+                            </svg>
+                            <span>Instagram</span>
+                        </div>
+                    </button>
+                    <div className="w-[1px] bg-gray-100 my-2" />
+                    <button
+                        onClick={() => onSetActivePlatform(Platform.GoogleMaps)}
+                        className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-bold transition-all relative group
+                            ${platforms.includes(Platform.GoogleMaps)
+                                ? 'bg-white text-emerald-600 border-t-2 border-emerald-500'
+                                : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50 bg-gray-50/50'
+                            }`}
+                    >
+                        <div className="flex items-center gap-2">
+                            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                            </svg>
+                            <span>Google Maps</span>
+                        </div>
+                    </button>
+                    <div className="w-[1px] bg-gray-100 my-2" />
+                </div>
+
+                <div className="flex items-center justify-center lg:justify-start gap-3 py-2 px-4 lg:py-0 bg-white/60 backdrop-blur-md rounded-2xl border border-white/50 shadow-sm min-h-[56px]">
+                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Simultaneous</span>
+                    <button
+                        onClick={onToggleMultiGen}
+                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-all duration-300 ${isMultiGen
+                            ? 'bg-indigo-600 shadow-[0_0_10px_rgba(79,70,229,0.3)]'
+                            : 'bg-gray-200 shadow-inner'
+                            }`}
+                    >
+                        <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform shadow-sm duration-300 ${isMultiGen ? 'translate-x-6' : 'translate-x-1'
+                            }`} />
+                    </button>
+                    <span className={`text-xs font-black transition-colors ${isMultiGen ? 'text-indigo-600' : 'text-gray-300'}`}>
+                        {isMultiGen ? 'ON' : 'OFF'}
+                    </span>
+                </div>
+            </div>
+
+            {/* Main Content Area */}
+            <div className="flex flex-col lg:flex-row flex-1 gap-6 p-6 lg:overflow-hidden">
+
+                {/* Left Control Panel */}
+                <div className="w-full lg:w-[320px] order-2 lg:order-1 flex flex-col gap-6 shrink-0 lg:overflow-y-auto px-1 lg:pr-2 scrollbar-hide py-2">
+
+                    {/* Mode Switcher */}
+                    <div className="flex justify-end px-2">
+                        <div className="bg-gray-100/80 p-1 rounded-lg flex items-center gap-1">
+                            <button
+                                onClick={() => toggleMode(false)}
+                                className={`px-3 py-1.5 rounded-md text-[10px] font-bold transition-all ${!isAdvancedMode
+                                    ? 'bg-white text-gray-800 shadow-sm'
+                                    : 'text-gray-400 hover:text-gray-600'
+                                    }`}
+                            >
+                                シンプル
+                            </button>
+                            <button
+                                onClick={() => toggleMode(true)}
+                                className={`px-3 py-1.5 rounded-md text-[10px] font-bold transition-all ${isAdvancedMode
+                                    ? 'bg-white text-indigo-600 shadow-sm'
+                                    : 'text-gray-400 hover:text-gray-600'
+                                    }`}
+                            >
+                                詳細設定
+                            </button>
                         </div>
                     </div>
 
-                    {/* Tone Module */}
-                    <div className="space-y-4">
-                        <div className="flex items-center gap-2">
-                            <div className="w-1 h-3 bg-orange-500 rounded-full"></div>
-                            <span className="text-[10px] font-black tracking-[0.3em] text-stone-500 uppercase">Voice Matrix</span>
+                    {/* Persona / Preset Selection (Card Grid) */}
+                    {(platform === Platform.X || platform === Platform.Instagram) && (
+                        <div>
+                            <div className="flex items-center justify-between mb-3 px-1">
+                                <h3 className="text-sm font-bold text-gray-500">投稿者プロフィール</h3>
+                                <button onClick={onOpenPresetModal} className="text-[10px] text-indigo-500 font-bold hover:text-indigo-600 hover:bg-indigo-50 px-2 py-1 rounded-md transition-colors">
+                                    管理
+                                </button>
+                            </div>
+                            <div className="grid grid-cols-2 gap-3">
+                                {presets.map((preset) => (
+                                    <button
+                                        key={preset.id}
+                                        onClick={() => onApplyPreset(preset)}
+                                        className={`
+                                            relative py-3.5 px-3 rounded-2xl border transition-all flex flex-col items-center justify-center gap-1.5 group shadow-sm
+                                            ${activePresetId === preset.id
+                                                ? 'bg-gradient-to-br from-indigo-50 to-white border-indigo-200 text-indigo-700 shadow-md scale-[1.02] ring-1 ring-indigo-200'
+                                                : 'bg-white border-transparent text-gray-400 hover:border-gray-200 hover:text-gray-600 hover:shadow-md'}
+                                        `}
+                                    >
+                                        <span className={`text-2xl transition-transform duration-300 ${activePresetId === preset.id ? 'scale-110 drop-shadow-sm' : 'group-hover:scale-110'}`}>
+                                            {preset.avatar || "👤"}
+                                        </span>
+                                        <span className={`text-[11px] font-bold text-center leading-tight line-clamp-2 px-1 ${activePresetId === preset.id ? 'text-indigo-700' : ''}`}>
+                                            {preset.name}
+                                        </span>
+
+                                        {/* Selection Indicator */}
+                                        {activePresetId === preset.id && (
+                                            <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-indigo-500 shadow-sm" />
+                                        )}
+                                    </button>
+                                ))}
+                                {presets.length === 0 && (
+                                    <div className="col-span-2 py-8 flex flex-col items-center justify-center bg-gray-50/50 rounded-2xl border border-dashed border-gray-200">
+                                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest px-2 italic mb-2">プロフィールなし</span>
+                                        <button onClick={onOpenPresetModal} className="text-[10px] text-indigo-600 bg-white px-3 py-1.5 rounded-lg border border-indigo-100 shadow-sm hover:shadow-md transition-all font-bold">
+                                            作成する
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
                         </div>
-                        <div className="flex flex-wrap gap-2">
+                    )}
+
+                    {/* Tone Selection (Segmented Control) */}
+                    <div>
+                        <h3 className="text-sm font-bold text-gray-500 mb-3 px-1">スタイル設定</h3>
+                        <div className="flex bg-white p-1 rounded-2xl border border-gray-100 shadow-sm relative isolate">
+                            {/* Background Slider - calculate position based on index if needed, or simple direct styling */}
                             {TONES.map((t) => (
                                 <button
                                     key={t.id}
                                     onClick={() => onToneChange(t.id)}
-                                    className={`
-                                        px-4 py-2.5 rounded-xl border text-[10px] font-black tracking-widest transition-all
-                                        ${tone === t.id
-                                            ? 'bg-orange-600 border-orange-500 text-white shadow-lg'
-                                            : 'bg-white border-stone-200 text-stone-500 hover:border-stone-300 hover:text-stone-800'}
-                                    `}
+                                    className={`flex-1 py-3 rounded-xl text-xs font-bold transition-all relative z-10 ${tone === t.id
+                                        ? 'bg-indigo-50 text-indigo-700 shadow-sm ring-1 ring-indigo-100' // Active
+                                        : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50' // Inactive
+                                        }`}
                                 >
-                                    {t.label.toUpperCase()}
+                                    {t.label}
                                 </button>
                             ))}
                         </div>
                     </div>
 
-                    {/* Length Module */}
-                    <div className="space-y-4">
-                        <div className="flex items-center gap-2">
-                            <div className="w-1 h-3 bg-orange-500 rounded-full"></div>
-                            <span className="text-[10px] font-black tracking-[0.3em] text-stone-500 uppercase">Output Scale</span>
-                        </div>
-                        <div className="grid grid-cols-3 gap-2">
-                            {LENGTHS.map((l) => (
-                                <button
-                                    key={l.id}
-                                    onClick={() => onLengthChange(l.id)}
-                                    className={`
-                                        flex flex-col items-center justify-center py-3 rounded-2xl border transition-all
-                                        ${length === l.id
-                                            ? 'bg-orange-500 text-white border-orange-500 shadow-lg'
-                                            : 'bg-white border-stone-200 text-stone-500 hover:bg-stone-50'}
-                                    `}
-                                >
-                                    <span className="text-[10px] font-black tracking-tighter mb-0.5">{l.label.toUpperCase()}</span>
-                                    <span className="text-[8px] font-black opacity-40">{l.id === 'short' ? 'MIN' : l.id === 'medium' ? 'MID' : 'MAX'}</span>
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Main Editor: The Workstation (8 Cols) */}
-            <div className="lg:col-span-8 p-10 flex flex-col relative overflow-hidden">
-                <div className="absolute top-0 right-0 p-8 flex gap-2 opacity-20">
-                    <div className="w-12 h-[1px] bg-white"></div>
-                    <div className="w-1 h-1 bg-white"></div>
-                </div>
-
-                <div className="mb-6">
-                    <h2 className="text-[10px] font-black text-orange-500 uppercase tracking-[0.4em] mb-2">Editor Protocol</h2>
-                    <h3 className="text-3xl font-black text-stone-800 tracking-tighter leading-tight italic">
-                        なにを伝えますか？
-                    </h3>
-                </div>
-
-                <div className="flex-1 relative group">
-                    <div className="absolute inset-0 bg-orange-500/5 blur-[100px] rounded-full opacity-0 group-focus-within:opacity-100 transition-opacity duration-1000"></div>
-                    <AutoResizingTextarea
-                        value={inputText}
-                        onChange={(e) => onInputTextChange(e.target.value)}
-                        placeholder="例：週末限定の特製クロワッサンが焼き上がりました。サクサクの食感と芳醇なバターの香りを楽しんでください。"
-                        className="w-full bg-transparent text-stone-800 text-xl md:text-2xl leading-relaxed placeholder:text-stone-400 focus:outline-none min-h-[300px] resize-none relative z-10"
-                    />
-                </div>
-
-                <div className="mt-10 flex items-center justify-between">
-                    <div className="hidden sm:flex items-center gap-6">
-                        <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-orange-500">
-                                <MagicWandIcon className="w-4 h-4" />
+                    {/* Star Rating - GMAP Only */}
+                    {isGoogleMaps && (
+                        <div>
+                            <div className="flex justify-between items-center mb-3 px-2">
+                                <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">星評価</h3>
+                                {starRating && <button onClick={() => onStarRatingChange(null)} className="text-[10px] text-gray-400 hover:text-gray-600">クリア</button>}
                             </div>
+                            <div className="flex gap-1 justify-center bg-white p-4 rounded-2xl shadow-sm border border-gray-100/50">
+                                {[1, 2, 3, 4, 5].map((rating) => (
+                                    <button
+                                        key={rating}
+                                        onClick={() => onStarRatingChange(rating)}
+                                        className={`text-2xl transition-all hover:scale-110 active:scale-95 ${starRating && rating <= starRating ? 'text-[#FCD34D] drop-shadow-sm' : 'text-gray-100'}`}
+                                    >
+                                        ★
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* --- ADVANCED MODE ONLY SECTIONS --- */}
+                    {isAdvancedMode && (
+                        <div className="space-y-6 animate-in fade-in slide-in-from-top-4 duration-300">
+                            {/* Length Selection (Segmented Control) */}
+                            {!isX && (
+                                <div>
+                                    <div className="flex bg-white p-1 rounded-2xl border border-gray-100 shadow-sm">
+                                        {LENGTHS.map((l) => (
+                                            <button
+                                                key={l.id}
+                                                onClick={() => onLengthChange(l.id)}
+                                                className={`flex-1 py-3 rounded-xl text-xs font-bold transition-all ${length === l.id
+                                                    ? 'bg-indigo-50 text-indigo-700 shadow-sm ring-1 ring-indigo-100'
+                                                    : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50'
+                                                    }`}
+                                            >
+                                                {l.label}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Purpose Selection - Large Card Grid */}
                             <div>
-                                <p className="text-[9px] font-black text-stone-400 uppercase tracking-widest">AI Status</p>
-                                <p className="text-[11px] font-black text-stone-800 uppercase tracking-tighter">Engine Optimized</p>
+                                <h3 className="text-sm font-bold text-gray-500 mb-3 px-1">投稿の目的</h3>
+                                <div className="grid grid-cols-2 gap-3">
+                                    {(isGoogleMaps ? GMAP_PURPOSES : PURPOSES).map((p) => {
+                                        const isSelected = (isGoogleMaps ? gmapPurpose : postPurpose) === p.id;
+                                        const isAuto = p.id === PostPurpose.Auto || p.id === GoogleMapPurpose.Auto;
+                                        const isLocked = isGoogleMaps && starRating && gmapPurpose !== p.id;
+
+                                        return (
+                                            <button
+                                                key={p.id}
+                                                onClick={() => !isLocked && (isGoogleMaps ? onGmapPurposeChange(p.id as GoogleMapPurpose) : onPostPurposeChange(p.id as PostPurpose))}
+                                                disabled={isLocked}
+                                                className={`
+                                            relative py-3.5 px-4 rounded-2xl border transition-all flex flex-col items-center justify-center gap-1.5 group
+                                            ${isSelected
+                                                        ? 'bg-gradient-to-br from-indigo-600 to-indigo-700 border-indigo-600 text-white shadow-lg shadow-indigo-200 scale-[1.02]'
+                                                        : 'bg-white border-transparent text-gray-400 hover:border-gray-200 hover:text-gray-600 hover:shadow-md'
+                                                    }
+                                            ${isLocked ? 'opacity-30 cursor-not-allowed' : ''}
+                                        `}
+                                            >
+                                                <span className={`p-2 rounded-full transition-all ${isSelected
+                                                    ? 'bg-white/20 text-white'
+                                                    : 'bg-gray-50 text-gray-400 group-hover:bg-indigo-50 group-hover:text-indigo-500'
+                                                    }`}>
+                                                    <span className="w-5 h-5 block [&>svg]:w-full [&>svg]:h-full">{p.icon}</span>
+                                                </span>
+                                                <span className={`text-[11px] font-bold ${isSelected ? 'text-white' : ''}`}>{p.label}</span>
+
+                                                {/* Visual Indicator for Selection */}
+                                                {isSelected && (
+                                                    <div className="absolute inset-0 rounded-2xl ring-2 ring-indigo-600/20 z-0 pointer-events-none" />
+                                                )}
+                                            </button>
+                                        )
+                                    })}
+                                </div>
                             </div>
+
+                            {/* Features / Toggles (Card Style) */}
+                            {!isGoogleMaps && (
+                                <div className="pt-2">
+                                    <div className="flex items-center justify-between px-2 mb-3">
+                                        <h3 className="text-sm font-bold text-gray-500">装飾オプション</h3>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <button
+                                            onClick={() => onIncludeEmojisChange(!includeEmojis)}
+                                            className={`relative p-3 rounded-2xl border transition-all flex flex-col items-center justify-center gap-1 aspect-[16/9] ${includeEmojis
+                                                ? 'bg-orange-50 border-orange-200 text-orange-600 shadow-sm'
+                                                : 'bg-white border-transparent text-gray-400 hover:shadow-md'}`}
+                                        >
+                                            <span className="text-xl">😊</span>
+                                            <span className="text-[10px] font-bold">絵文字</span>
+
+                                            {/* Toggle Switch Visual */}
+                                            <div className={`absolute top-2 right-2 w-6 h-3.5 rounded-full transition-colors ${includeEmojis ? 'bg-orange-400' : 'bg-gray-200'}`}>
+                                                <div className={`absolute top-0.5 left-0.5 w-2.5 h-2.5 bg-white rounded-full transition-transform ${includeEmojis ? 'translate-x-2.5' : ''}`} />
+                                            </div>
+                                        </button>
+                                        <button
+                                            onClick={() => onIncludeSymbolsChange(!includeSymbols)}
+                                            className={`relative p-3 rounded-2xl border transition-all flex flex-col items-center justify-center gap-1 aspect-[16/9] ${includeSymbols
+                                                ? 'bg-indigo-50 border-indigo-200 text-indigo-600 shadow-sm'
+                                                : 'bg-white border-transparent text-gray-400 hover:shadow-md'}`}
+                                        >
+                                            <span className="text-xl">✨</span>
+                                            <span className="text-[10px] font-bold">装飾・特殊文字</span>
+                                            {/* Toggle Switch Visual */}
+                                            <div className={`absolute top-2 right-2 w-6 h-3.5 rounded-full transition-colors ${includeSymbols ? 'bg-indigo-400' : 'bg-gray-200'}`}>
+                                                <div className={`absolute top-0.5 left-0.5 w-2.5 h-2.5 bg-white rounded-full transition-transform ${includeSymbols ? 'translate-x-2.5' : ''}`} />
+                                            </div>
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </div>
+
+                {/* Right Main Canvas - Input Only */}
+                <div className="flex-1 order-1 lg:order-2 flex flex-col h-full gap-4">
+                    <div className="flex-1 bg-white rounded-3xl p-8 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] border border-white/50 relative overflow-hidden flex flex-col group transition-all hover:shadow-[0_25px_50px_-12px_rgba(79,70,229,0.1)]">
+
+                        {/* Main Text Area - The "Canvas" */}
+                        <div className="flex-1 relative">
+                            <AutoResizingTextarea
+                                value={inputText}
+                                onChange={(e) => onInputTextChange(e.target.value)}
+                                placeholder="今どうしてる？ 写真の説明や伝えたいことなどを自由に入力..."
+                                className="w-full h-full bg-transparent text-gray-600 text-base lg:text-lg font-normal leading-relaxed placeholder:text-gray-300 focus:outline-none resize-none"
+                            />
+                        </div>
+
+                        {/* Custom Prompt Toggle - Bottom Floating Pill */}
+                        <div className="mt-4 pt-4 border-t border-gray-50 relative">
+                            {!showCustomPrompt ? (
+                                <button
+                                    onClick={() => setShowCustomPrompt(true)}
+                                    className="flex items-center gap-2 text-xs font-bold text-gray-400 hover:text-indigo-600 transition-colors py-2 px-1 group/prompt"
+                                >
+                                    <div className="p-1.5 rounded-full bg-gray-50 text-gray-400 group-hover/prompt:bg-indigo-50 group-hover/prompt:text-indigo-500 transition-colors">
+                                        <SparklesIcon className="w-3.5 h-3.5" />
+                                    </div>
+                                    <span>AIへの指示を追加（任意）</span>
+                                </button>
+                            ) : (
+                                <div className="animate-in fade-in slide-in-from-bottom-2 duration-300 bg-indigo-50/30 p-1.5 pl-4 pr-1.5 rounded-2xl flex items-center gap-2 border border-indigo-100/50 focus-within:ring-2 focus-within:ring-indigo-100 focus-within:border-indigo-300 transition-all">
+                                    <SparklesIcon className="w-4 h-4 text-indigo-500 shrink-0" />
+                                    <input
+                                        type="text"
+                                        placeholder="例：絵文字多めで、テンション高く..."
+                                        className="flex-1 bg-transparent border-none text-sm text-gray-800 placeholder:text-indigo-300 focus:ring-0 px-0 py-2"
+                                        autoFocus
+                                    />
+                                    <button
+                                        onClick={() => setShowCustomPrompt(false)}
+                                        className="p-2 rounded-xl hover:bg-white/50 text-gray-400 hover:text-gray-600 transition-colors"
+                                    >
+                                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     </div>
 
-                    <button
-                        ref={generateButtonRef}
-                        onClick={onGenerate}
-                        disabled={isGenerating || !inputText.trim()}
-                        className={`
-                            relative group overflow-hidden px-10 py-5 rounded-2xl font-black text-sm tracking-[0.2em] uppercase transition-all duration-500
-                            ${isGenerating || !inputText.trim()
-                                ? 'bg-stone-100 text-stone-400 cursor-not-allowed opacity-50'
-                                : 'bg-stone-900 text-white shadow-xl hover:shadow-2xl hover:scale-[1.02] active:scale-95'}
-                        `}
-                    >
-                        <div className="absolute inset-0 bg-gradient-to-r from-orange-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                        <span className="relative flex items-center gap-3">
+                    {/* Generate Button (Desktop) - Enhanced */}
+                    <div className="hidden lg:block relative group">
+                        <button
+                            ref={generateButtonRef}
+                            onClick={onGenerate}
+                            disabled={isGenerating}
+                            className={`relative w-full py-4 rounded-2xl font-bold text-lg transition-all duration-200 flex items-center justify-center gap-3 ${isGenerating
+                                ? 'bg-white text-gray-400 cursor-not-allowed border border-gray-100'
+                                : 'bg-black text-white hover:bg-gray-900 shadow-xl'
+                                }`}
+                        >
                             {isGenerating ? (
                                 <>
-                                    <div className="w-4 h-4 border-2 border-orange-600 border-t-transparent rounded-full animate-spin"></div>
-                                    GENERATING...
+                                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    生成中...
                                 </>
                             ) : (
                                 <>
-                                    <SparklesIcon className="w-5 h-5" />
-                                    ACTIVATE ENGINE
+                                    <SparklesIcon className="w-5 h-5 text-indigo-400" />
+                                    <span>投稿を作成</span>
+                                    <svg className="w-5 h-5 text-gray-500 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                    </svg>
                                 </>
                             )}
-                        </span>
-                    </button>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

@@ -20,36 +20,61 @@ export function normalizePlatform(value: unknown): Platform {
 
 export function normalizeResults(raw: any, fallbackPlatform: Platform): GeneratedResult[] {
   if (!raw) return [];
-  if (Array.isArray(raw)) {
-    return raw.map((r: any) => ({
-      platform: normalizePlatform(r.platform || fallbackPlatform),
-      data: Array.isArray(r.data) ? r.data : [String(r.data || '')],
-    }));
+  
+  // Handle string (single result stored as string)
+  if (typeof raw === 'string') {
+    return [{
+      platform: fallbackPlatform,
+      data: [raw],
+    }];
   }
+  
+  // Handle array
+  if (Array.isArray(raw)) {
+    return raw.map((r: any) => {
+      // If item is a string, wrap it
+      if (typeof r === 'string') {
+        return {
+          platform: fallbackPlatform,
+          data: [r],
+        };
+      }
+      // If item is an object with platform/data structure
+      return {
+        platform: normalizePlatform(r.platform || fallbackPlatform),
+        data: Array.isArray(r.data) ? r.data : (r.data ? [String(r.data)] : []),
+      };
+    });
+  }
+  
   return [];
 }
 
 export function mapHistoryEntry(entry: any): GeneratedPost {
-  const config = entry.config || {};
+  // The API saves input as {profile, config}, so unwrap if necessary
+  const rawConfig = entry.config?.config || entry.config || {};
+  // Results might be in entry.result (array of GeneratedResult) or entry.results
+  const rawResults = entry.result || entry.results || [];
+  
   return {
     id: entry.id?.toString() || crypto.randomUUID(),
     timestamp: entry.created_at ? new Date(entry.created_at).getTime() : Date.now(),
     config: {
-      platforms: Array.isArray(config.platforms) ? config.platforms.map(normalizePlatform) : [normalizePlatform(config.platform)],
-      postPurpose: config.postPurpose || config.purpose || PostPurpose.Promotion,
-      gmapPurpose: config.gmapPurpose || config.purpose || GoogleMapPurpose.Auto,
-      tone: config.tone || Tone.Standard,
-      length: config.length || Length.Medium,
-      inputText: config.inputText || config.input_text || '',
-      starRating: config.starRating || config.star_rating,
-      language: config.language || 'Japanese',
-      storeSupplement: config.storeSupplement || config.store_supplement,
-      customPrompt: config.customPrompt || config.custom_prompt,
-      includeSymbols: config.includeSymbols,
-      includeEmojis: config.includeEmojis,
-      xConstraint140: config.xConstraint140,
-      instagramFooter: config.instagramFooter,
+      platforms: Array.isArray(rawConfig.platforms) ? rawConfig.platforms.map(normalizePlatform) : [normalizePlatform(rawConfig.platform)],
+      postPurpose: rawConfig.postPurpose || rawConfig.purpose || PostPurpose.Promotion,
+      gmapPurpose: rawConfig.gmapPurpose || rawConfig.purpose || GoogleMapPurpose.Auto,
+      tone: rawConfig.tone || Tone.Standard,
+      length: rawConfig.length || Length.Medium,
+      inputText: rawConfig.inputText || rawConfig.input_text || '',
+      starRating: rawConfig.starRating || rawConfig.star_rating,
+      language: rawConfig.language || 'Japanese',
+      storeSupplement: rawConfig.storeSupplement || rawConfig.store_supplement,
+      customPrompt: rawConfig.customPrompt || rawConfig.custom_prompt,
+      includeSymbols: rawConfig.includeSymbols,
+      includeEmojis: rawConfig.includeEmojis,
+      xConstraint140: rawConfig.xConstraint140,
+      instagramFooter: rawConfig.instagramFooter,
     },
-    results: normalizeResults(entry.result || entry.results, normalizePlatform(config.platform)),
+    results: normalizeResults(rawResults, normalizePlatform(rawConfig.platform)),
   };
 }

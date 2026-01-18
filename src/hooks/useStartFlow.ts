@@ -68,7 +68,7 @@ export function useStartFlow() {
       setEligibleForTrial(payload?.eligibleForTrial ?? true);
 
       if (allowed) {
-        router.replace("/");
+        router.replace("/generate");
         return;
       }
 

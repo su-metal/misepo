@@ -7,21 +7,21 @@ export function usePlan(user: any) {
     eligibleForTrial: boolean;
     plan: string;
     status: string;
-    trialEndsAt: string | null;
+    trial_ends_at: string | null;
   }>({
     isPro: false,
     canUseApp: true,
     eligibleForTrial: true,
     plan: 'free',
     status: 'active',
-    trialEndsAt: null
+    trial_ends_at: null
   });
   const [loading, setLoading] = useState(false);
 
   const refreshPlan = useCallback(async (loggedInOverride?: boolean) => {
     const isLoggedIn = loggedInOverride !== undefined ? loggedInOverride : !!user;
     if (!isLoggedIn) {
-      setPlan({ isPro: false, canUseApp: true, eligibleForTrial: true, plan: 'free', status: 'active', trialEndsAt: null });
+      setPlan({ isPro: false, canUseApp: true, eligibleForTrial: true, plan: 'free', status: 'active', trial_ends_at: null });
       return;
     }
 
@@ -36,7 +36,7 @@ export function usePlan(user: any) {
           eligibleForTrial: !!data.eligibleForTrial,
           plan: data.plan,
           status: data.status,
-          trialEndsAt: data.trial_ends_at
+          trial_ends_at: data.trial_ends_at
         });
       }
     } catch (err) {

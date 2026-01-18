@@ -17,15 +17,15 @@ export const RefinePanel: React.FC<RefinePanelProps> = ({
     isRefining
 }) => {
     return (
-        <div className="mt-4 p-4 bg-orange-50/50 rounded-2xl border border-orange-100 animate-in zoom-in-95 duration-200">
-            <label className="block text-[10px] font-black text-orange-400 uppercase tracking-widest mb-2 px-1">
+        <div className="mt-4 p-4 bg-black rounded-2xl border border-lime/20 animate-in zoom-in-95 duration-200">
+            <label className="block text-[10px] font-black text-lime uppercase tracking-widest mb-2 px-1">
                 AIへの修正指示（例：もう少し柔らかい表現に、ハッシュタグを増やして）
             </label>
             <div className="relative">
                 <textarea
                     value={refineText}
                     onChange={(e) => onRefineTextChange(e.target.value)}
-                    className="w-full bg-white border border-orange-100 rounded-xl p-3 text-sm text-stone-800 focus:ring-4 focus:ring-orange-500/10 outline-none transition-all min-h-[80px]"
+                    className="w-full bg-stone-900 border border-stone-800 rounded-xl p-3 text-sm text-stone-100 focus:ring-4 focus:ring-lime/10 focus:border-lime outline-none transition-all min-h-[80px]"
                     placeholder="AIにお願いしたい修正内容を入力..."
                     autoFocus
                 />
@@ -39,10 +39,10 @@ export const RefinePanel: React.FC<RefinePanelProps> = ({
                     <button
                         onClick={onRefine}
                         disabled={isRefining || !refineText.trim()}
-                        className="flex items-center gap-2 px-6 py-1.5 rounded-lg bg-orange-600 text-white text-xs font-bold hover:bg-orange-700 transition shadow-md disabled:opacity-50"
+                        className="flex items-center gap-2 px-6 py-1.5 rounded-lg bg-lime text-black text-xs font-bold hover:bg-lime-light transition shadow-md disabled:opacity-50"
                     >
                         {isRefining ? (
-                            <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                            <div className="w-3.5 h-3.5 border-2 border-black/30 border-t-black rounded-full animate-spin"></div>
                         ) : (
                             <RotateCcwIcon className="w-3.5 h-3.5" />
                         )}

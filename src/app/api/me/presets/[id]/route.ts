@@ -6,6 +6,7 @@ const APP_ID = env.APP_ID;
 
 interface PresetUpdate {
   name?: string;
+  avatar?: string | null;
   custom_prompt?: string | null;
 }
 
@@ -34,6 +35,7 @@ export async function PATCH(
 
   const updateFields: Record<string, unknown> = {};
   if (body.name !== undefined) updateFields.name = body.name;
+  if (body.avatar !== undefined) updateFields.avatar = body.avatar;
   if (body.custom_prompt !== undefined) updateFields.custom_prompt = body.custom_prompt;
 
   if (Object.keys(updateFields).length === 0) {

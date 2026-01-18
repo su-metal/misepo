@@ -43,6 +43,8 @@ export function useGeneratorFlow(props: {
   const [includeSymbols, setIncludeSymbols] = useState<boolean>(false);
   const [includeEmojis, setIncludeEmojis] = useState<boolean>(true);
   
+  const [currentPostSamples, setCurrentPostSamples] = useState<{ [key in Platform]?: string }>({});
+  
   const [loading, setLoading] = useState(false);
   const [resultGroups, setResultGroups] = useState<ResultGroup[]>([]);
   const [activeTab, setActiveTab] = useState(0);
@@ -55,11 +57,84 @@ export function useGeneratorFlow(props: {
 
   const [activePresetId, setActivePresetId] = useState<string | null>(null);
 
+  // Track if user manually changed toggles (to preserve their choice)
+  const [userChangedEmoji, setUserChangedEmoji] = useState(false);
+  const [userChangedSymbols, setUserChangedSymbols] = useState(false);
+
+  // Initialize emoji/symbols based on default tone (only on first render)
+  useEffect(() => {
+    // Set default values based on initial tone
+    if (tone === Tone.Formal) {
+      setIncludeEmojis(false);
+      setIncludeSymbols(false);
+    } else {
+      setIncludeEmojis(true);
+      setIncludeSymbols(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Empty deps = run only once on mount
+
+  // Wrapped setters that track manual changes
+  const handleEmojiToggle = (value: boolean) => {
+    setIncludeEmojis(value);
+    setUserChangedEmoji(true);
+  };
+
+  const handleSymbolsToggle = (value: boolean) => {
+    setIncludeSymbols(value);
+    setUserChangedSymbols(true);
+  };
+
+  const handleToneChange = (newTone: Tone) => {
+    setTone(newTone);
+    
+    // Only apply default values if user hasn't manually changed them
+    if (!userChangedEmoji) {
+      setIncludeEmojis(newTone !== Tone.Formal);
+    }
+    if (!userChangedSymbols) {
+      setIncludeSymbols(false); // Always default to false for symbols
+    }
+  };
+
   // --- Logic ---
 
   const handleApplyPreset = (preset: Preset) => {
-    setCustomPrompt(preset.custom_prompt ?? '');
-    setActivePresetId(preset.id);
+    if (activePresetId === preset.id) {
+      setCustomPrompt('');
+      setActivePresetId(null);
+    } else {
+      setCustomPrompt(preset.custom_prompt ?? '');
+      setCurrentPostSamples(preset.postSamples || {});
+      setActivePresetId(preset.id);
+    }
+  };
+
+  const handleStarRatingChange = (rating: number) => {
+    setStarRating(rating);
+    // Auto-judgment logic:
+    // 4-5 stars -> Thanks
+    // 1-2 stars -> Apology
+    // 3 stars -> Thanks (usually neutral/minor issues)
+    if (gmapPurpose === GoogleMapPurpose.Auto || gmapPurpose === GoogleMapPurpose.Thanks || gmapPurpose === GoogleMapPurpose.Apology) {
+      if (rating >= 4) setGmapPurpose(GoogleMapPurpose.Thanks);
+      else if (rating <= 2) setGmapPurpose(GoogleMapPurpose.Apology);
+      else setGmapPurpose(GoogleMapPurpose.Thanks);
+    }
+  };
+
+  const handleSetActivePlatform = (p: Platform) => {
+    if (isMultiGenMode) {
+      if (p === Platform.GoogleMaps) {
+        setPlatforms([Platform.GoogleMaps]);
+        setIsMultiGenMode(false);
+      } else {
+        // If it's X or Instagram and we're in multi-gen, keep both
+        setPlatforms([Platform.X, Platform.Instagram]);
+      }
+    } else {
+      setPlatforms([p]);
+    }
   };
 
   const handlePlatformToggle = (p: Platform) => {
@@ -160,7 +235,8 @@ export function useGeneratorFlow(props: {
         xConstraint140,
         includeSymbols,
         includeEmojis,
-        instagramFooter: (p === Platform.Instagram && includeFooter) ? storeProfile.instagramFooter : undefined
+        instagramFooter: (p === Platform.Instagram && includeFooter) ? storeProfile.instagramFooter : undefined,
+        postSamples: currentPostSamples
       };
 
       try {
@@ -226,6 +302,7 @@ export function useGeneratorFlow(props: {
       });
     }
     onTaskComplete();
+    return true; // Indicate success for scrolling
   };
 
   const handleManualEdit = (gIdx: number, iIdx: number, text: string) => {
@@ -335,6 +412,9 @@ export function useGeneratorFlow(props: {
       setTone(restorePost.config.tone);
       setLength(restorePost.config.length);
       setInputText(restorePost.config.inputText);
+      setStarRating(restorePost.config.starRating ?? null);
+      // Set includeFooter to false since restored results already have footer embedded
+      setIncludeFooter(false);
       
       const reconstructed = restorePost.results.map(r => ({
         platform: r.platform,
@@ -353,13 +433,40 @@ export function useGeneratorFlow(props: {
     if (resetResultsTrigger) setResultGroups([]);
   }, [resetResultsTrigger]);
 
+  // Real-time footer toggle effect
+  useEffect(() => {
+    const footer = storeProfile.instagramFooter;
+    if (!footer) return;
+
+    setResultGroups(prev => {
+      let changed = false;
+      const next = prev.map(group => {
+        if (group.platform === Platform.Instagram) {
+          const nextData = group.data.map(text => {
+            if (includeFooter) {
+              return insertInstagramFooter(text, footer);
+            } else {
+              return removeInstagramFooter(text, footer);
+            }
+          });
+          if (JSON.stringify(nextData) !== JSON.stringify(group.data)) {
+            changed = true;
+            return { ...group, data: nextData };
+          }
+        }
+        return group;
+      });
+      return changed ? next : prev;
+    });
+  }, [includeFooter, storeProfile.instagramFooter]);
+
   return {
     platforms, setPlatforms,
     isMultiGenMode, setIsMultiGenMode,
     postPurpose, setPostPurpose,
     gmapPurpose, setGmapPurpose,
-    starRating, setStarRating,
-    tone, setTone,
+    starRating, onStarRatingChange: handleStarRatingChange,
+    tone, setTone: handleToneChange,
     length, setLength,
     inputText, setInputText,
     loading, resultGroups,
@@ -371,11 +478,12 @@ export function useGeneratorFlow(props: {
     customPrompt, setCustomPrompt,
     includeFooter, setIncludeFooter,
     xConstraint140, setXConstraint140,
-    includeSymbols, setIncludeSymbols,
-    includeEmojis, setIncludeEmojis,
+    includeSymbols, setIncludeSymbols: handleSymbolsToggle,
+    includeEmojis, setIncludeEmojis: handleEmojiToggle,
     language, setLanguage,
     storeSupplement, setStoreSupplement,
     handlePlatformToggle,
+    handleSetActivePlatform,
     handleToggleMultiGen,
     handleApplyPreset,
     performGeneration,

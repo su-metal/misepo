@@ -87,6 +87,10 @@ export const generateContent = async (
   const isXWith140Limit = config.platform === Platform.X && config.xConstraint140;
 
   const buildSystemInstruction = () => {
+    const effectivePurpose = config.purpose === 'auto' 
+      ? "Auto-Detect (Analyze the input text and infer the most appropriate purpose, e.g., Promotion, Story, or Engagement)" 
+      : config.purpose;
+
     let systemInstruction = `
 You are a skilled and friendly social media manager for a physical business.
 Your goal is to write engaging, natural, and effective posts for a ${profile.industry} named "${profile.name}" located in ${profile.region}.
@@ -95,7 +99,7 @@ Target Audience: Local customers and potential visitors.
 
 **Current Task Configuration:**
 - Platform: ${config.platform}
-- Purpose: ${config.purpose}
+- Purpose: ${effectivePurpose}
 - Tone: ${config.tone} (Formal/Standard/Friendly)
 - Length: ${config.length} (Short/Medium/Long)
 - Language: ${config.language || "Japanese"}
@@ -108,6 +112,16 @@ Target Audience: Local customers and potential visitors.
       if (config.purpose === GoogleMapPurpose.Apology) {
         systemInstruction += `\n- Focus: Sincere apology, explanation of improvement, and inviting them back.`;
       }
+      systemInstruction += `\n
+**Humble Language Enforcement (CRITICAL):**
+When the customer mentions family members (e.g., "奥様", "旦那様", "娘さん") or staff (e.g., "店員さん", "スタッフの方") in their review:
+- You MUST convert these to humble forms suitable for the store owner (e.g., "妻" or "家内", "主人" or "夫", "娘", "スタッフ").
+- NEVER repeat the customer's honorifics when referring to your own side.
+
+**Location-Based Greeting Rule (CRITICAL):**
+- Do NOT assume the customer is from out of town (e.g., "豊橋にお越しの際は" / "when you come to [Region]") UNLESS they explicitly mention traveling, visiting from afar, or being a tourist.
+- If the customer does NOT mention being from far away, assume they are potentially local.
+- Instead of "If you visit [Region] again," use generic welcoming phrases like "We look forward to your next visit" (またのご来店を心よりお待ちしております) or "We hope to see you again soon."`;
     }
 
     if (config.storeSupplement) {
@@ -120,7 +134,24 @@ Target Audience: Local customers and potential visitors.
       systemInstruction += `\n- Context (Store Info): "${config.instagramFooter}"\nNOTE: Do NOT include this store info footer in your generated output. It will be appended programmatically later. Only use this for context to avoid repeating information.`;
     }
 
-    const useEmojis = config.includeEmojis !== false;
+
+    // Inject Post Samples for Few-Shot Learning
+    if (config.postSamples?.[config.platform]) {
+      const sample = config.postSamples[config.platform];
+      if (sample && sample.trim()) {
+        systemInstruction += `\n
+**Persona Adoption (Few-Shot Style Learning):**
+The user has provided the following past posts (or replies) from this specific persona.
+You MUST adopt this persona's voice, tone, sentence structure, and emoji usage habits.
+---
+${sample}
+---
+IMPORTANT: Acting as the persona who wrote the above examples, write a new post about the topic below.`;
+      }
+    }
+
+    const useEmojis =
+      config.platform === Platform.GoogleMaps ? false : config.includeEmojis !== false;
 
     systemInstruction += `\n
 **Formatting Rules:**
@@ -130,7 +161,7 @@ Target Audience: Local customers and potential visitors.
 4. ${config.includeSymbols ? `Use text decorations from this palette if appropriate: ${DECORATION_PALETTE}` : "Do NOT use complex text decorations/symbols (like ✧ or ✄), but simple emojis are allowed if enabled."}
 5. ${isXWith140Limit ? `CRITICAL: The post MUST be UNDER ${charLimit} characters. This is a hard limit. Count carefully. Aim for 100-130 characters to be safe.` : ""}
 6. If Instagram: Use line breaks for readability and add 4-6 relevant hashtags at the bottom.
-7. If Google Maps: Be professional, concise, and do NOT use hashtags.
+7. If Google Maps: Be professional, concise, and do NOT use hashtags. Do NOT use emojis.
 
 **Style Constraint (CRITICAL):**
 - **Do NOT combine exclamation marks (! or ！) with emojis at the end of a sentence.**
@@ -222,6 +253,7 @@ Tone: ${config.tone}
 **Formatting Rules:**
 1. ${config.platform === Platform.X && config.xConstraint140 ? "MUST be under 140 characters." : ""}
 2. If Instagram: Keep hashtags.
+3. ${config.platform === Platform.GoogleMaps ? "If Google Maps: Do NOT use emojis." : ""}
 
 **Style Constraint (CRITICAL):**
 - **Do NOT combine exclamation marks (! or ！) with emojis at the end of a sentence.**

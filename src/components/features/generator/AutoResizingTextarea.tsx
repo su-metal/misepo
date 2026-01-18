@@ -4,12 +4,14 @@ export function AutoResizingTextarea({
     value,
     onChange,
     className,
-    placeholder
+    placeholder,
+    trigger
 }: {
     value: string;
     onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
     className?: string;
     placeholder?: string;
+    trigger?: any;
 }) {
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -19,7 +21,7 @@ export function AutoResizingTextarea({
             textarea.style.height = "auto";
             textarea.style.height = `${textarea.scrollHeight}px`;
         }
-    }, [value]);
+    }, [value, trigger]);
 
     return (
         <textarea
