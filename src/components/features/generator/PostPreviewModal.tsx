@@ -158,26 +158,33 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
 
                         {/* Google Maps Preview */}
                         {platform === Platform.GoogleMaps && (
-                            <div className="w-full bg-white border border-stone-200 rounded-3xl shadow-xl shadow-stone-200/50 overflow-hidden max-w-[370px]">
-                                <div className="p-5 flex items-start gap-4 bg-stone-50/50">
-                                    <div className="w-11 h-11 rounded-2xl bg-white border border-stone-200 shadow-sm flex items-center justify-center font-black text-stone-700 text-sm flex-shrink-0">
-                                        {(storeProfile.name?.[0] || 'S').toUpperCase()}
-                                    </div>
-                                    <div className="flex-1">
-                                        <div className="text-sm font-bold text-stone-900">{storeProfile.name || 'Your Store Name'}</div>
-                                        <div className="text-[10px] font-bold text-stone-400 uppercase tracking-widest mt-0.5">Owner · Just now</div>
-                                    </div>
-                                    <MoreHorizontalIcon className="w-5 h-5 text-stone-300" />
-                                </div>
+                            <div className="w-full bg-white p-6 max-w-[500px] border border-stone-100 rounded-[2rem] shadow-xl shadow-stone-200/40">
+                                <div className="flex gap-4">
+                                    {/* Left Border Line (Thread indicator) */}
+                                    <div className="w-0.5 bg-[#e8eaed] shrink-0" />
 
-                                <div className="p-6">
-                                    <div className="text-[14px] text-[#3c4043] whitespace-pre-wrap leading-relaxed tracking-normal">
-                                        {text}
-                                    </div>
-                                    <div className="mt-6">
-                                        <button className="w-full py-4 bg-stone-900 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-stone-800 transition-all shadow-xl shadow-black/10 active:scale-95">
-                                            Learn more
-                                        </button>
+                                    <div className="flex-1">
+                                        <div className="flex items-center gap-4 mb-4">
+                                            {/* Google blue user icon */}
+                                            <div className="w-10 h-10 rounded-full bg-[#4285f4] flex items-center justify-center shrink-0">
+                                                <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="currentColor">
+                                                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                                                </svg>
+                                            </div>
+
+                                            <div>
+                                                <div className="text-[14px] font-bold text-gray-900 leading-tight">
+                                                    {storeProfile.name || 'Your Store Name'}（オーナー）
+                                                </div>
+                                                <div className="text-[12px] text-gray-500 mt-1">
+                                                    1 分前
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="text-[14px] text-[#3c4043] whitespace-pre-wrap leading-relaxed tracking-normal">
+                                            {text}
+                                        </div>
                                     </div>
                                 </div>
                             </div>

@@ -112,6 +112,16 @@ Target Audience: Local customers and potential visitors.
       if (config.purpose === GoogleMapPurpose.Apology) {
         systemInstruction += `\n- Focus: Sincere apology, explanation of improvement, and inviting them back.`;
       }
+      systemInstruction += `\n
+**Humble Language Enforcement (CRITICAL):**
+When the customer mentions family members (e.g., "奥様", "旦那様", "娘さん") or staff (e.g., "店員さん", "スタッフの方") in their review:
+- You MUST convert these to humble forms suitable for the store owner (e.g., "妻" or "家内", "主人" or "夫", "娘", "スタッフ").
+- NEVER repeat the customer's honorifics when referring to your own side.
+
+**Location-Based Greeting Rule (CRITICAL):**
+- Do NOT assume the customer is from out of town (e.g., "豊橋にお越しの際は" / "when you come to [Region]") UNLESS they explicitly mention traveling, visiting from afar, or being a tourist.
+- If the customer does NOT mention being from far away, assume they are potentially local.
+- Instead of "If you visit [Region] again," use generic welcoming phrases like "We look forward to your next visit" (またのご来店を心よりお待ちしております) or "We hope to see you again soon."`;
     }
 
     if (config.storeSupplement) {
