@@ -302,9 +302,34 @@ export default function LandingPage() {
     }
 
     const problems = [
-        { icon: Icons.MessageSquare, title: "口コミ返信に\n時間がかかる", delay: 0 },
-        { icon: Icons.Instagram, title: "投稿のネタが\n思いつかない", delay: 0.1 },
-        { icon: Icons.TrendingUp, title: "集客効果が\n見えない", delay: 0.2 },
+        {
+            icon: <Icons.MessageCircle size={28} className="text-white" />,
+            title: "口コミ返信に\n時間がかかる",
+            desc: "一通一通考えるのは大変。\nAIが感情のこもった\n返信を自動生成します。",
+            bg: "bg-blue-500",
+            delay: 0
+        },
+        {
+            icon: <Icons.Instagram size={28} className="text-white" />,
+            title: "投稿のネタが\n思いつかない",
+            desc: "季節やトレンドに合わせて、\n「いま投稿すべき」内容を\n毎日提案します。",
+            bg: "bg-pink-500",
+            delay: 0.1
+        },
+        {
+            icon: <Icons.TrendingDown size={28} className="text-white" />,
+            title: "集客効果が\n見えない",
+            desc: "なんとなくの運用は卒業。\nデータに基づいた戦略で\n確実にファンを増やします。",
+            bg: "bg-orange-500",
+            delay: 0.2
+        },
+        {
+            icon: <Icons.MapPin size={28} className="text-white" />,
+            title: "インバウンド\n対応ができない",
+            desc: "英語・中国語・韓国語。\n外国人観光客向けの投稿も\nワンクリックで。",
+            bg: "bg-green-500",
+            delay: 0.3
+        },
     ];
     const faqs = [
         { q: "どのような業種で利用されていますか？", a: "カフェ、美容室、居酒屋、整体院、歯科医院など、地域密着型の店舗ビジネス全般でご利用いただいております。" },
