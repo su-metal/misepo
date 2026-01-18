@@ -172,7 +172,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                 </div>
 
                 <div className="flex items-center justify-center lg:justify-start gap-3 py-2 px-4 lg:py-0 bg-white/60 backdrop-blur-md rounded-2xl border border-white/50 shadow-sm min-h-[56px]">
-                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Simultaneous</span>
+                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">同時生成</span>
                     <button
                         onClick={onToggleMultiGen}
                         className={`relative inline-flex h-6 w-11 items-center rounded-full transition-all duration-300 ${isMultiGen
@@ -377,31 +377,35 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                 type="button"
                                 onClick={() => !activePresetId && onIncludeEmojisChange(!includeEmojis)}
                                 disabled={!!activePresetId}
-                                className={`relative p-3 rounded-2xl border transition-all flex flex-col items-center justify-center gap-1 aspect-[16/9] ${includeEmojis
+                                className={`relative p-2.5 px-4 rounded-2xl border transition-all flex flex-row items-center justify-between gap-3 ${includeEmojis
                                     ? (activePresetId ? 'bg-stone-50 border-stone-100 text-stone-400' : 'bg-orange-50 border-orange-200 text-orange-600 shadow-sm')
                                     : 'bg-white border-transparent text-gray-400 hover:shadow-md'}`}
                             >
-                                <span className={`text-xl ${activePresetId ? 'grayscale' : ''}`}>😊</span>
-                                <span className="text-[10px] font-bold">絵文字</span>
+                                <div className="flex items-center gap-3">
+                                    <span className={`text-lg leading-none ${activePresetId ? 'grayscale' : ''}`}>😊</span>
+                                    <span className="text-xs font-bold whitespace-nowrap">絵文字</span>
+                                </div>
 
                                 {/* Toggle Switch Visual */}
-                                <div className={`absolute top-2 right-2 w-6 h-3.5 rounded-full transition-colors ${includeEmojis ? (activePresetId ? 'bg-stone-200' : 'bg-orange-400') : 'bg-gray-200'}`}>
-                                    <div className={`absolute top-0.5 left-0.5 w-2.5 h-2.5 bg-white rounded-full transition-transform ${includeEmojis ? 'translate-x-2.5' : ''}`} />
+                                <div className={`relative w-7 h-4 rounded-full transition-colors shrink-0 ${includeEmojis ? (activePresetId ? 'bg-stone-200' : 'bg-orange-400') : 'bg-gray-200'}`}>
+                                    <div className={`absolute top-0.5 left-0.5 w-3 h-3 bg-white rounded-full transition-transform ${includeEmojis ? 'translate-x-3' : ''}`} />
                                 </div>
                             </button>
                             <button
                                 type="button"
                                 onClick={() => !activePresetId && onIncludeSymbolsChange(!includeSymbols)}
                                 disabled={!!activePresetId}
-                                className={`relative p-3 rounded-2xl border transition-all flex flex-col items-center justify-center gap-1 aspect-[16/9] ${includeSymbols
+                                className={`relative p-2.5 px-4 rounded-2xl border transition-all flex flex-row items-center justify-between gap-3 ${includeSymbols
                                     ? (activePresetId ? 'bg-stone-50 border-stone-100 text-stone-400' : 'bg-indigo-50 border-indigo-200 text-indigo-600 shadow-sm')
                                     : 'bg-white border-transparent text-gray-400 hover:shadow-md'}`}
                             >
-                                <span className={`text-xl ${activePresetId ? 'grayscale' : ''}`}>✨</span>
-                                <span className="text-[10px] font-bold">装飾・特殊文字</span>
+                                <div className="flex items-center gap-3">
+                                    <span className={`text-lg leading-none ${activePresetId ? 'grayscale' : ''}`}>✨</span>
+                                    <span className="text-xs font-bold whitespace-nowrap">特殊文字</span>
+                                </div>
                                 {/* Toggle Switch Visual */}
-                                <div className={`absolute top-2 right-2 w-6 h-3.5 rounded-full transition-colors ${includeSymbols ? (activePresetId ? 'bg-stone-200' : 'bg-indigo-400') : 'bg-gray-200'}`}>
-                                    <div className={`absolute top-0.5 left-0.5 w-2.5 h-2.5 bg-white rounded-full transition-transform ${includeSymbols ? 'translate-x-2.5' : ''}`} />
+                                <div className={`relative w-7 h-4 rounded-full transition-colors shrink-0 ${includeSymbols ? (activePresetId ? 'bg-stone-200' : 'bg-indigo-400') : 'bg-gray-200'}`}>
+                                    <div className={`absolute top-0.5 left-0.5 w-3 h-3 bg-white rounded-full transition-transform ${includeSymbols ? 'translate-x-3' : ''}`} />
                                 </div>
                             </button>
                         </div>
@@ -536,7 +540,6 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                 </>
                             ) : (
                                 <>
-                                    <SparklesIcon className="w-5 h-5 text-indigo-400" />
                                     <span>投稿を作成</span>
                                     <svg className="w-5 h-5 text-gray-500 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
