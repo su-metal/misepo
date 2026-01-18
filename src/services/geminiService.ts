@@ -150,16 +150,29 @@ IMPORTANT: Acting as the persona who wrote the above examples, write a new post 
       }
     }
 
-    const useEmojis =
-      config.platform === Platform.GoogleMaps ? false : config.includeEmojis !== false;
+    const hasPersona = (config.postSamples?.[config.platform] && config.postSamples[config.platform]!.trim()) || (config.customPrompt && config.customPrompt.trim());
+    const useEmojis = config.platform === Platform.GoogleMaps ? false : config.includeEmojis !== false;
 
     systemInstruction += `\n
 **Formatting Rules:**
 1. Generate exactly 1 distinct variation.
 2. Output strictly as a JSON array of strings.
+`;
+
+    if (hasPersona) {
+      systemInstruction += `
+3. **Persona Habit Override**: Ignore manual emoji/symbol settings. Instead, strictly adopt the learned persona's habits regarding emojis and decorative symbols from the provided samples and instructions.
+4. ${isXWith140Limit ? `CRITICAL: The post MUST be UNDER ${charLimit} characters. This is a hard limit. Count carefully. Aim for 100-130 characters to be safe.` : ""}
+`;
+    } else {
+      systemInstruction += `
 3. ${useEmojis ? 'Use emojis naturally. Even in "Standard" tone, use emojis moderately (e.g., ✨, 😊, ☕️) to ensure the post isn\'t too dry.' : "Do NOT use emojis."}
 4. ${config.includeSymbols ? `Use text decorations from this palette if appropriate: ${DECORATION_PALETTE}` : "Do NOT use complex text decorations/symbols (like ✧ or ✄), but simple emojis are allowed if enabled."}
 5. ${isXWith140Limit ? `CRITICAL: The post MUST be UNDER ${charLimit} characters. This is a hard limit. Count carefully. Aim for 100-130 characters to be safe.` : ""}
+`;
+    }
+
+    systemInstruction += `
 6. If Instagram: Use line breaks for readability and add 4-6 relevant hashtags at the bottom.
 7. If Google Maps: Be professional, concise, and do NOT use hashtags. Do NOT use emojis.
 
@@ -169,6 +182,7 @@ IMPORTANT: Acting as the persona who wrote the above examples, write a new post 
 - BAD: "お待ちしています！✨", "美味しいですよ！😋"
 - GOOD: "お待ちしています！", "お待ちしています✨", "美味しいですよ😋"
 `;
+
     return systemInstruction;
   };
 

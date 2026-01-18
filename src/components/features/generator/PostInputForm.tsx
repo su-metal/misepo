@@ -101,21 +101,6 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
     onApplyPreset,
     onOpenPresetModal
 }) => {
-    // Persistent Advanced Mode State
-    const [isAdvancedMode, setIsAdvancedMode] = React.useState(false);
-
-    React.useEffect(() => {
-        const savedMode = localStorage.getItem('misepo_ui_mode');
-        if (savedMode === 'advanced') {
-            setIsAdvancedMode(true);
-        }
-    }, []);
-
-    const toggleMode = (advanced: boolean) => {
-        setIsAdvancedMode(advanced);
-        localStorage.setItem('misepo_ui_mode', advanced ? 'advanced' : 'simple');
-    };
-
     const [show140LimitToggle, setShow140LimitToggle] = React.useState(true);
     const [showCustomPrompt, setShowCustomPrompt] = React.useState(false);
 
@@ -209,29 +194,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                 {/* Left Control Panel */}
                 <div className="w-full lg:w-[320px] order-2 lg:order-1 flex flex-col gap-6 shrink-0 lg:overflow-y-auto px-1 lg:pr-2 scrollbar-hide py-2">
 
-                    {/* Mode Switcher */}
-                    <div className="flex justify-end px-2">
-                        <div className="bg-gray-100/80 p-1 rounded-lg flex items-center gap-1">
-                            <button
-                                onClick={() => toggleMode(false)}
-                                className={`px-3 py-1.5 rounded-md text-[10px] font-bold transition-all ${!isAdvancedMode
-                                    ? 'bg-white text-gray-800 shadow-sm'
-                                    : 'text-gray-400 hover:text-gray-600'
-                                    }`}
-                            >
-                                シンプル
-                            </button>
-                            <button
-                                onClick={() => toggleMode(true)}
-                                className={`px-3 py-1.5 rounded-md text-[10px] font-bold transition-all ${isAdvancedMode
-                                    ? 'bg-white text-indigo-600 shadow-sm'
-                                    : 'text-gray-400 hover:text-gray-600'
-                                    }`}
-                            >
-                                詳細設定
-                            </button>
-                        </div>
-                    </div>
+
 
                     {/* Persona / Preset Selection (Card Grid) */}
                     <div>
@@ -391,63 +354,63 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                     </div>
 
                     {/* Decoration Options (Advanced Mode Only, Locked by Profile) */}
-                    {isAdvancedMode && !isGoogleMaps && (
-                        <div className={`${activePresetId ? 'opacity-60' : ''} transition-opacity duration-300`}>
-                            <div className="flex items-center justify-between px-2 mb-3">
-                                <h3 className="text-sm font-bold text-gray-500">装飾オプション</h3>
-                                {activePresetId && (
-                                    <div className="flex items-center gap-1 px-2 py-0.5 bg-indigo-50 rounded-full border border-indigo-100/50">
-                                        <SparklesIcon className="w-2.5 h-2.5 text-indigo-500" />
-                                        <span className="text-[9px] font-black text-indigo-600 uppercase tracking-tighter">Profile Active</span>
-                                    </div>
-                                )}
-                            </div>
-                            <div className={`grid grid-cols-2 gap-3 relative isolate ${activePresetId ? 'cursor-not-allowed select-none' : ''}`}>
-                                {activePresetId && (
-                                    <div
-                                        className="absolute inset-0 z-20"
-                                        title="プロフィールの文体学習を使用中のため、装飾設定は固定されています"
-                                    />
-                                )}
-                                <button
-                                    type="button"
-                                    onClick={() => !activePresetId && onIncludeEmojisChange(!includeEmojis)}
-                                    disabled={!!activePresetId}
-                                    className={`relative p-3 rounded-2xl border transition-all flex flex-col items-center justify-center gap-1 aspect-[16/9] ${includeEmojis
-                                        ? (activePresetId ? 'bg-stone-50 border-stone-100 text-stone-400' : 'bg-orange-50 border-orange-200 text-orange-600 shadow-sm')
-                                        : 'bg-white border-transparent text-gray-400 hover:shadow-md'}`}
-                                >
-                                    <span className={`text-xl ${activePresetId ? 'grayscale' : ''}`}>😊</span>
-                                    <span className="text-[10px] font-bold">絵文字</span>
 
-                                    {/* Toggle Switch Visual */}
-                                    <div className={`absolute top-2 right-2 w-6 h-3.5 rounded-full transition-colors ${includeEmojis ? (activePresetId ? 'bg-stone-200' : 'bg-orange-400') : 'bg-gray-200'}`}>
-                                        <div className={`absolute top-0.5 left-0.5 w-2.5 h-2.5 bg-white rounded-full transition-transform ${includeEmojis ? 'translate-x-2.5' : ''}`} />
-                                    </div>
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => !activePresetId && onIncludeSymbolsChange(!includeSymbols)}
-                                    disabled={!!activePresetId}
-                                    className={`relative p-3 rounded-2xl border transition-all flex flex-col items-center justify-center gap-1 aspect-[16/9] ${includeSymbols
-                                        ? (activePresetId ? 'bg-stone-50 border-stone-100 text-stone-400' : 'bg-indigo-50 border-indigo-200 text-indigo-600 shadow-sm')
-                                        : 'bg-white border-transparent text-gray-400 hover:shadow-md'}`}
-                                >
-                                    <span className={`text-xl ${activePresetId ? 'grayscale' : ''}`}>✨</span>
-                                    <span className="text-[10px] font-bold">装飾・特殊文字</span>
-                                    {/* Toggle Switch Visual */}
-                                    <div className={`absolute top-2 right-2 w-6 h-3.5 rounded-full transition-colors ${includeSymbols ? (activePresetId ? 'bg-stone-200' : 'bg-indigo-400') : 'bg-gray-200'}`}>
-                                        <div className={`absolute top-0.5 left-0.5 w-2.5 h-2.5 bg-white rounded-full transition-transform ${includeSymbols ? 'translate-x-2.5' : ''}`} />
-                                    </div>
-                                </button>
-                            </div>
+                    <div className={`${activePresetId ? 'opacity-60' : ''} transition-opacity duration-300`}>
+                        <div className="flex items-center justify-between px-2 mb-3">
+                            <h3 className="text-sm font-bold text-gray-500">装飾オプション</h3>
                             {activePresetId && (
-                                <p className="mt-2 px-1 text-[10px] text-stone-400 font-medium leading-relaxed">
-                                    ※ 絵文字や記号の使い方も学習データを優先します。
-                                </p>
+                                <div className="flex items-center gap-1 px-2 py-0.5 bg-indigo-50 rounded-full border border-indigo-100/50">
+                                    <SparklesIcon className="w-2.5 h-2.5 text-indigo-500" />
+                                    <span className="text-[9px] font-black text-indigo-600 uppercase tracking-tighter">Profile Active</span>
+                                </div>
                             )}
                         </div>
-                    )}
+                        <div className={`grid grid-cols-2 gap-3 relative isolate ${activePresetId ? 'cursor-not-allowed select-none' : ''}`}>
+                            {activePresetId && (
+                                <div
+                                    className="absolute inset-0 z-20"
+                                    title="プロフィールの文体学習を使用中のため、装飾設定は固定されています"
+                                />
+                            )}
+                            <button
+                                type="button"
+                                onClick={() => !activePresetId && onIncludeEmojisChange(!includeEmojis)}
+                                disabled={!!activePresetId}
+                                className={`relative p-3 rounded-2xl border transition-all flex flex-col items-center justify-center gap-1 aspect-[16/9] ${includeEmojis
+                                    ? (activePresetId ? 'bg-stone-50 border-stone-100 text-stone-400' : 'bg-orange-50 border-orange-200 text-orange-600 shadow-sm')
+                                    : 'bg-white border-transparent text-gray-400 hover:shadow-md'}`}
+                            >
+                                <span className={`text-xl ${activePresetId ? 'grayscale' : ''}`}>😊</span>
+                                <span className="text-[10px] font-bold">絵文字</span>
+
+                                {/* Toggle Switch Visual */}
+                                <div className={`absolute top-2 right-2 w-6 h-3.5 rounded-full transition-colors ${includeEmojis ? (activePresetId ? 'bg-stone-200' : 'bg-orange-400') : 'bg-gray-200'}`}>
+                                    <div className={`absolute top-0.5 left-0.5 w-2.5 h-2.5 bg-white rounded-full transition-transform ${includeEmojis ? 'translate-x-2.5' : ''}`} />
+                                </div>
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => !activePresetId && onIncludeSymbolsChange(!includeSymbols)}
+                                disabled={!!activePresetId}
+                                className={`relative p-3 rounded-2xl border transition-all flex flex-col items-center justify-center gap-1 aspect-[16/9] ${includeSymbols
+                                    ? (activePresetId ? 'bg-stone-50 border-stone-100 text-stone-400' : 'bg-indigo-50 border-indigo-200 text-indigo-600 shadow-sm')
+                                    : 'bg-white border-transparent text-gray-400 hover:shadow-md'}`}
+                            >
+                                <span className={`text-xl ${activePresetId ? 'grayscale' : ''}`}>✨</span>
+                                <span className="text-[10px] font-bold">装飾・特殊文字</span>
+                                {/* Toggle Switch Visual */}
+                                <div className={`absolute top-2 right-2 w-6 h-3.5 rounded-full transition-colors ${includeSymbols ? (activePresetId ? 'bg-stone-200' : 'bg-indigo-400') : 'bg-gray-200'}`}>
+                                    <div className={`absolute top-0.5 left-0.5 w-2.5 h-2.5 bg-white rounded-full transition-transform ${includeSymbols ? 'translate-x-2.5' : ''}`} />
+                                </div>
+                            </button>
+                        </div>
+                        {activePresetId && (
+                            <p className="mt-2 px-1 text-[10px] text-stone-400 font-medium leading-relaxed">
+                                ※ 絵文字や記号の使い方も学習データを優先します。
+                            </p>
+                        )}
+
+                    </div>
 
 
 
@@ -464,7 +427,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                 <h3 className="text-[10px] font-black text-indigo-400/80 uppercase tracking-widest pl-1">投稿の目的</h3>
                                 <div className="h-[1px] flex-1 bg-gradient-to-r from-gray-100 to-transparent"></div>
                             </div>
-                            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide -mx-1 px-1">
+                            <div className="flex flex-wrap gap-2 pb-2 -mx-1 px-1">
                                 {(isGoogleMaps ? GMAP_PURPOSES : PURPOSES).map((p) => {
                                     const isSelected = (isGoogleMaps ? gmapPurpose : postPurpose) === p.id;
                                     const isLocked = isGoogleMaps && starRating && gmapPurpose !== p.id;
