@@ -55,6 +55,46 @@ export function useGeneratorFlow(props: {
 
   const [activePresetId, setActivePresetId] = useState<string | null>(null);
 
+  // Track if user manually changed toggles (to preserve their choice)
+  const [userChangedEmoji, setUserChangedEmoji] = useState(false);
+  const [userChangedSymbols, setUserChangedSymbols] = useState(false);
+
+  // Initialize emoji/symbols based on default tone (only on first render)
+  useEffect(() => {
+    // Set default values based on initial tone
+    if (tone === Tone.Formal) {
+      setIncludeEmojis(false);
+      setIncludeSymbols(false);
+    } else {
+      setIncludeEmojis(true);
+      setIncludeSymbols(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Empty deps = run only once on mount
+
+  // Wrapped setters that track manual changes
+  const handleEmojiToggle = (value: boolean) => {
+    setIncludeEmojis(value);
+    setUserChangedEmoji(true);
+  };
+
+  const handleSymbolsToggle = (value: boolean) => {
+    setIncludeSymbols(value);
+    setUserChangedSymbols(true);
+  };
+
+  const handleToneChange = (newTone: Tone) => {
+    setTone(newTone);
+    
+    // Only apply default values if user hasn't manually changed them
+    if (!userChangedEmoji) {
+      setIncludeEmojis(newTone !== Tone.Formal);
+    }
+    if (!userChangedSymbols) {
+      setIncludeSymbols(false); // Always default to false for symbols
+    }
+  };
+
   // --- Logic ---
 
   const handleApplyPreset = (preset: Preset) => {
@@ -408,7 +448,7 @@ export function useGeneratorFlow(props: {
     postPurpose, setPostPurpose,
     gmapPurpose, setGmapPurpose,
     starRating, onStarRatingChange: handleStarRatingChange,
-    tone, setTone,
+    tone, setTone: handleToneChange,
     length, setLength,
     inputText, setInputText,
     loading, resultGroups,
@@ -420,8 +460,8 @@ export function useGeneratorFlow(props: {
     customPrompt, setCustomPrompt,
     includeFooter, setIncludeFooter,
     xConstraint140, setXConstraint140,
-    includeSymbols, setIncludeSymbols,
-    includeEmojis, setIncludeEmojis,
+    includeSymbols, setIncludeSymbols: handleSymbolsToggle,
+    includeEmojis, setIncludeEmojis: handleEmojiToggle,
     language, setLanguage,
     storeSupplement, setStoreSupplement,
     handlePlatformToggle,
