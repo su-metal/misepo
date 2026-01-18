@@ -192,6 +192,15 @@ export default function LandingPage() {
     const [openFaq, setOpenFaq] = useState<number | null>(null);
     const heroRef = useRef<HTMLDivElement>(null);
 
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 768);
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
     useEffect(() => {
         const handleScroll = () => {
             const currentScroll = window.scrollY;
@@ -215,35 +224,41 @@ export default function LandingPage() {
     }, []);
 
     // Animation States derived from progress
-    // Animation States
+    // On mobile, delay animations to allow scrolling the phone into view
+    const mobileAnimationOffset = isMobile ? 300 : 0;
+    const effectiveProgress = Math.max(0, heroAnimationProgress - mobileAnimationOffset);
+
+    // Mobile Scroll (Move content up before animation starts)
+    const mobileScrollY = isMobile ? Math.min(heroAnimationProgress, mobileAnimationOffset) * 0.8 : 0;
+
     // Data
     const userMemo = "・春限定のいちごタルト開始\n・サクサク生地と完熟いちご\n・自家製カスタード\n・渋谷駅徒歩5分\n・#春スイーツ";
     const generatedResult = "【春限定】とろける幸せ、いちごタルト解禁🍓\n\nサクサクのクッキー生地と、\n溢れんばかりの完熟いちご。\n一口食べれば、そこはもう春。\n\n完熟いちごの甘さと、\n自家製カスタードのハーモニーを\nぜひお楽しみください。\n\n📍Access: 渋谷駅 徒歩5分\n🕒Open: 10:00 - 20:00\n📞Reserve: 03-1234-5678\n\n#MisePoカフェ #春スイーツ #期間限定";
 
     // Phase 1: Typing Input (0 - 350)
-    const typingProgress = Math.min(Math.max(heroAnimationProgress / 350, 0), 1);
+    const typingProgress = Math.min(Math.max(effectiveProgress / 350, 0), 1);
 
     // Determine text content based on phase
     let currentText = "";
-    if (heroAnimationProgress < 450) {
+    if (effectiveProgress < 450) {
         currentText = userMemo.slice(0, Math.floor(userMemo.length * typingProgress));
-    } else if (heroAnimationProgress < 550) {
+    } else if (effectiveProgress < 550) {
         currentText = ""; // Generating...
     } else {
         currentText = generatedResult;
     }
 
     // Generation Phase
-    const isTypingDone = heroAnimationProgress > 350;
-    const isGenerating = heroAnimationProgress > 450 && heroAnimationProgress < 550;
-    const isResultShown = heroAnimationProgress > 550; // New: Text is visible, waiting for Post
+    const isTypingDone = effectiveProgress > 350;
+    const isGenerating = effectiveProgress > 450 && effectiveProgress < 550;
+    const isResultShown = effectiveProgress > 550; // New: Text is visible, waiting for Post
 
     // Post/Swap Phase (Trigger at 900 - Delayed for better reading time)
-    const isPosted = heroAnimationProgress > 900;
+    const isPosted = effectiveProgress > 900;
 
     // Inertia Scroll (Ease Out)
     // Start at 950, duration 600
-    const rawScrollProgress = Math.min(Math.max((heroAnimationProgress - 950) / 600, 0), 1);
+    const rawScrollProgress = Math.min(Math.max((effectiveProgress - 950) / 600, 0), 1);
     const easeOutCubic = 1 - Math.pow(1 - rawScrollProgress, 3);
     const internalScrollProgress = easeOutCubic;
 
@@ -253,11 +268,11 @@ export default function LandingPage() {
 
     // Text Opacity Logic for Fade-In Effect
     let textOpacity = 1;
-    if (heroAnimationProgress >= 450 && heroAnimationProgress < 550) {
+    if (effectiveProgress >= 450 && effectiveProgress < 550) {
         textOpacity = 0.5; // Generating pulse
-    } else if (heroAnimationProgress >= 550) {
+    } else if (effectiveProgress >= 550) {
         // Fade in result (550-650)
-        textOpacity = Math.min(Math.max((heroAnimationProgress - 550) / 100, 0), 1);
+        textOpacity = Math.min(Math.max((effectiveProgress - 550) / 100, 0), 1);
     }
 
     const problems = [
@@ -322,7 +337,10 @@ export default function LandingPage() {
 
             {/* New Sticky Hero Animation */}
             <div ref={heroRef} className="relative z-10 h-[700vh]">
-                <div className="sticky top-0 h-[150vh] md:h-screen w-full overflow-hidden flex flex-col">
+                <div
+                    className="sticky top-0 h-[150vh] md:h-screen w-full overflow-hidden flex flex-col transition-transform duration-100 ease-out will-change-transform"
+                    style={{ transform: `translateY(-${mobileScrollY}px)` }}
+                >
                     <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/50 via-white to-purple-50/50" />
 
                     {/* Mobile Text (Static at top) */}
@@ -332,11 +350,11 @@ export default function LandingPage() {
                             <span className="text-xs font-bold text-indigo-900">総生成数 10,000件突破</span>
                         </div>
                         <h1 className="text-4xl font-black text-slate-900 tracking-tight leading-[1.1] mb-3">
-                            店舗の広報は、<br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">AIに丸投げする時</span>代。
+                            お店の投稿は、<br />
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">AIにまかせる時代。</span>
                         </h1>
                         <p className="text-base text-slate-600 leading-relaxed px-2">
-                            Googleマップの口コミ返信も、Instagramの投稿文も。<br />
+                            Googleマップの口コミ返信も、Instagramの投稿文も。
                             MisePo（ミセポ）なら、たった5秒で「来店したくなる」文章が完成します。
                         </p>
                     </div>
