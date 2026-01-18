@@ -117,9 +117,9 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
 
     return (
         <>
-            <div className="space-y-8 animate-in fade-in duration-700">
+            <div className={`space-y-8 animate-in fade-in duration-700 ${results.length === 0 ? 'hidden md:block' : ''}`}>
                 {/* Tab Navigation */}
-                <div className="flex items-center gap-2 p-1.5 bg-gray-100/80 backdrop-blur-sm rounded-2xl w-fit mx-auto lg:mx-0 border border-gray-200 shadow-inner">
+                <div className={`flex items-center gap-2 p-1.5 bg-gray-100/80 backdrop-blur-sm rounded-2xl w-fit mx-auto lg:mx-0 border border-gray-200 shadow-inner ${results.length === 0 ? 'hidden md:flex' : ''}`}>
                     {results.map((res, idx) => {
                         const isSelected = activeTab === idx;
                         const iconClass = "w-4 h-4 transition-transform duration-300 " + (isSelected ? "scale-110" : "opacity-60");
@@ -167,7 +167,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                 <div className="">
                     {results.length === 0 ? (
                         // Placeholder when no results
-                        <div className="block animate-in fade-in slide-in-from-bottom-2 duration-500">
+                        <div className="hidden md:block animate-in fade-in slide-in-from-bottom-2 duration-500">
                             <div className="flex items-center gap-3 mb-6 px-1">
                                 <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
                                     <svg className="w-6 h-6 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
