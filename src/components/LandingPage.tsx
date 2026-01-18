@@ -240,11 +240,12 @@ export default function LandingPage() {
 
     // Post/Swap Phase (Trigger at 700)
     const isPosted = heroAnimationProgress > 700;
-    // Internal Scroll (After post, scroll the instagram content)
-    const internalScrollProgress = Math.min(Math.max((heroAnimationProgress - 800) / 400, 0), 1);
+    // Internal Scroll (Start after swap, longer duration for full read)
+    // 750 -> 1500 (Leaves 100 buffer before 1600 end)
+    const internalScrollProgress = Math.min(Math.max((heroAnimationProgress - 750) / 750, 0), 1);
 
     const innerContentStyle = {
-        transform: `translateY(-${internalScrollProgress * 180}px)`,
+        transform: `translateY(-${internalScrollProgress * 300}px)`,
     };
 
     const problems = [
