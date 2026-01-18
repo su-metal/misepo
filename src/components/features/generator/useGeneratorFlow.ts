@@ -43,6 +43,8 @@ export function useGeneratorFlow(props: {
   const [includeSymbols, setIncludeSymbols] = useState<boolean>(false);
   const [includeEmojis, setIncludeEmojis] = useState<boolean>(true);
   
+  const [currentPostSamples, setCurrentPostSamples] = useState<{ [key in Platform]?: string }>({});
+  
   const [loading, setLoading] = useState(false);
   const [resultGroups, setResultGroups] = useState<ResultGroup[]>([]);
   const [activeTab, setActiveTab] = useState(0);
@@ -103,6 +105,7 @@ export function useGeneratorFlow(props: {
       setActivePresetId(null);
     } else {
       setCustomPrompt(preset.custom_prompt ?? '');
+      setCurrentPostSamples(preset.postSamples || {});
       setActivePresetId(preset.id);
     }
   };
@@ -232,7 +235,8 @@ export function useGeneratorFlow(props: {
         xConstraint140,
         includeSymbols,
         includeEmojis,
-        instagramFooter: (p === Platform.Instagram && includeFooter) ? storeProfile.instagramFooter : undefined
+        instagramFooter: (p === Platform.Instagram && includeFooter) ? storeProfile.instagramFooter : undefined,
+        postSamples: currentPostSamples
       };
 
       try {

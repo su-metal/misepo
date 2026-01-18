@@ -67,6 +67,7 @@ export interface GenerationConfig {
   // Platform specific
   xConstraint140?: boolean; // X (Twitter) only
   instagramFooter?: string; // New: Footer text to append
+  postSamples?: { [key in Platform]?: string }; // Passed from active preset
 }
 
 export interface GeneratedResult {
@@ -102,6 +103,7 @@ export interface Preset {
   name: string;
   avatar: string | null;
   custom_prompt: string | null;
+  postSamples?: { [key in Platform]?: string }; // New: Few-shot learning samples per platform
   sort_order: number;
 }
 

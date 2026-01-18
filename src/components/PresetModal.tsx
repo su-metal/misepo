@@ -15,7 +15,7 @@ import {
   useSortable,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Preset } from '../types';
+import { Preset, Platform } from '../types';
 import {
   CloseIcon,
   BookmarkIcon,
@@ -33,6 +33,7 @@ interface PresetModalProps {
   onApply: (preset: Preset) => void;
   currentConfig: {
     customPrompt: string;
+    postSamples?: { [key in Platform]?: string };
   };
 }
 
@@ -166,6 +167,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
   const [name, setName] = useState('');
   const [avatar, setAvatar] = useState('👤');
   const [customPrompt, setCustomPrompt] = useState('');
+  const [postSamples, setPostSamples] = useState<{ [key in Platform]?: string }>({});
   const [selectedPresetId, setSelectedPresetId] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -198,6 +200,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
     setName('');
     setAvatar('👤');
     setCustomPrompt(currentConfig.customPrompt ?? '');
+    setPostSamples(currentConfig.postSamples || {});
     setSelectedPresetId(null);
     setErrorMessage(null);
     setOrderError(null);
@@ -236,6 +239,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
         name: trimmedName,
         avatar: avatar,
         custom_prompt: trimmedPrompt || null,
+        postSamples,
       };
       const endpoint = selectedPresetId
         ? `/api/me/presets/${selectedPresetId}`
@@ -263,6 +267,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
       setName('');
       setAvatar('👤');
       setCustomPrompt('');
+      setPostSamples({});
       setSelectedPresetId(null);
     } catch (err) {
       console.error('preset save failed:', err);
@@ -277,6 +282,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
     setName(enforceSaveNameWidth(preset.name));
     setAvatar(preset.avatar || '👤');
     setCustomPrompt(preset.custom_prompt ?? '');
+    setPostSamples(preset.postSamples || {});
     setErrorMessage(null);
     setOrderError(null);
     setMobileView('edit');
@@ -288,6 +294,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
     setName('');
     setAvatar('👤');
     setCustomPrompt('');
+    setPostSamples({});
     setErrorMessage(null);
     setOrderError(null);
     setMobileView('edit');
@@ -311,6 +318,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
         setName('');
         setAvatar('👤');
         setCustomPrompt(currentConfig.customPrompt ?? '');
+        setPostSamples(currentConfig.postSamples || {});
       }
     } catch (err) {
       console.error('preset delete failed:', err);
@@ -327,6 +335,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
       name: name || 'Persona',
       avatar: avatar,
       custom_prompt: trimmedPrompt || null,
+      postSamples,
       sort_order: 0,
     };
     onApply(personaPreset);
@@ -486,15 +495,32 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
         <div className="flex-1 overflow-y-auto p-8 md:p-12 space-y-10">
           <div className="animate-in slide-in-from-bottom-4 duration-500">
-            <label className="block text-[11px] font-black text-stone-400 uppercase tracking-[0.2em] mb-3">
-              プロフィール名 (Account Name)
-            </label>
-            <div className="flex flex-col md:flex-row gap-6">
-              <div className="flex flex-col gap-3">
+            <div className="space-y-8">
+              {/* Profile Name */}
+              <div className="space-y-3">
                 <label className="block text-[11px] font-black text-stone-400 uppercase tracking-[0.2em]">
-                  アイコン
+                  プロフィール名 (Account Name)
                 </label>
-                <div className="flex flex-wrap gap-2.5 p-4 bg-gray-50 border border-gray-100 rounded-3xl shadow-inner-sm">
+                <div className="relative group max-w-md">
+                  <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(enforceSaveNameWidth(e.target.value))}
+                    placeholder="例: 店長（公式）"
+                    className="w-full px-6 py-4.5 bg-stone-50 border-2 border-transparent focus:bg-white focus:border-indigo-500 focus:ring-[8px] focus:ring-indigo-500/10 outline-none rounded-2xl text-base text-stone-800 font-bold placeholder-stone-300 transition-all shadow-sm"
+                  />
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 text-stone-200 group-focus-within:text-indigo-500">
+                    <span className="text-xl">{avatar}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Icon Selection */}
+              <div className="space-y-4">
+                <label className="block text-[11px] font-black text-stone-400 uppercase tracking-[0.2em]">
+                  アイコンの選択 (Select Icon)
+                </label>
+                <div className="flex flex-wrap gap-2.5 p-5 bg-stone-50 border border-stone-100 rounded-[32px] shadow-inner-sm">
                   {[
                     { e: '👔', l: '店長/公式' },
                     { e: '👟', l: 'スタッフ' },
@@ -509,6 +535,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                   ].map((item) => (
                     <button
                       key={item.e}
+                      type="button"
                       onClick={() => setAvatar(item.e)}
                       title={item.l}
                       className={`w-12 h-12 flex items-center justify-center text-2xl rounded-2xl transition-all duration-300 ${avatar === item.e ? 'bg-white shadow-lg ring-2 ring-indigo-500 scale-110 z-10' : 'hover:bg-white hover:shadow-md opacity-40 hover:opacity-100'}`}
@@ -518,39 +545,83 @@ const PresetModal: React.FC<PresetModalProps> = ({
                   ))}
                 </div>
               </div>
-              <div className="flex-1">
-                <div className="relative group mt-7 md:mt-0">
-                  <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(enforceSaveNameWidth(e.target.value))}
-                    placeholder="例: 店長（公式）"
-                    className="w-full px-6 py-4.5 bg-gray-50 border-2 border-transparent focus:bg-white focus:border-indigo-500 focus:ring-[8px] focus:ring-indigo-500/10 outline-none rounded-2xl text-base text-gray-800 font-bold placeholder-gray-300 transition-all shadow-sm"
-                  />
-                  <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-200 group-focus-within:text-indigo-500">
-                    <span className="text-xl">{avatar}</span>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
 
           <div className="animate-in slide-in-from-bottom-4 duration-500 delay-100">
             <label className="block text-[11px] font-black text-indigo-500 uppercase tracking-[0.2em] mb-3">
-              発信者ペルソナ (Persona / Prompt)
+              追加の指示プロンプト (Additional Instructions)
             </label>
             <div className="relative p-[1px] rounded-[24px] bg-gradient-to-br from-indigo-500/20 via-gray-100 to-indigo-500/10">
               <AutoResizingTextarea
                 value={customPrompt}
                 onChange={setCustomPrompt}
-                placeholder="例: 活気のある店長の口調で、地域に愛される親しみやすさを意識して。"
+                placeholder={'例：\n・「ご来店お待ちしております」は使わないでください\n・必ず「#〇〇」のタグをつけてください\n・語尾は「〜だワン！」にしてください'}
                 className="w-full px-6 py-6 bg-white border-2 border-transparent focus:border-indigo-500 focus:ring-[8px] focus:ring-indigo-500/10 outline-none rounded-[22px] text-base text-gray-800 font-medium leading-relaxed placeholder-gray-300 transition-all shadow-inner min-h-[140px]"
               />
             </div>
             <p className="text-[11px] text-stone-400 font-medium mt-3 leading-relaxed flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
-              ここで指定した性格や文体がAIの出力に反映されます。
+              文体は「過去の投稿学習」が優先されます。ここは特定のルールや制約を指定するのに便利です。
             </p>
+          </div>
+
+          <div className="animate-in slide-in-from-bottom-4 duration-500 delay-200">
+            <label className="block text-[11px] font-black text-stone-900 uppercase tracking-[0.2em] mb-4">
+              AIプロフィールの育成 (文体学習)
+            </label>
+            <div className="bg-stone-100 rounded-[28px] p-1">
+              {/* Instagram Sample */}
+              <div className="bg-white rounded-[24px] p-5 mb-1">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-6 h-6 rounded-lg bg-pink-100 flex items-center justify-center text-pink-600">
+                    <InstagramIcon className="w-3.5 h-3.5" />
+                  </div>
+                  <span className="text-[10px] font-black text-stone-500 uppercase">Instagram Learning</span>
+                </div>
+                <textarea
+                  value={postSamples[Platform.Instagram] || ''}
+                  onChange={(e) => setPostSamples(prev => ({ ...prev, [Platform.Instagram]: e.target.value }))}
+                  placeholder={'例：\nこんにちは！今日のランチは... 🍝\n---\n新作のケーキが焼き上がりました！ 🍰\n---\n(このように「---」で区切る)'}
+                  rows={4}
+                  className="w-full px-4 py-3 rounded-xl bg-stone-50 border-2 border-transparent focus:bg-white focus:border-pink-500 outline-none transition-all resize-none text-xs text-stone-800 leading-relaxed placeholder-stone-400"
+                />
+              </div>
+
+              {/* X Sample */}
+              <div className="bg-white rounded-[24px] p-5 mb-1">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-6 h-6 rounded-lg bg-stone-900 flex items-center justify-center text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4l11.733 16h4.267l-11.733 -16z" /><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" /></svg>
+                  </div>
+                  <span className="text-[10px] font-black text-stone-500 uppercase">X (Twitter) Learning</span>
+                </div>
+                <textarea
+                  value={postSamples[Platform.X] || ''}
+                  onChange={(e) => setPostSamples(prev => ({ ...prev, [Platform.X]: e.target.value }))}
+                  placeholder="過去の気に入っている投稿を3件ほど貼り付けてください..."
+                  rows={3}
+                  className="w-full px-4 py-3 rounded-xl bg-stone-50 border-2 border-transparent focus:bg-white focus:border-stone-500 outline-none transition-all resize-none text-xs text-stone-800 leading-relaxed placeholder-stone-400"
+                />
+              </div>
+
+              {/* Google Maps Sample */}
+              <div className="bg-white rounded-[24px] p-5">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-6 h-6 rounded-lg bg-blue-500 flex items-center justify-center text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" /></svg>
+                  </div>
+                  <span className="text-[10px] font-black text-stone-500 uppercase">Map Replies Learning</span>
+                </div>
+                <textarea
+                  value={postSamples[Platform.GoogleMaps] || ''}
+                  onChange={(e) => setPostSamples(prev => ({ ...prev, [Platform.GoogleMaps]: e.target.value }))}
+                  placeholder="過去のオーナー返信を3件ほど貼り付けてください..."
+                  rows={3}
+                  className="w-full px-4 py-3 rounded-xl bg-stone-50 border-2 border-transparent focus:bg-white focus:border-blue-500 outline-none transition-all resize-none text-xs text-stone-800 leading-relaxed placeholder-stone-400"
+                />
+              </div>
+            </div>
           </div>
         </div>
 

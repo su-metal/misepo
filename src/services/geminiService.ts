@@ -134,6 +134,22 @@ When the customer mentions family members (e.g., "奥様", "旦那様", "娘さ�
       systemInstruction += `\n- Context (Store Info): "${config.instagramFooter}"\nNOTE: Do NOT include this store info footer in your generated output. It will be appended programmatically later. Only use this for context to avoid repeating information.`;
     }
 
+
+    // Inject Post Samples for Few-Shot Learning
+    if (config.postSamples?.[config.platform]) {
+      const sample = config.postSamples[config.platform];
+      if (sample && sample.trim()) {
+        systemInstruction += `\n
+**Persona Adoption (Few-Shot Style Learning):**
+The user has provided the following past posts (or replies) from this specific persona.
+You MUST adopt this persona's voice, tone, sentence structure, and emoji usage habits.
+---
+${sample}
+---
+IMPORTANT: Acting as the persona who wrote the above examples, write a new post about the topic below.`;
+      }
+    }
+
     const useEmojis =
       config.platform === Platform.GoogleMaps ? false : config.includeEmojis !== false;
 
