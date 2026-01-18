@@ -415,7 +415,7 @@ open11:00-close 17:00
                         </nav>
                         <div className="hidden md:flex items-center space-x-3">
                             <button onClick={() => loginWithGoogle('login')} className="text-slate-600 font-bold hover:text-indigo-600 px-4 py-2 text-sm transition-colors">ログイン</button>
-                            <button onClick={() => loginWithGoogle('trial')} className="bg-slate-900 text-white px-5 py-2.5 rounded-full text-sm font-bold shadow-lg shadow-slate-200 hover:bg-indigo-600 hover:shadow-indigo-200 hover:-translate-y-0.5 transition-all duration-300">無料で始める</button>
+                            <button onClick={() => window.location.href = '/start'} className="bg-slate-900 text-white px-5 py-2.5 rounded-full text-sm font-bold shadow-lg shadow-slate-200 hover:bg-indigo-600 hover:shadow-indigo-200 hover:-translate-y-0.5 transition-all duration-300">無料で始める</button>
                         </div>
                         <div className="md:hidden flex items-center">
                             <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-slate-600 hover:text-slate-900 focus:outline-none p-2" aria-label="メニューを開く">
@@ -432,7 +432,7 @@ open11:00-close 17:00
                             ))}
                             <div className="pt-4 flex flex-col gap-3 px-4">
                                 <button className="w-full bg-indigo-50 text-indigo-700 px-5 py-3.5 rounded-xl font-bold hover:bg-indigo-100 transition-colors">ログイン</button>
-                                <button onClick={() => loginWithGoogle('trial')} className="w-full bg-indigo-600 text-white px-5 py-3.5 rounded-xl font-bold shadow-lg shadow-indigo-200">無料で始める</button>
+                                <button onClick={() => window.location.href = '/start'} className="w-full bg-indigo-600 text-white px-5 py-3.5 rounded-xl font-bold shadow-lg shadow-indigo-200">無料で始める</button>
                             </div>
                         </div>
                     </div>
@@ -478,7 +478,7 @@ open11:00-close 17:00
                             MisePo（ミセポ）なら、たった5秒で「来店したくなる」文章が完成します。
                         </p>
                         <div className="flex gap-4 pointer-events-auto">
-                            <button className="px-8 py-4 bg-slate-900 text-white rounded-full font-bold hover:bg-slate-800 transition-all hover:scale-105 shadow-xl shadow-slate-900/20 flex items-center gap-2">
+                            <button onClick={() => window.location.href = '/start'} className="px-8 py-4 bg-slate-900 text-white rounded-full font-bold hover:bg-slate-800 transition-all hover:scale-105 shadow-xl shadow-slate-900/20 flex items-center gap-2">
                                 <Icons.Sparkles size={20} className="text-yellow-400" />
                                 無料で試してみる
                             </button>
@@ -720,7 +720,7 @@ open11:00-close 17:00
                     {/* Mobile CTA Buttons (Below Phone) */}
                     <div className="md:hidden absolute top-[62rem] left-0 right-0 px-4 z-20">
                         <div className="flex flex-col gap-3 max-w-sm mx-auto">
-                            <button onClick={() => loginWithGoogle('trial')} className="w-full px-6 py-3.5 bg-slate-900 text-white rounded-full font-bold hover:bg-slate-800 transition-all shadow-lg shadow-slate-900/20 flex items-center justify-center gap-2">
+                            <button onClick={() => window.location.href = '/start'} className="w-full px-6 py-3.5 bg-slate-900 text-white rounded-full font-bold hover:bg-slate-800 transition-all shadow-lg shadow-slate-900/20 flex items-center justify-center gap-2">
                                 <Icons.Sparkles size={18} className="text-yellow-400" />
                                 無料で試してみる
                             </button>
@@ -1194,7 +1194,7 @@ open11:00-close 17:00
                                 ))}
                             </ul>
 
-                            <button onClick={() => loginWithGoogle('trial')} className="w-full py-5 rounded-2xl font-bold text-xl bg-white text-slate-900 hover:bg-indigo-50 transition-all duration-300 shadow-xl hover:shadow-2xl hover:translate-y-[-2px] relative z-10 flex items-center justify-center gap-2 group-hover:shadow-indigo-500/20">
+                            <button onClick={() => window.location.href = '/start'} className="w-full py-5 rounded-2xl font-bold text-xl bg-white text-slate-900 hover:bg-indigo-50 transition-all duration-300 shadow-xl hover:shadow-2xl hover:translate-y-[-2px] relative z-10 flex items-center justify-center gap-2 group-hover:shadow-indigo-500/20">
                                 7日間無料で試す <Icons.ChevronUp className="rotate-90" size={20} />
                             </button>
                             <p className="text-center text-xs text-slate-500 mt-6">

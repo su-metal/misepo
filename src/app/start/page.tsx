@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense } from "react";
+import Link from "next/link";
 import { useStartFlow } from "@/hooks/useStartFlow";
 
 function StartPageContent() {
@@ -42,6 +43,26 @@ function StartPageContent() {
       <div className="w-full max-w-md relative z-10 animate-in fade-in zoom-in duration-1000">
         {/* Glass Portal Card */}
         <div className="bg-stone-900/60 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] shadow-2xl shadow-black/50 p-8 lg:p-10 relative overflow-hidden group">
+          {/* Back to Top */}
+          <Link
+            href="/"
+            className="absolute top-6 left-8 flex items-center gap-2 text-stone-500 hover:text-lime transition-all duration-300 group/back z-20"
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="group-hover/back:-translate-x-1 transition-transform"
+            >
+              <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+            <span className="text-[10px] font-black uppercase tracking-widest opacity-0 group-hover/back:opacity-100 -translate-x-2 group-hover/back:translate-x-0 transition-all">Top</span>
+          </Link>
 
           {/* Top Decorative Line */}
           <div className="absolute top-0 left-1/2 -transtone-x-1/2 w-1/3 h-1 bg-gradient-to-r from-transparent via-lime to-transparent opacity-50"></div>
