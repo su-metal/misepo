@@ -30,8 +30,8 @@ const Icons = {
             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
         </svg>
     ),
-    Sparkles: ({ size = 20, className = "" }: { size?: number; className?: string }) => (
-        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+    Sparkles: ({ size = 20, fill = "none", className = "" }: { size?: number; fill?: string; className?: string }) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth="2" className={className}>
             <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z" />
         </svg>
     ),
@@ -105,13 +105,13 @@ const Icons = {
             <polyline points="20 6 9 17 4 12" />
         </svg>
     ),
-    ChevronDown: ({ className = "" }: { className?: string }) => (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+    ChevronDown: ({ size = 20, className = "" }: { size?: number; className?: string }) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
             <polyline points="6 9 12 15 18 9" />
         </svg>
     ),
-    ChevronUp: ({ className = "" }: { className?: string }) => (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+    ChevronUp: ({ size = 20, className = "" }: { size?: number; className?: string }) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
             <polyline points="18 15 12 9 6 15" />
         </svg>
     ),
@@ -196,11 +196,7 @@ export default function LandingPage() {
         { icon: <Icons.TrendingDown className="text-slate-500" />, bg: "bg-slate-100", title: "外注コストが高い", desc: "MEO対策やSNS運用代行に見積もりをとったら月額3万円〜。個人店には負担が大きすぎる。" },
     ];
 
-    const plans = [
-        { name: "Free", price: "0", features: ["AI投稿生成 (月5回まで)", "Instagram投稿作成 (1案のみ)", "基本的なハッシュタグ提案"] },
-        { name: "Standard", price: "980", features: ["AI投稿生成 (無制限)", "Googleマップ/Insta/X 全対応", "投稿履歴の保存", "チャットサポート"] },
-        { name: "Premium", price: "2,980", features: ["Standardの全機能", "3パターン同時生成", "SNS同時書き出し (Insta & X)", "Refine機能 (チャット微調整)", "カスタム口調設定", "多言語出力 (英・中・韓)"], recommended: true },
-    ];
+
 
     const faqs = [
         { q: "どのような業種で利用されていますか？", a: "カフェ、美容室、居酒屋、整体院、歯科医院など、地域密着型の店舗ビジネス全般でご利用いただいております。" },
@@ -704,35 +700,96 @@ export default function LandingPage() {
             {/* Pricing */}
             <section id="pricing" className="py-24 bg-white border-t border-slate-100">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center mb-16">
-                        <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-6 tracking-tight">
-                            シンプルで透明な<br />
-                            <span className="text-indigo-600">料金プラン</span>
-                        </h2>
-                        <p className="text-slate-600 text-lg">まずは無料プランでお試しください。クレジットカードの登録は不要です。</p>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto items-stretch">
-                        {plans.map((plan, index) => (
-                            <div key={index} className={`relative rounded-3xl p-8 flex flex-col h-full transition-all duration-300 ${plan.recommended ? 'bg-slate-900 text-white shadow-2xl scale-105 z-10 ring-1 ring-white/20' : 'bg-white text-slate-900 border border-slate-200 hover:border-slate-300 hover:shadow-xl'}`}>
-                                {plan.recommended && (<div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-indigo-500 to-purple-500 text-white px-6 py-1.5 rounded-full text-sm font-bold shadow-lg">Most Popular</div>)}
-                                <div className="mb-8">
-                                    <h3 className={`text-lg font-bold mb-2 ${plan.recommended ? 'text-slate-300' : 'text-slate-500'}`}>{plan.name}</h3>
-                                    <div className="flex items-baseline gap-1"><span className="text-4xl font-black">¥{plan.price}</span><span className={`text-sm font-bold ${plan.recommended ? 'text-slate-400' : 'text-slate-400'}`}>/月</span></div>
+                    <div className="grid lg:grid-cols-2 gap-12 lg:gap-24 items-center">
+                        {/* Left Column: Value Proposition */}
+                        <div className="text-left">
+                            <span className="text-indigo-600 font-bold tracking-wider text-sm uppercase mb-4 block">Simple Pricing</span>
+                            <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-6 leading-tight">
+                                お店の成長に<br />
+                                <span className="text-indigo-600">必要なすべてを。</span>
+                            </h2>
+                            <p className="text-slate-600 text-lg mb-10 leading-relaxed">
+                                追加料金なしで、プロフェッショナルな機能を好きなだけ。<br />
+                                複雑なオプション料金はありません。
+                            </p>
+
+                            <div className="space-y-6">
+                                <div className="flex gap-4">
+                                    <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600 shrink-0">
+                                        <Icons.Sparkles size={24} />
+                                    </div>
+                                    <div>
+                                        <h3 className="font-bold text-slate-900 text-lg mb-1">AI投稿生成 無制限</h3>
+                                        <p className="text-slate-500">納得いくまで何度でも作り直せます。</p>
+                                    </div>
                                 </div>
-                                <div className={`h-px w-full mb-8 ${plan.recommended ? 'bg-slate-800' : 'bg-slate-100'}`} />
-                                <ul className="space-y-4 mb-8 flex-1">
-                                    {plan.features.map((feature, idx) => (
-                                        <li key={idx} className="flex items-start gap-3">
-                                            <div className={`mt-0.5 rounded-full p-0.5 ${plan.recommended ? 'bg-indigo-500/20 text-indigo-400' : 'bg-indigo-50 text-indigo-600'}`}><Icons.Check size={14} strokeWidth={3} /></div>
-                                            <span className={`text-sm font-medium ${plan.recommended ? 'text-slate-300' : 'text-slate-600'}`}>{feature}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                                <button onClick={() => loginWithGoogle('trial')} className={`w-full py-4 rounded-xl font-bold transition-all duration-300 ${plan.recommended ? 'bg-white text-slate-900 hover:bg-slate-100' : 'bg-slate-900 text-white hover:bg-indigo-600 hover:shadow-lg hover:shadow-indigo-200'}`}>
-                                    {plan.name === 'Free' ? '無料で始める' : 'このプランを選択'}
-                                </button>
+                                <div className="flex gap-4">
+                                    <div className="w-12 h-12 bg-pink-50 rounded-xl flex items-center justify-center text-pink-600 shrink-0">
+                                        <Icons.Instagram size={24} />
+                                    </div>
+                                    <div>
+                                        <h3 className="font-bold text-slate-900 text-lg mb-1">全プラットフォーム対応</h3>
+                                        <p className="text-slate-500">Instagram, X, Googleマップすべてに対応。</p>
+                                    </div>
+                                </div>
+                                <div className="flex gap-4">
+                                    <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center text-green-600 shrink-0">
+                                        <Icons.MessageCircle size={24} />
+                                    </div>
+                                    <div>
+                                        <h3 className="font-bold text-slate-900 text-lg mb-1">多言語 & 口コミ返信</h3>
+                                        <p className="text-slate-500">インバウンド対応も、丁寧な返信もお任せください。</p>
+                                    </div>
+                                </div>
                             </div>
-                        ))}
+                        </div>
+
+                        {/* Right Column: Pricing Card */}
+                        <div className="relative rounded-[2.5rem] p-8 md:p-10 flex flex-col bg-slate-900 text-white shadow-2xl ring-1 ring-white/20 overflow-hidden group hover:scale-[1.02] transition-transform duration-500">
+                            <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-600/30 rounded-full blur-[100px] -mr-20 -mt-20 group-hover:bg-indigo-600/40 transition-colors" />
+                            <div className="absolute bottom-0 left-0 w-80 h-80 bg-purple-600/30 rounded-full blur-[100px] -ml-20 -mb-20 group-hover:bg-purple-600/40 transition-colors" />
+
+                            <div className="relative z-10 text-center mb-10">
+                                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-sm font-bold shadow-lg mb-6 animate-pulse">
+                                    <Icons.Sparkles size={16} fill="currentColor" />
+                                    まずは7日間 無料体験
+                                </div>
+                                <h3 className="text-3xl font-bold mb-4">Proプラン</h3>
+                                <div className="flex items-baseline justify-center gap-2 mb-2">
+                                    <span className="text-6xl font-black tracking-tight">¥1,480</span>
+                                    <span className="text-slate-400 font-bold text-lg">/月</span>
+                                </div>
+                                <p className="text-sm text-slate-400">無料期間中はいつでもキャンセル可能</p>
+                            </div>
+
+                            <div className="h-px w-full bg-slate-800 mb-8" />
+
+                            <ul className="space-y-4 mb-10 text-left relative z-10 pl-4">
+                                {[
+                                    "AI投稿生成 (無制限)",
+                                    "Instagram / X / Google 全対応",
+                                    "3パターン同時提案",
+                                    "口コミ返信アシスト",
+                                    "多言語翻訳 (英・中・韓)",
+                                    "チャットサポート"
+                                ].map((feature, idx) => (
+                                    <li key={idx} className="flex items-center gap-3">
+                                        <div className="rounded-full p-1 bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">
+                                            <Icons.Check size={16} strokeWidth={3} />
+                                        </div>
+                                        <span className="font-medium text-slate-200 text-lg">{feature}</span>
+                                    </li>
+                                ))}
+                            </ul>
+
+                            <button onClick={() => loginWithGoogle('trial')} className="w-full py-5 rounded-2xl font-bold text-xl bg-white text-slate-900 hover:bg-indigo-50 transition-all duration-300 shadow-xl hover:shadow-2xl hover:translate-y-[-2px] relative z-10 flex items-center justify-center gap-2 group-hover:shadow-indigo-500/20">
+                                7日間無料で試す <Icons.ChevronUp className="rotate-90" size={20} />
+                            </button>
+                            <p className="text-center text-xs text-slate-500 mt-6">
+                                ※8日目以降は月額1,480円で自動更新されます。<br />
+                                違約金や期間の縛りはありません。
+                            </p>
+                        </div>
                     </div>
                 </div>
             </section>
