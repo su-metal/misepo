@@ -284,47 +284,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                         </div>
                     )}
 
-                    {/* Tone Selection (Segmented Control) */}
-                    <div className={`${activePresetId ? 'opacity-60' : ''} transition-opacity duration-300`}>
-                        <div className="flex items-center justify-between mb-3 px-1">
-                            <h3 className="text-sm font-bold text-gray-500">スタイル設定</h3>
-                            {activePresetId && (
-                                <div className="flex items-center gap-1 px-2 py-0.5 bg-indigo-50 rounded-full border border-indigo-100/50">
-                                    <SparklesIcon className="w-2.5 h-2.5 text-indigo-500" />
-                                    <span className="text-[9px] font-black text-indigo-600 uppercase tracking-tighter">Profile Active</span>
-                                </div>
-                            )}
-                        </div>
-                        <div className={`flex bg-white p-1 rounded-2xl border border-gray-100 shadow-sm relative isolate ${activePresetId ? 'cursor-not-allowed select-none' : ''}`}>
-                            {activePresetId && (
-                                <div
-                                    className="absolute inset-0 z-20"
-                                    title="プロフィールの文体学習を使用中のため、トーン設定は固定されています"
-                                />
-                            )}
-                            {TONES.map((t) => (
-                                <button
-                                    key={t.id}
-                                    type="button"
-                                    onClick={() => !activePresetId && onToneChange(t.id)}
-                                    disabled={!!activePresetId}
-                                    className={`flex-1 py-3 rounded-xl text-xs font-bold transition-all relative z-10 ${tone === t.id
-                                        ? (activePresetId
-                                            ? 'bg-stone-100 text-stone-500 border border-stone-200 shadow-none'
-                                            : 'bg-indigo-50 text-indigo-700 shadow-sm ring-1 ring-indigo-100') // Active
-                                        : (activePresetId ? 'text-stone-300' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50') // Inactive
-                                        }`}
-                                >
-                                    {t.label}
-                                </button>
-                            ))}
-                        </div>
-                        {activePresetId && (
-                            <p className="mt-2 px-1 text-[10px] text-stone-400 font-medium leading-relaxed">
-                                ※ プロフィールの学習データを優先するため固定されています。
-                            </p>
-                        )}
-                    </div>
+
 
                     {/* Star Rating - GMAP Only */}
                     {isGoogleMaps && (
@@ -350,33 +310,12 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                     {/* --- ADVANCED MODE ONLY SECTIONS --- */}
                     {isAdvancedMode && (
                         <div className="space-y-6 animate-in fade-in slide-in-from-top-4 duration-300">
-                            {/* Length Selection (Segmented Control) */}
-                            {!isX && (
-                                <div>
-                                    <div className="flex bg-white p-1 rounded-2xl border border-gray-100 shadow-sm">
-                                        {LENGTHS.map((l) => (
-                                            <button
-                                                key={l.id}
-                                                onClick={() => onLengthChange(l.id)}
-                                                className={`flex-1 py-3 rounded-xl text-xs font-bold transition-all ${length === l.id
-                                                    ? 'bg-indigo-50 text-indigo-700 shadow-sm ring-1 ring-indigo-100'
-                                                    : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50'
-                                                    }`}
-                                            >
-                                                {l.label}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-
                             {/* Purpose Selection - Large Card Grid */}
                             <div>
                                 <h3 className="text-sm font-bold text-gray-500 mb-3 px-1">投稿の目的</h3>
                                 <div className="grid grid-cols-2 gap-3">
                                     {(isGoogleMaps ? GMAP_PURPOSES : PURPOSES).map((p) => {
                                         const isSelected = (isGoogleMaps ? gmapPurpose : postPurpose) === p.id;
-                                        const isAuto = p.id === PostPurpose.Auto || p.id === GoogleMapPurpose.Auto;
                                         const isLocked = isGoogleMaps && starRating && gmapPurpose !== p.id;
 
                                         return (
@@ -410,6 +349,27 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                     })}
                                 </div>
                             </div>
+
+                            {/* Length Selection (Segmented Control) */}
+                            {!isX && (
+                                <div>
+                                    <h3 className="text-sm font-bold text-gray-500 mb-3 px-1">文章の長さ</h3>
+                                    <div className="flex bg-white p-1 rounded-2xl border border-gray-100 shadow-sm">
+                                        {LENGTHS.map((l) => (
+                                            <button
+                                                key={l.id}
+                                                onClick={() => onLengthChange(l.id)}
+                                                className={`flex-1 py-3 rounded-xl text-xs font-bold transition-all ${length === l.id
+                                                    ? 'bg-indigo-50 text-indigo-700 shadow-sm ring-1 ring-indigo-100'
+                                                    : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50'
+                                                    }`}
+                                            >
+                                                {l.label}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
 
                             {/* Features / Toggles (Card Style) */}
                             {!isGoogleMaps && (
@@ -471,6 +431,48 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                             )}
                         </div>
                     )}
+
+                    {/* Tone Selection (Segmented Control) - Moved to bottom */}
+                    <div className={`${activePresetId ? 'opacity-60' : ''} transition-opacity duration-300`}>
+                        <div className="flex items-center justify-between mb-3 px-1">
+                            <h3 className="text-sm font-bold text-gray-500">スタイル設定</h3>
+                            {activePresetId && (
+                                <div className="flex items-center gap-1 px-2 py-0.5 bg-indigo-50 rounded-full border border-indigo-100/50">
+                                    <SparklesIcon className="w-2.5 h-2.5 text-indigo-500" />
+                                    <span className="text-[9px] font-black text-indigo-600 uppercase tracking-tighter">Profile Active</span>
+                                </div>
+                            )}
+                        </div>
+                        <div className={`flex bg-white p-1 rounded-2xl border border-gray-100 shadow-sm relative isolate ${activePresetId ? 'cursor-not-allowed select-none' : ''}`}>
+                            {activePresetId && (
+                                <div
+                                    className="absolute inset-0 z-20"
+                                    title="プロフィールの文体学習を使用中のため、トーン設定は固定されています"
+                                />
+                            )}
+                            {TONES.map((t) => (
+                                <button
+                                    key={t.id}
+                                    type="button"
+                                    onClick={() => !activePresetId && onToneChange(t.id)}
+                                    disabled={!!activePresetId}
+                                    className={`flex-1 py-3 rounded-xl text-xs font-bold transition-all relative z-10 ${tone === t.id
+                                        ? (activePresetId
+                                            ? 'bg-stone-100 text-stone-500 border border-stone-200 shadow-none'
+                                            : 'bg-indigo-50 text-indigo-700 shadow-sm ring-1 ring-indigo-100') // Active
+                                        : (activePresetId ? 'text-stone-300' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50') // Inactive
+                                        }`}
+                                >
+                                    {t.label}
+                                </button>
+                            ))}
+                        </div>
+                        {activePresetId && (
+                            <p className="mt-2 px-1 text-[10px] text-stone-400 font-medium leading-relaxed">
+                                ※ プロフィールの学習データを優先するため固定されています。
+                            </p>
+                        )}
+                    </div>
                 </div>
 
                 {/* Right Main Canvas - Input Only */}
@@ -553,6 +555,6 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
