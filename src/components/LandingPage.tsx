@@ -184,18 +184,25 @@ export default function LandingPage() {
     const [scrollProgress, setScrollProgress] = useState(0);
     const [heroAnimationProgress, setHeroAnimationProgress] = useState(0);
     const [openFaq, setOpenFaq] = useState<number | null>(null);
+    const heroRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const handleScroll = () => {
             const currentScroll = window.scrollY;
             setScrolled(currentScroll > 20);
 
-            // Hero Animation Logic
-            // 0-100px: Typing
-            // 100-200px: Generating
-            // 200px+: Result
-            const progress = Math.min(Math.max(currentScroll, 0), 400); // Clamp to 0-400 range for animation
-            setHeroAnimationProgress(progress);
+            // Sticky Hero Animation Logic
+            if (heroRef.current) {
+                const rect = heroRef.current.getBoundingClientRect();
+                const scrolled = -rect.top;
+                const totalScrollable = rect.height - window.innerHeight;
+
+                if (totalScrollable > 0) {
+                    const progressPct = Math.min(Math.max(scrolled / totalScrollable, 0), 1);
+                    // Map 0-100% to 0-400 range for existing logic compatibility
+                    setHeroAnimationProgress(progressPct * 400);
+                }
+            }
         };
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
@@ -271,151 +278,153 @@ export default function LandingPage() {
                 )}
             </header>
 
-            {/* Hero */}
-            <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-40 overflow-hidden bg-slate-50">
-                <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[1000px] bg-indigo-100/40 rounded-full blur-[120px] -z-10" />
-                    <div className="absolute bottom-0 right-0 w-[800px] h-[800px] bg-purple-100/40 rounded-full blur-[100px] -z-10" />
-                </div>
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                    <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
-                        <div className="flex-1 text-center lg:text-left max-w-2xl mx-auto lg:mx-0">
-                            <div className="inline-flex items-center gap-2 bg-white border border-indigo-100 px-4 py-1.5 rounded-full text-indigo-600 font-bold text-xs shadow-sm mb-8 animate-fade-in-up">
-                                <span className="relative flex h-2 w-2">
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75" />
-                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500" />
-                                </span>
-                                <span>総計生成数 10,000件突破</span>
+            {/* Hero (Sticky Wrapper) */}
+            <div ref={heroRef} className="relative h-[180vh] bg-slate-50">
+                <div className="sticky top-0 h-screen overflow-hidden flex items-center">
+                    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[1000px] bg-indigo-100/40 rounded-full blur-[120px] -z-10" />
+                        <div className="absolute bottom-0 right-0 w-[800px] h-[800px] bg-purple-100/40 rounded-full blur-[100px] -z-10" />
+                    </div>
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+                        <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
+                            <div className="flex-1 text-center lg:text-left max-w-2xl mx-auto lg:mx-0">
+                                <div className="inline-flex items-center gap-2 bg-white border border-indigo-100 px-4 py-1.5 rounded-full text-indigo-600 font-bold text-xs shadow-sm mb-8 animate-fade-in-up">
+                                    <span className="relative flex h-2 w-2">
+                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75" />
+                                        <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500" />
+                                    </span>
+                                    <span>総計生成数 10,000件突破</span>
+                                </div>
+                                <h1 className="text-4xl md:text-6xl font-black text-slate-900 leading-[1.15] mb-6 tracking-tight">
+                                    店舗の広報は、<br />
+                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">AIに丸投げする時代。</span>
+                                </h1>
+                                <p className="text-lg text-slate-600 mb-10 leading-relaxed font-medium">
+                                    Googleマップの口コミ返信も、Instagramの投稿文も。<br className="hidden md:block" />
+                                    MisePo（ミセポ）なら、たった5秒で「来店したくなる」文章が完成します。
+                                </p>
+                                <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start mb-10">
+                                    <a href="#demo" onClick={() => loginWithGoogle('trial')} className="w-full sm:w-auto px-8 py-4 bg-slate-900 hover:bg-slate-800 text-white text-base font-bold rounded-xl shadow-xl shadow-slate-200 hover:shadow-slate-300 transition-all duration-300 transform hover:-translate-y-1 flex items-center justify-center gap-2 group">
+                                        <Icons.Sparkles size={18} className="text-yellow-400 group-hover:animate-pulse" />無料で試してみる
+                                    </a>
+                                    <a href="#pricing" className="w-full sm:w-auto px-8 py-4 bg-white hover:bg-gray-50 text-slate-700 border border-slate-200 text-base font-bold rounded-xl transition-all flex items-center justify-center hover:shadow-md">料金プラン</a>
+                                </div>
+                                <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-6 gap-y-2 text-sm font-bold text-slate-500">
+                                    <div className="flex items-center gap-2"><Icons.CheckCircle size={16} className="text-indigo-500" /><span>クレカ登録不要</span></div>
+                                    <div className="flex items-center gap-2"><Icons.CheckCircle size={16} className="text-indigo-500" /><span>アプリDL不要</span></div>
+                                    <div className="flex items-center gap-2"><Icons.CheckCircle size={16} className="text-indigo-500" /><span>30秒で開始</span></div>
+                                </div>
                             </div>
-                            <h1 className="text-4xl md:text-6xl font-black text-slate-900 leading-[1.15] mb-6 tracking-tight">
-                                店舗の広報は、<br />
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">AIに丸投げする時代。</span>
-                            </h1>
-                            <p className="text-lg text-slate-600 mb-10 leading-relaxed font-medium">
-                                Googleマップの口コミ返信も、Instagramの投稿文も。<br className="hidden md:block" />
-                                MisePo（ミセポ）なら、たった5秒で「来店したくなる」文章が完成します。
-                            </p>
-                            <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start mb-10">
-                                <a href="#demo" onClick={() => loginWithGoogle('trial')} className="w-full sm:w-auto px-8 py-4 bg-slate-900 hover:bg-slate-800 text-white text-base font-bold rounded-xl shadow-xl shadow-slate-200 hover:shadow-slate-300 transition-all duration-300 transform hover:-translate-y-1 flex items-center justify-center gap-2 group">
-                                    <Icons.Sparkles size={18} className="text-yellow-400 group-hover:animate-pulse" />無料で試してみる
-                                </a>
-                                <a href="#pricing" className="w-full sm:w-auto px-8 py-4 bg-white hover:bg-gray-50 text-slate-700 border border-slate-200 text-base font-bold rounded-xl transition-all flex items-center justify-center hover:shadow-md">料金プラン</a>
-                            </div>
-                            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-6 gap-y-2 text-sm font-bold text-slate-500">
-                                <div className="flex items-center gap-2"><Icons.CheckCircle size={16} className="text-indigo-500" /><span>クレカ登録不要</span></div>
-                                <div className="flex items-center gap-2"><Icons.CheckCircle size={16} className="text-indigo-500" /><span>アプリDL不要</span></div>
-                                <div className="flex items-center gap-2"><Icons.CheckCircle size={16} className="text-indigo-500" /><span>30秒で開始</span></div>
-                            </div>
-                        </div>
-                        <div className="flex-1 w-full relative h-[600px] flex items-center justify-center -mr-20 lg:-mr-0">
-                            {/* Detailed phones composition */}
-                            <div className="relative w-[300px] h-[600px] z-10 transition-transform duration-700 hover:scale-105">
-                                {/* Center Main Phone (MisePo) */}
-                                <div className="absolute inset-0 bg-slate-900 rounded-[3rem] border-8 border-slate-900 shadow-2xl overflow-hidden ring-4 ring-slate-900/10 z-30">
-                                    {/* Notch */}
-                                    <div className="absolute top-0 left-1/2 -translate-x-1/2 h-7 w-40 bg-slate-900 rounded-b-2xl z-40" />
-                                    {/* Screen Content */}
-                                    <div className="w-full h-full bg-slate-50 relative flex flex-col pt-10">
-                                        <div className="px-4 pb-4 border-b border-slate-100 flex justify-between items-center bg-white">
-                                            <Icons.Menu className="text-slate-400" />
-                                            <span className="font-bold text-slate-800">New Post</span>
-                                            <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center"><Icons.Sparkles size={16} fill="currentColor" /></div>
-                                        </div>
-                                        <div className="p-4 flex-1">
-                                            <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 mb-4 space-y-3">
-                                                <div className="flex gap-2">
-                                                    <span className="px-2 py-1 bg-indigo-50 text-indigo-600 text-[10px] font-bold rounded">Instagram</span>
-                                                    <span className="px-2 py-1 bg-slate-50 text-slate-400 text-[10px] font-bold rounded">Tone: Casual</span>
-                                                </div>
-                                                <div className={`space-y-2 transition-opacity duration-500 ${isGenerating ? 'opacity-50 pulse' : 'opacity-100'}`}>
-                                                    <div className="text-sm text-slate-700 min-h-[60px] whitespace-pre-wrap font-medium">
-                                                        {currentTypingText}
-                                                        <span className="animate-pulse">|</span>
+                            <div className="flex-1 w-full relative h-[600px] flex items-center justify-center -mr-20 lg:-mr-0">
+                                {/* Detailed phones composition */}
+                                <div className="relative w-[300px] h-[600px] z-10 transition-transform duration-700 hover:scale-105">
+                                    {/* Center Main Phone (MisePo) */}
+                                    <div className="absolute inset-0 bg-slate-900 rounded-[3rem] border-8 border-slate-900 shadow-2xl overflow-hidden ring-4 ring-slate-900/10 z-30">
+                                        {/* Notch */}
+                                        <div className="absolute top-0 left-1/2 -translate-x-1/2 h-7 w-40 bg-slate-900 rounded-b-2xl z-40" />
+                                        {/* Screen Content */}
+                                        <div className="w-full h-full bg-slate-50 relative flex flex-col pt-10">
+                                            <div className="px-4 pb-4 border-b border-slate-100 flex justify-between items-center bg-white">
+                                                <Icons.Menu className="text-slate-400" />
+                                                <span className="font-bold text-slate-800">New Post</span>
+                                                <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center"><Icons.Sparkles size={16} fill="currentColor" /></div>
+                                            </div>
+                                            <div className="p-4 flex-1">
+                                                <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 mb-4 space-y-3">
+                                                    <div className="flex gap-2">
+                                                        <span className="px-2 py-1 bg-indigo-50 text-indigo-600 text-[10px] font-bold rounded">Instagram</span>
+                                                        <span className="px-2 py-1 bg-slate-50 text-slate-400 text-[10px] font-bold rounded">Tone: Casual</span>
+                                                    </div>
+                                                    <div className={`space-y-2 transition-opacity duration-500 ${isGenerating ? 'opacity-50 pulse' : 'opacity-100'}`}>
+                                                        <div className="text-sm text-slate-700 min-h-[60px] whitespace-pre-wrap font-medium">
+                                                            {currentTypingText}
+                                                            <span className="animate-pulse">|</span>
+                                                        </div>
+                                                    </div>
+                                                    <div className={`bg-indigo-600 text-white rounded-xl py-3 font-bold text-center shadow-lg shadow-indigo-200 transition-all duration-300 ${isGenerating ? 'scale-95 bg-indigo-500' : ''}`}>
+                                                        {isGenerating ? (
+                                                            <span className="flex items-center justify-center gap-2">
+                                                                <Icons.Sparkles size={16} className="animate-spin" /> 生成中...
+                                                            </span>
+                                                        ) : (
+                                                            "生成する"
+                                                        )}
                                                     </div>
                                                 </div>
-                                                <div className={`bg-indigo-600 text-white rounded-xl py-3 font-bold text-center shadow-lg shadow-indigo-200 transition-all duration-300 ${isGenerating ? 'scale-95 bg-indigo-500' : ''}`}>
-                                                    {isGenerating ? (
-                                                        <span className="flex items-center justify-center gap-2">
-                                                            <Icons.Sparkles size={16} className="animate-spin" /> 生成中...
-                                                        </span>
-                                                    ) : (
-                                                        "生成する"
-                                                    )}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* AI Result Card (Absolute Overlay) */}
+                                    <div className={`absolute left-1/2 top-[280px] -translate-x-1/2 w-[260px] bg-white rounded-xl shadow-2xl border border-indigo-100 p-4 transition-all duration-700 z-50 origin-bottom ${showResult ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-10 scale-90 pointer-events-none'}`}>
+                                        <div className="flex items-center gap-2 mb-3">
+                                            <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 text-white flex items-center justify-center shadow-sm">
+                                                <Icons.Sparkles size={12} fill="currentColor" />
+                                            </div>
+                                            <span className="text-xs font-bold text-slate-800">AIからの提案</span>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <div className="p-2 bg-slate-50 rounded-lg text-xs leading-relaxed text-slate-600">
+                                                🍓 <strong>新作登場！いちごタルト</strong><br />
+                                                サクサクのタルト生地に、溢れんばかりの旬の苺をトッピングしました✨<br />
+                                                #いちごタルト #新作スイーツ
+                                            </div>
+                                            <div className="flex gap-1 justify-end">
+                                                <div className="px-3 py-1.5 bg-slate-900 text-white text-[10px] font-bold rounded-full shadow-lg">投稿する</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Left Phone (Instagram) */}
+                                    <div className="absolute left-0 lg:-left-12 top-12 w-[260px] h-[520px] bg-slate-800 rounded-[2.5rem] border-4 border-slate-800 shadow-xl z-20 transform -rotate-12 translate-y-8 opacity-90 scale-95 origin-bottom-right">
+                                        <div className="w-full h-full bg-white rounded-[2.2rem] overflow-hidden opacity-90 relative">
+                                            <div className="bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 h-1.5 w-full absolute top-0" />
+                                            <div className="p-4 pt-12">
+                                                <div className="flex items-center gap-2 mb-4">
+                                                    <div className="w-8 h-8 rounded-full bg-gray-200" />
+                                                    <div className="h-3 w-20 bg-gray-200 rounded" />
+                                                </div>
+                                                <div className="aspect-square bg-slate-100 rounded-xl mb-3" />
+                                                <div className="space-y-2">
+                                                    <div className="h-2 bg-slate-100 w-full rounded" />
+                                                    <div className="h-2 bg-slate-100 w-full rounded" />
                                                 </div>
                                             </div>
+                                            <div className="absolute inset-0 bg-slate-900/10 pointer-events-none" />
                                         </div>
                                     </div>
-                                </div>
 
-                                {/* AI Result Card (Absolute Overlay) */}
-                                <div className={`absolute left-1/2 top-[280px] -translate-x-1/2 w-[260px] bg-white rounded-xl shadow-2xl border border-indigo-100 p-4 transition-all duration-700 z-50 origin-bottom ${showResult ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-10 scale-90 pointer-events-none'}`}>
-                                    <div className="flex items-center gap-2 mb-3">
-                                        <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 text-white flex items-center justify-center shadow-sm">
-                                            <Icons.Sparkles size={12} fill="currentColor" />
-                                        </div>
-                                        <span className="text-xs font-bold text-slate-800">AIからの提案</span>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <div className="p-2 bg-slate-50 rounded-lg text-xs leading-relaxed text-slate-600">
-                                            🍓 <strong>新作登場！いちごタルト</strong><br />
-                                            サクサクのタルト生地に、溢れんばかりの旬の苺をトッピングしました✨<br />
-                                            #いちごタルト #新作スイーツ
-                                        </div>
-                                        <div className="flex gap-1 justify-end">
-                                            <div className="px-3 py-1.5 bg-slate-900 text-white text-[10px] font-bold rounded-full shadow-lg">投稿する</div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Left Phone (Instagram) */}
-                                <div className="absolute left-0 lg:-left-12 top-12 w-[260px] h-[520px] bg-slate-800 rounded-[2.5rem] border-4 border-slate-800 shadow-xl z-20 transform -rotate-12 translate-y-8 opacity-90 scale-95 origin-bottom-right">
-                                    <div className="w-full h-full bg-white rounded-[2.2rem] overflow-hidden opacity-90 relative">
-                                        <div className="bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 h-1.5 w-full absolute top-0" />
-                                        <div className="p-4 pt-12">
-                                            <div className="flex items-center gap-2 mb-4">
-                                                <div className="w-8 h-8 rounded-full bg-gray-200" />
-                                                <div className="h-3 w-20 bg-gray-200 rounded" />
+                                    {/* Right Phone (Maps) */}
+                                    <div className="absolute right-0 lg:-right-12 top-24 w-[260px] h-[520px] bg-slate-800 rounded-[2.5rem] border-4 border-slate-800 shadow-xl z-10 transform rotate-12 translate-y-16 opacity-80 scale-90 origin-bottom-left">
+                                        <div className="w-full h-full bg-white rounded-[2.2rem] overflow-hidden opacity-90 relative">
+                                            <div className="h-32 bg-slate-100 relative mb-8">
+                                                <div className="absolute -bottom-8 left-4 w-16 h-16 rounded-full bg-white border-2 border-white shadow-sm" />
                                             </div>
-                                            <div className="aspect-square bg-slate-100 rounded-xl mb-3" />
-                                            <div className="space-y-2">
-                                                <div className="h-2 bg-slate-100 w-full rounded" />
-                                                <div className="h-2 bg-slate-100 w-full rounded" />
-                                            </div>
-                                        </div>
-                                        <div className="absolute inset-0 bg-slate-900/10 pointer-events-none" />
-                                    </div>
-                                </div>
-
-                                {/* Right Phone (Maps) */}
-                                <div className="absolute right-0 lg:-right-12 top-24 w-[260px] h-[520px] bg-slate-800 rounded-[2.5rem] border-4 border-slate-800 shadow-xl z-10 transform rotate-12 translate-y-16 opacity-80 scale-90 origin-bottom-left">
-                                    <div className="w-full h-full bg-white rounded-[2.2rem] overflow-hidden opacity-90 relative">
-                                        <div className="h-32 bg-slate-100 relative mb-8">
-                                            <div className="absolute -bottom-8 left-4 w-16 h-16 rounded-full bg-white border-2 border-white shadow-sm" />
-                                        </div>
-                                        <div className="px-4">
-                                            <div className="h-4 w-32 bg-slate-200 rounded mb-2" />
-                                            <div className="flex gap-1 mb-4">
-                                                {[1, 2, 3, 4, 5].map(i => <Icons.Star key={i} size={12} fill="#FCD34D" className="text-yellow-400" />)}
-                                                <div className="h-3 w-8 bg-slate-100 rounded ml-2" />
-                                            </div>
-                                            <div className="space-y-3">
-                                                <div className="p-2 border border-slate-100 rounded-lg">
-                                                    <div className="flex gap-2 mb-1">
-                                                        <div className="w-4 h-4 rounded-full bg-slate-200" />
-                                                        <div className="h-2 w-12 bg-slate-200 rounded" />
+                                            <div className="px-4">
+                                                <div className="h-4 w-32 bg-slate-200 rounded mb-2" />
+                                                <div className="flex gap-1 mb-4">
+                                                    {[1, 2, 3, 4, 5].map(i => <Icons.Star key={i} size={12} fill="#FCD34D" className="text-yellow-400" />)}
+                                                    <div className="h-3 w-8 bg-slate-100 rounded ml-2" />
+                                                </div>
+                                                <div className="space-y-3">
+                                                    <div className="p-2 border border-slate-100 rounded-lg">
+                                                        <div className="flex gap-2 mb-1">
+                                                            <div className="w-4 h-4 rounded-full bg-slate-200" />
+                                                            <div className="h-2 w-12 bg-slate-200 rounded" />
+                                                        </div>
+                                                        <p className="text-[8px] text-slate-400">とても良いお店でした！</p>
                                                     </div>
-                                                    <p className="text-[8px] text-slate-400">とても良いお店でした！</p>
                                                 </div>
                                             </div>
+                                            <div className="absolute inset-0 bg-slate-900/10 pointer-events-none" />
                                         </div>
-                                        <div className="absolute inset-0 bg-slate-900/10 pointer-events-none" />
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
 
             {/* Problem */}
             <section id="problem" className="py-24 bg-white">
