@@ -432,15 +432,12 @@ export default function LandingPage() {
                                                 </div>
                                                 <p className="font-bold text-xs">1,203 likes</p>
                                                 <div className="text-xs space-y-1">
-                                                    <p><span className="font-bold">MisePo Cafe</span> 【春限定】とろける幸せ、いちごタルト解禁🍓</p>
-                                                    <p className="text-slate-600 leading-relaxed whitespace-pre-wrap">
-                                                        サクサクのクッキー生地と、溢れんばかりの完熟いちご。一口食べれば、そこはもう春。
-                                                        {'\n\n'}
-                                                        完熟いちごの甘さと、自家製カスタードのハーモニーをぜひお楽しみください。
-                                                        {'\n\n'}
-                                                        📍Access: 渋谷駅 徒歩5分
-                                                    </p>
-                                                    <p className="text-indigo-600">#MisePoカフェ #春スイーツ #いちごタルト</p>
+                                                    <div className="text-slate-800">
+                                                        <span className="font-bold mr-2">MisePo Cafe</span>
+                                                        <span className="whitespace-pre-wrap leading-relaxed block mt-1">
+                                                            {generatedResult}
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
