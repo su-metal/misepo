@@ -217,11 +217,21 @@ export default function LandingPage() {
     const heroRef = useRef<HTMLDivElement>(null);
 
     const [isMobile, setIsMobile] = useState(false);
+    const [isRepeatUser, setIsRepeatUser] = useState(false);
 
     useEffect(() => {
         const checkMobile = () => setIsMobile(window.innerWidth < 768);
         checkMobile();
         window.addEventListener('resize', checkMobile);
+
+        // Check for repeat visit (Fast Forward Mode)
+        const hasVisited = sessionStorage.getItem('hasVisited');
+        if (hasVisited) {
+            setIsRepeatUser(true);
+        } else {
+            sessionStorage.setItem('hasVisited', 'true');
+        }
+
         return () => window.removeEventListener('resize', checkMobile);
     }, []);
 
@@ -385,7 +395,7 @@ export default function LandingPage() {
             </header>
 
             {/* New Sticky Hero Animation */}
-            <div ref={heroRef} className="relative z-10 h-[1500vh]">
+            <div ref={heroRef} className={`relative z-10 ${isRepeatUser ? 'h-[400vh]' : 'h-[1500vh]'}`}>
                 <div
                     className="sticky top-0 h-[150vh] md:h-screen w-full overflow-hidden flex flex-col transition-transform duration-100 ease-out will-change-transform"
                     style={{ transform: `translateY(-${mobileScrollY}px)` }}
