@@ -58,6 +58,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                     label: 'X (Twitter)',
                     actionColor: 'bg-black hover:bg-gray-900',
                     actionLabel: 'Xで投稿する',
+                    contentClasses: "text-[15px] text-[#0f1419] font-normal leading-normal",
                 };
             case Platform.Instagram:
                 return {
@@ -87,6 +88,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                     ),
                     actionColor: 'bg-gradient-to-r from-[#FF8C37] via-[#DC2743] to-[#BC1888] hover:opacity-90',
                     actionLabel: 'Instagramを起動',
+                    contentClasses: "text-[14px] text-[#262626] font-normal leading-[1.4]",
                 };
             case Platform.GoogleMaps:
                 return {
@@ -100,6 +102,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                     label: 'Google Maps',
                     actionColor: 'bg-[#0F9D58] hover:bg-[#0B8043]',
                     actionLabel: 'Googleマップで返信する',
+                    contentClasses: "text-[14px] text-[#3c4043] font-normal leading-5",
                 };
             default:
                 return {
@@ -107,6 +110,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                     label: platform,
                     actionColor: 'bg-indigo-600',
                     actionLabel: '投稿する',
+                    contentClasses: "text-base text-gray-800 font-medium",
                 };
         }
     };
@@ -200,7 +204,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                     <AutoResizingTextarea
                                                         value={text}
                                                         onChange={(e) => onManualEdit(gIdx, iIdx, e.target.value)}
-                                                        className="w-full bg-transparent text-gray-800 text-base leading-relaxed focus:outline-none resize-none placeholder:text-gray-300 font-medium"
+                                                        className={`w-full bg-transparent focus:outline-none resize-none placeholder:text-gray-300 ${theme.contentClasses || 'text-base text-gray-800'}`}
                                                         trigger={activeTab}
                                                     />
                                                 </div>
