@@ -194,13 +194,19 @@ export default function LandingPage() {
             // Sticky Hero Animation Logic
             if (heroRef.current) {
                 const rect = heroRef.current.getBoundingClientRect();
-                const scrolled = -rect.top;
-                const totalScrollable = rect.height - window.innerHeight;
 
-                if (totalScrollable > 0) {
-                    const progressPct = Math.min(Math.max(scrolled / totalScrollable, 0), 1);
-                    // Map 0-100% to 0-400 range for existing logic compatibility
-                    setHeroAnimationProgress(progressPct * 400);
+                // Mobile: Direct scroll mapping (Parallax effect without pinning)
+                if (window.innerWidth < 1024) {
+                    setHeroAnimationProgress(window.scrollY);
+                }
+                // Desktop: Sticky Scroll mapping
+                else {
+                    const scrolled = -rect.top;
+                    const totalScrollable = rect.height - window.innerHeight;
+                    if (totalScrollable > 0) {
+                        const progressPct = Math.min(Math.max(scrolled / totalScrollable, 0), 1);
+                        setHeroAnimationProgress(progressPct * 400);
+                    }
                 }
             }
         };
@@ -279,8 +285,8 @@ export default function LandingPage() {
             </header>
 
             {/* Hero (Sticky Wrapper) */}
-            <div ref={heroRef} className="relative h-[180vh] bg-slate-50">
-                <div className="sticky top-0 h-screen overflow-hidden flex items-center">
+            <div ref={heroRef} className="relative h-auto lg:h-[250vh] bg-slate-50">
+                <div className="relative lg:sticky lg:top-0 lg:h-screen overflow-hidden flex items-center py-20 lg:py-0">
                     <div className="absolute inset-0 overflow-hidden pointer-events-none">
                         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[1000px] bg-indigo-100/40 rounded-full blur-[120px] -z-10" />
                         <div className="absolute bottom-0 right-0 w-[800px] h-[800px] bg-purple-100/40 rounded-full blur-[100px] -z-10" />
