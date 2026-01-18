@@ -214,6 +214,12 @@ export default function LandingPage() {
     const [scrollProgress, setScrollProgress] = useState(0);
     const [heroAnimationProgress, setHeroAnimationProgress] = useState(0);
     const [openFaq, setOpenFaq] = useState<number | null>(null);
+
+    // Demo Section State
+    const [demoInput, setDemoInput] = useState("ドーナツ新作３種登場。ハニーディップ、トリプルチョコ、パイ生地ドーナツ。一律２８０円。売り切れ次第終了。");
+    const [isDemoGenerating, setIsDemoGenerating] = useState(false);
+    const [demoResult, setDemoResult] = useState("");
+
     const heroRef = useRef<HTMLDivElement>(null);
 
     const [isMobile, setIsMobile] = useState(false);
@@ -234,6 +240,45 @@ export default function LandingPage() {
 
         return () => window.removeEventListener('resize', checkMobile);
     }, []);
+
+    // ... (omitted code) ...
+
+    // Demo Generation Logic
+    const handleDemoGenerate = async () => {
+        setIsDemoGenerating(true);
+
+        // Simulate AI Delay
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
+        // Fixed Mock Generation Logic (Real MisePo Output)
+        const mockResponse = `˗ˏˋ ✨新作ドーナツ登場✨ ˎˊ˗
+
+misepocafeに、とっておきのドーナツが3種類仲間入りしました🍩
+
+今回仲間入りしたのは、
+・ハニーディップ
+・トリプルチョコ
+・パイ生地ドーナツ
+
+どれも一つ280円です！
+
+自家焙煎のこだわりのコーヒーと一緒に、ぜひお楽しみくださいね☕️
+数量限定ですので、売り切れ次第終了となります。お早めにどうぞ😊
+
+MisePoCafe coffee&eat
+☎︎03-1234-5678
+
+open11:00-close 17:00
+（sat）open11:00-close22:00
+（sun）open11:00-close18:00
+
+〒150-0000 東京都渋谷区神南1-0-0 ミセポビル1F
+
+#misepocafe #渋谷カフェ #表参道カフェ #東京グルメ #新作ドーナツ #ドーナツ #カフェ巡り`;
+
+        setDemoResult(mockResponse);
+        setIsDemoGenerating(false);
+    };
 
     useEffect(() => {
         const handleScroll = () => {
@@ -905,10 +950,22 @@ export default function LandingPage() {
                                 <span className="text-[10px] font-bold text-indigo-300 bg-indigo-900/50 border border-indigo-700/50 px-2 py-1 rounded-full">Instagramモード</span>
                             </div>
                             <div className="relative mb-6 group">
-                                <textarea className="relative w-full h-40 p-4 bg-slate-800/80 border border-slate-700 text-slate-100 rounded-xl focus:outline-none focus:bg-slate-800 resize-none text-base transition-colors placeholder:text-slate-500 leading-relaxed" placeholder={"例：\n・今日は雨だけど元気に営業中\n・新作のいちごタルト始めました\n・数量限定なのでお早めに"} readOnly />
+                                <textarea
+                                    className="relative w-full h-40 p-4 bg-slate-800/80 border border-slate-700 text-slate-100 rounded-xl focus:outline-none focus:bg-slate-800 resize-none text-base transition-colors placeholder:text-slate-500 leading-relaxed cursor-not-allowed opacity-80"
+                                    readOnly
+                                    value={demoInput}
+                                />
                             </div>
-                            <button onClick={() => loginWithGoogle('trial')} className="w-full py-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all duration-300 relative overflow-hidden group bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:shadow-[0_0_20px_rgba(99,102,241,0.5)] hover:scale-[1.02]">
-                                <Icons.Sparkles size={20} className="group-hover:animate-pulse" />AIで文章を生成する
+                            <button
+                                onClick={handleDemoGenerate}
+                                disabled={isDemoGenerating}
+                                className={`w-full py-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all duration-300 relative overflow-hidden group bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:shadow-[0_0_20px_rgba(99,102,241,0.5)] hover:scale-[1.02]`}
+                            >
+                                {isDemoGenerating ? (
+                                    <><Icons.Sparkles size={20} className="animate-spin" /> 生成中...</>
+                                ) : (
+                                    <><Icons.Sparkles size={20} className="group-hover:animate-pulse" /> AIで文章を生成する</>
+                                )}
                             </button>
                             <div className="mt-auto pt-6">
                                 <div className="flex items-center gap-2 mb-4"><Icons.Zap size={16} className="text-yellow-400" fill="currentColor" /><h3 className="font-bold text-slate-200 text-sm">Proプランなら...</h3></div>
@@ -943,19 +1000,36 @@ export default function LandingPage() {
                                                 <Icons.Bookmark size={22} className="text-slate-800" />
                                             </div>
                                             <p className="font-bold text-xs mb-2 text-slate-900">「いいね！」128件</p>
-                                            <div className="text-xs text-slate-800 leading-relaxed whitespace-pre-wrap">
+                                            <div className="text-xs text-slate-800 leading-relaxed whitespace-pre-wrap select-none" onContextMenu={(e) => e.preventDefault()}>
                                                 <span className="font-bold mr-2">misepo_cafe</span>
-                                                <span className="text-slate-400">ここにAIが生成した投稿文が表示されます。ハッシュタグも含めて提案します。</span>
+                                                <span className={`${demoResult ? 'text-slate-800' : 'text-slate-400'}`}>
+                                                    {isDemoGenerating ? (
+                                                        <span className="animate-pulse">AIが最適な投稿文を考えています...</span>
+                                                    ) : demoResult ? (
+                                                        demoResult
+                                                    ) : (
+                                                        "ここにAIが生成した投稿文が表示されます。ハッシュタグも含めて提案します。"
+                                                    )}
+                                                </span>
                                             </div>
-                                            <p className="text-[10px] text-slate-400 mt-2 uppercase">2時間前</p>
+                                            {demoResult && (
+                                                <p className="text-[10px] text-slate-400 mt-4 text-right italic border-t border-slate-100 pt-2">
+                                                    ※実際にMisePoのAIが出力した文章です
+                                                </p>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div className="absolute inset-0 z-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.15) 1px, transparent 0)', backgroundSize: '24px 24px' }} />
+                            <p className="text-[10px] text-slate-400 mt-2 uppercase">2時間前</p>
                         </div>
                     </div>
+                    {/* End Right Column & Flex Container */}
                 </div>
+                {/* End Max-Width Container */}
+
+                <div className="absolute inset-0 z-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.15) 1px, transparent 0)', backgroundSize: '24px 24px' }} />
+                <p className="text-center text-[9px] text-gray-400 mt-4 absolute bottom-4 left-0 right-0 z-10">※画面はイメージです</p>
             </section>
 
             {/* PWA Section */}
@@ -1030,14 +1104,13 @@ export default function LandingPage() {
                                     </div>
                                 </div>
                             </div>
-                            <p className="text-center text-[9px] text-gray-400 mt-2">※画面はイメージです</p>
                         </div>
                     </div>
                 </div>
             </section>
 
             {/* Pricing */}
-            <section id="pricing" className="py-24 bg-white border-t border-slate-100" >
+            <section id="pricing" className="py-24 bg-white border-t border-slate-100">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid lg:grid-cols-2 gap-12 lg:gap-24 items-center">
                         {/* Left Column: Value Proposition */}
@@ -1134,7 +1207,7 @@ export default function LandingPage() {
             </section>
 
             {/* FAQ */}
-            <section id="faq" className="py-20 bg-white" >
+            <section id="faq" className="py-20 bg-white">
                 <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
                     <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">よくある質問</h2>
                     <div className="space-y-4">
@@ -1154,7 +1227,7 @@ export default function LandingPage() {
             </section>
 
             {/* Footer */}
-            < footer className="bg-gray-900 text-white py-12" >
+            <footer className="bg-gray-900 text-white py-12">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
                         <div className="col-span-1 md:col-span-2">
