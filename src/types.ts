@@ -6,6 +6,7 @@ export enum Platform {
 }
 
 export enum PostPurpose {
+  Auto = 'auto',
   Promotion = 'promotion',
   Story = 'story',
   Educational = 'educational',
@@ -99,6 +100,7 @@ export interface GeneratedPost {
 export interface Preset {
   id: string;
   name: string;
+  avatar: string | null;
   custom_prompt: string | null;
   sort_order: number;
 }

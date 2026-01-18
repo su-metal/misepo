@@ -73,9 +73,9 @@ const SortablePresetRow: React.FC<{
           }`}
         type="button"
       >
-        <div className="flex items-center gap-3">
-          <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${isSelected ? 'bg-lime text-black shadow-lg shadow-lime/20' : 'bg-stone-100 text-stone-400 group-hover:bg-stone-200'}`}>
-            <BookmarkIcon className="w-4 h-4" />
+        <div className="flex items-center gap-4">
+          <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-3xl transition-all duration-300 ${isSelected ? 'bg-white shadow-inner scale-105' : 'bg-stone-100'}`}>
+            {preset.avatar || "👤"}
           </div>
           <div className={`font-bold text-sm truncate ${isSelected ? 'text-white' : 'text-stone-700 group-hover:text-black'}`}>
             {preset.name}
@@ -164,6 +164,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
   currentConfig,
 }) => {
   const [name, setName] = useState('');
+  const [avatar, setAvatar] = useState('👤');
   const [customPrompt, setCustomPrompt] = useState('');
   const [selectedPresetId, setSelectedPresetId] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -195,6 +196,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
     }
 
     setName('');
+    setAvatar('👤');
     setCustomPrompt(currentConfig.customPrompt ?? '');
     setSelectedPresetId(null);
     setErrorMessage(null);
@@ -232,6 +234,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
     try {
       const payload = {
         name: trimmedName,
+        avatar: avatar,
         custom_prompt: trimmedPrompt || null,
       };
       const endpoint = selectedPresetId
@@ -258,6 +261,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
       await refreshPresets();
       setName('');
+      setAvatar('👤');
       setCustomPrompt('');
       setSelectedPresetId(null);
     } catch (err) {
@@ -271,6 +275,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
   const handleLoadPreset = (preset: Preset) => {
     setSelectedPresetId(preset.id);
     setName(enforceSaveNameWidth(preset.name));
+    setAvatar(preset.avatar || '👤');
     setCustomPrompt(preset.custom_prompt ?? '');
     setErrorMessage(null);
     setOrderError(null);
@@ -281,6 +286,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
     if (limitReached) return;
     setSelectedPresetId(null);
     setName('');
+    setAvatar('👤');
     setCustomPrompt('');
     setErrorMessage(null);
     setOrderError(null);
@@ -303,6 +309,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
       if (selectedPresetId === preset.id) {
         setSelectedPresetId(null);
         setName('');
+        setAvatar('👤');
         setCustomPrompt(currentConfig.customPrompt ?? '');
       }
     } catch (err) {
@@ -317,7 +324,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
     const trimmedPrompt = customPrompt.trim();
     const personaPreset: Preset = {
       id: 'temp',
-      name: 'Persona',
+      name: name || 'Persona',
+      avatar: avatar,
       custom_prompt: trimmedPrompt || null,
       sort_order: 0,
     };
@@ -377,9 +385,9 @@ const PresetModal: React.FC<PresetModalProps> = ({
             <div className="space-y-1">
               <h3 className="font-black text-xl text-stone-800 tracking-tight flex items-center gap-2">
                 <div className="w-1.5 h-6 bg-lime rounded-full shadow-sm"></div>
-                プリセット一覧
+                投稿者プロフィール
               </h3>
-              <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest">Saved Configurations</p>
+              <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest">Sender Profiles</p>
             </div>
             <button
               type="button"
@@ -452,8 +460,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
               <MagicWandIcon className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="font-black text-xl text-stone-900 tracking-tight">プリセット編集</h2>
-              <p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">Configuration Editor</p>
+              <h2 className="font-black text-xl text-stone-900 tracking-tight">プロファイルの編集</h2>
+              <p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">Profile Editor</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -479,36 +487,68 @@ const PresetModal: React.FC<PresetModalProps> = ({
         <div className="flex-1 overflow-y-auto p-8 md:p-12 space-y-10">
           <div className="animate-in slide-in-from-bottom-4 duration-500">
             <label className="block text-[11px] font-black text-stone-400 uppercase tracking-[0.2em] mb-3">
-              プリセット名 (Save Name)
+              プロフィール名 (Account Name)
             </label>
-            <div className="relative group">
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(enforceSaveNameWidth(e.target.value))}
-                placeholder="例: フレンドリーな店長"
-                className="w-full px-6 py-4.5 bg-gray-50 border-2 border-transparent focus:bg-white focus:border-lime focus:ring-[8px] focus:ring-lime/20 outline-none rounded-2xl text-base text-gray-800 font-bold placeholder-gray-300 transition-all shadow-sm"
-              />
-              <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-200 group-focus-within:text-lime">
-                <BookmarkIcon className="w-5 h-5" />
+            <div className="flex flex-col md:flex-row gap-6">
+              <div className="flex flex-col gap-3">
+                <label className="block text-[11px] font-black text-stone-400 uppercase tracking-[0.2em]">
+                  アイコン
+                </label>
+                <div className="flex flex-wrap gap-2.5 p-4 bg-gray-50 border border-gray-100 rounded-3xl shadow-inner-sm">
+                  {[
+                    { e: '👔', l: '店長/公式' },
+                    { e: '👟', l: 'スタッフ' },
+                    { e: '💻', l: '広報/IT' },
+                    { e: '🍳', l: '料理/製作' },
+                    { e: '☕', l: 'カフェ/日常' },
+                    { e: '🏢', l: '店舗/外観' },
+                    { e: '✨', l: 'キラキラ' },
+                    { e: '📣', l: 'お知らせ' },
+                    { e: '🌿', l: 'ナチュラル' },
+                    { e: '💎', l: 'プレミアム' }
+                  ].map((item) => (
+                    <button
+                      key={item.e}
+                      onClick={() => setAvatar(item.e)}
+                      title={item.l}
+                      className={`w-12 h-12 flex items-center justify-center text-2xl rounded-2xl transition-all duration-300 ${avatar === item.e ? 'bg-white shadow-lg ring-2 ring-indigo-500 scale-110 z-10' : 'hover:bg-white hover:shadow-md opacity-40 hover:opacity-100'}`}
+                    >
+                      {item.e}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="flex-1">
+                <div className="relative group mt-7 md:mt-0">
+                  <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(enforceSaveNameWidth(e.target.value))}
+                    placeholder="例: 店長（公式）"
+                    className="w-full px-6 py-4.5 bg-gray-50 border-2 border-transparent focus:bg-white focus:border-indigo-500 focus:ring-[8px] focus:ring-indigo-500/10 outline-none rounded-2xl text-base text-gray-800 font-bold placeholder-gray-300 transition-all shadow-sm"
+                  />
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-200 group-focus-within:text-indigo-500">
+                    <span className="text-xl">{avatar}</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
           <div className="animate-in slide-in-from-bottom-4 duration-500 delay-100">
-            <label className="block text-[11px] font-black text-lime uppercase tracking-[0.2em] mb-3">
-              発信者ペルソナ (Prompt Instruction)
+            <label className="block text-[11px] font-black text-indigo-500 uppercase tracking-[0.2em] mb-3">
+              発信者ペルソナ (Persona / Prompt)
             </label>
-            <div className="relative p-[1px] rounded-[24px] bg-gradient-to-br from-lime/20 via-gray-100 to-lime/10">
+            <div className="relative p-[1px] rounded-[24px] bg-gradient-to-br from-indigo-500/20 via-gray-100 to-indigo-500/10">
               <AutoResizingTextarea
                 value={customPrompt}
                 onChange={setCustomPrompt}
-                placeholder="例: 活気のある若手スタッフの口調で、親しみやすく丁寧なタメ口を交えて。"
-                className="w-full px-6 py-6 bg-white border-2 border-transparent focus:border-lime focus:ring-[8px] focus:ring-lime/20 outline-none rounded-[22px] text-base text-gray-800 font-medium leading-relaxed placeholder-gray-300 transition-all shadow-inner min-h-[140px]"
+                placeholder="例: 活気のある店長の口調で、地域に愛される親しみやすさを意識して。"
+                className="w-full px-6 py-6 bg-white border-2 border-transparent focus:border-indigo-500 focus:ring-[8px] focus:ring-indigo-500/10 outline-none rounded-[22px] text-base text-gray-800 font-medium leading-relaxed placeholder-gray-300 transition-all shadow-inner min-h-[140px]"
               />
             </div>
             <p className="text-[11px] text-stone-400 font-medium mt-3 leading-relaxed flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-lime"></span>
+              <span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
               ここで指定した性格や文体がAIの出力に反映されます。
             </p>
           </div>
@@ -519,19 +559,19 @@ const PresetModal: React.FC<PresetModalProps> = ({
             <button
               onClick={handleSave}
               disabled={isSaveDisabled}
-              className="w-full bg-black hover:bg-stone-900 disabled:opacity-50 disabled:cursor-not-allowed text-lime border border-lime/50 px-8 py-5 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center justify-center gap-3 transition-all transform hover:-translate-y-1 active:translate-y-0 shadow-xl shadow-black/20"
+              className="w-full bg-black hover:bg-stone-900 disabled:opacity-50 disabled:cursor-not-allowed text-indigo-400 border border-indigo-500/50 px-8 py-5 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center justify-center gap-3 transition-all transform hover:-translate-y-1 active:translate-y-0 shadow-xl shadow-black/20"
             >
               <SaveIcon className="w-4 h-4" />
-              {selectedPresetId ? 'プリセットを更新' : '新規保存'}
+              {selectedPresetId ? '更新して保存' : '新規作成'}
             </button>
           </div>
 
           <button
             onClick={handleApplyCurrent}
-            className="flex-[1.2] bg-lime hover:bg-lime-dark text-black font-black py-5 px-8 rounded-2xl shadow-xl shadow-lime/20 transition-all transform hover:-translate-y-1 active:translate-y-0 flex items-center justify-center gap-3 text-sm uppercase tracking-widest"
+            className="flex-[1.2] bg-indigo-600 hover:bg-indigo-700 text-white font-black py-5 px-8 rounded-2xl shadow-xl shadow-indigo-200 transition-all transform hover:-translate-y-1 active:translate-y-0 flex items-center justify-center gap-3 text-sm uppercase tracking-widest"
           >
             <MagicWandIcon className="w-4 h-4" />
-            設定を適用する
+            プロファイルを適用
           </button>
         </div>
       </div>

@@ -87,6 +87,10 @@ export const generateContent = async (
   const isXWith140Limit = config.platform === Platform.X && config.xConstraint140;
 
   const buildSystemInstruction = () => {
+    const effectivePurpose = config.purpose === 'auto' 
+      ? "Auto-Detect (Analyze the input text and infer the most appropriate purpose, e.g., Promotion, Story, or Engagement)" 
+      : config.purpose;
+
     let systemInstruction = `
 You are a skilled and friendly social media manager for a physical business.
 Your goal is to write engaging, natural, and effective posts for a ${profile.industry} named "${profile.name}" located in ${profile.region}.
@@ -95,7 +99,7 @@ Target Audience: Local customers and potential visitors.
 
 **Current Task Configuration:**
 - Platform: ${config.platform}
-- Purpose: ${config.purpose}
+- Purpose: ${effectivePurpose}
 - Tone: ${config.tone} (Formal/Standard/Friendly)
 - Length: ${config.length} (Short/Medium/Long)
 - Language: ${config.language || "Japanese"}
