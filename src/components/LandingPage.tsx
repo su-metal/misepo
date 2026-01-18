@@ -238,14 +238,17 @@ export default function LandingPage() {
     const isGenerating = heroAnimationProgress > 450 && heroAnimationProgress < 550;
     const isResultShown = heroAnimationProgress > 550; // New: Text is visible, waiting for Post
 
-    // Post/Swap Phase (Trigger at 700)
-    const isPosted = heroAnimationProgress > 700;
-    // Internal Scroll (Start after swap, longer duration for full read)
-    // 750 -> 1500 (Leaves 100 buffer before 1600 end)
-    const internalScrollProgress = Math.min(Math.max((heroAnimationProgress - 750) / 750, 0), 1);
+    // Post/Swap Phase (Trigger at 900 - Delayed for better reading time)
+    const isPosted = heroAnimationProgress > 900;
+
+    // Inertia Scroll (Ease Out)
+    // Start at 950, duration 600
+    const rawScrollProgress = Math.min(Math.max((heroAnimationProgress - 950) / 600, 0), 1);
+    const easeOutCubic = 1 - Math.pow(1 - rawScrollProgress, 3);
+    const internalScrollProgress = easeOutCubic;
 
     const innerContentStyle = {
-        transform: `translateY(-${internalScrollProgress * 300}px)`,
+        transform: `translateY(-${internalScrollProgress * 320}px)`,
     };
 
     const problems = [
@@ -309,7 +312,7 @@ export default function LandingPage() {
             </header>
 
             {/* New Sticky Hero Animation */}
-            <div ref={heroRef} className="relative z-10 h-[500vh]">
+            <div ref={heroRef} className="relative z-10 h-[700vh]">
                 <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col">
                     <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/50 via-white to-purple-50/50" />
 
