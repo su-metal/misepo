@@ -123,7 +123,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: countErr.message });
   }
 
-  if ((count ?? 0) >= 5) {
+  if ((count ?? 0) >= 10) {
     return NextResponse.json(
       { ok: false, error: "preset_limit_reached" },
       { status: 409 }

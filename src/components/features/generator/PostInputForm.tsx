@@ -243,7 +243,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                 </button>
                             </div>
                             <div className="grid grid-cols-2 gap-3">
-                                {presets.map((preset) => (
+                                {presets.slice(0, 4).map((preset) => (
                                     <button
                                         key={preset.id}
                                         onClick={() => onApplyPreset(preset)}
@@ -267,13 +267,18 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                         )}
                                     </button>
                                 ))}
-                                {presets.length === 0 && (
-                                    <div className="col-span-2 py-8 flex flex-col items-center justify-center bg-gray-50/50 rounded-2xl border border-dashed border-gray-200">
-                                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest px-2 italic mb-2">プロフィールなし</span>
-                                        <button onClick={onOpenPresetModal} className="text-[10px] text-indigo-600 bg-white px-3 py-1.5 rounded-lg border border-indigo-100 shadow-sm hover:shadow-md transition-all font-bold">
-                                            作成する
-                                        </button>
-                                    </div>
+
+                                {/* Add Button Card: Visible up to 4 total items (Presets + Add) */}
+                                {presets.length < 4 && (
+                                    <button
+                                        onClick={onOpenPresetModal}
+                                        className="relative py-3.5 px-3 rounded-2xl border-2 border-dashed border-gray-100 bg-white/50 text-gray-300 hover:bg-white hover:border-indigo-300 hover:text-indigo-400 transition-all flex flex-col items-center justify-center gap-1.5 shadow-sm active:scale-95"
+                                    >
+                                        <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-indigo-50 transition-colors">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12h14" /></svg>
+                                        </div>
+                                        <span className="text-[10px] font-black uppercase tracking-widest px-1">追加</span>
+                                    </button>
                                 )}
                             </div>
                         </div>
