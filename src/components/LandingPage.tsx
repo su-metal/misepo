@@ -322,11 +322,11 @@ export default function LandingPage() {
 
             {/* New Sticky Hero Animation */}
             <div ref={heroRef} className="relative z-10 h-[700vh]">
-                <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col">
+                <div className="sticky top-0 h-[150vh] md:h-screen w-full overflow-hidden flex flex-col">
                     <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/50 via-white to-purple-50/50" />
 
                     {/* Mobile Text (Static at top) */}
-                    <div className="md:hidden pt-24 px-4 text-center z-20 relative">
+                    <div className="md:hidden pt-24 px-4 text-center z-20 relative mb-12">
                         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/80 backdrop-blur-sm border border-indigo-100 shadow-sm mb-4">
                             <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
                             <span className="text-xs font-bold text-indigo-900">総生成数 10,000件突破</span>
@@ -335,6 +335,10 @@ export default function LandingPage() {
                             店舗の広報は、<br />
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">AIに丸投げする時</span>代。
                         </h1>
+                        <p className="text-base text-slate-600 leading-relaxed px-2">
+                            Googleマップの口コミ返信も、Instagramの投稿文も。<br />
+                            MisePo（ミセポ）なら、たった5秒で「来店したくなる」文章が完成します。
+                        </p>
                     </div>
 
                     {/* Desktop Text (Absolute) */}
@@ -363,7 +367,7 @@ export default function LandingPage() {
                     </div>
 
                     {/* Phone Animation Container */}
-                    <div className="absolute inset-0 md:left-1/3 flex items-end md:items-center justify-center pointer-events-none pb-16 md:pb-0">
+                    <div className="absolute inset-0 md:left-1/3 flex items-start md:items-center justify-center pointer-events-none pt-[22rem] md:pt-0">
                         <div className="relative w-[300px] h-[600px] scale-90 md:scale-100 origin-center">
 
                             {/* CENTER PHONE (MisePo) */}
@@ -489,6 +493,19 @@ export default function LandingPage() {
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+
+                    {/* Mobile CTA Buttons (Below Phone) */}
+                    <div className="md:hidden absolute top-[62rem] left-0 right-0 px-4 z-20">
+                        <div className="flex flex-col gap-3 max-w-sm mx-auto">
+                            <button onClick={() => loginWithGoogle('trial')} className="w-full px-6 py-3.5 bg-slate-900 text-white rounded-full font-bold hover:bg-slate-800 transition-all shadow-lg shadow-slate-900/20 flex items-center justify-center gap-2">
+                                <Icons.Sparkles size={18} className="text-yellow-400" />
+                                無料で試してみる
+                            </button>
+                            <button className="w-full px-6 py-3.5 bg-white text-slate-900 rounded-full font-bold border-2 border-slate-100 hover:border-slate-200 hover:bg-slate-50 transition-all">
+                                料金プラン
+                            </button>
                         </div>
                     </div>
                 </div>
