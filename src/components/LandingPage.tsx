@@ -415,14 +415,29 @@ export default function LandingPage() {
 
                             {/* LEFT PHONE (Instagram) */}
                             <div
-                                className={`absolute inset-0 w-[280px] h-[560px] top-4 left-2 transition-all duration-700 ease-in-out origin-center
+                                className={`absolute inset-0 w-[260px] h-[520px] top-20 left-[-100px] transition-all duration-700 ease-in-out origin-center
                                     ${isPosted
-                                        ? 'scale-105 translate-x-2 -translate-y-4 rotate-0 z-40'
-                                        : 'scale-90 -translate-x-[42vw] md:-translate-x-[240px] translate-y-8 -rotate-12 z-20'
+                                        ? 'scale-105 translate-x-[120px] -translate-y-4 rotate-0 z-40'
+                                        : '-translate-x-[100px] translate-y-0 -rotate-12 z-20 opacity-80'
                                     }`}
                             >
                                 <div className="w-full h-full bg-slate-800 rounded-[2.5rem] border-4 border-slate-800 shadow-xl overflow-hidden relative">
                                     <div className="w-full h-full bg-white relative">
+                                        {/* Skeleton Overlay for Waiting State */}
+                                        <div className={`absolute inset-0 bg-white z-20 transition-opacity duration-500 ${isPosted ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+                                            <div className="p-4 space-y-4 h-full">
+                                                <div className="flex items-center gap-3 border-b border-slate-50 pb-3">
+                                                    <div className="w-8 h-8 rounded-full bg-slate-100 animate-pulse" />
+                                                    <div className="w-24 h-3 bg-slate-100 rounded animate-pulse" />
+                                                </div>
+                                                <div className="w-full aspect-square bg-slate-100 rounded animate-pulse" />
+                                                <div className="space-y-3 pt-2">
+                                                    <div className="w-3/4 h-3 bg-slate-100 rounded animate-pulse" />
+                                                    <div className="w-1/2 h-3 bg-slate-100 rounded animate-pulse" />
+                                                    <div className="w-full h-3 bg-slate-100 rounded animate-pulse" />
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div className="bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 h-1.5 w-full absolute top-0 z-10" />
                                         <div className="flex flex-col h-full bg-white transition-transform duration-[2000ms] ease-out" style={isPosted ? innerContentStyle : {}}>
                                             <div className="px-4 py-4 flex items-center gap-2 border-b border-slate-100 flex-shrink-0 bg-white z-10 sticky top-0">
