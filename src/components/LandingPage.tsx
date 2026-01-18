@@ -678,31 +678,36 @@ export default function LandingPage() {
             </div>
 
             {/* Problem */}
-            <section id="problem" className="py-24 bg-white">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid lg:grid-cols-2 gap-16 items-center mb-16">
-                        <div>
-                            <span className="text-indigo-600 font-bold tracking-wider text-sm uppercase mb-2 block">Problem</span>
-                            <h2 className="text-4xl md:text-6xl font-black text-slate-900 leading-tight mb-6">
-                                「何を投稿すればいい？」<br />
-                                <span className="text-slate-400">毎日のその悩み、もう終わり。</span>
-                            </h2>
-                            <p className="text-slate-600 text-lg leading-relaxed">
-                                映える写真、刺さる文章、流行りのハッシュタグ。<br />
-                                変化の激しいトレンドを追いかけ、正解のない投稿を作り続けるのは大変です。<br />
-                                そんなオーナー様の悩みを、MisePoは技術で解決します。
-                            </p>
-                        </div>
-                        <div className="hidden lg:block">
-                            <div className="h-px w-full bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
-                        </div>
+            <section id="problem" className="py-32 bg-slate-50 relative overflow-hidden">
+                {/* Background Decor */}
+                <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-indigo-200/20 rounded-full blur-[120px] -translate-y-1/2 pointer-events-none" />
+
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                    <div className="max-w-3xl mx-auto text-center mb-20">
+                        <span className="inline-block py-1 px-3 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-600 font-bold tracking-wider text-xs uppercase mb-6">
+                            Social Media Challenges
+                        </span>
+                        <h2 className="text-4xl md:text-6xl font-black text-slate-900 leading-[1.1] mb-8">
+                            「何を投稿すればいい？」<br />
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-slate-600 to-slate-400">毎日のその悩み、もう終わり。</span>
+                        </h2>
+                        <p className="text-slate-600 text-lg leading-relaxed max-w-2xl mx-auto">
+                            映える写真、刺さる文章、流行りのハッシュタグ。<br className="hidden md:block" />
+                            変化の激しいトレンドを追いかけ、正解のない投稿を作り続けるのは大変です。<br className="hidden md:block" />
+                            そんなオーナー様の悩みを、MisePoは技術で解決します。
+                        </p>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
                         {problems.map((prob, index) => (
-                            <div key={index} className="group relative bg-white rounded-2xl p-8 border border-slate-100 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] transition-all duration-300 hover:-translate-y-1">
-                                <div className={`w-12 h-12 rounded-xl ${prob.bg} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>{prob.icon}</div>
-                                <h3 className="text-lg font-bold text-slate-900 mb-3">{prob.title}</h3>
-                                <p className="text-sm text-slate-500 leading-relaxed mb-6">{prob.desc}</p>
+                            <div key={index} className="group relative bg-white rounded-[2rem] p-8 border border-slate-100 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-2 transition-all duration-300 flex flex-col items-center text-center">
+                                <div className={`w-16 h-16 rounded-2xl ${prob.bg} flex items-center justify-center mb-6 text-white shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300`}>
+                                    {prob.icon}
+                                </div>
+                                <h3 className="text-xl font-bold text-slate-900 mb-4 whitespace-pre-line leading-tight">{prob.title}</h3>
+                                <div className="h-px w-12 bg-slate-100 mb-4 group-hover:w-full group-hover:bg-indigo-100 transition-all duration-500" />
+                                <p className="text-sm text-slate-500 leading-relaxed">{prob.desc}</p>
                             </div>
                         ))}
                     </div>
