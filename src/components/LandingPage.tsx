@@ -370,7 +370,7 @@ export default function LandingPage() {
                             <div
                                 className={`absolute inset-0 transition-all duration-700 ease-in-out origin-center
                                     ${isPosted
-                                        ? 'scale-90 -translate-x-[40vw] md:-translate-x-[200px] -rotate-12 opacity-60 z-10 blur-[1px]'
+                                        ? 'scale-75 -translate-x-[40vw] md:-translate-x-[200px] -rotate-12 opacity-60 z-10 blur-[1px]'
                                         : 'scale-100 translate-x-0 rotate-0 opacity-100 z-30 blur-none'
                                     }`}
                             >
@@ -417,7 +417,7 @@ export default function LandingPage() {
                             <div
                                 className={`absolute inset-0 w-[260px] h-[520px] top-20 left-[-100px] transition-all duration-700 ease-in-out origin-center
                                     ${isPosted
-                                        ? 'scale-105 translate-x-[120px] -translate-y-4 rotate-0 z-40'
+                                        ? 'scale-110 translate-x-[120px] -translate-y-4 rotate-0 z-40'
                                         : '-translate-x-[100px] translate-y-0 -rotate-12 z-20 opacity-80'
                                     }`}
                             >
