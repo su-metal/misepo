@@ -280,23 +280,45 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                     )}
 
                     {/* Tone Selection (Segmented Control) */}
-                    <div>
-                        <h3 className="text-sm font-bold text-gray-500 mb-3 px-1">スタイル設定</h3>
-                        <div className="flex bg-white p-1 rounded-2xl border border-gray-100 shadow-sm relative isolate">
-                            {/* Background Slider - calculate position based on index if needed, or simple direct styling */}
+                    <div className={`${activePresetId ? 'opacity-60' : ''} transition-opacity duration-300`}>
+                        <div className="flex items-center justify-between mb-3 px-1">
+                            <h3 className="text-sm font-bold text-gray-500">スタイル設定</h3>
+                            {activePresetId && (
+                                <div className="flex items-center gap-1 px-2 py-0.5 bg-indigo-50 rounded-full border border-indigo-100/50">
+                                    <SparklesIcon className="w-2.5 h-2.5 text-indigo-500" />
+                                    <span className="text-[9px] font-black text-indigo-600 uppercase tracking-tighter">Profile Active</span>
+                                </div>
+                            )}
+                        </div>
+                        <div className={`flex bg-white p-1 rounded-2xl border border-gray-100 shadow-sm relative isolate ${activePresetId ? 'cursor-not-allowed select-none' : ''}`}>
+                            {activePresetId && (
+                                <div
+                                    className="absolute inset-0 z-20"
+                                    title="プロフィールの文体学習を使用中のため、トーン設定は固定されています"
+                                />
+                            )}
                             {TONES.map((t) => (
                                 <button
                                     key={t.id}
-                                    onClick={() => onToneChange(t.id)}
+                                    type="button"
+                                    onClick={() => !activePresetId && onToneChange(t.id)}
+                                    disabled={!!activePresetId}
                                     className={`flex-1 py-3 rounded-xl text-xs font-bold transition-all relative z-10 ${tone === t.id
-                                        ? 'bg-indigo-50 text-indigo-700 shadow-sm ring-1 ring-indigo-100' // Active
-                                        : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50' // Inactive
+                                        ? (activePresetId
+                                            ? 'bg-stone-100 text-stone-500 border border-stone-200 shadow-none'
+                                            : 'bg-indigo-50 text-indigo-700 shadow-sm ring-1 ring-indigo-100') // Active
+                                        : (activePresetId ? 'text-stone-300' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50') // Inactive
                                         }`}
                                 >
                                     {t.label}
                                 </button>
                             ))}
                         </div>
+                        {activePresetId && (
+                            <p className="mt-2 px-1 text-[10px] text-stone-400 font-medium leading-relaxed">
+                                ※ プロフィールの学習データを優先するため固定されています。
+                            </p>
+                        )}
                     </div>
 
                     {/* Star Rating - GMAP Only */}
