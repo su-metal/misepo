@@ -328,43 +328,45 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                     {/* Toggles */}
                     <div className="space-y-3">
                         {/* Emoji & Decoration Toggles */}
-                        <div className="grid grid-cols-2 gap-3 mt-4">
-                            {/* Emoji Card */}
-                            <div className={`rounded-2xl p-4 border transition-colors flex flex-col justify-between h-[84px] ${includeEmojis ? 'bg-[#FFFBEB] border-[#FCD34D]' : 'bg-white border-gray-100'}`}>
-                                <div className="flex items-center justify-between">
-                                    <span className={`text-[13px] font-bold ${includeEmojis ? 'text-[#B45309]' : 'text-gray-400'}`}>絵文字</span>
-                                    <button
-                                        onClick={() => onIncludeEmojisChange(!includeEmojis)}
-                                        className={`relative inline-flex h-5 w-10 items-center rounded-full transition-colors ${includeEmojis ? 'bg-[#F59E0B]' : 'bg-gray-200'}`}
-                                    >
-                                        <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${includeEmojis ? 'translate-x-5.5' : 'translate-x-1'}`} />
-                                    </button>
+                        {!isGoogleMaps && (
+                            <div className="grid grid-cols-2 gap-3 mt-4">
+                                {/* Emoji Card */}
+                                <div className={`rounded-2xl p-4 border transition-colors flex flex-col justify-between h-[84px] ${includeEmojis ? 'bg-[#FFFBEB] border-[#FCD34D]' : 'bg-white border-gray-100'}`}>
+                                    <div className="flex items-center justify-between">
+                                        <span className={`text-[13px] font-bold ${includeEmojis ? 'text-[#B45309]' : 'text-gray-400'}`}>絵文字</span>
+                                        <button
+                                            onClick={() => onIncludeEmojisChange(!includeEmojis)}
+                                            className={`relative inline-flex h-5 w-10 items-center rounded-full transition-colors ${includeEmojis ? 'bg-[#F59E0B]' : 'bg-gray-200'}`}
+                                        >
+                                            <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${includeEmojis ? 'translate-x-5.5' : 'translate-x-1'}`} />
+                                        </button>
+                                    </div>
+                                    <div className="flex gap-1.5 opacity-80">
+                                        <span>✨</span>
+                                        <span>😋</span>
+                                        <span>👍</span>
+                                    </div>
                                 </div>
-                                <div className="flex gap-1.5 opacity-80">
-                                    <span>✨</span>
-                                    <span>😋</span>
-                                    <span>👍</span>
-                                </div>
-                            </div>
 
-                            {/* Decoration Card */}
-                            <div className={`rounded-2xl p-4 border transition-colors flex flex-col justify-between h-[84px] ${includeSymbols ? 'bg-[#F8FAFC] border-indigo-200' : 'bg-white border-gray-100 shadow-sm shadow-gray-100/50'}`}>
-                                <div className="flex items-center justify-between">
-                                    <span className={`text-[13px] font-bold ${includeSymbols ? 'text-[#4f46e5]' : 'text-gray-400'}`}>装飾記号</span>
-                                    <button
-                                        onClick={() => onIncludeSymbolsChange(!includeSymbols)}
-                                        className={`relative inline-flex h-5 w-10 items-center rounded-full transition-colors ${includeSymbols ? 'bg-[#4f46e5]' : 'bg-gray-200'}`}
-                                    >
-                                        <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${includeSymbols ? 'translate-x-5.5' : 'translate-x-1'}`} />
-                                    </button>
-                                </div>
-                                <div className="flex gap-1.5 opacity-60">
-                                    <span>✦</span>
-                                    <span>▷</span>
-                                    <span>■</span>
+                                {/* Decoration Card */}
+                                <div className={`rounded-2xl p-4 border transition-colors flex flex-col justify-between h-[84px] ${includeSymbols ? 'bg-[#F8FAFC] border-indigo-200' : 'bg-white border-gray-100 shadow-sm shadow-gray-100/50'}`}>
+                                    <div className="flex items-center justify-between">
+                                        <span className={`text-[13px] font-bold ${includeSymbols ? 'text-[#4f46e5]' : 'text-gray-400'}`}>装飾記号</span>
+                                        <button
+                                            onClick={() => onIncludeSymbolsChange(!includeSymbols)}
+                                            className={`relative inline-flex h-5 w-10 items-center rounded-full transition-colors ${includeSymbols ? 'bg-[#4f46e5]' : 'bg-gray-200'}`}
+                                        >
+                                            <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${includeSymbols ? 'translate-x-5.5' : 'translate-x-1'}`} />
+                                        </button>
+                                    </div>
+                                    <div className="flex gap-1.5 opacity-60">
+                                        <span>✦</span>
+                                        <span>▷</span>
+                                        <span>■</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        )}
                         {/* 140 Limit Card (Flat) */}
                         {platform === Platform.X && (
                             <div className="bg-[#F3F4F6] rounded-xl px-4 py-3 flex items-center justify-between">
