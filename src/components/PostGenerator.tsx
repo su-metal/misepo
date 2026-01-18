@@ -99,7 +99,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
                 isMultiGen={flow.isMultiGenMode}
                 onPlatformToggle={flow.handlePlatformToggle}
                 onToggleMultiGen={flow.handleToggleMultiGen}
-                onSetActivePlatform={(p) => flow.setPlatforms([p])}
+                onSetActivePlatform={flow.handleSetActivePlatform}
                 platform={flow.platforms[0] || Platform.Instagram}
                 postPurpose={flow.postPurpose}
                 gmapPurpose={flow.gmapPurpose}

@@ -120,6 +120,20 @@ export function useGeneratorFlow(props: {
     }
   };
 
+  const handleSetActivePlatform = (p: Platform) => {
+    if (isMultiGenMode) {
+      if (p === Platform.GoogleMaps) {
+        setPlatforms([Platform.GoogleMaps]);
+        setIsMultiGenMode(false);
+      } else {
+        // If it's X or Instagram and we're in multi-gen, keep both
+        setPlatforms([Platform.X, Platform.Instagram]);
+      }
+    } else {
+      setPlatforms([p]);
+    }
+  };
+
   const handlePlatformToggle = (p: Platform) => {
     if (!isLoggedIn && p !== Platform.Instagram) return;
     
@@ -465,6 +479,7 @@ export function useGeneratorFlow(props: {
     language, setLanguage,
     storeSupplement, setStoreSupplement,
     handlePlatformToggle,
+    handleSetActivePlatform,
     handleToggleMultiGen,
     handleApplyPreset,
     performGeneration,
