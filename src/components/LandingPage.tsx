@@ -363,7 +363,7 @@ export default function LandingPage() {
                     </div>
 
                     {/* Phone Animation Container */}
-                    <div className="absolute inset-0 md:left-1/3 flex items-center justify-center pointer-events-none">
+                    <div className="absolute inset-0 md:left-1/3 flex items-end md:items-center justify-center pointer-events-none pb-16 md:pb-0">
                         <div className="relative w-[300px] h-[600px] scale-90 md:scale-100 origin-center">
 
                             {/* CENTER PHONE (MisePo) */}
