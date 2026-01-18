@@ -72,20 +72,17 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                     ),
                     label: 'Instagram',
                     extra: (gIdx: number, iIdx: number) => (
-                        <div key="inst-toggle" className="px-6 py-4 bg-[#FFF0F6] rounded-2xl flex items-center justify-between mb-4">
-                            <div className="flex items-center gap-2 text-pink-600 font-bold text-xs">
-                                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M12 2c2.717 0 3.056.01 4.122.06 1.065.05 1.79.217 2.428.465.66.254 1.216.598 1.772 1.153a4.908 4.908 0 0 1 1.153 1.772c.247.637.415 1.363.465 2.428.047 1.066.06 1.405.06 4.122 0 2.717-.01 3.056-.06 4.122-.05 1.065-.218 1.79-.465 2.428a4.883 4.883 0 0 1-1.153 1.772 4.915 4.915 0 0 1-1.772 1.153c-.637.247-1.363.415-2.428.465-1.066.047-1.405.06-4.122.06-2.717 0-3.056-.01-4.122-.06-1.065-.05-1.79-.218-2.428-.465a4.89 4.89 0 0 1-1.772-1.153 4.904 4.904 0 0 1-1.153-1.772c-.248-.637-.415-1.363-.465-2.428C2.013 15.056 2 14.717 2 12c0-2.717.01-3.056.06-4.122.05-1.066.217-1.79.465-2.428a4.88 4.88 0 0 1 1.153-1.772A4.897 4.897 0 0 1 5.45 2.525c.638-.248 1.362-.415 2.428-.465C8.944 2.013 9.283 2 12 2zm0 5a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm6.5-.25a1.25 1.25 0 1 0-2.5 0 1.25 1.25 0 0 0 2.5 0zM12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6z" />
-                                </svg>
-                                <span>定型文（店舗情報）を含める</span>
-                            </div>
-                            <button
-                                onClick={() => onIncludeFooterChange(!includeFooter)}
-                                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${includeFooter ? 'bg-pink-500' : 'bg-gray-200'}`}
-                            >
-                                <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${includeFooter ? 'translate-x-6' : 'translate-x-1'}`} />
-                            </button>
-                        </div>
+                        <button
+                            key="inst-toggle"
+                            onClick={() => onIncludeFooterChange(!includeFooter)}
+                            className={`flex items-center gap-2 px-3 py-1.5 rounded-full transition-all text-[11px] font-bold border ${includeFooter
+                                ? 'bg-pink-50 text-pink-600 border-pink-100 shadow-sm'
+                                : 'bg-gray-50 text-gray-400 border-gray-100'
+                                }`}
+                        >
+                            <span className={`w-2 h-2 rounded-full transition-colors ${includeFooter ? 'bg-pink-500 animate-pulse' : 'bg-gray-300'}`} />
+                            <span>店舗情報を表示</span>
+                        </button>
                     ),
                     actionColor: 'bg-gradient-to-r from-[#FF8C37] via-[#DC2743] to-[#BC1888] hover:opacity-90',
                     actionLabel: 'Instagramを起動',
@@ -212,17 +209,17 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                     />
                                                 </div>
 
-                                                {/* Character Count */}
-                                                <div className="flex justify-end mb-6">
+                                                {/* Meta Row: Toggle & Char Count */}
+                                                <div className="flex items-center justify-between mb-6 min-h-[32px]">
+                                                    <div className="flex-1">
+                                                        {theme.extra && theme.extra(gIdx, iIdx)}
+                                                    </div>
                                                     <CharCounter
                                                         platform={res.platform}
                                                         text={text}
                                                         config={{ platform: res.platform } as any}
                                                     />
                                                 </div>
-
-                                                {/* Platform Specific Extra (e.g. Instagram Toggle) */}
-                                                {theme.extra && theme.extra(gIdx, iIdx)}
 
                                                 {/* Actions */}
                                                 <div className="space-y-3">

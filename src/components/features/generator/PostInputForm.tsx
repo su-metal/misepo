@@ -207,7 +207,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
             <div className="flex flex-col lg:flex-row flex-1 gap-6 p-6 lg:overflow-hidden">
 
                 {/* Left Control Panel */}
-                <div className="w-full lg:w-[320px] order-2 lg:order-1 flex flex-col gap-6 shrink-0 lg:overflow-y-auto lg:pr-2 scrollbar-hide py-2">
+                <div className="w-full lg:w-[320px] order-2 lg:order-1 flex flex-col gap-6 shrink-0 lg:overflow-y-auto px-1 lg:pr-2 scrollbar-hide py-2">
 
                     {/* Mode Switcher */}
                     <div className="flex justify-end px-2">
@@ -435,7 +435,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                 value={inputText}
                                 onChange={(e) => onInputTextChange(e.target.value)}
                                 placeholder="今どうしてる？ 写真の説明や伝えたいことなどを自由に入力..."
-                                className="w-full h-full bg-transparent text-gray-800 text-lg lg:text-xl font-medium leading-relaxed placeholder:text-gray-300 focus:outline-none resize-none"
+                                className="w-full h-full bg-transparent text-gray-600 text-base lg:text-lg font-normal leading-relaxed placeholder:text-gray-300 focus:outline-none resize-none"
                             />
                         </div>
 
@@ -475,7 +475,6 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
 
                     {/* Generate Button (Desktop) - Enhanced */}
                     <div className="hidden lg:block relative group">
-                        <div className={`absolute -inset-0.5 rounded-2xl blur opacity-30 transition duration-1000 group-hover:duration-200 ${isGenerating ? 'bg-gray-200' : 'bg-gradient-to-r from-indigo-600 to-pink-600 opacity-60'}`}></div>
                         <button
                             ref={generateButtonRef}
                             onClick={onGenerate}
