@@ -19,13 +19,25 @@ function StartPageContent() {
   // 2. Intent is trial and user is logged in (about to redirect)
   if (isRedirecting || (intent === "trial" && isLoggedIn)) {
     return (
-      <main className="min-h-screen bg-stone-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="inline-flex items-center gap-3 px-6 py-4 bg-black backdrop-blur-3xl border border-lime/20 rounded-2xl shadow-xl">
-            <div className="w-3 h-3 bg-lime rounded-full animate-bounce"></div>
-            <span className="text-sm font-black text-lime uppercase tracking-widest">
-              Redirecting to checkout...
-            </span>
+      <main className="min-h-screen bg-gradient-to-br from-indigo-50/50 via-white to-violet-50/50 flex items-center justify-center relative overflow-hidden">
+        {/* Decorative Orbs */}
+        <div className="fixed inset-0 pointer-events-none z-0">
+          <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-indigo-200/30 blur-[120px] rounded-full animate-pulse opacity-40"></div>
+          <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-violet-200/30 blur-[100px] rounded-full opacity-30"></div>
+        </div>
+
+        <div className="relative z-10 animate-in fade-in zoom-in duration-700">
+          <div className="bg-white/70 backdrop-blur-3xl border border-white shadow-2xl shadow-indigo-100/50 rounded-3xl p-8 flex flex-col items-center gap-6">
+            <div className="relative">
+              <div className="w-16 h-16 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin"></div>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-2 h-2 bg-indigo-600 rounded-full animate-pulse"></div>
+              </div>
+            </div>
+            <div className="text-center">
+              <h2 className="text-xl font-black text-slate-900 tracking-tight mb-1">Redirecting</h2>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Secure Checkout Connection...</p>
+            </div>
           </div>
         </div>
       </main>
