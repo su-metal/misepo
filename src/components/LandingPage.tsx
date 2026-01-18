@@ -216,21 +216,32 @@ export default function LandingPage() {
 
     // Animation States derived from progress
     // Animation States
-    const typingTextFull = "【春限定】とろける幸せ、いちごタルト解禁🍓\n\nサクサクのクッキー生地と、\n溢れんばかりの完熟いちご。\n一口食べれば、そこはもう春。\n\n完熟いちごの甘さと、\n自家製カスタードのハーモニーを\nぜひお楽しみください。\n\n📍Access: 渋谷駅 徒歩5分\n🕒Open: 10:00 - 20:00\n📞Reserve: 03-1234-5678\n\n#MisePoカフェ #春スイーツ #いちごタルト #渋谷カフェ #期間限定";
+    // Data
+    const userMemo = "・春限定のいちごタルト開始\n・サクサク生地と完熟いちご\n・自家製カスタード\n・渋谷駅徒歩5分\n・#春スイーツ";
+    const generatedResult = "【春限定】とろける幸せ、いちごタルト解禁🍓\n\nサクサクのクッキー生地と、\n溢れんばかりの完熟いちご。\n一口食べれば、そこはもう春。\n\n完熟いちごの甘さと、\n自家製カスタードのハーモニーを\nぜひお楽しみください。\n\n📍Access: 渋谷駅 徒歩5分\n🕒Open: 10:00 - 20:00\n📞Reserve: 03-1234-5678\n\n#MisePoカフェ #春スイーツ #期間限定";
 
-    // Typing Phase (0 - 350)
+    // Phase 1: Typing Input (0 - 350)
     const typingProgress = Math.min(Math.max(heroAnimationProgress / 350, 0), 1);
-    const currentTypingText = typingTextFull.slice(0, Math.floor(typingTextFull.length * typingProgress));
 
-    // Generation Phase (350 - 500)
+    // Determine text content based on phase
+    let currentText = "";
+    if (heroAnimationProgress < 450) {
+        currentText = userMemo.slice(0, Math.floor(userMemo.length * typingProgress));
+    } else if (heroAnimationProgress < 550) {
+        currentText = ""; // Generating...
+    } else {
+        currentText = generatedResult;
+    }
+
+    // Generation Phase
     const isTypingDone = heroAnimationProgress > 350;
-    const isGenerating = heroAnimationProgress > 400 && heroAnimationProgress < 550;
+    const isGenerating = heroAnimationProgress > 450 && heroAnimationProgress < 550;
+    const isResultShown = heroAnimationProgress > 550; // New: Text is visible, waiting for Post
 
-    // Post/Swap Phase (Trigger at 550)
-    // Simple boolean state for the swap. No complex progress calculation.
-    const isPosted = heroAnimationProgress > 550;
+    // Post/Swap Phase (Trigger at 700)
+    const isPosted = heroAnimationProgress > 700;
     // Internal Scroll (After post, scroll the instagram content)
-    const internalScrollProgress = Math.min(Math.max((heroAnimationProgress - 600) / 400, 0), 1);
+    const internalScrollProgress = Math.min(Math.max((heroAnimationProgress - 800) / 400, 0), 1);
 
     const innerContentStyle = {
         transform: `translateY(-${internalScrollProgress * 180}px)`,
@@ -366,7 +377,7 @@ export default function LandingPage() {
                                                 </div>
                                                 <div className={`space-y-2 transition-opacity duration-500 ${isGenerating ? 'opacity-50 pulse' : 'opacity-100'}`}>
                                                     <div className="text-sm text-slate-700 min-h-[60px] whitespace-pre-wrap font-medium">
-                                                        {currentTypingText}
+                                                        {currentText}
                                                         <span className={`${isTypingDone ? 'hidden' : 'inline'} animate-pulse text-indigo-500`}>|</span>
                                                     </div>
                                                 </div>
@@ -377,6 +388,8 @@ export default function LandingPage() {
                                                         </span>
                                                     ) : isPosted ? (
                                                         "投稿完了！"
+                                                    ) : isResultShown ? (
+                                                        "投稿する"
                                                     ) : (
                                                         "生成する"
                                                     )}
@@ -451,14 +464,13 @@ export default function LandingPage() {
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
             </div>
 
             {/* Problem */}
-            < section id="problem" className="py-24 bg-white" >
+            <section id="problem" className="py-24 bg-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid lg:grid-cols-2 gap-16 items-center mb-16">
                         <div>
@@ -487,10 +499,10 @@ export default function LandingPage() {
                         ))}
                     </div>
                 </div>
-            </section >
+            </section>
 
             {/* Market Data (Why Now?) */}
-            < section className="py-24 bg-slate-900 text-white overflow-hidden relative" >
+            <section className="py-24 bg-slate-900 text-white overflow-hidden relative" >
                 <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
                     <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-indigo-500/20 rounded-full blur-[100px]" />
                     <div className="absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] bg-purple-500/20 rounded-full blur-[100px]" />
@@ -567,10 +579,10 @@ export default function LandingPage() {
                     </div>
                 </div>
 
-            </section >
+            </section>
 
             {/* Features */}
-            < section id="features" className="py-24 bg-slate-50 overflow-hidden" >
+            <section id="features" className="py-24 bg-slate-50 overflow-hidden" >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center max-w-3xl mx-auto mb-16">
                         <span className="text-indigo-600 font-bold tracking-wider text-sm uppercase mb-2 block">All-in-One Platform</span>
@@ -647,10 +659,10 @@ export default function LandingPage() {
                         </div>
                     </div>
                 </div>
-            </section >
+            </section>
 
             {/* Demo */}
-            < section id="demo" className="py-24 bg-[#0f172a] text-white relative overflow-hidden" >
+            <section id="demo" className="py-24 bg-[#0f172a] text-white relative overflow-hidden" >
                 <div className="absolute inset-0 bg-gradient-to-b from-indigo-950 to-slate-950" />
                 <div className="absolute top-0 left-0 w-full h-full overflow-hidden opacity-30 pointer-events-none">
                     <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-indigo-500/30 rounded-full blur-[120px]" />
@@ -721,10 +733,10 @@ export default function LandingPage() {
                         </div>
                     </div>
                 </div>
-            </section >
+            </section>
 
             {/* PWA Section */}
-            < section id="pwa" className="py-12 bg-white" >
+            <section id="pwa" className="py-12 bg-white" >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
                         <div className="lg:w-1/2">
@@ -799,10 +811,10 @@ export default function LandingPage() {
                         </div>
                     </div>
                 </div>
-            </section >
+            </section>
 
             {/* Pricing */}
-            < section id="pricing" className="py-24 bg-white border-t border-slate-100" >
+            <section id="pricing" className="py-24 bg-white border-t border-slate-100" >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid lg:grid-cols-2 gap-12 lg:gap-24 items-center">
                         {/* Left Column: Value Proposition */}
@@ -896,10 +908,10 @@ export default function LandingPage() {
                         </div>
                     </div>
                 </div>
-            </section >
+            </section>
 
             {/* FAQ */}
-            < section id="faq" className="py-20 bg-white" >
+            <section id="faq" className="py-20 bg-white" >
                 <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
                     <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">よくある質問</h2>
                     <div className="space-y-4">
@@ -916,7 +928,7 @@ export default function LandingPage() {
                         ))}
                     </div>
                 </div>
-            </section >
+            </section>
 
             {/* Footer */}
             < footer className="bg-gray-900 text-white py-12" >
@@ -951,7 +963,7 @@ export default function LandingPage() {
                         © {new Date().getFullYear()} MisePo. All rights reserved.
                     </div>
                 </div>
-            </footer >
+            </footer>
 
             <style jsx global>{`
                 html { scroll-behavior: smooth; scroll-padding-top: 80px; }
@@ -962,6 +974,6 @@ export default function LandingPage() {
                 .no-scrollbar::-webkit-scrollbar { display: none; }
                 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
             `}</style>
-        </div >
+        </div>
     );
 }
