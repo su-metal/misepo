@@ -77,9 +77,9 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
         <div className="absolute -bottom-[20%] -left-[20%] w-[90%] h-[90%] bg-[#D0D6FF] blur-[150px] rounded-full opacity-10"></div>
       </div>
 
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-8 py-8 relative z-10">
+      <div className="max-w-[1400px] mx-auto py-8 relative z-10">
         {/* Header Module - Floating Glass */}
-        <div className="mb-10 animate-in fade-in slide-in-from-top-4 duration-1000">
+        <div className="mb-10 px-4 sm:px-8 animate-in fade-in slide-in-from-top-4 duration-1000">
           <GeneratorHeader
             onOpenHistory={onOpenHistory || (() => { })}
             storeProfile={storeProfile}
@@ -88,7 +88,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
         </div>
 
         {/* 2-Column Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div className="px-4 sm:px-8 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
 
           {/* Left Column: Input Form (8 Cols) */}
           <div className="lg:col-span-8">

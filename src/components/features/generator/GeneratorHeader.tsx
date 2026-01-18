@@ -20,11 +20,11 @@ export const GeneratorHeader: React.FC<GeneratorHeaderProps> = ({
 
     return (
         <header className="sticky top-4 z-[100] w-full">
-            <div className="mx-auto max-w-7xl bg-white/60 backdrop-blur-2xl border border-stone-200 rounded-[2rem] p-2 flex items-center justify-between gap-4 shadow-xl shadow-stone-200/50">
+            <div className="bg-white/60 backdrop-blur-2xl border border-stone-200 rounded-[2rem] py-2 flex items-center justify-between gap-4 shadow-xl shadow-stone-200/50">
 
                 {/* Left: Brand Space */}
-                <div className="flex items-center gap-3 pl-4 pr-2">
-                    <span className="text-xl font-black text-stone-800 tracking-tighter">MisePo</span>
+                <div className="flex items-center gap-3">
+                    <span className="text-xl font-black text-stone-800 tracking-tighter pl-4">MisePo</span>
 
                     {/* Status Badge */}
                     <div className="flex items-center">

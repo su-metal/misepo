@@ -406,7 +406,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                 >
                                     <div className="flex items-center gap-3">
                                         <span className={`text-lg leading-none ${activePresetId ? 'grayscale' : ''}`}>✨</span>
-                                        <span className="text-xs font-bold whitespace-nowrap">記号・特殊文字</span>
+                                        <span className="text-xs font-bold whitespace-nowrap">特殊文字</span>
                                     </div>
                                     {/* Toggle Switch Visual */}
                                     <div className={`relative w-7 h-4 rounded-full transition-colors shrink-0 ${includeSymbols ? (activePresetId ? 'bg-stone-200' : 'bg-indigo-400') : 'bg-gray-200'}`}>
