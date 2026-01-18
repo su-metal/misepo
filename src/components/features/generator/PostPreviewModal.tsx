@@ -42,7 +42,7 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
                 onClick={onClose}
             />
 
-            <div className="relative w-full max-w-md bg-white rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] overflow-hidden animate-in zoom-in-95 duration-200 border border-stone-100">
+            <div className="relative w-full max-w-lg bg-white rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] overflow-hidden animate-in zoom-in-95 duration-200 border border-stone-100">
                 <div className="flex items-center justify-between p-6 bg-stone-50/50 border-b border-stone-100">
                     <h3 className="text-[10px] font-black text-stone-400 uppercase tracking-[0.4em] flex items-center gap-3">
                         <div className="text-stone-600">
@@ -104,7 +104,7 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
 
                                     <div className="text-xs font-bold text-stone-900 mb-2">1,234 likes</div>
 
-                                    <div className="text-xs text-stone-800 whitespace-pre-wrap leading-relaxed">
+                                    <div className="text-[14px] text-[#262626] whitespace-pre-wrap leading-relaxed tracking-normal">
                                         <span className="font-bold mr-2">{storeProfile.name || 'your_account'}</span>
                                         {text}
                                     </div>
@@ -115,7 +115,7 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
 
                         {/* X (Twitter) Preview */}
                         {platform === Platform.X && (
-                            <div className="w-full bg-white border border-stone-100 rounded-3xl shadow-xl shadow-stone-200/50 p-5 max-w-[370px]">
+                            <div className="w-full bg-white border border-stone-100 rounded-3xl shadow-xl shadow-stone-200/50 p-5 max-w-[475px]">
                                 <div className="flex gap-4">
                                     <div className="w-11 h-11 rounded-full bg-stone-100 border border-stone-200 flex items-center justify-center text-[12px] font-black text-stone-400 flex-shrink-0">
                                         {(storeProfile.name?.[0] || 'U').toUpperCase()}
@@ -130,7 +130,7 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
                                             <MoreHorizontalIcon className="w-4 h-4 text-stone-300" />
                                         </div>
 
-                                        <div className="text-[14px] text-stone-800 whitespace-pre-wrap leading-relaxed">
+                                        <div className="text-[15px] text-[#0f1419] whitespace-pre-wrap leading-[1.5] tracking-normal">
                                             {text}
                                         </div>
 
@@ -171,7 +171,7 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
                                 </div>
 
                                 <div className="p-6">
-                                    <div className="text-sm text-stone-800 whitespace-pre-wrap leading-relaxed">
+                                    <div className="text-[14px] text-[#3c4043] whitespace-pre-wrap leading-relaxed tracking-normal">
                                         {text}
                                     </div>
                                     <div className="mt-6">

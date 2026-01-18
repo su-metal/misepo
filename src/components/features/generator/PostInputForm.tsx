@@ -248,7 +248,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                         key={preset.id}
                                         onClick={() => onApplyPreset(preset)}
                                         className={`
-                                            relative p-3 rounded-2xl border transition-all flex flex-col items-center justify-center gap-2 aspect-[4/3] group shadow-sm
+                                            relative py-3.5 px-3 rounded-2xl border transition-all flex flex-col items-center justify-center gap-1.5 group shadow-sm
                                             ${activePresetId === preset.id
                                                 ? 'bg-gradient-to-br from-indigo-50 to-white border-indigo-200 text-indigo-700 shadow-md scale-[1.02] ring-1 ring-indigo-200'
                                                 : 'bg-white border-transparent text-gray-400 hover:border-gray-200 hover:text-gray-600 hover:shadow-md'}
@@ -358,7 +358,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                                 onClick={() => !isLocked && (isGoogleMaps ? onGmapPurposeChange(p.id as GoogleMapPurpose) : onPostPurposeChange(p.id as PostPurpose))}
                                                 disabled={isLocked}
                                                 className={`
-                                            relative p-4 rounded-2xl border transition-all flex flex-col items-center justify-center gap-2 aspect-[4/3] group
+                                            relative py-3.5 px-4 rounded-2xl border transition-all flex flex-col items-center justify-center gap-1.5 group
                                             ${isSelected
                                                         ? 'bg-gradient-to-br from-indigo-600 to-indigo-700 border-indigo-600 text-white shadow-lg shadow-indigo-200 scale-[1.02]'
                                                         : 'bg-white border-transparent text-gray-400 hover:border-gray-200 hover:text-gray-600 hover:shadow-md'
@@ -366,11 +366,11 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                             ${isLocked ? 'opacity-30 cursor-not-allowed' : ''}
                                         `}
                                             >
-                                                <span className={`p-3 rounded-full transition-all ${isSelected
+                                                <span className={`p-2 rounded-full transition-all ${isSelected
                                                     ? 'bg-white/20 text-white'
                                                     : 'bg-gray-50 text-gray-400 group-hover:bg-indigo-50 group-hover:text-indigo-500'
                                                     }`}>
-                                                    <span className="w-6 h-6 block [&>svg]:w-full [&>svg]:h-full">{p.icon}</span>
+                                                    <span className="w-5 h-5 block [&>svg]:w-full [&>svg]:h-full">{p.icon}</span>
                                                 </span>
                                                 <span className={`text-[11px] font-bold ${isSelected ? 'text-white' : ''}`}>{p.label}</span>
 

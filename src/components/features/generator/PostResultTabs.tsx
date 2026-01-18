@@ -58,7 +58,8 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                     label: 'X (Twitter)',
                     actionColor: 'bg-black hover:bg-gray-900',
                     actionLabel: 'Xで投稿する',
-                    contentClasses: "text-[15px] text-[#0f1419] font-normal leading-normal",
+                    contentClasses: "text-[15px] text-[#0f1419] font-normal leading-[1.5] tracking-normal",
+                    wrapperClass: "max-w-[375px]",
                 };
             case Platform.Instagram:
                 return {
@@ -88,7 +89,8 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                     ),
                     actionColor: 'bg-gradient-to-r from-[#FF8C37] via-[#DC2743] to-[#BC1888] hover:opacity-90',
                     actionLabel: 'Instagramを起動',
-                    contentClasses: "text-[14px] text-[#262626] font-normal leading-[1.4]",
+                    contentClasses: "text-[14px] text-[#262626] font-normal leading-relaxed tracking-normal",
+                    wrapperClass: "max-w-[340px]",
                 };
             case Platform.GoogleMaps:
                 return {
@@ -102,7 +104,8 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                     label: 'Google Maps',
                     actionColor: 'bg-[#0F9D58] hover:bg-[#0B8043]',
                     actionLabel: 'Googleマップで返信する',
-                    contentClasses: "text-[14px] text-[#3c4043] font-normal leading-5",
+                    contentClasses: "text-[14px] text-[#3c4043] font-normal leading-relaxed tracking-normal",
+                    wrapperClass: "max-w-[325px]",
                 };
             default:
                 return {
@@ -200,11 +203,11 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                         {res.data.map((text, iIdx) => (
                                             <div key={iIdx} className="group relative bg-white border border-gray-100 rounded-[32px] shadow-sm hover:shadow-md transition-all duration-300 flex flex-col min-h-[400px] overflow-hidden p-8">
                                                 {/* Text Area */}
-                                                <div className="flex-1 mb-6">
+                                                <div className={`flex-1 overflow-y-auto mb-6 custom-scrollbar ${theme.wrapperClass || ''}`}>
                                                     <AutoResizingTextarea
                                                         value={text}
                                                         onChange={(e) => onManualEdit(gIdx, iIdx, e.target.value)}
-                                                        className={`w-full bg-transparent focus:outline-none resize-none placeholder:text-gray-300 ${theme.contentClasses || 'text-base text-gray-800'}`}
+                                                        className={`w-full bg-transparent focus:outline-none resize-none placeholder:text-gray-300 whitespace-pre-wrap ${theme.contentClasses || 'text-base text-gray-800'}`}
                                                         trigger={activeTab}
                                                     />
                                                 </div>
