@@ -214,8 +214,8 @@ export default function LandingPage() {
 
                 if (totalScrollable > 0) {
                     const progressPct = Math.min(Math.max(scrolled / totalScrollable, 0), 1);
-                    // Map 0-100% to 0-1600 range for super extended timeline (Scroll within phone)
-                    setHeroAnimationProgress(progressPct * 1600);
+                    // Map 0-100% to 0-7500 range for ultra-smooth, extended timeline (V5)
+                    setHeroAnimationProgress(progressPct * 7500);
                 }
             }
         };
@@ -235,30 +235,32 @@ export default function LandingPage() {
     const userMemo = "・春限定のいちごタルト開始\n・サクサク生地と完熟いちご\n・自家製カスタード\n・渋谷駅徒歩5分\n・#春スイーツ";
     const generatedResult = "【春限定】とろける幸せ、いちごタルト解禁🍓\n\nサクサクのクッキー生地と、\n溢れんばかりの完熟いちご。\n一口食べれば、そこはもう春。\n\n完熟いちごの甘さと、\n自家製カスタードのハーモニーを\nぜひお楽しみください。\n\n📍Access: 渋谷駅 徒歩5分\n🕒Open: 10:00 - 20:00\n📞Reserve: 03-1234-5678\n\n#MisePoカフェ #春スイーツ #期間限定";
 
-    // Phase 1: Typing Input (0 - 350)
-    const typingProgress = Math.min(Math.max(effectiveProgress / 350, 0), 1);
+    // Phase 1: Typing Input (0 - 2000) - Very slow and deliberate
+    const typingProgress = Math.min(Math.max(effectiveProgress / 2000, 0), 1);
 
     // Determine text content based on phase
     let currentText = "";
-    if (effectiveProgress < 450) {
+    if (effectiveProgress < 2000) {
         currentText = userMemo.slice(0, Math.floor(userMemo.length * typingProgress));
-    } else if (effectiveProgress < 550) {
-        currentText = ""; // Generating...
+    } else if (effectiveProgress < 2750) {
+        currentText = ""; // Generating... (Reduced by 250)
     } else {
         currentText = generatedResult;
     }
 
     // Generation Phase
-    const isTypingDone = effectiveProgress > 350;
-    const isGenerating = effectiveProgress > 450 && effectiveProgress < 550;
-    const isResultShown = effectiveProgress > 550; // New: Text is visible, waiting for Post
+    const isTypingDone = effectiveProgress > 2000;
+    const isGenerating = effectiveProgress > 2000 && effectiveProgress < 2750;
+    const isResultShown = effectiveProgress > 2750; // Result visible
 
-    // Post/Swap Phase (Trigger at 900 - Delayed for better reading time)
-    const isPosted = effectiveProgress > 900;
+    // Post/Swap Phase (Trigger at 4050)
+    const isPosted = effectiveProgress > 4050;
 
     // Inertia Scroll (Ease Out)
-    // Start at 950, duration 600
-    const rawScrollProgress = Math.min(Math.max((effectiveProgress - 950) / 600, 0), 1);
+    // Start at 4150, duration 2850 -> Ends at 7000
+    // (Duration increased by 450: 2400 + 250 + 200)
+    // Total timeline is 7500, so 7000-7500 is "Locked Wait"
+    const rawScrollProgress = Math.min(Math.max((effectiveProgress - 4150) / 2850, 0), 1);
     const easeOutCubic = 1 - Math.pow(1 - rawScrollProgress, 3);
     const internalScrollProgress = easeOutCubic;
 
@@ -268,20 +270,18 @@ export default function LandingPage() {
 
     // Text Opacity Logic for Fade-In Effect
     let textOpacity = 1;
-    if (effectiveProgress >= 450 && effectiveProgress < 550) {
+    if (effectiveProgress >= 2000 && effectiveProgress < 2750) {
         textOpacity = 0.5; // Generating pulse
-    } else if (effectiveProgress >= 550) {
-        // Fade in result (550-650)
-        textOpacity = Math.min(Math.max((effectiveProgress - 550) / 100, 0), 1);
+    } else if (effectiveProgress >= 2750) {
+        // Fade in result (2750-3050)
+        textOpacity = Math.min(Math.max((effectiveProgress - 2750) / 300, 0), 1);
     }
 
     const problems = [
-        { icon: <Icons.HelpCircle className="text-orange-500" />, bg: "bg-orange-50", title: "何を書けばいいかわからない", desc: "「今日のランチ」以外に書くことがない。魅力的な文章表現や、流行りのハッシュタグがわからない。" },
-        { icon: <Icons.Clock size={24} className="text-rose-500" />, bg: "bg-rose-50", title: "時間が足りない", desc: "営業終了後は疲れ果てて、SNS投稿を作る気力がない。結局「明日やろう」と先延ばしにしてしまう。" },
-        { icon: <Icons.BatteryWarning className="text-amber-500" />, bg: "bg-amber-50", title: "アプリの切り替えが面倒", desc: "インスタを開いて、Xを開いて、Googleマップを開いて...。それぞれのアプリを行き来するだけで一苦労。" },
-        { icon: <Icons.TrendingDown className="text-slate-500" />, bg: "bg-slate-100", title: "外注コストが高い", desc: "MEO対策やSNS運用代行に見積もりをとったら月額3万円〜。個人店には負担が大きすぎる。" },
+        { icon: Icons.MessageSquare, title: "口コミ返信に\n時間がかかる", delay: 0 },
+        { icon: Icons.Instagram, title: "投稿のネタが\n思いつかない", delay: 0.1 },
+        { icon: Icons.TrendingUp, title: "集客効果が\n見えない", delay: 0.2 },
     ];
-
     const faqs = [
         { q: "どのような業種で利用されていますか？", a: "カフェ、美容室、居酒屋、整体院、歯科医院など、地域密着型の店舗ビジネス全般でご利用いただいております。" },
         { q: "パソコンが苦手ですが使えますか？", a: "はい、スマートフォンだけで完結します。LINEでメッセージを送るような感覚で操作できます。" },
@@ -336,7 +336,7 @@ export default function LandingPage() {
             </header>
 
             {/* New Sticky Hero Animation */}
-            <div ref={heroRef} className="relative z-10 h-[700vh]">
+            <div ref={heroRef} className="relative z-10 h-[1500vh]">
                 <div
                     className="sticky top-0 h-[150vh] md:h-screen w-full overflow-hidden flex flex-col transition-transform duration-100 ease-out will-change-transform"
                     style={{ transform: `translateY(-${mobileScrollY}px)` }}
