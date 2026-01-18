@@ -117,6 +117,8 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
                 onIncludeEmojisChange={flow.setIncludeEmojis}
                 includeSymbols={flow.includeSymbols}
                 onIncludeSymbolsChange={flow.setIncludeSymbols}
+                xConstraint140={flow.xConstraint140}
+                onXConstraint140Change={flow.setXConstraint140}
                 isGenerating={flow.loading}
                 onGenerate={handleGenerate}
                 generateButtonRef={buttonRef}

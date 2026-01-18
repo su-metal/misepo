@@ -31,6 +31,8 @@ interface PostInputFormProps {
     onIncludeEmojisChange: (value: boolean) => void;
     includeSymbols: boolean;
     onIncludeSymbolsChange: (value: boolean) => void;
+    xConstraint140: boolean;
+    onXConstraint140Change: (value: boolean) => void;
     isGenerating: boolean;
     onGenerate: () => void;
     generateButtonRef?: React.RefObject<HTMLButtonElement>;
@@ -92,6 +94,8 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
     onIncludeEmojisChange,
     includeSymbols,
     onIncludeSymbolsChange,
+    xConstraint140,
+    onXConstraint140Change,
     isGenerating,
     onGenerate,
     generateButtonRef,
@@ -415,6 +419,37 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                     ※ 絵文字や記号の使い方も学習データを優先します。
                                 </p>
                             )}
+                        </div>
+                    )}
+
+                    {/* X Specific Constraints */}
+                    {platforms.includes(Platform.X) && (
+                        <div className="mt-6 border-t border-gray-100 pt-6 animate-in fade-in slide-in-from-top-2 duration-500">
+                            <div className="flex items-center justify-between px-2 mb-3">
+                                <h3 className="text-sm font-bold text-gray-500">𝕏 (Twitter) 設定</h3>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={() => onXConstraint140Change(!xConstraint140)}
+                                className={`w-full relative p-2.5 px-4 rounded-2xl border transition-all flex flex-row items-center justify-between gap-3 ${xConstraint140
+                                    ? 'bg-black border-black text-white shadow-sm'
+                                    : 'bg-white border-transparent text-gray-400 hover:shadow-md'}`}
+                            >
+                                <div className="flex items-center gap-3">
+                                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] ${xConstraint140 ? 'bg-white text-black' : 'bg-gray-100 text-gray-400'}`}>
+                                        140
+                                    </div>
+                                    <span className="text-xs font-bold whitespace-nowrap">140文字以内に抑える</span>
+                                </div>
+
+                                {/* Toggle Switch Visual */}
+                                <div className={`relative w-7 h-4 rounded-full transition-colors shrink-0 ${xConstraint140 ? 'bg-indigo-400' : 'bg-gray-200'}`}>
+                                    <div className={`absolute top-0.5 left-0.5 w-3 h-3 bg-white rounded-full transition-transform ${xConstraint140 ? 'translate-x-3' : ''}`} />
+                                </div>
+                            </button>
+                            <p className="mt-2 px-1 text-[10px] text-gray-400 font-medium leading-relaxed">
+                                ※ 有料プラン以外の 𝕏 制限に合わせます。
+                            </p>
                         </div>
                     )}
 
