@@ -103,6 +103,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
 }) => {
     const [show140LimitToggle, setShow140LimitToggle] = React.useState(true);
     const [showCustomPrompt, setShowCustomPrompt] = React.useState(false);
+    const textareaRef = React.useRef<HTMLTextAreaElement>(null);
 
     const isGoogleMaps = platform === Platform.GoogleMaps;
     const isX = platform === Platform.X;
@@ -419,7 +420,10 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
 
                 {/* Right Main Canvas - Input Only */}
                 <div className="flex-1 order-1 lg:order-2 flex flex-col h-full gap-4">
-                    <div className="flex-1 bg-white rounded-3xl p-8 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] border border-white/50 relative overflow-hidden flex flex-col group transition-all hover:shadow-[0_25px_50px_-12px_rgba(79,70,229,0.1)]">
+                    <div
+                        onClick={() => textareaRef.current?.focus()}
+                        className="flex-1 bg-white rounded-3xl p-8 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] border border-white/50 relative overflow-hidden flex flex-col group transition-all hover:shadow-[0_25px_50px_-12px_rgba(79,70,229,0.1)] cursor-text"
+                    >
 
                         {/* Purpose Selection - Horizontal Pills */}
                         <div className="mb-6 pb-4 border-b border-gray-50/50">
@@ -427,7 +431,10 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                 <h3 className="text-[10px] font-black text-indigo-400/80 uppercase tracking-widest pl-1">投稿の目的</h3>
                                 <div className="h-[1px] flex-1 bg-gradient-to-r from-gray-100 to-transparent"></div>
                             </div>
-                            <div className="flex flex-wrap gap-2 pb-2 -mx-1 px-1">
+                            <div
+                                className="flex flex-nowrap lg:flex-wrap gap-2 pb-2 -mx-1 px-1 overflow-x-auto lg:overflow-x-visible scrollbar-hide"
+                                onClick={(e) => e.stopPropagation()}
+                            >
                                 {(isGoogleMaps ? GMAP_PURPOSES : PURPOSES).map((p) => {
                                     const isSelected = (isGoogleMaps ? gmapPurpose : postPurpose) === p.id;
                                     const isLocked = isGoogleMaps && starRating && gmapPurpose !== p.id;
@@ -459,6 +466,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                         {/* Main Text Area - The "Canvas" */}
                         <div className="flex-1 relative">
                             <AutoResizingTextarea
+                                ref={textareaRef}
                                 value={inputText}
                                 onChange={(e) => onInputTextChange(e.target.value)}
                                 placeholder="今どうしてる？ 写真の説明や伝えたいことなどを自由に入力..."
@@ -470,7 +478,10 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                         <div className="mt-4 pt-4 border-t border-gray-50 relative">
                             {!showCustomPrompt ? (
                                 <button
-                                    onClick={() => setShowCustomPrompt(true)}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setShowCustomPrompt(true);
+                                    }}
                                     className="flex items-center gap-2 text-xs font-bold text-gray-400 hover:text-indigo-600 transition-colors py-2 px-1 group/prompt"
                                 >
                                     <div className="p-1.5 rounded-full bg-gray-50 text-gray-400 group-hover/prompt:bg-indigo-50 group-hover/prompt:text-indigo-500 transition-colors">
@@ -486,9 +497,13 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                         placeholder="例：絵文字多めで、テンション高く..."
                                         className="flex-1 bg-transparent border-none text-sm text-gray-800 placeholder:text-indigo-300 focus:ring-0 px-0 py-2"
                                         autoFocus
+                                        onClick={(e) => e.stopPropagation()}
                                     />
                                     <button
-                                        onClick={() => setShowCustomPrompt(false)}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setShowCustomPrompt(false);
+                                        }}
                                         className="p-2 rounded-xl hover:bg-white/50 text-gray-400 hover:text-gray-600 transition-colors"
                                     >
                                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
