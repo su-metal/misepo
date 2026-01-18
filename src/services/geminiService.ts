@@ -152,6 +152,7 @@ IMPORTANT: Acting as the persona who wrote the above examples, write a new post 
 
     const hasPersona = (config.postSamples?.[config.platform] && config.postSamples[config.platform]!.trim()) || (config.customPrompt && config.customPrompt.trim());
     const useEmojis = config.platform === Platform.GoogleMaps ? false : config.includeEmojis !== false;
+    const useSymbols = config.platform === Platform.GoogleMaps ? false : config.includeSymbols;
 
     systemInstruction += `\n
 **Formatting Rules:**
@@ -161,13 +162,13 @@ IMPORTANT: Acting as the persona who wrote the above examples, write a new post 
 
     if (hasPersona) {
       systemInstruction += `
-3. **Persona Habit Override**: Ignore manual emoji/symbol settings. Instead, strictly adopt the learned persona's habits regarding emojis and decorative symbols from the provided samples and instructions.
+3. **Persona Habit Override**: Ignore manual emoji/symbol settings. Instead, strictly adopt the learned persona's habits regarding emojis and decorative symbols from the provided samples and instructions. ${config.platform === Platform.GoogleMaps ? '(CRITICAL: Despite persona habits, do NOT use emojis or symbols for Google Maps.)' : ''}
 4. ${isXWith140Limit ? `CRITICAL: The post MUST be UNDER ${charLimit} characters. This is a hard limit. Count carefully. Aim for 100-130 characters to be safe.` : ""}
 `;
     } else {
       systemInstruction += `
 3. ${useEmojis ? 'Use emojis naturally. Even in "Standard" tone, use emojis moderately (e.g., ✨, 😊, ☕️) to ensure the post isn\'t too dry.' : "Do NOT use emojis."}
-4. ${config.includeSymbols ? `Use text decorations from this palette if appropriate: ${DECORATION_PALETTE}` : "Do NOT use complex text decorations/symbols (like ✧ or ✄), but simple emojis are allowed if enabled."}
+4. ${useSymbols ? `Use text decorations from this palette if appropriate: ${DECORATION_PALETTE}` : "Do NOT use complex text decorations/symbols (like ✧ or ✄), but simple emojis are allowed if enabled."}
 5. ${isXWith140Limit ? `CRITICAL: The post MUST be UNDER ${charLimit} characters. This is a hard limit. Count carefully. Aim for 100-130 characters to be safe.` : ""}
 `;
     }

@@ -356,66 +356,67 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
 
                     {/* Decoration Options (Advanced Mode Only, Locked by Profile) */}
 
-                    <div className={`${activePresetId ? 'opacity-60' : ''} transition-opacity duration-300`}>
-                        <div className="flex items-center justify-between px-2 mb-3">
-                            <h3 className="text-sm font-bold text-gray-500">装飾オプション</h3>
+                    {!isGoogleMaps && (
+                        <div className={`${activePresetId ? 'opacity-60' : ''} transition-opacity duration-300`}>
+                            <div className="flex items-center justify-between px-2 mb-3">
+                                <h3 className="text-sm font-bold text-gray-500">装飾オプション</h3>
+                                {activePresetId && (
+                                    <div className="flex items-center gap-1 px-2 py-0.5 bg-indigo-50 rounded-full border border-indigo-100/50">
+                                        <SparklesIcon className="w-2.5 h-2.5 text-indigo-500" />
+                                        <span className="text-[9px] font-black text-indigo-600 uppercase tracking-tighter">Profile Active</span>
+                                    </div>
+                                )}
+                            </div>
+                            <div className={`grid grid-cols-2 gap-3 relative isolate ${activePresetId ? 'cursor-not-allowed select-none' : ''}`}>
+                                {activePresetId && (
+                                    <div
+                                        className="absolute inset-0 z-20"
+                                        title="プロフィールの文体学習を使用中のため、装飾設定は固定されています"
+                                    />
+                                )}
+                                <button
+                                    type="button"
+                                    onClick={() => !activePresetId && onIncludeEmojisChange(!includeEmojis)}
+                                    disabled={!!activePresetId}
+                                    className={`relative p-2.5 px-4 rounded-2xl border transition-all flex flex-row items-center justify-between gap-3 ${includeEmojis
+                                        ? (activePresetId ? 'bg-stone-50 border-stone-100 text-stone-400' : 'bg-orange-50 border-orange-200 text-orange-600 shadow-sm')
+                                        : 'bg-white border-transparent text-gray-400 hover:shadow-md'}`}
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <span className={`text-lg leading-none ${activePresetId ? 'grayscale' : ''}`}>😊</span>
+                                        <span className="text-xs font-bold whitespace-nowrap">絵文字</span>
+                                    </div>
+
+                                    {/* Toggle Switch Visual */}
+                                    <div className={`relative w-7 h-4 rounded-full transition-colors shrink-0 ${includeEmojis ? (activePresetId ? 'bg-stone-200' : 'bg-orange-400') : 'bg-gray-200'}`}>
+                                        <div className={`absolute top-0.5 left-0.5 w-3 h-3 bg-white rounded-full transition-transform ${includeEmojis ? 'translate-x-3' : ''}`} />
+                                    </div>
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => !activePresetId && onIncludeSymbolsChange(!includeSymbols)}
+                                    disabled={!!activePresetId}
+                                    className={`relative p-2.5 px-4 rounded-2xl border transition-all flex flex-row items-center justify-between gap-3 ${includeSymbols
+                                        ? (activePresetId ? 'bg-stone-50 border-stone-100 text-stone-400' : 'bg-indigo-50 border-indigo-200 text-indigo-600 shadow-sm')
+                                        : 'bg-white border-transparent text-gray-400 hover:shadow-md'}`}
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <span className={`text-lg leading-none ${activePresetId ? 'grayscale' : ''}`}>✨</span>
+                                        <span className="text-xs font-bold whitespace-nowrap">記号・特殊文字</span>
+                                    </div>
+                                    {/* Toggle Switch Visual */}
+                                    <div className={`relative w-7 h-4 rounded-full transition-colors shrink-0 ${includeSymbols ? (activePresetId ? 'bg-stone-200' : 'bg-indigo-400') : 'bg-gray-200'}`}>
+                                        <div className={`absolute top-0.5 left-0.5 w-3 h-3 bg-white rounded-full transition-transform ${includeSymbols ? 'translate-x-3' : ''}`} />
+                                    </div>
+                                </button>
+                            </div>
                             {activePresetId && (
-                                <div className="flex items-center gap-1 px-2 py-0.5 bg-indigo-50 rounded-full border border-indigo-100/50">
-                                    <SparklesIcon className="w-2.5 h-2.5 text-indigo-500" />
-                                    <span className="text-[9px] font-black text-indigo-600 uppercase tracking-tighter">Profile Active</span>
-                                </div>
+                                <p className="mt-2 px-1 text-[10px] text-stone-400 font-medium leading-relaxed">
+                                    ※ 絵文字や記号の使い方も学習データを優先します。
+                                </p>
                             )}
                         </div>
-                        <div className={`grid grid-cols-2 gap-3 relative isolate ${activePresetId ? 'cursor-not-allowed select-none' : ''}`}>
-                            {activePresetId && (
-                                <div
-                                    className="absolute inset-0 z-20"
-                                    title="プロフィールの文体学習を使用中のため、装飾設定は固定されています"
-                                />
-                            )}
-                            <button
-                                type="button"
-                                onClick={() => !activePresetId && onIncludeEmojisChange(!includeEmojis)}
-                                disabled={!!activePresetId}
-                                className={`relative p-2.5 px-4 rounded-2xl border transition-all flex flex-row items-center justify-between gap-3 ${includeEmojis
-                                    ? (activePresetId ? 'bg-stone-50 border-stone-100 text-stone-400' : 'bg-orange-50 border-orange-200 text-orange-600 shadow-sm')
-                                    : 'bg-white border-transparent text-gray-400 hover:shadow-md'}`}
-                            >
-                                <div className="flex items-center gap-3">
-                                    <span className={`text-lg leading-none ${activePresetId ? 'grayscale' : ''}`}>😊</span>
-                                    <span className="text-xs font-bold whitespace-nowrap">絵文字</span>
-                                </div>
-
-                                {/* Toggle Switch Visual */}
-                                <div className={`relative w-7 h-4 rounded-full transition-colors shrink-0 ${includeEmojis ? (activePresetId ? 'bg-stone-200' : 'bg-orange-400') : 'bg-gray-200'}`}>
-                                    <div className={`absolute top-0.5 left-0.5 w-3 h-3 bg-white rounded-full transition-transform ${includeEmojis ? 'translate-x-3' : ''}`} />
-                                </div>
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => !activePresetId && onIncludeSymbolsChange(!includeSymbols)}
-                                disabled={!!activePresetId}
-                                className={`relative p-2.5 px-4 rounded-2xl border transition-all flex flex-row items-center justify-between gap-3 ${includeSymbols
-                                    ? (activePresetId ? 'bg-stone-50 border-stone-100 text-stone-400' : 'bg-indigo-50 border-indigo-200 text-indigo-600 shadow-sm')
-                                    : 'bg-white border-transparent text-gray-400 hover:shadow-md'}`}
-                            >
-                                <div className="flex items-center gap-3">
-                                    <span className={`text-lg leading-none ${activePresetId ? 'grayscale' : ''}`}>✨</span>
-                                    <span className="text-xs font-bold whitespace-nowrap">特殊文字</span>
-                                </div>
-                                {/* Toggle Switch Visual */}
-                                <div className={`relative w-7 h-4 rounded-full transition-colors shrink-0 ${includeSymbols ? (activePresetId ? 'bg-stone-200' : 'bg-indigo-400') : 'bg-gray-200'}`}>
-                                    <div className={`absolute top-0.5 left-0.5 w-3 h-3 bg-white rounded-full transition-transform ${includeSymbols ? 'translate-x-3' : ''}`} />
-                                </div>
-                            </button>
-                        </div>
-                        {activePresetId && (
-                            <p className="mt-2 px-1 text-[10px] text-stone-400 font-medium leading-relaxed">
-                                ※ 絵文字や記号の使い方も学習データを優先します。
-                            </p>
-                        )}
-
-                    </div>
+                    )}
 
 
 
