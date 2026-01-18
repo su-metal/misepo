@@ -131,6 +131,11 @@ const Icons = {
             <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" /><polyline points="16 6 12 2 8 6" /><line x1="12" y1="2" x2="12" y2="15" />
         </svg>
     ),
+    Maximize2: ({ size = 24, className = "" }: { size?: number; className?: string }) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+            <polyline points="15 3 21 3 21 9" /><polyline points="9 21 3 21 3 15" /><line x1="21" y1="3" x2="14" y2="10" /><line x1="3" y1="21" x2="10" y2="14" />
+        </svg>
+    ),
 };
 
 const CountUp = ({ end, duration = 2000 }: { end: number; duration?: number }) => {
@@ -210,55 +215,25 @@ export default function LandingPage() {
     }, []);
 
     // Animation States derived from progress
+    // Animation States
     const typingTextFull = "【春限定】とろける幸せ、いちごタルト解禁🍓\n\nサクサクのクッキー生地と、\n溢れんばかりの完熟いちご。\n一口食べれば、そこはもう春。\n\n完熟いちごの甘さと、\n自家製カスタードのハーモニーを\nぜひお楽しみください。\n\n📍Access: 渋谷駅 徒歩5分\n🕒Open: 10:00 - 20:00\n📞Reserve: 03-1234-5678\n\n#MisePoカフェ #春スイーツ #いちごタルト #渋谷カフェ #期間限定";
-    // Slower typing: map 0-350px
-    const typingProgress = Math.min(heroAnimationProgress / 350, 1);
+
+    // Typing Phase (0 - 350)
+    const typingProgress = Math.min(Math.max(heroAnimationProgress / 350, 0), 1);
     const currentTypingText = typingTextFull.slice(0, Math.floor(typingTextFull.length * typingProgress));
 
-    const isGenerating = heroAnimationProgress > 450 && heroAnimationProgress < 600; // generating
-    const showResult = heroAnimationProgress >= 600;
+    // Generation Phase (350 - 500)
+    const isTypingDone = heroAnimationProgress > 350;
+    const isGenerating = heroAnimationProgress > 400 && heroAnimationProgress < 550;
 
-    // Transfer Phase - Start AFTER typing completes (350px)
-    // Typing finishes at 350, so transfer starts at 400
-    const transferProgress = Math.min(Math.max((heroAnimationProgress - 400) / 200, 0), 1);
+    // Post/Swap Phase (Trigger at 550)
+    // Simple boolean state for the swap. No complex progress calculation.
+    const isPosted = heroAnimationProgress > 550;
+    // Internal Scroll (After post, scroll the instagram content)
+    const internalScrollProgress = Math.min(Math.max((heroAnimationProgress - 600) / 400, 0), 1);
 
-    // Internal Scroll Phase (400px - 800px)
-    const internalScrollProgress = Math.min(Math.max((heroAnimationProgress - 400) / 400, 0), 1);
-
-    // Post appears when transfer is about 50% done
-    const postAppears = heroAnimationProgress > 300;
-
-    // DEBUG: Log current progress values (remove after fixing)
-    // console.log('heroAnimationProgress:', heroAnimationProgress, 'transferProgress:', transferProgress);
-
-    // Computed Styles for Animation
-    // CENTER PHONE (MisePo): Start STRAIGHT and CLEAR, stay that way
-    // No animation on this phone - it's the main focus
-    const centerPhoneStyle = {
-        transform: `scale(1) translateX(0px) rotate(0deg)`,
-        opacity: 1,
-        filter: `blur(0px)`,
-    };
-
-    // Left Phone (Instagram): Scale to 1.1x max, center on mobile
-    const leftPhoneStyle = {
-        transform: `translate(${transferProgress * 50}%, ${transferProgress * 10}px) rotate(${-12 * (1 - transferProgress)}deg) scale(${0.95 + transferProgress * 0.15})`,
-        zIndex: transferProgress > 0.3 ? 50 : 20,
-    };
-
-    const rightPhoneStyle = {
-        transform: `translateX(${transferProgress * 100}px) rotate(${12 + transferProgress * 5}deg) scale(${0.9 - transferProgress * 0.1})`,
-        opacity: 0.8 - transferProgress * 0.5,
-    };
-
-    const resultCardStyle = {
-        opacity: showResult && transferProgress < 0.2 ? 1 : 0,
-        transform: `translate(-50%, ${showResult ? 0 : 40}px) scale(${showResult ? 1 : 0.9})`,
-    };
-
-    // Inner Content Style for Scrolling
     const innerContentStyle = {
-        transform: `translateY(-${internalScrollProgress * 180}px)`, // Scroll up by 180px
+        transform: `translateY(-${internalScrollProgress * 180}px)`,
     };
 
     const problems = [
@@ -267,8 +242,6 @@ export default function LandingPage() {
         { icon: <Icons.BatteryWarning className="text-amber-500" />, bg: "bg-amber-50", title: "アプリの切り替えが面倒", desc: "インスタを開いて、Xを開いて、Googleマップを開いて...。それぞれのアプリを行き来するだけで一苦労。" },
         { icon: <Icons.TrendingDown className="text-slate-500" />, bg: "bg-slate-100", title: "外注コストが高い", desc: "MEO対策やSNS運用代行に見積もりをとったら月額3万円〜。個人店には負担が大きすぎる。" },
     ];
-
-
 
     const faqs = [
         { q: "どのような業種で利用されていますか？", a: "カフェ、美容室、居酒屋、整体院、歯科医院など、地域密着型の店舗ビジネス全般でご利用いただいております。" },
@@ -323,217 +296,169 @@ export default function LandingPage() {
                 )}
             </header>
 
-            {/* Mobile Hero Text (Static) */}
-            <section className="lg:hidden pt-32 pb-10 px-4 bg-slate-50 text-center relative z-20">
-                <div className="inline-flex items-center gap-2 bg-white border border-indigo-100 px-4 py-1.5 rounded-full text-indigo-600 font-bold text-xs shadow-sm mb-6 animate-fade-in-up">
-                    <span className="relative flex h-2 w-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75" />
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500" />
-                    </span>
-                    <span>総計生成数 10,000件突破</span>
-                </div>
-                <h1 className="text-4xl font-black text-slate-900 leading-[1.15] mb-6 tracking-tight">
-                    店舗の広報は、<br />
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">AIに丸投げする時代。</span>
-                </h1>
-                <p className="text-lg text-slate-600 mb-8 leading-relaxed font-medium">
-                    Googleマップの口コミ返信も、Instagramの投稿文も。<br className="hidden md:block" />
-                    MisePo（ミセポ）なら、たった5秒で「来店したくなる」文章が完成します。
-                </p>
-                <div className="flex flex-col items-center gap-4 justify-center mb-8">
-                    <a href="#demo" onClick={() => loginWithGoogle('trial')} className="w-full px-8 py-4 bg-slate-900 text-white text-base font-bold rounded-xl shadow-xl shadow-slate-200 flex items-center justify-center gap-2 group">
-                        <Icons.Sparkles size={18} className="text-yellow-400 group-hover:animate-pulse" />無料で試してみる
-                    </a>
-                    <a href="#pricing" className="w-full px-8 py-4 bg-white text-slate-700 border border-slate-200 text-base font-bold rounded-xl flex items-center justify-center">料金プラン</a>
-                </div>
-                <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm font-bold text-slate-500">
-                    <div className="flex items-center gap-2"><Icons.CheckCircle size={16} className="text-indigo-500" /><span>クレカ登録不要</span></div>
-                    <div className="flex items-center gap-2"><Icons.CheckCircle size={16} className="text-indigo-500" /><span>アプリDL不要</span></div>
-                    <div className="flex items-center gap-2"><Icons.CheckCircle size={16} className="text-indigo-500" /><span>30秒で開始</span></div>
-                </div>
-            </section>
+            {/* New Sticky Hero Animation */}
+            <div ref={heroRef} className="relative z-10 h-[500vh]">
+                <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col">
+                    <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/50 via-white to-purple-50/50" />
 
-            {/* Hero (Sticky Wrapper) */}
-            <div ref={heroRef} className="relative h-[800vh] bg-slate-50">
-                <div className="sticky top-0 h-screen overflow-hidden flex items-center justify-center">
-                    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[1000px] bg-indigo-100/40 rounded-full blur-[120px] -z-10" />
-                        <div className="absolute bottom-0 right-0 w-[800px] h-[800px] bg-purple-100/40 rounded-full blur-[100px] -z-10" />
+                    {/* Mobile Text (Static at top) */}
+                    <div className="md:hidden pt-24 px-4 text-center z-20 relative">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/80 backdrop-blur-sm border border-indigo-100 shadow-sm mb-4">
+                            <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
+                            <span className="text-xs font-bold text-indigo-900">総生成数 10,000件突破</span>
+                        </div>
+                        <h1 className="text-4xl font-black text-slate-900 tracking-tight leading-[1.1] mb-3">
+                            店舗の広報は、<br />
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">AIに丸投げする時</span>代。
+                        </h1>
                     </div>
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
-                        <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
-                            <div className="hidden lg:block flex-1 text-center lg:text-left max-w-2xl mx-auto lg:mx-0">
-                                <div className="inline-flex items-center gap-2 bg-white border border-indigo-100 px-4 py-1.5 rounded-full text-indigo-600 font-bold text-xs shadow-sm mb-8 animate-fade-in-up">
-                                    <span className="relative flex h-2 w-2">
-                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75" />
-                                        <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500" />
-                                    </span>
-                                    <span>総計生成数 10,000件突破</span>
-                                </div>
-                                <h1 className="text-4xl md:text-6xl font-black text-slate-900 leading-[1.15] mb-6 tracking-tight">
-                                    店舗の広報は、<br />
-                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">AIに丸投げする時代。</span>
-                                </h1>
-                                <p className="text-lg text-slate-600 mb-10 leading-relaxed font-medium">
-                                    Googleマップの口コミ返信も、Instagramの投稿文も。<br className="hidden md:block" />
-                                    MisePo（ミセポ）なら、たった5秒で「来店したくなる」文章が完成します。
-                                </p>
-                                <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start mb-10">
-                                    <a href="#demo" onClick={() => loginWithGoogle('trial')} className="w-full sm:w-auto px-8 py-4 bg-slate-900 hover:bg-slate-800 text-white text-base font-bold rounded-xl shadow-xl shadow-slate-200 hover:shadow-slate-300 transition-all duration-300 transform hover:-translate-y-1 flex items-center justify-center gap-2 group">
-                                        <Icons.Sparkles size={18} className="text-yellow-400 group-hover:animate-pulse" />無料で試してみる
-                                    </a>
-                                    <a href="#pricing" className="w-full sm:w-auto px-8 py-4 bg-white hover:bg-gray-50 text-slate-700 border border-slate-200 text-base font-bold rounded-xl transition-all flex items-center justify-center hover:shadow-md">料金プラン</a>
-                                </div>
-                                <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-6 gap-y-2 text-sm font-bold text-slate-500">
-                                    <div className="flex items-center gap-2"><Icons.CheckCircle size={16} className="text-indigo-500" /><span>クレカ登録不要</span></div>
-                                    <div className="flex items-center gap-2"><Icons.CheckCircle size={16} className="text-indigo-500" /><span>アプリDL不要</span></div>
-                                    <div className="flex items-center gap-2"><Icons.CheckCircle size={16} className="text-indigo-500" /><span>30秒で開始</span></div>
-                                </div>
-                            </div>
-                            <div className="flex-1 w-full relative h-[600px] flex items-center justify-center -mr-20 lg:-mr-0">
-                                {/* Detailed phones composition */}
-                                <div className="relative w-[300px] h-[600px] z-10 transition-transform duration-100 ease-linear origin-center" style={centerPhoneStyle}>
-                                    {/* Center Main Phone (MisePo) */}
-                                    <div className="absolute inset-0 bg-slate-900 rounded-[3rem] border-8 border-slate-900 shadow-2xl overflow-hidden ring-4 ring-slate-900/10 z-30">
-                                        {/* Notch */}
-                                        <div className="absolute top-0 left-1/2 -translate-x-1/2 h-7 w-40 bg-slate-900 rounded-b-2xl z-40" />
-                                        {/* Screen Content */}
-                                        <div className="w-full h-full bg-slate-50 relative flex flex-col pt-10">
-                                            <div className="px-4 pb-4 border-b border-slate-100 flex justify-between items-center bg-white">
-                                                <Icons.Menu className="text-slate-400" />
-                                                <span className="font-bold text-slate-800">New Post</span>
-                                                <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center"><Icons.Sparkles size={16} fill="currentColor" /></div>
-                                            </div>
-                                            <div className="p-4 flex-1">
-                                                <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 mb-4 space-y-3">
-                                                    <div className="flex gap-2">
-                                                        <span className="px-2 py-1 bg-indigo-50 text-indigo-600 text-[10px] font-bold rounded">Instagram</span>
-                                                        <span className="px-2 py-1 bg-slate-50 text-slate-400 text-[10px] font-bold rounded">Tone: Casual</span>
-                                                    </div>
-                                                    <div className={`space-y-2 transition-opacity duration-500 ${isGenerating ? 'opacity-50 pulse' : 'opacity-100'}`}>
-                                                        <div className="text-sm text-slate-700 min-h-[60px] whitespace-pre-wrap font-medium">
-                                                            {currentTypingText}
-                                                            <span className="animate-pulse">|</span>
-                                                        </div>
-                                                    </div>
-                                                    <div className={`bg-indigo-600 text-white rounded-xl py-3 font-bold text-center shadow-lg shadow-indigo-200 transition-all duration-300 ${isGenerating ? 'scale-95 bg-indigo-500' : ''}`}>
-                                                        {isGenerating ? (
-                                                            <span className="flex items-center justify-center gap-2">
-                                                                <Icons.Sparkles size={16} className="animate-spin" /> 生成中...
-                                                            </span>
-                                                        ) : (
-                                                            "生成する"
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
 
-                                    {/* AI Result Card (Absolute Overlay) */}
-                                    <div
-                                        className={`absolute left-1/2 top-[280px] -translate-x-1/2 w-[260px] bg-white rounded-xl shadow-2xl border border-indigo-100 p-4 transition-all duration-700 z-50 origin-bottom`}
-                                        style={resultCardStyle}
-                                    >
-                                        <div className="flex items-center gap-2 mb-3">
-                                            <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 text-white flex items-center justify-center shadow-sm">
-                                                <Icons.Sparkles size={12} fill="currentColor" />
-                                            </div>
-                                            <span className="text-xs font-bold text-slate-800">AIからの提案</span>
-                                        </div>
-                                        <div className="space-y-2">
-                                            <div className="p-2 bg-slate-50 rounded-lg text-xs leading-relaxed text-slate-600">
-                                                🍓 <strong>新作登場！いちごタルト</strong><br />
-                                                サクサクのタルト生地に、溢れんばかりの旬の苺をトッピングしました✨<br />
-                                                #いちごタルト #新作スイーツ
-                                            </div>
-                                            <div className="flex gap-1 justify-end">
-                                                <div className="px-3 py-1.5 bg-slate-900 text-white text-[10px] font-bold rounded-full shadow-lg">投稿する</div>
-                                            </div>
-                                        </div>
-                                    </div>
+                    {/* Desktop Text (Absolute) */}
+                    <div className="hidden md:block absolute top-1/2 -translate-y-1/2 left-12 lg:left-24 z-20 max-w-xl pointer-events-none">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-indigo-100 shadow-sm mb-8">
+                            <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
+                            <span className="text-sm font-bold text-indigo-900">総生成数 10,000件突破</span>
+                        </div>
+                        <h1 className="text-6xl lg:text-[5.5rem] font-black text-slate-900 tracking-tight leading-[1.1] mb-8">
+                            店舗の広報は、<br />
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">AIに丸投げする時</span>代。
+                        </h1>
+                        <p className="text-xl text-slate-600 leading-relaxed mb-10 max-w-lg">
+                            Googleマップの口コミ返信も、Instagramの投稿文も。<br />
+                            MisePo（ミセポ）なら、たった5秒で「来店したくなる」文章が完成します。
+                        </p>
+                        <div className="flex gap-4 pointer-events-auto">
+                            <button className="px-8 py-4 bg-slate-900 text-white rounded-full font-bold hover:bg-slate-800 transition-all hover:scale-105 shadow-xl shadow-slate-900/20 flex items-center gap-2">
+                                <Icons.Sparkles size={20} className="text-yellow-400" />
+                                無料で試してみる
+                            </button>
+                            <button className="px-8 py-4 bg-white text-slate-900 rounded-full font-bold border-2 border-slate-100 hover:border-slate-200 hover:bg-slate-50 transition-all">
+                                料金プラン
+                            </button>
+                        </div>
+                    </div>
 
-                                    {/* Left Phone (Instagram) */}
-                                    <div
-                                        className="absolute left-0 lg:-left-12 top-12 w-[260px] h-[520px] bg-slate-800 rounded-[2.5rem] border-4 border-slate-800 shadow-xl z-20 origin-bottom-right transition-transform duration-100 ease-linear"
-                                        style={leftPhoneStyle}
-                                    >
-                                        <div className="w-full h-full bg-white rounded-[2.2rem] overflow-hidden relative">
-                                            <div className="bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 h-1.5 w-full absolute top-0" />
-                                            {postAppears ? (
-                                                <div className="flex flex-col h-full animate-fade-in bg-white" style={innerContentStyle}>
-                                                    <div className="px-4 py-4 flex items-center gap-2 border-b border-slate-100 flex-shrink-0">
-                                                        <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600"><Icons.Smartphone size={16} /></div>
-                                                        <span className="font-bold text-xs text-slate-900">MisePo Cafe</span>
-                                                    </div>
-                                                    <div className="aspect-square bg-slate-50 relative flex items-center justify-center overflow-hidden flex-shrink-0">
-                                                        <div className="text-8xl animate-bounce-slow">🍓</div>
-                                                    </div>
-                                                    <div className="p-3 flex gap-4 flex-shrink-0">
-                                                        <Icons.Heart className="text-red-500 fill-red-500" />
-                                                        <Icons.MessageCircle className="text-slate-800" />
-                                                        <Icons.Send className="text-slate-800" />
-                                                    </div>
-                                                    <div className="px-4 pb-12 space-y-1">
-                                                        <p className="text-xs font-bold text-slate-900">1,203 likes</p>
-                                                        <div className="text-xs text-slate-600 whitespace-pre-wrap leading-relaxed pb-8">
-                                                            <span className="font-bold text-slate-900 mr-2">MisePo Cafe</span>
-                                                            {typingTextFull}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            ) : (
-                                                <div className="p-4 pt-12">
-                                                    <div className="flex items-center gap-2 mb-4">
-                                                        <div className="w-8 h-8 rounded-full bg-gray-200" />
-                                                        <div className="h-3 w-20 bg-gray-200 rounded" />
-                                                    </div>
-                                                    <div className="aspect-square bg-slate-100 rounded-xl mb-3" />
-                                                    <div className="space-y-2">
-                                                        <div className="h-2 bg-slate-100 w-full rounded" />
-                                                        <div className="h-2 bg-slate-100 w-full rounded" />
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
+                    {/* Phone Animation Container */}
+                    <div className="absolute inset-0 md:left-1/3 flex items-center justify-center pointer-events-none">
+                        <div className="relative w-[300px] h-[600px] scale-90 md:scale-100 origin-center">
 
-                                    {/* Right Phone (Maps) */}
-                                    <div
-                                        className="absolute right-0 lg:-right-12 top-24 w-[260px] h-[520px] bg-slate-800 rounded-[2.5rem] border-4 border-slate-800 shadow-xl z-10 origin-bottom-left transition-transform duration-100 ease-linear"
-                                        style={rightPhoneStyle}
-                                    >
-                                        <div className="w-full h-full bg-white rounded-[2.2rem] overflow-hidden relative">
-                                            <div className="h-32 bg-slate-100 relative mb-8">
-                                                <div className="absolute -bottom-8 left-4 w-16 h-16 rounded-full bg-white border-2 border-white shadow-sm" />
-                                            </div>
-                                            <div className="px-4">
-                                                <div className="h-4 w-32 bg-slate-200 rounded mb-2" />
-                                                <div className="flex gap-1 mb-4">
-                                                    {[1, 2, 3, 4, 5].map(i => <Icons.Star key={i} size={12} fill="#FCD34D" className="text-yellow-400" />)}
-                                                    <div className="h-3 w-8 bg-slate-100 rounded ml-2" />
+                            {/* CENTER PHONE (MisePo) */}
+                            <div
+                                className={`absolute inset-0 transition-all duration-700 ease-in-out origin-center
+                                    ${isPosted
+                                        ? 'scale-90 -translate-x-[40vw] md:-translate-x-[200px] -rotate-12 opacity-60 z-10 blur-[1px]'
+                                        : 'scale-100 translate-x-0 rotate-0 opacity-100 z-30 blur-none'
+                                    }`}
+                            >
+                                <div className="w-full h-full bg-slate-900 rounded-[3rem] border-8 border-slate-900 shadow-2xl overflow-hidden ring-4 ring-slate-900/10 relative">
+                                    <div className="absolute top-0 left-1/2 -translate-x-1/2 h-7 w-40 bg-slate-900 rounded-b-2xl z-40" />
+                                    <div className="w-full h-full bg-slate-50 relative flex flex-col pt-10">
+                                        <div className="px-4 pb-4 border-b border-slate-100 flex justify-between items-center bg-white">
+                                            <div className="p-2"><Icons.Menu className="text-slate-400" size={20} /></div>
+                                            <span className="font-bold text-slate-800">New Post</span>
+                                            <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center"><Icons.Sparkles size={16} fill="currentColor" /></div>
+                                        </div>
+                                        <div className="p-4 flex-1">
+                                            <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 mb-4 space-y-3">
+                                                <div className="flex gap-2">
+                                                    <span className="px-2 py-1 bg-indigo-50 text-indigo-600 text-[10px] font-bold rounded">Instagram</span>
+                                                    <span className="px-2 py-1 bg-slate-50 text-slate-400 text-[10px] font-bold rounded">Tone: Casual</span>
                                                 </div>
-                                                <div className="space-y-3">
-                                                    <div className="p-2 border border-slate-100 rounded-lg">
-                                                        <div className="flex gap-2 mb-1">
-                                                            <div className="w-4 h-4 rounded-full bg-slate-200" />
-                                                            <div className="h-2 w-12 bg-slate-200 rounded" />
-                                                        </div>
-                                                        <p className="text-[8px] text-slate-400">とても良いお店でした！</p>
+                                                <div className={`space-y-2 transition-opacity duration-500 ${isGenerating ? 'opacity-50 pulse' : 'opacity-100'}`}>
+                                                    <div className="text-sm text-slate-700 min-h-[60px] whitespace-pre-wrap font-medium">
+                                                        {currentTypingText}
+                                                        <span className={`${isTypingDone ? 'hidden' : 'inline'} animate-pulse text-indigo-500`}>|</span>
                                                     </div>
+                                                </div>
+                                                <div className={`bg-indigo-600 text-white rounded-xl py-3 font-bold text-center shadow-lg shadow-indigo-200 transition-all duration-300 ${isGenerating ? 'scale-95 bg-indigo-500' : ''}`}>
+                                                    {isGenerating ? (
+                                                        <span className="flex items-center justify-center gap-2">
+                                                            <Icons.Sparkles size={16} className="animate-spin" /> 生成中...
+                                                        </span>
+                                                    ) : isPosted ? (
+                                                        "投稿完了！"
+                                                    ) : (
+                                                        "生成する"
+                                                    )}
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
+                            {/* LEFT PHONE (Instagram) */}
+                            <div
+                                className={`absolute inset-0 w-[280px] h-[560px] top-4 left-2 transition-all duration-700 ease-in-out origin-center
+                                    ${isPosted
+                                        ? 'scale-105 translate-x-2 -translate-y-4 rotate-0 z-40'
+                                        : 'scale-90 -translate-x-[42vw] md:-translate-x-[240px] translate-y-8 -rotate-12 z-20'
+                                    }`}
+                            >
+                                <div className="w-full h-full bg-slate-800 rounded-[2.5rem] border-4 border-slate-800 shadow-xl overflow-hidden relative">
+                                    <div className="w-full h-full bg-white relative">
+                                        <div className="bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 h-1.5 w-full absolute top-0 z-10" />
+                                        <div className="flex flex-col h-full bg-white transition-transform duration-[2000ms] ease-out" style={isPosted ? innerContentStyle : {}}>
+                                            <div className="px-4 py-4 flex items-center gap-2 border-b border-slate-100 flex-shrink-0 bg-white z-10 sticky top-0">
+                                                <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600"><Icons.Smartphone size={16} /></div>
+                                                <span className="font-bold text-xs text-slate-900">MisePo Cafe</span>
+                                                <span className="text-[10px] text-slate-400 ml-auto">Just now</span>
+                                            </div>
+                                            <div className="aspect-square bg-slate-50 relative flex items-center justify-center overflow-hidden flex-shrink-0">
+                                                <div className="text-8xl animate-bounce-slow">🍓</div>
+                                                <div className="absolute bottom-2 right-2 px-2 py-1 bg-black/50 text-white text-[10px] rounded backdrop-blur-sm">1/3</div>
+                                            </div>
+                                            <div className="p-4 space-y-3 pb-20">
+                                                <div className="flex justify-between items-center text-slate-800">
+                                                    <div className="flex gap-4">
+                                                        <Icons.Heart className="text-red-500 fill-red-500" size={20} />
+                                                        <Icons.MessageCircle size={20} />
+                                                        <Icons.Send size={20} />
+                                                    </div>
+                                                    <Icons.Maximize2 size={20} />
+                                                </div>
+                                                <p className="font-bold text-xs">1,203 likes</p>
+                                                <div className="text-xs space-y-1">
+                                                    <p><span className="font-bold">MisePo Cafe</span> 【春限定】とろける幸せ、いちごタルト解禁🍓</p>
+                                                    <p className="text-slate-600 leading-relaxed whitespace-pre-wrap">
+                                                        サクサクのクッキー生地と、溢れんばかりの完熟いちご。一口食べれば、そこはもう春。
+                                                        {'\n\n'}
+                                                        完熟いちごの甘さと、自家製カスタードのハーモニーをぜひお楽しみください。
+                                                        {'\n\n'}
+                                                        📍Access: 渋谷駅 徒歩5分
+                                                    </p>
+                                                    <p className="text-indigo-600">#MisePoカフェ #春スイーツ #いちごタルト</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* RIGHT PHONE (Maps - Background) */}
+                            <div
+                                className={`absolute right-[-100px] top-20 w-[260px] h-[520px] transition-all duration-700 ease-in-out
+                                    ${isPosted ? 'translate-x-[30px] opacity-40 scale-90' : 'translate-x-[100px] opacity-80 rotate-12 delay-100'}
+                                `}
+                            >
+                                <div className="w-full h-full bg-slate-800 rounded-[2.5rem] border-4 border-slate-800 shadow-xl opacity-60 overflow-hidden relative">
+                                    <div className="w-full h-full bg-white opacity-80">
+                                        <div className="h-32 bg-slate-100 relative mb-8" />
+                                        <div className="px-4 space-y-2">
+                                            <div className="h-4 w-20 bg-slate-200 rounded" />
+                                            <div className="h-2 w-full bg-slate-100 rounded" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
             </div>
 
             {/* Problem */}
-            <section id="problem" className="py-24 bg-white">
+            < section id="problem" className="py-24 bg-white" >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid lg:grid-cols-2 gap-16 items-center mb-16">
                         <div>
@@ -562,10 +487,10 @@ export default function LandingPage() {
                         ))}
                     </div>
                 </div>
-            </section>
+            </section >
 
             {/* Market Data (Why Now?) */}
-            <section className="py-24 bg-slate-900 text-white overflow-hidden relative">
+            < section className="py-24 bg-slate-900 text-white overflow-hidden relative" >
                 <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
                     <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-indigo-500/20 rounded-full blur-[100px]" />
                     <div className="absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] bg-purple-500/20 rounded-full blur-[100px]" />
@@ -642,10 +567,10 @@ export default function LandingPage() {
                     </div>
                 </div>
 
-            </section>
+            </section >
 
             {/* Features */}
-            <section id="features" className="py-24 bg-slate-50 overflow-hidden">
+            < section id="features" className="py-24 bg-slate-50 overflow-hidden" >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center max-w-3xl mx-auto mb-16">
                         <span className="text-indigo-600 font-bold tracking-wider text-sm uppercase mb-2 block">All-in-One Platform</span>
@@ -722,10 +647,10 @@ export default function LandingPage() {
                         </div>
                     </div>
                 </div>
-            </section>
+            </section >
 
             {/* Demo */}
-            <section id="demo" className="py-24 bg-[#0f172a] text-white relative overflow-hidden">
+            < section id="demo" className="py-24 bg-[#0f172a] text-white relative overflow-hidden" >
                 <div className="absolute inset-0 bg-gradient-to-b from-indigo-950 to-slate-950" />
                 <div className="absolute top-0 left-0 w-full h-full overflow-hidden opacity-30 pointer-events-none">
                     <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-indigo-500/30 rounded-full blur-[120px]" />
@@ -796,10 +721,10 @@ export default function LandingPage() {
                         </div>
                     </div>
                 </div>
-            </section>
+            </section >
 
             {/* PWA Section */}
-            <section id="pwa" className="py-12 bg-white">
+            < section id="pwa" className="py-12 bg-white" >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
                         <div className="lg:w-1/2">
@@ -874,10 +799,10 @@ export default function LandingPage() {
                         </div>
                     </div>
                 </div>
-            </section>
+            </section >
 
             {/* Pricing */}
-            <section id="pricing" className="py-24 bg-white border-t border-slate-100">
+            < section id="pricing" className="py-24 bg-white border-t border-slate-100" >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid lg:grid-cols-2 gap-12 lg:gap-24 items-center">
                         {/* Left Column: Value Proposition */}
@@ -971,10 +896,10 @@ export default function LandingPage() {
                         </div>
                     </div>
                 </div>
-            </section>
+            </section >
 
             {/* FAQ */}
-            <section id="faq" className="py-20 bg-white">
+            < section id="faq" className="py-20 bg-white" >
                 <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
                     <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">よくある質問</h2>
                     <div className="space-y-4">
@@ -991,10 +916,10 @@ export default function LandingPage() {
                         ))}
                     </div>
                 </div>
-            </section>
+            </section >
 
             {/* Footer */}
-            <footer className="bg-gray-900 text-white py-12">
+            < footer className="bg-gray-900 text-white py-12" >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
                         <div className="col-span-1 md:col-span-2">
@@ -1026,7 +951,7 @@ export default function LandingPage() {
                         © {new Date().getFullYear()} MisePo. All rights reserved.
                     </div>
                 </div>
-            </footer>
+            </footer >
 
             <style jsx global>{`
                 html { scroll-behavior: smooth; scroll-padding-top: 80px; }
@@ -1037,6 +962,6 @@ export default function LandingPage() {
                 .no-scrollbar::-webkit-scrollbar { display: none; }
                 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
             `}</style>
-        </div>
+        </div >
     );
 }
