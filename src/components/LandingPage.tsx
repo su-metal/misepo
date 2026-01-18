@@ -251,6 +251,15 @@ export default function LandingPage() {
         transform: `translateY(-${internalScrollProgress * 320}px)`,
     };
 
+    // Text Opacity Logic for Fade-In Effect
+    let textOpacity = 1;
+    if (heroAnimationProgress >= 450 && heroAnimationProgress < 550) {
+        textOpacity = 0.5; // Generating pulse
+    } else if (heroAnimationProgress >= 550) {
+        // Fade in result (550-650)
+        textOpacity = Math.min(Math.max((heroAnimationProgress - 550) / 100, 0), 1);
+    }
+
     const problems = [
         { icon: <Icons.HelpCircle className="text-orange-500" />, bg: "bg-orange-50", title: "何を書けばいいかわからない", desc: "「今日のランチ」以外に書くことがない。魅力的な文章表現や、流行りのハッシュタグがわからない。" },
         { icon: <Icons.Clock size={24} className="text-rose-500" />, bg: "bg-rose-50", title: "時間が足りない", desc: "営業終了後は疲れ果てて、SNS投稿を作る気力がない。結局「明日やろう」と先延ばしにしてしまう。" },
@@ -379,7 +388,7 @@ export default function LandingPage() {
                                                     <span className="px-2 py-1 bg-indigo-50 text-indigo-600 text-[10px] font-bold rounded">Instagram</span>
                                                     <span className="px-2 py-1 bg-slate-50 text-slate-400 text-[10px] font-bold rounded">Tone: Casual</span>
                                                 </div>
-                                                <div className={`space-y-2 transition-opacity duration-500 ${isGenerating ? 'opacity-50 pulse' : 'opacity-100'}`}>
+                                                <div className={`space-y-2 ${isGenerating ? 'animate-pulse' : ''}`} style={{ opacity: textOpacity }}>
                                                     <div className="text-sm text-slate-700 min-h-[60px] whitespace-pre-wrap font-medium">
                                                         {currentText}
                                                         <span className={`${isTypingDone ? 'hidden' : 'inline'} animate-pulse text-indigo-500`}>|</span>
