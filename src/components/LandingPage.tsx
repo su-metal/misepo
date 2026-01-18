@@ -30,6 +30,21 @@ const Icons = {
             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
         </svg>
     ),
+    Heart: ({ size = 24, className = "", fill = "none" }: { size?: number; className?: string; fill?: string }) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth="2" className={className}>
+            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+        </svg>
+    ),
+    MessageCircle: ({ size = 24, className = "" }: { size?: number; className?: string }) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5Z" />
+        </svg>
+    ),
+    Send: ({ size = 24, className = "" }: { size?: number; className?: string }) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+            <line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" />
+        </svg>
+    ),
     Sparkles: ({ size = 20, fill = "none", className = "" }: { size?: number; fill?: string; className?: string }) => (
         <svg width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth="2" className={className}>
             <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z" />
@@ -40,8 +55,8 @@ const Icons = {
             <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
         </svg>
     ),
-    HelpCircle: ({ className = "" }: { className?: string }) => (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+    HelpCircle: ({ size = 24, className = "" }: { size?: number; className?: string }) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
             <circle cx="12" cy="12" r="10" /><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" /><line x1="12" y1="17" x2="12.01" y2="17" />
         </svg>
     ),
@@ -75,21 +90,7 @@ const Icons = {
             <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
         </svg>
     ),
-    Heart: ({ size = 22, className = "" }: { size?: number; className?: string }) => (
-        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
-            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
-        </svg>
-    ),
-    MessageCircle: ({ size = 22 }: { size?: number }) => (
-        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z" />
-        </svg>
-    ),
-    Send: ({ size = 22 }: { size?: number }) => (
-        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="m22 2-7 20-4-9-9-4Z" /><path d="M22 2 11 13" />
-        </svg>
-    ),
+
     Bookmark: ({ size = 22, className = "" }: { size?: number; className?: string }) => (
         <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
             <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z" />
@@ -199,8 +200,8 @@ export default function LandingPage() {
 
                 if (totalScrollable > 0) {
                     const progressPct = Math.min(Math.max(scrolled / totalScrollable, 0), 1);
-                    // Map 0-100% to 0-600 range to finish animation earlier and leave "inertia" buffer
-                    setHeroAnimationProgress(progressPct * 600);
+                    // Map 0-100% to 0-1600 range for super extended timeline (Scroll within phone)
+                    setHeroAnimationProgress(progressPct * 1600);
                 }
             }
         };
@@ -209,12 +210,58 @@ export default function LandingPage() {
     }, []);
 
     // Animation States derived from progress
-    const typingTextFull = "新作のいちごタルト始めました！\n甘酸っぱい苺とカスタードが相性抜群です🍓";
-    const typingProgress = Math.min(heroAnimationProgress / 150, 1); // 0-150px for typing
+    const typingTextFull = "【春限定】とろける幸せ、いちごタルト解禁🍓\n\nサクサクのクッキー生地と、\n溢れんばかりの完熟いちご。\n一口食べれば、そこはもう春。\n\n完熟いちごの甘さと、\n自家製カスタードのハーモニーを\nぜひお楽しみください。\n\n📍Access: 渋谷駅 徒歩5分\n🕒Open: 10:00 - 20:00\n📞Reserve: 03-1234-5678\n\n#MisePoカフェ #春スイーツ #いちごタルト #渋谷カフェ #期間限定";
+    // Slower typing: map 0-350px
+    const typingProgress = Math.min(heroAnimationProgress / 350, 1);
     const currentTypingText = typingTextFull.slice(0, Math.floor(typingTextFull.length * typingProgress));
 
-    const isGenerating = heroAnimationProgress > 150 && heroAnimationProgress < 250; // 150-250px for generating
-    const showResult = heroAnimationProgress >= 250; // 250px+ for result
+    const isGenerating = heroAnimationProgress > 450 && heroAnimationProgress < 600; // generating
+    const showResult = heroAnimationProgress >= 600;
+
+    // Transfer Phase - MUST complete VERY early
+    // The hero section scrolls out before progress reaches high values
+    // Start transfer at 200, complete by 400 (25% of total)
+    const transferProgress = Math.min(Math.max((heroAnimationProgress - 200) / 200, 0), 1);
+
+    // Internal Scroll Phase (400px - 800px)
+    const internalScrollProgress = Math.min(Math.max((heroAnimationProgress - 400) / 400, 0), 1);
+
+    // Post appears when transfer is about 50% done
+    const postAppears = heroAnimationProgress > 300;
+
+    // DEBUG: Log current progress values (remove after fixing)
+    // console.log('heroAnimationProgress:', heroAnimationProgress, 'transferProgress:', transferProgress);
+
+    // Computed Styles for Animation
+    // CENTER PHONE (MisePo): This is what user calls "Instagram phone"
+    // REVERSED: Start tilted+dim, end straight+clear
+    const centerPhoneStyle = {
+        transform: `scale(${0.85 + transferProgress * 0.15}) translateX(${60 - transferProgress * 60}px) rotate(${12 - transferProgress * 12}deg)`,
+        opacity: 0.6 + transferProgress * 0.4,
+        filter: `blur(${2 - transferProgress * 2}px)`,
+    };
+
+    // Left Phone: Start at -12deg, end at 0deg when transferProgress=1
+    // Scale: 0.95 -> 1.35
+    const leftPhoneStyle = {
+        transform: `translate(${transferProgress * 80}px, ${transferProgress * 20}px) rotate(${-12 * (1 - transferProgress)}deg) scale(${0.95 + transferProgress * 0.4})`,
+        zIndex: transferProgress > 0.3 ? 50 : 20,
+    };
+
+    const rightPhoneStyle = {
+        transform: `translateX(${transferProgress * 100}px) rotate(${12 + transferProgress * 5}deg) scale(${0.9 - transferProgress * 0.1})`,
+        opacity: 0.8 - transferProgress * 0.5,
+    };
+
+    const resultCardStyle = {
+        opacity: showResult && transferProgress < 0.2 ? 1 : 0,
+        transform: `translate(-50%, ${showResult ? 0 : 40}px) scale(${showResult ? 1 : 0.9})`,
+    };
+
+    // Inner Content Style for Scrolling
+    const innerContentStyle = {
+        transform: `translateY(-${internalScrollProgress * 180}px)`, // Scroll up by 180px
+    };
 
     const problems = [
         { icon: <Icons.HelpCircle className="text-orange-500" />, bg: "bg-orange-50", title: "何を書けばいいかわからない", desc: "「今日のランチ」以外に書くことがない。魅力的な文章表現や、流行りのハッシュタグがわからない。" },
@@ -309,7 +356,7 @@ export default function LandingPage() {
             </section>
 
             {/* Hero (Sticky Wrapper) */}
-            <div ref={heroRef} className="relative h-[350vh] bg-slate-50">
+            <div ref={heroRef} className="relative h-[800vh] bg-slate-50">
                 <div className="sticky top-0 h-screen overflow-hidden flex items-center justify-center">
                     <div className="absolute inset-0 overflow-hidden pointer-events-none">
                         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[1000px] bg-indigo-100/40 rounded-full blur-[120px] -z-10" />
@@ -347,7 +394,7 @@ export default function LandingPage() {
                             </div>
                             <div className="flex-1 w-full relative h-[600px] flex items-center justify-center -mr-20 lg:-mr-0">
                                 {/* Detailed phones composition */}
-                                <div className="relative w-[300px] h-[600px] z-10 transition-transform duration-700 hover:scale-105">
+                                <div className="relative w-[300px] h-[600px] z-10 transition-transform duration-100 ease-linear origin-center" style={centerPhoneStyle}>
                                     {/* Center Main Phone (MisePo) */}
                                     <div className="absolute inset-0 bg-slate-900 rounded-[3rem] border-8 border-slate-900 shadow-2xl overflow-hidden ring-4 ring-slate-900/10 z-30">
                                         {/* Notch */}
@@ -386,7 +433,10 @@ export default function LandingPage() {
                                     </div>
 
                                     {/* AI Result Card (Absolute Overlay) */}
-                                    <div className={`absolute left-1/2 top-[280px] -translate-x-1/2 w-[260px] bg-white rounded-xl shadow-2xl border border-indigo-100 p-4 transition-all duration-700 z-50 origin-bottom ${showResult ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-10 scale-90 pointer-events-none'}`}>
+                                    <div
+                                        className={`absolute left-1/2 top-[280px] -translate-x-1/2 w-[260px] bg-white rounded-xl shadow-2xl border border-indigo-100 p-4 transition-all duration-700 z-50 origin-bottom`}
+                                        style={resultCardStyle}
+                                    >
                                         <div className="flex items-center gap-2 mb-3">
                                             <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 text-white flex items-center justify-center shadow-sm">
                                                 <Icons.Sparkles size={12} fill="currentColor" />
@@ -406,26 +456,57 @@ export default function LandingPage() {
                                     </div>
 
                                     {/* Left Phone (Instagram) */}
-                                    <div className="absolute left-0 lg:-left-12 top-12 w-[260px] h-[520px] bg-slate-800 rounded-[2.5rem] border-4 border-slate-800 shadow-xl z-20 transform -rotate-12 translate-y-8 opacity-90 scale-95 origin-bottom-right">
-                                        <div className="w-full h-full bg-white rounded-[2.2rem] overflow-hidden opacity-90 relative">
+                                    <div
+                                        className="absolute left-0 lg:-left-12 top-12 w-[260px] h-[520px] bg-slate-800 rounded-[2.5rem] border-4 border-slate-800 shadow-xl z-20 origin-bottom-right transition-transform duration-100 ease-linear"
+                                        style={leftPhoneStyle}
+                                    >
+                                        <div className={`w-full h-full bg-white rounded-[2.2rem] overflow-hidden relative transition-opacity duration-300 ${transferProgress > 0.5 ? 'opacity-100' : 'opacity-90'}`}>
                                             <div className="bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 h-1.5 w-full absolute top-0" />
-                                            <div className="p-4 pt-12">
-                                                <div className="flex items-center gap-2 mb-4">
-                                                    <div className="w-8 h-8 rounded-full bg-gray-200" />
-                                                    <div className="h-3 w-20 bg-gray-200 rounded" />
+                                            {postAppears ? (
+                                                <div className="flex flex-col h-full animate-fade-in bg-white" style={innerContentStyle}>
+                                                    <div className="px-4 py-4 flex items-center gap-2 border-b border-slate-100 flex-shrink-0">
+                                                        <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600"><Icons.Smartphone size={16} /></div>
+                                                        <span className="font-bold text-xs text-slate-900">MisePo Cafe</span>
+                                                    </div>
+                                                    <div className="aspect-square bg-slate-50 relative flex items-center justify-center overflow-hidden flex-shrink-0">
+                                                        <div className="text-8xl animate-bounce-slow">🍓</div>
+                                                    </div>
+                                                    <div className="p-3 flex gap-4 flex-shrink-0">
+                                                        <Icons.Heart className="text-red-500 fill-red-500" />
+                                                        <Icons.MessageCircle className="text-slate-800" />
+                                                        <Icons.Send className="text-slate-800" />
+                                                    </div>
+                                                    <div className="px-4 pb-12 space-y-1">
+                                                        <p className="text-xs font-bold text-slate-900">1,203 likes</p>
+                                                        <div className="text-xs text-slate-600 whitespace-pre-wrap leading-relaxed pb-8">
+                                                            <span className="font-bold text-slate-900 mr-2">MisePo Cafe</span>
+                                                            {typingTextFull}
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div className="aspect-square bg-slate-100 rounded-xl mb-3" />
-                                                <div className="space-y-2">
-                                                    <div className="h-2 bg-slate-100 w-full rounded" />
-                                                    <div className="h-2 bg-slate-100 w-full rounded" />
+                                            ) : (
+                                                <div className="p-4 pt-12">
+                                                    <div className="flex items-center gap-2 mb-4">
+                                                        <div className="w-8 h-8 rounded-full bg-gray-200" />
+                                                        <div className="h-3 w-20 bg-gray-200 rounded" />
+                                                    </div>
+                                                    <div className="aspect-square bg-slate-100 rounded-xl mb-3" />
+                                                    <div className="space-y-2">
+                                                        <div className="h-2 bg-slate-100 w-full rounded" />
+                                                        <div className="h-2 bg-slate-100 w-full rounded" />
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div className="absolute inset-0 bg-slate-900/10 pointer-events-none" />
+                                            )}
+                                            {/* Hide overlay when active */}
+                                            <div className={`absolute inset-0 bg-slate-900/10 pointer-events-none transition-opacity duration-300 ${transferProgress > 0.5 ? 'opacity-0' : 'opacity-100'}`} />
                                         </div>
                                     </div>
 
                                     {/* Right Phone (Maps) */}
-                                    <div className="absolute right-0 lg:-right-12 top-24 w-[260px] h-[520px] bg-slate-800 rounded-[2.5rem] border-4 border-slate-800 shadow-xl z-10 transform rotate-12 translate-y-16 opacity-80 scale-90 origin-bottom-left">
+                                    <div
+                                        className="absolute right-0 lg:-right-12 top-24 w-[260px] h-[520px] bg-slate-800 rounded-[2.5rem] border-4 border-slate-800 shadow-xl z-10 origin-bottom-left transition-transform duration-100 ease-linear"
+                                        style={rightPhoneStyle}
+                                    >
                                         <div className="w-full h-full bg-white rounded-[2.2rem] overflow-hidden opacity-90 relative">
                                             <div className="h-32 bg-slate-100 relative mb-8">
                                                 <div className="absolute -bottom-8 left-4 w-16 h-16 rounded-full bg-white border-2 border-white shadow-sm" />
