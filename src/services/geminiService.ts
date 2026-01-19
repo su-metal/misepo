@@ -139,12 +139,8 @@ When the customer mentions family members (e.g., "奥様", "旦那様", "娘さ�
 
 
     // Inject Post Samples for Few-Shot Learning
-    console.log('[geminiService] Checking postSamples for platform:', config.platform);
-    console.log('[geminiService] config.postSamples:', config.postSamples);
-    
     if (config.postSamples?.[config.platform]) {
       const sample = config.postSamples[config.platform];
-      console.log('[geminiService] Found sample for', config.platform, ':', sample?.substring(0, 50) + '...');
       
       if (sample && sample.trim()) {
         systemInstruction += `\n
@@ -166,10 +162,7 @@ ${sample}
 ---
 
 INSTRUCTION: Write a new ${config.platform} post/reply in EXACTLY the same style as the examples above. Match the persona's voice perfectly.`;
-        console.log('[geminiService] ✅ Persona learning APPLIED with STRICT mode');
       }
-    } else {
-      console.log('[geminiService] ❌ No postSamples found for', config.platform);
     }
 
     const hasPersona = (config.postSamples?.[config.platform] && config.postSamples[config.platform]!.trim()) || (config.customPrompt && config.customPrompt.trim());
