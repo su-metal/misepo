@@ -323,3 +323,47 @@ export const analyzeRisk = async (
 ): Promise<RiskAnalysisResult> => {
   return scoreRisk(starRating, reviewText);
 };
+
+export const sanitizePostSamples = async (
+  text: string,
+  isPro: boolean
+): Promise<string> => {
+  const modelName = getModelName(isPro);
+  const ai = getServerAI();
+
+  const systemInstruction = `
+You are a privacy-focused editor. Your task is to "sanitize" social media posts by replacing specific personal identifiable information (PII) with generic placeholders.
+
+**Rules:**
+1. Replace staff names (e.g., "鈴木", "佐藤") with "[担当者名]" or "[スタッフ]".
+2. Replace customer names (e.g., "ずん様", "田中様") with "[お客様名]".
+3. Replace specific dates/times (e.g., "1月20日", "昨日の14時") with "[日付]" or "[時間]".
+4. Replace specific phone numbers or email addresses with "[連絡先]".
+5. **CRITICAL**: Maintain the EXACT original tone, dialect, and emoji usage. Do NOT change the personality of the text.
+6. The user will provide multiple samples separated by "---". Keep the separators intact.
+
+Example Input:
+鈴木のカウンセリング最高やったわ。ずん様も喜んでたで。
+---
+1月15日に来てくれてサンガツ！佐藤より。
+
+Example Output:
+[担当者名]のカウンセリング最高やったわ。[お客様名]も喜んでたで。
+---
+[日付]に来てくれてサンガツ！[担当者名]より。
+`;
+
+  const userPrompt = `Sanitize this text while preserving its unique style and tone:\n\n${text}`;
+
+  const response = await ai.models.generateContent({
+    model: modelName,
+    contents: [{ role: "user", parts: [{ text: userPrompt }] }],
+    config: {
+      systemInstruction,
+      responseMimeType: "text/plain",
+      temperature: 0.1, // Low temperature for high fidelity
+    },
+  });
+
+  return response.text || text;
+};

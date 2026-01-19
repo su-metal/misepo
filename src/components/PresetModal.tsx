@@ -208,6 +208,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
   const [isReordering, setIsReordering] = useState(false);
   const [orderError, setOrderError] = useState<string | null>(null);
   const [mobileView, setMobileView] = useState<'list' | 'edit'>('list');
+  const [expandingPlatform, setExpandingPlatform] = useState<Platform | null>(null);
+  const [isSanitizing, setIsSanitizing] = useState(false);
 
   const sensors = useSensors(useSensor(PointerSensor));
   const goToListView = () => setMobileView('list');
@@ -226,6 +228,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
       setErrorMessage(null);
       setOrderError(null);
       setMobileView('list');
+      setExpandingPlatform(null);
       return;
     }
 
@@ -626,11 +629,21 @@ const PresetModal: React.FC<PresetModalProps> = ({
             <div className="bg-slate-50/50 rounded-[40px] p-2 border border-slate-100">
               {/* Instagram Sample */}
               <div className="bg-white rounded-[32px] p-6 mb-2 shadow-sm border border-slate-50">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-8 h-8 rounded-xl bg-pink-100 flex items-center justify-center text-pink-600 shadow-sm">
-                    <InstagramIcon className="w-4 h-4" />
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-xl bg-pink-100 flex items-center justify-center text-pink-600 shadow-sm">
+                      <InstagramIcon className="w-4 h-4" />
+                    </div>
+                    <span className="text-[11px] font-black text-[#E5005A] uppercase tracking-widest">Instagram Learning</span>
                   </div>
-                  <span className="text-[11px] font-black text-[#E5005A] uppercase tracking-widest">Instagram Learning</span>
+                  <button
+                    type="button"
+                    onClick={() => setExpandingPlatform(Platform.Instagram)}
+                    className="p-2 text-[#E5005A] hover:bg-pink-50 rounded-xl transition-all"
+                    title="集中入力モード"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M15 3h6v6" /><path d="M9 21H3v-6" /><path d="M21 3l-7 7" /><path d="M3 21l7-7" /></svg>
+                  </button>
                 </div>
                 <textarea
                   value={postSamples[Platform.Instagram] || ''}
@@ -643,11 +656,21 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
               {/* X Sample */}
               <div className="bg-white rounded-[32px] p-6 mb-2 shadow-sm border border-slate-50">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-8 h-8 rounded-xl bg-[#001738] flex items-center justify-center text-white shadow-md">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4l11.733 16h4.267l-11.733 -16z" /><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" /></svg>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-xl bg-[#001738] flex items-center justify-center text-white shadow-md">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4l11.733 16h4.267l-11.733 -16z" /><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" /></svg>
+                    </div>
+                    <span className="text-[11px] font-black text-[#001738] uppercase tracking-widest">X (Twitter) Learning</span>
                   </div>
-                  <span className="text-[11px] font-black text-[#001738] uppercase tracking-widest">X (Twitter) Learning</span>
+                  <button
+                    type="button"
+                    onClick={() => setExpandingPlatform(Platform.X)}
+                    className="p-2 text-slate-600 hover:bg-slate-100 rounded-xl transition-all"
+                    title="集中入力モード"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M15 3h6v6" /><path d="M9 21H3v-6" /><path d="M21 3l-7 7" /><path d="M3 21l7-7" /></svg>
+                  </button>
                 </div>
                 <textarea
                   value={postSamples[Platform.X] || ''}
@@ -660,11 +683,21 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
               {/* Google Maps Sample */}
               <div className="bg-white rounded-[32px] p-6 shadow-sm border border-slate-50">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-8 h-8 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" /></svg>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" /></svg>
+                    </div>
+                    <span className="text-[11px] font-black text-blue-600 uppercase tracking-widest">Map Replies Learning</span>
                   </div>
-                  <span className="text-[11px] font-black text-blue-600 uppercase tracking-widest">Map Replies Learning</span>
+                  <button
+                    type="button"
+                    onClick={() => setExpandingPlatform(Platform.GoogleMaps)}
+                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-xl transition-all"
+                    title="集中入力モード"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M15 3h6v6" /><path d="M9 21H3v-6" /><path d="M21 3l-7 7" /><path d="M3 21l7-7" /></svg>
+                  </button>
                 </div>
                 <textarea
                   value={postSamples[Platform.GoogleMaps] || ''}
@@ -702,7 +735,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
     </div>
   );
 
-  return createPortal(
+  const mainPortal = createPortal(
     <div
       className="fixed inset-0 z-[150] bg-[#001738]/80 backdrop-blur-xl transition-all duration-300 animate-in fade-in"
       onClick={onClose}
@@ -728,6 +761,124 @@ const PresetModal: React.FC<PresetModalProps> = ({
       </div>
     </div>,
     document.body
+  );
+
+  const focusModeOverlay = expandingPlatform && createPortal(
+    <div className="fixed inset-0 z-[200] bg-[#001738]/95 backdrop-blur-2xl flex items-center justify-center p-4 md:p-10 animate-in fade-in duration-300">
+      <div className="w-full max-w-4xl h-full max-h-[800px] bg-white rounded-[48px] shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-500">
+        <div className="p-8 border-b border-slate-100 flex items-center justify-between shrink-0">
+          <div className="flex items-center gap-4">
+            <div className={`p-3 rounded-2xl shadow-sm ${expandingPlatform === Platform.Instagram ? 'bg-pink-100 text-pink-600' :
+                expandingPlatform === Platform.X ? 'bg-[#001738] text-white' :
+                  'bg-blue-600 text-white'
+              }`}>
+              {expandingPlatform === Platform.Instagram && <InstagramIcon className="w-6 h-6" />}
+              {expandingPlatform === Platform.X && <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4l11.733 16h4.267l-11.733 -16z" /><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" /></svg>}
+              {expandingPlatform === Platform.GoogleMaps && <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" /></svg>}
+            </div>
+            <div>
+              <h3 className="font-black text-xl text-[#001738] tracking-tight">{expandingPlatform} の文体学習</h3>
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Focus Mode Editor</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={async () => {
+                const currentText = postSamples[expandingPlatform!] || '';
+                if (!currentText.trim() || isSanitizing) return;
+                setIsSanitizing(true);
+                try {
+                  const res = await fetch('/api/ai/sanitize', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: currentText }),
+                  });
+                  const data = await res.json();
+                  if (data.sanitized) {
+                    setPostSamples(prev => ({ ...prev, [expandingPlatform!]: data.sanitized }));
+                  }
+                } catch (err) {
+                  console.error('Sanitization failed:', err);
+                } finally {
+                  setIsSanitizing(false);
+                }
+              }}
+              disabled={isSanitizing || !(postSamples[expandingPlatform!] || '').trim()}
+              className={`flex items-center gap-2 px-5 py-3 rounded-2xl font-black text-[11px] transition-all transform hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 ${expandingPlatform === Platform.Instagram ? 'bg-pink-50 text-[#E5005A] hover:bg-pink-100' :
+                  expandingPlatform === Platform.X ? 'bg-slate-100 text-[#001738] hover:bg-slate-200' :
+                    'bg-blue-50 text-blue-600 hover:bg-blue-100'
+                }`}
+            >
+              {isSanitizing ? (
+                <>
+                  <div className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+                  AIが名前を伏せ字にしています...
+                </>
+              ) : (
+                <>
+                  <SparklesIcon className="w-4 h-4" />
+                  AIで名前を伏せる
+                </>
+              )}
+            </button>
+            <button
+              onClick={() => setExpandingPlatform(null)}
+              className="p-3 bg-slate-100 hover:bg-[#001738] text-slate-400 hover:text-white rounded-2xl transition-all font-black text-sm px-6"
+            >
+              完了
+            </button>
+          </div>
+        </div>
+
+        <div className="flex-1 overflow-hidden flex flex-col">
+          {/* Instructions / Tips */}
+          <div className="p-8 bg-slate-50/50 flex flex-col md:flex-row gap-6 shrink-0">
+            <div className="flex-1 flex gap-4">
+              <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center shrink-0">
+                <MagicWandIcon className="w-5 h-5 text-indigo-500" />
+              </div>
+              <div className="space-y-1">
+                <h4 className="text-[11px] font-black text-[#001738] uppercase tracking-wider">AI学習を成功させるヒント</h4>
+                <p className="text-xs text-slate-500 leading-relaxed font-bold">
+                  気に入っている過去の投稿を3〜5件貼り付けるのがベストです。<br />
+                  文体や絵文字の使い方はAIが自動で学習します。
+                </p>
+              </div>
+            </div>
+            <div className="flex-1 flex gap-4">
+              <div className="w-10 h-10 rounded-full bg-[#E5005A]/10 flex items-center justify-center shrink-0">
+                <SparklesIcon className="w-5 h-5 text-[#E5005A]" />
+              </div>
+              <div className="space-y-1">
+                <h4 className="text-[11px] font-black text-[#E5005A] uppercase tracking-wider">個人情報を守る</h4>
+                <p className="text-xs text-slate-500 leading-relaxed font-bold">
+                  「AIで名前を伏せる」ボタンを押すと、文章の中の特定の名前などをAIが自動で伏せ字（[担当者名]など）に書き換えます。<br />
+                  コピペした後にボタンを押すだけで、安全な学習データが作れます。
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex-1 p-8 overflow-y-auto">
+            <textarea
+              autoFocus
+              value={postSamples[expandingPlatform] || ''}
+              onChange={(e) => setPostSamples(prev => ({ ...prev, [expandingPlatform]: e.target.value }))}
+              className="w-full h-full min-h-[400px] bg-transparent outline-none text-lg text-slate-800 font-bold leading-loose placeholder-slate-200 resize-none no-scrollbar"
+              placeholder={'ここに過去の投稿を貼り付けてください...\n複数の投稿を入れる場合は「---」で区切ってください。'}
+            />
+          </div>
+        </div>
+      </div>
+    </div>,
+    document.body
+  );
+
+  return (
+    <>
+      {mainPortal}
+      {focusModeOverlay}
+    </>
   );
 };
 
