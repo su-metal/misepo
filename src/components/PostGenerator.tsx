@@ -127,6 +127,8 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
                 activePresetId={flow.activePresetId}
                 onApplyPreset={flow.handleApplyPreset}
                 onOpenPresetModal={() => setIsPresetModalOpen(true)}
+                customPrompt={flow.customPrompt}
+                onCustomPromptChange={flow.setCustomPrompt}
               />
             </div>
           </div>
