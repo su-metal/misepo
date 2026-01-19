@@ -1608,8 +1608,9 @@ open11:00-close 17:00
                             <ul className="space-y-2 text-sm text-gray-400">
                                 <li><a href="#" className="hover:text-white">ヘルプセンター</a></li>
                                 <li><a href="#" className="hover:text-white">お問い合わせ</a></li>
-                                <li><a href="#" className="hover:text-white">利用規約</a></li>
-                                <li><a href="#" className="hover:text-white">プライバシーポリシー</a></li>
+                                <li><a href="/terms" className="hover:text-white">利用規約</a></li>
+                                <li><a href="/privacy" className="hover:text-white">プライバシーポリシー</a></li>
+                                <li><a href="/commercial-law" className="hover:text-white">特定商取引法に基づく表記</a></li>
                             </ul>
                         </div>
                     </div>
