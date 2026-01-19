@@ -128,12 +128,18 @@ export function useGeneratorFlow(props: {
       if (p === Platform.GoogleMaps) {
         setPlatforms([Platform.GoogleMaps]);
         setIsMultiGenMode(false);
+        setIncludeEmojis(false);
+        setIncludeSymbols(false);
       } else {
         // If it's X or Instagram and we're in multi-gen, keep both
         setPlatforms([Platform.X, Platform.Instagram]);
       }
     } else {
       setPlatforms([p]);
+      if (p === Platform.GoogleMaps) {
+        setIncludeEmojis(false);
+        setIncludeSymbols(false);
+      }
     }
   };
 
@@ -143,6 +149,8 @@ export function useGeneratorFlow(props: {
     if (p === Platform.GoogleMaps) {
       setPlatforms([Platform.GoogleMaps]);
       setIsMultiGenMode(false);
+      setIncludeEmojis(false);
+      setIncludeSymbols(false);
       return;
     }
 

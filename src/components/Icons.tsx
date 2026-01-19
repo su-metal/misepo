@@ -140,3 +140,72 @@ export const MenuIcon = ({ className = "w-4 h-4" }: { className?: string }) => (
     <line x1="4" y1="12" x2="20" y2="12" /><line x1="4" y1="6" x2="20" y2="6" /><line x1="4" y1="18" x2="20" y2="18" />
   </svg>
 );
+
+// Profile Selection Icons
+export const TieIcon = ({ className = "w-6 h-6" }: { className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M6 3h12l-2 6v12H8V9z" />
+    <path d="m12 3 3 3-3 3-3-3z" />
+  </svg>
+);
+
+export const SneakersIcon = ({ className = "w-6 h-6" }: { className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M3 12c0-3 2-5 5-5h10c2 0 3 1 3 3v8c0 1-1 2-2 2H5c-1 0-2-1-2-2z" />
+    <path d="m3 12 5-1 4 2 5-2 4 1" />
+    <path d="M12 11V7" />
+  </svg>
+);
+
+export const LaptopIcon = ({ className = "w-6 h-6" }: { className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <rect width="18" height="12" x="3" y="4" rx="2" ry="2" />
+    <line x1="2" x2="22" y1="20" y2="20" />
+  </svg>
+);
+
+export const CookingIcon = ({ className = "w-6 h-6" }: { className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M6 18c0 3 2 4 6 4s6-1 6-4V8c0-2-1-3-3-3H9C7 5 6 6 6 8z" />
+    <path d="M18 10h2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-2" />
+    <line x1="12" x2="12" y1="5" y2="2" />
+  </svg>
+);
+
+export const CoffeeIcon = ({ className = "w-6 h-6" }: { className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M17 8h1a4 4 0 1 1 0 8h-1" />
+    <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z" />
+    <line x1="6" x2="6" y1="2" y2="4" />
+    <line x1="10" x2="10" y1="2" y2="4" />
+    <line x1="14" x2="14" y1="2" y2="4" />
+  </svg>
+);
+
+export const BuildingIcon = ({ className = "w-6 h-6" }: { className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <rect width="16" height="20" x="4" y="2" rx="2" ry="2" />
+    <path d="M9 22v-4h6v4" />
+    <path d="M8 6h.01" />
+    <path d="M16 6h.01" />
+    <path d="M8 10h.01" />
+    <path d="M16 10h.01" />
+    <path d="M8 14h.01" />
+    <path d="M16 14h.01" />
+  </svg>
+);
+
+export const LeafIcon = ({ className = "w-6 h-6" }: { className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M11 20a7 7 0 0 1-7-7c0-3.87 3.13-7 7-7 2.1 0 3.13 1 7 1h4V7a7 7 0 0 1-7 7c-2.1 0-3.13-1-7-1h-4" />
+    <path d="M11 14v6" />
+  </svg>
+);
+
+export const GemIcon = ({ className = "w-6 h-6" }: { className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M6 3h12l4 6-10 12L2 9z" />
+    <path d="M11 3 8 9l4 12 4-12-3-6" />
+    <path d="M2 9h20" />
+  </svg>
+);

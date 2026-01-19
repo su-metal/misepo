@@ -70,16 +70,16 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
   };
 
   return (
-    <div className="min-h-screen bg-white text-black overflow-x-hidden">
-      {/* Subtle Ambient Background Gradient */}
+    <div className="min-h-screen bg-white text-slate-900 overflow-x-hidden">
+      {/* Very Subtle Glow for Depth - CastMe Style */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute -top-[20%] -right-[20%] w-[90%] h-[90%] bg-[#B0BCFF] blur-[150px] rounded-full opacity-15"></div>
-        <div className="absolute -bottom-[20%] -left-[20%] w-[90%] h-[90%] bg-[#D0D6FF] blur-[150px] rounded-full opacity-10"></div>
+        <div className="absolute top-[0%] right-[0%] w-[50%] h-[50%] bg-indigo-50/30 blur-[150px] rounded-full"></div>
+        <div className="absolute bottom-[0%] left-[0%] w-[50%] h-[50%] bg-pink-50/20 blur-[150px] rounded-full"></div>
       </div>
 
-      <div className="max-w-[1400px] mx-auto py-8 relative z-10">
+      <div className="max-w-[1400px] mx-auto py-4 sm:py-8 relative z-10">
         {/* Header Module - Floating Glass */}
-        <div className="mb-10 px-4 sm:px-8 animate-in fade-in slide-in-from-top-4 duration-1000">
+        <div className="mb-10 px-3 sm:px-8 animate-in fade-in slide-in-from-top-4 duration-1000">
           <GeneratorHeader
             onOpenHistory={onOpenHistory || (() => { })}
             storeProfile={storeProfile}
@@ -88,11 +88,11 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
         </div>
 
         {/* 2-Column Layout */}
-        <div className="px-4 sm:px-8 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div className="px-1 sm:px-8 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
 
           {/* Left Column: Input Form (8 Cols) */}
           <div className="lg:col-span-8">
-            <div ref={inputRef} className="bg-white border border-gray-200 rounded-[3rem] shadow-xl shadow-black/5 overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-black/10">
+            <div ref={inputRef} className="bg-white border border-slate-100 rounded-[32px] shadow-2xl shadow-navy-900/5 overflow-hidden transition-all duration-500 hover:shadow-navy-900/10 hover:border-slate-200">
               <PostInputForm
                 platforms={flow.platforms}
                 activePlatform={flow.platforms[0] || Platform.Instagram}
@@ -159,22 +159,26 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
         </div>
       </div>
 
-      {/* Mobile Fixed Generation Footer */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 p-4 bg-white/80 backdrop-blur-xl border-t border-gray-200 z-[90] safe-area-bottom">
+      {/* Mobile Fixed Generation Footer - CastMe Style */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 px-6 py-5 pb-8 bg-white/80 backdrop-blur-xl border-t border-slate-100 z-[90] safe-area-bottom shadow-[0_-20px_40px_-15px_rgba(0,0,0,0.05)]">
         <button
           onClick={handleGenerate}
           disabled={flow.loading || !flow.inputText.trim()}
-          className="w-full bg-black text-white py-4 rounded-xl font-black text-sm uppercase tracking-widest shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 active:scale-95 transition-all"
+          className={`w-full py-6 rounded-[32px] font-black text-lg uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-4 active:scale-95 shadow-2xl
+              ${flow.loading || !flow.inputText.trim()
+              ? 'bg-slate-100 text-slate-300 shadow-none'
+              : 'bg-[#E5005A] text-white shadow-[#E5005A]/30'
+            }`}
         >
           {flow.loading ? (
             <>
-              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-              GENERATING...
+              <div className="w-6 h-6 border-3 border-white/30 border-t-white rounded-full animate-spin"></div>
+              <span>PROCESSING...</span>
             </>
           ) : (
             <>
-              <SparklesIcon className="w-5 h-5 text-white" />
-              投稿を作成
+              <SparklesIcon className="w-6 h-6 text-white" />
+              <span>GENERATE POST</span>
             </>
           )}
         </button>

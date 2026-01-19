@@ -23,7 +23,39 @@ import {
   TrashIcon,
   MagicWandIcon,
   InstagramIcon,
+  TieIcon,
+  SneakersIcon,
+  LaptopIcon,
+  CookingIcon,
+  CoffeeIcon,
+  BuildingIcon,
+  LeafIcon,
+  GemIcon,
+  MegaphoneIcon,
+  SparklesIcon,
 } from './Icons';
+
+const AVATAR_OPTIONS = [
+  { id: '👔', icon: TieIcon, label: '店長/公式' },
+  { id: '👟', icon: SneakersIcon, label: 'スタッフ' },
+  { id: '💻', icon: LaptopIcon, label: '広報/IT' },
+  { id: '🍳', icon: CookingIcon, label: '料理/製作' },
+  { id: '☕', icon: CoffeeIcon, label: 'カフェ/日常' },
+  { id: '🏢', icon: BuildingIcon, label: '店舗/外観' },
+  { id: '✨', icon: SparklesIcon, label: 'キラキラ' },
+  { id: '📣', icon: MegaphoneIcon, label: 'お知らせ' },
+  { id: '🌿', icon: LeafIcon, label: 'ナチュラル' },
+  { id: '💎', icon: GemIcon, label: 'プレミアム' }
+];
+
+const renderAvatar = (avatarId: string | null, className: string = "w-6 h-6") => {
+  const option = AVATAR_OPTIONS.find(opt => opt.id === avatarId);
+  if (option) {
+    const Icon = option.icon;
+    return <Icon className={className} />;
+  }
+  return <div className={className}><TieIcon /></div>; // Default
+};
 
 interface PresetModalProps {
   isOpen: boolean;
@@ -68,32 +100,32 @@ const SortablePresetRow: React.FC<{
     >
       <button
         onClick={() => onSelect(preset)}
-        className={`flex-1 text-left p-4 pr-14 rounded-2xl border-2 transition-all duration-300 ${isSelected
-          ? 'bg-black text-white shadow-lg shadow-black/10 border-black'
-          : 'bg-white border-stone-200 hover:border-stone-300 hover:bg-stone-50'
+        className={`flex-1 text-left p-6 pr-16 rounded-[28px] border-2 transition-all duration-300 ${isSelected
+          ? 'bg-[#001738] text-white shadow-2xl shadow-navy-900/30 border-[#001738]'
+          : 'bg-white border-slate-100 hover:border-[#001738] hover:bg-slate-50 shadow-sm'
           }`}
         type="button"
       >
-        <div className="flex items-center gap-4">
-          <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-3xl transition-all duration-300 ${isSelected ? 'bg-white shadow-inner scale-105' : 'bg-stone-100'}`}>
-            {preset.avatar || "👤"}
+        <div className="flex items-center gap-5">
+          <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-3xl transition-all duration-300 ${isSelected ? 'bg-white/10 shadow-inner scale-105' : 'bg-slate-50'}`}>
+            {renderAvatar(preset.avatar, "w-7 h-7")}
           </div>
-          <div className={`font-bold text-sm truncate ${isSelected ? 'text-white' : 'text-stone-700 group-hover:text-black'}`}>
+          <div className={`font-black text-sm tracking-tight truncate ${isSelected ? 'text-white' : 'text-slate-600 group-hover:text-[#001738]'}`}>
             {preset.name}
           </div>
         </div>
       </button>
-      <div className="absolute right-3 flex items-center gap-1">
+      <div className="absolute right-4 flex items-center gap-1.5">
         <button
           type="button"
           {...attributes}
           {...listeners}
           disabled={isReordering}
-          className={`h-8 w-8 rounded-lg flex items-center justify-center text-xs transition-all touch-none active:scale-95 ${isSelected ? 'bg-white/10 text-white/50 hover:bg-white/20 hover:text-white' : 'bg-stone-100 text-stone-400 hover:bg-stone-200 hover:text-stone-700'}`}
+          className={`h-9 w-9 rounded-xl flex items-center justify-center text-xs transition-all touch-none active:scale-95 ${isSelected ? 'bg-white/10 text-white/50 hover:bg-white/20 hover:text-white' : 'bg-slate-100 text-slate-400 hover:bg-slate-200 hover:text-slate-700'}`}
           aria-label="ドラッグして順番を変更"
         >
-          <div className="grid grid-cols-2 gap-0.5">
-            {[...Array(4)].map((_, i) => <div key={i} className="w-1 h-1 rounded-full bg-current" />)}
+          <div className="grid grid-cols-2 gap-1">
+            {[...Array(4)].map((_, i) => <div key={i} className="w-1.5 h-1.5 rounded-full bg-current" />)}
           </div>
         </button>
         <button
@@ -103,10 +135,10 @@ const SortablePresetRow: React.FC<{
             onDelete(preset);
           }}
           disabled={deletingId === preset.id || isReordering}
-          className={`h-8 w-8 rounded-lg flex items-center justify-center transition-all disabled:opacity-20 ${isSelected ? 'text-white/40 hover:text-rose-400 hover:bg-rose-500/10' : 'text-stone-400 hover:text-rose-500 hover:bg-rose-50'}`}
+          className={`h-9 w-9 rounded-xl flex items-center justify-center transition-all disabled:opacity-20 ${isSelected ? 'text-white/40 hover:text-[#E5005A] hover:bg-[#E5005A]/10' : 'text-slate-300 hover:text-[#E5005A] hover:bg-[#E5005A]/5'}`}
           aria-label="プリセットを削除"
         >
-          <TrashIcon className="w-4 h-4" />
+          <TrashIcon className="w-5 h-5" />
         </button>
       </div>
     </div>
@@ -198,7 +230,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
     }
 
     setName('');
-    setAvatar('👤');
+    setAvatar('👔');
     setCustomPrompt('');
     setPostSamples({});
     setSelectedPresetId(null);
@@ -277,7 +309,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
       }
 
       setName('');
-      setAvatar('👤');
+      setAvatar('👔');
       setCustomPrompt('');
       setPostSamples({});
       setSelectedPresetId(null);
@@ -292,7 +324,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
   const handleLoadPreset = (preset: Preset) => {
     setSelectedPresetId(preset.id);
     setName(enforceSaveNameWidth(preset.name));
-    setAvatar(preset.avatar || '👤');
+    setAvatar(preset.avatar || '👔');
     setCustomPrompt(preset.custom_prompt ?? '');
     setPostSamples(preset.postSamples || {});
     setErrorMessage(null);
@@ -328,7 +360,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
       if (selectedPresetId === preset.id) {
         setSelectedPresetId(null);
         setName('');
-        setAvatar('👤');
+        setAvatar('👔');
         setCustomPrompt(currentConfig.customPrompt ?? '');
         setPostSamples(currentConfig.postSamples || {});
       }
@@ -396,19 +428,19 @@ const PresetModal: React.FC<PresetModalProps> = ({
     <div className="flex w-full h-full flex-col md:flex-row overflow-hidden">
       {/* SIDEBAR: Dark Tech Theme */}
       <div
-        className={`md:w-5/12 lg:w-4/12 bg-stone-50 border-r border-stone-200 flex flex-col shrink-0 h-full relative overflow-hidden ${listVisibilityClass}`}
+        className={`md:w-5/12 lg:w-4/12 bg-slate-50/50 border-r border-slate-100 flex flex-col shrink-0 h-full relative overflow-hidden ${listVisibilityClass}`}
       >
         {/* Background Pattern */}
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.02)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none"></div>
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(0,17,45,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,17,45,0.03)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none"></div>
 
-        <div className="relative z-10 p-6 md:p-8 flex flex-col h-full">
-          <div className="mb-8 flex items-center justify-between gap-4">
-            <div className="space-y-1">
-              <h3 className="font-black text-xl text-stone-800 tracking-tight flex items-center gap-2">
-                <div className="w-1.5 h-6 bg-lime rounded-full shadow-sm"></div>
+        <div className="relative z-10 p-8 flex flex-col h-full">
+          <div className="mb-10 flex items-center justify-between gap-4">
+            <div className="space-y-2">
+              <h3 className="font-black text-2xl text-[#001738] tracking-tighter flex items-center gap-3">
+                <div className="w-2 h-7 bg-[#E5005A] rounded-full shadow-lg shadow-[#E5005A]/20"></div>
                 投稿者プロフィール
               </h3>
-              <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest">Sender Profiles</p>
+              <p className="text-[11px] font-black text-[#E5005A] uppercase tracking-[0.3em] opacity-80">Sender Profiles</p>
             </div>
             <button
               type="button"
@@ -423,9 +455,9 @@ const PresetModal: React.FC<PresetModalProps> = ({
             </button>
           </div>
 
-          <div className="mb-4 bg-indigo-50/50 border border-indigo-100/50 rounded-xl p-3">
-            <p className="text-[10px] text-indigo-500 font-bold leading-relaxed flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse"></span>
+          <div className="mb-6 bg-[#001738]/5 border border-[#001738]/10 rounded-2xl p-4">
+            <p className="text-[11px] text-[#001738] font-black leading-relaxed flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#E5005A] animate-pulse"></span>
               上位4件が入力画面に表示されます
             </p>
           </div>
@@ -465,8 +497,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
               </DndContext>
             )}
             {limitReached && (
-              <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-3">
-                <p className="text-[10px] text-amber-500 font-bold leading-tight">
+              <div className="bg-[#E5005A]/10 border border-[#E5005A]/20 rounded-2xl p-4">
+                <p className="text-[11px] text-[#E5005A] font-black leading-tight">
                   保存上限(10件)に達しています。既存の設定を編集してください。
                 </p>
               </div>
@@ -482,32 +514,32 @@ const PresetModal: React.FC<PresetModalProps> = ({
       <div
         className={`flex-1 flex flex-col bg-white min-h-0 overflow-hidden h-full ${editVisibilityClass}`}
       >
-        <div className="p-6 md:p-8 border-b border-stone-100 flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-black shadow-inner" style={{ backgroundColor: 'rgba(239,255,0,0.2)' }}>
-              <MagicWandIcon className="w-5 h-5" />
+        <div className="p-8 md:p-10 border-b border-slate-100 flex items-center justify-between shrink-0 bg-white/50 backdrop-blur-sm">
+          <div className="flex items-center gap-5">
+            <div className="w-12 h-12 rounded-[18px] flex items-center justify-center bg-[#001738] text-[#E5005A] shadow-lg shadow-navy-900/20">
+              <MagicWandIcon className="w-6 h-6" />
             </div>
             <div>
-              <h2 className="font-black text-xl text-stone-900 tracking-tight">プロファイルの編集</h2>
-              <p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">Profile Editor</p>
+              <h2 className="font-black text-2xl text-[#001738] tracking-tighter">プロファイルの編集</h2>
+              <p className="text-[11px] font-black text-[#E5005A] uppercase tracking-[0.3em] opacity-80">Profile Editor</p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             {mobileView === 'edit' && (
               <button
                 type="button"
                 onClick={goToListView}
-                className="md:hidden flex items-center gap-1.5 px-4 py-2 text-xs font-black text-stone-500 bg-stone-100 rounded-full hover:bg-stone-200"
+                className="md:hidden flex items-center gap-2 px-5 py-2.5 text-xs font-black text-slate-500 bg-slate-100 rounded-full hover:bg-[#001738] hover:text-white transition-all active:scale-95"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
                 戻る
               </button>
             )}
             <button
               onClick={onClose}
-              className="p-2.5 hover:bg-lime/10 rounded-2xl text-stone-300 hover:text-lime transition-all active:scale-95"
+              className="p-3 hover:bg-[#E5005A]/5 rounded-2xl text-slate-300 hover:text-[#E5005A] transition-all active:scale-90"
             >
-              <CloseIcon className="w-6 h-6" />
+              <CloseIcon className="w-7 h-7" />
             </button>
           </div>
         </div>
@@ -516,8 +548,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
           <div className="animate-in slide-in-from-bottom-4 duration-500">
             <div className="space-y-8">
               {/* Profile Name */}
-              <div className="space-y-3">
-                <label className="block text-[11px] font-black text-stone-400 uppercase tracking-[0.2em]">
+              <div className="space-y-4">
+                <label className="block text-[11px] font-black text-[#E5005A] uppercase tracking-[0.3em]">
                   プロフィール名 (Account Name)
                 </label>
                 <div className="relative group max-w-md">
@@ -526,141 +558,143 @@ const PresetModal: React.FC<PresetModalProps> = ({
                     value={name}
                     onChange={(e) => setName(enforceSaveNameWidth(e.target.value))}
                     placeholder="例: 店長（公式）"
-                    className="w-full px-6 py-4.5 bg-stone-50 border-2 border-transparent focus:bg-white focus:border-indigo-500 focus:ring-[8px] focus:ring-indigo-500/10 outline-none rounded-2xl text-base text-stone-800 font-bold placeholder-stone-300 transition-all shadow-sm"
+                    className="w-full px-7 py-5 bg-slate-50 border-2 border-transparent focus:bg-white focus:border-[#001738] outline-none rounded-2xl text-base text-[#001738] font-black placeholder-slate-300 transition-all shadow-sm"
                   />
-                  <div className="absolute right-4 top-1/2 -translate-y-1/2 text-stone-200 group-focus-within:text-indigo-500">
-                    <span className="text-xl">{avatar}</span>
+                  <div className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#001738] transition-colors">
+                    {renderAvatar(avatar, "w-8 h-8")}
                   </div>
                 </div>
               </div>
 
               {/* Icon Selection */}
-              <div className="space-y-4">
-                <label className="block text-[11px] font-black text-stone-400 uppercase tracking-[0.2em]">
+              <div className="space-y-5">
+                <label className="block text-[11px] font-black text-[#E5005A] uppercase tracking-[0.3em]">
                   アイコンの選択 (Select Icon)
                 </label>
-                <div className="flex flex-wrap gap-2.5 p-5 bg-stone-50 border border-stone-100 rounded-[32px] shadow-inner-sm">
-                  {[
-                    { e: '👔', l: '店長/公式' },
-                    { e: '👟', l: 'スタッフ' },
-                    { e: '💻', l: '広報/IT' },
-                    { e: '🍳', l: '料理/製作' },
-                    { e: '☕', l: 'カフェ/日常' },
-                    { e: '🏢', l: '店舗/外観' },
-                    { e: '✨', l: 'キラキラ' },
-                    { e: '📣', l: 'お知らせ' },
-                    { e: '🌿', l: 'ナチュラル' },
-                    { e: '💎', l: 'プレミアム' }
-                  ].map((item) => (
-                    <button
-                      key={item.e}
-                      type="button"
-                      onClick={() => setAvatar(item.e)}
-                      title={item.l}
-                      className={`w-12 h-12 flex items-center justify-center text-2xl rounded-2xl transition-all duration-300 ${avatar === item.e ? 'bg-white shadow-lg ring-2 ring-indigo-500 scale-110 z-10' : 'hover:bg-white hover:shadow-md opacity-40 hover:opacity-100'}`}
-                    >
-                      {item.e}
-                    </button>
-                  ))}
+                <div className="flex flex-wrap gap-3 p-6 bg-slate-50/50 border border-slate-100 rounded-[40px] shadow-inner">
+                  {AVATAR_OPTIONS.map((item) => {
+                    const Icon = item.icon;
+                    const isSelected = avatar === item.id;
+                    return (
+                      <button
+                        key={item.id}
+                        type="button"
+                        onClick={() => setAvatar(item.id)}
+                        title={item.label}
+                        className={`
+                          w-14 h-14 flex items-center justify-center rounded-2xl transition-all duration-300 relative
+                          ${isSelected
+                            ? 'bg-[#001738] shadow-2xl shadow-navy-900/30 scale-110 z-10 text-white'
+                            : 'bg-white text-slate-300 hover:bg-slate-50 hover:text-[#001738] border border-transparent hover:border-[#001738]/10'
+                          }
+                        `}
+                      >
+                        <Icon className="w-6 h-6" />
+                        {isSelected && (
+                          <div className="absolute -top-1 -right-1 w-4 h-4 bg-[#E5005A] rounded-full border-4 border-white shadow-sm" />
+                        )}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             </div>
           </div>
 
           <div className="animate-in slide-in-from-bottom-4 duration-500 delay-100">
-            <label className="block text-[11px] font-black text-indigo-500 uppercase tracking-[0.2em] mb-3">
+            <label className="block text-[11px] font-black text-[#E5005A] uppercase tracking-[0.3em] mb-4">
               追加の指示プロンプト (Additional Instructions)
             </label>
-            <div className="relative p-[1px] rounded-[24px] bg-gradient-to-br from-indigo-500/20 via-gray-100 to-indigo-500/10">
+            <div className="relative p-[1px] rounded-[32px] bg-gradient-to-br from-[#001738]/10 via-slate-100 to-[#E5005A]/10">
               <AutoResizingTextarea
                 value={customPrompt}
                 onChange={setCustomPrompt}
                 placeholder={'例：\n・「ご来店お待ちしております」は使わないでください\n・必ず「#〇〇」のタグをつけてください\n・語尾は「〜だワン！」にしてください'}
-                className="w-full px-6 py-6 bg-white border-2 border-transparent focus:border-indigo-500 focus:ring-[8px] focus:ring-indigo-500/10 outline-none rounded-[22px] text-base text-gray-800 font-medium leading-relaxed placeholder-gray-300 transition-all shadow-inner min-h-[140px]"
+                className="w-full px-8 py-8 bg-white border-2 border-transparent focus:border-[#001738] outline-none rounded-[30px] text-base text-slate-800 font-bold leading-relaxed placeholder-slate-300 transition-all shadow-inner min-h-[160px]"
               />
             </div>
-            <p className="text-[11px] text-stone-400 font-medium mt-3 leading-relaxed flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+            <p className="text-[11px] text-slate-400 font-black mt-4 leading-relaxed flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#E5005A]"></span>
               文体は「過去の投稿学習」が優先されます。ここは特定のルールや制約を指定するのに便利です。
             </p>
           </div>
 
           <div className="animate-in slide-in-from-bottom-4 duration-500 delay-200">
-            <label className="block text-[11px] font-black text-stone-900 uppercase tracking-[0.2em] mb-4">
+            <label className="block text-[11px] font-black text-[#001738] uppercase tracking-[0.3em] mb-5">
               AIプロフィールの育成 (文体学習)
             </label>
-            <div className="bg-stone-100 rounded-[28px] p-1">
+            <div className="bg-slate-50/50 rounded-[40px] p-2 border border-slate-100">
               {/* Instagram Sample */}
-              <div className="bg-white rounded-[24px] p-5 mb-1">
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="w-6 h-6 rounded-lg bg-pink-100 flex items-center justify-center text-pink-600">
-                    <InstagramIcon className="w-3.5 h-3.5" />
+              <div className="bg-white rounded-[32px] p-6 mb-2 shadow-sm border border-slate-50">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-8 h-8 rounded-xl bg-pink-100 flex items-center justify-center text-pink-600 shadow-sm">
+                    <InstagramIcon className="w-4 h-4" />
                   </div>
-                  <span className="text-[10px] font-black text-stone-500 uppercase">Instagram Learning</span>
+                  <span className="text-[11px] font-black text-[#E5005A] uppercase tracking-widest">Instagram Learning</span>
                 </div>
                 <textarea
                   value={postSamples[Platform.Instagram] || ''}
                   onChange={(e) => setPostSamples(prev => ({ ...prev, [Platform.Instagram]: e.target.value }))}
                   placeholder={'例：\nこんにちは！今日のランチは... 🍝\n---\n新作のケーキが焼き上がりました！ 🍰\n---\n(このように「---」で区切る)'}
                   rows={4}
-                  className="w-full px-4 py-3 rounded-xl bg-stone-50 border-2 border-transparent focus:bg-white focus:border-pink-500 outline-none transition-all resize-none text-xs text-stone-800 leading-relaxed placeholder-stone-400"
+                  className="w-full px-5 py-4 rounded-2xl bg-slate-50 border-2 border-transparent focus:bg-white focus:border-pink-300 outline-none transition-all resize-none text-xs text-slate-800 font-bold leading-relaxed placeholder-slate-300"
                 />
               </div>
 
               {/* X Sample */}
-              <div className="bg-white rounded-[24px] p-5 mb-1">
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="w-6 h-6 rounded-lg bg-stone-900 flex items-center justify-center text-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4l11.733 16h4.267l-11.733 -16z" /><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" /></svg>
+              <div className="bg-white rounded-[32px] p-6 mb-2 shadow-sm border border-slate-50">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-8 h-8 rounded-xl bg-[#001738] flex items-center justify-center text-white shadow-md">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4l11.733 16h4.267l-11.733 -16z" /><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" /></svg>
                   </div>
-                  <span className="text-[10px] font-black text-stone-500 uppercase">X (Twitter) Learning</span>
+                  <span className="text-[11px] font-black text-[#001738] uppercase tracking-widest">X (Twitter) Learning</span>
                 </div>
                 <textarea
                   value={postSamples[Platform.X] || ''}
                   onChange={(e) => setPostSamples(prev => ({ ...prev, [Platform.X]: e.target.value }))}
                   placeholder="過去の気に入っている投稿を3件ほど貼り付けてください..."
                   rows={3}
-                  className="w-full px-4 py-3 rounded-xl bg-stone-50 border-2 border-transparent focus:bg-white focus:border-stone-500 outline-none transition-all resize-none text-xs text-stone-800 leading-relaxed placeholder-stone-400"
+                  className="w-full px-5 py-4 rounded-2xl bg-slate-50 border-2 border-transparent focus:bg-white focus:border-slate-300 outline-none transition-all resize-none text-xs text-slate-800 font-bold leading-relaxed placeholder-slate-300"
                 />
               </div>
 
               {/* Google Maps Sample */}
-              <div className="bg-white rounded-[24px] p-5">
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="w-6 h-6 rounded-lg bg-blue-500 flex items-center justify-center text-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" /></svg>
+              <div className="bg-white rounded-[32px] p-6 shadow-sm border border-slate-50">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-8 h-8 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" /></svg>
                   </div>
-                  <span className="text-[10px] font-black text-stone-500 uppercase">Map Replies Learning</span>
+                  <span className="text-[11px] font-black text-blue-600 uppercase tracking-widest">Map Replies Learning</span>
                 </div>
                 <textarea
                   value={postSamples[Platform.GoogleMaps] || ''}
                   onChange={(e) => setPostSamples(prev => ({ ...prev, [Platform.GoogleMaps]: e.target.value }))}
                   placeholder="過去のオーナー返信を3件ほど貼り付けてください..."
                   rows={3}
-                  className="w-full px-4 py-3 rounded-xl bg-stone-50 border-2 border-transparent focus:bg-white focus:border-blue-500 outline-none transition-all resize-none text-xs text-stone-800 leading-relaxed placeholder-stone-400"
+                  className="w-full px-5 py-4 rounded-2xl bg-slate-50 border-2 border-transparent focus:bg-white focus:border-blue-300 outline-none transition-all resize-none text-xs text-slate-800 font-bold leading-relaxed placeholder-slate-300"
                 />
               </div>
             </div>
           </div>
         </div>
 
-        <div className="p-6 md:p-8 border-t border-stone-100 bg-stone-50/50 flex flex-col md:flex-row items-stretch justify-between gap-4 shrink-0">
+        <div className="p-8 md:p-10 border-t border-slate-100 bg-slate-50/50 flex flex-col md:flex-row items-stretch justify-between gap-6 shrink-0 backdrop-blur-sm">
           <div className="flex-1 flex flex-col gap-2">
             <button
               onClick={handleSave}
               disabled={isSaveDisabled}
-              className="w-full bg-black hover:bg-stone-900 disabled:opacity-50 disabled:cursor-not-allowed text-indigo-400 border border-indigo-500/50 px-8 py-5 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center justify-center gap-3 transition-all transform hover:-translate-y-1 active:translate-y-0 shadow-xl shadow-black/20"
+              className="w-full bg-[#001738] hover:bg-[#001D47] disabled:opacity-50 disabled:cursor-not-allowed text-white px-8 py-6 rounded-[28px] font-black text-sm uppercase tracking-[0.3em] flex items-center justify-center gap-4 transition-all transform hover:-translate-y-1 active:translate-y-0 shadow-2xl shadow-navy-900/40 group"
             >
-              <SaveIcon className="w-4 h-4" />
+              <SaveIcon className="w-5 h-5 group-hover:scale-110 transition-transform" />
               {selectedPresetId ? '更新して保存' : '新規作成'}
             </button>
           </div>
 
           <button
             onClick={handleApplyCurrent}
-            className="flex-[1.2] bg-indigo-600 hover:bg-indigo-700 text-white font-black py-5 px-8 rounded-2xl shadow-xl shadow-indigo-200 transition-all transform hover:-translate-y-1 active:translate-y-0 flex items-center justify-center gap-3 text-sm uppercase tracking-widest"
+            className="flex-[1.2] bg-[#E5005A] hover:bg-[#C2004D] text-white font-black py-6 px-10 rounded-[28px] shadow-2xl shadow-[#E5005A]/30 transition-all transform hover:-translate-y-1 active:translate-y-0 flex items-center justify-center gap-4 text-sm uppercase tracking-[0.3em] group"
           >
-            <MagicWandIcon className="w-4 h-4" />
+            <MagicWandIcon className="w-5 h-5 group-hover:rotate-12 transition-transform" />
             プロファイルを適用
           </button>
         </div>
@@ -670,24 +704,24 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[150] bg-stone-950/80 backdrop-blur-md transition-all duration-300 animate-in fade-in"
+      className="fixed inset-0 z-[150] bg-[#001738]/80 backdrop-blur-xl transition-all duration-300 animate-in fade-in"
       onClick={onClose}
     >
       <div className="hidden md:flex w-full h-full items-center justify-center">
         <div
-          className="w-full max-w-6xl h-[85vh] rounded-[32px] shadow-2xl overflow-hidden bg-white border border-white/20 animate-in zoom-in-95 duration-500 scale-100"
+          className="w-full max-w-6xl h-[90vh] rounded-[48px] shadow-[0_32px_128px_-32px_rgba(0,17,45,0.7)] overflow-hidden bg-white border border-white/20 animate-in zoom-in-95 duration-500 scale-100"
           onClick={(e) => e.stopPropagation()}
         >
           {modalBody}
         </div>
       </div>
-      <div className="md:hidden fixed inset-x-0 bottom-0 flex justify-center p-2">
+      <div className="md:hidden fixed inset-x-0 bottom-0 flex justify-center p-0">
         <div
-          className="w-full max-h-[95dvh] bg-white rounded-[32px] shadow-2xl overflow-hidden flex flex-col animate-in slide-in-from-bottom-10 duration-500"
+          className="w-full max-h-[98dvh] bg-white rounded-t-[48px] shadow-2xl overflow-hidden flex flex-col animate-in slide-in-from-bottom-10 duration-500"
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="flex justify-center py-3">
-            <span className="block w-12 h-1.5 rounded-full bg-stone-200" />
+          <div className="flex justify-center py-4">
+            <span className="block w-16 h-1.5 rounded-full bg-slate-100" />
           </div>
           <div className="flex-1 overflow-hidden">{modalBody}</div>
         </div>
