@@ -322,8 +322,8 @@ open11:00-close 17:00
 
                 if (totalScrollable > 0) {
                     const progressPct = Math.min(Math.max(scrolled / totalScrollable, 0), 1);
-                    // Map 0-100% to 0-9500 range (extended for longer generating phase)
-                    setHeroAnimationProgress(progressPct * 9500);
+                    // Map 0-100% to 0-11950 range (extended for longer generating phase)
+                    setHeroAnimationProgress(progressPct * 11950);
                 }
             }
         };
@@ -344,31 +344,31 @@ open11:00-close 17:00
     const userMemo = "・春限定のいちごタルト開始\n・サクサク生地と完熟いちご\n・自家製カスタード\n・渋谷駅徒歩5分\n・#春スイーツ";
     const generatedResult = "【春限定】とろける幸せ、いちごタルト解禁🍓\n\nサクサクのクッキー生地と、\n溢れんばかりの完熟いちご。\n一口食べれば、そこはもう春。\n\n完熟いちごの甘さと、\n自家製カスタードのハーモニーを\nぜひお楽しみください。\n\n📍Access: 渋谷駅 徒歩5分\n🕒Open: 10:00 - 20:00\n📞Reserve: 03-1234-5678\n\n#MisePoカフェ #春スイーツ #期間限定";
 
-    // Phase 1: Typing Input (0 - 2000) - Very slow and deliberate
-    const typingProgress = Math.min(Math.max(effectiveProgress / 2000, 0), 1);
+    // Phase 1: Typing Input (0 - 3000) - Extended for full memo typing
+    const typingProgress = Math.min(Math.max(effectiveProgress / 3000, 0), 1);
 
     // Determine text content based on phase
     let currentText = "";
-    if (effectiveProgress < 2000) {
+    if (effectiveProgress < 3000) {
         currentText = userMemo.slice(0, Math.floor(userMemo.length * typingProgress));
-    } else if (effectiveProgress < 3250) {
-        currentText = ""; // Generating... (Extended duration)
+    } else if (effectiveProgress < 5000) {
+        currentText = ""; // Generating... (Extended from 1250 to 2000)
     } else {
         currentText = generatedResult;
     }
 
     // Generation Phase
-    const isTypingDone = effectiveProgress > 2000;
-    const isGenerating = effectiveProgress > 2000 && effectiveProgress < 3250;
-    const isResultShown = effectiveProgress > 3250; // Result visible
+    const isTypingDone = effectiveProgress > 3000;
+    const isGenerating = effectiveProgress > 3000 && effectiveProgress < 5000;
+    const isResultShown = effectiveProgress > 5000; // Result visible
 
-    // Post/Swap Phase (Trigger at 4550 - adjusted for longer generation)
-    const isPosted = effectiveProgress > 4550;
+    // Post/Swap Phase (Trigger at 7000 - adjusted for extended generating phase)
+    const isPosted = effectiveProgress > 7000;
 
     // Inertia Scroll (Ease Out)
-    // Start at 4650, duration 2850 -> Ends at 7500
-    // Total timeline is 9000, so 7500-9000 is "Grace Period" (Locked Wait)
-    const rawScrollProgress = Math.min(Math.max((effectiveProgress - 4650) / 2850, 0), 1);
+    // Start at 7100, duration 2850 -> Ends at 9950
+    // Total timeline is 11950, so 9950-11950 is "Grace Period" (Locked Wait)
+    const rawScrollProgress = Math.min(Math.max((effectiveProgress - 7100) / 2850, 0), 1);
     const easeOutCubic = 1 - Math.pow(1 - rawScrollProgress, 3);
     const internalScrollProgress = easeOutCubic;
 
@@ -379,11 +379,11 @@ open11:00-close 17:00
     // Text Opacity Logic for Fade-In Effect
     // Smoother transitions between phases
     let textOpacity = 1;
-    if (effectiveProgress >= 2000 && effectiveProgress < 3250) {
+    if (effectiveProgress >= 3000 && effectiveProgress < 5000) {
         textOpacity = 0.5; // Generating pulse
-    } else if (effectiveProgress >= 3250) {
-        // Fade in result (3250-3750) - Slower fade (500ms equivalent)
-        textOpacity = Math.min(Math.max((effectiveProgress - 3250) / 500, 0), 1);
+    } else if (effectiveProgress >= 5000) {
+        // Fade in result (5000-5500) - Slower fade (500ms equivalent)
+        textOpacity = Math.min(Math.max((effectiveProgress - 5000) / 500, 0), 1);
     }
 
     const problems = [
@@ -546,19 +546,19 @@ open11:00-close 17:00
                                 {/* Narrative Floating Label */}
                                 <div className={`absolute -top-16 left-1/2 -translate-x-1/2 whitespace-nowrap z-50 transition-all duration-300 ${effectiveProgress > 100 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
                                     <div className="bg-slate-900/90 backdrop-blur-md text-white px-4 py-2 rounded-full font-bold text-sm shadow-xl border border-slate-700/50 flex items-center gap-2">
-                                        {effectiveProgress < 2000 && (
+                                        {effectiveProgress < 3000 && (
                                             <>
                                                 <span className="w-2 h-2 bg-indigo-500 rounded-full animate-pulse" />
                                                 1. メモを入力中...
                                             </>
                                         )}
-                                        {effectiveProgress >= 2000 && effectiveProgress < 3250 && (
+                                        {effectiveProgress >= 3000 && effectiveProgress < 5000 && (
                                             <>
                                                 <Icons.Sparkles size={14} className="text-yellow-400 animate-spin" />
                                                 2. AIが文章を生成中...
                                             </>
                                         )}
-                                        {effectiveProgress >= 3250 && (
+                                        {effectiveProgress >= 5000 && (
                                             <>
                                                 <Icons.CheckCircle size={14} className="text-green-400" />
                                                 3. 文章が完成！
