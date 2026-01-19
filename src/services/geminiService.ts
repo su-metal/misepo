@@ -154,6 +154,11 @@ You MUST STRICTLY MIMIC this persona's:
 - Punctuation style
 - Any unique catchphrases or speaking patterns
 
+**Specific Data Exclusion (CRITICAL):**
+- DO NOT copy specific names (staff names like "鈴木", customer names like "ずん様"), dates, or specific location details from the examples below into your output.
+- These are "placeholders" for style reference only.
+- In your output, use the current store's information or generic terms (e.g., "[名前]" or context-appropriate generic references) instead of copying the specific names from the samples.
+
 IGNORE any conflicting tone/style settings above. The examples below are your ONLY style guide.
 
 ---
@@ -161,7 +166,7 @@ PERSONA EXAMPLES:
 ${sample}
 ---
 
-INSTRUCTION: Write a new ${config.platform} post/reply in EXACTLY the same style as the examples above. Match the persona's voice perfectly.`;
+INSTRUCTION: Write a new ${config.platform} post/reply in EXACTLY the same style as the examples above. Match the persona's voice perfectly while ignoring specific names or dates contained in the samples.`;
       }
     }
 
