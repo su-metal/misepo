@@ -50,6 +50,21 @@ const Icons: any = {
             <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z" />
         </svg>
     ),
+    Moon: ({ size = 24, className = "" }: { size?: number; className?: string }) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+        </svg>
+    ),
+    Bot: ({ size = 24, className = "" }: { size?: number; className?: string }) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+            <path d="M12 8V4H8" /><rect width="16" height="12" x="4" y="8" rx="2" /><path d="M2 14h2" /><path d="M20 14h2" /><path d="M15 13v2" /><path d="M9 13v2" />
+        </svg>
+    ),
+    Users: ({ size = 24, className = "" }: { size?: number; className?: string }) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />
+        </svg>
+    ),
     Clock: ({ size = 18, className = "" }: { size?: number; className?: string }) => (
         <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
             <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
@@ -101,24 +116,29 @@ const Icons: any = {
             <circle cx="12" cy="12" r="1" /><circle cx="19" cy="12" r="1" /><circle cx="5" cy="12" r="1" />
         </svg>
     ),
-    Check: ({ size = 14, strokeWidth = 3 }: { size?: number; strokeWidth?: number }) => (
-        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth}>
+    Check: ({ size = 24, className = "" }: { size?: number; className?: string }) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
             <polyline points="20 6 9 17 4 12" />
         </svg>
     ),
-    ChevronDown: ({ size = 20, className = "" }: { size?: number; className?: string }) => (
-        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
-            <polyline points="6 9 12 15 18 9" />
-        </svg>
-    ),
-    ChevronUp: ({ size = 20, className = "" }: { size?: number; className?: string }) => (
+    ChevronUp: ({ size = 24, className = "" }: { size?: number; className?: string }) => (
         <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
             <polyline points="18 15 12 9 6 15" />
         </svg>
     ),
-    ShieldCheck: ({ size = 18 }: { size?: number }) => (
-        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" /><path d="m9 12 2 2 4-4" />
+    ChevronDown: ({ size = 24, className = "" }: { size?: number; className?: string }) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+            <polyline points="6 9 12 15 18 9" />
+        </svg>
+    ),
+    PlusCircle: ({ size = 24, className = "" }: { size?: number; className?: string }) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+            <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="16" /><line x1="8" y1="12" x2="16" y2="12" />
+        </svg>
+    ),
+    Bell: ({ size = 24, className = "", fill = "none" }: { size?: number; className?: string; fill?: string }) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth="2" className={className}>
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.73 21a2 2 0 0 1-3.46 0" />
         </svg>
     ),
     PlusSquare: ({ size = 20, className = "" }: { size?: number; className?: string }) => (
@@ -148,17 +168,16 @@ const Icons: any = {
     User: ({ size = 24 }: { size?: number }) => (
         <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
     ),
-    Bell: ({ size = 24, fill = "none", className = "" }: { size?: number; fill?: string; className?: string }) => (
-        <svg width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth="2" className={className}><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" /><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" /></svg>
-    ),
     Film: ({ size = 24 }: { size?: number }) => (
         <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect width="18" height="18" x="3" y="3" rx="2" /><path d="M7 3v18" /><path d="M3 7.5h4" /><path d="M3 12h18" /><path d="M3 16.5h4" /><path d="M17 3v18" /><path d="M17 7.5h4" /><path d="M17 16.5h4" /></svg>
     ),
     Compass: ({ size = 24 }: { size?: number }) => (
         <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" /></svg>
     ),
-    PlusCircle: ({ size = 24 }: { size?: number }) => (
-        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="16" /><line x1="8" y1="12" x2="16" y2="12" /></svg>
+    ShieldCheck: ({ size = 18 }: { size?: number }) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" /><path d="m9 12 2 2 4-4" />
+        </svg>
     ),
 };
 
@@ -358,30 +377,30 @@ open11:00-close 17:00
 
     const problems = [
         {
-            icon: <Icons.MessageCircle size={28} className="text-white" />,
-            title: "口コミ返信に\n時間がかかる",
-            desc: "一通一通考えるのは大変。\nAIが感情のこもった\n返信を自動生成します。",
-            bg: "bg-blue-500",
+            icon: <Icons.Moon size={28} className="text-white" />,
+            title: "閉店後の\nSNS作業がツラい",
+            desc: "疲れた体でスマホを見つめて、\n手が止まる。\nそんな夜はもう終わりにしませんか。",
+            bg: "bg-slate-700",
             delay: 0
         },
         {
-            icon: <Icons.Instagram size={28} className="text-white" />,
-            title: "投稿のネタが\n思いつかない",
-            desc: "季節やトレンドに合わせて、\n「いま投稿すべき」内容を\n毎日提案します。",
+            icon: <Icons.Bot size={28} className="text-white" />,
+            title: "AI文章に\n違和感がある",
+            desc: "丁寧すぎて『自分らしくない』。\nMisePoなら、あなたの口癖や\n話し方を再現します。",
             bg: "bg-pink-500",
             delay: 0.1
         },
         {
-            icon: <Icons.TrendingDown size={28} className="text-white" />,
-            title: "集客効果が\n見えない",
-            desc: "なんとなくの運用は卒業。\nデータに基づいた戦略で\n確実にファンを増やします。",
-            bg: "bg-orange-500",
+            icon: <Icons.MessageCircle size={28} className="text-white" />,
+            title: "クチコミ返信が\n放置気味…",
+            desc: "言葉が見つからず、\n気づけば数週間。お客様との絆を\n30秒で紡ぎ直せます。",
+            bg: "bg-blue-500",
             delay: 0.2
         },
         {
-            icon: <Icons.MapPin size={28} className="text-white" />,
-            title: "インバウンド\n対応ができない",
-            desc: "英語・中国語・韓国語。\n外国人観光客向けの投稿も\nワンクリックで。",
+            icon: <Icons.Users size={28} className="text-white" />,
+            title: "任せたいけど\n任せられない",
+            desc: "スタッフに頼みたいけど、\n店の雰囲気が壊れないか心配…\n『店の人格』を設定すれば解決。",
             bg: "bg-green-500",
             delay: 0.3
         },
@@ -454,12 +473,12 @@ open11:00-close 17:00
                             <span className="text-xs font-bold text-indigo-900">総生成数 10,000件突破</span>
                         </div>
                         <h1 className="text-4xl font-black text-slate-900 tracking-tight leading-[1.1] mb-3">
-                            お店の投稿は、<br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">AIにまかせる時代。</span>
+                            AIなのに、<br />
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">私の言葉。</span>
                         </h1>
                         <p className="text-base text-slate-600 leading-relaxed px-2">
-                            Googleマップの口コミ返信も、Instagramの投稿文も。
-                            MisePo（ミセポ）なら、たった5秒で「来店したくなる」文章が完成します。
+                            もうSNSで無理をするのは、やめませんか？<br />
+                            過去の投稿を読み込むだけで、あなたの口癖や想いまで再現します。
                         </p>
                     </div>
 
@@ -470,12 +489,13 @@ open11:00-close 17:00
                             <span className="text-sm font-bold text-indigo-900">総生成数 10,000件突破</span>
                         </div>
                         <h1 className="text-6xl lg:text-[5.5rem] font-black text-slate-900 tracking-tight leading-[1.1] mb-8">
-                            お店の投稿<br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">AIにまかせる時代。</span>
+                            AIなのに、<br />
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">私の言葉。</span>
                         </h1>
                         <p className="text-xl text-slate-600 leading-relaxed mb-10 max-w-lg">
-                            Googleマップの口コミ返信も、Instagramの投稿文も。<br />
-                            MisePo（ミセポ）なら、たった5秒で「来店したくなる」文章が完成します。
+                            もうSNSで無理をするのは、やめませんか？<br />
+                            過去の投稿を読み込むだけで、あなたの口癖や想いまで再現。<br />
+                            X・インスタ・Googleクチコミ返信まで、あなたの「分身」が代行します。
                         </p>
                         <div className="flex gap-4 pointer-events-auto">
                             <button onClick={() => window.location.href = '/start'} className="px-8 py-4 bg-slate-900 text-white rounded-full font-bold hover:bg-slate-800 transition-all hover:scale-105 shadow-xl shadow-slate-900/20 flex items-center gap-2">
@@ -744,13 +764,13 @@ open11:00-close 17:00
                             Social Media Challenges
                         </span>
                         <h2 className="text-4xl md:text-6xl font-black text-slate-900 leading-[1.1] mb-8">
-                            「何を投稿すればいい？」<br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-slate-600 to-slate-400">毎日のその悩み、もう終わり。</span>
+                            こんな毎日を、<br />
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-slate-600 to-slate-400">一人で抱えていませんか？</span>
                         </h2>
                         <p className="text-slate-600 text-lg leading-relaxed max-w-2xl mx-auto">
-                            映える写真、刺さる文章、流行りのハッシュタグ。<br className="hidden md:block" />
-                            変化の激しいトレンドを追いかけ、正解のない投稿を作り続けるのは大変です。<br className="hidden md:block" />
-                            そんなオーナー様の悩みを、MisePoは技術で解決します。
+                            閉店後の疲れた体でスマホを見つめる夜。<br className="hidden md:block" />
+                            AIを使ってみたけれど、どこか自分らしくない文章への違和感。<br className="hidden md:block" />
+                            MisePoは、あなたのそんな「心の重荷」に寄り添うために生まれました。
                         </p>
                     </div>
 
