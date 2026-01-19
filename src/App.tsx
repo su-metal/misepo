@@ -60,7 +60,12 @@ function App() {
       }
       const data = await res.json();
       if (data.ok) {
-        setPresets(data.presets || []);
+        // Map snake_case from DB to camelCase for frontend
+        const mappedPresets = (data.presets || []).map((p: any) => ({
+          ...p,
+          postSamples: p.post_samples || {},
+        }));
+        setPresets(mappedPresets);
       }
     } catch (err) {
       console.error('Failed to fetch presets:', err);
