@@ -13,9 +13,21 @@ export function useStartFlow() {
   const [eligibleForTrial, setEligibleForTrial] = useState<boolean>(true);
   const [isRedirecting, setIsRedirecting] = useState(false);
 
-  const intent = (searchParams.get("intent") as "trial" | "login") ?? "login";
+  // URLパラメータまたはストレージから intent を取得
+  // (Googleログインから戻ってきた時に URL パラメータが消えることがあるため、ストレージも確認する)
+  const intent = useMemo(() => {
+    if (typeof window === "undefined") return "login";
+    const fromUrl = searchParams.get("intent") as "trial" | "login" | null;
+    const fromStorage = window.sessionStorage.getItem("login_intent") as "trial" | "login" | null;
+    return fromUrl ?? fromStorage ?? "login";
+  }, [searchParams]);
 
   const startGoogleLogin = async (nextIntent: "trial" | "login") => {
+    // ログイン後のために intent を保存
+    if (typeof window !== "undefined") {
+      window.sessionStorage.setItem("login_intent", nextIntent);
+    }
+
     const origin = window.location.origin;
     await supabase.auth.signInWithOAuth({
       provider: "google",
@@ -36,6 +48,10 @@ export function useStartFlow() {
     const data = await res.json().catch(() => null);
 
     if (res.ok && data?.ok && data?.url) {
+      // 決済へ進むので意図をクリア
+      if (typeof window !== "undefined") {
+        window.sessionStorage.removeItem("login_intent");
+      }
       window.location.href = data.url;
     } else if (data?.error === "already_active") {
       router.replace("/");
@@ -68,6 +84,10 @@ export function useStartFlow() {
       setEligibleForTrial(payload?.eligibleForTrial ?? true);
 
       if (allowed) {
+        // 利用可能なら意図をクリアして遷移
+        if (typeof window !== "undefined") {
+          window.sessionStorage.removeItem("login_intent");
+        }
         router.replace("/generate");
         return;
       }
