@@ -91,6 +91,9 @@ export const generateContent = async (
       ? "Auto-Detect (Analyze the input text and infer the most appropriate purpose, e.g., Promotion, Story, or Engagement)" 
       : config.purpose;
 
+    // Check if persona learning is available
+    const hasPersonaSamples = config.postSamples?.[config.platform] && config.postSamples[config.platform]!.trim();
+
     let systemInstruction = `
 You are a skilled and friendly social media manager for a physical business.
 Your goal is to write engaging, natural, and effective posts for a ${profile.industry} named "${profile.name}" located in ${profile.region}.
@@ -100,7 +103,7 @@ Target Audience: Local customers and potential visitors.
 **Current Task Configuration:**
 - Platform: ${config.platform}
 - Purpose: ${effectivePurpose}
-- Tone: ${config.tone} (Formal/Standard/Friendly)
+${hasPersonaSamples ? '- Tone: IGNORE - Use learned persona style instead' : `- Tone: ${config.tone} (Formal/Standard/Friendly)`}
 - Length: ${config.length} (Short/Medium/Long)
 - Language: ${config.language || "Japanese"}
 `;
@@ -136,18 +139,37 @@ When the customer mentions family members (e.g., "奥様", "旦那様", "娘さ�
 
 
     // Inject Post Samples for Few-Shot Learning
+    console.log('[geminiService] Checking postSamples for platform:', config.platform);
+    console.log('[geminiService] config.postSamples:', config.postSamples);
+    
     if (config.postSamples?.[config.platform]) {
       const sample = config.postSamples[config.platform];
+      console.log('[geminiService] Found sample for', config.platform, ':', sample?.substring(0, 50) + '...');
+      
       if (sample && sample.trim()) {
         systemInstruction += `\n
-**Persona Adoption (Few-Shot Style Learning):**
-The user has provided the following past posts (or replies) from this specific persona.
-You MUST adopt this persona's voice, tone, sentence structure, and emoji usage habits.
+**CRITICAL: Persona Adoption (Few-Shot Style Learning)**
+The user has provided past posts/replies from a specific persona below.
+You MUST STRICTLY MIMIC this persona's:
+- Exact tone and formality level (casual, formal, friendly, etc.)
+- Sentence structure and length patterns
+- Vocabulary choices and expressions
+- Emoji usage patterns (frequency, types, placement)
+- Punctuation style
+- Any unique catchphrases or speaking patterns
+
+IGNORE any conflicting tone/style settings above. The examples below are your ONLY style guide.
+
 ---
+PERSONA EXAMPLES:
 ${sample}
 ---
-IMPORTANT: Acting as the persona who wrote the above examples, write a new post about the topic below.`;
+
+INSTRUCTION: Write a new ${config.platform} post/reply in EXACTLY the same style as the examples above. Match the persona's voice perfectly.`;
+        console.log('[geminiService] ✅ Persona learning APPLIED with STRICT mode');
       }
+    } else {
+      console.log('[geminiService] ❌ No postSamples found for', config.platform);
     }
 
     const hasPersona = (config.postSamples?.[config.platform] && config.postSamples[config.platform]!.trim()) || (config.customPrompt && config.customPrompt.trim());

@@ -271,7 +271,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
         name: trimmedName,
         avatar: avatar,
         custom_prompt: trimmedPrompt, // Send empty string, not null (DB has NOT NULL constraint)
-        // postSamples: postSamples, // Commented out: DB column doesn't exist yet
+        post_samples: postSamples, // Store learning samples per platform
       };
       const endpoint = selectedPresetId
         ? `/api/me/presets/${selectedPresetId}`
