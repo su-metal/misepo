@@ -23,7 +23,39 @@ import {
   TrashIcon,
   MagicWandIcon,
   InstagramIcon,
+  TieIcon,
+  SneakersIcon,
+  LaptopIcon,
+  CookingIcon,
+  CoffeeIcon,
+  BuildingIcon,
+  LeafIcon,
+  GemIcon,
+  MegaphoneIcon,
+  SparklesIcon,
 } from './Icons';
+
+const AVATAR_OPTIONS = [
+  { id: '👔', icon: TieIcon, label: '店長/公式' },
+  { id: '👟', icon: SneakersIcon, label: 'スタッフ' },
+  { id: '💻', icon: LaptopIcon, label: '広報/IT' },
+  { id: '🍳', icon: CookingIcon, label: '料理/製作' },
+  { id: '☕', icon: CoffeeIcon, label: 'カフェ/日常' },
+  { id: '🏢', icon: BuildingIcon, label: '店舗/外観' },
+  { id: '✨', icon: SparklesIcon, label: 'キラキラ' },
+  { id: '📣', icon: MegaphoneIcon, label: 'お知らせ' },
+  { id: '🌿', icon: LeafIcon, label: 'ナチュラル' },
+  { id: '💎', icon: GemIcon, label: 'プレミアム' }
+];
+
+const renderAvatar = (avatarId: string | null, className: string = "w-6 h-6") => {
+  const option = AVATAR_OPTIONS.find(opt => opt.id === avatarId);
+  if (option) {
+    const Icon = option.icon;
+    return <Icon className={className} />;
+  }
+  return <div className={className}><TieIcon /></div>; // Default
+};
 
 interface PresetModalProps {
   isOpen: boolean;
@@ -76,7 +108,7 @@ const SortablePresetRow: React.FC<{
       >
         <div className="flex items-center gap-4">
           <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-3xl transition-all duration-300 ${isSelected ? 'bg-white shadow-inner scale-105' : 'bg-stone-100'}`}>
-            {preset.avatar || "👤"}
+            {renderAvatar(preset.avatar, "w-6 h-6")}
           </div>
           <div className={`font-bold text-sm truncate ${isSelected ? 'text-white' : 'text-stone-700 group-hover:text-black'}`}>
             {preset.name}
@@ -198,7 +230,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
     }
 
     setName('');
-    setAvatar('👤');
+    setAvatar('👔');
     setCustomPrompt('');
     setPostSamples({});
     setSelectedPresetId(null);
@@ -277,7 +309,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
       }
 
       setName('');
-      setAvatar('👤');
+      setAvatar('👔');
       setCustomPrompt('');
       setPostSamples({});
       setSelectedPresetId(null);
@@ -292,7 +324,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
   const handleLoadPreset = (preset: Preset) => {
     setSelectedPresetId(preset.id);
     setName(enforceSaveNameWidth(preset.name));
-    setAvatar(preset.avatar || '👤');
+    setAvatar(preset.avatar || '👔');
     setCustomPrompt(preset.custom_prompt ?? '');
     setPostSamples(preset.postSamples || {});
     setErrorMessage(null);
@@ -328,7 +360,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
       if (selectedPresetId === preset.id) {
         setSelectedPresetId(null);
         setName('');
-        setAvatar('👤');
+        setAvatar('👔');
         setCustomPrompt(currentConfig.customPrompt ?? '');
         setPostSamples(currentConfig.postSamples || {});
       }
@@ -528,8 +560,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
                     placeholder="例: 店長（公式）"
                     className="w-full px-6 py-4.5 bg-stone-50 border-2 border-transparent focus:bg-white focus:border-indigo-500 focus:ring-[8px] focus:ring-indigo-500/10 outline-none rounded-2xl text-base text-stone-800 font-bold placeholder-stone-300 transition-all shadow-sm"
                   />
-                  <div className="absolute right-4 top-1/2 -translate-y-1/2 text-stone-200 group-focus-within:text-indigo-500">
-                    <span className="text-xl">{avatar}</span>
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 text-stone-300 group-focus-within:text-indigo-500">
+                    {renderAvatar(avatar, "w-6 h-6")}
                   </div>
                 </div>
               </div>
@@ -539,29 +571,31 @@ const PresetModal: React.FC<PresetModalProps> = ({
                 <label className="block text-[11px] font-black text-stone-400 uppercase tracking-[0.2em]">
                   アイコンの選択 (Select Icon)
                 </label>
-                <div className="flex flex-wrap gap-2.5 p-5 bg-stone-50 border border-stone-100 rounded-[32px] shadow-inner-sm">
-                  {[
-                    { e: '👔', l: '店長/公式' },
-                    { e: '👟', l: 'スタッフ' },
-                    { e: '💻', l: '広報/IT' },
-                    { e: '🍳', l: '料理/製作' },
-                    { e: '☕', l: 'カフェ/日常' },
-                    { e: '🏢', l: '店舗/外観' },
-                    { e: '✨', l: 'キラキラ' },
-                    { e: '📣', l: 'お知らせ' },
-                    { e: '🌿', l: 'ナチュラル' },
-                    { e: '💎', l: 'プレミアム' }
-                  ].map((item) => (
-                    <button
-                      key={item.e}
-                      type="button"
-                      onClick={() => setAvatar(item.e)}
-                      title={item.l}
-                      className={`w-12 h-12 flex items-center justify-center text-2xl rounded-2xl transition-all duration-300 ${avatar === item.e ? 'bg-white shadow-lg ring-2 ring-indigo-500 scale-110 z-10' : 'hover:bg-white hover:shadow-md opacity-40 hover:opacity-100'}`}
-                    >
-                      {item.e}
-                    </button>
-                  ))}
+                <div className="flex flex-wrap gap-2.5 p-5 bg-white border border-gray-100 rounded-[32px] shadow-sm">
+                  {AVATAR_OPTIONS.map((item) => {
+                    const Icon = item.icon;
+                    const isSelected = avatar === item.id;
+                    return (
+                      <button
+                        key={item.id}
+                        type="button"
+                        onClick={() => setAvatar(item.id)}
+                        title={item.label}
+                        className={`
+                          w-12 h-12 flex items-center justify-center rounded-2xl transition-all duration-300 relative
+                          ${isSelected
+                            ? 'bg-white shadow-[0_8px_16px_-4px_rgba(79,70,229,0.3)] ring-2 ring-indigo-500 scale-110 z-10 text-indigo-600'
+                            : 'bg-gray-50 text-gray-400 hover:bg-white hover:shadow-md hover:text-gray-600'
+                          }
+                        `}
+                      >
+                        <Icon className="w-5 h-5" />
+                        {isSelected && (
+                          <div className="absolute -top-1 -right-1 w-3 h-3 bg-indigo-500 rounded-full border-2 border-white" />
+                        )}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             </div>

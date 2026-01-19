@@ -4,8 +4,32 @@ import { AutoResizingTextarea } from './AutoResizingTextarea';
 import {
     MegaphoneIcon, BookOpenIcon, LightbulbIcon, ChatHeartIcon,
     AutoSparklesIcon, HandHeartIcon, ApologyIcon, InfoIcon, SparklesIcon,
-    StarIcon, ChevronDownIcon
+    StarIcon, ChevronDownIcon,
+    TieIcon, SneakersIcon, LaptopIcon, CookingIcon, CoffeeIcon,
+    BuildingIcon, LeafIcon, GemIcon,
 } from '../../Icons';
+
+const AVATAR_OPTIONS = [
+    { id: '👔', icon: TieIcon },
+    { id: '👟', icon: SneakersIcon },
+    { id: '💻', icon: LaptopIcon },
+    { id: '🍳', icon: CookingIcon },
+    { id: '☕', icon: CoffeeIcon },
+    { id: '🏢', icon: BuildingIcon },
+    { id: '✨', icon: SparklesIcon },
+    { id: '📣', icon: MegaphoneIcon },
+    { id: '🌿', icon: LeafIcon },
+    { id: '💎', icon: GemIcon }
+];
+
+const renderAvatar = (avatarId: string | null, className: string = "w-6 h-6") => {
+    const option = AVATAR_OPTIONS.find(opt => opt.id === avatarId);
+    if (option) {
+        const Icon = option.icon;
+        return <Icon className={className} />;
+    }
+    return <TieIcon className={className} />; // Default
+};
 
 interface PostInputFormProps {
     platforms: Platform[];
@@ -242,9 +266,9 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                             : 'bg-white border-transparent text-gray-400 hover:border-gray-200 hover:text-gray-600 hover:shadow-md'}
                                         `}
                                 >
-                                    <span className={`text-2xl transition-transform duration-300 ${activePresetId === preset.id ? 'scale-110 drop-shadow-sm' : 'group-hover:scale-110'}`}>
-                                        {preset.avatar || "👤"}
-                                    </span>
+                                    <div className={`transition-transform duration-300 ${activePresetId === preset.id ? 'scale-110 drop-shadow-sm' : 'group-hover:scale-110'}`}>
+                                        {renderAvatar(preset.avatar, "w-6 h-6")}
+                                    </div>
                                     <span className={`text-[11px] font-bold text-center leading-tight line-clamp-2 px-1 ${activePresetId === preset.id ? 'text-indigo-700' : ''}`}>
                                         {preset.name}
                                     </span>
