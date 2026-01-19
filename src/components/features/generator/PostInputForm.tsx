@@ -123,11 +123,11 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
     return (
         <div className="flex flex-col h-auto lg:h-[800px] bg-gradient-to-br from-[#F8FAFC] to-[#EFF6FF]">
             {/* Platform Tabs & Multi-gen Toggle - Glassmorphism Header */}
-            <div className="flex flex-col lg:flex-row lg:items-center gap-2 px-6 pt-6 pb-2">
+            <div className="flex flex-col lg:flex-row lg:items-center gap-2 px-2 pt-6 pb-2">
                 <div className="flex items-stretch flex-1 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                     <button
                         onClick={() => onSetActivePlatform(Platform.X)}
-                        className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-bold transition-all relative group
+                        className={`flex-1 flex items-center justify-center gap-2 py-3 text-xs sm:text-sm font-bold transition-all relative group
                             ${platforms.includes(Platform.X)
                                 ? 'bg-white text-gray-900 border-t-2 border-gray-900'
                                 : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50 bg-gray-50/50'
@@ -143,7 +143,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                     <div className="w-[1px] bg-gray-100 my-2" />
                     <button
                         onClick={() => onSetActivePlatform(Platform.Instagram)}
-                        className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-bold transition-all relative group
+                        className={`flex-1 flex items-center justify-center gap-2 py-3 text-xs sm:text-sm font-bold transition-all relative group
                             ${platforms.includes(Platform.Instagram)
                                 ? 'bg-white text-pink-600 border-t-2 border-pink-500'
                                 : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50 bg-gray-50/50'
@@ -159,7 +159,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                     <div className="w-[1px] bg-gray-100 my-2" />
                     <button
                         onClick={() => onSetActivePlatform(Platform.GoogleMaps)}
-                        className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-bold transition-all relative group
+                        className={`flex-1 flex items-center justify-center gap-2 py-3 text-xs sm:text-sm font-bold transition-all relative group
                             ${platforms.includes(Platform.GoogleMaps)
                                 ? 'bg-white text-emerald-600 border-t-2 border-emerald-500'
                                 : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50 bg-gray-50/50'
@@ -194,7 +194,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
             </div>
 
             {/* Main Content Area */}
-            <div className="flex flex-col lg:flex-row flex-1 gap-6 p-6 lg:overflow-hidden">
+            <div className="flex flex-col lg:flex-row flex-1 gap-6 px-2 py-6 lg:overflow-hidden">
 
                 {/* Left Control Panel */}
                 <div className="w-full lg:w-[320px] order-2 lg:order-1 flex flex-col gap-6 shrink-0 lg:overflow-y-auto px-1 lg:pr-2 scrollbar-hide py-2">
