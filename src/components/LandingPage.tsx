@@ -322,8 +322,8 @@ open11:00-close 17:00
 
                 if (totalScrollable > 0) {
                     const progressPct = Math.min(Math.max(scrolled / totalScrollable, 0), 1);
-                    // Map 0-100% to 0-7500 range for ultra-smooth, extended timeline (V5)
-                    setHeroAnimationProgress(progressPct * 7500);
+                    // Map 0-100% to 0-9000 range for ultra-smooth, extended timeline with grace period
+                    setHeroAnimationProgress(progressPct * 9000);
                 }
             }
         };
@@ -332,8 +332,8 @@ open11:00-close 17:00
     }, []);
 
     // Animation States derived from progress
-    // On mobile, delay animations to allow scrolling the phone into view
-    const mobileAnimationOffset = isMobile ? 300 : 0;
+    // On mobile, small delay to allow phone to settle before animation starts
+    const mobileAnimationOffset = isMobile ? 200 : 0;
     const effectiveProgress = Math.max(0, heroAnimationProgress - mobileAnimationOffset);
 
     // Mobile Scroll (Move content up before animation starts)
@@ -367,7 +367,7 @@ open11:00-close 17:00
     // Inertia Scroll (Ease Out)
     // Start at 4150, duration 2850 -> Ends at 7000
     // (Duration increased by 450: 2400 + 250 + 200)
-    // Total timeline is 7500, so 7000-7500 is "Locked Wait"
+    // Total timeline is 9000, so 7000-9000 is "Grace Period" (Locked Wait)
     const rawScrollProgress = Math.min(Math.max((effectiveProgress - 4150) / 2850, 0), 1);
     const easeOutCubic = 1 - Math.pow(1 - rawScrollProgress, 3);
     const internalScrollProgress = easeOutCubic;
@@ -481,7 +481,7 @@ open11:00-close 17:00
             </header>
 
             {/* New Sticky Hero Animation */}
-            <div ref={heroRef} className={`relative z-10 ${isRepeatUser ? 'h-[400vh]' : 'h-[1500vh]'}`}>
+            <div ref={heroRef} className={`relative z-10 ${isRepeatUser ? 'h-[400vh]' : 'h-[1800vh]'}`}>
                 <div
                     className="sticky top-0 h-[150vh] md:h-screen w-full overflow-hidden flex flex-col transition-transform duration-100 ease-out will-change-transform"
                     style={{ transform: `translateY(-${mobileScrollY}px)` }}
