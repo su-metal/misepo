@@ -237,8 +237,9 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                         </div>
                                                     </div>
 
-                                                    {/* Actions Grid */}
-                                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                    {/* Actions Grid - Stacked Layout (Mobile Style for All) */}
+                                                    <div className="flex flex-col gap-4">
+                                                        {/* Preview - Full Width */}
                                                         <button
                                                             onClick={() => setPreviewState({ isOpen: true, platform: res.platform, text })}
                                                             className="flex items-center justify-center gap-3 py-5 rounded-[24px] bg-white text-xs font-black text-[#001738] border-2 border-slate-100 hover:border-[#001738] hover:bg-slate-50 transition-all uppercase tracking-widest shadow-sm"
@@ -247,6 +248,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                             <span>Preview</span>
                                                         </button>
 
+                                                        {/* Retry + Refine - Side by Side */}
                                                         <div className="grid grid-cols-2 gap-3">
                                                             <button
                                                                 onClick={() => onRegenerateSingle(res.platform)}
@@ -264,9 +266,10 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                             </button>
                                                         </div>
 
+                                                        {/* SNS Launch Button - Full Width */}
                                                         <button
                                                             onClick={() => onShare(res.platform, text)}
-                                                            className={`sm:col-span-2 flex items-center justify-center gap-4 py-6 rounded-[28px] text-white font-black text-lg transition-all shadow-2xl shadow-slate-200 uppercase tracking-[0.2em] group ${theme.actionColor}`}
+                                                            className={`flex items-center justify-center gap-4 py-6 rounded-[28px] text-white font-black text-lg transition-all shadow-2xl shadow-slate-200 uppercase tracking-[0.2em] group ${theme.actionColor}`}
                                                         >
                                                             <span>{theme.actionLabel}</span>
                                                             <ExternalLinkIcon className="w-6 h-6 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
