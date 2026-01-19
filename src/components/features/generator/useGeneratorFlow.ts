@@ -100,9 +100,6 @@ export function useGeneratorFlow(props: {
   // --- Logic ---
 
   const handleApplyPreset = (preset: Preset) => {
-    console.log('[handleApplyPreset] Applying preset:', preset.id, preset.name);
-    console.log('[handleApplyPreset] postSamples:', preset.postSamples);
-    
     if (preset.id === 'plain-ai') {
       // Full reset to default state
       setCustomPrompt('');
@@ -115,14 +112,11 @@ export function useGeneratorFlow(props: {
       setIncludeSymbols(false);
       setXConstraint140(true);
       setActivePresetId(null);
-      console.log('[handleApplyPreset] Reset to plain AI');
     } else {
       // Apply preset (even if it's the same one - keep it applied)
       setCustomPrompt(preset.custom_prompt ?? '');
       setCurrentPostSamples(preset.postSamples || {});
       setActivePresetId(preset.id);
-      console.log('[handleApplyPreset] Applied customPrompt:', preset.custom_prompt);
-      console.log('[handleApplyPreset] Applied postSamples:', preset.postSamples);
     }
   };
 
