@@ -179,6 +179,16 @@ const Icons: any = {
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" /><path d="m9 12 2 2 4-4" />
         </svg>
     ),
+    Globe: ({ size = 24 }: { size?: number }) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="12" cy="12" r="10" /><line x1="2" y1="12" x2="22" y2="12" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+        </svg>
+    ),
+    History: ({ size = 24 }: { size?: number }) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /><path d="M3 3v5h5" /><polyline points="12 7 12 12 15 15" />
+        </svg>
+    ),
 };
 
 const CountUp = ({ end, duration = 2000 }: { end: number; duration?: number }) => {
@@ -881,9 +891,9 @@ open11:00-close 17:00
 
                     <div className="grid md:grid-cols-3 gap-8 lg:gap-12 max-w-6xl mx-auto">
                         {/* Benefit 1: Natural Voice */}
-                        <div className="bg-slate-800/50 backdrop-blur-xl rounded-3xl p-8 border border-slate-700 relative group hover:border-indigo-500/50 transition-colors duration-500">
+                        <div className="bg-slate-800/50 backdrop-blur-xl rounded-3xl p-8 border border-slate-700 relative group hover:border-indigo-500 hover:shadow-[0_0_20px_rgba(99,102,241,0.3)] transition-all duration-300">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-indigo-500/20 to-transparent rounded-bl-full opacity-50" />
-                            <div className="w-14 h-14 bg-indigo-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-indigo-900/20 mb-6">
+                            <div className="w-14 h-14 bg-indigo-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-indigo-900/20 mb-6 group-hover:scale-110 transition-transform duration-300">
                                 <Icons.MessageCircle size={28} />
                             </div>
                             <h3 className="text-2xl font-bold mb-3">あなたの「文体」を<br />コピー</h3>
@@ -894,9 +904,9 @@ open11:00-close 17:00
                         </div>
 
                         {/* Benefit 2: Persona Switching */}
-                        <div className="bg-slate-800/50 backdrop-blur-xl rounded-3xl p-8 border border-slate-700 relative group hover:border-pink-500/50 transition-colors duration-500">
+                        <div className="bg-slate-800/50 backdrop-blur-xl rounded-3xl p-8 border border-slate-700 relative group hover:border-pink-500 hover:shadow-[0_0_20px_rgba(236,72,153,0.3)] transition-all duration-300">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-pink-500/20 to-transparent rounded-bl-full opacity-50" />
-                            <div className="w-14 h-14 bg-pink-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-pink-900/20 mb-6">
+                            <div className="w-14 h-14 bg-pink-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-pink-900/20 mb-6 group-hover:scale-110 transition-transform duration-300">
                                 <Icons.Users size={28} />
                             </div>
                             <h3 className="text-2xl font-bold mb-3">「中の人」を<br />自由自在に</h3>
@@ -906,9 +916,9 @@ open11:00-close 17:00
                         </div>
 
                         {/* Benefit 3: Review Replies */}
-                        <div className="bg-slate-800/50 backdrop-blur-xl rounded-3xl p-8 border border-slate-700 relative group hover:border-green-500/50 transition-colors duration-500">
+                        <div className="bg-slate-800/50 backdrop-blur-xl rounded-3xl p-8 border border-slate-700 relative group hover:border-green-500 hover:shadow-[0_0_20px_rgba(34,197,94,0.3)] transition-all duration-300">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-green-500/20 to-transparent rounded-bl-full opacity-50" />
-                            <div className="w-14 h-14 bg-green-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-green-900/20 mb-6">
+                            <div className="w-14 h-14 bg-green-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-green-900/20 mb-6 group-hover:scale-110 transition-transform duration-300">
                                 <Icons.Heart size={28} />
                             </div>
                             <h3 className="text-2xl font-bold mb-3">クチコミ返信の<br />「心の壁」を撤去</h3>
@@ -945,43 +955,58 @@ open11:00-close 17:00
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[minmax(280px,auto)]">
                         <div className="md:col-span-2 bg-white rounded-[2rem] p-8 md:p-10 border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden group">
-                            <div className="absolute top-0 right-0 w-64 h-64 bg-pink-100 rounded-full blur-[80px] -mr-16 -mt-16 transition-opacity group-hover:opacity-70" />
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-100 rounded-full blur-[80px] -mr-16 -mt-16 transition-opacity group-hover:opacity-70" />
                             <div className="relative z-10 flex flex-col h-full items-start">
-                                <div className="w-12 h-12 bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 rounded-xl flex items-center justify-center text-white mb-6 shadow-lg shadow-pink-200"><Icons.Instagram size={24} /></div>
-                                <h3 className="text-2xl font-bold text-slate-900 mb-2">Instagram 投稿作成</h3>
-                                <p className="text-slate-600 mb-6 max-w-md">「映える」文章構成と、集客に効果的なハッシュタグ選定を自動化。絵文字のバランスも完璧に調整します。</p>
-                                <div className="mt-auto w-full bg-slate-50 rounded-xl p-4 border border-slate-100 flex gap-4 items-center">
-                                    <div className="w-12 h-12 bg-gray-200 rounded-lg shrink-0 overflow-hidden">
-                                        <img src="https://picsum.photos/id/30/200/200" alt="img" className="w-full h-full object-cover" />
-                                    </div>
-                                    <div className="space-y-2 w-full">
-                                        <div className="h-2 bg-slate-200 rounded w-3/4" />
-                                        <div className="h-2 bg-slate-200 rounded w-1/2" />
-                                        <div className="text-[10px] text-blue-500 font-medium">#カフェ #ランチ #MisePo</div>
-                                    </div>
+                                <div className="w-12 h-12 bg-gradient-to-tr from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center text-white mb-6 shadow-lg shadow-indigo-200"><Icons.Maximize2 size={24} /></div>
+                                <h3 className="text-2xl font-bold text-slate-900 mb-2">3大プラットフォーム一括管理</h3>
+                                <p className="text-slate-600 mb-6 max-w-md">
+                                    Instagram、X (Twitter)、Googleビジネスプロフィールの投稿・返信を1つのアプリで完結。
+                                    <br />
+                                    媒体ごとのアプリを行き来する手間をゼロにします。
+                                </p>
+                                <div className="mt-auto w-full flex gap-4 items-center justify-start">
+                                    {[
+                                        { icon: <Icons.Instagram size={18} />, bg: "bg-pink-100", text: "text-pink-600" },
+                                        { icon: <Icons.Twitter size={18} />, bg: "bg-sky-100", text: "text-sky-600" },
+                                        { icon: <Icons.MapPin size={18} />, bg: "bg-green-100", text: "text-green-600" },
+                                    ].map((item, i) => (
+                                        <div key={i} className={`w-12 h-12 ${item.bg} ${item.text} rounded-xl flex items-center justify-center`}>
+                                            {item.icon}
+                                        </div>
+                                    ))}
+                                    <div className="h-0.5 w-12 bg-slate-200" />
+                                    <div className="text-xs font-bold text-slate-500">Sync All</div>
                                 </div>
                             </div>
                         </div>
                         <div className="bg-white rounded-[2rem] p-8 border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden group">
                             <div className="absolute bottom-0 left-0 w-full h-1 bg-green-500" />
-                            <div className="w-12 h-12 bg-green-100 text-green-600 rounded-xl flex items-center justify-center mb-6"><Icons.MapPin size={24} /></div>
-                            <h3 className="text-xl font-bold text-slate-900 mb-2">MEO対策・返信</h3>
-                            <p className="text-slate-600 text-sm mb-4">口コミへの丁寧な返信文を数秒で。Googleからの評価を高めます。</p>
+                            <div className="w-12 h-12 bg-green-100 text-green-600 rounded-xl flex items-center justify-center mb-6"><Icons.Globe size={24} /></div>
+                            <h3 className="text-xl font-bold text-slate-900 mb-2">多言語翻訳 &<br />インバウンド対応</h3>
+                            <p className="text-slate-600 text-sm mb-4">
+                                日本語の投稿から、英語・中国語・韓国語をワンタップで生成。外国人観光客へのアピールも自動化できます。
+                            </p>
                             <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
-                                <div className="flex text-yellow-400 gap-1 mb-2">
-                                    <Icons.Zap size={12} fill="currentColor" /><Icons.Zap size={12} fill="currentColor" /><Icons.Zap size={12} fill="currentColor" /><Icons.Zap size={12} fill="currentColor" /><Icons.Zap size={12} fill="currentColor" />
+                                <div className="flex gap-2 mb-2 text-[10px] font-bold text-slate-400">
+                                    <span className="bg-white px-1 rounded border border-slate-200">EN</span>
+                                    <span className="bg-white px-1 rounded border border-slate-200">CN</span>
+                                    <span className="bg-white px-1 rounded border border-slate-200">KR</span>
                                 </div>
-                                <div className="text-[10px] text-slate-500">ご来店ありがとうございます！...</div>
+                                <div className="text-[10px] text-slate-500">Welcome to our cafe...</div>
                             </div>
                         </div>
                         <div className="bg-white rounded-[2rem] p-8 border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden group">
                             <div className="absolute bottom-0 left-0 w-full h-1 bg-sky-500" />
-                            <div className="w-12 h-12 bg-sky-100 text-sky-500 rounded-xl flex items-center justify-center mb-6"><Icons.Twitter size={24} /></div>
-                            <h3 className="text-xl font-bold text-slate-900 mb-2">X (Twitter)</h3>
-                            <p className="text-slate-600 text-sm mb-4">140文字の制限内で最大限の魅力を。拡散されやすい文章を作成。</p>
-                            <div className="flex justify-between items-center text-xs font-bold text-slate-400 mt-auto">
-                                <span>残り 3文字</span>
-                                <div className="w-6 h-6 rounded-full border-2 border-sky-500 flex items-center justify-center text-[8px] text-sky-500">OK</div>
+                            <div className="w-12 h-12 bg-sky-100 text-sky-500 rounded-xl flex items-center justify-center mb-6"><Icons.History size={24} /></div>
+                            <h3 className="text-xl font-bold text-slate-900 mb-2">過去投稿の<br />スタイル同期</h3>
+                            <p className="text-slate-600 text-sm mb-4">
+                                過去数年分の投稿データを解析し、あなただけの「書き癖」データベースを構築。使えば使うほど精度が向上します。
+                            </p>
+                            <div className="flex items-center gap-2 mt-auto">
+                                <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                                    <div className="h-full w-[85%] bg-sky-500" />
+                                </div>
+                                <span className="text-[10px] font-bold text-sky-500">85% Match</span>
                             </div>
                         </div>
                         <div className="md:col-span-2 bg-slate-900 rounded-[2rem] p-8 md:p-10 text-white relative overflow-hidden group">
@@ -1058,10 +1083,28 @@ open11:00-close 17:00
                         </div>
                         <div className="md:w-1/2 p-8 flex flex-col items-center justify-center relative overflow-hidden bg-slate-950/30">
                             <div className="w-full max-w-sm relative z-10">
-                                <div className="bg-white border border-gray-200 rounded-2xl max-w-xs mx-auto shadow-2xl overflow-hidden text-sm flex flex-col h-[480px] transform transition-all hover:scale-[1.01]">
+                                <div className="bg-white border border-gray-200 rounded-2xl max-w-xs mx-auto shadow-2xl overflow-hidden text-sm flex flex-col h-[480px] transform transition-all hover:scale-[1.01] relative group">
+                                    {/* Success Badge */}
+                                    {demoResult && (
+                                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 animate-bounce-in">
+                                            <div className="bg-white/90 backdrop-blur-md text-indigo-600 px-6 py-3 rounded-full font-black shadow-2xl border-2 border-indigo-100 flex items-center gap-2 whitespace-nowrap">
+                                                <Icons.CheckCircle size={24} className="text-green-500" />
+                                                <span>投稿完了！</span>
+                                            </div>
+                                        </div>
+                                    )}
+                                    {/* Confetti Elements */}
+                                    {demoResult && (
+                                        <>
+                                            <div className="absolute top-1/4 left-1/4 w-3 h-3 bg-yellow-400 rounded-full animate-ping" />
+                                            <div className="absolute top-1/3 right-1/4 w-2 h-2 bg-pink-500 rounded-full animate-ping delay-100" />
+                                            <div className="absolute bottom-1/3 left-1/3 w-2 h-2 bg-indigo-500 rounded-full animate-ping delay-200" />
+                                        </>
+                                    )}
+
                                     <div className="flex items-center justify-between p-3 border-b border-gray-50 shrink-0 bg-white z-10">
                                         <div className="flex items-center gap-2">
-                                            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-yellow-400 to-purple-600 p-[2px]">
+                                            <div className={`w-8 h-8 rounded-full bg-gradient-to-tr from-yellow-400 to-purple-600 p-[2px] ${demoResult ? 'animate-pulse' : ''}`}>
                                                 <div className="w-full h-full rounded-full bg-white border border-white overflow-hidden">
                                                     <img src="https://picsum.photos/id/64/100/100" alt="avatar" className="w-full h-full object-cover" />
                                                 </div>
@@ -1073,10 +1116,13 @@ open11:00-close 17:00
                                     <div className="overflow-y-auto no-scrollbar flex-1 bg-white">
                                         <div className="bg-gray-100 aspect-square w-full relative group shrink-0">
                                             <img src="https://picsum.photos/id/425/600/600" alt="post" className="w-full h-full object-cover" />
+                                            {demoResult && (
+                                                <div className="absolute inset-0 bg-white/20 animate-pulse pointer-events-none" />
+                                            )}
                                         </div>
                                         <div className="p-3">
                                             <div className="flex justify-between mb-2">
-                                                <div className="flex gap-4 text-slate-800"><Icons.Heart size={22} className="hover:text-red-500 transition-colors cursor-pointer" /><Icons.MessageCircle size={22} /><Icons.Send size={22} /></div>
+                                                <div className="flex gap-4 text-slate-800"><Icons.Heart size={22} className={`hover:text-red-500 transition-colors cursor-pointer ${demoResult ? 'text-red-500 fill-red-500 animate-pulse' : ''}`} /><Icons.MessageCircle size={22} /><Icons.Send size={22} /></div>
                                                 <Icons.Bookmark size={22} className="text-slate-800" />
                                             </div>
                                             <p className="font-bold text-xs mb-2 text-slate-900">「いいね！」128件</p>
