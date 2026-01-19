@@ -621,7 +621,7 @@ open11:00-close 17:00
                             <div
                                 className={`absolute inset-0 w-[260px] h-[520px] top-20 left-[-100px] transition-all duration-700 ease-in-out origin-center
                                     ${isPosted
-                                        ? 'scale-110 translate-x-[120px] -translate-y-4 rotate-0 z-40'
+                                        ? 'scale-[1.15] translate-x-[120px] -translate-y-4 rotate-0 z-40'
                                         : '-translate-x-[100px] translate-y-0 -rotate-12 z-20 opacity-80'
                                     }`}
                             >
