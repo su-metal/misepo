@@ -16,17 +16,6 @@ import GuestDemoModal from './components/GuestDemoModal';
 import GuideModal from './components/GuideModal';
 import { LockIcon, LogOutIcon } from './components/Icons';
 
-// Inline simple components for now
-const MobileHeader = ({ onOpenSidebar }: { onOpenSidebar: () => void }) => (
-  <header className="md:hidden flex items-center justify-between p-5 bg-white/80 backdrop-blur-xl border-b border-slate-100 sticky top-0 z-30 transition-all">
-    <h1 className="text-2xl font-black text-[#001738] tracking-tighter italic">
-      Mise<span className="text-[#E5005A]">Po</span>
-    </h1>
-    <button onClick={onOpenSidebar} className="p-3 bg-slate-50 rounded-2xl text-slate-400 hover:text-[#001738] transition-all active:scale-95 border border-slate-100 shadow-sm">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-    </button>
-  </header>
-);
 
 const UpgradeBanner = ({ plan, onUpgrade }: { plan: string, onUpgrade: () => void }) => (
   <div className="bg-[#001738] p-4 flex items-center justify-between text-white text-sm border-b border-[#E5005A]/20 shadow-2xl shadow-navy-900/40 relative overflow-hidden group">
@@ -184,7 +173,7 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-white flex">
+    <div className="min-h-screen bg-slate-50 flex">
       <HistorySidebar
         isOpen={isSidebarOpen}
         toggleOpen={() => setIsSidebarOpen(false)}
@@ -204,7 +193,6 @@ function App() {
 
       <div className="flex-1 flex flex-col min-w-0">
         {!plan.isPro && isLoggedIn && <UpgradeBanner plan={plan.plan} onUpgrade={() => router.push('/start')} />}
-        <MobileHeader onOpenSidebar={() => setIsSidebarOpen(true)} />
 
         <main className="flex-1 overflow-y-auto overflow-x-hidden">
           <PostGenerator

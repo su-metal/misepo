@@ -77,7 +77,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
         <div className="absolute bottom-[0%] left-[0%] w-[50%] h-[50%] bg-pink-50/20 blur-[150px] rounded-full"></div>
       </div>
 
-      <div className="max-w-[1400px] mx-auto py-8 relative z-10">
+      <div className="max-w-[1400px] mx-auto py-4 sm:py-8 relative z-10">
         {/* Header Module - Floating Glass */}
         <div className="mb-10 px-3 sm:px-8 animate-in fade-in slide-in-from-top-4 duration-1000">
           <GeneratorHeader

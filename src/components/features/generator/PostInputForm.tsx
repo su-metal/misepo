@@ -244,18 +244,19 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                     {/* Tone Selection */}
                     <section>
                         <h3 className="text-xs font-black text-[#001738] uppercase tracking-[0.25em] mb-6 px-1">Tone Style</h3>
-                        <div className="flex flex-col gap-2 bg-slate-100/50 p-2 rounded-[24px] border border-slate-200/50">
+                        <div className={`flex flex-row gap-2 bg-slate-100/50 p-1.5 rounded-[24px] border border-slate-200/50 ${activePresetId ? 'opacity-50 cursor-not-allowed' : ''}`}>
                             {TONES.map((t) => (
                                 <button
                                     key={t.id}
                                     onClick={() => onToneChange(t.id)}
-                                    className={`py-3 px-6 rounded-2xl text-xs font-black transition-all flex items-center justify-between ${tone === t.id
-                                        ? 'bg-[#001738] text-white shadow-lg'
+                                    disabled={!!activePresetId}
+                                    className={`flex-1 py-3 px-2 rounded-[18px] text-[10px] sm:text-xs font-black transition-all flex items-center justify-center gap-2 relative ${tone === t.id
+                                        ? 'bg-[#001738] text-white shadow-lg shadow-navy-900/20'
                                         : 'text-slate-400 hover:text-slate-600 hover:bg-white'
                                         }`}
                                 >
                                     <span>{t.label}</span>
-                                    {tone === t.id && <div className="w-1.5 h-1.5 rounded-full bg-[#E5005A]" />}
+                                    {tone === t.id && <div className="w-1.5 h-1.5 rounded-full bg-[#E5005A] shadow-sm animate-pulse" />}
                                 </button>
                             ))}
                         </div>
@@ -265,20 +266,50 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                     {!isX && (
                         <section>
                             <h3 className="text-xs font-black text-[#001738] uppercase tracking-[0.25em] mb-6 px-1">Content Length</h3>
-                            <div className="flex flex-col gap-2 bg-slate-100/50 p-2 rounded-[24px] border border-slate-200/50">
+                            <div className="flex flex-row gap-2 bg-slate-100/50 p-1.5 rounded-[24px] border border-slate-200/50">
                                 {LENGTHS.map((l) => (
                                     <button
                                         key={l.id}
                                         onClick={() => onLengthChange(l.id)}
-                                        className={`py-3 px-6 rounded-2xl text-xs font-black transition-all flex items-center justify-between ${length === l.id
-                                            ? 'bg-[#001738] text-white shadow-lg'
+                                        className={`flex-1 py-3 px-2 rounded-[18px] text-[10px] sm:text-xs font-black transition-all flex items-center justify-center gap-2 relative ${length === l.id
+                                            ? 'bg-[#001738] text-white shadow-lg shadow-navy-900/20'
                                             : 'text-slate-400 hover:text-slate-600 hover:bg-white'
                                             }`}
                                     >
                                         <span>{l.label}</span>
-                                        {length === l.id && <div className="w-1.5 h-1.5 rounded-full bg-[#E5005A]" />}
+                                        {length === l.id && <div className="w-1.5 h-1.5 rounded-full bg-[#E5005A] shadow-sm animate-pulse" />}
                                     </button>
                                 ))}
+                            </div>
+                        </section>
+                    )}
+
+                    {/* Style Options */}
+                    {!isGoogleMaps && (
+                        <section className="animate-in fade-in duration-500 delay-150">
+                            <h3 className="text-xs font-black text-[#001738] uppercase tracking-[0.25em] mb-4 px-1">Style Options</h3>
+                            <div className={`flex flex-col gap-3 bg-white p-4 rounded-[24px] border border-slate-100 shadow-sm ${activePresetId ? 'opacity-50' : ''}`}>
+                                <div className="flex items-center justify-between">
+                                    <span className="text-[11px] font-black text-[#001738] uppercase tracking-widest">絵文字</span>
+                                    <button
+                                        onClick={() => onIncludeEmojisChange(!includeEmojis)}
+                                        disabled={!!activePresetId}
+                                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-all duration-300 ${activePresetId ? 'cursor-not-allowed' : ''} ${includeEmojis ? 'bg-[#E5005A]' : 'bg-slate-200'}`}
+                                    >
+                                        <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-300 ${includeEmojis ? 'translate-x-6' : 'translate-x-1'}`} />
+                                    </button>
+                                </div>
+                                <div className="h-px bg-slate-50" />
+                                <div className="flex items-center justify-between">
+                                    <span className="text-[11px] font-black text-[#001738] uppercase tracking-widest">特殊文字</span>
+                                    <button
+                                        onClick={() => onIncludeSymbolsChange(!includeSymbols)}
+                                        disabled={!!activePresetId}
+                                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-all duration-300 ${activePresetId ? 'cursor-not-allowed' : ''} ${includeSymbols ? 'bg-[#E5005A]' : 'bg-slate-200'}`}
+                                    >
+                                        <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-300 ${includeSymbols ? 'translate-x-6' : 'translate-x-1'}`} />
+                                    </button>
+                                </div>
                             </div>
                         </section>
                     )}
