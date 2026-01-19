@@ -100,8 +100,17 @@ export function useGeneratorFlow(props: {
   // --- Logic ---
 
   const handleApplyPreset = (preset: Preset) => {
-    if (activePresetId === preset.id) {
+    if (preset.id === 'plain-ai' || activePresetId === preset.id) {
+      // Full reset to default state
       setCustomPrompt('');
+      setCurrentPostSamples({});
+      setPostPurpose(PostPurpose.Auto);
+      setGmapPurpose(GoogleMapPurpose.Auto);
+      setTone(Tone.Standard);
+      setLength(Length.Medium);
+      setIncludeEmojis(true);
+      setIncludeSymbols(false);
+      setXConstraint140(true);
       setActivePresetId(null);
     } else {
       setCustomPrompt(preset.custom_prompt ?? '');

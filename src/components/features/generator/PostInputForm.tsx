@@ -65,6 +65,8 @@ interface PostInputFormProps {
     activePresetId: string | null;
     onApplyPreset: (preset: Preset) => void;
     onOpenPresetModal: () => void;
+    customPrompt: string;
+    onCustomPromptChange: (val: string) => void;
 }
 
 const PURPOSES = [
@@ -127,9 +129,12 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
     presets,
     activePresetId,
     onApplyPreset,
-    onOpenPresetModal
+    onOpenPresetModal,
+    customPrompt,
+    onCustomPromptChange
 }) => {
     const textareaRef = React.useRef<HTMLTextAreaElement>(null);
+    const [isPromptExpanded, setIsPromptExpanded] = React.useState(!!customPrompt);
     const isGoogleMaps = platform === Platform.GoogleMaps;
     const isX = platform === Platform.X;
 
@@ -141,15 +146,15 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
 
     return (
         <div className="flex flex-col h-auto lg:h-[800px] bg-white">
-            {/* Platform Tabs & Multi-gen Toggle - CastMe Style High Contrast */}
+            {/* Platform Tabs & Multi-gen Toggle - Floating Navy Pill Style */}
             <div className="flex flex-col lg:flex-row lg:items-center gap-4 px-3 sm:px-6 pt-8 pb-4">
-                <div className="flex items-stretch flex-1 bg-slate-100/50 rounded-[20px] border border-slate-200/50 overflow-hidden shadow-sm">
+                <div className="flex items-stretch flex-1 p-1.5 bg-slate-100/70 rounded-full border border-slate-200/50 shadow-sm">
                     <button
                         onClick={() => onSetActivePlatform(Platform.X)}
-                        className={`flex-1 flex items-center justify-center gap-2 py-4 text-xs sm:text-sm font-black transition-all relative group
+                        className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-full text-xs sm:text-sm font-black transition-all relative
                             ${platforms.includes(Platform.X)
                                 ? 'bg-[#001738] text-white shadow-lg'
-                                : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100'
+                                : 'text-slate-400 hover:text-slate-600'
                             }`}
                     >
                         <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
@@ -159,10 +164,10 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                     </button>
                     <button
                         onClick={() => onSetActivePlatform(Platform.Instagram)}
-                        className={`flex-1 flex items-center justify-center gap-2 py-4 text-xs sm:text-sm font-black transition-all relative group
+                        className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-full text-xs sm:text-sm font-black transition-all relative
                             ${platforms.includes(Platform.Instagram)
                                 ? 'bg-[#001738] text-white shadow-lg'
-                                : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100'
+                                : 'text-slate-400 hover:text-slate-600'
                             }`}
                     >
                         <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
@@ -172,10 +177,10 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                     </button>
                     <button
                         onClick={() => onSetActivePlatform(Platform.GoogleMaps)}
-                        className={`flex-1 flex items-center justify-center gap-2 py-4 text-xs sm:text-sm font-black transition-all relative group
+                        className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-full text-xs sm:text-sm font-black transition-all relative
                             ${platforms.includes(Platform.GoogleMaps)
                                 ? 'bg-[#001738] text-white shadow-lg'
-                                : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100'
+                                : 'text-slate-400 hover:text-slate-600'
                             }`}
                     >
                         <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
@@ -199,7 +204,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
             {/* Main Content Area */}
             <div className="flex flex-col lg:flex-row flex-1 gap-8 px-3 sm:px-6 py-6 overflow-hidden">
                 {/* Left Column: Settings Panel */}
-                <div className="w-full lg:w-[320px] shrink-0 flex flex-col gap-10 overflow-y-auto pr-2 custom-scrollbar order-2 lg:order-1">
+                <div className="w-full lg:w-[320px] shrink-0 flex flex-col gap-10 overflow-y-auto pr-2 custom-scrollbar order-1">
 
                     {/* Persona / Preset Grid */}
                     <section>
@@ -207,30 +212,48 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                             <h3 className="text-xs font-black text-[#001738] uppercase tracking-[0.25em]">Profiles</h3>
                             <button onClick={onOpenPresetModal} className="text-[10px] font-black text-[#E5005A] hover:underline uppercase tracking-widest">Manage</button>
                         </div>
-                        <div className="grid grid-cols-2 gap-4">
-                            {presets.slice(0, 4).map((preset) => (
+                        <div className="grid grid-cols-2 gap-x-4 gap-y-5 p-2">
+                            {/* Plain AI Option (Reset) */}
+                            <button
+                                onClick={() => onApplyPreset({ id: 'plain-ai' } as Preset)} // Special ID to trigger reset handled in handleApplyPreset
+                                className={`relative py-3.5 px-5 rounded-[24px] border-2 transition-all flex flex-col items-center gap-3 group shadow-sm
+                                    ${!activePresetId
+                                        ? 'bg-[#001738] border-[#001738] text-white shadow-lg shadow-navy-900/40 outline outline-2 outline-[#E5005A]/50 outline-offset-[3px]'
+                                        : 'bg-slate-50 border-transparent text-slate-400 hover:border-slate-200 hover:text-slate-600 hover:bg-slate-100'
+                                    }`}
+                            >
+                                <div className="transition-transform duration-300 group-hover:scale-110">
+                                    <AutoSparklesIcon className="w-8 h-8" />
+                                </div>
+                                <span className={`text-xs font-black text-center line-clamp-1 leading-tight ${!activePresetId ? 'text-white' : 'text-slate-600'}`}>プレーンAI</span>
+                                {!activePresetId && (
+                                    <div className="absolute top-3 right-3 w-2.5 h-2.5 rounded-full bg-[#E5005A] shadow-sm animate-pulse" />
+                                )}
+                            </button>
+
+                            {presets.slice(0, 3).map((preset) => (
                                 <button
                                     key={preset.id}
                                     onClick={() => onApplyPreset(preset)}
-                                    className={`relative p-5 rounded-[24px] border-2 transition-all flex flex-col items-center gap-3 group shadow-sm
+                                    className={`relative py-3.5 px-5 rounded-[24px] border-2 transition-all flex flex-col items-center gap-3 group shadow-sm
                                         ${activePresetId === preset.id
-                                            ? 'bg-white border-[#E5005A] text-[#001738] shadow-lg shadow-pink-100'
-                                            : 'bg-slate-50 border-transparent text-slate-400 hover:border-slate-200 hover:text-slate-600 hover:bg-white'
+                                            ? 'bg-[#001738] border-[#001738] text-white shadow-lg shadow-navy-900/40 outline outline-2 outline-[#E5005A]/50 outline-offset-[3px]'
+                                            : 'bg-slate-50 border-transparent text-slate-400 hover:border-slate-200 hover:text-slate-600 hover:bg-slate-100'
                                         }`}
                                 >
                                     <div className="transition-transform duration-300 group-hover:scale-110">
                                         {renderAvatar(preset.avatar, "w-8 h-8")}
                                     </div>
-                                    <span className="text-xs font-black text-center line-clamp-1 leading-tight">{preset.name}</span>
+                                    <span className={`text-xs font-black text-center line-clamp-1 leading-tight ${activePresetId === preset.id ? 'text-white' : 'text-slate-600'}`}>{preset.name}</span>
                                     {activePresetId === preset.id && (
                                         <div className="absolute top-3 right-3 w-2.5 h-2.5 rounded-full bg-[#E5005A] shadow-sm animate-pulse" />
                                     )}
                                 </button>
                             ))}
-                            {presets.length < 4 && (
+                            {presets.length < 3 && (
                                 <button
                                     onClick={onOpenPresetModal}
-                                    className="p-4 rounded-3xl border-2 border-dashed border-slate-100 bg-slate-50/50 text-slate-300 hover:border-indigo-200 hover:text-indigo-400 transition-all flex flex-col items-center gap-2 group"
+                                    className="py-3.5 px-4 rounded-3xl border-[3px] border-dashed border-slate-100 bg-slate-50/50 text-slate-300 hover:border-indigo-200 hover:text-indigo-400 transition-all flex flex-col items-center gap-2 group"
                                 >
                                     <div className="w-7 h-7 rounded-full bg-white flex items-center justify-center shadow-sm">
                                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><path d="M12 5v14M5 12h14" /></svg>
@@ -350,30 +373,32 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                 </div>
 
                 {/* Right Column: Input Canvas */}
-                <div className="flex-1 flex flex-col gap-8 overflow-hidden order-1 lg:order-2">
+                <div className="flex-1 flex flex-col gap-8 overflow-hidden order-2">
                     <div className="flex-1 bg-white rounded-[40px] lg:rounded-[48px] p-5 lg:p-12 border-2 border-slate-100 flex flex-col group transition-all hover:border-[#001738] shadow-2xl shadow-slate-200/50 relative isolate overflow-hidden">
 
                         {/* Shimmer effect for focus */}
                         <div className="absolute inset-0 bg-gradient-to-br from-[#001738]/5 via-transparent to-transparent opacity-0 group-focus-within:opacity-100 transition-opacity pointer-events-none" />
 
-                        {/* Purpose Selector Pills */}
-                        <div className="flex flex-nowrap gap-3 mb-10 overflow-x-auto scrollbar-hide -mx-2 px-2 py-3">
-                            {(isGoogleMaps ? GMAP_PURPOSES : PURPOSES).map((p) => {
-                                const isSelected = (isGoogleMaps ? gmapPurpose : postPurpose) === p.id;
-                                return (
-                                    <button
-                                        key={p.id}
-                                        onClick={() => (isGoogleMaps ? onGmapPurposeChange(p.id as GoogleMapPurpose) : onPostPurposeChange(p.id as PostPurpose))}
-                                        className={`px-6 py-3 rounded-full text-[11px] font-black transition-all border-2 flex items-center gap-3 whitespace-nowrap shadow-sm
-                                            ${isSelected
-                                                ? 'bg-[#001738] border-[#001738] text-white shadow-xl shadow-slate-300'
-                                                : 'bg-white border-slate-100 text-slate-400 hover:border-[#001738] hover:text-[#001738]'}`}
-                                    >
-                                        <span className={`w-4 h-4 text-inherit ${isSelected ? 'opacity-100' : 'opacity-40'}`}>{p.icon}</span>
-                                        {p.label}
-                                    </button>
-                                );
-                            })}
+                        {/* Purpose Selector - Segmented Control Approach */}
+                        <div className="flex items-center mb-10 relative z-20">
+                            <div className="flex items-center p-1.5 bg-slate-100/70 rounded-full border border-slate-200/50 overflow-x-auto scrollbar-hide">
+                                {(isGoogleMaps ? GMAP_PURPOSES : PURPOSES).map((p) => {
+                                    const isSelected = (isGoogleMaps ? gmapPurpose : postPurpose) === p.id;
+                                    return (
+                                        <button
+                                            key={p.id}
+                                            onClick={() => (isGoogleMaps ? onGmapPurposeChange(p.id as GoogleMapPurpose) : onPostPurposeChange(p.id as PostPurpose))}
+                                            className={`px-5 py-2.5 rounded-full text-[11px] font-black transition-all flex items-center gap-2.5 whitespace-nowrap flex-shrink-0
+                                                ${isSelected
+                                                    ? 'bg-white text-[#001738] shadow-lg shadow-slate-200/50 border border-slate-100'
+                                                    : 'text-slate-400 hover:text-slate-600'}`}
+                                        >
+                                            <span className={`w-3.5 h-3.5 text-inherit ${isSelected ? 'opacity-100' : 'opacity-40'}`}>{p.icon}</span>
+                                            {p.label}
+                                        </button>
+                                    );
+                                })}
+                            </div>
                         </div>
 
                         {/* Main Text Area */}
@@ -388,14 +413,50 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                         </div>
 
                         {/* Canvas Footer */}
-                        <div className="mt-10 pt-8 border-t-2 border-slate-50 flex items-center justify-between relative z-10">
-                            <div className="text-[10px] font-black text-slate-300 tracking-[0.3em] uppercase flex items-center gap-4">
-                                <span className="bg-slate-100 text-slate-400 px-3 py-1 rounded-full">{inputText.length} CHARS</span>
-                            </div>
-                            <div className="flex items-center gap-4">
-                                <button className="w-12 h-12 flex items-center justify-center bg-slate-50 hover:bg-[#E5005A] hover:text-white rounded-[18px] transition-all shadow-sm">
-                                    <SparklesIcon className="w-6 h-6" />
+                        <div className="mt-10 pt-8 border-t-2 border-slate-50 relative z-10">
+                            {/* Additional Instructions Indicator / Field */}
+                            {!isPromptExpanded ? (
+                                <button
+                                    onClick={() => setIsPromptExpanded(true)}
+                                    className="flex items-center gap-3 py-2 px-1 text-indigo-500/60 hover:text-indigo-600 transition-colors group mb-4"
+                                >
+                                    <div className="w-8 h-8 rounded-full bg-indigo-50 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <AutoSparklesIcon className="w-4 h-4" />
+                                    </div>
+                                    <span className="text-[11px] font-black uppercase tracking-wider">AIへの指示を追加（任意）</span>
                                 </button>
+                            ) : (
+                                <div className="flex items-center gap-3 bg-white border-2 border-indigo-100 rounded-full pl-5 pr-2 py-2 mb-4 animate-in zoom-in-95 duration-200">
+                                    <AutoSparklesIcon className="w-4 h-4 text-indigo-400 shrink-0" />
+                                    <input
+                                        type="text"
+                                        value={customPrompt}
+                                        onChange={(e) => onCustomPromptChange(e.target.value)}
+                                        placeholder="例：絵文字多めで、テンション高めに..."
+                                        className="flex-1 bg-transparent border-none focus:outline-none text-[13px] font-bold text-[#001738] placeholder:text-slate-300"
+                                        autoFocus
+                                    />
+                                    <button
+                                        onClick={() => {
+                                            onCustomPromptChange("");
+                                            setIsPromptExpanded(false);
+                                        }}
+                                        className="w-8 h-8 flex items-center justify-center text-slate-300 hover:text-slate-500 hover:bg-slate-50 rounded-full transition-all"
+                                    >
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><path d="M18 6L6 18M6 6l12 12" /></svg>
+                                    </button>
+                                </div>
+                            )}
+
+                            <div className="flex items-center justify-between">
+                                <div className="text-[10px] font-black text-slate-300 tracking-[0.3em] uppercase flex items-center gap-4">
+                                    <span className="bg-slate-100 text-slate-400 px-3 py-1 rounded-full">{inputText.length} CHARS</span>
+                                </div>
+                                <div className="flex items-center gap-4">
+                                    <button className="w-12 h-12 flex items-center justify-center bg-slate-50 hover:bg-[#E5005A] hover:text-white rounded-[18px] transition-all shadow-sm">
+                                        <SparklesIcon className="w-6 h-6" />
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
