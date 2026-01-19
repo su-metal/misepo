@@ -406,10 +406,22 @@ open11:00-close 17:00
         },
     ];
     const faqs = [
-        { q: "どのような業種で利用されていますか？", a: "カフェ、美容室、居酒屋、整体院、歯科医院など、地域密着型の店舗ビジネス全般でご利用いただいております。" },
-        { q: "パソコンが苦手ですが使えますか？", a: "はい、スマートフォンだけで完結します。LINEでメッセージを送るような感覚で操作できます。" },
-        { q: "MEO対策の効果はすぐに出ますか？", a: "継続的な投稿と口コミへの返信が重要です。MisePoを使えば作業頻度を高められるため、通常より早く効果が期待できます。" },
-        { q: "生成された文章はそのまま使っても大丈夫ですか？", a: "はい、そのまま投稿可能です。ただし、店主様ご自身の言葉を少し加えると、より温かみのある投稿になります。" },
+        {
+            q: "AIだと不自然な文章になりませんか？",
+            a: "MisePoは過去の投稿を学習し、あなたの口癖や語尾まで再現します。フォロワーからも「いつも通りですね」と言われるほど自然な文章が生成されるため、AI特有の堅苦しさはありません。"
+        },
+        {
+            q: "操作が難しそうです...",
+            a: "メモを1行打つだけです。LINEでメッセージを送るのと変わりません。PWA技術により0.5秒で起動するため、忙しい現場でもストレスなく使えます。"
+        },
+        {
+            q: "他店と同じような文章になりませんか？",
+            a: "大丈夫です。『熱い店長』『親しみやすいスタッフ』など、投稿の目的に合わせて人格を切り替えられるため、あなたのお店だけの個性が出ます。"
+        },
+        {
+            q: "生成された文章はそのまま使えますか？",
+            a: "はい、完成度が高いのでそのままコピーペーストして投稿できます。さらにこだわりたい方は、少しだけ手を加えることで、より『自分らしさ』を出せます。"
+        },
     ];
 
     return (
@@ -1345,6 +1357,41 @@ open11:00-close 17:00
                                 </div>
                             </div>
                         ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* Final Message (Pre-footer) */}
+            <section className="py-32 bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-900 text-white relative overflow-hidden">
+                <div className="absolute inset-0 opacity-20">
+                    <div className="absolute top-0 left-1/4 w-96 h-96 bg-indigo-500 rounded-full blur-[120px]" />
+                    <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-violet-500 rounded-full blur-[120px]" />
+                </div>
+                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+                    <div className="mb-8">
+                        <div className="inline-block px-4 py-2 bg-indigo-500/20 border border-indigo-400/30 rounded-full text-indigo-300 text-sm font-bold mb-6">
+                            最後に、店主様へ。
+                        </div>
+                    </div>
+                    <h2 className="text-4xl md:text-6xl font-black mb-8 leading-tight">
+                        365日のSNSの悩み、<br />
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 to-pink-300">これでおしまい。</span>
+                    </h2>
+                    <p className="text-xl md:text-2xl text-slate-300 leading-relaxed mb-12 max-w-2xl mx-auto">
+                        あなたの情熱は、本来のお客様のために。<br />
+                        文章作成は、あなたの『分身』に任せてください。
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                        <button
+                            onClick={() => window.location.href = '/start'}
+                            className="group px-8 py-5 bg-white text-slate-900 rounded-2xl font-bold text-lg shadow-2xl hover:shadow-indigo-500/50 hover:-translate-y-1 transition-all duration-300 flex items-center gap-2"
+                        >
+                            今すぐ無料で始める
+                            <Icons.ChevronUp className="rotate-90 group-hover:translate-x-1 transition-transform" size={20} />
+                        </button>
+                        <p className="text-sm text-slate-400">
+                            クレジットカード登録不要・7日間無料
+                        </p>
                     </div>
                 </div>
             </section>
