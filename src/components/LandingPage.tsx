@@ -1163,12 +1163,12 @@ open11:00-close 17:00
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
                         <div className="lg:w-1/2">
-                            <div className="inline-block px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold mb-3">アプリストア不要</div>
+                            <div className="inline-block px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold mb-3">ダウンロード不要</div>
                             <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4 leading-tight">
                                 アイコンタップから<br />
                                 <span className="text-indigo-600">5秒で投稿完了。</span>
                             </h2>
-                            <p className="text-base text-gray-600 mb-6 leading-relaxed">MisePoは最新技術「PWA」を採用。ブラウザで開いて「ホーム画面に追加」するだけで、ネイティブアプリを超えるスピードで起動します。</p>
+                            <p className="text-base text-gray-600 mb-6 leading-relaxed">MisePoは、アプリストアからのダウンロードは不要。Webサイトを「ホーム画面に追加」するだけで、普通のスマホアプリと同じようにサクサク動きます。</p>
                             <div className="space-y-3">
                                 <div className="flex items-start gap-3">
                                     <div className="bg-indigo-50 p-2 rounded-lg text-indigo-600 mt-1"><Icons.Clock size={18} /></div>
@@ -1181,7 +1181,7 @@ open11:00-close 17:00
                                     <div className="bg-indigo-50 p-2 rounded-lg text-indigo-600 mt-1"><Icons.ShieldCheck size={18} /></div>
                                     <div>
                                         <h3 className="font-bold text-gray-900 text-sm">常に最新バージョン</h3>
-                                        <p className="text-xs text-gray-600">ストアでの更新作業は不要。アクセスするだけで常に最新のAIモデルを利用できます。</p>
+                                        <p className="text-xs text-gray-600">アプリの更新作業は不要。アクセスするだけで常に最新のAIモデルを利用できます。</p>
                                     </div>
                                 </div>
                             </div>
