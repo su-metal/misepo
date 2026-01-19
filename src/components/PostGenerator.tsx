@@ -79,13 +79,30 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
 
       <div className="max-w-[1400px] mx-auto py-4 sm:py-8 relative z-10">
         {/* Header Module - Floating Glass */}
-        <div className="mb-10 px-3 sm:px-8 animate-in fade-in slide-in-from-top-4 duration-1000">
+        <div className="mb-6 px-3 sm:px-8 animate-in fade-in slide-in-from-top-4 duration-1000">
           <GeneratorHeader
             onOpenHistory={onOpenHistory || (() => { })}
             storeProfile={storeProfile}
             plan={plan}
           />
         </div>
+
+        {/* Usage Guide Link - Between Header and Input */}
+        {onOpenGuide && (
+          <div className="flex justify-end mb-4 px-3 sm:px-8">
+            <button
+              onClick={onOpenGuide}
+              className="flex items-center gap-2 text-slate-400 hover:text-[#001738] transition-colors text-xs font-bold"
+            >
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                <path d="M12 17h.01" />
+              </svg>
+              <span>使い方ガイド</span>
+            </button>
+          </div>
+        )}
 
         {/* 2-Column Layout */}
         <div className="px-1 sm:px-8 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
