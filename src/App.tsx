@@ -18,22 +18,26 @@ import { LockIcon, LogOutIcon } from './components/Icons';
 
 // Inline simple components for now
 const MobileHeader = ({ onOpenSidebar }: { onOpenSidebar: () => void }) => (
-  <header className="md:hidden flex items-center justify-between p-4 bg-white border-b border-stone-100 sticky top-0 z-30">
-    <h1 className="text-xl font-black text-stone-800">MisePo</h1>
-    <button onClick={onOpenSidebar} className="p-2 bg-stone-50 rounded-lg text-stone-600">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+  <header className="md:hidden flex items-center justify-between p-5 bg-white/80 backdrop-blur-xl border-b border-slate-100 sticky top-0 z-30 transition-all">
+    <h1 className="text-2xl font-black text-[#001738] tracking-tighter italic">
+      Mise<span className="text-[#E5005A]">Po</span>
+    </h1>
+    <button onClick={onOpenSidebar} className="p-3 bg-slate-50 rounded-2xl text-slate-400 hover:text-[#001738] transition-all active:scale-95 border border-slate-100 shadow-sm">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
     </button>
   </header>
 );
 
 const UpgradeBanner = ({ plan, onUpgrade }: { plan: string, onUpgrade: () => void }) => (
-  <div className="bg-black p-4 flex items-center justify-between text-white text-sm border-b border-lime/20 shadow-lg shadow-black/40">
-    <div className="flex items-center gap-2">
-      <span className="bg-lime px-2 py-0.5 rounded text-[10px] font-black uppercase text-black">Free Plan</span>
-      <span className="font-bold">無料枠をご利用中です。Proプランで作成回数が無制限になります。</span>
+  <div className="bg-[#001738] p-4 flex items-center justify-between text-white text-sm border-b border-[#E5005A]/20 shadow-2xl shadow-navy-900/40 relative overflow-hidden group">
+    <div className="absolute inset-0 bg-gradient-to-r from-[#E5005A]/10 to-transparent pointer-events-none"></div>
+    <div className="flex items-center gap-3 relative z-10">
+      <span className="bg-[#E5005A] px-3 py-1 rounded-full text-[10px] font-black uppercase text-white shadow-lg shadow-[#E5005A]/30 tracking-widest">Free Plan</span>
+      <span className="font-black tracking-tight hidden sm:inline">無料枠をご利用中です。Proプランで作成回数が無制限になります。</span>
+      <span className="font-black tracking-tight sm:hidden text-xs">無料枠をご利用中です。</span>
     </div>
-    <button onClick={onUpgrade} className="bg-lime text-black px-4 py-1.5 rounded-lg font-black text-xs hover:bg-lime-light transition shadow-lg shadow-lime/20">
-      Proへアップグレード
+    <button onClick={onUpgrade} className="bg-white text-[#001738] px-5 py-2 rounded-xl font-black text-xs hover:bg-[#E5005A] hover:text-white transition-all shadow-xl shadow-white/5 active:scale-95 relative z-10 uppercase tracking-widest">
+      Go Pro
     </button>
   </div>
 );
@@ -128,7 +132,6 @@ function App() {
       setInitDone(true);
     };
     init();
-    init();
   }, [authLoading, fetchProfile, fetchHistory, fetchPresets]);
 
   // Strict Redirect for Paid-Only Model
@@ -170,8 +173,8 @@ function App() {
 
   if (authLoading || !initDone) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-stone-50">
-        <div className="w-8 h-8 border-4 border-stone-200 border-t-black rounded-full animate-spin"></div>
+      <div className="flex items-center justify-center min-h-screen bg-white">
+        <div className="w-10 h-10 border-4 border-slate-100 border-t-[#E5005A] rounded-full animate-spin shadow-2xl shadow-[#E5005A]/10"></div>
       </div>
     );
   }
@@ -181,7 +184,7 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-stone-50 flex">
+    <div className="min-h-screen bg-white flex">
       <HistorySidebar
         isOpen={isSidebarOpen}
         toggleOpen={() => setIsSidebarOpen(false)}
@@ -200,6 +203,9 @@ function App() {
       />
 
       <div className="flex-1 flex flex-col min-w-0">
+        {!plan.isPro && isLoggedIn && <UpgradeBanner plan={plan.plan} onUpgrade={() => router.push('/start')} />}
+        <MobileHeader onOpenSidebar={() => setIsSidebarOpen(true)} />
+
         <main className="flex-1 overflow-y-auto overflow-x-hidden">
           <PostGenerator
             storeProfile={storeProfile!}
@@ -220,7 +226,6 @@ function App() {
       </div>
 
       {showGuide && <GuideModal isOpen={showGuide} onClose={() => setShowGuide(false)} />}
-      {showGuestDemo && <GuestDemoModal onClose={() => setShowGuestDemo(false)} />}
     </div>
   );
 }
