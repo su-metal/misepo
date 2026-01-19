@@ -1178,6 +1178,13 @@ open11:00-close 17:00
                                     </div>
                                 </div>
                                 <div className="flex items-start gap-3">
+                                    <div className="bg-green-50 p-2 rounded-lg text-green-600 mt-1"><Icons.Smartphone size={18} /></div>
+                                    <div>
+                                        <h3 className="font-bold text-gray-900 text-sm">スマホ容量を圧迫しない</h3>
+                                        <p className="text-xs text-gray-600">数MBの軽量設計。写真や動画の保存容量を気にせず使えます。</p>
+                                    </div>
+                                </div>
+                                <div className="flex items-start gap-3">
                                     <div className="bg-indigo-50 p-2 rounded-lg text-indigo-600 mt-1"><Icons.ShieldCheck size={18} /></div>
                                     <div>
                                         <h3 className="font-bold text-gray-900 text-sm">常に最新バージョン</h3>
@@ -1186,50 +1193,122 @@ open11:00-close 17:00
                                 </div>
                             </div>
                         </div>
-                        <div className="lg:w-1/2 w-full bg-gray-50 rounded-2xl p-5 border border-gray-100 shadow-inner">
-                            <h3 className="text-center font-bold text-gray-800 mb-4 text-sm">導入はたったの2ステップ</h3>
-                            <div className="grid grid-cols-2 gap-3 mb-4">
-                                <div className="bg-white p-3 rounded-lg shadow-sm flex flex-col items-center text-center">
-                                    <div className="w-6 h-6 bg-gray-900 text-white rounded-full flex items-center justify-center font-bold text-xs mb-2">1</div>
-                                    <Icons.Smartphone size={20} className="text-gray-400 mb-1" />
-                                    <p className="font-bold text-gray-700 text-xs">メニューを開く</p>
-                                    <p className="text-[10px] text-gray-500">Safari / Chrome</p>
+                        <div className="lg:w-1/2 w-full">
+                            {/* Animated Phone Mockup */}
+                            <div className="relative mx-auto w-56 border-gray-900 bg-gray-900 border-[8px] rounded-[2rem] h-[400px] shadow-2xl flex flex-col overflow-hidden ring-4 ring-gray-800/50">
+                                {/* Notch */}
+                                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-5 bg-gray-900 rounded-b-xl z-20" />
+
+                                {/* Screen Content - Animated Scenes */}
+                                <div className="flex-1 bg-white relative w-full h-full overflow-hidden">
+
+                                    {/* Scene 1: Browser with Share Menu (0-4s) */}
+                                    <div className="absolute inset-0 animate-pwa-scene1">
+                                        {/* Browser Header */}
+                                        <div className="h-10 bg-gray-100 flex items-center justify-between px-3 border-b border-gray-200 pt-4">
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-4 h-4 bg-gray-300 rounded-full" />
+                                                <div className="w-20 h-3 bg-gray-200 rounded-full" />
+                                            </div>
+                                            <div className="w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center animate-pulse">
+                                                <Icons.Share size={12} className="text-white" />
+                                            </div>
+                                        </div>
+                                        {/* Page Content */}
+                                        <div className="p-3 space-y-2 opacity-50">
+                                            <div className="w-full h-16 bg-indigo-100 rounded-lg" />
+                                            <div className="space-y-1">
+                                                <div className="w-3/4 h-2 bg-gray-200 rounded" />
+                                                <div className="w-1/2 h-2 bg-gray-200 rounded" />
+                                            </div>
+                                        </div>
+                                        {/* Share Menu Popup */}
+                                        <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-[0_-4px_20px_rgba(0,0,0,0.15)] animate-slide-up">
+                                            <div className="flex justify-center py-2"><div className="w-8 h-1 bg-gray-300 rounded-full" /></div>
+                                            <p className="px-4 pb-2 text-[10px] font-bold text-gray-400 uppercase tracking-wider">共有</p>
+                                            <div className="px-3 pb-4 space-y-1">
+                                                <div className="flex items-center gap-3 px-3 py-2 text-gray-500">
+                                                    <Icons.Send size={14} /><span className="text-xs">メッセージ</span>
+                                                </div>
+                                                <div className="flex items-center gap-3 px-3 py-2.5 bg-indigo-50 text-indigo-700 rounded-xl font-bold border-2 border-indigo-200 relative overflow-hidden animate-pulse">
+                                                    <Icons.PlusSquare size={16} />
+                                                    <span className="text-xs">ホーム画面に追加</span>
+                                                    <div className="absolute right-3 w-2 h-2 bg-red-500 rounded-full animate-ping" />
+                                                </div>
+                                                <div className="flex items-center gap-3 px-3 py-2 text-gray-500">
+                                                    <Icons.MoreHorizontal size={14} /><span className="text-xs">その他</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Scene 2: Confirmation Dialog (4-8s) */}
+                                    <div className="absolute inset-0 animate-pwa-scene2 opacity-0">
+                                        <div className="h-full bg-gray-100/80 flex items-center justify-center p-4">
+                                            <div className="bg-white rounded-2xl shadow-2xl p-4 w-full max-w-[180px] animate-scale-in">
+                                                <div className="flex items-center gap-3 mb-3">
+                                                    <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                                                        <Icons.Sparkles size={20} className="text-white" />
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-bold text-gray-900 text-sm">MisePo</p>
+                                                        <p className="text-[10px] text-gray-500">misepo.app</p>
+                                                    </div>
+                                                </div>
+                                                <div className="flex gap-2">
+                                                    <button className="flex-1 py-2 text-xs text-gray-500 bg-gray-100 rounded-lg">キャンセル</button>
+                                                    <button className="flex-1 py-2 text-xs text-white bg-indigo-600 rounded-lg font-bold animate-pulse">追加</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Scene 3: Home Screen with App Icon (8-12s) */}
+                                    <div className="absolute inset-0 animate-pwa-scene3 opacity-0">
+                                        <div className="h-full bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 p-4 pt-8">
+                                            {/* Status Bar */}
+                                            <div className="flex justify-between text-white text-[8px] mb-4 px-1">
+                                                <span>9:41</span>
+                                                <div className="flex gap-1">
+                                                    <div className="w-3 h-2 border border-white rounded-sm" />
+                                                </div>
+                                            </div>
+                                            {/* App Grid */}
+                                            <div className="grid grid-cols-4 gap-3">
+                                                {[1, 2, 3, 4, 5, 6, 7].map((i) => (
+                                                    <div key={i} className="flex flex-col items-center gap-1">
+                                                        <div className="w-10 h-10 bg-white/20 rounded-xl" />
+                                                        <div className="w-8 h-1 bg-white/30 rounded" />
+                                                    </div>
+                                                ))}
+                                                {/* MisePo Icon - Appears with animation */}
+                                                <div className="flex flex-col items-center gap-1 animate-bounce-in">
+                                                    <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg ring-2 ring-white/50 animate-pulse">
+                                                        <Icons.Sparkles size={18} className="text-white" />
+                                                    </div>
+                                                    <span className="text-[8px] text-white font-medium">MisePo</span>
+                                                </div>
+                                            </div>
+                                            {/* Success Toast */}
+                                            <div className="absolute bottom-16 left-4 right-4 bg-white/90 backdrop-blur-md rounded-xl p-3 flex items-center gap-2 shadow-xl animate-slide-up">
+                                                <Icons.CheckCircle size={18} className="text-green-500" />
+                                                <span className="text-xs font-bold text-gray-800">ホーム画面に追加しました！</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 </div>
-                                <div className="bg-white p-3 rounded-lg shadow-sm flex flex-col items-center text-center">
-                                    <div className="w-6 h-6 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-xs mb-2">2</div>
-                                    <Icons.PlusSquare size={20} className="text-indigo-600 mb-1" />
-                                    <p className="font-bold text-gray-700 text-xs">ホーム画面に追加</p>
-                                    <p className="text-[10px] text-gray-500">これだけで完了</p>
-                                </div>
+                                {/* Home Indicator */}
+                                <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-24 h-1 bg-gray-600 rounded-full" />
                             </div>
-                            <div className="relative mx-auto w-40 border-gray-800 bg-gray-800 border-[6px] rounded-[1.2rem] h-[240px] shadow-md flex flex-col overflow-hidden ring-2 ring-gray-100/50">
-                                <div className="flex-1 bg-white relative w-full h-full overflow-hidden flex flex-col">
-                                    <div className="h-6 bg-gray-100 flex items-center justify-center border-b border-gray-200 px-2">
-                                        <div className="w-full h-3 bg-gray-200 rounded-md flex items-center px-1">
-                                            <div className="w-1 h-1 bg-gray-400 rounded-full" />
-                                            <div className="ml-1 w-6 h-1 bg-gray-300 rounded-full opacity-50" />
-                                        </div>
-                                    </div>
-                                    <div className="flex-1 p-2 space-y-2 opacity-40">
-                                        <div className="w-full h-12 bg-indigo-200 rounded-md animate-pulse" />
-                                        <div className="space-y-1">
-                                            <div className="w-3/4 h-1 bg-gray-200 rounded" />
-                                            <div className="w-1/2 h-1 bg-gray-200 rounded" />
-                                            <div className="w-full h-1 bg-gray-200 rounded" />
-                                        </div>
-                                        <div className="w-full h-8 bg-gray-100 rounded-md" />
-                                    </div>
-                                    <div className="absolute bottom-0 w-full bg-white rounded-t-lg shadow-[0_-3px_10px_rgba(0,0,0,0.1)] pb-2 transform transition-transform duration-500">
-                                        <div className="flex justify-center py-1"><div className="w-5 h-0.5 bg-gray-300 rounded-full" /></div>
-                                        <div className="px-2 pb-0.5"><p className="text-[8px] font-bold text-gray-400 mb-0.5 uppercase tracking-wider">共有</p></div>
-                                        <div className="px-1 space-y-0.5">
-                                            <div className="flex items-center gap-2 px-2 py-1 text-gray-500"><Icons.Share size={8} /><span className="text-[9px]">送信</span></div>
-                                            <div className="flex items-center gap-2 px-2 py-1 bg-indigo-50 text-indigo-700 rounded-md font-bold border border-indigo-100 mx-0.5 shadow-sm relative overflow-hidden"><Icons.PlusSquare size={10} /><span className="text-[9px]">ホーム画面に追加</span><div className="absolute right-1 w-1 h-1 bg-red-500 rounded-full animate-ping" /></div>
-                                            <div className="flex items-center gap-2 px-2 py-1 text-gray-500"><Icons.MoreHorizontal size={8} /><span className="text-[9px]">その他</span></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+
+                            {/* Caption */}
+                            <p className="text-center text-xs text-gray-500 mt-4">
+                                <span className="inline-flex items-center gap-1">
+                                    <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                                    アニメーション再生中
+                                </span>
+                            </p>
                         </div>
                     </div>
                 </div>
