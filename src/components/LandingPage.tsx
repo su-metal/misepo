@@ -249,7 +249,7 @@ export default function LandingPage() {
     const [isDemoGenerating, setIsDemoGenerating] = useState(false);
     const [demoResult, setDemoResult] = useState("");
 
-    const heroRef = useRef<HTMLDivElement>(null);
+    const heroRef = useRef<HTMLDivElement>(null); // Keep for potential future scroll-to-hero functionality
 
     const [isMobile, setIsMobile] = useState(false);
     const [isRepeatUser, setIsRepeatUser] = useState(false);
@@ -313,32 +313,33 @@ open11:00-close 17:00
         const handleScroll = () => {
             const currentScroll = window.scrollY;
             setScrolled(currentScroll > 20);
-
-            // Sticky Hero Animation Logic
-            if (heroRef.current) {
-                const rect = heroRef.current.getBoundingClientRect();
-                const scrolled = -rect.top;
-                const totalScrollable = rect.height - window.innerHeight;
-
-                if (totalScrollable > 0) {
-                    const progressPct = Math.min(Math.max(scrolled / totalScrollable, 0), 1);
-                    // Map 0-100% to 0-11950 range (extended for longer generating phase)
-                    setHeroAnimationProgress(progressPct * 11950);
-                }
-            }
         };
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    // Animation States derived from progress
-    // On mobile, delay animations to allow phone to settle (400 target for sweet spot)
-    const mobileAnimationOffset = isMobile ? 400 : 0;
-    const effectiveProgress = Math.max(0, heroAnimationProgress - mobileAnimationOffset);
+    // Time-Based Animation Loop
+    const ANIMATION_DURATION = 11950; // Total duration in ms for one full loop
+    useEffect(() => {
+        let startTime: number | null = null;
+        let animationFrameId: number;
 
-    // Mobile Scroll (Move content up before animation starts)
-    // Lowered multiplier (0.4) to keep it more centered
-    const mobileScrollY = isMobile ? Math.min(heroAnimationProgress, mobileAnimationOffset) * 0.4 : 0;
+        const animate = (timestamp: number) => {
+            if (!startTime) startTime = timestamp;
+            const elapsed = timestamp - startTime;
+            const progress = elapsed % ANIMATION_DURATION; // Loop
+            setHeroAnimationProgress(progress);
+            animationFrameId = requestAnimationFrame(animate);
+        };
+
+        animationFrameId = requestAnimationFrame(animate);
+
+        return () => cancelAnimationFrame(animationFrameId);
+    }, []);
+
+    // Animation States derived from progress
+    // Since it's now time-based, we use progress directly
+    const effectiveProgress = heroAnimationProgress;
 
     // Data
     const userMemo = "・春限定のいちごタルト開始\n・サクサク生地と完熟いちご\n・自家製カスタード\n・渋谷駅徒歩5分\n・#春スイーツ";
@@ -481,11 +482,10 @@ open11:00-close 17:00
                 )}
             </header>
 
-            {/* New Sticky Hero Animation */}
-            <div ref={heroRef} className={`relative z-10 ${isRepeatUser ? 'h-[400vh]' : 'h-[1800vh]'}`}>
+            {/* New Hero Section (Auto-Loop Animation) */}
+            <div className="relative z-10 h-auto">
                 <div
-                    className="sticky top-0 h-[150vh] md:h-screen w-full overflow-hidden flex flex-col transition-transform duration-100 ease-out will-change-transform"
-                    style={{ transform: `translateY(-${mobileScrollY}px)` }}
+                    className="relative h-[150vh] md:h-screen w-full overflow-hidden flex flex-col"
                 >
                     <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/50 via-white to-purple-50/50" />
 
