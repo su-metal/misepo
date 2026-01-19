@@ -37,10 +37,12 @@ export default function LegalLayout({ children, title, lastUpdated }: LegalLayou
                             <span className="font-black text-xl tracking-tight text-slate-800">MisePo</span>
                         </a>
 
-                        <nav className="hidden md:flex items-center space-x-8">
-                            <a href="/" className="text-sm font-bold text-slate-600 hover:text-indigo-600 transition-colors relative group">
-                                トップページへ戻る
-                                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-indigo-600 transition-all group-hover:w-full opacity-50" />
+                        <nav className="hidden md:flex items-center space-x-6">
+                            <a href="/" className="text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors">
+                                トップページ
+                            </a>
+                            <a href="/start" className="bg-slate-900 text-white px-5 py-2.5 rounded-full text-sm font-bold shadow-lg shadow-slate-200 hover:bg-indigo-600 hover:shadow-indigo-200 hover:-translate-y-0.5 transition-all duration-300">
+                                アプリを始める
                             </a>
                         </nav>
 
@@ -54,7 +56,8 @@ export default function LegalLayout({ children, title, lastUpdated }: LegalLayou
                 {isMenuOpen && (
                     <div className="md:hidden absolute top-full left-0 w-full bg-white/95 backdrop-blur-xl border-b border-gray-100 shadow-xl animate-fade-in">
                         <div className="px-4 py-6 space-y-3">
-                            <a href="/" className="block px-4 py-3 text-base font-bold text-slate-700 hover:bg-slate-50 rounded-xl transition-colors">トップページへ戻る</a>
+                            <a href="/" className="block px-4 py-3 text-base font-bold text-slate-700 hover:bg-slate-50 rounded-xl transition-colors">トップページ</a>
+                            <a href="/start" className="block px-4 py-3 text-base font-bold text-indigo-600 bg-indigo-50 rounded-xl transition-colors mt-2">アプリを始める</a>
                         </div>
                     </div>
                 )}
