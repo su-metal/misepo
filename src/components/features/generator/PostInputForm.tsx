@@ -130,7 +130,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                         className={`flex-1 flex items-center justify-center gap-2 py-3 text-xs sm:text-sm font-bold transition-all relative group
                             ${platforms.includes(Platform.X)
                                 ? 'bg-white text-gray-900 border-t-2 border-gray-900'
-                                : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50 bg-gray-50/50'
+                                : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50 bg-gray-100'
                             }`}
                     >
                         <div className="flex items-center gap-2">
@@ -146,7 +146,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                         className={`flex-1 flex items-center justify-center gap-2 py-3 text-xs sm:text-sm font-bold transition-all relative group
                             ${platforms.includes(Platform.Instagram)
                                 ? 'bg-white text-pink-600 border-t-2 border-pink-500'
-                                : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50 bg-gray-50/50'
+                                : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50 bg-gray-100'
                             }`}
                     >
                         <div className="flex items-center gap-2">
@@ -162,7 +162,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                         className={`flex-1 flex items-center justify-center gap-2 py-3 text-xs sm:text-sm font-bold transition-all relative group
                             ${platforms.includes(Platform.GoogleMaps)
                                 ? 'bg-white text-emerald-600 border-t-2 border-emerald-500'
-                                : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50 bg-gray-50/50'
+                                : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50 bg-gray-100'
                             }`}
                     >
                         <div className="flex items-center gap-2">
