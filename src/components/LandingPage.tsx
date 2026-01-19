@@ -789,7 +789,67 @@ open11:00-close 17:00
                 </div>
             </section>
 
-            {/* Market Data (Why Now?) */}
+            {/* Market Data (Rational Bridge) */}
+            <section className="py-24 bg-white relative overflow-hidden">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                    <div className="text-center mb-16">
+                        <span className="text-indigo-600 font-bold tracking-wider text-sm uppercase mb-3 block">Why Now?</span>
+                        <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-6 tracking-tight leading-tight">
+                            でも、お店探しをする人の<span className="text-indigo-600">7割以上</span>が、<br className="hidden md:block" />SNSを見ています。
+                        </h2>
+                        <p className="text-slate-500 text-lg max-w-2xl mx-auto leading-relaxed">
+                            データが語る『今、やるべき理由』。<br />
+                            避けては通れない、集客の新常識です。
+                        </p>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-8 lg:gap-12 max-w-5xl mx-auto">
+                        {/* Instagram Data */}
+                        <div className="bg-slate-50 rounded-3xl p-8 border border-slate-200 relative group hover:border-pink-200 transition-colors duration-500">
+                            <div className="flex items-center gap-4 mb-6">
+                                <div className="w-12 h-12 bg-pink-100 text-pink-500 rounded-xl flex items-center justify-center shrink-0">
+                                    <Icons.Instagram size={24} />
+                                </div>
+                                <div>
+                                    <div className="text-sm font-bold text-slate-400 uppercase tracking-wider">Discovery</div>
+                                    <h3 className="text-xl font-bold text-slate-900">認知・発見</h3>
+                                </div>
+                            </div>
+                            <div className="flex items-baseline gap-1 mb-4">
+                                <span className="text-6xl font-black text-slate-900"><CountUp end={70} /></span>
+                                <span className="text-2xl font-bold text-slate-400">%</span>
+                            </div>
+                            <p className="text-slate-600 font-bold leading-relaxed">
+                                グルメ検索でInstagramを利用。<br />
+                                <span className="bg-pink-100 text-pink-800 px-1">「保存」された投稿</span>が行き先候補に。
+                            </p>
+                        </div>
+
+                        {/* Google Maps Data */}
+                        <div className="bg-slate-50 rounded-3xl p-8 border border-slate-200 relative group hover:border-indigo-200 transition-colors duration-500">
+                            <div className="flex items-center gap-4 mb-6">
+                                <div className="w-12 h-12 bg-green-100 text-green-600 rounded-xl flex items-center justify-center shrink-0">
+                                    <Icons.MapPin size={24} />
+                                </div>
+                                <div>
+                                    <div className="text-sm font-bold text-slate-400 uppercase tracking-wider">Decision</div>
+                                    <h3 className="text-xl font-bold text-slate-900">決定・来店</h3>
+                                </div>
+                            </div>
+                            <div className="flex items-baseline gap-1 mb-4">
+                                <span className="text-6xl font-black text-slate-900"><CountUp end={73} /></span>
+                                <span className="text-2xl font-bold text-slate-400">%</span>
+                            </div>
+                            <p className="text-slate-600 font-bold leading-relaxed">
+                                マップ検索後の来店率。<br />
+                                決め手は<span className="bg-green-100 text-green-800 px-1">信頼できる口コミ返信</span>です。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Solution (Benefits) */}
             <section className="py-24 bg-slate-900 text-white overflow-hidden relative" >
                 <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
                     <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-indigo-500/20 rounded-full blur-[100px]" />
@@ -797,64 +857,52 @@ open11:00-close 17:00
                 </div>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     <div className="text-center mb-20">
-                        <span className="text-indigo-400 font-bold tracking-wider text-sm uppercase mb-3 block">Why MisePo?</span>
+                        <span className="text-indigo-400 font-bold tracking-wider text-sm uppercase mb-3 block">Solution</span>
                         <h2 className="text-4xl md:text-6xl font-black mb-6 tracking-tight">
-                            集客の<span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-pink-400">『黄金ルート』</span>を<br className="md:hidden" />逃していませんか？
+                            『みせぽ』は、<span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-pink-400">あなたを学習するAI。</span>
                         </h2>
                         <p className="text-slate-400 text-lg max-w-2xl mx-auto leading-relaxed">
-                            現代の消費者は、Instagramで「発見」し、Googleマップで「決定」します。<br />
-                            この2つのプラットフォームを同時に攻略することが、繁盛店への最短ルートです。
+                            もう、ゼロから悩む必要はありません。<br />
+                            過去の投稿を読み込むだけで、あなたの口癖、温かさ、お店の雰囲気を再現します。
                         </p>
                     </div>
 
-                    <div className="grid md:grid-cols-2 gap-8 lg:gap-12 max-w-5xl mx-auto">
-                        {/* Instagram Data */}
-                        <div className="bg-slate-800/50 backdrop-blur-xl rounded-3xl p-8 border border-slate-700 relative group hover:border-pink-500/50 transition-colors duration-500">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-pink-500/20 to-transparent rounded-bl-full opacity-50" />
-                            <div className="flex items-center gap-4 mb-8">
-                                <div className="w-14 h-14 bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-pink-900/20">
-                                    <Icons.Instagram size={28} />
-                                </div>
-                                <div>
-                                    <span className="text-pink-400 font-bold text-sm tracking-wider uppercase">Discovery</span>
-                                    <h3 className="text-2xl font-bold">認知・発見</h3>
-                                </div>
+                    <div className="grid md:grid-cols-3 gap-8 lg:gap-12 max-w-6xl mx-auto">
+                        {/* Benefit 1: Natural Voice */}
+                        <div className="bg-slate-800/50 backdrop-blur-xl rounded-3xl p-8 border border-slate-700 relative group hover:border-indigo-500/50 transition-colors duration-500">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-indigo-500/20 to-transparent rounded-bl-full opacity-50" />
+                            <div className="w-14 h-14 bg-indigo-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-indigo-900/20 mb-6">
+                                <Icons.MessageCircle size={28} />
                             </div>
-                            <div className="mb-6 flex items-baseline gap-2">
-                                <span className="text-6xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400">
-                                    <CountUp end={70} />
-                                </span>
-                                <span className="text-2xl font-bold text-slate-500">%</span>
-                            </div>
-                            <p className="text-xl font-bold mb-3">お店選びの起点</p>
+                            <h3 className="text-2xl font-bold mb-3">あなたの「文体」を<br />コピー</h3>
                             <p className="text-slate-400 leading-relaxed">
-                                グルメ情報の検索において、約7割のユーザーがInstagramを利用。<br />
-                                <span className="text-white font-bold underline decoration-pink-500/50 decoration-2 underline-offset-4">「保存」された投稿</span>が、週末の行き先候補になります。
+                                過去の投稿を学習し、あなたの口癖や温かさを再現。<br />
+                                フォロワーに「これAI？」と思わせない<span className="text-white font-bold">自然な発信</span>が可能に。
                             </p>
                         </div>
 
-                        {/* Google Maps Data */}
-                        <div className="bg-slate-800/50 backdrop-blur-xl rounded-3xl p-8 border border-slate-700 relative group hover:border-indigo-500/50 transition-colors duration-500">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-indigo-500/20 to-transparent rounded-bl-full opacity-50" />
-                            <div className="flex items-center gap-4 mb-8">
-                                <div className="w-14 h-14 bg-green-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-green-900/20">
-                                    <Icons.MapPin size={28} />
-                                </div>
-                                <div>
-                                    <span className="text-green-400 font-bold text-sm tracking-wider uppercase">Decision</span>
-                                    <h3 className="text-2xl font-bold">決定・来店</h3>
-                                </div>
+                        {/* Benefit 2: Persona Switching */}
+                        <div className="bg-slate-800/50 backdrop-blur-xl rounded-3xl p-8 border border-slate-700 relative group hover:border-pink-500/50 transition-colors duration-500">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-pink-500/20 to-transparent rounded-bl-full opacity-50" />
+                            <div className="w-14 h-14 bg-pink-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-pink-900/20 mb-6">
+                                <Icons.Users size={28} />
                             </div>
-                            <div className="mb-6 flex items-baseline gap-2">
-                                <span className="text-6xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400">
-                                    <CountUp end={73} />
-                                </span>
-                                <span className="text-2xl font-bold text-slate-500">%</span>
-                            </div>
-                            <p className="text-xl font-bold mb-3">来店の決め手</p>
+                            <h3 className="text-2xl font-bold mb-3">「中の人」を<br />自由自在に</h3>
                             <p className="text-slate-400 leading-relaxed">
-                                マップ検索後の来店率は驚異の高水準。<br />
-                                最後のひと押しは、<span className="text-white font-bold underline decoration-green-500/50 decoration-2 underline-offset-4">丁寧な口コミ返信</span>による「信頼感」です。
+                                「熱い店長」「親しみやすい看板娘」「クールな公式」など、投稿の目的に合わせて<span className="text-white font-bold">人格を切り替え</span>。
+                            </p>
+                        </div>
+
+                        {/* Benefit 3: Review Replies */}
+                        <div className="bg-slate-800/50 backdrop-blur-xl rounded-3xl p-8 border border-slate-700 relative group hover:border-green-500/50 transition-colors duration-500">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-green-500/20 to-transparent rounded-bl-full opacity-50" />
+                            <div className="w-14 h-14 bg-green-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-green-900/20 mb-6">
+                                <Icons.Heart size={28} />
+                            </div>
+                            <h3 className="text-2xl font-bold mb-3">クチコミ返信の<br />「心の壁」を撤去</h3>
+                            <p className="text-slate-400 leading-relaxed">
+                                コピペするだけで、誠実であなたらしい返信案を<span className="text-white font-bold">30秒で作成</span>。<br />
+                                お客様との絆を深める時間を短縮。
                             </p>
                         </div>
                     </div>
@@ -862,7 +910,7 @@ open11:00-close 17:00
                     <div className="mt-16 text-center">
                         <div className="inline-flex items-center gap-2 bg-indigo-600/20 text-indigo-300 px-6 py-3 rounded-full border border-indigo-500/30">
                             <Icons.CheckCircle size={20} />
-                            <span className="font-bold">MisePoなら、この2つを同時に攻略できます</span>
+                            <span className="font-bold">「これなら自分の言葉として発信できる」という安心感を提供します</span>
                         </div>
                     </div>
                 </div>
@@ -1129,6 +1177,61 @@ open11:00-close 17:00
                 </div>
             </section>
 
+            {/* User Voices */}
+            <section className="py-24 bg-slate-50 relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-full opacity-30 pointer-events-none">
+                    <div className="absolute top-[10%] left-[5%] w-[400px] h-[400px] bg-indigo-100 rounded-full blur-[100px]" />
+                    <div className="absolute bottom-[10%] right-[5%] w-[400px] h-[400px] bg-pink-100 rounded-full blur-[100px]" />
+                </div>
+                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                    <div className="text-center mb-16">
+                        <span className="text-indigo-600 font-bold tracking-wider text-sm uppercase mb-3 block">User Voices</span>
+                        <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-6 tracking-tight">
+                            ユーザーの声
+                        </h2>
+                        <p className="text-slate-600 text-lg max-w-xl mx-auto">
+                            実際にMisePoをご利用いただいている店主様の声をご紹介します。
+                        </p>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-8">
+                        {/* Testimonial 1 */}
+                        <div className="bg-white rounded-3xl p-8 shadow-xl shadow-indigo-100/50 border border-slate-100 relative group hover:-translate-y-1 transition-transform duration-300">
+                            <div className="absolute top-6 right-6 text-indigo-200">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M6.5 10c-.223 0-.437.034-.65.065.069-.232.14-.468.254-.68.114-.308.292-.575.469-.844.148-.291.409-.488.601-.737.201-.242.475-.403.692-.604.213-.21.492-.315.714-.463.232-.133.434-.28.65-.35l.539-.222.474-.197L9.758 4.03c-.258.092-.47.166-.721.27-.257.085-.516.2-.765.325-.247.126-.479.282-.724.428-.2.162-.462.277-.638.48-.199.178-.379.393-.579.563a7 7 0 0 0-.653.888c-.169.259-.343.54-.482.829-.145.293-.236.63-.364.939-.116.33-.208.66-.275 1.002-.087.332-.128.67-.171.997S4 10.79 4 11.13v.75A4.38 4.38 0 0 0 8.38 16.25c.57 0 1.13-.1 1.66-.3a4.37 4.37 0 0 0 2.66-4.01c0-1.17-.44-2.26-1.24-3.05A4.37 4.37 0 0 0 8.38 7.65c-.68 0-1.34.14-1.93.4a.5.5 0 0 0 .05.95z" /><path d="M17.5 10c-.223 0-.437.034-.65.065.069-.232.14-.468.254-.68.114-.308.292-.575.469-.844.148-.291.409-.488.601-.737.201-.242.475-.403.692-.604.213-.21.492-.315.714-.463.232-.133.434-.28.65-.35l.539-.222.474-.197-1.514-1.97c-.258.092-.47.166-.721.27-.257.085-.516.2-.765.325-.247.126-.479.282-.724.428-.2.162-.462.277-.638.48-.199.178-.379.393-.579.563a7 7 0 0 0-.653.888c-.169.259-.343.54-.482.829-.145.293-.236.63-.364.939-.116.33-.208.66-.275 1.002-.087.332-.128.67-.171.997s-.063.667-.063 1.007v.75a4.38 4.38 0 0 0 4.38 4.87c.57 0 1.13-.1 1.66-.3a4.37 4.37 0 0 0 2.66-4.01c0-1.17-.44-2.26-1.24-3.05a4.37 4.37 0 0 0-3.08-1.24c-.68 0-1.34.14-1.93.4a.5.5 0 0 0 .05.95z" /></svg>
+                            </div>
+                            <p className="text-slate-700 text-lg font-medium leading-relaxed mb-6 italic">
+                                「AI特有の堅苦しさがなくて、<span className="text-indigo-600 font-bold not-italic">常連さんからも『最近の投稿、楽しそうですね』と声をかけられました</span>。」
+                            </p>
+                            <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-md">☕</div>
+                                <div>
+                                    <p className="font-bold text-slate-900">カフェオーナーさま</p>
+                                    <p className="text-sm text-slate-500">東京都渋谷区</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Testimonial 2 */}
+                        <div className="bg-white rounded-3xl p-8 shadow-xl shadow-indigo-100/50 border border-slate-100 relative group hover:-translate-y-1 transition-transform duration-300">
+                            <div className="absolute top-6 right-6 text-pink-200">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M6.5 10c-.223 0-.437.034-.65.065.069-.232.14-.468.254-.68.114-.308.292-.575.469-.844.148-.291.409-.488.601-.737.201-.242.475-.403.692-.604.213-.21.492-.315.714-.463.232-.133.434-.28.65-.35l.539-.222.474-.197L9.758 4.03c-.258.092-.47.166-.721.27-.257.085-.516.2-.765.325-.247.126-.479.282-.724.428-.2.162-.462.277-.638.48-.199.178-.379.393-.579.563a7 7 0 0 0-.653.888c-.169.259-.343.54-.482.829-.145.293-.236.63-.364.939-.116.33-.208.66-.275 1.002-.087.332-.128.67-.171.997S4 10.79 4 11.13v.75A4.38 4.38 0 0 0 8.38 16.25c.57 0 1.13-.1 1.66-.3a4.37 4.37 0 0 0 2.66-4.01c0-1.17-.44-2.26-1.24-3.05A4.37 4.37 0 0 0 8.38 7.65c-.68 0-1.34.14-1.93.4a.5.5 0 0 0 .05.95z" /><path d="M17.5 10c-.223 0-.437.034-.65.065.069-.232.14-.468.254-.68.114-.308.292-.575.469-.844.148-.291.409-.488.601-.737.201-.242.475-.403.692-.604.213-.21.492-.315.714-.463.232-.133.434-.28.65-.35l.539-.222.474-.197-1.514-1.97c-.258.092-.47.166-.721.27-.257.085-.516.2-.765.325-.247.126-.479.282-.724.428-.2.162-.462.277-.638.48-.199.178-.379.393-.579.563a7 7 0 0 0-.653.888c-.169.259-.343.54-.482.829-.145.293-.236.63-.364.939-.116.33-.208.66-.275 1.002-.087.332-.128.67-.171.997s-.063.667-.063 1.007v.75a4.38 4.38 0 0 0 4.38 4.87c.57 0 1.13-.1 1.66-.3a4.37 4.37 0 0 0 2.66-4.01c0-1.17-.44-2.26-1.24-3.05a4.37 4.37 0 0 0-3.08-1.24c-.68 0-1.34.14-1.93.4a.5.5 0 0 0 .05.95z" /></svg>
+                            </div>
+                            <p className="text-slate-700 text-lg font-medium leading-relaxed mb-6 italic">
+                                「スタッフ数人で運用していますが、<span className="text-pink-600 font-bold not-italic">誰が書いても『お店のトーン』が揃うのが安心</span>。任せられるようになりました。」
+                            </p>
+                            <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 bg-gradient-to-br from-pink-400 to-rose-500 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-md">✂️</div>
+                                <div>
+                                    <p className="font-bold text-slate-900">美容室オーナーさま</p>
+                                    <p className="text-sm text-slate-500">大阪府大阪市</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             {/* Pricing */}
             <section id="pricing" className="py-24 bg-white border-t border-slate-100">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1215,11 +1318,11 @@ open11:00-close 17:00
                             </ul>
 
                             <button onClick={() => window.location.href = '/start'} className="w-full py-5 rounded-2xl font-bold text-xl bg-white text-slate-900 hover:bg-indigo-50 transition-all duration-300 shadow-xl hover:shadow-2xl hover:translate-y-[-2px] relative z-10 flex items-center justify-center gap-2 group-hover:shadow-indigo-500/20">
-                                7日間無料で試す <Icons.ChevronUp className="rotate-90" size={20} />
+                                今すぐ「分身」を作る <Icons.ChevronUp className="rotate-90" size={20} />
                             </button>
                             <p className="text-center text-xs text-slate-500 mt-6">
-                                ※8日目以降は月額1,480円で自動更新されます。<br />
-                                違約金や期間の縛りはありません。
+                                ✓ クレジットカード登録不要で体験可能<br />
+                                ※8日目以降は月額1,480円で自動更新。違約金なしでいつでも解約OK。
                             </p>
                         </div>
                     </div>
@@ -1290,6 +1393,6 @@ open11:00-close 17:00
                 .no-scrollbar::-webkit-scrollbar { display: none; }
                 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
             `}</style>
-        </div>
+        </div >
     );
 }
