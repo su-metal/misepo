@@ -210,6 +210,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
   const [mobileView, setMobileView] = useState<'list' | 'edit'>('list');
   const [expandingPlatform, setExpandingPlatform] = useState<Platform | null>(null);
   const [isSanitizing, setIsSanitizing] = useState(false);
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
 
   const sensors = useSensors(useSensor(PointerSensor));
   const goToListView = () => setMobileView('list');
@@ -311,11 +312,23 @@ const PresetModal: React.FC<PresetModalProps> = ({
         });
       }
 
-      setName('');
-      setAvatar('👔');
-      setCustomPrompt('');
-      setPostSamples({});
-      setSelectedPresetId(null);
+      setName(trimmedName);
+      setAvatar(avatar);
+      setCustomPrompt(trimmedPrompt);
+      setPostSamples(postSamples);
+
+      // Show success toast
+      setShowSuccessToast(true);
+      setTimeout(() => setShowSuccessToast(false), 3000);
+
+      // Only reset if it was a completely NEW creation
+      if (!selectedPresetId) {
+        setName('');
+        setAvatar('👔');
+        setCustomPrompt('');
+        setPostSamples({});
+        setSelectedPresetId(null);
+      }
     } catch (err) {
       console.error('preset save failed:', err);
       setErrorMessage('保存に失敗しました。時間をおいて再度お試しください。');
@@ -433,9 +446,6 @@ const PresetModal: React.FC<PresetModalProps> = ({
       <div
         className={`md:w-5/12 lg:w-4/12 bg-slate-50/50 border-r border-slate-100 flex flex-col shrink-0 h-full relative overflow-hidden ${listVisibilityClass}`}
       >
-        {/* Background Pattern */}
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(0,17,45,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,17,45,0.03)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none"></div>
-
         <div className="relative z-10 p-8 flex flex-col h-full">
           <div className="mb-10 flex items-center justify-between gap-4">
             <div className="space-y-2">
@@ -461,7 +471,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
           <div className="mb-6 bg-[#001738]/5 border border-[#001738]/10 rounded-2xl p-4">
             <p className="text-[11px] text-[#001738] font-black leading-relaxed flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-[#E5005A] animate-pulse"></span>
-              上位4件が入力画面に表示されます
+              上位3件が入力画面に表示されます
             </p>
           </div>
 
@@ -712,7 +722,15 @@ const PresetModal: React.FC<PresetModalProps> = ({
         </div>
 
         <div className="p-8 md:p-10 border-t border-slate-100 bg-slate-50/50 flex flex-col md:flex-row items-stretch justify-between gap-6 shrink-0 backdrop-blur-sm">
-          <div className="flex-1 flex flex-col gap-2">
+          <div className="flex-1 flex flex-col gap-2 relative">
+            {showSuccessToast && (
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 z-[50] animate-in slide-in-from-bottom-2 fade-in duration-500">
+                <div className="bg-white text-[#001738] px-5 py-2.5 rounded-xl shadow-[0_10px_30px_-5px_rgba(0,0,0,0.1)] flex items-center gap-2 border border-slate-100 whitespace-nowrap">
+                  <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
+                  <span className="text-[11px] font-black uppercase tracking-widest">保存しました</span>
+                </div>
+              </div>
+            )}
             <button
               onClick={handleSave}
               disabled={isSaveDisabled}
@@ -759,6 +777,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
           <div className="flex-1 overflow-hidden">{modalBody}</div>
         </div>
       </div>
+
+      {/* Success Toast within Modal - REMOVED from here to move inside footer */}
     </div>,
     document.body
   );
@@ -769,8 +789,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
         <div className="p-8 border-b border-slate-100 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-4">
             <div className={`p-3 rounded-2xl shadow-sm ${expandingPlatform === Platform.Instagram ? 'bg-pink-100 text-pink-600' :
-                expandingPlatform === Platform.X ? 'bg-[#001738] text-white' :
-                  'bg-blue-600 text-white'
+              expandingPlatform === Platform.X ? 'bg-[#001738] text-white' :
+                'bg-blue-600 text-white'
               }`}>
               {expandingPlatform === Platform.Instagram && <InstagramIcon className="w-6 h-6" />}
               {expandingPlatform === Platform.X && <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4l11.733 16h4.267l-11.733 -16z" /><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" /></svg>}
@@ -805,8 +825,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
               }}
               disabled={isSanitizing || !(postSamples[expandingPlatform!] || '').trim()}
               className={`flex items-center gap-2 px-5 py-3 rounded-2xl font-black text-[11px] transition-all transform hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 ${expandingPlatform === Platform.Instagram ? 'bg-pink-50 text-[#E5005A] hover:bg-pink-100' :
-                  expandingPlatform === Platform.X ? 'bg-slate-100 text-[#001738] hover:bg-slate-200' :
-                    'bg-blue-50 text-blue-600 hover:bg-blue-100'
+                expandingPlatform === Platform.X ? 'bg-slate-100 text-[#001738] hover:bg-slate-200' :
+                  'bg-blue-50 text-blue-600 hover:bg-blue-100'
                 }`}
             >
               {isSanitizing ? (
