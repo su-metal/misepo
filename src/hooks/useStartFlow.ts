@@ -18,14 +18,14 @@ export function useStartFlow() {
   const intent = useMemo(() => {
     if (typeof window === "undefined") return "login";
     const fromUrl = searchParams.get("intent") as "trial" | "login" | null;
-    const fromStorage = window.sessionStorage.getItem("login_intent") as "trial" | "login" | null;
+    const fromStorage = window.localStorage.getItem("login_intent") as "trial" | "login" | null;
     return fromUrl ?? fromStorage ?? "login";
   }, [searchParams]);
 
   const startGoogleLogin = async (nextIntent: "trial" | "login") => {
     // ログイン後のために intent を保存
     if (typeof window !== "undefined") {
-      window.sessionStorage.setItem("login_intent", nextIntent);
+      window.localStorage.setItem("login_intent", nextIntent);
     }
 
     const origin = window.location.origin;
@@ -50,13 +50,19 @@ export function useStartFlow() {
     if (res.ok && data?.ok && data?.url) {
       // 決済へ進むので意図をクリア
       if (typeof window !== "undefined") {
-        window.sessionStorage.removeItem("login_intent");
+        window.localStorage.removeItem("login_intent");
       }
       window.location.href = data.url;
     } else if (data?.error === "already_active") {
+      // 既に有効ならストレージをクリアして遷移
+      if (typeof window !== "undefined") {
+        window.localStorage.removeItem("login_intent");
+      }
       router.replace("/");
     } else {
       setIsRedirecting(false);
+      // エラー時も一度クリアしないとループする可能性があるが、
+      // リトライのために残すべきか？ -> 今回は手動リトライさせるため残す（またはアラートで通知）
       alert(data?.error ?? "Checkout failed");
     }
   }, [router]);
@@ -86,7 +92,7 @@ export function useStartFlow() {
       if (allowed) {
         // 利用可能なら意図をクリアして遷移
         if (typeof window !== "undefined") {
-          window.sessionStorage.removeItem("login_intent");
+          window.localStorage.removeItem("login_intent");
         }
         router.replace("/generate");
         return;
