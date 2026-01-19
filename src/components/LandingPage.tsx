@@ -542,6 +542,34 @@ open11:00-close 17:00
                                         : 'scale-100 translate-x-0 rotate-0 opacity-100 z-30 blur-none'
                                     }`}
                             >
+                                {/* Narrative Floating Label */}
+                                <div className={`absolute -top-16 left-1/2 -translate-x-1/2 whitespace-nowrap z-50 transition-all duration-300 ${effectiveProgress > 100 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+                                    <div className="bg-slate-900/90 backdrop-blur-md text-white px-4 py-2 rounded-full font-bold text-sm shadow-xl border border-slate-700/50 flex items-center gap-2">
+                                        {effectiveProgress < 2000 && (
+                                            <>
+                                                <span className="w-2 h-2 bg-indigo-500 rounded-full animate-pulse" />
+                                                1. メモを入力中...
+                                            </>
+                                        )}
+                                        {effectiveProgress >= 2000 && effectiveProgress < 2750 && (
+                                            <>
+                                                <Icons.Sparkles size={14} className="text-yellow-400 animate-spin" />
+                                                2. AIが文章を生成中...
+                                            </>
+                                        )}
+                                        {effectiveProgress >= 2750 && (
+                                            <>
+                                                <Icons.CheckCircle size={14} className="text-green-400" />
+                                                3. 文章が完成！
+                                            </>
+                                        )}
+                                    </div>
+                                    {/* Arrow */}
+                                    <div className="absolute top-full left-1/2 -translate-x-1/2 text-slate-900/90 -mt-1">
+                                        <svg width="12" height="6" viewBox="0 0 12 6" fill="currentColor"><path d="M6 6L0 0H12L6 6Z" /></svg>
+                                    </div>
+                                </div>
+
                                 <div className="w-full h-full bg-slate-900 rounded-[3rem] border-8 border-slate-900 shadow-2xl overflow-hidden ring-4 ring-slate-900/10 relative">
                                     <div className="absolute top-0 left-1/2 -translate-x-1/2 h-7 w-40 bg-slate-900 rounded-b-2xl z-40" />
                                     <div className="w-full h-full bg-slate-50 relative flex flex-col pt-10">
@@ -562,19 +590,27 @@ open11:00-close 17:00
                                                         <span className={`${isTypingDone ? 'hidden' : 'inline'} animate-pulse text-indigo-500`}>|</span>
                                                     </div>
                                                 </div>
-                                                <div className={`bg-indigo-600 text-white rounded-xl py-3 font-bold text-center shadow-lg shadow-indigo-200 transition-all duration-300 ${isGenerating ? 'scale-95 bg-indigo-500' : ''}`}>
-                                                    {isGenerating ? (
-                                                        <span className="flex items-center justify-center gap-2">
-                                                            <Icons.Sparkles size={16} className="animate-spin" /> 生成中...
-                                                        </span>
-                                                    ) : isPosted ? (
-                                                        "投稿完了！"
-                                                    ) : isResultShown ? (
-                                                        "投稿する"
-                                                    ) : (
-                                                        "生成する"
+
+                                                {/* Button Container with Tap Effect */}
+                                                <div className="relative">
+                                                    <div className={`bg-indigo-600 text-white rounded-xl py-3 font-bold text-center shadow-lg shadow-indigo-200 transition-all duration-300 ${isGenerating ? 'scale-95 bg-indigo-500' : ''}`}>
+                                                        {isGenerating ? (
+                                                            <span className="flex items-center justify-center gap-2">
+                                                                <Icons.Sparkles size={16} className="animate-spin" /> 生成中...
+                                                            </span>
+                                                        ) : isResultShown ? (
+                                                            "投稿する"
+                                                        ) : (
+                                                            "生成する"
+                                                        )}
+                                                    </div>
+
+                                                    {/* Tap Visual Cue at 2000 (Start of Generation) */}
+                                                    {effectiveProgress >= 1900 && effectiveProgress <= 2300 && (
+                                                        <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-white/50 rounded-full animate-ping pointer-events-none" />
                                                     )}
                                                 </div>
+
                                             </div>
                                         </div>
                                     </div>
@@ -590,6 +626,32 @@ open11:00-close 17:00
                                     }`}
                             >
                                 <div className="w-full h-full bg-white rounded-[2.5rem] border-4 border-slate-900 shadow-xl overflow-hidden relative flex flex-col">
+
+                                    {/* Success Overlay when posted (Non-blocking) */}
+                                    {isPosted && (
+                                        <div className="absolute inset-0 z-50 pointer-events-none overflow-hidden">
+                                            {/* Large Confetti (Background) - Always show when posted */}
+                                            <div className="absolute inset-0">
+                                                <div className="absolute top-1/4 left-1/4 w-3 h-3 bg-yellow-400 rotate-12 animate-fall" style={{ animationDuration: '3s' }} />
+                                                <div className="absolute top-1/3 right-1/4 w-2 h-2 bg-pink-500 -rotate-12 animate-fall" style={{ animationDuration: '2.5s', animationDelay: '0.2s' }} />
+                                                <div className="absolute top-1/2 left-1/3 w-3 h-3 bg-indigo-500 rotate-45 animate-fall" style={{ animationDuration: '4s', animationDelay: '0.1s' }} />
+                                                <div className="absolute top-10 left-10 w-2 h-2 bg-green-400 rotate-45 animate-fall" style={{ animationDuration: '2.8s', animationDelay: '0.5s' }} />
+                                                <div className="absolute top-20 right-10 w-2 h-2 bg-purple-400 -rotate-12 animate-fall" style={{ animationDuration: '3.2s', animationDelay: '0.3s' }} />
+                                            </div>
+
+                                            {/* Success Toast (Bottom) - Only show after scroll finishes (>6800) */}
+                                            <div className={`absolute bottom-16 left-1/2 -translate-x-1/2 flex items-center gap-3 bg-slate-900/95 backdrop-blur-md text-white px-5 py-3 rounded-full shadow-2xl border border-slate-700/50 w-[90%] justify-center transition-all duration-500 transform ${effectiveProgress > 6800 ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+                                                <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center shrink-0 animate-pulse">
+                                                    <Icons.Check size={14} strokeWidth={4} />
+                                                </div>
+                                                <div>
+                                                    <p className="font-bold text-sm leading-none">Posted Successfully!</p>
+                                                    <p className="text-[10px] text-slate-400 font-medium mt-0.5">to Instagram</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+
                                     {/* Header */}
                                     <div className="px-4 py-3 flex items-center justify-between border-b border-gray-100 z-10 bg-white sticky top-0 shrink-0">
                                         <div className="font-bold text-lg font-script tracking-tighter">Instagram</div>
