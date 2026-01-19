@@ -206,6 +206,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
           <div className="flex items-center justify-center gap-6">
             <a href="/terms" className="text-[10px] font-black text-stone-400 hover:text-lime transition-colors uppercase tracking-widest">Terms</a>
             <a href="/privacy" className="text-[10px] font-black text-stone-400 hover:text-lime transition-colors uppercase tracking-widest">Privacy</a>
+            <a href="/commercial-law" className="text-[10px] font-black text-stone-400 hover:text-lime transition-colors uppercase tracking-widest">Law</a>
           </div>
           <p className="text-[9px] font-bold text-stone-300 text-center mt-3 uppercase tracking-widest">© 2026 MisePo Inc.</p>
         </div>
