@@ -322,8 +322,8 @@ open11:00-close 17:00
 
                 if (totalScrollable > 0) {
                     const progressPct = Math.min(Math.max(scrolled / totalScrollable, 0), 1);
-                    // Map 0-100% to 0-9000 range for ultra-smooth, extended timeline with grace period
-                    setHeroAnimationProgress(progressPct * 9000);
+                    // Map 0-100% to 0-9500 range (extended for longer generating phase)
+                    setHeroAnimationProgress(progressPct * 9500);
                 }
             }
         };
@@ -332,12 +332,13 @@ open11:00-close 17:00
     }, []);
 
     // Animation States derived from progress
-    // On mobile, small delay to allow phone to settle before animation starts
-    const mobileAnimationOffset = isMobile ? 200 : 0;
+    // On mobile, delay animations to allow phone to settle (400 target for sweet spot)
+    const mobileAnimationOffset = isMobile ? 400 : 0;
     const effectiveProgress = Math.max(0, heroAnimationProgress - mobileAnimationOffset);
 
     // Mobile Scroll (Move content up before animation starts)
-    const mobileScrollY = isMobile ? Math.min(heroAnimationProgress, mobileAnimationOffset) * 0.8 : 0;
+    // Lowered multiplier (0.4) to keep it more centered
+    const mobileScrollY = isMobile ? Math.min(heroAnimationProgress, mobileAnimationOffset) * 0.4 : 0;
 
     // Data
     const userMemo = "・春限定のいちごタルト開始\n・サクサク生地と完熟いちご\n・自家製カスタード\n・渋谷駅徒歩5分\n・#春スイーツ";
@@ -350,25 +351,24 @@ open11:00-close 17:00
     let currentText = "";
     if (effectiveProgress < 2000) {
         currentText = userMemo.slice(0, Math.floor(userMemo.length * typingProgress));
-    } else if (effectiveProgress < 2750) {
-        currentText = ""; // Generating... (Reduced by 250)
+    } else if (effectiveProgress < 3250) {
+        currentText = ""; // Generating... (Extended duration)
     } else {
         currentText = generatedResult;
     }
 
     // Generation Phase
     const isTypingDone = effectiveProgress > 2000;
-    const isGenerating = effectiveProgress > 2000 && effectiveProgress < 2750;
-    const isResultShown = effectiveProgress > 2750; // Result visible
+    const isGenerating = effectiveProgress > 2000 && effectiveProgress < 3250;
+    const isResultShown = effectiveProgress > 3250; // Result visible
 
-    // Post/Swap Phase (Trigger at 4050)
-    const isPosted = effectiveProgress > 4050;
+    // Post/Swap Phase (Trigger at 4550 - adjusted for longer generation)
+    const isPosted = effectiveProgress > 4550;
 
     // Inertia Scroll (Ease Out)
-    // Start at 4150, duration 2850 -> Ends at 7000
-    // (Duration increased by 450: 2400 + 250 + 200)
-    // Total timeline is 9000, so 7000-9000 is "Grace Period" (Locked Wait)
-    const rawScrollProgress = Math.min(Math.max((effectiveProgress - 4150) / 2850, 0), 1);
+    // Start at 4650, duration 2850 -> Ends at 7500
+    // Total timeline is 9000, so 7500-9000 is "Grace Period" (Locked Wait)
+    const rawScrollProgress = Math.min(Math.max((effectiveProgress - 4650) / 2850, 0), 1);
     const easeOutCubic = 1 - Math.pow(1 - rawScrollProgress, 3);
     const internalScrollProgress = easeOutCubic;
 
@@ -377,12 +377,13 @@ open11:00-close 17:00
     };
 
     // Text Opacity Logic for Fade-In Effect
+    // Smoother transitions between phases
     let textOpacity = 1;
-    if (effectiveProgress >= 2000 && effectiveProgress < 2750) {
+    if (effectiveProgress >= 2000 && effectiveProgress < 3250) {
         textOpacity = 0.5; // Generating pulse
-    } else if (effectiveProgress >= 2750) {
-        // Fade in result (2750-3050)
-        textOpacity = Math.min(Math.max((effectiveProgress - 2750) / 300, 0), 1);
+    } else if (effectiveProgress >= 3250) {
+        // Fade in result (3250-3750) - Slower fade (500ms equivalent)
+        textOpacity = Math.min(Math.max((effectiveProgress - 3250) / 500, 0), 1);
     }
 
     const problems = [
@@ -536,7 +537,7 @@ open11:00-close 17:00
 
                             {/* CENTER PHONE (MisePo) */}
                             <div
-                                className={`absolute inset-0 transition-all duration-700 ease-in-out origin-center
+                                className={`absolute inset-0 transition-all duration-1000 ease-in-out origin-center
                                     ${isPosted
                                         ? 'scale-75 -translate-x-[40vw] md:-translate-x-[200px] -rotate-12 opacity-60 z-10 blur-[1px]'
                                         : 'scale-100 translate-x-0 rotate-0 opacity-100 z-30 blur-none'
@@ -551,13 +552,13 @@ open11:00-close 17:00
                                                 1. メモを入力中...
                                             </>
                                         )}
-                                        {effectiveProgress >= 2000 && effectiveProgress < 2750 && (
+                                        {effectiveProgress >= 2000 && effectiveProgress < 3250 && (
                                             <>
                                                 <Icons.Sparkles size={14} className="text-yellow-400 animate-spin" />
                                                 2. AIが文章を生成中...
                                             </>
                                         )}
-                                        {effectiveProgress >= 2750 && (
+                                        {effectiveProgress >= 3250 && (
                                             <>
                                                 <Icons.CheckCircle size={14} className="text-green-400" />
                                                 3. 文章が完成！
@@ -584,7 +585,7 @@ open11:00-close 17:00
                                                     <span className="px-2 py-1 bg-indigo-50 text-indigo-600 text-[10px] font-bold rounded">Instagram</span>
                                                     <span className="px-2 py-1 bg-slate-50 text-slate-400 text-[10px] font-bold rounded">Tone: Casual</span>
                                                 </div>
-                                                <div className={`space-y-2 ${isGenerating ? 'animate-pulse' : ''}`} style={{ opacity: textOpacity }}>
+                                                <div className={`space-y-2 transition-all duration-500 ease-in-out ${isGenerating ? 'animate-pulse' : ''}`} style={{ opacity: textOpacity }}>
                                                     <div className="text-sm text-slate-700 min-h-[60px] whitespace-pre-wrap font-medium">
                                                         {currentText}
                                                         <span className={`${isTypingDone ? 'hidden' : 'inline'} animate-pulse text-indigo-500`}>|</span>
@@ -619,7 +620,7 @@ open11:00-close 17:00
 
                             {/* LEFT PHONE (Instagram) */}
                             <div
-                                className={`absolute inset-0 w-[260px] h-[520px] top-20 left-[-100px] transition-all duration-700 ease-in-out origin-center
+                                className={`absolute inset-0 w-[260px] h-[520px] top-20 left-[-100px] transition-all duration-1000 ease-in-out origin-center
                                     ${isPosted
                                         ? 'scale-[1.15] translate-x-[120px] -translate-y-16 rotate-0 z-40'
                                         : '-translate-x-[100px] translate-y-0 -rotate-12 z-20 opacity-80'
