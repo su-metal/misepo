@@ -68,6 +68,15 @@ body {
 .text-accent { color: var(--accent) !important; }
 .border-accent { border-color: var(--accent) !important; }
 
+/* Platform Brand Colors */
+.bg-brand-green { background-color: #34A853 !important; }
+.text-brand-green { color: #34A853 !important; }
+.border-brand-green { border-color: #34A853 !important; }
+
+.bg-brand-instagram { background-color: #E1306C !important; }
+.text-brand-instagram { color: #E1306C !important; }
+.border-brand-instagram { border-color: #E1306C !important; }
+
 /* Custom Scrollbar */
 .scrollbar-hide::-webkit-scrollbar {
     display: none;
