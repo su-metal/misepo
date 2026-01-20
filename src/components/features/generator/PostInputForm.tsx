@@ -224,9 +224,6 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                 <button onClick={onOpenPresetModal} className="text-[10px] font-black text-[#E5005A] hover:underline uppercase tracking-widest">Manage</button>
                             </div>
                             <div className="w-full flex bg-white rounded-[32px] p-1.5 shadow-sm border border-slate-100/60 relative overflow-hidden h-full">
-                                <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
-                                    <span className="text-[120px] leading-none font-black text-[#001738]">P</span>
-                                </div>
                                 <div className="relative z-10 p-4 md:p-6 w-full">
                                     <div className="grid grid-cols-2 gap-3 md:gap-4">
                                         {/* Plain AI Option */}
@@ -244,7 +241,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                             <span className={`text-2xl transition-transform duration-300 group-hover:scale-110 ${!activePresetId ? 'opacity-100' : 'opacity-60 grayscale group-hover:grayscale-0'}`}>
                                                 <AutoSparklesIcon className="w-6 h-6" />
                                             </span>
-                                            <span className={`text-[11px] font-bold truncate tracking-wide text-center w-full ${!activePresetId ? 'opacity-100' : 'opacity-60'}`}>プレーンAI</span>
+                                            <span className={`text-[11px] font-bold truncate tracking-wide text-center w-full ${!activePresetId ? 'opacity-100' : 'text-slate-500'}`}>プレーンAI</span>
                                         </button>
 
                                         {/* Profiles Grid */}
@@ -257,7 +254,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                                     className={`group relative py-5 px-3 rounded-[24px] transition-all duration-300 flex flex-col items-center justify-center gap-2
                                                         ${isSelected
                                                             ? 'bg-[#001738] text-white shadow-lg shadow-[#001738]/20 ring-2 ring-[#001738]/5 ring-offset-2'
-                                                            : 'bg-slate-50/50 hover:bg-slate-100/80 text-slate-400 hover:text-slate-600 border border-slate-100/50 hover:border-slate-200'}
+                                                            : 'hover:bg-slate-100/80 text-slate-400 hover:text-slate-600 border border-slate-100/50 hover:border-slate-200'}
                                                     `}
                                                 >
                                                     {isSelected && (
@@ -315,7 +312,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                                     onClick={() => onLengthChange(l.id)}
                                                     className={`flex-1 py-2 px-1 rounded-[12px] text-[10px] font-black transition-all flex items-center justify-center gap-1.5 relative ${length === l.id
                                                         ? 'bg-[#001738] text-white shadow-lg shadow-navy-900/20'
-                                                        : 'text-slate-400 hover:text-slate-600 hover:bg-white'
+                                                        : 'text-slate-500 hover:text-slate-700 hover:bg-white'
                                                         }`}
                                                 >
                                                     <span>{l.label}</span>
@@ -333,7 +330,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                         <button
                                             onClick={() => onXConstraint140Change(!xConstraint140)}
                                             className={`w-full p-2 rounded-[16px] border transition-all flex items-center justify-between group shadow-sm
-                                            ${xConstraint140 ? 'bg-slate-900 border-slate-900 text-white shadow-xl shadow-slate-200/50' : 'bg-white border-slate-100 text-slate-400 hover:border-slate-300'}`}
+                                            ${xConstraint140 ? 'bg-slate-900 border-slate-900 text-white shadow-xl shadow-slate-200/50' : 'bg-white border-slate-100 text-slate-500 hover:border-slate-300'}`}
                                         >
                                             <span className="text-[10px] font-black ml-2">140文字</span>
                                             <div className={`w-4 h-4 rounded-full transition-all flex items-center justify-center mr-1 ${xConstraint140 ? 'bg-indigo-500' : 'bg-slate-100'}`}>
@@ -421,7 +418,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                                     className={`px-3 py-2.5 rounded-[16px] text-[11px] font-black transition-all flex items-center justify-center gap-1.5
                                                             ${isSelected
                                                             ? 'bg-[#001738] text-white shadow-lg shadow-navy-900/20'
-                                                            : 'text-slate-400 hover:text-slate-600 hover:bg-slate-50'}`}
+                                                            : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'}`}
                                                 >
                                                     <span className={`flex items-center justify-center ${isSelected ? 'opacity-100' : 'opacity-40'}`}>{p.icon}</span>
                                                     <span>{p.label}</span>
@@ -465,7 +462,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                     }, 100);
                                 }}
                                 placeholder="投稿したい内容や伝えたいことを自由に入力してください..."
-                                className="w-full h-full bg-transparent text-[#001738] text-lg font-bold leading-relaxed placeholder:text-slate-100 focus:outline-none resize-none"
+                                className="w-full h-full bg-transparent text-[#001738] text-lg font-bold leading-relaxed placeholder:text-slate-400 focus:outline-none resize-none"
                             />
                         </div>
 
@@ -508,11 +505,6 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                             <div className="flex items-center justify-between">
                                 <div className="text-[10px] font-black text-slate-300 tracking-[0.3em] uppercase flex items-center gap-4">
                                     <span className="bg-slate-100 text-slate-400 px-3 py-1 rounded-full">{inputText.length} CHARS</span>
-                                </div>
-                                <div className="flex items-center gap-4">
-                                    <button className="w-12 h-12 flex items-center justify-center bg-slate-50 hover:bg-[#E5005A] hover:text-white rounded-[18px] transition-all shadow-sm">
-                                        <SparklesIcon className="w-6 h-6" />
-                                    </button>
                                 </div>
                             </div>
                         </div>
