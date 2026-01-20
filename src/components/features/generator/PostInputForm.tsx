@@ -410,7 +410,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                             <div className="flex-1 w-full lg:w-1/2 flex flex-col gap-2 relative">
                                 <h3 className="text-xs font-black text-[#001738] uppercase tracking-[0.25em] px-1">返信の目的</h3>
                                 <div className="bg-white rounded-[24px] p-4 border border-slate-100/60 shadow-sm flex items-center justify-center h-full relative overflow-hidden group">
-                                    <div className={`flex flex-row flex-wrap gap-2 justify-center transition-all duration-500 ${starRating !== null ? 'blur-[2px] opacity-40' : ''}`}>
+                                    <div className={`grid grid-cols-2 gap-2 w-full transition-all duration-500 ${starRating !== null ? 'blur-[2px] opacity-40' : ''}`}>
                                         {GMAP_PURPOSES.map((p) => {
                                             const isSelected = gmapPurpose === p.id;
                                             return (
@@ -418,13 +418,13 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                                     key={p.id}
                                                     onClick={() => onGmapPurposeChange(p.id as GoogleMapPurpose)}
                                                     disabled={starRating !== null}
-                                                    className={`px-4 py-2 rounded-[16px] text-[11px] font-black transition-all flex items-center gap-2
+                                                    className={`px-3 py-2.5 rounded-[16px] text-[11px] font-black transition-all flex items-center justify-center gap-1.5
                                                             ${isSelected
                                                             ? 'bg-[#001738] text-white shadow-lg shadow-navy-900/20'
                                                             : 'text-slate-400 hover:text-slate-600 hover:bg-slate-50'}`}
                                                 >
-                                                    <span className={`w-4 h-4 text-inherit ${isSelected ? 'opacity-100' : 'opacity-40'}`}>{p.icon}</span>
-                                                    {p.label}
+                                                    <span className={`flex items-center justify-center ${isSelected ? 'opacity-100' : 'opacity-40'}`}>{p.icon}</span>
+                                                    <span>{p.label}</span>
                                                 </button>
                                             );
                                         })}

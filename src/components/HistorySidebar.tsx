@@ -1,6 +1,6 @@
 import React from 'react';
 import { GeneratedPost, Platform, GeneratedResult, StoreProfile } from '../types';
-import { XIcon, InstagramIcon, GoogleMapsIcon, LockIcon, TrashIcon, HistoryIcon, HelpIcon, LogOutIcon, ChevronDownIcon } from './Icons';
+import { CloseIcon, XIcon, InstagramIcon, GoogleMapsIcon, LockIcon, TrashIcon, HistoryIcon, HelpIcon, LogOutIcon, ChevronDownIcon } from './Icons';
 
 interface HistorySidebarProps {
   history: GeneratedPost[];
@@ -73,7 +73,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
               className="w-10 h-10 flex items-center justify-center rounded-2xl bg-white text-slate-400 hover:text-[#001738] hover:bg-slate-50 transition-all border border-slate-200 active:scale-95 shadow-sm"
               aria-label="Close menu"
             >
-              <XIcon className="w-5 h-5" />
+              <CloseIcon className="w-5 h-5" />
             </button>
           </div>
 
