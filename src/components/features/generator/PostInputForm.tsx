@@ -278,7 +278,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                     <div className="flex flex-col lg:flex-row gap-6 lg:items-stretch">
 
                         {/* LEFT COL: Profiles */}
-                        <div className="glass-panel p-5 rounded-[32px] border border-white/40 shadow-sm flex flex-col gap-4 h-full">
+                        <div className="glass-panel p-5 rounded-[32px] border border-white/40 shadow-sm flex flex-col gap-4 h-full flex-1">
                             <div className="flex items-center justify-between px-2">
                                 <h3 className="text-xs font-black text-primary uppercase tracking-[0.25em]">Profiles</h3>
                                 <button onClick={onOpenPresetModal} className="text-[10px] font-black text-accent hover:underline uppercase tracking-widest">Manage</button>
@@ -325,7 +325,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                         </div>
 
                         {/* RIGHT COL: Style Settings (Tone, Length, X Limit, Emojis) */}
-                        <div className="glass-panel p-5 rounded-[32px] border border-white/40 shadow-sm flex flex-col gap-5 h-full">
+                        <div className="glass-panel p-5 rounded-[32px] border border-white/40 shadow-sm flex flex-col gap-5 h-full flex-1">
                             <div className="flex items-center justify-between px-2">
                                 <h3 className="text-xs font-black text-primary uppercase tracking-[0.25em]">Style</h3>
                             </div>
