@@ -12,6 +12,7 @@ import { GUEST_PROFILE } from './constants';
 import PostGenerator from './components/PostGenerator';
 import OnboardingFlow from './components/Onboarding'; // Corrected
 import HistorySidebar from './components/HistorySidebar'; // Corrected
+import AccountSettingsModal from './components/AccountSettingsModal';
 import GuestDemoModal from './components/GuestDemoModal';
 import GuideModal from './components/GuideModal';
 import { LockIcon, LogOutIcon } from './components/Icons';
@@ -45,6 +46,7 @@ function App() {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showGuide, setShowGuide] = useState(false);
   const [showGuestDemo, setShowGuestDemo] = useState(false);
+  const [showAccountSettings, setShowAccountSettings] = useState(false);
   const [initDone, setInitDone] = useState(false);
 
   const isLoggedIn = !!user;
@@ -186,6 +188,7 @@ function App() {
         onOpenLogin={() => router.push('/start')}
         onOpenGuide={() => setShowGuide(true)}
         onOpenSettings={() => setShowOnboarding(true)}
+        onOpenAccount={() => setShowAccountSettings(true)}
         onLogout={logout}
         storeProfile={storeProfile}
       />
@@ -213,6 +216,15 @@ function App() {
       </div>
 
       {showGuide && <GuideModal isOpen={showGuide} onClose={() => setShowGuide(false)} />}
+
+      {showAccountSettings && (
+        <AccountSettingsModal
+          user={user}
+          plan={plan}
+          onClose={() => setShowAccountSettings(false)}
+          onLogout={logout}
+        />
+      )}
     </div>
   );
 }
