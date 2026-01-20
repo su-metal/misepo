@@ -202,14 +202,10 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                             {res.data.map((text, iIdx) => (
                                                 <div key={iIdx} className="group relative bg-white border-2 border-slate-100 rounded-[48px] shadow-2xl shadow-slate-200/50 hover:border-[#001738] transition-all duration-500 flex flex-col min-h-[500px] overflow-hidden p-12">
 
-                                                    {/* Header Label */}
-                                                    <div className="flex items-center justify-between mb-8">
-                                                        <span className="text-[10px] font-black text-[#001738] bg-slate-100 px-4 py-1.5 rounded-full uppercase tracking-[0.3em]">
-                                                            Variant {iIdx + 1}
-                                                        </span>
-                                                        <div className="flex items-center gap-3">
-                                                            <div className="w-2 h-2 rounded-full bg-[#E5005A] animate-pulse" />
-                                                            <span className="text-[10px] font-black text-[#E5005A] uppercase tracking-widest">Optimized</span>
+                                                    {/* Platform Icon Header */}
+                                                    <div className="flex items-center justify-center mb-10">
+                                                        <div className="transform transition-transform group-hover:scale-110 duration-500">
+                                                            {theme.icon}
                                                         </div>
                                                     </div>
 
@@ -323,3 +319,5 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
         </>
     );
 };
+
+export default PostResultTabs;
