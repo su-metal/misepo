@@ -151,7 +151,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
 
                     {/* Integrated Tab Navigation Header */}
                     {results.length > 0 && (
-                        <div className="flex items-center gap-1 p-3 bg-slate-50/50 border-b-2 border-slate-100 overflow-x-auto no-scrollbar">
+                        <div className="flex items-center w-full border-b border-slate-100">
                             {results.map((res, idx) => {
                                 const isSelected = activeTab === idx;
                                 return (
@@ -159,14 +159,20 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                         key={res.platform}
                                         onClick={() => onTabChange(idx)}
                                         className={`
-                                            flex items-center gap-2.5 px-6 py-3 rounded-[20px] text-[10px] font-black tracking-[0.2em] transition-all shrink-0 uppercase
+                                            flex-1 flex items-center justify-center gap-2.5 py-5 text-[10px] font-black tracking-[0.2em] transition-all uppercase relative
+                                            first:rounded-tl-[46px] last:rounded-tr-[46px]
                                             ${isSelected
-                                                ? 'bg-white text-[#001738] shadow-sm ring-1 ring-slate-200'
-                                                : 'text-slate-400 hover:text-slate-600 hover:bg-white/50'}
+                                                ? 'bg-white text-[#001738] z-10'
+                                                : 'bg-slate-50 text-slate-400 hover:text-slate-600 hover:bg-slate-100'}
                                         `}
                                     >
                                         {getTabIcon(res.platform, isSelected)}
                                         <span>{res.platform === Platform.X ? 'X (Twitter)' : res.platform}</span>
+
+                                        {/* Active Indicator Line (Optional visual separation if needed, or rely on bg color) */}
+                                        {isSelected && (
+                                            <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-white transform translate-y-[1px]" />
+                                        )}
                                     </button>
                                 );
                             })}
