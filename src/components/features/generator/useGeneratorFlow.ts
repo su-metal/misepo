@@ -412,9 +412,16 @@ export function useGeneratorFlow(props: {
           break;
         case Platform.GoogleMaps:
           if (storeProfile.googlePlaceId) {
-            window.open(`https://www.google.com/maps/search/?api=1&query=GOOGLE&query_place_id=${storeProfile.googlePlaceId}`, "_blank");
+            const query = encodeURIComponent(storeProfile.name || 'Store');
+            window.open(`https://www.google.com/maps/search/?api=1&query=${query}&query_place_id=${storeProfile.googlePlaceId}`, "_blank");
           } else {
-            window.open("https://business.google.com/", "_blank");
+            // Fallback: Search by name if Place ID is missing
+            const query = encodeURIComponent(storeProfile.name || '');
+            if (query) {
+              window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, "_blank");
+            } else {
+              window.open("https://business.google.com/", "_blank");
+            }
           }
           break;
       }

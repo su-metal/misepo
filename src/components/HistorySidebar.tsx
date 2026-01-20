@@ -12,6 +12,7 @@ interface HistorySidebarProps {
   onDelete: (id: string) => void;
   onOpenGuide?: () => void;
   onOpenSettings?: () => void;
+  onOpenAccount?: () => void;
   onLogout?: () => void;
   storeProfile?: StoreProfile | null;
 }
@@ -26,6 +27,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
   onDelete,
   onOpenGuide,
   onOpenSettings,
+  onOpenAccount,
   onLogout,
   storeProfile
 }) => {
@@ -77,24 +79,27 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
 
           {isLoggedIn ? (
             <div className="space-y-6">
-              <div className="flex items-center gap-4 p-4 rounded-[2rem] bg-white border border-slate-100 shadow-xl shadow-indigo-100/50">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-indigo-200">
+              <button
+                onClick={() => { onOpenSettings?.(); toggleOpen(); }}
+                className="flex items-center gap-4 p-4 rounded-[2rem] bg-white border border-slate-100 shadow-xl shadow-indigo-100/50 w-full hover:scale-[1.02] transition-transform text-left group"
+              >
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-indigo-200 group-hover:shadow-indigo-300 transition-shadow">
                   {(storeProfile?.name?.[0] || 'S').toUpperCase()}
                 </div>
                 <div>
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Account</p>
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Store Profile</p>
                   <p className="text-sm font-black text-slate-800 tracking-tight">{storeProfile?.name || 'User'}</p>
                 </div>
-              </div>
+              </button>
 
               {/* Quick Navigation Pack */}
               <div className="grid grid-cols-2 gap-3">
                 <button
-                  onClick={() => { onOpenSettings?.(); toggleOpen(); }}
+                  onClick={() => { onOpenAccount?.(); toggleOpen(); }}
                   className="flex flex-col items-center gap-2 p-4 rounded-[20px] bg-white border border-slate-100 hover:border-indigo-100 hover:bg-slate-50/80 shadow-sm transition-all group"
                 >
                   <ChevronDownIcon className="w-5 h-5 text-slate-400 group-hover:text-primary rotate-180 transition-colors" />
-                  <span className="text-[10px] font-black text-slate-500 group-hover:text-primary tracking-widest uppercase transition-colors">Profile</span>
+                  <span className="text-[10px] font-black text-slate-500 group-hover:text-primary tracking-widest uppercase transition-colors">Account</span>
                 </button>
                 <button
                   onClick={() => { onOpenGuide?.(); toggleOpen(); }}
