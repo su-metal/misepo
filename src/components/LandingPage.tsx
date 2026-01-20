@@ -843,7 +843,7 @@ open11:00-close 17:00
             </div>
 
             {/* Problem */}
-            <section id="problem" className="py-32 bg-slate-50 relative overflow-hidden">
+            <section id="problem" className="py-20 md:py-32 bg-slate-50 relative overflow-hidden">
                 {/* Background Decor */}
                 <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-indigo-200/20 rounded-full blur-[120px] -translate-y-1/2 pointer-events-none" />
@@ -853,7 +853,7 @@ open11:00-close 17:00
                         <span className="inline-block py-1 px-3 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-600 font-bold tracking-wider text-xs uppercase mb-6">
                             Social Media Challenges
                         </span>
-                        <h2 className="text-4xl md:text-6xl font-black text-slate-900 leading-[1.1] mb-8">
+                        <h2 className="text-3xl md:text-6xl font-black text-slate-900 leading-[1.2] md:leading-[1.1] mb-6 md:mb-8">
                             こんな毎日を、<br />
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-slate-600 to-slate-400">一人で抱えていませんか？</span>
                         </h2>
@@ -880,12 +880,12 @@ open11:00-close 17:00
             </section>
 
             {/* Why MisePo Now (New Data Section) */}
-            <section className="py-24 bg-white relative overflow-hidden">
+            <section className="py-16 md:py-24 bg-white relative overflow-hidden">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     <div className="text-center mb-16">
                         <span className="text-indigo-600 font-bold tracking-wider text-sm uppercase mb-3 block">Why MisePo?</span>
                         <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-6 tracking-tight leading-tight">
-                            なぜ今、<span className="text-indigo-600">MisePo（分身）</span>が必要なのか？
+                            なぜ今、<br className="md:hidden" /><span className="text-indigo-600">MisePo（分身）</span>が必要なのか？
                         </h2>
                         <p className="text-slate-500 text-lg max-w-2xl mx-auto leading-relaxed">
                             SNSはただの宣伝ツールではありません。<br />
@@ -895,7 +895,7 @@ open11:00-close 17:00
 
                     <div className="grid md:grid-cols-3 gap-8 lg:gap-8 max-w-6xl mx-auto">
                         {/* Data 1: Recruitment */}
-                        <div className="bg-slate-50 rounded-3xl p-8 border border-slate-200 relative group hover:border-indigo-200 transition-colors duration-500">
+                        <div className="bg-slate-50 rounded-3xl p-6 md:p-8 border border-slate-200 relative group hover:border-indigo-200 transition-colors duration-500">
                             <div className="flex items-center gap-4 mb-6">
                                 <div className="w-12 h-12 bg-pink-100 text-pink-500 rounded-xl flex items-center justify-center shrink-0">
                                     <Icons.Users size={24} />
@@ -915,7 +915,7 @@ open11:00-close 17:00
                         </div>
 
                         {/* Data 2: Trust */}
-                        <div className="bg-slate-50 rounded-3xl p-8 border border-slate-200 relative group hover:border-green-200 transition-colors duration-500">
+                        <div className="bg-slate-50 rounded-3xl p-6 md:p-8 border border-slate-200 relative group hover:border-green-200 transition-colors duration-500">
                             <div className="flex items-center gap-4 mb-6">
                                 <div className="w-12 h-12 bg-green-100 text-green-600 rounded-xl flex items-center justify-center shrink-0">
                                     <Icons.ShieldCheck size={24} />
@@ -935,7 +935,7 @@ open11:00-close 17:00
                         </div>
 
                         {/* Data 3: Customer Loss */}
-                        <div className="bg-slate-50 rounded-3xl p-8 border border-slate-200 relative group hover:border-blue-200 transition-colors duration-500">
+                        <div className="bg-slate-50 rounded-3xl p-6 md:p-8 border border-slate-200 relative group hover:border-blue-200 transition-colors duration-500">
                             <div className="flex items-center gap-4 mb-6">
                                 <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center shrink-0">
                                     <Icons.TrendingDown size={24} />
@@ -957,7 +957,7 @@ open11:00-close 17:00
             </section>
 
             {/* Solution (Benefits) */}
-            <section id="features" className="py-24 bg-slate-900 text-white overflow-hidden relative" >
+            <section id="features" className="py-16 md:py-24 bg-slate-900 text-white overflow-hidden relative" >
                 <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
                     <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-indigo-500/20 rounded-full blur-[100px]" />
                     <div className="absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] bg-purple-500/20 rounded-full blur-[100px]" />
@@ -976,7 +976,7 @@ open11:00-close 17:00
 
                     <div className="grid md:grid-cols-3 gap-8 lg:gap-12 max-w-6xl mx-auto mb-24">
                         {/* Benefit 1: Learning (Step 1 Focus) */}
-                        <div className="bg-slate-800/50 backdrop-blur-xl rounded-3xl p-8 border border-slate-700 relative group hover:border-indigo-500 hover:shadow-[0_0_20px_rgba(99,102,241,0.3)] transition-all duration-300">
+                        <div className="bg-slate-800/50 backdrop-blur-xl rounded-3xl p-6 md:p-8 border border-slate-700 relative group hover:border-indigo-500 hover:shadow-[0_0_20px_rgba(99,102,241,0.3)] transition-all duration-300">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-indigo-500/20 to-transparent rounded-bl-full opacity-50" />
                             <div className="w-14 h-14 bg-indigo-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-indigo-900/20 mb-6 group-hover:scale-110 transition-transform duration-300">
                                 <Icons.Bot size={28} />
@@ -990,7 +990,7 @@ open11:00-close 17:00
                         </div>
 
                         {/* Benefit 2: Persona Switching */}
-                        <div className="bg-slate-800/50 backdrop-blur-xl rounded-3xl p-8 border border-slate-700 relative group hover:border-pink-500 hover:shadow-[0_0_20px_rgba(236,72,153,0.3)] transition-all duration-300">
+                        <div className="bg-slate-800/50 backdrop-blur-xl rounded-3xl p-6 md:p-8 border border-slate-700 relative group hover:border-pink-500 hover:shadow-[0_0_20px_rgba(236,72,153,0.3)] transition-all duration-300">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-pink-500/20 to-transparent rounded-bl-full opacity-50" />
                             <div className="w-14 h-14 bg-pink-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-pink-900/20 mb-6 group-hover:scale-110 transition-transform duration-300">
                                 <Icons.Users size={28} />
@@ -1004,7 +1004,7 @@ open11:00-close 17:00
                         </div>
 
                         {/* Benefit 3: Review Replies */}
-                        <div className="bg-slate-800/50 backdrop-blur-xl rounded-3xl p-8 border border-slate-700 relative group hover:border-green-500 hover:shadow-[0_0_20px_rgba(34,197,94,0.3)] transition-all duration-300">
+                        <div className="bg-slate-800/50 backdrop-blur-xl rounded-3xl p-6 md:p-8 border border-slate-700 relative group hover:border-green-500 hover:shadow-[0_0_20px_rgba(34,197,94,0.3)] transition-all duration-300">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-green-500/20 to-transparent rounded-bl-full opacity-50" />
                             <div className="w-14 h-14 bg-green-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-green-900/20 mb-6 group-hover:scale-110 transition-transform duration-300">
                                 <Icons.Heart size={28} />
@@ -1019,7 +1019,7 @@ open11:00-close 17:00
                     </div>
 
                     {/* Before / After Comparison */}
-                    <div className="max-w-5xl mx-auto bg-slate-800/30 rounded-[3rem] p-8 md:p-12 border border-slate-700 backdrop-blur-sm">
+                    <div className="max-w-5xl mx-auto bg-slate-800/30 rounded-[2rem] md:rounded-[3rem] p-6 md:p-12 border border-slate-700 backdrop-blur-sm">
                         <div className="text-center mb-10">
                             <h3 className="text-2xl md:text-3xl font-bold mb-4">MisePoなら、ここまで変わる。</h3>
                             <p className="text-slate-400">「標準的なAI」と「あなたの分身（MisePo）」の違いをご覧ください。</p>
@@ -1041,6 +1041,10 @@ open11:00-close 17:00
                                 {/* Arrow on Desktop */}
                                 <div className="hidden md:flex absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-slate-700 rounded-full items-center justify-center border-4 border-slate-800 text-slate-400">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+                                </div>
+                                {/* Mobile Arrow */}
+                                <div className="md:hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-slate-700 rounded-full flex items-center justify-center border-4 border-slate-800 text-slate-400">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14" /><path d="m5 12 7 7 7-7" /></svg>
                                 </div>
 
                                 {/* Standard AI */}
@@ -1100,11 +1104,11 @@ open11:00-close 17:00
             </section>
 
             {/* Features */}
-            <section id="features" className="py-24 bg-slate-50 overflow-hidden" >
+            <section id="features" className="py-16 md:py-24 bg-slate-50 overflow-hidden" >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center max-w-3xl mx-auto mb-16">
                         <span className="text-indigo-600 font-bold tracking-wider text-sm uppercase mb-2 block">All-in-One Platform</span>
-                        <h2 className="text-4xl md:text-6xl font-black text-slate-900 mb-6 tracking-tight">
+                        <h2 className="text-3xl md:text-6xl font-black text-slate-900 mb-6 tracking-tight">
                             必要なのは、<br />
                             <span className="gradient-text">このアプリひとつだけ。</span>
                         </h2>
@@ -1530,7 +1534,7 @@ open11:00-close 17:00
             </section>
 
             {/* Comparison (Cost Performance) */}
-            <section className="py-24 bg-slate-50 border-t border-slate-100">
+            <section className="py-16 md:py-24 bg-slate-50 border-t border-slate-100">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-16">
                         <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-6 tracking-tight">
@@ -1545,7 +1549,7 @@ open11:00-close 17:00
 
                     <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto items-center">
                         {/* Option 1: Self */}
-                        <div className="bg-white rounded-3xl p-8 border border-slate-200 text-center opacity-70 scale-95 grayscale hover:grayscale-0 hover:opacity-100 hover:scale-100 transition-all duration-300">
+                        <div className="bg-white rounded-3xl p-6 md:p-8 border border-slate-200 text-center opacity-70 scale-95 grayscale hover:grayscale-0 hover:opacity-100 hover:scale-100 transition-all duration-300">
                             <h3 className="text-xl font-bold text-slate-600 mb-4">自分・スタッフ</h3>
                             <div className="text-4xl font-black text-slate-400 mb-2">¥0</div>
                             <p className="text-sm text-slate-400 mb-8">（ただし、残業代・疲労）</p>
@@ -1557,7 +1561,7 @@ open11:00-close 17:00
                         </div>
 
                         {/* Option 2: Agency */}
-                        <div className="bg-white rounded-3xl p-8 border border-slate-200 text-center opacity-70 scale-95 grayscale hover:grayscale-0 hover:opacity-100 hover:scale-100 transition-all duration-300 relative">
+                        <div className="bg-white rounded-3xl p-6 md:p-8 border border-slate-200 text-center opacity-70 scale-95 grayscale hover:grayscale-0 hover:opacity-100 hover:scale-100 transition-all duration-300 relative">
                             <div className="absolute top-0 right-0 bg-slate-100 text-slate-500 text-[10px] px-2 py-1 rounded-bl-xl rounded-tr-2xl font-bold">一般的</div>
                             <h3 className="text-xl font-bold text-slate-600 mb-4">SNS運用代行</h3>
                             <div className="text-4xl font-black text-slate-900 mb-2">¥50,000<span className="text-sm font-normal text-slate-400 ml-1">~</span></div>
@@ -1570,14 +1574,14 @@ open11:00-close 17:00
                         </div>
 
                         {/* Option 3: MisePo */}
-                        <div className="bg-white rounded-[2.5rem] p-8 border-2 border-indigo-500 text-center shadow-2xl shadow-indigo-200 relative transform md:-translate-y-4 z-10">
+                        <div className="bg-white rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-8 border-2 border-indigo-500 text-center shadow-2xl shadow-indigo-200 relative transform md:-translate-y-4 z-10">
                             <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-sm font-bold px-6 py-2 rounded-full shadow-lg whitespace-nowrap">
                                 コスパ最強の第3の選択
                             </div>
                             <h3 className="text-2xl font-bold text-indigo-900 mb-4 mt-2">MisePo (分身AI)</h3>
                             <div className="flex items-center justify-center gap-2 mb-2">
                                 <span className="text-gray-400 line-through font-bold text-lg">¥2,980</span>
-                                <span className="text-5xl font-black text-slate-900">¥1,480</span>
+                                <span className="text-4xl md:text-5xl font-black text-slate-900">¥1,480</span>
                             </div>
                             <p className="text-sm text-indigo-600 font-bold mb-8">1日あたり49円</p>
                             <ul className="space-y-4 text-sm text-slate-700 text-left bg-indigo-50 rounded-2xl p-6">
@@ -1591,7 +1595,7 @@ open11:00-close 17:00
             </section>
 
             {/* Pricing */}
-            <section id="pricing" className="py-24 bg-white">
+            <section id="pricing" className="py-16 md:py-24 bg-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid lg:grid-cols-2 gap-12 lg:gap-24 items-center">
                         {/* Left Column: Value Proposition */}
@@ -1638,7 +1642,7 @@ open11:00-close 17:00
                         </div>
 
                         {/* Right Column: Pricing Card */}
-                        <div className="relative rounded-[2.5rem] p-8 md:p-10 flex flex-col bg-slate-900 text-white shadow-2xl ring-1 ring-white/20 overflow-hidden group hover:scale-[1.02] transition-transform duration-500">
+                        <div className="relative rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-10 flex flex-col bg-slate-900 text-white shadow-2xl ring-1 ring-white/20 overflow-hidden group hover:scale-[1.02] transition-transform duration-500">
                             <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-600/30 rounded-full blur-[100px] -mr-20 -mt-20 group-hover:bg-indigo-600/40 transition-colors" />
                             <div className="absolute bottom-0 left-0 w-80 h-80 bg-purple-600/30 rounded-full blur-[100px] -ml-20 -mb-20 group-hover:bg-purple-600/40 transition-colors" />
 
@@ -1651,7 +1655,7 @@ open11:00-close 17:00
                                 <div className="flex items-center justify-center gap-3 mb-2">
                                     <span className="text-slate-500 line-through font-bold text-xl decoration-2 decoration-slate-500">¥2,980</span>
                                     <div className="flex items-baseline gap-1">
-                                        <span className="text-6xl font-black tracking-tight">¥1,480</span>
+                                        <span className="text-5xl md:text-6xl font-black tracking-tight">¥1,480</span>
                                         <span className="text-slate-400 font-bold text-lg">/月</span>
                                     </div>
                                 </div>
