@@ -848,22 +848,22 @@ const PresetModal: React.FC<PresetModalProps> = ({
   const focusModeOverlay = expandingPlatform && createPortal(
     <div className="fixed inset-0 z-[200] bg-slate-900/60 backdrop-blur-xl flex items-center justify-center p-4 md:p-10 animate-in fade-in duration-300">
       <div className="w-full max-w-4xl h-full max-h-[800px] bg-white rounded-[40px] shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-500 ring-1 ring-white/50">
-        <div className="p-8 border-b border-slate-100 flex items-center justify-between shrink-0 bg-white/50 backdrop-blur-sm">
-          <div className="flex items-center gap-4">
-            <div className={`p-3 rounded-2xl shadow-sm ${expandingPlatform === Platform.Instagram ? 'bg-pink-50 text-pink-500' :
+        <div className="p-5 md:p-8 border-b border-slate-100 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shrink-0 bg-white/50 backdrop-blur-sm">
+          <div className="flex items-center gap-3 md:gap-4">
+            <div className={`p-2.5 md:p-3 rounded-xl md:rounded-2xl shadow-sm ${expandingPlatform === Platform.Instagram ? 'bg-pink-50 text-pink-500' :
               expandingPlatform === Platform.X ? 'bg-slate-900 text-white' :
                 'bg-blue-600 text-white'
               }`}>
-              {expandingPlatform === Platform.Instagram && <InstagramIcon className="w-6 h-6" />}
-              {expandingPlatform === Platform.X && <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4l11.733 16h4.267l-11.733 -16z" /><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" /></svg>}
-              {expandingPlatform === Platform.GoogleMaps && <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" /></svg>}
+              {expandingPlatform === Platform.Instagram && <InstagramIcon className="w-5 h-5 md:w-6 md:h-6" />}
+              {expandingPlatform === Platform.X && <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="md:w-6 md:h-6"><path d="M4 4l11.733 16h4.267l-11.733 -16z" /><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" /></svg>}
+              {expandingPlatform === Platform.GoogleMaps && <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" className="md:w-6 md:h-6"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" /></svg>}
             </div>
             <div>
-              <h3 className="font-black text-xl text-slate-800 tracking-tight">{expandingPlatform} の文体学習</h3>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Focus Mode Editor</p>
+              <h3 className="font-black text-lg md:text-xl text-slate-800 tracking-tight">{expandingPlatform} の文体学習</h3>
+              <p className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest">Focus Mode Editor</p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 md:gap-3 w-full md:w-auto">
             <button
               onClick={async () => {
                 const currentText = postSamples[expandingPlatform!] || '';
@@ -886,7 +886,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                 }
               }}
               disabled={isSanitizing || !(postSamples[expandingPlatform!] || '').trim()}
-              className={`flex items-center gap-2 px-5 py-3 rounded-2xl font-black text-[11px] transition-all transform hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 ${expandingPlatform === Platform.Instagram ? 'bg-pink-50 text-pink-600 hover:bg-pink-100' :
+              className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-4 md:px-5 py-3 rounded-2xl font-black text-[10px] md:text-[11px] transition-all transform hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 ${expandingPlatform === Platform.Instagram ? 'bg-pink-50 text-pink-600 hover:bg-pink-100' :
                 expandingPlatform === Platform.X ? 'bg-slate-100 text-slate-700 hover:bg-slate-200' :
                   'bg-blue-50 text-blue-600 hover:bg-blue-100'
                 }`}
@@ -894,18 +894,20 @@ const PresetModal: React.FC<PresetModalProps> = ({
               {isSanitizing ? (
                 <>
                   <div className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
-                  AIが名前を伏せ字にしています...
+                  <span className="hidden md:inline">AIが名前を伏せ字にしています...</span>
+                  <span className="md:hidden">伏せ字中...</span>
                 </>
               ) : (
                 <>
-                  <MagicWandIcon className="w-4 h-4" />
-                  AIで名前を伏せる
+                  <MagicWandIcon className="w-3.5 h-3.5 md:w-4 md:h-4" />
+                  <span className="hidden md:inline">AIで名前を伏せる</span>
+                  <span className="md:hidden text-[11px]">AI伏せ字</span>
                 </>
               )}
             </button>
             <button
               onClick={() => setExpandingPlatform(null)}
-              className="p-3 bg-slate-100 hover:bg-slate-200 text-slate-400 hover:text-slate-600 rounded-2xl transition-all font-black text-sm px-6"
+              className="flex-none p-3 bg-slate-100 hover:bg-slate-200 text-slate-400 hover:text-slate-600 rounded-2xl transition-all font-black text-sm px-5 md:px-6"
             >
               完了
             </button>
@@ -914,39 +916,37 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
         <div className="flex-1 overflow-hidden flex flex-col bg-slate-50/30">
           {/* Instructions / Tips */}
-          <div className="p-8 bg-white/40 flex flex-col md:flex-row gap-6 shrink-0 border-b border-slate-100">
-            <div className="flex-1 flex gap-4">
-              <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center shrink-0">
-                <MagicWandIcon className="w-5 h-5 text-indigo-500" />
+          <div className="p-5 md:p-8 bg-white/40 flex flex-col md:flex-row gap-4 md:gap-6 shrink-0 border-b border-slate-100">
+            <div className="flex-1 flex gap-3 md:gap-4">
+              <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-indigo-50 flex items-center justify-center shrink-0">
+                <MagicWandIcon className="w-4 h-4 md:w-5 md:h-5 text-indigo-500" />
               </div>
-              <div className="space-y-1">
-                <h4 className="text-[11px] font-black text-indigo-900 uppercase tracking-wider">AI学習を成功させるヒント</h4>
-                <p className="text-xs text-slate-500 leading-relaxed font-bold">
-                  気に入っている過去の投稿を3〜5件貼り付けるのがベストです。<br />
-                  文体や絵文字の使い方はAIが自動で学習します。
+              <div className="space-y-0.5 md:space-y-1">
+                <h4 className="text-[10px] md:text-[11px] font-black text-indigo-900 uppercase tracking-wider">学習のヒント</h4>
+                <p className="text-[11px] md:text-xs text-slate-500 leading-relaxed font-bold">
+                  過去の投稿を3〜5件貼り付けるのがベストです。<span className="hidden md:inline"><br />文体や絵文字はAIが自動で学習します。</span>
                 </p>
               </div>
             </div>
-            <div className="flex-1 flex gap-4">
-              <div className="w-10 h-10 rounded-full bg-rose-50 flex items-center justify-center shrink-0">
-                <SparklesIcon className="w-5 h-5 text-rose-500" />
+            <div className="flex-1 flex gap-3 md:gap-4">
+              <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-rose-50 flex items-center justify-center shrink-0">
+                <SparklesIcon className="w-4 h-4 md:w-5 md:h-5 text-rose-500" />
               </div>
-              <div className="space-y-1">
-                <h4 className="text-[11px] font-black text-rose-900 uppercase tracking-wider">個人情報を守る</h4>
-                <p className="text-xs text-slate-500 leading-relaxed font-bold">
-                  「AIで名前を伏せる」ボタンを押すと、文章の中の特定の名前などをAIが自動で伏せ字（[担当者名]など）に書き換えます。<br />
-                  コピペした後にボタンを押すだけで、安全な学習データが作れます。
+              <div className="space-y-0.5 md:space-y-1">
+                <h4 className="text-[10px] md:text-[11px] font-black text-rose-900 uppercase tracking-wider">個人情報を守る</h4>
+                <p className="text-[11px] md:text-xs text-slate-500 leading-relaxed font-bold">
+                  「AI伏せ字」で名前などを自動で書き換えます。<span className="hidden md:inline"><br />安全な学習データが作れます。</span>
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="flex-1 p-8 overflow-y-auto">
+          <div className="flex-1 p-5 md:p-8 overflow-y-auto">
             <textarea
               autoFocus
               value={postSamples[expandingPlatform] || ''}
               onChange={(e) => setPostSamples(prev => ({ ...prev, [expandingPlatform]: e.target.value }))}
-              className="w-full h-full min-h-[400px] bg-transparent outline-none text-lg text-slate-800 font-bold leading-loose placeholder-slate-300 resize-none no-scrollbar"
+              className="w-full h-full min-h-[400px] bg-transparent outline-none text-base md:text-lg text-slate-800 font-bold leading-loose placeholder-slate-300 resize-none no-scrollbar"
               placeholder={'ここに過去の投稿を貼り付けてください...\n複数の投稿を入れる場合は「---」で区切ってください。'}
             />
           </div>
