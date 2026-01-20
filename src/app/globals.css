@@ -4,9 +4,9 @@
 
 :root {
   /* Glassmorphism Brand Colors */
-  --primary: #5266eb;     /* Soft Indigo - Main Brand Color (Reference: View All button) */
+  --primary: #2b2b2b;     /* Soft Indigo - Main Brand Color (Reference: View All button) */
   --primary-dark: #3b4cca;
-  --accent: #9dde33;      /* Google Maps Green - Unified Accent */
+  --accent: #130c0a;      /* Google Maps Green - Unified Accent */
   --accent-secondary: #aa9cff; /* Soft Purple - Gradient/Accent */
   
   /* Text Colors */

@@ -168,7 +168,7 @@ function App() {
   }
 
   if (showOnboarding) {
-    return <OnboardingFlow onSave={handleOnboardingSave} initialProfile={storeProfile!} />;
+    return <OnboardingFlow onSave={handleOnboardingSave} initialProfile={storeProfile!} onCancel={storeProfile ? () => setShowOnboarding(false) : undefined} />;
   }
 
   return (
