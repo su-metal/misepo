@@ -195,7 +195,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                 <h2 className="text-3xl font-black text-primary uppercase tracking-[0.25em] text-center">プレビュー (Live Preview)</h2>
 
                                 <div className="space-y-6 max-w-sm">
-                                    <div className="w-24 h-24 rounded-[32px] bg-slate-100 border-2 border-slate-200 flex items-center justify-center text-slate-300 mx-auto">
+                                    <div className="w-24 h-24 rounded-[32px] bg-white/5 border-2 border-white/20 flex items-center justify-center text-slate-300 mx-auto">
                                         <SparklesIcon className="w-12 h-12" />
                                     </div>
                                     <h3 className="text-xl font-black text-primary uppercase tracking-widest">生成待機中 (Awaiting Input)</h3>

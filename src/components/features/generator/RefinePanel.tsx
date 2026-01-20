@@ -25,7 +25,7 @@ export const RefinePanel: React.FC<RefinePanelProps> = ({
                 <textarea
                     value={refineText}
                     onChange={(e) => onRefineTextChange(e.target.value)}
-                    className="w-full bg-white/50 border border-slate-200 rounded-xl p-3 text-sm text-primary placeholder:text-slate-400 focus:ring-4 focus:ring-primary/5 focus:border-primary outline-none transition-all min-h-[80px]"
+                    className="w-full bg-white/10 border border-white/20 rounded-xl p-3 text-sm text-primary placeholder:text-slate-400 focus:ring-4 focus:ring-primary/5 focus:border-primary outline-none transition-all min-h-[80px]"
                     placeholder="AIにお願いしたい修正内容を入力..."
                     autoFocus
                 />
