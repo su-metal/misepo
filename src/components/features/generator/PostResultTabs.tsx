@@ -169,9 +169,12 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                         {getTabIcon(res.platform, isSelected)}
                                         <span>{res.platform === Platform.X ? 'X (Twitter)' : res.platform}</span>
 
-                                        {/* Active Indicator Line (Optional visual separation if needed, or rely on bg color) */}
+                                        {/* Active Indicator Line - Brand Color Match */}
                                         {isSelected && (
-                                            <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-white transform translate-y-[1px]" />
+                                            <div className={`absolute bottom-0 left-0 right-0 h-[2px] ${res.platform === Platform.Instagram ? 'bg-[#E5005A]' :
+                                                    res.platform === Platform.GoogleMaps ? 'bg-[#34A853]' :
+                                                        'bg-[#001738]'
+                                                }`} />
                                         )}
                                     </button>
                                 );
