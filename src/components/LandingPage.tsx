@@ -491,34 +491,39 @@ open11:00-close 17:00
 
                     {/* Mobile Text (Static at top) */}
                     <div className="md:hidden pt-24 px-4 text-center z-20 relative mb-12">
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/80 backdrop-blur-sm border border-indigo-100 shadow-sm mb-4">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50/80 backdrop-blur-sm border border-indigo-100 shadow-sm mb-4">
                             <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
-                            <span className="text-xs font-bold text-indigo-900">総生成数 10,000件突破</span>
+                            <span className="text-xs font-bold text-indigo-900">先着100店舗様限定 モニター価格</span>
                         </div>
                         <h1 className="text-4xl font-black text-slate-900 tracking-tight leading-[1.1] mb-3">
                             AIなのに、<br />
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">私の言葉。</span>
                         </h1>
                         <p className="text-base text-slate-600 leading-relaxed px-2">
-                            もうSNSで無理をするのは、やめませんか？<br />
-                            過去の投稿を読み込むだけで、あなたの口癖や想いまで再現します。
+                            丁寧すぎて恥ずかしいAIは卒業。<br />
+                            MisePoはあなたの「書き癖」を学習し、<br />
+                            店主の『分身』としてSNS運用を代行します。
                         </p>
                     </div>
 
                     {/* Desktop Text (Absolute) */}
                     <div className="hidden md:block absolute top-1/2 -translate-y-1/2 left-12 lg:left-24 z-20 max-w-xl pointer-events-none">
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-indigo-100 shadow-sm mb-8">
-                            <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
-                            <span className="text-sm font-bold text-indigo-900">総生成数 10,000件突破</span>
+                        <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-indigo-100 shadow-lg shadow-indigo-100/20 mb-8">
+                            <span className="flex h-3 w-3 relative">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-3 w-3 bg-indigo-500"></span>
+                            </span>
+                            <span className="text-sm font-bold text-indigo-900">【先着100店舗様限定】先行モニター価格 月額1,480円</span>
                         </div>
                         <h1 className="text-6xl lg:text-[5.5rem] font-black text-slate-900 tracking-tight leading-[1.1] mb-8">
                             AIなのに、<br />
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">私の言葉。</span>
                         </h1>
                         <p className="text-xl text-slate-600 leading-relaxed mb-10 max-w-lg">
-                            もうSNSで無理をするのは、やめませんか？<br />
-                            過去の投稿を読み込むだけで、あなたの口癖や想いまで再現。<br />
-                            X・インスタ・Googleクチコミ返信まで、あなたの「分身」が代行します。
+                            丁寧すぎて恥ずかしいAIは卒業。<br />
+                            MisePoはあなたの「書き癖」を学習し、<br />
+                            常連さんが読んでも違和感のない文章を30秒で作成。<br />
+                            店主の『分身』が、SNS投稿もクチコミ返信も代行します。
                         </p>
                         <div className="flex gap-4 pointer-events-auto">
                             <button onClick={() => window.location.href = '/start'} className="px-8 py-4 bg-slate-900 text-white rounded-full font-bold hover:bg-slate-800 transition-all hover:scale-105 shadow-xl shadow-slate-900/20 flex items-center gap-2">
@@ -838,7 +843,7 @@ open11:00-close 17:00
             </div>
 
             {/* Problem */}
-            <section id="problem" className="py-32 bg-slate-50 relative overflow-hidden">
+            <section id="problem" className="py-20 md:py-32 bg-slate-50 relative overflow-hidden">
                 {/* Background Decor */}
                 <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-indigo-200/20 rounded-full blur-[120px] -translate-y-1/2 pointer-events-none" />
@@ -848,7 +853,7 @@ open11:00-close 17:00
                         <span className="inline-block py-1 px-3 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-600 font-bold tracking-wider text-xs uppercase mb-6">
                             Social Media Challenges
                         </span>
-                        <h2 className="text-4xl md:text-6xl font-black text-slate-900 leading-[1.1] mb-8">
+                        <h2 className="text-3xl md:text-6xl font-black text-slate-900 leading-[1.2] md:leading-[1.1] mb-6 md:mb-8">
                             こんな毎日を、<br />
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-slate-600 to-slate-400">一人で抱えていませんか？</span>
                         </h2>
@@ -874,60 +879,77 @@ open11:00-close 17:00
                 </div>
             </section>
 
-            {/* Market Data (Rational Bridge) */}
-            <section className="py-24 bg-white relative overflow-hidden">
+            {/* Why MisePo Now (New Data Section) */}
+            <section className="py-16 md:py-24 bg-white relative overflow-hidden">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     <div className="text-center mb-16">
-                        <span className="text-indigo-600 font-bold tracking-wider text-sm uppercase mb-3 block">Why Now?</span>
+                        <span className="text-indigo-600 font-bold tracking-wider text-sm uppercase mb-3 block">Why MisePo?</span>
                         <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-6 tracking-tight leading-tight">
-                            でも、お店探しをする人の<span className="text-indigo-600">7割以上</span>が、<br className="hidden md:block" />SNSを見ています。
+                            なぜ今、<br className="md:hidden" /><span className="text-indigo-600">MisePo（分身）</span>が必要なのか？
                         </h2>
                         <p className="text-slate-500 text-lg max-w-2xl mx-auto leading-relaxed">
-                            データが語る『今、やるべき理由』。<br />
-                            避けては通れない、集客の新常識です。
+                            SNSはただの宣伝ツールではありません。<br />
+                            採用、信頼、集客...お店の未来を左右するインフラです。
                         </p>
                     </div>
 
-                    <div className="grid md:grid-cols-2 gap-8 lg:gap-12 max-w-5xl mx-auto">
-                        {/* Instagram Data */}
-                        <div className="bg-slate-50 rounded-3xl p-8 border border-slate-200 relative group hover:border-pink-200 transition-colors duration-500">
+                    <div className="grid md:grid-cols-3 gap-8 lg:gap-8 max-w-6xl mx-auto">
+                        {/* Data 1: Recruitment */}
+                        <div className="bg-slate-50 rounded-3xl p-6 md:p-8 border border-slate-200 relative group hover:border-indigo-200 transition-colors duration-500">
                             <div className="flex items-center gap-4 mb-6">
                                 <div className="w-12 h-12 bg-pink-100 text-pink-500 rounded-xl flex items-center justify-center shrink-0">
-                                    <Icons.Instagram size={24} />
+                                    <Icons.Users size={24} />
                                 </div>
                                 <div>
-                                    <div className="text-sm font-bold text-slate-400 uppercase tracking-wider">Discovery</div>
-                                    <h3 className="text-xl font-bold text-slate-900">認知・発見</h3>
+                                    <div className="text-sm font-bold text-slate-400 uppercase tracking-wider">Recruiting</div>
+                                    <h3 className="text-xl font-bold text-slate-900">採用への影響</h3>
                                 </div>
                             </div>
                             <div className="flex items-baseline gap-1 mb-4">
-                                <span className="text-6xl font-black text-slate-900"><CountUp end={70} /></span>
+                                <span className="text-6xl font-black text-slate-900"><CountUp end={85} /></span>
                                 <span className="text-2xl font-bold text-slate-400">%</span>
                             </div>
                             <p className="text-slate-600 font-bold leading-relaxed">
-                                グルメ検索でInstagramを利用。<br />
-                                <span className="bg-pink-100 text-pink-800 px-1">「保存」された投稿</span>が行き先候補に。
+                                若者の85%は、バイト応募前に店主の<span className="bg-pink-100 text-pink-800 px-1">SNSで職場の雰囲気</span>をチェックしています。
                             </p>
                         </div>
 
-                        {/* Google Maps Data */}
-                        <div className="bg-slate-50 rounded-3xl p-8 border border-slate-200 relative group hover:border-indigo-200 transition-colors duration-500">
+                        {/* Data 2: Trust */}
+                        <div className="bg-slate-50 rounded-3xl p-6 md:p-8 border border-slate-200 relative group hover:border-green-200 transition-colors duration-500">
                             <div className="flex items-center gap-4 mb-6">
                                 <div className="w-12 h-12 bg-green-100 text-green-600 rounded-xl flex items-center justify-center shrink-0">
-                                    <Icons.MapPin size={24} />
+                                    <Icons.ShieldCheck size={24} />
                                 </div>
                                 <div>
-                                    <div className="text-sm font-bold text-slate-400 uppercase tracking-wider">Decision</div>
-                                    <h3 className="text-xl font-bold text-slate-900">決定・来店</h3>
+                                    <div className="text-sm font-bold text-slate-400 uppercase tracking-wider">Trust</div>
+                                    <h3 className="text-xl font-bold text-slate-900">信頼度の向上</h3>
                                 </div>
                             </div>
                             <div className="flex items-baseline gap-1 mb-4">
-                                <span className="text-6xl font-black text-slate-900"><CountUp end={73} /></span>
-                                <span className="text-2xl font-bold text-slate-400">%</span>
+                                <span className="text-5xl font-black text-slate-900">1.7</span>
+                                <span className="text-2xl font-bold text-slate-400">倍</span>
                             </div>
                             <p className="text-slate-600 font-bold leading-relaxed">
-                                マップ検索後の来店率。<br />
-                                決め手は<span className="bg-green-100 text-green-800 px-1">信頼できる口コミ返信</span>です。
+                                クチコミに丁寧に返信している店は、そうでない店より<span className="bg-green-100 text-green-800 px-1">顧客の信頼度</span>が圧倒的に高まります。
+                            </p>
+                        </div>
+
+                        {/* Data 3: Customer Loss */}
+                        <div className="bg-slate-50 rounded-3xl p-6 md:p-8 border border-slate-200 relative group hover:border-blue-200 transition-colors duration-500">
+                            <div className="flex items-center gap-4 mb-6">
+                                <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center shrink-0">
+                                    <Icons.TrendingDown size={24} />
+                                </div>
+                                <div>
+                                    <div className="text-sm font-bold text-slate-400 uppercase tracking-wider">Opportunity Loss</div>
+                                    <h3 className="text-xl font-bold text-slate-900">機会損失</h3>
+                                </div>
+                            </div>
+                            <div className="flex items-baseline gap-1 mb-4">
+                                <span className="text-3xl font-black text-slate-900">2人に1人</span>
+                            </div>
+                            <p className="text-slate-600 font-bold leading-relaxed">
+                                <span className="bg-blue-100 text-blue-800 px-1">最新情報が不明な店</span>への来店を断念した経験があります。
                             </p>
                         </div>
                     </div>
@@ -935,7 +957,7 @@ open11:00-close 17:00
             </section>
 
             {/* Solution (Benefits) */}
-            <section className="py-24 bg-slate-900 text-white overflow-hidden relative" >
+            <section id="features" className="py-16 md:py-24 bg-slate-900 text-white overflow-hidden relative" >
                 <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
                     <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-indigo-500/20 rounded-full blur-[100px]" />
                     <div className="absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] bg-purple-500/20 rounded-full blur-[100px]" />
@@ -944,51 +966,130 @@ open11:00-close 17:00
                     <div className="text-center mb-20">
                         <span className="text-indigo-400 font-bold tracking-wider text-sm uppercase mb-3 block">Solution</span>
                         <h2 className="text-4xl md:text-6xl font-black mb-6 tracking-tight">
-                            『みせぽ』は、<span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-pink-400">あなたを学習するAI。</span>
+                            AIが、<span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-pink-400">あなたの『分身』になる。</span>
                         </h2>
                         <p className="text-slate-400 text-lg max-w-2xl mx-auto leading-relaxed">
-                            もう、ゼロから悩む必要はありません。<br />
-                            過去の投稿を読み込むだけで、あなたの口癖、温かさ、お店の雰囲気を再現します。
+                            MisePoは単なる自動生成ツールではありません。<br />
+                            あなたの過去の投稿を学習し、まるであなたが書いたかのような文章を生み出します。
                         </p>
                     </div>
 
-                    <div className="grid md:grid-cols-3 gap-8 lg:gap-12 max-w-6xl mx-auto">
-                        {/* Benefit 1: Natural Voice */}
-                        <div className="bg-slate-800/50 backdrop-blur-xl rounded-3xl p-8 border border-slate-700 relative group hover:border-indigo-500 hover:shadow-[0_0_20px_rgba(99,102,241,0.3)] transition-all duration-300">
+                    <div className="grid md:grid-cols-3 gap-8 lg:gap-12 max-w-6xl mx-auto mb-24">
+                        {/* Benefit 1: Learning (Step 1 Focus) */}
+                        <div className="bg-slate-800/50 backdrop-blur-xl rounded-3xl p-6 md:p-8 border border-slate-700 relative group hover:border-indigo-500 hover:shadow-[0_0_20px_rgba(99,102,241,0.3)] transition-all duration-300">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-indigo-500/20 to-transparent rounded-bl-full opacity-50" />
                             <div className="w-14 h-14 bg-indigo-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-indigo-900/20 mb-6 group-hover:scale-110 transition-transform duration-300">
-                                <Icons.MessageCircle size={28} />
+                                <Icons.Bot size={28} />
                             </div>
-                            <h3 className="text-2xl font-bold mb-3">あなたの「文体」を<br />コピー</h3>
+                            <div className="inline-block px-3 py-1 bg-indigo-500/20 text-indigo-300 rounded-full text-xs font-bold mb-3 border border-indigo-500/30">Step 1</div>
+                            <h3 className="text-2xl font-bold mb-3">あなたの『書き癖』を<br />学習</h3>
                             <p className="text-slate-400 leading-relaxed">
-                                過去の投稿を学習し、あなたの口癖や温かさを再現。<br />
-                                フォロワーに「これAI？」と思わせない<span className="text-white font-bold">自然な発信</span>が可能に。
+                                過去の投稿を数件読み込ませるだけで、MisePoがあなたのリズムをコピー。<br />
+                                <span className="text-white font-bold">過去の投稿がない方</span>は、理想のお店の文章を学習させることも可能です。
                             </p>
                         </div>
 
                         {/* Benefit 2: Persona Switching */}
-                        <div className="bg-slate-800/50 backdrop-blur-xl rounded-3xl p-8 border border-slate-700 relative group hover:border-pink-500 hover:shadow-[0_0_20px_rgba(236,72,153,0.3)] transition-all duration-300">
+                        <div className="bg-slate-800/50 backdrop-blur-xl rounded-3xl p-6 md:p-8 border border-slate-700 relative group hover:border-pink-500 hover:shadow-[0_0_20px_rgba(236,72,153,0.3)] transition-all duration-300">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-pink-500/20 to-transparent rounded-bl-full opacity-50" />
                             <div className="w-14 h-14 bg-pink-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-pink-900/20 mb-6 group-hover:scale-110 transition-transform duration-300">
                                 <Icons.Users size={28} />
                             </div>
+                            <div className="inline-block px-3 py-1 bg-pink-500/20 text-pink-300 rounded-full text-xs font-bold mb-3 border border-pink-500/30">Step 2</div>
                             <h3 className="text-2xl font-bold mb-3">「中の人」を<br />自由自在に</h3>
                             <p className="text-slate-400 leading-relaxed">
-                                「熱い店長」「親しみやすい看板娘」「クールな公式」など、投稿の目的に合わせて<span className="text-white font-bold">人格を切り替え</span>。
+                                「熱い店長」「親しみやすい看板娘」など、投稿の目的に合わせて<span className="text-white font-bold">人格を切り替え</span>。<br />
+                                複数のスタッフで運営しているような多様性を。
                             </p>
                         </div>
 
                         {/* Benefit 3: Review Replies */}
-                        <div className="bg-slate-800/50 backdrop-blur-xl rounded-3xl p-8 border border-slate-700 relative group hover:border-green-500 hover:shadow-[0_0_20px_rgba(34,197,94,0.3)] transition-all duration-300">
+                        <div className="bg-slate-800/50 backdrop-blur-xl rounded-3xl p-6 md:p-8 border border-slate-700 relative group hover:border-green-500 hover:shadow-[0_0_20px_rgba(34,197,94,0.3)] transition-all duration-300">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-green-500/20 to-transparent rounded-bl-full opacity-50" />
                             <div className="w-14 h-14 bg-green-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-green-900/20 mb-6 group-hover:scale-110 transition-transform duration-300">
                                 <Icons.Heart size={28} />
                             </div>
-                            <h3 className="text-2xl font-bold mb-3">クチコミ返信の<br />「心の壁」を撤去</h3>
+                            <div className="inline-block px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-xs font-bold mb-3 border border-green-500/30">Result</div>
+                            <h3 className="text-2xl font-bold mb-3">クチコミ返信の<br />「壁」を撤去</h3>
                             <p className="text-slate-400 leading-relaxed">
                                 コピペするだけで、誠実であなたらしい返信案を<span className="text-white font-bold">30秒で作成</span>。<br />
-                                お客様との絆を深める時間を短縮。
+                                お客様との絆を深める時間を短縮します。
                             </p>
+                        </div>
+                    </div>
+
+                    {/* Before / After Comparison */}
+                    <div className="max-w-5xl mx-auto bg-slate-800/30 rounded-[2rem] md:rounded-[3rem] p-6 md:p-12 border border-slate-700 backdrop-blur-sm">
+                        <div className="text-center mb-10">
+                            <h3 className="text-2xl md:text-3xl font-bold mb-4">MisePoなら、ここまで変わる。</h3>
+                            <p className="text-slate-400">「標準的なAI」と「あなたの分身（MisePo）」の違いをご覧ください。</p>
+                        </div>
+
+                        <div className="flex flex-col gap-6">
+                            {/* Input Info */}
+                            <div className="bg-slate-900/50 rounded-2xl p-6 border border-slate-700 flex flex-col md:flex-row items-center gap-4 text-center md:text-left mx-auto max-w-2xl w-full">
+                                <div className="p-3 bg-slate-800 rounded-xl text-slate-400 shrink-0">
+                                    <Icons.Bot size={24} />
+                                </div>
+                                <div className="flex-1">
+                                    <div className="text-xs font-bold text-slate-500 uppercase mb-1">Input Memo</div>
+                                    <p className="text-lg text-white font-medium">「明日からいちごパフェ。1580円。地元産。」</p>
+                                </div>
+                            </div>
+
+                            <div className="grid md:grid-cols-2 gap-8 relative">
+                                {/* Arrow on Desktop */}
+                                <div className="hidden md:flex absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-slate-700 rounded-full items-center justify-center border-4 border-slate-800 text-slate-400">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+                                </div>
+                                {/* Mobile Arrow */}
+                                <div className="md:hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-slate-700 rounded-full flex items-center justify-center border-4 border-slate-800 text-slate-400">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14" /><path d="m5 12 7 7 7-7" /></svg>
+                                </div>
+
+                                {/* Standard AI */}
+                                <div className="bg-slate-800 rounded-3xl p-8 border border-slate-700/50 opacity-80">
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <div className="w-10 h-10 bg-slate-600 rounded-full flex items-center justify-center text-slate-300">
+                                            <Icons.Bot size={20} />
+                                        </div>
+                                        <div className="font-bold text-slate-400">標準的なAI</div>
+                                    </div>
+                                    <div className="bg-slate-900/50 rounded-2xl p-6 relative">
+                                        <div className="absolute top-0 left-6 -translate-y-1/2 w-4 h-4 bg-slate-900/50 rotate-45 border-l border-t border-slate-700/50" />
+                                        <p className="text-slate-300 leading-relaxed font-medium">
+                                            新作のいちごパフェが明日から発売です。<br />
+                                            価格は1,580円です。<br />
+                                            地元産のいちごを使用しています。<br />
+                                            ぜひご賞味ください。
+                                        </p>
+                                    </div>
+                                    <p className="text-center text-xs text-slate-500 mt-4 font-bold">事務的で、どこか冷たい...</p>
+                                </div>
+
+                                {/* MisePo */}
+                                <div className="bg-indigo-900/20 rounded-3xl p-8 border border-indigo-500/30 relative overflow-hidden shadow-2xl shadow-indigo-900/20">
+                                    <div className="absolute inset-0 bg-indigo-500/5 pointer-events-none" />
+                                    <div className="flex items-center gap-3 mb-4 relative z-10">
+                                        <div className="w-10 h-10 bg-gradient-to-tr from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white shadow-lg">
+                                            <Icons.Sparkles size={20} />
+                                        </div>
+                                        <div className="font-bold text-white">MisePo (あなたの分身)</div>
+                                    </div>
+                                    <div className="bg-white text-slate-900 rounded-2xl p-6 relative shadow-lg">
+                                        <div className="absolute top-0 left-6 -translate-y-1/2 w-4 h-4 bg-white rotate-45" />
+                                        <p className="leading-relaxed font-medium">
+                                            お待たせしました🍓<br />
+                                            明日から<span className="bg-pink-100 text-pink-800 px-1 rounded">地元の完熟いちご</span>をたっぷり使ったパフェが始まります！<br />
+                                            自分へのご褒美にぜひ♪ 11時にお待ちしてます🌿
+                                        </p>
+                                    </div>
+                                    <p className="text-center text-xs text-indigo-300 mt-4 font-bold flex items-center justify-center gap-2">
+                                        <Icons.CheckCircle size={14} />
+                                        いつものあなたの口調！
+                                    </p>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -1003,11 +1104,11 @@ open11:00-close 17:00
             </section>
 
             {/* Features */}
-            <section id="features" className="py-24 bg-slate-50 overflow-hidden" >
+            <section id="features" className="py-16 md:py-24 bg-slate-50 overflow-hidden" >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center max-w-3xl mx-auto mb-16">
                         <span className="text-indigo-600 font-bold tracking-wider text-sm uppercase mb-2 block">All-in-One Platform</span>
-                        <h2 className="text-4xl md:text-6xl font-black text-slate-900 mb-6 tracking-tight">
+                        <h2 className="text-3xl md:text-6xl font-black text-slate-900 mb-6 tracking-tight">
                             必要なのは、<br />
                             <span className="gradient-text">このアプリひとつだけ。</span>
                         </h2>
@@ -1432,8 +1533,69 @@ open11:00-close 17:00
                 </div>
             </section>
 
+            {/* Comparison (Cost Performance) */}
+            <section className="py-16 md:py-24 bg-slate-50 border-t border-slate-100">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center mb-16">
+                        <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-6 tracking-tight">
+                            賢い店主は、<br />
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">「コスト」と「質」で選んでいます。</span>
+                        </h2>
+                        <p className="text-slate-500 text-lg max-w-2xl mx-auto">
+                            「自分でやる」のは限界。「業者に頼む」のは高すぎる。<br />
+                            MisePoは、第3の選択肢です。
+                        </p>
+                    </div>
+
+                    <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto items-center">
+                        {/* Option 1: Self */}
+                        <div className="bg-white rounded-3xl p-6 md:p-8 border border-slate-200 text-center opacity-70 scale-95 grayscale hover:grayscale-0 hover:opacity-100 hover:scale-100 transition-all duration-300">
+                            <h3 className="text-xl font-bold text-slate-600 mb-4">自分・スタッフ</h3>
+                            <div className="text-4xl font-black text-slate-400 mb-2">¥0</div>
+                            <p className="text-sm text-slate-400 mb-8">（ただし、残業代・疲労）</p>
+                            <ul className="space-y-4 text-sm text-slate-500 text-left">
+                                <li className="flex gap-2"><Icons.X className="text-slate-300" /> 閉店後の作業が辛い</li>
+                                <li className="flex gap-2"><Icons.X className="text-slate-300" /> 文才に自信がない</li>
+                                <li className="flex gap-2"><Icons.X className="text-slate-300" /> 投稿が続かない</li>
+                            </ul>
+                        </div>
+
+                        {/* Option 2: Agency */}
+                        <div className="bg-white rounded-3xl p-6 md:p-8 border border-slate-200 text-center opacity-70 scale-95 grayscale hover:grayscale-0 hover:opacity-100 hover:scale-100 transition-all duration-300 relative">
+                            <div className="absolute top-0 right-0 bg-slate-100 text-slate-500 text-[10px] px-2 py-1 rounded-bl-xl rounded-tr-2xl font-bold">一般的</div>
+                            <h3 className="text-xl font-bold text-slate-600 mb-4">SNS運用代行</h3>
+                            <div className="text-4xl font-black text-slate-900 mb-2">¥50,000<span className="text-sm font-normal text-slate-400 ml-1">~</span></div>
+                            <p className="text-sm text-slate-400 mb-8">/月 （非常に高額）</p>
+                            <ul className="space-y-4 text-sm text-slate-500 text-left">
+                                <li className="flex gap-2"><Icons.X className="text-red-400" /> コストが高すぎる</li>
+                                <li className="flex gap-2"><Icons.X className="text-red-400" /> 確認のやり取りが面倒</li>
+                                <li className="flex gap-2"><Icons.X className="text-red-400" /> "お店らしさ"が出ない</li>
+                            </ul>
+                        </div>
+
+                        {/* Option 3: MisePo */}
+                        <div className="bg-white rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-8 border-2 border-indigo-500 text-center shadow-2xl shadow-indigo-200 relative transform md:-translate-y-4 z-10">
+                            <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-sm font-bold px-6 py-2 rounded-full shadow-lg whitespace-nowrap">
+                                コスパ最強の第3の選択
+                            </div>
+                            <h3 className="text-2xl font-bold text-indigo-900 mb-4 mt-2">MisePo (分身AI)</h3>
+                            <div className="flex items-center justify-center gap-2 mb-2">
+                                <span className="text-gray-400 line-through font-bold text-lg">¥2,980</span>
+                                <span className="text-4xl md:text-5xl font-black text-slate-900">¥1,480</span>
+                            </div>
+                            <p className="text-sm text-indigo-600 font-bold mb-8">1日あたり49円</p>
+                            <ul className="space-y-4 text-sm text-slate-700 text-left bg-indigo-50 rounded-2xl p-6">
+                                <li className="flex gap-3 items-start"><Icons.CheckCircle className="text-indigo-600 shrink-0" /> <span className="font-bold">圧倒的な低コスト</span></li>
+                                <li className="flex gap-3 items-start"><Icons.CheckCircle className="text-indigo-600 shrink-0" /> <span className="font-bold">30秒で即完成・修正</span></li>
+                                <li className="flex gap-3 items-start"><Icons.CheckCircle className="text-indigo-600 shrink-0" /> <span className="font-bold">あなたの言葉で書ける</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             {/* Pricing */}
-            <section id="pricing" className="py-24 bg-white border-t border-slate-100">
+            <section id="pricing" className="py-16 md:py-24 bg-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid lg:grid-cols-2 gap-12 lg:gap-24 items-center">
                         {/* Left Column: Value Proposition */}
@@ -1480,21 +1642,29 @@ open11:00-close 17:00
                         </div>
 
                         {/* Right Column: Pricing Card */}
-                        <div className="relative rounded-[2.5rem] p-8 md:p-10 flex flex-col bg-slate-900 text-white shadow-2xl ring-1 ring-white/20 overflow-hidden group hover:scale-[1.02] transition-transform duration-500">
+                        <div className="relative rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-10 flex flex-col bg-slate-900 text-white shadow-2xl ring-1 ring-white/20 overflow-hidden group hover:scale-[1.02] transition-transform duration-500">
                             <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-600/30 rounded-full blur-[100px] -mr-20 -mt-20 group-hover:bg-indigo-600/40 transition-colors" />
                             <div className="absolute bottom-0 left-0 w-80 h-80 bg-purple-600/30 rounded-full blur-[100px] -ml-20 -mb-20 group-hover:bg-purple-600/40 transition-colors" />
 
                             <div className="relative z-10 text-center mb-10">
                                 <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-sm font-bold shadow-lg mb-6 animate-pulse">
                                     <Icons.Sparkles size={16} fill="currentColor" />
-                                    まずは7日間 無料体験
+                                    人数限定 モニター価格
                                 </div>
-                                <h3 className="text-3xl font-bold mb-4">Proプラン</h3>
-                                <div className="flex items-baseline justify-center gap-2 mb-2">
-                                    <span className="text-6xl font-black tracking-tight">¥1,480</span>
-                                    <span className="text-slate-400 font-bold text-lg">/月</span>
+                                <h3 className="text-xl font-bold mb-2 text-indigo-200">Proプラン</h3>
+                                <div className="flex items-center justify-center gap-3 mb-2">
+                                    <span className="text-slate-500 line-through font-bold text-xl decoration-2 decoration-slate-500">¥2,980</span>
+                                    <div className="flex items-baseline gap-1">
+                                        <span className="text-5xl md:text-6xl font-black tracking-tight">¥1,480</span>
+                                        <span className="text-slate-400 font-bold text-lg">/月</span>
+                                    </div>
                                 </div>
-                                <p className="text-sm text-slate-400">無料期間中はいつでもキャンセル可能</p>
+                                <p className="text-sm font-bold text-white mb-1">
+                                    1日わずか49円。
+                                </p>
+                                <p className="text-xs text-slate-400">
+                                    時給1時間分のコストで、1ヶ月分の心の余裕を。
+                                </p>
                             </div>
 
                             <div className="h-px w-full bg-slate-800 mb-8" />
@@ -1504,7 +1674,7 @@ open11:00-close 17:00
                                     "AI投稿生成 (無制限)",
                                     "Instagram / X / Google 全対応",
                                     "3パターン同時提案",
-                                    "口コミ返信アシスト",
+                                    "書き癖学習 (分身機能)",
                                     "多言語翻訳 (英・中・韓)",
                                     "チャットサポート"
                                 ].map((feature, idx) => (
@@ -1521,7 +1691,7 @@ open11:00-close 17:00
                                 今すぐ「分身」を作る <Icons.ChevronUp className="rotate-90" size={20} />
                             </button>
                             <p className="text-center text-xs text-slate-500 mt-6">
-                                ✓ クレジットカード登録不要で体験可能<br />
+                                ✓ 7日間の無料体験を実施中<br />
                                 ※8日目以降は月額1,480円で自動更新。違約金なしでいつでも解約OK。
                             </p>
                         </div>
