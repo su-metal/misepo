@@ -205,13 +205,6 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                             {res.data.map((text, iIdx) => (
                                                 <div key={iIdx} className="p-12 flex flex-col min-h-[500px] relative">
 
-                                                    {/* Central Icon Header - Shows only for first variant or all? Let's show for all but maybe smaller for others? */}
-                                                    <div className="flex items-center justify-center mb-10">
-                                                        <div className="transform transition-transform group-hover:scale-110 duration-500">
-                                                            {theme.icon}
-                                                        </div>
-                                                    </div>
-
                                                     {/* Text Area */}
                                                     <div className={`flex-1 overflow-y-auto mb-10 custom-scrollbar ${theme.wrapperClass || ''}`}>
                                                         <AutoResizingTextarea
