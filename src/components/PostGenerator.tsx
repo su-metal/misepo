@@ -45,6 +45,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
   });
 
   const [isPresetModalOpen, setIsPresetModalOpen] = React.useState(false);
+  const [isSavingPreset, setIsSavingPreset] = React.useState(false); // Add saving state
   const resultsRef = useRef<HTMLDivElement>(null);
 
   // Refs for GuestTour
@@ -67,6 +68,41 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
         resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 300);
     });
+  };
+
+  const handleSavePreset = async (preset: Partial<Preset>) => {
+    setIsSavingPreset(true);
+    try {
+      const url = preset.id ? `/api/me/presets/${preset.id}` : '/api/me/presets';
+      const method = preset.id ? 'PATCH' : 'POST';
+
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(preset),
+      });
+
+      if (!res.ok) throw new Error('Failed to save preset');
+
+      await props.refreshPresets();
+    } catch (error) {
+      console.error('Failed to save preset:', error);
+      alert('プロファイルの保存に失敗しました。');
+    } finally {
+      setIsSavingPreset(false);
+    }
+  };
+
+  const handleDeletePreset = async (id: string) => {
+    if (!window.confirm('本当にこのプロファイルを削除しますか？')) return;
+    try {
+      const res = await fetch(`/api/me/presets/${id}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('Failed to delete preset');
+      await props.refreshPresets();
+    } catch (error) {
+      console.error('Failed to delete preset:', error);
+      alert('プロファイルの削除に失敗しました。');
+    }
   };
 
   return (
@@ -208,12 +244,16 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
 
       {isPresetModalOpen && (
         <PresetModal
-          isOpen={isPresetModalOpen}
           onClose={() => setIsPresetModalOpen(false)}
           presets={presets}
-          refreshPresets={props.refreshPresets}
-          onApply={flow.handleApplyPreset}
-          currentConfig={{ customPrompt: flow.customPrompt }}
+          onSave={handleSavePreset}
+          onDelete={handleDeletePreset}
+          onApply={(p) => {
+            flow.handleApplyPreset(p);
+            setIsPresetModalOpen(false);
+          }}
+          initialPresetId={undefined} // Or pass if needed
+          isSaving={isSavingPreset}
         />
       )}
 

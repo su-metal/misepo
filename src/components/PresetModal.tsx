@@ -1,82 +1,84 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import {
   DndContext,
-  DragEndEvent,
-  PointerSensor,
   closestCenter,
+  KeyboardSensor,
+  PointerSensor,
   useSensor,
   useSensors,
+  DragEndEvent,
 } from '@dnd-kit/core';
 import {
   arrayMove,
   SortableContext,
+  sortableKeyboardCoordinates,
   verticalListSortingStrategy,
   useSortable,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Preset, Platform } from '../types';
 import {
   CloseIcon,
-  BookmarkIcon,
+  MagicWandIcon,
+  SparklesIcon,
   SaveIcon,
   TrashIcon,
-  MagicWandIcon,
+  MenuIcon,
   InstagramIcon,
+  BookmarkIcon,
+  ChevronDownIcon,
+  CoffeeIcon,
   TieIcon,
   SneakersIcon,
   LaptopIcon,
   CookingIcon,
-  CoffeeIcon,
   BuildingIcon,
   LeafIcon,
   GemIcon,
-  MegaphoneIcon,
-  SparklesIcon,
 } from './Icons';
-
-const AVATAR_OPTIONS = [
-  { id: '👔', icon: TieIcon, label: '店長/公式' },
-  { id: '👟', icon: SneakersIcon, label: 'スタッフ' },
-  { id: '💻', icon: LaptopIcon, label: '広報/IT' },
-  { id: '🍳', icon: CookingIcon, label: '料理/製作' },
-  { id: '☕', icon: CoffeeIcon, label: 'カフェ/日常' },
-  { id: '🏢', icon: BuildingIcon, label: '店舗/外観' },
-  { id: '✨', icon: SparklesIcon, label: 'キラキラ' },
-  { id: '📣', icon: MegaphoneIcon, label: 'お知らせ' },
-  { id: '🌿', icon: LeafIcon, label: 'ナチュラル' },
-  { id: '💎', icon: GemIcon, label: 'プレミアム' }
-];
-
-const renderAvatar = (avatarId: string | null, className: string = "w-6 h-6") => {
-  const option = AVATAR_OPTIONS.find(opt => opt.id === avatarId);
-  if (option) {
-    const Icon = option.icon;
-    return <Icon className={className} />;
-  }
-  return <div className={className}><TieIcon /></div>; // Default
-};
+import { Platform, Preset } from '../types';
+import { AutoResizingTextarea } from './AutoResizingTextarea';
 
 interface PresetModalProps {
-  isOpen: boolean;
-  onClose: () => void;
   presets: Preset[];
-  refreshPresets: () => Promise<void>;
+  onSave: (preset: Partial<Preset>) => Promise<void>;
+  onDelete: (id: string) => Promise<void>;
   onApply: (preset: Preset) => void;
-  currentConfig: {
-    customPrompt: string;
-    postSamples?: { [key in Platform]?: string };
-  };
+  onClose: () => void;
+  initialPresetId?: string;
+  isSaving?: boolean;
 }
 
-const SortablePresetRow: React.FC<{
+const AVATAR_OPTIONS = [
+  { id: 'shop', icon: BookmarkIcon, label: '店舗' },
+  { id: 'chef', icon: MagicWandIcon, label: '店主' },
+  { id: 'star', icon: SparklesIcon, label: 'スター' },
+  { id: 'mail', icon: InstagramIcon, label: '公式' },
+  { id: 'business', icon: TieIcon, label: 'ビジネス' },
+  { id: 'casual', icon: SneakersIcon, label: 'カジュアル' },
+  { id: 'tech', icon: LaptopIcon, label: 'テック' },
+  { id: 'food', icon: CookingIcon, label: '飲食' },
+  { id: 'cafe', icon: CoffeeIcon, label: 'カフェ' },
+  { id: 'office', icon: BuildingIcon, label: 'オフィス' },
+  { id: 'nature', icon: LeafIcon, label: '自然' },
+  { id: 'premium', icon: GemIcon, label: 'プレミアム' },
+];
+
+const SortablePresetRow = ({
+  preset,
+  deletingId,
+  isReordering,
+  onSelect,
+  onDelete,
+  isSelected,
+}: {
   preset: Preset;
-  isReordering: boolean;
   deletingId: string | null;
-  onSelect: (preset: Preset) => void;
-  onDelete: (preset: Preset) => void;
+  isReordering: boolean;
+  onSelect: (id: string) => void;
+  onDelete: (id: string) => void;
   isSelected: boolean;
-}> = ({ preset, deletingId, onSelect, onDelete, isReordering, isSelected }) => {
+}) => {
   const {
     attributes,
     listeners,
@@ -89,190 +91,221 @@ const SortablePresetRow: React.FC<{
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    zIndex: isDragging ? 50 : undefined,
-  } as React.CSSProperties;
+    zIndex: isDragging ? 50 : 0,
+  };
 
   return (
     <div
       ref={setNodeRef}
       style={style}
-      className={`group relative flex items-center transition-all duration-300 animate-in slide-in-from-left-4 ${isDragging ? 'opacity-50' : 'opacity-100'}`}
+      className={`
+        group flex items-center gap-3 p-4 rounded-2xl transition-all duration-300 border-2
+        ${isSelected
+          ? 'bg-indigo-50/80 border-indigo-200 shadow-lg shadow-indigo-100/50 scale-[1.02]'
+          : 'bg-white border-slate-100 hover:border-indigo-100 hover:bg-slate-50/50'
+        }
+        ${isDragging ? 'opacity-50' : ''}
+      `}
     >
-      <button
-        onClick={() => onSelect(preset)}
-        className={`flex-1 text-left p-4 rounded-[24px] border transition-all duration-300 ${isSelected
-          ? 'bg-white text-slate-900 shadow-lg shadow-indigo-100/50 border-indigo-100 ring-2 ring-indigo-50/50'
-          : 'bg-white/40 border-transparent hover:bg-white hover:border-slate-100 hover:shadow-sm'
-          }`}
-        type="button"
+      <div
+        {...attributes}
+        {...listeners}
+        className="cursor-grab active:cursor-grabbing p-1 text-slate-300 hover:text-slate-500 transition-colors"
       >
-        <div className="flex items-center gap-4">
-          <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-2xl transition-all duration-300 ${isSelected ? 'bg-indigo-50 shadow-inner scale-105' : 'bg-slate-50'}`}>
-            {renderAvatar(preset.avatar, "w-6 h-6")}
-          </div>
-          <div className={`font-black text-sm tracking-tight truncate ${isSelected ? 'text-indigo-900' : 'text-slate-500 group-hover:text-slate-700'}`}>
-            {preset.name}
-          </div>
+        <MenuIcon className="w-5 h-5" />
+      </div>
+      <button
+        onClick={() => onSelect(preset.id)}
+        className="flex-1 text-left min-w-0"
+      >
+        <div className="font-black text-sm text-slate-800 truncate mb-0.5">{preset.name}</div>
+        <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest truncate">
+          Custom Style
+
         </div>
       </button>
-      <div className="absolute right-4 flex items-center gap-1.5">
-        <button
-          type="button"
-          {...attributes}
-          {...listeners}
-          disabled={isReordering}
-          className={`h-8 w-8 rounded-xl flex items-center justify-center text-xs transition-all touch-none active:scale-95 ${isSelected ? 'bg-indigo-50 text-indigo-300 hover:bg-indigo-100 hover:text-indigo-500' : 'bg-transparent text-slate-300 hover:bg-slate-100 hover:text-slate-500'}`}
-          aria-label="ドラッグして順番を変更"
-        >
-          <div className="grid grid-cols-2 gap-1">
-            {[...Array(4)].map((_, i) => <div key={i} className="w-1 h-1 rounded-full bg-current" />)}
-          </div>
-        </button>
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            onDelete(preset);
-          }}
-          disabled={deletingId === preset.id || isReordering}
-          className={`h-8 w-8 rounded-xl flex items-center justify-center transition-all disabled:opacity-20 opacity-0 group-hover:opacity-100 ${isSelected ? 'text-rose-300 hover:text-rose-500 hover:bg-rose-50' : 'text-slate-300 hover:text-rose-500 hover:bg-rose-50'}`}
-          aria-label="プリセットを削除"
-        >
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          onDelete(preset.id);
+        }}
+        disabled={deletingId === preset.id}
+        className="p-2.5 rounded-xl text-slate-300 hover:text-rose-500 hover:bg-rose-50 transition-all opacity-0 group-hover:opacity-100"
+      >
+        {deletingId === preset.id ? (
+          <div className="w-4 h-4 border-2 border-rose-500 border-t-transparent rounded-full animate-spin" />
+        ) : (
           <TrashIcon className="w-4 h-4" />
-        </button>
-      </div>
+        )}
+      </button>
     </div>
   );
 };
 
-const MAX_SAVE_NAME_WIDTH = 40;
-
-const enforceSaveNameWidth = (value: string, maxWidth: number = MAX_SAVE_NAME_WIDTH) => {
-  let width = 0;
-  let truncated = '';
-  for (const char of Array.from(value)) {
-    const code = char.codePointAt(0) ?? 0;
-    const isHalfWidth = code <= 0x7f;
-    const delta = isHalfWidth ? 1 : 2;
-    if (width + delta > maxWidth) break;
-    truncated += char;
-    width += delta;
-  }
-  return truncated;
-};
-
-const AutoResizingTextarea: React.FC<{
-  value: string;
-  onChange: (value: string) => void;
-  placeholder?: string;
-  className?: string;
-}> = ({ value, onChange, placeholder, className }) => {
-  const ref = useRef<HTMLTextAreaElement>(null);
-
-  useEffect(() => {
-    if (!ref.current) return;
-    ref.current.style.height = 'auto';
-    ref.current.style.height = `${ref.current.scrollHeight}px`;
-  }, [value]);
-
-  return (
-    <textarea
-      ref={ref}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      placeholder={placeholder}
-      className={className}
-      rows={1}
-      style={{ overflow: 'hidden' }}
-    />
-  );
-};
-
 const PresetModal: React.FC<PresetModalProps> = ({
-  isOpen,
-  onClose,
   presets,
-  refreshPresets,
+  onSave,
+  onDelete,
   onApply,
-  currentConfig,
+  onClose,
+  initialPresetId,
+  isSaving: isExternalSaving,
 }) => {
+  const [selectedPresetId, setSelectedPresetId] = useState<string | null>(initialPresetId || null);
   const [name, setName] = useState('');
-  const [avatar, setAvatar] = useState('👤');
+  const [avatar, setAvatar] = useState('shop');
   const [customPrompt, setCustomPrompt] = useState('');
-  const [postSamples, setPostSamples] = useState<{ [key in Platform]?: string }>({});
-  const [selectedPresetId, setSelectedPresetId] = useState<string | null>(null);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [isSaving, setIsSaving] = useState(false);
+  const [postSamples, setPostSamples] = useState<Record<string, string>>({});
+  const [isInternalSaving, setIsInternalSaving] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
-  const [orderedPresets, setOrderedPresets] = useState<Preset[]>(presets);
+  const [orderedPresets, setOrderedPresets] = useState<Preset[]>([]);
   const [isReordering, setIsReordering] = useState(false);
   const [orderError, setOrderError] = useState<string | null>(null);
   const [mobileView, setMobileView] = useState<'list' | 'edit'>('list');
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [expandingPlatform, setExpandingPlatform] = useState<Platform | null>(null);
   const [isSanitizing, setIsSanitizing] = useState(false);
-  const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [suggestions, setSuggestions] = useState<any[]>([]);
-  const autocompleteService = useRef<any>(null);
+  const [isIconSelectorOpen, setIsIconSelectorOpen] = useState(false);
 
-  const sensors = useSensors(useSensor(PointerSensor));
-  const goToListView = () => setMobileView('list');
-  const listVisibilityClass =
-    mobileView === 'edit' ? 'hidden md:flex' : 'flex md:flex';
-  const editVisibilityClass =
-    mobileView === 'list' ? 'hidden md:flex' : 'flex md:flex';
+  const isSaving = isExternalSaving || isInternalSaving;
 
   useEffect(() => {
     setOrderedPresets(presets);
   }, [presets]);
 
   useEffect(() => {
-    if (!isOpen) {
-      setSelectedPresetId(null);
-      setErrorMessage(null);
-      setOrderError(null);
-      setMobileView('list');
-      setExpandingPlatform(null);
-      return;
+    if (initialPresetId) {
+      handleLoadPreset(initialPresetId);
+      setMobileView('edit');
     }
+  }, [initialPresetId]);
 
+  const handleLoadPreset = (id: string) => {
+    const preset = presets.find((p) => p.id === id);
+    if (preset) {
+      setSelectedPresetId(id);
+      setName(preset.name);
+      setAvatar(preset.avatar || 'shop');
+      setCustomPrompt(preset.custom_prompt || '');
+      setPostSamples(preset.postSamples || {});
+      setMobileView('edit');
+    }
+  };
+
+  const handleStartNew = () => {
+    setSelectedPresetId(null);
     setName('');
-    setAvatar('👔');
+    setAvatar('shop');
     setCustomPrompt('');
     setPostSamples({});
-    setSelectedPresetId(null);
-    setErrorMessage(null);
-    setOrderError(null);
-    setMobileView('list');
-    refreshPresets().catch(() => { });
-  }, [isOpen, refreshPresets]);
+    setMobileView('edit');
+  };
 
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-      setSuggestions([]);
+  const handleSave = async () => {
+    if (!name.trim()) return;
+    setIsInternalSaving(true);
+    try {
+      await onSave({
+        id: selectedPresetId || undefined,
+        name,
+        avatar,
+        custom_prompt: customPrompt,
+        postSamples: postSamples,
+      });
+      setShowSuccessToast(true);
+      setTimeout(() => setShowSuccessToast(false), 3000);
+    } catch (err) {
+      console.error('Failed to save preset:', err);
+    } finally {
+      setIsInternalSaving(false);
     }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [isOpen]);
+  };
 
-  const handleNameChange = (val: string) => {
-    setName(enforceSaveNameWidth(val));
+  const handleDeletePreset = async (id: string) => {
+    if (!window.confirm('このプロファイルを削除してもよろしいですか？')) return;
+    setDeletingId(id);
+    try {
+      await onDelete(id);
+      if (selectedPresetId === id) {
+        handleStartNew();
+        setMobileView('list');
+      }
+    } catch (err) {
+      console.error('Failed to delete preset:', err);
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
-    if (!val.trim()) {
+  const handleApplyCurrent = () => {
+    if (selectedPresetId) {
+      const preset = presets.find(p => p.id === selectedPresetId);
+      if (preset) {
+        onApply(preset);
+        onClose();
+      }
+    }
+  };
+
+  // Drag and Drop sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
+
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = orderedPresets.findIndex((p) => p.id === active.id);
+    const newIndex = orderedPresets.findIndex((p) => p.id === over.id);
+
+    const newOrder = arrayMove(orderedPresets, oldIndex, newIndex);
+    setOrderedPresets(newOrder);
+
+    // Save order to backend
+    setIsReordering(true);
+    setOrderError(null);
+    try {
+      const res = await fetch('/api/me/presets/reorder', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ order: newOrder.map((p) => p.id) }),
+      });
+      if (!res.ok) throw new Error('Failed to save order');
+    } catch (err) {
+      console.error('Failed to reorder:', err);
+      setOrderError('並び替えの保存に失敗しました');
+      setOrderedPresets(presets); // Revert
+    } finally {
+      setIsReordering(false);
+    }
+  };
+
+  const renderAvatar = (id: string, className = "w-6 h-6") => {
+    const opt = AVATAR_OPTIONS.find(o => o.id === id) || AVATAR_OPTIONS[0];
+    const Icon = opt.icon;
+    return <Icon className={className} />;
+  };
+
+  const enforceSaveNameWidth = (n: string) => {
+    return n.length > 20 ? n.slice(0, 20) : n;
+  };
+
+  const handleNameChange = async (val: string) => {
+    const limited = enforceSaveNameWidth(val);
+    setName(limited);
+    if (!limited.trim()) {
       setSuggestions([]);
       return;
     }
 
-    if (!autocompleteService.current && typeof window !== 'undefined' && window.google) {
-      autocompleteService.current = new window.google.maps.places.AutocompleteService();
-    }
-
-    if (autocompleteService.current) {
-      autocompleteService.current.getPlacePredictions(
-        { input: val, types: ['establishment'] },
+    // Google Places Search Suggestions
+    if (window.google && window.google.maps && window.google.maps.places) {
+      const service = new window.google.maps.places.AutocompleteService();
+      service.getPlacePredictions(
+        { input: limited, types: ['establishment'] },
         (predictions: any[] | null, status: any) => {
           if (status === 'OK' && predictions) {
             setSuggestions(predictions);
@@ -284,219 +317,34 @@ const PresetModal: React.FC<PresetModalProps> = ({
     }
   };
 
-  const limitReached = orderedPresets.length >= 10 && !selectedPresetId;
-  const isSaveDisabled = isSaving || !name.trim() || limitReached;
-  const isCreatingNew = selectedPresetId === null;
+  const isSaveDisabled = isSaving || !name.trim();
 
-  const handleSave = async () => {
-    const trimmedName = name.trim();
-    if (!trimmedName) {
-      setErrorMessage('プリセット名を入力してください');
-      return;
-    }
+  // Handle mobile view transitions
+  const editVisibilityClass = mobileView === 'edit' ? 'flex' : 'hidden md:flex';
+  const listVisibilityClass = mobileView === 'list' ? 'flex' : 'hidden md:flex';
 
-    const trimmedPrompt = customPrompt.trim();
-    setIsSaving(true);
-    setErrorMessage(null);
-
-    try {
-      const payload = {
-        name: trimmedName,
-        avatar: avatar,
-        custom_prompt: trimmedPrompt, // Send empty string, not null (DB has NOT NULL constraint)
-        post_samples: postSamples, // Store learning samples per platform
-      };
-      const endpoint = selectedPresetId
-        ? `/api/me/presets/${selectedPresetId}`
-        : '/api/me/presets';
-      const method = selectedPresetId ? 'PATCH' : 'POST';
-      const res = await fetch(endpoint, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-      const data = await res.json().catch(() => null);
-      if (!res.ok || data?.ok === false) {
-        if (!selectedPresetId && res.status === 409) {
-          setErrorMessage(
-            '保存済みプリセットは最大10件です。既存プリセットを編集してください。'
-          );
-        } else {
-          setErrorMessage(data?.error ?? '保存に失敗しました。');
-        }
-        return;
-      }
-
-      await refreshPresets();
-
-      // If we were editing an active preset, re-apply it to sync the generator UI
-      if (selectedPresetId && onApply) {
-        onApply({
-          id: selectedPresetId,
-          name: trimmedName,
-          avatar: avatar,
-          custom_prompt: trimmedPrompt || null,
-          postSamples,
-          sort_order: 0, // Not critical for apply
-        });
-      }
-
-      setName(trimmedName);
-      setAvatar(avatar);
-      setCustomPrompt(trimmedPrompt);
-      setPostSamples(postSamples);
-
-      // Show success toast
-      setShowSuccessToast(true);
-      setTimeout(() => setShowSuccessToast(false), 3000);
-
-      // Only reset if it was a completely NEW creation
-      if (!selectedPresetId) {
-        setName('');
-        setAvatar('👔');
-        setCustomPrompt('');
-        setPostSamples({});
-        setSelectedPresetId(null);
-      }
-    } catch (err) {
-      console.error('preset save failed:', err);
-      setErrorMessage('保存に失敗しました。時間をおいて再度お試しください。');
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  const handleLoadPreset = (preset: Preset) => {
-    setSelectedPresetId(preset.id);
-    setName(enforceSaveNameWidth(preset.name));
-    setAvatar(preset.avatar || '👔');
-    setCustomPrompt(preset.custom_prompt ?? '');
-    setPostSamples(preset.postSamples || {});
-    setErrorMessage(null);
-    setOrderError(null);
-    setMobileView('edit');
-  };
-
-  const handleStartNew = () => {
-    if (limitReached) return;
-    setSelectedPresetId(null);
-    setName('');
-    setAvatar('👤');
-    setCustomPrompt('');
-    setPostSamples({});
-    setErrorMessage(null);
-    setOrderError(null);
-    setMobileView('edit');
-  };
-
-  const handleDeletePreset = async (preset: Preset) => {
-    setDeletingId(preset.id);
-    setErrorMessage(null);
-    try {
-      const res = await fetch(`/api/me/presets/${preset.id}`, {
-        method: 'DELETE',
-      });
-      const data = await res.json().catch(() => null);
-      if (!res.ok || data?.ok === false) {
-        setErrorMessage('削除に失敗しました。');
-        return;
-      }
-      await refreshPresets();
-      if (selectedPresetId === preset.id) {
-        setSelectedPresetId(null);
-        setName('');
-        setAvatar('👔');
-        setCustomPrompt(currentConfig.customPrompt ?? '');
-        setPostSamples(currentConfig.postSamples || {});
-      }
-    } catch (err) {
-      console.error('preset delete failed:', err);
-      setErrorMessage('削除に失敗しました。');
-    } finally {
-      setDeletingId(null);
-    }
-  };
-
-  const handleApplyCurrent = () => {
-    const trimmedPrompt = customPrompt.trim();
-    const personaPreset: Preset = {
-      id: 'temp',
-      name: name || 'Persona',
-      avatar: avatar,
-      custom_prompt: trimmedPrompt || null,
-      postSamples,
-      sort_order: 0,
-    };
-    onApply(personaPreset);
-    onClose();
-  };
-
-  const handleDragEnd = async (event: DragEndEvent) => {
-    const { active, over } = event;
-    if (!over || active.id === over.id) return;
-
-    const activeIndex = orderedPresets.findIndex((preset) => preset.id === active.id);
-    const overIndex = orderedPresets.findIndex((preset) => preset.id === over.id);
-    if (activeIndex === -1 || overIndex === -1) return;
-
-    const nextOrder = arrayMove(orderedPresets, activeIndex, overIndex);
-    const previousOrder = orderedPresets;
-    setOrderedPresets(nextOrder);
-    setIsReordering(true);
-    setOrderError(null);
-
-    try {
-      const res = await fetch('/api/me/presets/reorder', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ orderedIds: nextOrder.map((p) => p.id) }),
-      });
-      const data = await res.json().catch(() => null);
-      if (!res.ok || data?.ok === false) {
-        setOrderedPresets(previousOrder);
-        setOrderError('並び順の保存に失敗しました。リロードして再度お試しください。');
-        return;
-      }
-      await refreshPresets();
-    } catch (err) {
-      console.error('reorder failed:', err);
-      setOrderedPresets(previousOrder);
-      setOrderError('並び順의 保存に失敗しました。リロードして再度お試しください。');
-    } finally {
-      setIsReordering(false);
-    }
-  };
-
-  if (!isOpen) return null;
+  const goToListView = () => setMobileView('list');
 
   const modalBody = (
-    <div className="flex w-full h-full flex-col md:flex-row overflow-hidden bg-white/80 backdrop-blur-2xl rounded-[32px] border border-white/40 shadow-2xl">
-      {/* SIDEBAR: Light Glass Theme */}
+    <div className="flex h-full bg-white relative">
+      {/* SIDEBAR: Profile List */}
       <div
-        className={`md:w-5/12 lg:w-4/12 bg-slate-50/50 border-r border-slate-100 flex flex-col shrink-0 h-full relative overflow-hidden ${listVisibilityClass}`}
+        className={`w-full md:w-[420px] shrink-0 border-r border-slate-100 flex flex-col bg-white overflow-hidden ${listVisibilityClass}`}
       >
-        <div className="relative z-10 p-6 md:p-8 flex flex-col h-full">
-          <div className="mb-8 flex items-center justify-between gap-4">
-            <div className="space-y-1">
-              <h3 className="font-black text-2xl text-slate-800 tracking-tighter flex items-center gap-3">
-                <div className="w-1.5 h-6 bg-gradient-to-b from-rose-400 to-orange-400 rounded-full shadow-lg shadow-rose-200"></div>
-                投稿者リスト
-              </h3>
-              <p className="text-[10px] font-black text-rose-500 uppercase tracking-[0.2em] opacity-80 pl-4">Sender Profiles</p>
-            </div>
-            <button
-              type="button"
-              onClick={handleStartNew}
-              disabled={limitReached}
-              className={`p-2.5 rounded-xl transition-all border flex items-center justify-center ${limitReached
-                ? 'border-slate-100 text-slate-300 bg-slate-50'
-                : 'border-white bg-white text-slate-500 hover:text-indigo-600 hover:border-indigo-100 hover:shadow-md shadow-sm'
-                }`}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12h14" /></svg>
-            </button>
+        <div className="p-8 border-b border-slate-50 flex items-center justify-between shrink-0">
+          <div>
+            <h2 className="font-black text-xl text-slate-800 tracking-tight">AIプロファイル</h2>
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Management</p>
           </div>
+          <button
+            onClick={handleStartNew}
+            className="p-3 bg-indigo-50 text-indigo-600 rounded-2xl hover:bg-indigo-600 hover:text-white transition-all active:scale-95 group"
+          >
+            <MagicWandIcon className="w-6 h-6 group-hover:rotate-12 transition-transform" />
+          </button>
+        </div>
 
+        <div className="flex-1 overflow-hidden flex flex-col p-6 space-y-6">
           <div className="mb-6 bg-indigo-50/50 border border-indigo-100/50 rounded-2xl p-4">
             <p className="text-[11px] text-indigo-900/80 font-bold leading-relaxed flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse shadow-sm shadow-indigo-200"></span>
@@ -543,7 +391,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                 </SortableContext>
               </DndContext>
             )}
-            {limitReached && (
+            {orderedPresets.length >= 10 && (
               <div className="bg-rose-50 border border-rose-100 rounded-2xl p-4">
                 <p className="text-[10px] text-rose-500 font-bold leading-tight">
                   保存上限(10件)に達しています。既存の設定を編集してください。
@@ -567,8 +415,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
               <MagicWandIcon className="w-6 h-6" />
             </div>
             <div>
-              <h2 className="font-black text-2xl text-slate-800 tracking-tighter">プロファイルの編集</h2>
-              <p className="text-[10px] font-black text-indigo-500 uppercase tracking-[0.3em] opacity-80">Profile Editor</p>
+              <h2 className="font-black text-lg md:text-2xl text-slate-800 tracking-tighter">プロファイルの編集</h2>
+              <p className="text-[9px] md:text-[10px] font-black text-indigo-500 uppercase tracking-[0.3em] opacity-80">Profile Editor</p>
             </div>
           </div>
           <div className="flex items-center gap-4">
@@ -596,7 +444,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
             <div className="space-y-8">
               {/* Profile Name */}
               <div className="space-y-4">
-                <label className="block text-[11px] font-black text-indigo-500 uppercase tracking-[0.3em]">
+                <label className="block text-[10px] md:text-[11px] font-black text-indigo-500 uppercase tracking-[0.3em]">
                   プロフィール名 (Account Name)
                 </label>
                 <div className="relative group max-w-md">
@@ -605,10 +453,10 @@ const PresetModal: React.FC<PresetModalProps> = ({
                     value={name}
                     onChange={(e) => handleNameChange(e.target.value)}
                     placeholder="例: 店長（公式）"
-                    className="w-full px-7 py-5 bg-white border border-slate-200 focus:border-indigo-300 focus:ring-4 focus:ring-indigo-50/50 outline-none rounded-2xl text-base text-slate-800 font-black placeholder-slate-300 transition-all shadow-sm"
+                    className="w-full px-5 py-4 md:px-7 md:py-5 bg-white border border-slate-200 focus:border-indigo-300 focus:ring-4 focus:ring-indigo-50/50 outline-none rounded-2xl text-sm md:text-base text-slate-800 font-black placeholder-slate-300 transition-all shadow-sm"
                   />
                   <div className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-indigo-500 transition-colors">
-                    {renderAvatar(avatar, "w-8 h-8")}
+                    {renderAvatar(avatar, "w-6 h-6 md:w-8 md:h-8")}
                   </div>
 
                   {/* Google Maps Search Suggestions */}
@@ -645,43 +493,70 @@ const PresetModal: React.FC<PresetModalProps> = ({
                 </div>
               </div>
 
-              {/* Icon Selection */}
-              <div className="space-y-5">
-                <label className="block text-[11px] font-black text-indigo-500 uppercase tracking-[0.3em]">
-                  アイコンの選択 (Select Icon)
-                </label>
-                <div className="flex flex-wrap gap-3 p-6 bg-white border border-slate-200 rounded-[32px] shadow-sm">
-                  {AVATAR_OPTIONS.map((item) => {
-                    const Icon = item.icon;
-                    const isSelected = avatar === item.id;
-                    return (
-                      <button
-                        key={item.id}
-                        type="button"
-                        onClick={() => setAvatar(item.id)}
-                        title={item.label}
-                        className={`
-                          w-14 h-14 flex items-center justify-center rounded-2xl transition-all duration-300 relative
-                          ${isSelected
-                            ? 'bg-gradient-to-br from-indigo-500 to-violet-600 shadow-xl shadow-indigo-200 scale-110 z-10 text-white'
-                            : 'bg-slate-50 text-slate-300 hover:bg-slate-100 hover:text-slate-500 border border-slate-100'
-                          }
-                        `}
-                      >
-                        <Icon className="w-6 h-6" />
-                        {isSelected && (
-                          <div className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-white rounded-full border-[3px] border-indigo-500 shadow-sm" />
-                        )}
-                      </button>
-                    );
-                  })}
+              {/* Icon Selection - Accordion Style */}
+              <div className="space-y-4">
+                <div
+                  onClick={() => setIsIconSelectorOpen(!isIconSelectorOpen)}
+                  className="flex flex-col gap-4 p-5 bg-white border border-slate-200 rounded-[32px] shadow-sm cursor-pointer hover:border-indigo-200 transition-colors group"
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <label className="block text-[10px] md:text-[11px] font-black text-indigo-500 uppercase tracking-[0.3em] mb-1">
+                        アイコンの選択 (Select Icon)
+                      </label>
+                      <div className="text-sm font-bold text-slate-500">
+                        {AVATAR_OPTIONS.find(o => o.id === avatar)?.label}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      {/* Selected Icon Preview */}
+                      <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white shadow-lg shadow-indigo-200">
+                        {renderAvatar(avatar, "w-6 h-6")}
+                      </div>
+                      <div className={`w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center transition-transform duration-300 ${isIconSelectorOpen ? 'rotate-180' : ''}`}>
+                        <ChevronDownIcon className="w-4 h-4 text-slate-400 group-hover:text-indigo-500" />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Expandable Grid */}
+                  <div className={`grid grid-cols-5 md:flex md:flex-wrap gap-2 md:gap-3 transition-all duration-300 ease-in-out overflow-hidden ${isIconSelectorOpen ? 'max-h-[500px] opacity-100 pt-4 border-t border-slate-100' : 'max-h-0 opacity-0'}`}>
+                    {AVATAR_OPTIONS.map((item) => {
+                      const Icon = item.icon;
+                      const isSelected = avatar === item.id;
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setAvatar(item.id);
+                            // setIsIconSelectorOpen(false); // Optional: close on select
+                          }}
+                          title={item.label}
+                          className={`
+                            w-10 h-10 md:w-14 md:h-14 flex items-center justify-center rounded-xl md:rounded-2xl transition-all duration-300 relative shrink-0
+                            ${isSelected
+                              ? 'bg-gradient-to-br from-indigo-500 to-violet-600 shadow-lg md:shadow-xl shadow-indigo-200 scale-110 z-10 text-white'
+                              : 'bg-slate-50 text-slate-300 hover:bg-slate-100 hover:text-slate-500 border border-slate-100'
+                            }
+                          `}
+                        >
+                          <Icon className="w-4 h-4 md:w-6 md:h-6" />
+                          {isSelected && (
+                            <div className="absolute -top-1 -right-1 w-2.5 h-2.5 md:w-3.5 md:h-3.5 bg-white rounded-full border-[3px] border-indigo-500 shadow-sm" />
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
           <div className="animate-in slide-in-from-bottom-4 duration-500 delay-100">
-            <label className="block text-[11px] font-black text-indigo-500 uppercase tracking-[0.3em] mb-4">
+            <label className="block text-[10px] md:text-[11px] font-black text-indigo-500 uppercase tracking-[0.3em] mb-3 md:mb-4">
               追加の指示プロンプト (Additional Instructions)
             </label>
             <div className="relative p-1 rounded-[32px] bg-gradient-to-br from-indigo-50 via-white to-purple-50 border border-indigo-100 shadow-sm">
@@ -689,20 +564,46 @@ const PresetModal: React.FC<PresetModalProps> = ({
                 value={customPrompt}
                 onChange={setCustomPrompt}
                 placeholder={'例：\n・「ご来店お待ちしております」は使わないでください\n・必ず「#〇〇」のタグをつけてください\n・語尾は「〜だワン！」にしてください'}
-                className="w-full px-8 py-8 bg-white/50 border-2 border-transparent focus:bg-white focus:border-indigo-100 outline-none rounded-[28px] text-base text-slate-800 font-bold leading-relaxed placeholder-slate-300 transition-all min-h-[160px]"
+                className="w-full px-6 py-6 md:px-8 md:py-8 bg-white/50 border-2 border-transparent focus:bg-white focus:border-indigo-100 outline-none rounded-[28px] text-sm md:text-base text-slate-800 font-bold leading-relaxed placeholder-slate-300 transition-all min-h-[120px] md:min-h-[160px]"
               />
             </div>
-            <p className="text-[11px] text-slate-400 font-black mt-4 leading-relaxed flex items-center gap-2">
+            <p className="text-[10px] md:text-[11px] text-slate-400 font-black mt-3 md:mt-4 leading-relaxed flex items-center gap-1.5 md:gap-2">
               <span className="w-2 h-2 rounded-full bg-indigo-400"></span>
               文体は「過去の投稿学習」が優先されます。ここは特定のルールや制約を指定するのに便利です。
             </p>
           </div>
 
           <div className="animate-in slide-in-from-bottom-4 duration-500 delay-200">
-            <label className="block text-[11px] font-black text-slate-800 uppercase tracking-[0.3em] mb-5">
+            <label className="block text-[10px] md:text-[11px] font-black text-slate-800 uppercase tracking-[0.3em] mb-3 md:mb-5">
               AIプロフィールの育成 (文体学習)
             </label>
-            <div className="bg-slate-100/50 rounded-[40px] p-2 border border-slate-200/50">
+            <div className="bg-slate-100/50 rounded-[40px] p-1.5 md:p-2 border border-slate-200/50">
+              {/* Learning Hints relocated from Focus Mode */}
+              <div className="p-5 md:p-6 flex flex-col md:flex-row gap-4 md:gap-6 shrink-0 bg-white/40 rounded-[32px] mb-2 border border-slate-100">
+                <div className="flex-1 flex gap-3 md:gap-4">
+                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-indigo-50 flex items-center justify-center shrink-0">
+                    <MagicWandIcon className="w-4 h-4 md:w-5 md:h-5 text-indigo-500" />
+                  </div>
+                  <div className="space-y-0.5 md:space-y-1">
+                    <h4 className="text-[10px] md:text-[11px] font-black text-indigo-900 uppercase tracking-wider">学習のヒント</h4>
+                    <p className="text-[11px] md:text-xs text-slate-500 leading-relaxed font-bold">
+                      過去の投稿を3〜5件貼り付けるのがベストです。<span className="hidden md:inline"><br />文体や絵文字はAIが自動で学習します。</span>
+                    </p>
+                  </div>
+                </div>
+                <div className="flex-1 flex gap-3 md:gap-4">
+                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-rose-50 flex items-center justify-center shrink-0">
+                    <SparklesIcon className="w-4 h-4 md:w-5 md:h-5 text-rose-500" />
+                  </div>
+                  <div className="space-y-0.5 md:space-y-1">
+                    <h4 className="text-[10px] md:text-[11px] font-black text-rose-900 uppercase tracking-wider">個人情報を守る</h4>
+                    <p className="text-[11px] md:text-xs text-slate-500 leading-relaxed font-bold">
+                      「AI伏せ字」で名前などを自動で書き換えます。<span className="hidden md:inline"><br />安全な学習データが作れます。</span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+
               {/* Instagram Sample */}
               <div className="bg-white rounded-[32px] p-6 mb-2 shadow-sm border border-slate-100 hover:border-pink-200 transition-colors">
                 <div className="flex items-center justify-between mb-4">
@@ -797,21 +698,13 @@ const PresetModal: React.FC<PresetModalProps> = ({
             <button
               onClick={handleSave}
               disabled={isSaveDisabled}
-              className="w-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 disabled:opacity-50 disabled:cursor-not-allowed text-white px-8 py-6 rounded-[28px] font-black text-sm uppercase tracking-[0.3em] flex items-center justify-center gap-4 transition-all transform hover:-translate-y-1 active:translate-y-0 shadow-xl shadow-indigo-300/40 group relative overflow-hidden"
+              className="w-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 disabled:opacity-50 disabled:cursor-not-allowed text-white px-8 py-4 md:py-6 rounded-[28px] font-black text-sm uppercase tracking-[0.3em] flex items-center justify-center gap-4 transition-all transform hover:-translate-y-1 active:translate-y-0 shadow-xl shadow-indigo-300/40 group relative overflow-hidden"
             >
               <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
               <SaveIcon className="w-5 h-5 group-hover:scale-110 transition-transform relative z-10" />
-              <span className="relative z-10">{selectedPresetId ? '更新して保存' : '新規作成'}</span>
+              <span className="relative z-10">{selectedPresetId ? '更新して保存' : '新規作成して保存'}</span>
             </button>
           </div>
-
-          <button
-            onClick={handleApplyCurrent}
-            className="flex-[1.2] bg-white border-2 border-slate-100 hover:border-violet-200 text-slate-600 hover:text-violet-600 font-black py-6 px-10 rounded-[28px] shadow-sm hover:shadow-lg hover:shadow-violet-100/50 transition-all transform hover:-translate-y-1 active:translate-y-0 flex items-center justify-center gap-4 text-sm uppercase tracking-[0.3em] group"
-          >
-            <MagicWandIcon className="w-5 h-5 group-hover:rotate-12 transition-transform text-violet-500" />
-            プロファイルを適用
-          </button>
         </div>
       </div>
     </div>
@@ -915,32 +808,6 @@ const PresetModal: React.FC<PresetModalProps> = ({
         </div>
 
         <div className="flex-1 overflow-hidden flex flex-col bg-slate-50/30">
-          {/* Instructions / Tips */}
-          <div className="p-5 md:p-8 bg-white/40 flex flex-col md:flex-row gap-4 md:gap-6 shrink-0 border-b border-slate-100">
-            <div className="flex-1 flex gap-3 md:gap-4">
-              <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-indigo-50 flex items-center justify-center shrink-0">
-                <MagicWandIcon className="w-4 h-4 md:w-5 md:h-5 text-indigo-500" />
-              </div>
-              <div className="space-y-0.5 md:space-y-1">
-                <h4 className="text-[10px] md:text-[11px] font-black text-indigo-900 uppercase tracking-wider">学習のヒント</h4>
-                <p className="text-[11px] md:text-xs text-slate-500 leading-relaxed font-bold">
-                  過去の投稿を3〜5件貼り付けるのがベストです。<span className="hidden md:inline"><br />文体や絵文字はAIが自動で学習します。</span>
-                </p>
-              </div>
-            </div>
-            <div className="flex-1 flex gap-3 md:gap-4">
-              <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-rose-50 flex items-center justify-center shrink-0">
-                <SparklesIcon className="w-4 h-4 md:w-5 md:h-5 text-rose-500" />
-              </div>
-              <div className="space-y-0.5 md:space-y-1">
-                <h4 className="text-[10px] md:text-[11px] font-black text-rose-900 uppercase tracking-wider">個人情報を守る</h4>
-                <p className="text-[11px] md:text-xs text-slate-500 leading-relaxed font-bold">
-                  「AI伏せ字」で名前などを自動で書き換えます。<span className="hidden md:inline"><br />安全な学習データが作れます。</span>
-                </p>
-              </div>
-            </div>
-          </div>
-
           <div className="flex-1 p-5 md:p-8 overflow-y-auto">
             <textarea
               autoFocus
