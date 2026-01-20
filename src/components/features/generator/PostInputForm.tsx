@@ -283,7 +283,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                 <h3 className="text-xs font-black text-primary uppercase tracking-[0.25em]">Profiles</h3>
                                 <button onClick={onOpenPresetModal} className="text-[10px] font-black text-accent hover:underline uppercase tracking-widest">Manage</button>
                             </div>
-                            <div className="grid grid-cols-2 gap-3 md:gap-4 w-full">
+                            <div className="grid grid-cols-2 gap-3 md:gap-4 w-full flex-1 h-full auto-rows-fr">
                                 {/* Plain AI Option */}
                                 <button
                                     onClick={() => onApplyPreset({ id: 'plain-ai' } as any)}
