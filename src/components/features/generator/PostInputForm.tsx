@@ -215,7 +215,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
         <div className="flex flex-col">
             {/* Platform Tabs & Multi-gen Toggle - Glass Style */}
             <div className="flex flex-col lg:flex-row lg:items-center gap-4 px-3 sm:px-6 pb-4">
-                <div className="flex items-stretch flex-1 p-1.5 glass-panel rounded-full border border-white/40 shadow-sm">
+                <div className="flex items-stretch flex-1 p-4 gap-1 glass-panel rounded-full border border-white/40 shadow-sm">
                     <button
                         onClick={() => onSetActivePlatform(Platform.X)}
                         className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-full text-xs sm:text-sm font-black transition-all relative
@@ -295,9 +295,6 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                                     : 'bg-slate-50 shadow-sm hover:bg-slate-100 text-slate-400 hover:text-slate-600 border border-slate-200 hover:border-slate-300'}
                                             `}
                                         >
-                                            {!activePresetId && (
-                                                <span className="absolute top-3 right-3 w-1.5 h-1.5 rounded-full bg-[#B8E600] shadow-lg shadow-[#FF2D55]/50 animate-pulse" />
-                                            )}
                                             <span className={`text-2xl transition-transform duration-300 group-hover:scale-110 ${!activePresetId ? 'opacity-100' : 'opacity-60 grayscale group-hover:grayscale-0'}`}>
                                                 <AutoSparklesIcon className="w-6 h-6" />
                                             </span>
@@ -317,9 +314,6 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                                             : 'bg-slate-50 shadow-sm hover:bg-slate-100 text-slate-400 hover:text-slate-600 border border-slate-200 hover:border-slate-300'}
                                                     `}
                                                 >
-                                                    {isSelected && (
-                                                        <span className="absolute top-3 right-3 w-1.5 h-1.5 rounded-full bg-[#FF2D55] shadow-lg shadow-[#FF2D55]/50 animate-pulse" />
-                                                    )}
                                                     <span className={`text-2xl transition-transform duration-300 group-hover:scale-110 ${isSelected ? 'opacity-100' : 'opacity-60 grayscale group-hover:grayscale-0'}`}>
                                                         {renderAvatar(p.avatar, "w-6 h-6")}
                                                     </span>
@@ -355,7 +349,6 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                                     }`}
                                             >
                                                 <span>{t.label}</span>
-                                                {tone === t.id && <div className="w-1.5 h-1.5 rounded-full bg-accent shadow-sm animate-pulse" />}
                                             </button>
                                         ))}
                                     </div>
@@ -376,7 +369,6 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                                         }`}
                                                 >
                                                     <span>{l.label}</span>
-                                                    {length === l.id && <div className="w-1.5 h-1.5 rounded-full bg-accent shadow-sm animate-pulse" />}
                                                 </button>
                                             ))}
                                         </div>
@@ -490,7 +482,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                     {/* Lock Overlay */}
                                     {starRating !== null && (
                                         <div className="absolute inset-0 flex items-center justify-center z-20 animate-in fade-in zoom-in-95 duration-300">
-                                            <div className="bg-[#4F46E5] text-white px-5 py-2.5 rounded-full shadow-xl shadow-indigo-200 flex items-center gap-2.5 transform scale-100 border border-white/20">
+                                            <div className="bg-[#130c0a] text-white px-5 py-2.5 rounded-full shadow-xl shadow-indigo-200 flex items-center gap-2.5 transform scale-100 border border-white/20">
                                                 <AutoSparklesIcon className="w-4 h-4" />
                                                 <span className="text-[11px] font-black tracking-widest whitespace-nowrap">自動判定モード固定</span>
                                             </div>
