@@ -443,7 +443,6 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                             </div>
                         </div>
                     )}
-
                 </div>
 
                 {/* Right Column: Input Canvas */}
