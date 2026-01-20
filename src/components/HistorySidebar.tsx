@@ -54,23 +54,21 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
       {/* Mobile Toggle Overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-[#001738]/40 backdrop-blur-md z-[9990] transition-opacity duration-300"
+          className="fixed inset-0 bg-slate-900/20 backdrop-blur-sm z-[9990] transition-opacity duration-300"
           onClick={toggleOpen}
         />
       )}
 
       <div
-        className={`fixed top-0 left-0 h-full glass-panel-dark w-80 transform transition-all duration-500 cubic-bezier(0.4, 0, 0.2, 1) z-[9999] flex flex-col overflow-hidden ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}
+        className={`fixed top-0 left-0 h-full bg-white/80 backdrop-blur-2xl border-r border-white/40 shadow-2xl w-[85vw] sm:w-[400px] md:w-[480px] transform transition-all duration-500 cubic-bezier(0.2, 0.8, 0.2, 1) z-[9999] flex flex-col overflow-hidden ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}
       >
-        {/* Tech Background Effects - Grid and patterns removed for clarity */}
-
         {/* Header: User Profile & Close */}
-        <div className="p-8 border-b border-slate-100 relative z-10">
+        <div className="p-6 md:p-8 border-b border-slate-100 relative z-10 bg-white/40">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="font-black text-white text-2xl tracking-tighter">MENU</h2>
+            <h2 className="font-black text-slate-800 text-2xl tracking-tighter">MENU</h2>
             <button
               onClick={toggleOpen}
-              className="w-10 h-10 flex items-center justify-center rounded-2xl bg-white/10 text-white/70 hover:text-white hover:bg-white/20 transition-all border border-white/10 active:scale-95 shadow-sm"
+              className="w-10 h-10 flex items-center justify-center rounded-2xl bg-white border border-slate-200 text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-all active:scale-95 shadow-sm"
               aria-label="Close menu"
             >
               <CloseIcon className="w-5 h-5" />
@@ -79,37 +77,37 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
 
           {isLoggedIn ? (
             <div className="space-y-6">
-              <div className="flex items-center gap-4 p-5 rounded-[2.5rem] bg-[#001738] border border-[#001738] shadow-xl shadow-navy-100">
-                <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center text-[#E5005A] font-black text-xl shadow-inner border border-white/10">
+              <div className="flex items-center gap-4 p-4 rounded-[2rem] bg-white border border-slate-100 shadow-xl shadow-indigo-100/50">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-indigo-200">
                   {(storeProfile?.name?.[0] || 'S').toUpperCase()}
                 </div>
                 <div>
-                  <p className="text-[10px] font-black text-white/40 uppercase tracking-widest mb-0.5">Account</p>
-                  <p className="text-sm font-black text-white tracking-tight">{storeProfile?.name || 'User'}</p>
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Account</p>
+                  <p className="text-sm font-black text-slate-800 tracking-tight">{storeProfile?.name || 'User'}</p>
                 </div>
               </div>
 
               {/* Quick Navigation Pack */}
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-3">
                 <button
                   onClick={() => { onOpenSettings?.(); toggleOpen(); }}
-                  className="flex flex-col items-center gap-2 p-4 rounded-2xl bg-white border border-slate-200 hover:border-[#E5005A]/30 hover:bg-slate-50 shadow-sm transition-all group"
+                  className="flex flex-col items-center gap-2 p-4 rounded-[20px] bg-white border border-slate-100 hover:border-indigo-100 hover:bg-slate-50/80 shadow-sm transition-all group"
                 >
-                  <ChevronDownIcon className="w-5 h-5 text-[#001738]/40 group-hover:text-[#E5005A] rotate-180" />
-                  <span className="text-[10px] font-black text-[#001738]/60 tracking-widest uppercase">Profile</span>
+                  <ChevronDownIcon className="w-5 h-5 text-slate-400 group-hover:text-primary rotate-180 transition-colors" />
+                  <span className="text-[10px] font-black text-slate-500 group-hover:text-primary tracking-widest uppercase transition-colors">Profile</span>
                 </button>
                 <button
                   onClick={() => { onOpenGuide?.(); toggleOpen(); }}
-                  className="flex flex-col items-center gap-2 p-4 rounded-2xl bg-white border border-slate-200 hover:border-[#E5005A]/30 hover:bg-slate-50 shadow-sm transition-all group"
+                  className="flex flex-col items-center gap-2 p-4 rounded-[20px] bg-white border border-slate-100 hover:border-indigo-100 hover:bg-slate-50/80 shadow-sm transition-all group"
                 >
-                  <HelpIcon className="w-5 h-5 text-[#001738]/40 group-hover:text-[#E5005A]" />
-                  <span className="text-[10px] font-black text-[#001738]/60 tracking-widest uppercase">Docs</span>
+                  <HelpIcon className="w-5 h-5 text-slate-400 group-hover:text-primary transition-colors" />
+                  <span className="text-[10px] font-black text-slate-500 group-hover:text-primary tracking-widest uppercase transition-colors">Docs</span>
                 </button>
               </div>
 
               <button
                 onClick={() => { onLogout?.(); toggleOpen(); }}
-                className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-slate-400 hover:text-rose-500 hover:bg-rose-50 border border-slate-50 hover:border-rose-100 transition-all text-[10px] font-black tracking-widest uppercase"
+                className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-slate-400 hover:text-rose-500 hover:bg-rose-50 border border-transparent hover:border-rose-100 transition-all text-[10px] font-black tracking-widest uppercase"
               >
                 <LogOutIcon className="w-4 h-4" />
                 Sign Out
@@ -119,7 +117,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
           ) : (
             <button
               onClick={() => { onOpenLogin(); toggleOpen(); }}
-              className="w-full py-5 bg-[#001738] text-white text-sm font-black rounded-2xl shadow-xl shadow-navy-900/20 hover:bg-navy-900 transition-all active:scale-95 flex items-center justify-center gap-3 group"
+              className="w-full py-5 bg-gradient-to-r from-indigo-600 to-violet-600 text-white text-sm font-black rounded-[20px] shadow-xl shadow-indigo-200 hover:shadow-indigo-300 transition-all active:scale-95 flex items-center justify-center gap-3 group"
             >
               ログイン / 登録
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="translate-x-0 group-hover:translate-x-1 transition-transform"><path d="M5 12h14m-7-7 7 7-7 7" /></svg>
@@ -128,16 +126,21 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
         </div>
 
         {/* Content Segment: History */}
-        <div className="flex-1 overflow-y-auto overscroll-contain p-6 relative z-10 space-y-6 no-scrollbar">
-          <div className="flex items-center gap-2 px-2">
-            <HistoryIcon className="w-4 h-4 text-slate-300" />
+        <div className="flex-1 overflow-y-auto overscroll-contain p-6 md:p-8 relative z-10 space-y-6 no-scrollbar bg-slate-50/30">
+          <div className="flex items-center gap-3 px-2">
+            <div className="p-2 bg-white rounded-lg shadow-sm border border-slate-100">
+              <HistoryIcon className="w-4 h-4 text-slate-400" />
+            </div>
             <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">History Archive</span>
           </div>
 
           <div className="space-y-4">
             {isLoggedIn ? (
               displayHistory.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-10 text-center opacity-40">
+                <div className="flex flex-col items-center justify-center py-20 text-center opacity-60">
+                  <div className="w-16 h-16 mb-4 rounded-full bg-slate-100 flex items-center justify-center text-slate-300">
+                    <HistoryIcon className="w-8 h-8" />
+                  </div>
                   <p className="text-xs text-slate-400 font-bold tracking-widest uppercase">履歴はありません</p>
                 </div>
               ) : (
@@ -169,25 +172,25 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                     >
                       <button
                         onClick={() => { onSelect(item); toggleOpen(); }}
-                        className="w-full text-left p-6 rounded-[2rem] bg-white border border-slate-200 hover:border-[#E5005A]/30 hover:bg-slate-50 transition-all shadow-sm group-hover:shadow-md"
+                        className="w-full text-left p-6 rounded-[24px] bg-white border border-slate-100 hover:border-indigo-200 hover:shadow-lg hover:shadow-indigo-100/40 transition-all shadow-sm group-hover:-translate-y-0.5"
                       >
                         <div className="flex items-center gap-2 mb-3">
                           {item.config.platforms.map((p) => (
-                            <span key={p} className={`flex items-center justify-center w-5 h-5 rounded-md ${getPlatformColor(p)} shadow-sm`}>
+                            <span key={p} className={`flex items-center justify-center w-6 h-6 rounded-full ${getPlatformColor(p)} shadow-md ring-2 ring-white`}>
                               {getPlatformIcon(p)}
                             </span>
                           ))}
-                          <span className="ml-auto text-[9px] font-black text-slate-400 uppercase tracking-tighter">
+                          <span className="ml-auto text-[10px] font-black text-slate-300 uppercase tracking-widest bg-slate-50 px-2 py-1 rounded-full">
                             {new Date(item.timestamp).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                           </span>
                         </div>
-                        <p className="text-[11px] text-slate-600 font-bold line-clamp-3 leading-relaxed opacity-80 group-hover:opacity-100">
+                        <p className="text-xs text-slate-600 font-bold line-clamp-2 leading-relaxed opacity-80 group-hover:opacity-100 group-hover:text-slate-800 transition-colors">
                           {previewText}
                         </p>
                       </button>
                       <button
                         onClick={(e) => { e.stopPropagation(); onDelete(item.id); }}
-                        className="absolute -top-1 -right-1 w-8 h-8 flex items-center justify-center bg-rose-500 text-white rounded-full opacity-0 group-hover:opacity-100 transform scale-50 group-hover:scale-100 transition-all hover:bg-rose-600 shadow-lg z-20"
+                        className="absolute -top-2 -right-2 w-8 h-8 flex items-center justify-center bg-white text-rose-500 border border-rose-100 rounded-full opacity-0 group-hover:opacity-100 transform scale-75 group-hover:scale-100 transition-all hover:bg-rose-50 hover:border-rose-200 shadow-md z-20"
                       >
                         <TrashIcon className="w-4 h-4" />
                       </button>
@@ -200,13 +203,13 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
         </div>
 
         {/* Footer: Legal */}
-        <div className="p-8 border-t border-white/10 bg-white/5 relative z-20">
-          <div className="flex items-center justify-center gap-8 mb-4">
-            <a href="/terms" className="text-[10px] font-black text-white/40 hover:text-accent transition-colors uppercase tracking-widest">Terms</a>
-            <a href="/privacy" className="text-[10px] font-black text-white/40 hover:text-accent transition-colors uppercase tracking-widest">Privacy</a>
-            <a href="/commercial-law" className="text-[10px] font-black text-white/40 hover:text-accent transition-colors uppercase tracking-widest">Law</a>
+        <div className="p-6 border-t border-slate-100 bg-white/60 backdrop-blur-md relative z-20">
+          <div className="flex items-center justify-center gap-6 mb-2">
+            <a href="/terms" className="text-[10px] font-black text-slate-300 hover:text-primary transition-colors uppercase tracking-widest">Terms</a>
+            <a href="/privacy" className="text-[10px] font-black text-slate-300 hover:text-primary transition-colors uppercase tracking-widest">Privacy</a>
+            <a href="/commercial-law" className="text-[10px] font-black text-slate-300 hover:text-primary transition-colors uppercase tracking-widest">Law</a>
           </div>
-          <p className="text-[9px] font-bold text-white/20 text-center uppercase tracking-[0.2em]">© 2026 MisePo Inc.</p>
+          <p className="text-[9px] font-bold text-slate-300 text-center uppercase tracking-[0.2em] mt-2">© 2026 MisePo Inc.</p>
         </div>
       </div>
     </>
