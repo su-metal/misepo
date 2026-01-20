@@ -36,14 +36,14 @@ import {
   LeafIcon,
   GemIcon,
 } from './Icons';
-import { Platform, UserPreset } from '../types';
-import AutoResizingTextarea from './AutoResizingTextarea';
+import { Platform, Preset } from '../types';
+import { AutoResizingTextarea } from './AutoResizingTextarea';
 
 interface PresetModalProps {
-  presets: UserPreset[];
-  onSave: (preset: Partial<UserPreset>) => Promise<void>;
+  presets: Preset[];
+  onSave: (preset: Partial<Preset>) => Promise<void>;
   onDelete: (id: string) => Promise<void>;
-  onApply: (preset: UserPreset) => void;
+  onApply: (preset: Preset) => void;
   onClose: () => void;
   initialPresetId?: string;
   isSaving?: boolean;
@@ -72,7 +72,7 @@ const SortablePresetRow = ({
   onDelete,
   isSelected,
 }: {
-  preset: UserPreset;
+  preset: Preset;
   deletingId: string | null;
   isReordering: boolean;
   onSelect: (id: string) => void;
@@ -120,10 +120,8 @@ const SortablePresetRow = ({
       >
         <div className="font-black text-sm text-slate-800 truncate mb-0.5">{preset.name}</div>
         <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest truncate">
-          {preset.platform === Platform.Instagram && 'Instagram Style'}
-          {preset.platform === Platform.X && 'X (Twitter) Style'}
-          {preset.platform === Platform.GoogleMaps && 'Map Reply Style'}
-          {!preset.platform && 'Generic Style'}
+          Custom Style
+
         </div>
       </button>
       <button
@@ -160,7 +158,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
   const [postSamples, setPostSamples] = useState<Record<string, string>>({});
   const [isInternalSaving, setIsInternalSaving] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
-  const [orderedPresets, setOrderedPresets] = useState<UserPreset[]>([]);
+  const [orderedPresets, setOrderedPresets] = useState<Preset[]>([]);
   const [isReordering, setIsReordering] = useState(false);
   const [orderError, setOrderError] = useState<string | null>(null);
   const [mobileView, setMobileView] = useState<'list' | 'edit'>('list');
@@ -190,7 +188,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
       setName(preset.name);
       setAvatar(preset.avatar || 'shop');
       setCustomPrompt(preset.custom_prompt || '');
-      setPostSamples(preset.post_samples || {});
+      setPostSamples(preset.postSamples || {});
       setMobileView('edit');
     }
   };
@@ -213,7 +211,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
         name,
         avatar,
         custom_prompt: customPrompt,
-        post_samples: postSamples,
+        postSamples: postSamples,
       });
       setShowSuccessToast(true);
       setTimeout(() => setShowSuccessToast(false), 3000);

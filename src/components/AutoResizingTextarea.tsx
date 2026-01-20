@@ -5,7 +5,7 @@ interface AutoResizingTextareaProps extends Omit<React.TextareaHTMLAttributes<HT
     onChange: (value: string) => void;
 }
 
-const AutoResizingTextarea: React.FC<AutoResizingTextareaProps> = ({
+export const AutoResizingTextarea: React.FC<AutoResizingTextareaProps> = ({
     value,
     onChange,
     className = '',
@@ -39,4 +39,4 @@ const AutoResizingTextarea: React.FC<AutoResizingTextareaProps> = ({
     );
 };
 
-export default AutoResizingTextarea;
+// Exported inline

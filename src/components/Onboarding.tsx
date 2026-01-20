@@ -89,24 +89,24 @@ const Onboarding: React.FC<OnboardingProps> = ({
   return (
 
     <div className="fixed inset-0 bg-slate-900/40 flex items-center justify-center p-0 sm:p-4 z-[100] backdrop-blur-md animate-in fade-in duration-500">
-      <div className="bg-white rounded-[32px] shadow-2xl w-full max-w-lg md:max-w-6xl md:h-[90vh] h-full sm:max-h-[800px] flex flex-col md:flex-row overflow-hidden relative ring-1 ring-white/50 animate-in zoom-in-95 duration-500">
+      <div className="bg-white rounded-none sm:rounded-[32px] shadow-2xl w-full max-w-lg md:max-w-6xl md:h-[90vh] h-full sm:max-h-[800px] flex flex-col md:flex-row overflow-y-auto md:overflow-hidden relative ring-1 ring-white/50 animate-in zoom-in-95 duration-500 mobile-scroll-container">
 
         {/* LEFT PANEL: Light Glass Info Sidebar */}
-        <div className="md:w-5/12 bg-slate-50/50 relative p-8 md:p-12 flex flex-col justify-between shrink-0 border-r border-slate-100 overflow-hidden">
+        <div className="md:w-5/12 bg-slate-50/50 relative p-6 sm:p-8 md:p-12 flex flex-col justify-between shrink-0 border-b md:border-b-0 md:border-r border-slate-100 min-h-min md:h-full">
 
-          <div className="relative z-10 flex flex-col h-full">
-            <div className="mb-10 animate-in slide-in-from-top-4 duration-700">
-              <div className="flex items-center gap-2 mb-3">
+          <div className="relative z-10 flex flex-col h-auto md:h-full">
+            <div className="mb-6 md:mb-10 animate-in slide-in-from-top-4 duration-700">
+              <div className="flex items-center gap-2 mb-2 md:mb-3">
                 <div className="w-1.5 h-1.5 rounded-full bg-gradient-to-tr from-indigo-500 to-violet-500 shadow-sm animate-pulse"></div>
-                <span className="text-[10px] font-black tracking-[0.3em] text-slate-400 uppercase">店舗専用アシスタント</span>
+                <span className="text-[9px] md:text-[10px] font-black tracking-[0.3em] text-slate-400 uppercase">店舗専用アシスタント</span>
               </div>
-              <h1 className="text-4xl font-black tracking-tighter leading-none italic text-slate-800">
+              <h1 className="text-2xl md:text-4xl font-black tracking-tighter leading-none italic text-slate-800">
                 Mise<span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-violet-600">Po</span>
               </h1>
             </div>
 
-            <div className="space-y-6 mb-12 flex-1">
-              <h2 className="text-3xl md:text-3xl font-black leading-tight text-slate-800 animate-in slide-in-from-left-4 duration-700 delay-100">
+            <div className="space-y-4 md:space-y-6 mb-6 md:mb-12 flex-1">
+              <h2 className="text-lg md:text-3xl font-black leading-tight text-slate-800 animate-in slide-in-from-left-4 duration-700 delay-100">
                 {isEditMode ? '店舗設定の最適化' : 'AIが提案する、\n次世代の店舗広報。'}
               </h2>
               <p className="text-slate-500 text-sm font-bold leading-relaxed animate-in slide-in-from-left-4 duration-700 delay-200">
@@ -143,7 +143,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
         </div>
 
         {/* RIGHT PANEL: Modern Form */}
-        <div className="flex-1 bg-white overflow-y-auto overscroll-contain animate-in slide-in-from-right-8 duration-700">
+        <div className="flex-1 bg-white md:overflow-y-auto overscroll-contain animate-in slide-in-from-right-8 duration-700">
           <form onSubmit={handleSubmit} className="p-8 md:p-14 space-y-12">
 
             {/* Industry Selection */}
@@ -283,8 +283,8 @@ const Onboarding: React.FC<OnboardingProps> = ({
                 value={instagramFooter}
                 onChange={(e) => setInstagramFooter(e.target.value)}
                 placeholder="📍 アクセス情報や営業時間をセット..."
-                rows={3}
-                className="w-full px-6 py-4 rounded-2xl bg-slate-50 border border-transparent focus:bg-white focus:border-pink-300 outline-none transition-all resize-none text-sm text-slate-700 leading-relaxed placeholder-slate-300 font-bold"
+                rows={6}
+                className="w-full px-6 py-4 rounded-2xl bg-slate-50 border border-transparent focus:bg-white focus:border-pink-300 outline-none transition-all resize-none text-sm text-slate-700 leading-relaxed placeholder-slate-300 font-bold min-h-[160px]"
               />
             </div>
 
