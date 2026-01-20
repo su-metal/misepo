@@ -172,8 +172,8 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                         {/* Active Indicator Line - Brand Color Match */}
                                         {isSelected && (
                                             <div className={`absolute bottom-0 left-0 right-0 h-[2px] ${res.platform === Platform.Instagram ? 'bg-[#E5005A]' :
-                                                    res.platform === Platform.GoogleMaps ? 'bg-[#34A853]' :
-                                                        'bg-[#001738]'
+                                                res.platform === Platform.GoogleMaps ? 'bg-[#34A853]' :
+                                                    'bg-[#001738]'
                                                 }`} />
                                         )}
                                     </button>
@@ -212,7 +212,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                     <div key={res.platform} className={activeTab === gIdx ? 'block animate-in fade-in duration-500' : 'hidden'}>
                                         <div className="divide-y-2 divide-slate-50">
                                             {res.data.map((text, iIdx) => (
-                                                <div key={iIdx} className="p-12 flex flex-col min-h-[500px] relative">
+                                                <div key={iIdx} className="py-12 px-8 flex flex-col min-h-[500px] relative">
 
                                                     {/* Text Area */}
                                                     <div className={`flex-1 overflow-y-auto mb-10 custom-scrollbar ${theme.wrapperClass || ''}`}>
