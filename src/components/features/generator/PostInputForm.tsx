@@ -223,8 +223,8 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                 <h3 className="text-xs font-black text-[#001738] uppercase tracking-[0.25em]">Profiles</h3>
                                 <button onClick={onOpenPresetModal} className="text-[10px] font-black text-[#E5005A] hover:underline uppercase tracking-widest">Manage</button>
                             </div>
-                            <div className="w-full flex bg-white rounded-[32px] p-1.5 shadow-sm border border-slate-100/60 relative overflow-hidden h-full">
-                                <div className="relative z-10 p-4 md:p-6 w-full">
+                            <div className="w-full flex bg-white rounded-[32px] p-1.5 relative overflow-hidden h-full">
+                                <div className="relative z-10 p-0  w-full">
                                     <div className="grid grid-cols-2 gap-3 md:gap-4">
                                         {/* Plain AI Option */}
                                         <button
@@ -241,7 +241,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                             <span className={`text-2xl transition-transform duration-300 group-hover:scale-110 ${!activePresetId ? 'opacity-100' : 'opacity-60 grayscale group-hover:grayscale-0'}`}>
                                                 <AutoSparklesIcon className="w-6 h-6" />
                                             </span>
-                                            <span className={`text-[11px] font-bold truncate tracking-wide text-center w-full ${!activePresetId ? 'opacity-100' : 'text-slate-500'}`}>プレーンAI</span>
+                                            <span className={`text-[11px] font-bold truncate tracking-wide text-center w-full ${!activePresetId ? 'opacity-100' : 'text-slate-500'}`}>おまかせ</span>
                                         </button>
 
                                         {/* Profiles Grid */}
@@ -279,7 +279,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                             <div className="flex items-center justify-between px-1">
                                 <h3 className="text-xs font-black text-[#001738] uppercase tracking-[0.25em]">Style</h3>
                             </div>
-                            <div className="flex flex-col gap-4 p-4 lg:p-6 bg-white rounded-[32px] border border-slate-100/60 shadow-sm h-full justify-center">
+                            <div className="flex flex-col gap-4  bg-white rounded-[32px] h-full justify-center">
                                 {/* Tone Selection */}
                                 <section>
                                     <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 px-1">Tone</h3>
@@ -406,7 +406,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                             {/* Purpose (Right Column) */}
                             <div className="flex-1 w-full lg:w-1/2 flex flex-col gap-2 relative">
                                 <h3 className="text-xs font-black text-[#001738] uppercase tracking-[0.25em] px-1">返信の目的</h3>
-                                <div className="bg-white rounded-[24px] p-4 border border-slate-100/60 shadow-sm flex items-center justify-center h-full relative overflow-hidden group">
+                                <div className="bg-white  flex items-center justify-center h-full relative overflow-hidden group">
                                     <div className={`grid grid-cols-2 gap-2 w-full transition-all duration-500 ${starRating !== null ? 'blur-[2px] opacity-40' : ''}`}>
                                         {GMAP_PURPOSES.map((p) => {
                                             const isSelected = gmapPurpose === p.id;
