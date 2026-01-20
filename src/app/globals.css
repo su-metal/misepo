@@ -59,6 +59,20 @@ body {
     box-shadow: 0 8px 16px rgba(0,0,0,0.1);
 }
 
+/* High-fidelity Neumorphic "Raised" (Pop-out) Effect */
+.active-floating {
+    box-shadow: 
+        10px 10px 20px 0 rgba(0, 0, 0, 0.3),     /* Dark shadow for depth */
+        -6px -6px 16px 0 rgba(255, 255, 255, 0.1), /* Light highlight for lift */
+        0 0 0 1px rgba(255, 255, 255, 0.05) !important; /* Subtle sharp edge */
+    background-color: var(--primary) !important;
+    transform: none !important; /* Stationary 3D, no movement */
+    filter: none !important;
+}
+.active-floating:active {
+    transform: scale(0.98) !important;
+}
+
 /* Color Utilities using CSS Variables */
 .bg-primary { background-color: var(--primary) !important; }
 .text-primary { color: var(--primary) !important; }
