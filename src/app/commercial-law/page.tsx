@@ -28,8 +28,7 @@ export default function CommercialLawPage() {
                                 所在地
                             </th>
                             <td className="px-6 py-4 text-sm text-gray-900">
-                                〒[000-0000]<br />
-                                [都道府県市区町村番地 建物名など]
+                                請求があった場合に遅滞なく開示いたします
                             </td>
                         </tr>
                         <tr>
@@ -37,7 +36,7 @@ export default function CommercialLawPage() {
                                 電話番号
                             </th>
                             <td className="px-6 py-4 text-sm text-gray-900">
-                                [電話番号を記載]<br />
+                                請求があった場合に遅滞なく開示いたします<br />
                                 <span className="text-xs text-gray-500">※お電話でのお問い合わせは受け付けておりません。メールにてお問い合わせください。</span>
                             </td>
                         </tr>

@@ -296,7 +296,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                     <span className={`text-2xl transition-transform duration-300 group-hover:scale-110 ${!activePresetId ? 'opacity-100' : 'opacity-60 grayscale group-hover:grayscale-0'}`}>
                                         <AutoSparklesIcon className="w-6 h-6" />
                                     </span>
-                                    <span className={`text-[11px] font-bold truncate tracking-wide text-center w-full ${!activePresetId ? 'opacity-100' : 'text-slate-500'}`}>おまかせ</span>
+                                    <span className={`text-[11px] font-bold truncate tracking-wide text-center w-full ${!activePresetId ? 'opacity-100' : 'text-slate-00'}`}>おまかせ</span>
                                 </button>
 
                                 {/* Profiles Grid */}
