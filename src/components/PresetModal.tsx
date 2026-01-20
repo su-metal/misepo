@@ -101,8 +101,8 @@ const SortablePresetRow = ({
       className={`
         group flex items-center gap-3 p-4 rounded-2xl transition-all duration-300 border-2
         ${isSelected
-          ? 'bg-white/15 border-white/40 shadow-lg shadow-indigo-100/10 scale-[1.02]'
-          : 'bg-white/5 border-white/10 hover:border-white/20 hover:bg-white/10'
+          ? 'bg-indigo-50/80 border-indigo-200 shadow-lg shadow-indigo-100/50 scale-[1.02]'
+          : 'bg-white border-slate-100 hover:border-indigo-100 hover:bg-slate-50/50'
         }
         ${isDragging ? 'opacity-50' : ''}
       `}

@@ -42,8 +42,8 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
                 onClick={onClose}
             />
 
-            <div className="relative w-full max-w-lg bg-white/15 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.2)] overflow-hidden animate-in zoom-in-95 duration-200 border border-white/20">
-                <div className="flex items-center justify-between p-6 bg-white/5 border-b border-white/10">
+            <div className="relative w-full max-w-lg bg-white rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] overflow-hidden animate-in zoom-in-95 duration-200 border border-stone-100">
+                <div className="flex items-center justify-between p-6 bg-stone-50/50 border-b border-stone-100">
                     <h3 className="text-[10px] font-black text-stone-400 uppercase tracking-[0.4em] flex items-center gap-3">
                         <div className="text-stone-600">
                             {getPlatformIcon(platform)}
@@ -58,13 +58,13 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
                     </button>
                 </div>
 
-                <div className="p-0 bg-white/5 max-h-[70vh] overflow-y-auto">
+                <div className="p-0 bg-stone-50/30 max-h-[70vh] overflow-y-auto">
                     {/* Platform Specific Preview */}
-                    <div className="flex justify-center px-2 py-6 bg-transparent">
+                    <div className="flex justify-center px-2 py-6 bg-gradient-to-b from-stone-50 to-white">
 
                         {/* Instagram Preview */}
                         {platform === Platform.Instagram && (
-                            <div className="w-full bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl shadow-xl shadow-indigo-900/10 max-w-[370px] overflow-hidden">
+                            <div className="w-full bg-white border border-stone-100 rounded-2xl shadow-xl shadow-stone-200/50 max-w-[370px] overflow-hidden">
                                 {/* Header */}
                                 <div className="flex items-center justify-between p-3 border-b border-stone-50">
                                     <div className="flex items-center gap-2">
@@ -115,7 +115,7 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
 
                         {/* X (Twitter) Preview */}
                         {platform === Platform.X && (
-                            <div className="w-full bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl shadow-xl shadow-indigo-900/10 p-5 max-w-[475px]">
+                            <div className="w-full bg-white border border-stone-100 rounded-3xl shadow-xl shadow-stone-200/50 p-5 max-w-[475px]">
                                 <div className="flex gap-4">
                                     <div className="w-11 h-11 rounded-full bg-stone-100 border border-stone-200 flex items-center justify-center text-[12px] font-black text-stone-400 flex-shrink-0">
                                         {(storeProfile.name?.[0] || 'U').toUpperCase()}
@@ -158,7 +158,7 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
 
                         {/* Google Maps Preview */}
                         {platform === Platform.GoogleMaps && (
-                            <div className="w-full bg-white/10 backdrop-blur-md p-6 max-w-[500px] border border-white/20 rounded-[2rem] shadow-xl shadow-indigo-900/10">
+                            <div className="w-full bg-white p-6 max-w-[500px] border border-stone-100 rounded-[2rem] shadow-xl shadow-stone-200/40">
                                 <div className="flex gap-4">
                                     {/* Left Border Line (Thread indicator) */}
                                     <div className="w-0.5 bg-[#e8eaed] shrink-0" />
@@ -193,7 +193,7 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
                     </div>
                 </div>
 
-                <div className="p-6 bg-white/5 border-t border-white/10">
+                <div className="p-6 bg-white border-t border-stone-100">
                     <button
                         onClick={onClose}
                         className="w-full py-4 bg-stone-100 text-stone-900 border border-stone-200 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-stone-200 transition-all active:scale-95 shadow-sm"

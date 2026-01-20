@@ -296,7 +296,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                     className={`group relative py-5 px-3 rounded-[24px] transition-all duration-300 flex flex-col items-center justify-center gap-2
                                                 ${!activePresetId
                                             ? 'bg-primary text-white shadow-lg active-floating'
-                                            : 'bg-white/5 shadow-sm hover:bg-white/10 text-slate-400 hover:text-slate-600 border border-white/10 hover:border-white/20'}
+                                            : 'bg-slate-50 shadow-sm hover:bg-slate-100 text-slate-400 hover:text-slate-600 border border-slate-200 hover:border-slate-300'}
                                             `}
                                 >
                                     <span className={`text-2xl transition-transform duration-300 group-hover:scale-110 ${!activePresetId ? 'opacity-100' : 'opacity-60 grayscale group-hover:grayscale-0'}`}>
@@ -315,7 +315,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                             className={`group relative py-5 px-3 rounded-[24px] transition-all duration-300 flex flex-col items-center justify-center gap-2
                                                         ${isSelected
                                                     ? 'bg-primary text-white shadow-lg active-floating'
-                                                    : 'bg-white/5 shadow-sm hover:bg-white/10 text-slate-400 hover:text-slate-600 border border-white/10 hover:border-white/20'}
+                                                    : 'bg-slate-50 shadow-sm hover:bg-slate-100 text-slate-400 hover:text-slate-600 border border-slate-200 hover:border-slate-300'}
                                                     `}
                                         >
                                             <span className={`text-2xl transition-transform duration-300 group-hover:scale-110 ${isSelected ? 'opacity-100' : 'opacity-60 grayscale group-hover:grayscale-0'}`}>
@@ -338,7 +338,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                             {/* Tone Selection */}
                             <section>
                                 <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 px-1">Tone</h3>
-                                <div className={`flex flex-row gap-1.5 bg-white/5 p-1 rounded-[16px] border border-white/10 ${activePresetId ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                                <div className={`flex flex-row gap-1.5 bg-slate-100 p-1 rounded-[16px] border border-slate-200 ${activePresetId ? 'opacity-50 cursor-not-allowed' : ''}`}>
                                     {TONES.map((t) => (
                                         <button
                                             key={t.id}
@@ -359,7 +359,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                             {!isX && (
                                 <section>
                                     <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 px-1">Length</h3>
-                                    <div className="flex flex-row gap-1.5 bg-white/5 p-1 rounded-[16px] border border-white/10">
+                                    <div className="flex flex-row gap-1.5 bg-slate-100 p-1 rounded-[16px] border border-slate-200">
                                         {LENGTHS.map((l) => (
                                             <button
                                                 key={l.id}
@@ -383,7 +383,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                     <button
                                         onClick={() => onXConstraint140Change(!xConstraint140)}
                                         className={`w-full p-2 rounded-[16px] border transition-all flex items-center justify-between group shadow-sm
-                                            ${xConstraint140 ? 'bg-slate-900 border-slate-900 text-white shadow-xl shadow-slate-200/50' : 'bg-white/5 border-white/10 text-slate-500 hover:border-white/20'}`}
+                                            ${xConstraint140 ? 'bg-slate-900 border-slate-900 text-white shadow-xl shadow-slate-200/50' : 'bg-white border-slate-100 text-slate-500 hover:border-slate-300'}`}
                                     >
                                         <span className="text-[10px] font-black ml-2">140文字</span>
                                         <div className={`w-4 h-4 rounded-full transition-all flex items-center justify-center mr-1 ${xConstraint140 ? 'bg-indigo-500' : 'bg-slate-100'}`}>
@@ -396,7 +396,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                             {/* Style Options (Emoji/Symbol) */}
                             {!isGoogleMaps && (
                                 <section className="animate-in fade-in duration-500 delay-150">
-                                    <div className={`flex flex-row items-center gap-2 bg-white/5 px-3 py-2 rounded-[20px] border border-white/10 shadow-sm ${activePresetId ? 'opacity-50' : ''}`}>
+                                    <div className={`flex flex-row items-center gap-2 bg-white px-3 py-2 rounded-[20px] border border-slate-100 shadow-sm ${activePresetId ? 'opacity-50' : ''}`}>
                                         <div className="flex-1 flex items-center justify-between px-2">
                                             <span className="text-[10px] font-black text-primary uppercase tracking-widest">絵文字</span>
                                             <button
@@ -434,7 +434,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                     {starRating !== null && (
                                         <button
                                             onClick={() => onStarRatingChange(null)}
-                                            className="text-[10px] font-black text-slate-400 hover:text-white transition-colors underline uppercase tracking-widest"
+                                            className="text-[10px] font-black text-slate-400 hover:text-accent transition-colors underline uppercase tracking-widest"
                                         >
                                             リセット
                                         </button>

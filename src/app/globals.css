@@ -4,7 +4,7 @@
 
 :root {
   /* Glassmorphism Brand Colors (Restored Deep Indigo) */
-  --primary: #1e1b4b;     /* Deep Indigo - Unified AI Brand Color */
+  --primary: #2c2c2c;     /* Deep Indigo - Unified AI Brand Color */
   --primary-dark: #3b4cca;
   --accent: #130c0a;      /* Unified Accent */
   --accent-secondary: #aa9cff; /* Soft Purple - Gradient/Accent */
@@ -21,13 +21,13 @@
 
 body {
   font-family: 'Outfit', 'Inter', 'Noto Sans JP', sans-serif;
-  /* FundFlow-inspired: Richer, deeper atmospheric gradient */
+  /* Aurora Mist: Luminous, low-saturation multi-directional gradient */
   background: 
-    radial-gradient(circle at 15% 15%, #c7d2fe 0%, transparent 50%),    /* Richer Indigo */
-    radial-gradient(circle at 85% 15%, #e9d5ff 0%, transparent 50%),    /* Richer Purple */
-    radial-gradient(circle at 85% 85%, #bae6fd 0%, transparent 50%),    /* Richer Sky */
-    radial-gradient(circle at 15% 85%, #ddd6fe 0%, transparent 50%),    /* Richer Violet */
-    #f3f4f6; /* slightly deeper grey-blue base */
+    radial-gradient(at 0% 0%, #e0e7ff 0%, transparent 40%),  /* Soft Indigo */
+    radial-gradient(at 100% 0%, #f0fdf4 0%, transparent 40%), /* Mint Mist */
+    radial-gradient(at 100% 100%, #faf5ff 0%, transparent 40%), /* Lavender Mist */
+    radial-gradient(at 0% 100%, #eff6ff 0%, transparent 40%), /* Sky Mist */
+    #f8fafc; /* Base Silk */
   background-attachment: fixed;
   color: var(--text-main);
   min-height: 100vh;
@@ -35,14 +35,13 @@ body {
 
 /* Glass Utility Classes */
 .glass-panel {
-  background: rgba(255, 255, 255, 0.35);     /* Slightly more opaque for better legibility */
-  backdrop-filter: blur(48px);               /* High-end thick glass blur */
-  -webkit-backdrop-filter: blur(48px);
-  border: 1px solid rgba(255, 255, 255, 0.3); /* Transparent edge */
+  background: var(--glass-bg);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.9); /* Sharp bright inner edge */
   box-shadow: 
-    0 20px 80px -20px rgba(0, 0, 0, 0.1),      /* Soft floating shadow */
-    0 0 0 1px rgba(0, 0, 0, 0.02),             /* Ultra-faint hairline */
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.2); /* Top edge sheen */
+    0 12px 48px -12px rgba(0, 0, 0, 0.15),      /* Deeper anchor shadow */
+    0 0 0 1px rgba(0, 0, 0, 0.08);             /* Distinct dark outer hairline */
 }
 
 .glass-panel-dark {
@@ -50,7 +49,7 @@ body {
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    color: white;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 .glass-button {
