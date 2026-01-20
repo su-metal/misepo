@@ -23,7 +23,7 @@ const SocialPreview: React.FC<SocialPreviewProps> = ({ platform, text, storeName
   // --- X (Twitter) Layout ---
   if (platform === Platform.X) {
     return (
-      <div className="bg-white border border-gray-100 rounded-xl overflow-hidden w-full max-w-md mx-auto font-sans text-[15px] leading-normal text-stone-900 shadow-sm">
+      <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl overflow-hidden w-full max-w-md mx-auto font-sans text-[15px] leading-normal text-stone-900 shadow-sm">
         <div className="p-4 flex gap-3">
           {/* Avatar */}
           <div className="shrink-0">
@@ -65,7 +65,7 @@ const SocialPreview: React.FC<SocialPreviewProps> = ({ platform, text, storeName
   // --- Instagram Layout ---
   if (platform === Platform.Instagram) {
     return (
-      <div className="bg-white border border-gray-200 rounded-xl overflow-hidden w-full max-w-sm mx-auto font-sans text-sm shadow-sm">
+      <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl overflow-hidden w-full max-w-sm mx-auto font-sans text-sm shadow-sm">
         {/* Header */}
         <div className="flex items-center justify-between p-2.5 border-b border-gray-50">
           <div className="flex items-center gap-2">
@@ -117,7 +117,7 @@ const SocialPreview: React.FC<SocialPreviewProps> = ({ platform, text, storeName
   // --- Google Maps Layout ---
   if (platform === Platform.GoogleMaps) {
     return (
-      <div className="bg-white border border-gray-200 rounded-xl p-4 w-full max-w-md mx-auto font-sans shadow-sm">
+      <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-4 w-full max-w-md mx-auto font-sans shadow-sm">
         <div className="flex gap-3">
           <div className="w-8 h-8 rounded-full bg-black flex items-center justify-center shrink-0 border border-lime/20">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="text-lime"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" /><circle cx="12" cy="12" r="3" /></svg>
