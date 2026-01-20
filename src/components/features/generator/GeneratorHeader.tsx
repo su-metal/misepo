@@ -24,18 +24,18 @@ export const GeneratorHeader: React.FC<GeneratorHeaderProps> = ({
 
                 {/* Left: Brand Space */}
                 <div className="flex items-center gap-4">
-                    <span className="text-2xl font-black text-[#001738] tracking-tighter">MisePo</span>
+                    <span className="text-2xl font-black text-primary tracking-tighter">MisePo</span>
 
                     {/* Status Badge - CastMe Style */}
                     <div className="flex items-center">
                         {isTrial ? (
-                            <div className="flex items-center gap-2 px-4 py-1.5 bg-[#E5005A]/5 border border-[#E5005A]/10 rounded-full shadow-sm">
-                                <StarIcon className="w-3 h-3 text-[#E5005A] fill-current animate-pulse" />
-                                <span className="text-[10px] font-black text-[#E5005A] uppercase tracking-widest leading-none">Free Trial</span>
+                            <div className="flex items-center gap-2 px-4 py-1.5 bg-[#B8E600]/5 border border-[#B8E600]/10 rounded-full shadow-sm">
+                                <StarIcon className="w-3 h-3 text-accent fill-current animate-pulse" />
+                                <span className="text-[10px] font-black text-accent uppercase tracking-widest leading-none">Free Trial</span>
                             </div>
                         ) : isPro ? (
-                            <div className="flex items-center gap-2 px-4 py-1.5 bg-[#001738] border border-[#001738] rounded-full shadow-lg shadow-navy-900/20">
-                                <div className="w-1.5 h-1.5 rounded-full bg-[#E5005A]"></div>
+                            <div className="flex items-center gap-2 px-4 py-1.5 bg-primary border border-primary rounded-full shadow-lg shadow-navy-900/20">
+                                <div className="w-1.5 h-1.5 rounded-full bg-accent"></div>
                                 <span className="text-[10px] font-black text-white uppercase tracking-widest leading-none">Pro Plan</span>
                             </div>
                         ) : (
@@ -51,7 +51,7 @@ export const GeneratorHeader: React.FC<GeneratorHeaderProps> = ({
                 <div className="flex items-center">
                     <button
                         onClick={onOpenHistory}
-                        className="flex items-center gap-3 pl-4 md:pl-6 pr-2 md:pr-4 py-2 rounded-2xl bg-[#001738] text-white hover:bg-navy-900 transition-all shadow-xl shadow-navy-900/20 active:scale-95 group border border-navy-800"
+                        className="flex items-center gap-3 pl-4 md:pl-6 pr-2 md:pr-4 py-2 rounded-2xl bg-primary text-white hover:bg-navy-900 transition-all shadow-xl shadow-navy-900/20 active:scale-95 group border border-navy-800"
                     >
                         <div className="w-8 h-8 md:w-9 md:h-9 rounded-xl bg-white/10 border border-white/10 flex items-center justify-center overflow-hidden transition-transform group-hover:scale-110">
                             <span className="text-xs md:text-sm font-black text-white">
