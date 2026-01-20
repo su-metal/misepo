@@ -214,7 +214,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
     return (
         <div className="flex flex-col">
             {/* Platform Tabs & Multi-gen Toggle - Glass Style */}
-            <div className="flex flex-col lg:flex-row lg:items-center gap-4 px-3 sm:px-6 pt-8 pb-4">
+            <div className="flex flex-col lg:flex-row lg:items-center gap-4 px-3 sm:px-6 pb-4">
                 <div className="flex items-stretch flex-1 p-1.5 glass-panel rounded-full border border-white/40 shadow-sm">
                     <button
                         onClick={() => onSetActivePlatform(Platform.X)}
@@ -269,7 +269,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
             </div>
 
             {/* Main Content Area */}
-            <div className="flex flex-col flex-1 gap-8 px-3 sm:px-6 py-6">
+            <div className="flex flex-col flex-1 gap-8 px-3 sm:px-6 sm:py-6 py-2">
 
                 {/* Content Rows Container (Order 1) */}
                 <div className="w-full shrink-0 flex flex-col gap-6 order-1">
@@ -603,7 +603,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                         className={`hidden lg:flex w-full py-8 rounded-[32px] font-black text-2xl tracking-[0.3em] transition-all relative overflow-hidden shadow-2xl group flex-row items-center justify-center
                             ${isGenerating || !inputText.trim()
                                 ? 'bg-slate-100 text-slate-300 cursor-not-allowed border border-slate-200'
-                                : 'bg-accent text-primary hover:scale-[1.02] hover:shadow-accent/40 active:scale-[0.98]'
+                                : 'bg-gradient-to-r from-[#4F46E5] to-[#9333EA] text-white shadow-[0_8px_32px_rgba(79,70,229,0.35)] hover:shadow-[0_8px_40px_rgba(79,70,229,0.5)] active:scale-[0.98] border border-white/20'
                             }`}
                     >
                         <div className="flex items-center justify-center gap-5 relative z-10">
@@ -614,8 +614,11 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                 </>
                             ) : (
                                 <>
-                                    <SparklesIcon className="w-8 h-8 group-hover:rotate-12 transition-transform" />
-                                    <span>GENERATE POST</span>
+                                    <div className="relative">
+                                        <SparklesIcon className="w-8 h-8 group-hover:rotate-12 transition-transform drop-shadow-sm" />
+                                        <div className="absolute inset-0 bg-white/50 blur-lg animate-ping-slow opacity-50" />
+                                    </div>
+                                    <span className="drop-shadow-sm">GENERATE POST</span>
                                 </>
                             )}
                         </div>

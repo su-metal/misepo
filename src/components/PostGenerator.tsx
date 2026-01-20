@@ -173,29 +173,37 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
         </div>
       </div>
 
-      {/* Mobile Fixed Generation Footer - Glass Style */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 px-6 py-5 pb-8 glass-panel-dark border-t border-white/10 z-[90] safe-area-bottom">
-        <button
-          onClick={handleGenerate}
-          disabled={flow.loading || !flow.inputText.trim()}
-          className={`w-full py-6 rounded-[32px] font-black text-lg uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-4 active:scale-95 shadow-2xl
-              ${flow.loading || !flow.inputText.trim()
-              ? 'bg-white/10 text-slate-500 shadow-none'
-              : 'bg-accent text-slate-900 shadow-lg shadow-[#B8E600]/30'
-            }`}
-        >
-          {flow.loading ? (
-            <>
-              <div className="w-6 h-6 border-3 border-white/30 border-t-white rounded-full animate-spin"></div>
-              <span>PROCESSING...</span>
-            </>
-          ) : (
-            <>
-              <SparklesIcon className="w-6 h-6 text-white" />
-              <span>GENERATE POST</span>
-            </>
-          )}
-        </button>
+      {/* Mobile Fixed Generation Footer - Refined Light Glass Style */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-[90]">
+        {/* Gradient Fade Overlay */}
+        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-white via-white/90 to-transparent pointer-events-none" />
+
+        <div className="relative px-4 py-3 pb-8 safe-area-bottom flex items-center justify-center">
+          <button
+            onClick={handleGenerate}
+            disabled={flow.loading || !flow.inputText.trim()}
+            className={`w-full max-w-md py-4 rounded-full font-black text-base tracking-[0.2em] transition-all flex items-center justify-center gap-3 active:scale-[0.98]
+                ${flow.loading || !flow.inputText.trim()
+                ? 'bg-slate-100/80 backdrop-blur-sm text-slate-400 border border-slate-200 cursor-not-allowed'
+                : 'bg-gradient-to-r from-[#4F46E5] to-[#9333EA] text-white shadow-[0_8px_32px_rgba(79,70,229,0.35)] hover:shadow-[0_8px_40px_rgba(79,70,229,0.5)] border border-white/20'
+              }`}
+          >
+            {flow.loading ? (
+              <>
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                <span className="text-sm">GENERATING...</span>
+              </>
+            ) : (
+              <>
+                <div className="relative">
+                  <SparklesIcon className="w-5 h-5 animate-pulse" />
+                  <div className="absolute inset-0 bg-white/50 blur-lg animate-ping-slow opacity-50" />
+                </div>
+                <span>GENERATE POST</span>
+              </>
+            )}
+          </button>
+        </div>
       </div>
 
       {isPresetModalOpen && (

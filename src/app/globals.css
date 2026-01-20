@@ -6,7 +6,7 @@
   /* Glassmorphism Brand Colors */
   --primary: #5266eb;     /* Soft Indigo - Main Brand Color (Reference: View All button) */
   --primary-dark: #3b4cca;
-  --accent: #B8E600;      /* Lime - Retained for key actions */
+  --accent: #34A853;      /* Google Maps Green - Unified Accent */
   --accent-secondary: #aa9cff; /* Soft Purple - Gradient/Accent */
   
   /* Text Colors */
@@ -67,6 +67,15 @@ body {
 .bg-accent { background-color: var(--accent) !important; }
 .text-accent { color: var(--accent) !important; }
 .border-accent { border-color: var(--accent) !important; }
+
+/* Platform Brand Colors */
+.bg-brand-green { background-color: #34A853 !important; }
+.text-brand-green { color: #34A853 !important; }
+.border-brand-green { border-color: #34A853 !important; }
+
+.bg-brand-instagram { background-color: #E1306C !important; }
+.text-brand-instagram { color: #E1306C !important; }
+.border-brand-instagram { border-color: #E1306C !important; }
 
 /* Custom Scrollbar */
 .scrollbar-hide::-webkit-scrollbar {

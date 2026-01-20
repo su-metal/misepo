@@ -54,12 +54,15 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
         switch (platform) {
             case Platform.X:
                 return {
-                    icon: <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white text-xl font-black shadow-lg">𝕏</div>,
+                    icon: <div className="w-10 h-10 bg-slate-950 rounded-full flex items-center justify-center text-white text-xl font-black shadow-lg">𝕏</div>,
                     label: 'X (Twitter)',
-                    actionColor: 'bg-primary hover:bg-[#000c1d]',
-                    actionLabel: 'Xで投稿する',
-                    contentClasses: "text-[16px] text-primary font-bold leading-relaxed tracking-tight",
+                    actionColor: "bg-slate-950 hover:bg-black active:scale-[0.98]",
+                    actionLabel: "Xで投稿する",
+                    contentClasses: "text-[16px] text-slate-800 font-bold leading-relaxed tracking-tight",
                     wrapperClass: "max-w-[375px]",
+                    brandTextColor: "text-slate-950",
+                    brandBgColor: "bg-slate-950/5",
+                    brandBorderColor: "border-slate-950/10",
                 };
             case Platform.Instagram:
                 return {
@@ -84,10 +87,13 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                             <span className="tracking-widest uppercase">Show Shop Info</span>
                         </button>
                     ),
-                    actionColor: 'bg-gradient-to-r from-[#FF8C37] via-[#B8E600] to-[#BC1888] hover:scale-[1.02] active:scale-[0.98]',
-                    actionLabel: 'Instagramを起動',
-                    contentClasses: "text-[15px] text-primary font-bold leading-relaxed tracking-tight",
+                    actionColor: "bg-[#E1306C] hover:bg-[#c21d56] active:scale-[0.98]",
+                    actionLabel: "Instagramを起動",
+                    contentClasses: "text-[15px] text-slate-800 font-bold leading-relaxed tracking-tight",
                     wrapperClass: "max-w-[340px]",
+                    brandTextColor: "text-brand-instagram",
+                    brandBgColor: "bg-brand-instagram/5",
+                    brandBorderColor: "border-brand-instagram/10",
                 };
             case Platform.GoogleMaps:
                 return {
@@ -99,10 +105,13 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                         </div>
                     ),
                     label: 'Google Maps',
-                    actionColor: 'bg-brand-green hover:bg-[#2d9147] hover:scale-[1.02] active:scale-[0.98]',
-                    actionLabel: 'Googleマップで返信する',
-                    contentClasses: "text-[15px] text-primary font-bold leading-relaxed tracking-tight",
+                    actionColor: "bg-brand-green hover:bg-[#2d9147] active:scale-[0.98] text-white",
+                    actionLabel: "Googleマップで返信する",
+                    contentClasses: "text-[15px] text-slate-800 font-bold leading-relaxed tracking-tight",
                     wrapperClass: "max-w-[325px]",
+                    brandTextColor: "text-brand-green",
+                    brandBgColor: "bg-brand-green/5",
+                    brandBorderColor: "border-brand-green/10",
                 };
             default:
                 return {
@@ -110,7 +119,10 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                     label: platform,
                     actionColor: 'bg-primary',
                     actionLabel: '投稿する',
-                    contentClasses: "text-base text-primary font-black",
+                    contentClasses: "text-base text-slate-800 font-black",
+                    brandTextColor: "text-primary",
+                    brandBgColor: "bg-primary/5",
+                    brandBorderColor: "border-primary/10",
                 };
         }
     };
@@ -121,13 +133,13 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
         switch (p) {
             case Platform.Instagram:
                 return (
-                    <svg className={`${iconClass} text-accent`} viewBox="0 0 24 24" fill="currentColor">
+                    <svg className={`${iconClass} text-brand-instagram`} viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 2c2.717 0 3.056.01 4.122.06 1.065.05 1.79.217 2.428.465.66.254 1.216.598 1.772 1.153a4.908 4.908 0 0 1 1.153 1.772c.247.637.415 1.363.465 2.428.047 1.066.06 1.405.06 4.122 0 2.717-.01 3.056-.06 4.122-.05 1.065-.218 1.79-.465 2.428a4.883 4.883 0 0 1-1.153 1.772 4.915 4.915 0 0 1-1.772 1.153c-.637.247-1.363.415-2.428.465-1.066.047-1.405.06-4.122.06-2.717 0-3.056-.01-4.122-.06-1.065-.05-1.79-.218-2.428-.465a4.89 4.89 0 0 1-1.772-1.153 4.904 4.904 0 0 1-1.153-1.772c-.248-.637-.415-1.363-.465-2.428C2.013 15.056 2 14.717 2 12c0-2.717.01-3.056.06-4.122.05-1.066.217-1.79.465-2.428a4.88 4.88 0 0 1 1.153-1.772A4.897 4.897 0 0 1 5.45 2.525c.638-.248 1.362-.415 2.428-.465C8.944 2.013 9.283 2 12 2zm0 5a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm6.5-.25a1.25 1.25 0 1 0-2.5 0 1.25 1.25 0 0 0 2.5 0zM12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6z" />
                     </svg>
                 );
             case Platform.X:
                 return (
-                    <svg className={`${iconClass} text-primary`} viewBox="0 0 24 24" fill="currentColor">
+                    <svg className={`${iconClass} text-slate-950`} viewBox="0 0 24 24" fill="currentColor">
                         <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                     </svg>
                 );
@@ -154,29 +166,22 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                         <div className="flex items-center w-full border-b border-white/20">
                             {results.map((res, idx) => {
                                 const isSelected = activeTab === idx;
+                                const theme = getPlatformTheme(res.platform); // Get theme for the current platform
                                 return (
-                                    <button
+                                    <div
                                         key={res.platform}
                                         onClick={() => onTabChange(idx)}
-                                        className={`
-                                            flex-1 flex items-center justify-center gap-2.5 py-5 text-[10px] font-black tracking-[0.2em] transition-all uppercase relative
-                                            first:rounded-tl-[46px] last:rounded-tr-[46px]
+                                        className={`flex-1 py-4 flex items-center justify-center gap-3 cursor-pointer transition-all duration-300 border-b-2 hover:bg-white/5
                                             ${isSelected
-                                                ? 'bg-white/10 text-primary z-10 backdrop-blur-md'
-                                                : 'bg-transparent text-slate-400 hover:text-primary hover:bg-white/5'}
-                                        `}
+                                                ? `bg-white/10 ${theme.brandBorderColor?.replace('border', 'border-b') || 'border-primary'}`
+                                                : 'border-transparent'
+                                            }`}
                                     >
                                         {getTabIcon(res.platform, isSelected)}
-                                        <span>{res.platform === Platform.X ? 'X (Twitter)' : res.platform}</span>
-
-                                        {/* Active Indicator Line - Brand Color Match */}
-                                        {isSelected && (
-                                            <div className={`absolute bottom-0 left-0 right-0 h-[2px] ${res.platform === Platform.Instagram ? 'bg-accent' :
-                                                res.platform === Platform.GoogleMaps ? 'bg-brand-green' :
-                                                    'bg-primary'
-                                                }`} />
-                                        )}
-                                    </button>
+                                        <span className={`text-[11px] font-black tracking-[0.2em] uppercase transition-colors ${isSelected ? (theme.brandTextColor || 'text-primary') : 'text-slate-400'}`}>
+                                            {res.platform === Platform.X ? 'X (Twitter)' : res.platform}
+                                        </span>
+                                    </div>
                                 );
                             })}
                         </div>
@@ -196,7 +201,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                     <h2 className="text-3xl font-black text-primary uppercase tracking-[0.25em]">Live Preview</h2>
                                 </div>
                                 <div className="space-y-6 max-w-sm">
-                                    <div className="w-24 h-24 rounded-[32px] bg-white/5 border-2 border-white/20 flex items-center justify-center text-white/20 mx-auto">
+                                    <div className="w-24 h-24 rounded-[32px] bg-slate-100 border-2 border-slate-200 flex items-center justify-center text-slate-300 mx-auto">
                                         <SparklesIcon className="w-12 h-12" />
                                     </div>
                                     <h3 className="text-xl font-black text-primary uppercase tracking-widest">Awaiting Input</h3>
@@ -210,12 +215,12 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                 const theme = getPlatformTheme(res.platform);
                                 return (
                                     <div key={res.platform} className={activeTab === gIdx ? 'block animate-in fade-in duration-500' : 'hidden'}>
-                                        <div className="divide-y-2 divide-white/10">
+                                        <div className={`divide-y-2 ${theme.brandBorderColor || 'divide-white/10'}`}>
                                             {res.data.map((text, iIdx) => (
-                                                <div key={iIdx} className="py-12 px-8 flex flex-col min-h-[500px] relative">
+                                                <div key={iIdx} className="py-6 px-6 flex flex-col relative text-left">
 
                                                     {/* Text Area */}
-                                                    <div className={`flex-1 overflow-y-auto mb-10 custom-scrollbar ${theme.wrapperClass || ''}`}>
+                                                    <div className={`overflow-y-auto mb-4 custom-scrollbar ${theme.wrapperClass || ''}`}>
                                                         <AutoResizingTextarea
                                                             value={text}
                                                             onChange={(e) => onManualEdit(gIdx, iIdx, e.target.value)}
@@ -225,7 +230,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                     </div>
 
                                                     {/* Meta Row: Toggle & Char Count */}
-                                                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 mb-10 pt-8 border-t-2 border-white/10">
+                                                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4 pt-4 border-t-2 border-white/10">
                                                         <div className="flex-1">
                                                             {theme.extra && theme.extra(gIdx, iIdx)}
                                                         </div>
@@ -242,7 +247,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                     <div className="flex flex-col gap-4">
                                                         <button
                                                             onClick={() => setPreviewState({ isOpen: true, platform: res.platform, text })}
-                                                            className="glass-button flex items-center justify-center gap-3 py-5 rounded-[24px] bg-white/10 text-xs font-black text-primary border border-white/20 hover:bg-white/20 transition-all uppercase tracking-widest shadow-sm"
+                                                            className="glass-button flex items-center justify-center gap-3 py-5 rounded-[24px] bg-white/10 text-xs font-black text-slate-600 border border-white/20 hover:bg-white/20 transition-all uppercase tracking-widest shadow-sm"
                                                         >
                                                             <EyeIcon className="w-5 h-5" />
                                                             <span>Preview</span>
