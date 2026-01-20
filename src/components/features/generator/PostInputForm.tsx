@@ -7,7 +7,7 @@ import {
     StarIcon, ChevronDownIcon,
     TieIcon, SneakersIcon, LaptopIcon, CookingIcon, CoffeeIcon,
     BuildingIcon, LeafIcon, GemIcon,
-    MicIcon, MicOffIcon, EraserIcon,
+    MicIcon, MicOffIcon, EraserIcon, MagicWandIcon,
 } from '../../Icons';
 
 const AVATAR_OPTIONS = [
@@ -220,7 +220,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                         onClick={() => onSetActivePlatform(Platform.X)}
                         className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-full text-xs sm:text-sm font-black transition-all relative
                             ${platforms.includes(Platform.X)
-                                ? 'bg-primary text-white shadow-lg shadow-indigo-500/30'
+                                ? 'bg-primary text-white shadow-lg shadow-slate-400/20'
                                 : 'text-slate-400 hover:text-primary hover:bg-white/30'
                             }`}
                     >
@@ -233,7 +233,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                         onClick={() => onSetActivePlatform(Platform.Instagram)}
                         className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-full text-xs sm:text-sm font-black transition-all relative
                             ${platforms.includes(Platform.Instagram)
-                                ? 'bg-primary text-white shadow-lg shadow-indigo-500/30'
+                                ? 'bg-primary text-white shadow-lg shadow-slate-400/20'
                                 : 'text-slate-400 hover:text-primary hover:bg-white/30'
                             }`}
                     >
@@ -246,7 +246,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                         onClick={() => onSetActivePlatform(Platform.GoogleMaps)}
                         className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-full text-xs sm:text-sm font-black transition-all relative
                             ${platforms.includes(Platform.GoogleMaps)
-                                ? 'bg-primary text-white shadow-lg shadow-indigo-500/30'
+                                ? 'bg-primary text-white shadow-lg shadow-slate-400/20'
                                 : 'text-slate-400 hover:text-primary hover:bg-white/30'
                             }`}
                     >
@@ -281,7 +281,13 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                         <div className="glass-panel p-5 rounded-[32px] border border-white/40 shadow-sm flex flex-col gap-4 flex-1">
                             <div className="flex items-center justify-between px-2">
                                 <h3 className="text-xs font-black text-primary uppercase tracking-[0.25em]">Profiles</h3>
-                                <button onClick={onOpenPresetModal} className="text-[10px] font-black text-accent hover:underline uppercase tracking-widest">Manage</button>
+                                <button
+                                    onClick={onOpenPresetModal}
+                                    className="px-3 py-1.5 rounded-xl bg-indigo-50 text-indigo-600 text-[10px] font-black uppercase tracking-widest hover:bg-indigo-600 hover:text-white transition-all active:scale-95 flex items-center gap-1.5 border border-indigo-100/50 shadow-sm"
+                                >
+                                    <MagicWandIcon className="w-3.5 h-3.5" />
+                                    <span>Manage</span>
+                                </button>
                             </div>
                             <div className="grid grid-cols-2 gap-3 md:gap-4 w-full flex-1 h-full auto-rows-fr">
                                 {/* Plain AI Option */}
@@ -463,7 +469,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                                     disabled={starRating !== null}
                                                     className={`px-3 py-2.5 rounded-[16px] text-[11px] font-black transition-all flex items-center justify-center gap-1.5 border
                                                             ${isSelected
-                                                            ? 'bg-primary text-white border-primary shadow-lg shadow-indigo-500/20'
+                                                            ? 'bg-primary text-white border-primary shadow-lg shadow-slate-400/20'
                                                             : 'text-slate-500 border-slate-200 hover:text-slate-700 hover:bg-slate-50'}`}
                                                 >
                                                     <span className={`flex items-center justify-center ${isSelected ? 'opacity-100' : 'opacity-40'}`}>{p.icon}</span>
@@ -568,13 +574,28 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                     {/* Voice Input Button */}
                                     <button
                                         onClick={toggleVoiceInput}
-                                        className={`p-2 rounded-full transition-all flex items-center gap-2 ${isListening
-                                            ? 'bg-accent text-primary shadow-lg animate-pulse border border-accent/50'
+                                        className={`p-2 rounded-full transition-all flex items-center gap-2 relative ${isListening
+                                            ? 'bg-accent text-primary shadow-lg border border-accent/50 pr-4'
                                             : 'text-slate-400 hover:text-primary hover:bg-slate-100'
                                             }`}
                                         title={isListening ? '音声入力を停止' : '音声入力'}
                                     >
-                                        {isListening ? <MicOffIcon className="w-5 h-5" /> : <MicIcon className="w-5 h-5" />}
+                                        {isListening ? (
+                                            <>
+                                                <div className="relative w-5 h-5 flex items-center justify-center">
+                                                    <MicIcon className="w-5 h-5 relative z-10" />
+                                                    <div className="absolute inset-0 bg-accent rounded-full animate-ping opacity-75"></div>
+                                                </div>
+                                                <div className="flex items-center gap-0.5 h-3 ml-1">
+                                                    <div className="w-0.5 bg-primary rounded-full h-full animate-[music-bar_0.5s_ease-in-out_infinite]"></div>
+                                                    <div className="w-0.5 bg-primary rounded-full h-2/3 animate-[music-bar_0.5s_ease-in-out_0.1s_infinite]"></div>
+                                                    <div className="w-0.5 bg-primary rounded-full h-full animate-[music-bar_0.5s_ease-in-out_0.2s_infinite]"></div>
+                                                    <div className="w-0.5 bg-primary rounded-full h-1/2 animate-[music-bar_0.5s_ease-in-out_0.3s_infinite]"></div>
+                                                </div>
+                                            </>
+                                        ) : (
+                                            <MicIcon className="w-5 h-5" />
+                                        )}
                                     </button>
                                 </div>
                             </div>
