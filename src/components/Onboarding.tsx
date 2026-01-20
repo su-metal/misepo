@@ -18,6 +18,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
   const [region, setRegion] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [instagramFooter, setInstagramFooter] = useState<string>('');
+  const [googlePlaceId, setGooglePlaceId] = useState<string>('');
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const autocompleteService = useRef<any>(null);
 
@@ -37,6 +38,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
       setRegion(initialProfile.region);
       setDescription(initialProfile.description || '');
       setInstagramFooter(initialProfile.instagramFooter || '');
+      setGooglePlaceId(initialProfile.googlePlaceId || '');
     }
   }, [initialProfile]);
 
@@ -50,12 +52,14 @@ const Onboarding: React.FC<OnboardingProps> = ({
       name: name.trim(),
       region: region.trim(),
       description: description.trim(),
-      instagramFooter: instagramFooter.trim()
+      instagramFooter: instagramFooter.trim(),
+      googlePlaceId: googlePlaceId
     });
   };
 
   const handleNameChange = (val: string) => {
     setName(val);
+    setGooglePlaceId(''); // Clear place ID when manual edit starts
 
     if (!val.trim()) {
       setSuggestions([]);
@@ -212,6 +216,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
                             type="button"
                             onClick={() => {
                               setName(s.structured_formatting.main_text);
+                              setGooglePlaceId(s.place_id);
                               setSuggestions([]);
                             }}
                             className="w-full text-left px-7 py-5 hover:bg-slate-50 transition-all flex items-center justify-between group border-b border-slate-50 last:border-0"

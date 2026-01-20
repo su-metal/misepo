@@ -41,7 +41,8 @@ export interface StoreProfile {
   name: string;
   region: string;
   description?: string;
-  instagramFooter?: string; // New: Fixed footer text for Instagram
+  instagramFooter?: string;
+  googlePlaceId?: string;
 }
 
 // Configuration for a single API generation call
@@ -105,6 +106,7 @@ export interface Preset {
   custom_prompt: string | null;
   postSamples?: { [key in Platform]?: string }; // New: Few-shot learning samples per platform
   sort_order: number;
+  googlePlaceId?: string;
 }
 
 export interface UserPlan {
