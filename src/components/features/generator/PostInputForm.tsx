@@ -215,7 +215,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
         <div className="flex flex-col">
             {/* Platform Tabs & Multi-gen Toggle - Glass Style */}
             <div className="flex flex-col lg:flex-row lg:items-center gap-4 px-3 sm:px-6 pb-4">
-                <div className="flex items-stretch flex-1 p-4 gap-1 glass-panel rounded-full border border-white/40 shadow-sm">
+                <div className="flex items-stretch flex-1 px-4 py-2 gap-1 glass-panel rounded-full border border-white/40 shadow-sm">
                     <button
                         onClick={() => onSetActivePlatform(Platform.X)}
                         className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-full text-xs sm:text-sm font-black transition-all relative
@@ -278,149 +278,143 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                     <div className="flex flex-col lg:flex-row gap-6 lg:items-stretch">
 
                         {/* LEFT COL: Profiles */}
-                        <div className="flex-1 w-full lg:w-1/2 flex flex-col gap-4">
+                        <div className="glass-panel p-5 rounded-[32px] border border-white/40 shadow-sm flex flex-col gap-4 h-full">
                             <div className="flex items-center justify-between px-2">
                                 <h3 className="text-xs font-black text-primary uppercase tracking-[0.25em]">Profiles</h3>
                                 <button onClick={onOpenPresetModal} className="text-[10px] font-black text-accent hover:underline uppercase tracking-widest">Manage</button>
                             </div>
-                            <div className="w-full flex glass-panel rounded-[24px] p-3 relative overflow-hidden h-full">
-                                <div className="relative z-10 p-0  w-full">
-                                    <div className="grid grid-cols-2 gap-3 md:gap-4">
-                                        {/* Plain AI Option */}
-                                        <button
-                                            onClick={() => onApplyPreset({ id: 'plain-ai' } as any)}
-                                            className={`group relative py-5 px-3 rounded-[24px] transition-all duration-300 flex flex-col items-center justify-center gap-2
+                            <div className="grid grid-cols-2 gap-3 md:gap-4 w-full">
+                                {/* Plain AI Option */}
+                                <button
+                                    onClick={() => onApplyPreset({ id: 'plain-ai' } as any)}
+                                    className={`group relative py-5 px-3 rounded-[24px] transition-all duration-300 flex flex-col items-center justify-center gap-2
                                                 ${!activePresetId
+                                            ? 'bg-primary text-white shadow-lg shadow-[#001738]/20 ring-2 ring-[#001738]/5 ring-offset-2'
+                                            : 'bg-slate-50 shadow-sm hover:bg-slate-100 text-slate-400 hover:text-slate-600 border border-slate-200 hover:border-slate-300'}
+                                            `}
+                                >
+                                    <span className={`text-2xl transition-transform duration-300 group-hover:scale-110 ${!activePresetId ? 'opacity-100' : 'opacity-60 grayscale group-hover:grayscale-0'}`}>
+                                        <AutoSparklesIcon className="w-6 h-6" />
+                                    </span>
+                                    <span className={`text-[11px] font-bold truncate tracking-wide text-center w-full ${!activePresetId ? 'opacity-100' : 'text-slate-500'}`}>おまかせ</span>
+                                </button>
+
+                                {/* Profiles Grid */}
+                                {presets.map((p) => {
+                                    const isSelected = activePresetId === p.id;
+                                    return (
+                                        <button
+                                            key={p.id}
+                                            onClick={() => onApplyPreset(p)}
+                                            className={`group relative py-5 px-3 rounded-[24px] transition-all duration-300 flex flex-col items-center justify-center gap-2
+                                                        ${isSelected
                                                     ? 'bg-primary text-white shadow-lg shadow-[#001738]/20 ring-2 ring-[#001738]/5 ring-offset-2'
                                                     : 'bg-slate-50 shadow-sm hover:bg-slate-100 text-slate-400 hover:text-slate-600 border border-slate-200 hover:border-slate-300'}
-                                            `}
-                                        >
-                                            <span className={`text-2xl transition-transform duration-300 group-hover:scale-110 ${!activePresetId ? 'opacity-100' : 'opacity-60 grayscale group-hover:grayscale-0'}`}>
-                                                <AutoSparklesIcon className="w-6 h-6" />
-                                            </span>
-                                            <span className={`text-[11px] font-bold truncate tracking-wide text-center w-full ${!activePresetId ? 'opacity-100' : 'text-slate-500'}`}>おまかせ</span>
-                                        </button>
-
-                                        {/* Profiles Grid */}
-                                        {presets.map((p) => {
-                                            const isSelected = activePresetId === p.id;
-                                            return (
-                                                <button
-                                                    key={p.id}
-                                                    onClick={() => onApplyPreset(p)}
-                                                    className={`group relative py-5 px-3 rounded-[24px] transition-all duration-300 flex flex-col items-center justify-center gap-2
-                                                        ${isSelected
-                                                            ? 'bg-primary text-white shadow-lg shadow-[#001738]/20 ring-2 ring-[#001738]/5 ring-offset-2'
-                                                            : 'bg-slate-50 shadow-sm hover:bg-slate-100 text-slate-400 hover:text-slate-600 border border-slate-200 hover:border-slate-300'}
                                                     `}
-                                                >
-                                                    <span className={`text-2xl transition-transform duration-300 group-hover:scale-110 ${isSelected ? 'opacity-100' : 'opacity-60 grayscale group-hover:grayscale-0'}`}>
-                                                        {renderAvatar(p.avatar, "w-6 h-6")}
-                                                    </span>
-                                                    <span className={`text-[11px] font-bold truncate tracking-wide text-center w-full ${isSelected ? 'opacity-100' : 'opacity-60'}`}>
-                                                        {p.name}
-                                                    </span>
-                                                </button>
-                                            );
-                                        })}
-                                    </div>
-                                </div>
+                                        >
+                                            <span className={`text-2xl transition-transform duration-300 group-hover:scale-110 ${isSelected ? 'opacity-100' : 'opacity-60 grayscale group-hover:grayscale-0'}`}>
+                                                {renderAvatar(p.avatar, "w-6 h-6")}
+                                            </span>
+                                            <span className={`text-[11px] font-bold truncate tracking-wide text-center w-full ${isSelected ? 'opacity-100' : 'opacity-60'}`}>
+                                                {p.name}
+                                            </span>
+                                        </button>
+                                    );
+                                })}
                             </div>
                         </div>
 
                         {/* RIGHT COL: Style Settings (Tone, Length, X Limit, Emojis) */}
-                        <div className="flex-1 w-full lg:w-1/2 flex flex-col gap-3">
+                        <div className="glass-panel p-5 rounded-[32px] border border-white/40 shadow-sm flex flex-col gap-5 h-full">
                             <div className="flex items-center justify-between px-2">
                                 <h3 className="text-xs font-black text-primary uppercase tracking-[0.25em]">Style</h3>
                             </div>
-                            <div className="flex flex-col gap-4 glass-panel rounded-[24px] h-full p-4 lg:p-5 justify-center">
-                                {/* Tone Selection */}
+                            {/* Tone Selection */}
+                            <section>
+                                <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 px-1">Tone</h3>
+                                <div className={`flex flex-row gap-1.5 bg-slate-100 p-1 rounded-[16px] border border-slate-200 ${activePresetId ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                                    {TONES.map((t) => (
+                                        <button
+                                            key={t.id}
+                                            onClick={() => onToneChange(t.id)}
+                                            disabled={!!activePresetId}
+                                            className={`flex-1 py-2 px-1 rounded-[12px] text-[10px] font-black transition-all flex items-center justify-center gap-1.5 relative ${tone === t.id
+                                                ? 'bg-primary text-white shadow-lg shadow-navy-900/20'
+                                                : 'text-slate-400 hover:text-slate-600 hover:bg-white'
+                                                }`}
+                                        >
+                                            <span>{t.label}</span>
+                                        </button>
+                                    ))}
+                                </div>
+                            </section>
+
+                            {/* Length Selection */}
+                            {!isX && (
                                 <section>
-                                    <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 px-1">Tone</h3>
-                                    <div className={`flex flex-row gap-1.5 bg-slate-100 p-1 rounded-[16px] border border-slate-200 ${activePresetId ? 'opacity-50 cursor-not-allowed' : ''}`}>
-                                        {TONES.map((t) => (
+                                    <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 px-1">Length</h3>
+                                    <div className="flex flex-row gap-1.5 bg-slate-100 p-1 rounded-[16px] border border-slate-200">
+                                        {LENGTHS.map((l) => (
                                             <button
-                                                key={t.id}
-                                                onClick={() => onToneChange(t.id)}
-                                                disabled={!!activePresetId}
-                                                className={`flex-1 py-2 px-1 rounded-[12px] text-[10px] font-black transition-all flex items-center justify-center gap-1.5 relative ${tone === t.id
+                                                key={l.id}
+                                                onClick={() => onLengthChange(l.id)}
+                                                className={`flex-1 py-2 px-1 rounded-[12px] text-[10px] font-black transition-all flex items-center justify-center gap-1.5 relative ${length === l.id
                                                     ? 'bg-primary text-white shadow-lg shadow-navy-900/20'
                                                     : 'text-slate-400 hover:text-slate-600 hover:bg-white'
                                                     }`}
                                             >
-                                                <span>{t.label}</span>
+                                                <span>{l.label}</span>
                                             </button>
                                         ))}
                                     </div>
                                 </section>
+                            )}
 
-                                {/* Length Selection */}
-                                {!isX && (
-                                    <section>
-                                        <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 px-1">Length</h3>
-                                        <div className="flex flex-row gap-1.5 bg-slate-100 p-1 rounded-[16px] border border-slate-200">
-                                            {LENGTHS.map((l) => (
-                                                <button
-                                                    key={l.id}
-                                                    onClick={() => onLengthChange(l.id)}
-                                                    className={`flex-1 py-2 px-1 rounded-[12px] text-[10px] font-black transition-all flex items-center justify-center gap-1.5 relative ${length === l.id
-                                                        ? 'bg-primary text-white shadow-lg shadow-navy-900/20'
-                                                        : 'text-slate-400 hover:text-slate-600 hover:bg-white'
-                                                        }`}
-                                                >
-                                                    <span>{l.label}</span>
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </section>
-                                )}
-
-                                {/* X Constraint */}
-                                {isX && (
-                                    <section className="animate-in fade-in duration-500">
-                                        <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 px-1">Limit</h3>
-                                        <button
-                                            onClick={() => onXConstraint140Change(!xConstraint140)}
-                                            className={`w-full p-2 rounded-[16px] border transition-all flex items-center justify-between group shadow-sm
+                            {/* X Constraint */}
+                            {isX && (
+                                <section className="animate-in fade-in duration-500">
+                                    <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 px-1">Limit</h3>
+                                    <button
+                                        onClick={() => onXConstraint140Change(!xConstraint140)}
+                                        className={`w-full p-2 rounded-[16px] border transition-all flex items-center justify-between group shadow-sm
                                             ${xConstraint140 ? 'bg-slate-900 border-slate-900 text-white shadow-xl shadow-slate-200/50' : 'bg-white border-slate-100 text-slate-500 hover:border-slate-300'}`}
-                                        >
-                                            <span className="text-[10px] font-black ml-2">140文字</span>
-                                            <div className={`w-4 h-4 rounded-full transition-all flex items-center justify-center mr-1 ${xConstraint140 ? 'bg-indigo-500' : 'bg-slate-100'}`}>
-                                                {xConstraint140 && <div className="w-2 h-2 rounded-full bg-white animate-pulse" />}
-                                            </div>
-                                        </button>
-                                    </section>
-                                )}
-
-                                {/* Style Options (Emoji/Symbol) */}
-                                {!isGoogleMaps && (
-                                    <section className="animate-in fade-in duration-500 delay-150">
-                                        <div className={`flex flex-row items-center gap-2 bg-white px-3 py-2 rounded-[20px] border border-slate-100 shadow-sm ${activePresetId ? 'opacity-50' : ''}`}>
-                                            <div className="flex-1 flex items-center justify-between px-2">
-                                                <span className="text-[10px] font-black text-primary uppercase tracking-widest">絵文字</span>
-                                                <button
-                                                    onClick={() => onIncludeEmojisChange(!includeEmojis)}
-                                                    disabled={!!activePresetId}
-                                                    className={`relative inline-flex h-4 w-7 items-center rounded-full transition-all duration-300 ${activePresetId ? 'cursor-not-allowed' : ''} ${includeEmojis ? 'bg-accent' : 'bg-slate-200'}`}
-                                                >
-                                                    <span className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform duration-300 ${includeEmojis ? 'translate-x-3.5' : 'translate-x-0.5'}`} />
-                                                </button>
-                                            </div>
-                                            <div className="w-px h-5 bg-slate-100" />
-                                            <div className="flex-1 flex items-center justify-between px-2">
-                                                <span className="text-[10px] font-black text-primary uppercase tracking-widest">特殊文字</span>
-                                                <button
-                                                    onClick={() => onIncludeSymbolsChange(!includeSymbols)}
-                                                    disabled={!!activePresetId}
-                                                    className={`relative inline-flex h-4 w-7 items-center rounded-full transition-all duration-300 ${activePresetId ? 'cursor-not-allowed' : ''} ${includeSymbols ? 'bg-accent' : 'bg-slate-200'}`}
-                                                >
-                                                    <span className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform duration-300 ${includeSymbols ? 'translate-x-3.5' : 'translate-x-0.5'}`} />
-                                                </button>
-                                            </div>
+                                    >
+                                        <span className="text-[10px] font-black ml-2">140文字</span>
+                                        <div className={`w-4 h-4 rounded-full transition-all flex items-center justify-center mr-1 ${xConstraint140 ? 'bg-indigo-500' : 'bg-slate-100'}`}>
+                                            {xConstraint140 && <div className="w-2 h-2 rounded-full bg-white animate-pulse" />}
                                         </div>
-                                    </section>
-                                )}
-                            </div>
+                                    </button>
+                                </section>
+                            )}
+
+                            {/* Style Options (Emoji/Symbol) */}
+                            {!isGoogleMaps && (
+                                <section className="animate-in fade-in duration-500 delay-150">
+                                    <div className={`flex flex-row items-center gap-2 bg-white px-3 py-2 rounded-[20px] border border-slate-100 shadow-sm ${activePresetId ? 'opacity-50' : ''}`}>
+                                        <div className="flex-1 flex items-center justify-between px-2">
+                                            <span className="text-[10px] font-black text-primary uppercase tracking-widest">絵文字</span>
+                                            <button
+                                                onClick={() => onIncludeEmojisChange(!includeEmojis)}
+                                                disabled={!!activePresetId}
+                                                className={`relative inline-flex h-4 w-7 items-center rounded-full transition-all duration-300 ${activePresetId ? 'cursor-not-allowed' : ''} ${includeEmojis ? 'bg-accent' : 'bg-slate-200'}`}
+                                            >
+                                                <span className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform duration-300 ${includeEmojis ? 'translate-x-3.5' : 'translate-x-0.5'}`} />
+                                            </button>
+                                        </div>
+                                        <div className="w-px h-5 bg-slate-100" />
+                                        <div className="flex-1 flex items-center justify-between px-2">
+                                            <span className="text-[10px] font-black text-primary uppercase tracking-widest">特殊文字</span>
+                                            <button
+                                                onClick={() => onIncludeSymbolsChange(!includeSymbols)}
+                                                disabled={!!activePresetId}
+                                                className={`relative inline-flex h-4 w-7 items-center rounded-full transition-all duration-300 ${activePresetId ? 'cursor-not-allowed' : ''} ${includeSymbols ? 'bg-accent' : 'bg-slate-200'}`}
+                                            >
+                                                <span className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform duration-300 ${includeSymbols ? 'translate-x-3.5' : 'translate-x-0.5'}`} />
+                                            </button>
+                                        </div>
+                                    </div>
+                                </section>
+                            )}
                         </div>
                     </div>
 
