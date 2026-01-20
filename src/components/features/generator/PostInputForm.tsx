@@ -7,6 +7,7 @@ import {
     StarIcon, ChevronDownIcon,
     TieIcon, SneakersIcon, LaptopIcon, CookingIcon, CoffeeIcon,
     BuildingIcon, LeafIcon, GemIcon,
+    MicIcon, MicOffIcon, EraserIcon,
 } from '../../Icons';
 
 const AVATAR_OPTIONS = [
@@ -135,8 +136,67 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
 }) => {
     const textareaRef = React.useRef<HTMLTextAreaElement>(null);
     const [isPromptExpanded, setIsPromptExpanded] = React.useState(!!customPrompt);
+    const [isListening, setIsListening] = React.useState(false);
+    const recognitionRef = React.useRef<any>(null); // Use any for SpeechRecognition to avoid extensive typing setup
+
     const isGoogleMaps = platform === Platform.GoogleMaps;
     const isX = platform === Platform.X;
+
+    // Handle Voice Input
+    const toggleVoiceInput = React.useCallback(() => {
+        if (isListening) {
+            recognitionRef.current?.stop();
+            setIsListening(false);
+            return;
+        }
+
+        const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+            alert('お使いのブラウザは音声入力に対応していません。Google Chromeなどのモダンブラウザをご利用ください。');
+            return;
+        }
+
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'ja-JP';
+        recognition.continuous = true;
+        recognition.interimResults = true;
+
+        recognition.onstart = () => {
+            setIsListening(true);
+        };
+
+        recognition.onresult = (event: any) => {
+            let finalTranscript = '';
+            for (let i = event.resultIndex; i < event.results.length; ++i) {
+                if (event.results[i].isFinal) {
+                    finalTranscript += event.results[i][0].transcript;
+                }
+            }
+            if (finalTranscript) {
+                onInputTextChange(inputText + (inputText ? ' ' : '') + finalTranscript);
+            }
+        };
+
+        recognition.onerror = (event: any) => {
+            console.error('Speech recognition error', event.error);
+            setIsListening(false);
+        };
+
+        recognition.onend = () => {
+            setIsListening(false);
+        };
+
+        recognitionRef.current = recognition;
+        recognition.start();
+
+    }, [isListening, inputText, onInputTextChange]);
+
+    // Handle Clear
+    const handleClear = React.useCallback(() => {
+        if (window.confirm('入力内容をすべて消去しますか？')) {
+            onInputTextChange('');
+        }
+    }, [onInputTextChange]);
 
     React.useEffect(() => {
         if (!isGoogleMaps && !Object.values(PostPurpose).includes(postPurpose)) {
@@ -505,6 +565,31 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                             <div className="flex items-center justify-between">
                                 <div className="text-[10px] font-black text-slate-300 tracking-[0.3em] uppercase flex items-center gap-4">
                                     <span className="bg-slate-100 text-slate-400 px-3 py-1 rounded-full">{inputText.length} CHARS</span>
+                                </div>
+
+                                {/* Tools: Clear & Voice */}
+                                <div className="flex items-center gap-2">
+                                    {/* Clear Button */}
+                                    <button
+                                        onClick={handleClear}
+                                        disabled={!inputText}
+                                        className="p-2 rounded-full text-slate-300 hover:text-slate-500 hover:bg-slate-100 transition-all disabled:opacity-30 disabled:cursor-not-allowed group/clear"
+                                        title="入力をクリア"
+                                    >
+                                        <EraserIcon className="w-5 h-5" />
+                                    </button>
+
+                                    {/* Voice Input Button */}
+                                    <button
+                                        onClick={toggleVoiceInput}
+                                        className={`p-2 rounded-full transition-all flex items-center gap-2 ${isListening
+                                                ? 'bg-[#E5005A] text-white shadow-lg animate-pulse'
+                                                : 'text-slate-400 hover:text-[#001738] hover:bg-slate-100'
+                                            }`}
+                                        title={isListening ? '音声入力を停止' : '音声入力'}
+                                    >
+                                        {isListening ? <MicOffIcon className="w-5 h-5" /> : <MicIcon className="w-5 h-5" />}
+                                    </button>
                                 </div>
                             </div>
                         </div>

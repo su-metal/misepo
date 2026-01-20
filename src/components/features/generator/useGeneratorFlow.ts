@@ -414,7 +414,11 @@ export function useGeneratorFlow(props: {
           window.open("https://www.instagram.com/", "_blank");
           break;
         case Platform.GoogleMaps:
-          window.open("https://business.google.com/", "_blank");
+          if (storeProfile.googlePlaceId) {
+            window.open(`https://www.google.com/maps/search/?api=1&query=GOOGLE&query_place_id=${storeProfile.googlePlaceId}`, "_blank");
+          } else {
+            window.open("https://business.google.com/", "_blank");
+          }
           break;
       }
     }, 1200);

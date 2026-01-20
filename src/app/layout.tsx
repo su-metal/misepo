@@ -33,6 +33,7 @@ export default function RootLayout({
             }
           })
         }} />
+        <script src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`} async defer></script>
       </head>
       <body>
         <div id="root">{children}</div>
