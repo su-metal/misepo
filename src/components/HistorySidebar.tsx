@@ -195,7 +195,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                       </button>
                       <button
                         onClick={(e) => { e.stopPropagation(); onDelete(item.id); }}
-                        className="absolute -top-2 -right-2 w-8 h-8 flex items-center justify-center bg-white text-rose-500 border border-rose-100 rounded-full opacity-0 group-hover:opacity-100 transform scale-75 group-hover:scale-100 transition-all hover:bg-rose-50 hover:border-rose-200 shadow-md z-20"
+                        className="absolute -top-2 -right-2 w-8 h-8 flex items-center justify-center bg-white text-rose-500 border border-rose-100 rounded-full md:opacity-0 md:group-hover:opacity-100 transform md:scale-75 md:group-hover:scale-100 transition-all hover:bg-rose-50 hover:border-rose-200 shadow-md z-20"
                       >
                         <TrashIcon className="w-4 h-4" />
                       </button>

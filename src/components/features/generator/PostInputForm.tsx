@@ -220,7 +220,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                         onClick={() => onSetActivePlatform(Platform.X)}
                         className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-full text-xs sm:text-sm font-black transition-all relative
                             ${platforms.includes(Platform.X)
-                                ? 'bg-primary text-white shadow-lg shadow-slate-400/20'
+                                ? 'bg-primary text-white shadow-lg active-floating'
                                 : 'text-slate-400 hover:text-primary hover:bg-white/30'
                             }`}
                     >
@@ -233,7 +233,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                         onClick={() => onSetActivePlatform(Platform.Instagram)}
                         className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-full text-xs sm:text-sm font-black transition-all relative
                             ${platforms.includes(Platform.Instagram)
-                                ? 'bg-primary text-white shadow-lg shadow-slate-400/20'
+                                ? 'bg-primary text-white shadow-lg active-floating'
                                 : 'text-slate-400 hover:text-primary hover:bg-white/30'
                             }`}
                     >
@@ -244,9 +244,9 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                     </button>
                     <button
                         onClick={() => onSetActivePlatform(Platform.GoogleMaps)}
-                        className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-full text-xs sm:text-sm font-black transition-all relative
+                        className={`flex-1 flex items-center justify-center gap-0 py-3 rounded-full text-xs sm:text-sm font-black transition-all relative
                             ${platforms.includes(Platform.GoogleMaps)
-                                ? 'bg-primary text-white shadow-lg shadow-slate-400/20'
+                                ? 'bg-primary text-white shadow-lg active-floating'
                                 : 'text-slate-400 hover:text-primary hover:bg-white/30'
                             }`}
                     >
@@ -295,7 +295,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                     onClick={() => onApplyPreset({ id: 'plain-ai' } as any)}
                                     className={`group relative py-5 px-3 rounded-[24px] transition-all duration-300 flex flex-col items-center justify-center gap-2
                                                 ${!activePresetId
-                                            ? 'bg-primary text-white shadow-lg shadow-[#001738]/20 ring-2 ring-[#001738]/5 ring-offset-2'
+                                            ? 'bg-primary text-white shadow-lg active-floating'
                                             : 'bg-slate-50 shadow-sm hover:bg-slate-100 text-slate-400 hover:text-slate-600 border border-slate-200 hover:border-slate-300'}
                                             `}
                                 >
@@ -314,7 +314,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                             onClick={() => onApplyPreset(p)}
                                             className={`group relative py-5 px-3 rounded-[24px] transition-all duration-300 flex flex-col items-center justify-center gap-2
                                                         ${isSelected
-                                                    ? 'bg-primary text-white shadow-lg shadow-[#001738]/20 ring-2 ring-[#001738]/5 ring-offset-2'
+                                                    ? 'bg-primary text-white shadow-lg active-floating'
                                                     : 'bg-slate-50 shadow-sm hover:bg-slate-100 text-slate-400 hover:text-slate-600 border border-slate-200 hover:border-slate-300'}
                                                     `}
                                         >
@@ -345,7 +345,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                             onClick={() => onToneChange(t.id)}
                                             disabled={!!activePresetId}
                                             className={`flex-1 py-2 px-1 rounded-[12px] text-[10px] font-black transition-all flex items-center justify-center gap-1.5 relative ${tone === t.id
-                                                ? 'bg-primary text-white shadow-lg shadow-navy-900/20'
+                                                ? 'bg-primary text-white border-primary shadow-lg active-floating'
                                                 : 'text-slate-400 hover:text-slate-600 hover:bg-white'
                                                 }`}
                                         >
@@ -365,7 +365,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                                 key={l.id}
                                                 onClick={() => onLengthChange(l.id)}
                                                 className={`flex-1 py-2 px-1 rounded-[12px] text-[10px] font-black transition-all flex items-center justify-center gap-1.5 relative ${length === l.id
-                                                    ? 'bg-primary text-white shadow-lg shadow-navy-900/20'
+                                                    ? 'bg-primary text-white border-primary shadow-lg active-floating'
                                                     : 'text-slate-400 hover:text-slate-600 hover:bg-white'
                                                     }`}
                                             >
@@ -631,10 +631,6 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                         </div>
                     </button>
 
-                    {/* Footnote */}
-                    <p className="text-center text-[10px] font-black text-slate-400 uppercase tracking-widest mt-8">
-                        AI-Powered High Performance Content Generation
-                    </p>
                 </div>
             </div >
         </div >

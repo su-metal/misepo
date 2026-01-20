@@ -214,7 +214,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                 <div key={iIdx} className="py-6 px-6 flex flex-col relative text-left">
 
                                                     {/* Text Area */}
-                                                    <div className={`overflow-y-auto mb-4 custom-scrollbar ${theme.wrapperClass || ''}`}>
+                                                    <div className={`mb-4 ${theme.wrapperClass || ''}`}>
                                                         <AutoResizingTextarea
                                                             value={text}
                                                             onChange={(e) => onManualEdit(gIdx, iIdx, e.target.value)}

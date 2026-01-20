@@ -3,10 +3,10 @@
 @tailwind utilities;
 
 :root {
-  /* Glassmorphism Brand Colors */
-  --primary: #2b2b2b;     /* Soft Indigo - Main Brand Color (Reference: View All button) */
+  /* Glassmorphism Brand Colors (Restored Deep Indigo) */
+  --primary: #1e1b4b;     /* Deep Indigo - Unified AI Brand Color */
   --primary-dark: #3b4cca;
-  --accent: #130c0a;      /* Google Maps Green - Unified Accent */
+  --accent: #130c0a;      /* Unified Accent */
   --accent-secondary: #aa9cff; /* Soft Purple - Gradient/Accent */
   
   /* Text Colors */
@@ -21,7 +21,7 @@
 
 body {
   font-family: 'Outfit', 'Inter', 'Noto Sans JP', sans-serif;
-  /* Multi-layered soft gradient background for a more "gradient" feel */
+  /* Restored Multi-layered soft gradient background */
   background: 
     linear-gradient(135deg, #e0f2fe 0%, #e0e7ff 40%, #f1f5f9 100%);
   background-attachment: fixed;
@@ -57,6 +57,25 @@ body {
     background: rgba(255, 255, 255, 0.4);
     transform: translateY(-2px);
     box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+}
+
+/* High-fidelity Neumorphic "3D Block" (Raised with thickness) */
+.active-floating {
+    background-color: var(--primary) !important;
+    transform: translateY(-1.5px) !important; /* Refined lift */
+    box-shadow: 
+        1px 2.5px 0 0 #888888,                     /* Refined thickness */
+        8px 10px 20px -4px rgba(0, 0, 0, 0.25),    /* Refined floor shadow */
+        -4px -4px 12px 0 rgba(255, 255, 255, 0.1),  /* Top-left light source */
+        inset 0 1px 1px 0 rgba(255, 255, 255, 0.2) !important; /* Top edge highlight */
+    filter: none !important;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 1.64, 1);
+}
+.active-floating:active {
+    transform: translateY(1px) !important;    /* "Click" down */
+    box-shadow: 
+        0 1px 0 0 #888888,
+        4px 4px 10px -2px rgba(0, 0, 0, 0.2) !important;
 }
 
 /* Color Utilities using CSS Variables */

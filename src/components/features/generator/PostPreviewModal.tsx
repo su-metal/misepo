@@ -60,7 +60,7 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
 
                 <div className="p-0 bg-stone-50/30 max-h-[70vh] overflow-y-auto">
                     {/* Platform Specific Preview */}
-                    <div className="flex justify-center p-6 bg-gradient-to-b from-stone-50 to-white">
+                    <div className="flex justify-center px-2 py-6 bg-gradient-to-b from-stone-50 to-white">
 
                         {/* Instagram Preview */}
                         {platform === Platform.Instagram && (
