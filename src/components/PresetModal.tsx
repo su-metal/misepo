@@ -649,18 +649,17 @@ const PresetModal: React.FC<PresetModalProps> = ({
                   <button
                     type="button"
                     onClick={() => setExpandingPlatform(Platform.Instagram)}
-                    className="p-2 text-[#E5005A] hover:bg-pink-50 rounded-xl transition-all"
-                    title="集中入力モード"
+                    className="flex items-center gap-2 px-4 py-2 text-[10px] font-black text-[#E5005A] bg-pink-50 hover:bg-pink-100 rounded-xl transition-all group"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M15 3h6v6" /><path d="M9 21H3v-6" /><path d="M21 3l-7 7" /><path d="M3 21l7-7" /></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="group-hover:scale-110 transition-transform"><path d="M15 3h6v6" /><path d="M9 21H3v-6" /><path d="M21 3l-7 7" /><path d="M3 21l7-7" /></svg>
+                    <span>拡大表示で集中入力</span>
                   </button>
                 </div>
-                <textarea
+                <AutoResizingTextarea
                   value={postSamples[Platform.Instagram] || ''}
-                  onChange={(e) => setPostSamples(prev => ({ ...prev, [Platform.Instagram]: e.target.value }))}
+                  onChange={(val) => setPostSamples(prev => ({ ...prev, [Platform.Instagram]: val }))}
                   placeholder={'例：\nこんにちは！今日のランチは... 🍝\n---\n新作のケーキが焼き上がりました！ 🍰\n---\n(このように「---」で区切る)'}
-                  rows={4}
-                  className="w-full px-5 py-4 rounded-2xl bg-slate-50 border-2 border-transparent focus:bg-white focus:border-pink-300 outline-none transition-all resize-none text-xs text-slate-800 font-bold leading-relaxed placeholder-slate-300"
+                  className="w-full px-5 py-4 rounded-2xl bg-slate-50 border-2 border-transparent focus:bg-white focus:border-pink-300 outline-none transition-all resize-none text-xs text-slate-800 font-bold leading-relaxed placeholder-slate-300 min-h-[100px]"
                 />
               </div>
 
@@ -676,18 +675,17 @@ const PresetModal: React.FC<PresetModalProps> = ({
                   <button
                     type="button"
                     onClick={() => setExpandingPlatform(Platform.X)}
-                    className="p-2 text-slate-600 hover:bg-slate-100 rounded-xl transition-all"
-                    title="集中入力モード"
+                    className="flex items-center gap-2 px-4 py-2 text-[10px] font-black text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-all group"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M15 3h6v6" /><path d="M9 21H3v-6" /><path d="M21 3l-7 7" /><path d="M3 21l7-7" /></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="group-hover:scale-110 transition-transform"><path d="M15 3h6v6" /><path d="M9 21H3v-6" /><path d="M21 3l-7 7" /><path d="M3 21l7-7" /></svg>
+                    <span>拡大表示で集中入力</span>
                   </button>
                 </div>
-                <textarea
+                <AutoResizingTextarea
                   value={postSamples[Platform.X] || ''}
-                  onChange={(e) => setPostSamples(prev => ({ ...prev, [Platform.X]: e.target.value }))}
+                  onChange={(val) => setPostSamples(prev => ({ ...prev, [Platform.X]: val }))}
                   placeholder="過去の気に入っている投稿を3件ほど貼り付けてください..."
-                  rows={3}
-                  className="w-full px-5 py-4 rounded-2xl bg-slate-50 border-2 border-transparent focus:bg-white focus:border-slate-300 outline-none transition-all resize-none text-xs text-slate-800 font-bold leading-relaxed placeholder-slate-300"
+                  className="w-full px-5 py-4 rounded-2xl bg-slate-50 border-2 border-transparent focus:bg-white focus:border-slate-300 outline-none transition-all resize-none text-xs text-slate-800 font-bold leading-relaxed placeholder-slate-300 min-h-[80px]"
                 />
               </div>
 
@@ -703,18 +701,17 @@ const PresetModal: React.FC<PresetModalProps> = ({
                   <button
                     type="button"
                     onClick={() => setExpandingPlatform(Platform.GoogleMaps)}
-                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-xl transition-all"
-                    title="集中入力モード"
+                    className="flex items-center gap-2 px-4 py-2 text-[10px] font-black text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-xl transition-all group"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M15 3h6v6" /><path d="M9 21H3v-6" /><path d="M21 3l-7 7" /><path d="M3 21l7-7" /></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="group-hover:scale-110 transition-transform"><path d="M15 3h6v6" /><path d="M9 21H3v-6" /><path d="M21 3l-7 7" /><path d="M3 21l7-7" /></svg>
+                    <span>拡大表示で集中入力</span>
                   </button>
                 </div>
-                <textarea
+                <AutoResizingTextarea
                   value={postSamples[Platform.GoogleMaps] || ''}
-                  onChange={(e) => setPostSamples(prev => ({ ...prev, [Platform.GoogleMaps]: e.target.value }))}
+                  onChange={(val) => setPostSamples(prev => ({ ...prev, [Platform.GoogleMaps]: val }))}
                   placeholder="過去のオーナー返信を3件ほど貼り付けてください..."
-                  rows={3}
-                  className="w-full px-5 py-4 rounded-2xl bg-slate-50 border-2 border-transparent focus:bg-white focus:border-blue-300 outline-none transition-all resize-none text-xs text-slate-800 font-bold leading-relaxed placeholder-slate-300"
+                  className="w-full px-5 py-4 rounded-2xl bg-slate-50 border-2 border-transparent focus:bg-white focus:border-blue-300 outline-none transition-all resize-none text-xs text-slate-800 font-bold leading-relaxed placeholder-slate-300 min-h-[80px]"
                 />
               </div>
             </div>
