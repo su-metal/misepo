@@ -29,13 +29,13 @@ export const GeneratorHeader: React.FC<GeneratorHeaderProps> = ({
                     {/* Status Badge - CastMe Style */}
                     <div className="flex items-center">
                         {isTrial ? (
-                            <div className="flex items-center gap-2 px-4 py-1.5 bg-[#B8E600]/5 border border-[#B8E600]/10 rounded-full shadow-sm">
-                                <StarIcon className="w-3 h-3 text-accent fill-current animate-pulse" />
-                                <span className="text-[10px] font-black text-accent uppercase tracking-widest leading-none">Free Trial</span>
+                            <div className="flex items-center gap-2 px-4 py-1.5 bg-slate-100 border border-slate-200 rounded-full shadow-sm">
+                                <StarIcon className="w-3 h-3 text-slate-400 fill-current animate-pulse" />
+                                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none">Free Trial</span>
                             </div>
                         ) : isPro ? (
                             <div className="flex items-center gap-2 px-4 py-1.5 bg-primary rounded-full shadow-lg">
-                                <div className="w-1.5 h-1.5 rounded-full bg-accent shadow-[0_0_10px_rgba(184,230,0,0.8)]"></div>
+                                <div className="w-1.5 h-1.5 rounded-full bg-indigo-400 shadow-[0_0_10px_rgba(129,140,248,0.8)]"></div>
                                 <span className="text-[10px] font-black text-white uppercase tracking-widest leading-none">Pro Plan</span>
                             </div>
                         ) : (

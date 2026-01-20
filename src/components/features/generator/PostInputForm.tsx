@@ -244,7 +244,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                     </button>
                     <button
                         onClick={() => onSetActivePlatform(Platform.GoogleMaps)}
-                        className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-full text-xs sm:text-sm font-black transition-all relative
+                        className={`flex-1 flex items-center justify-center gap-0 py-3 rounded-full text-xs sm:text-sm font-black transition-all relative
                             ${platforms.includes(Platform.GoogleMaps)
                                 ? 'bg-primary text-white shadow-lg active-floating'
                                 : 'text-slate-400 hover:text-primary hover:bg-white/30'
