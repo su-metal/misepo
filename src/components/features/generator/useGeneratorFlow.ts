@@ -154,8 +154,6 @@ export function useGeneratorFlow(props: {
   };
 
   const handlePlatformToggle = (p: Platform) => {
-    if (!isLoggedIn && p !== Platform.Instagram) return;
-    
     if (p === Platform.GoogleMaps) {
       setPlatforms([Platform.GoogleMaps]);
       setIsMultiGenMode(false);
@@ -264,7 +262,6 @@ export function useGeneratorFlow(props: {
           body: JSON.stringify({
             profile: storeProfile,
             config,
-            allowGuest: !isLoggedIn,
             save_history: targetPlatforms.length === 1,
             run_type: "generation",
           }),
@@ -447,9 +444,7 @@ export function useGeneratorFlow(props: {
     }
   }, [restorePost]);
 
-  useEffect(() => {
-    if (!isLoggedIn) setInputText(DEMO_SAMPLE_TEXT);
-  }, [isLoggedIn]);
+  // Demo text logic removed as /generate is now auth-only
 
   useEffect(() => {
     if (resetResultsTrigger) setResultGroups([]);
