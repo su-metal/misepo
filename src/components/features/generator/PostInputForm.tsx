@@ -214,7 +214,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
     return (
         <div className="flex flex-col">
             {/* Platform Tabs & Multi-gen Toggle - Glass Style */}
-            <div className="flex flex-col lg:flex-row lg:items-center gap-4 px-3 sm:px-6 pt-8 pb-4">
+            <div className="flex flex-col lg:flex-row lg:items-center gap-4 px-3 sm:px-6 pb-4">
                 <div className="flex items-stretch flex-1 p-1.5 glass-panel rounded-full border border-white/40 shadow-sm">
                     <button
                         onClick={() => onSetActivePlatform(Platform.X)}
