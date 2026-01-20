@@ -99,7 +99,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                   className="flex flex-col items-center gap-2 p-4 rounded-[20px] bg-white border border-slate-100 hover:border-indigo-100 hover:bg-slate-50/80 shadow-sm transition-all group"
                 >
                   <ChevronDownIcon className="w-5 h-5 text-slate-400 group-hover:text-primary rotate-180 transition-colors" />
-                  <span className="text-[10px] font-black text-slate-500 group-hover:text-primary tracking-widest uppercase transition-colors">Account</span>
+                  <span className="text-[10px] font-black text-slate-500 group-hover:text-primary tracking-widest uppercase transition-colors">アカウント設定</span>
                 </button>
                 <button
                   onClick={() => { onOpenGuide?.(); toggleOpen(); }}
