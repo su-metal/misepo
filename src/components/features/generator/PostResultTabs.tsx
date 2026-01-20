@@ -115,94 +115,97 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
         }
     };
 
+    const getTabIcon = (p: Platform, isSelected: boolean) => {
+        const iconClass = `w-4 h-4 transition-transform duration-300 ${isSelected ? "scale-110" : "opacity-30"}`;
+
+        switch (p) {
+            case Platform.Instagram:
+                return (
+                    <svg className={`${iconClass} text-[#E5005A]`} viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2c2.717 0 3.056.01 4.122.06 1.065.05 1.79.217 2.428.465.66.254 1.216.598 1.772 1.153a4.908 4.908 0 0 1 1.153 1.772c.247.637.415 1.363.465 2.428.047 1.066.06 1.405.06 4.122 0 2.717-.01 3.056-.06 4.122-.05 1.065-.218 1.79-.465 2.428a4.883 4.883 0 0 1-1.153 1.772 4.915 4.915 0 0 1-1.772 1.153c-.637.247-1.363.415-2.428.465-1.066.047-1.405.06-4.122.06-2.717 0-3.056-.01-4.122-.06-1.065-.05-1.79-.218-2.428-.465a4.89 4.89 0 0 1-1.772-1.153 4.904 4.904 0 0 1-1.153-1.772c-.248-.637-.415-1.363-.465-2.428C2.013 15.056 2 14.717 2 12c0-2.717.01-3.056.06-4.122.05-1.066.217-1.79.465-2.428a4.88 4.88 0 0 1 1.153-1.772A4.897 4.897 0 0 1 5.45 2.525c.638-.248 1.362-.415 2.428-.465C8.944 2.013 9.283 2 12 2zm0 5a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm6.5-.25a1.25 1.25 0 1 0-2.5 0 1.25 1.25 0 0 0 2.5 0zM12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6z" />
+                    </svg>
+                );
+            case Platform.X:
+                return (
+                    <svg className={`${iconClass} text-[#001738]`} viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                    </svg>
+                );
+            case Platform.GoogleMaps:
+                return (
+                    <svg className={`${iconClass} text-[#34A853]`} viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                    </svg>
+                );
+            default:
+                return null;
+        }
+    };
+
     return (
         <>
             <div className={`space-y-8 animate-in fade-in duration-700 ${results.length === 0 ? 'hidden md:block' : ''}`}>
-                {/* Tab Navigation */}
-                <div className={`space-y-12 animate-in fade-in duration-1000 ${results.length === 0 ? 'hidden md:block' : ''}`}>
-                    {/* Tab Navigation - CastMe Style */}
-                    <div className={`flex items-center gap-3 bg-slate-50/50 w-fit mx-auto lg:mx-0  ${results.length === 0 ? 'hidden md:flex' : ''}`}>
-                        {results.map((res, idx) => {
-                            const isSelected = activeTab === idx;
-                            const iconClass = "w-5 h-5 transition-transform duration-300 " + (isSelected ? "scale-110" : "opacity-30");
 
-                            let icon = null;
-                            if (res.platform === Platform.Instagram) {
-                                icon = (
-                                    <svg className={`${iconClass} text-[#E5005A]`} viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M12 2c2.717 0 3.056.01 4.122.06 1.065.05 1.79.217 2.428.465.66.254 1.216.598 1.772 1.153a4.908 4.908 0 0 1 1.153 1.772c.247.637.415 1.363.465 2.428.047 1.066.06 1.405.06 4.122 0 2.717-.01 3.056-.06 4.122-.05 1.065-.218 1.79-.465 2.428a4.883 4.883 0 0 1-1.153 1.772 4.915 4.915 0 0 1-1.772 1.153c-.637.247-1.363.415-2.428.465-1.066.047-1.405.06-4.122.06-2.717 0-3.056-.01-4.122-.06-1.065-.05-1.79-.218-2.428-.465a4.89 4.89 0 0 1-1.772-1.153 4.904 4.904 0 0 1-1.153-1.772c-.248-.637-.415-1.363-.465-2.428C2.013 15.056 2 14.717 2 12c0-2.717.01-3.056.06-4.122.05-1.066.217-1.79.465-2.428a4.88 4.88 0 0 1 1.153-1.772A4.897 4.897 0 0 1 5.45 2.525c.638-.248 1.362-.415 2.428-.465C8.944 2.013 9.283 2 12 2zm0 5a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm6.5-.25a1.25 1.25 0 1 0-2.5 0 1.25 1.25 0 0 0 2.5 0zM12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6z" />
-                                    </svg>
-                                );
-                            } else if (res.platform === Platform.X) {
-                                icon = (
-                                    <svg className={`${iconClass} text-[#001738]`} viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                                    </svg>
-                                );
-                            } else if (res.platform === Platform.GoogleMaps) {
-                                icon = (
-                                    <svg className={`${iconClass} text-[#34A853]`} viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-                                    </svg>
-                                );
-                            }
+                {/* Main Results Container - Tabs Integrated Inside */}
+                <div className="bg-white border-2 border-slate-100 rounded-[48px] shadow-2xl shadow-slate-200/50 flex flex-col min-h-[600px] overflow-hidden group/main hover:border-[#001738] transition-all duration-500">
 
-                            return (
-                                <button
-                                    key={res.platform}
-                                    onClick={() => onTabChange(idx)}
-                                    className={`
-                                flex items-center gap-2.5 px-6 py-2.5 rounded-xl text-xs font-black tracking-widest transition-all shrink-0
-                                ${isSelected
-                                            ? 'bg-white text-gray-900 shadow-sm ring-1 ring-gray-200/50'
-                                            : 'text-gray-400 hover:text-gray-600 hover:bg-white/50'}
-                            `}
-                                >
-                                    {icon}
-                                    <span>{res.platform.toUpperCase()}</span>
-                                </button>
-                            );
-                        })}
-                    </div>
+                    {/* Integrated Tab Navigation Header */}
+                    {results.length > 0 && (
+                        <div className="flex items-center gap-1 p-3 bg-slate-50/50 border-b-2 border-slate-100 overflow-x-auto no-scrollbar">
+                            {results.map((res, idx) => {
+                                const isSelected = activeTab === idx;
+                                return (
+                                    <button
+                                        key={res.platform}
+                                        onClick={() => onTabChange(idx)}
+                                        className={`
+                                            flex items-center gap-2.5 px-6 py-3 rounded-[20px] text-[10px] font-black tracking-[0.2em] transition-all shrink-0 uppercase
+                                            ${isSelected
+                                                ? 'bg-white text-[#001738] shadow-sm ring-1 ring-slate-200'
+                                                : 'text-slate-400 hover:text-slate-600 hover:bg-white/50'}
+                                        `}
+                                    >
+                                        {getTabIcon(res.platform, isSelected)}
+                                        <span>{res.platform === Platform.X ? 'X (Twitter)' : res.platform}</span>
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    )}
 
-                    {/* Results Content */}
-                    <div className="flex-1 min-h-0">
+                    {/* Results Content Area */}
+                    <div className="flex-1 overflow-y-auto no-scrollbar">
                         {results.length === 0 ? (
-                            // Placeholder when no results - CastMe Style
-                            <div className="hidden md:block animate-in fade-in slide-in-from-bottom-2 duration-700">
-                                <div className="flex items-center gap-4 mb-8 px-1">
-                                    <div className="w-12 h-12 bg-[#001738] rounded-[18px] flex items-center justify-center shadow-lg">
-                                        <svg className="w-7 h-7 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                            // Placeholder when no results
+                            <div className="p-12 h-full flex flex-col items-center justify-center text-center space-y-8 animate-in fade-in duration-1000">
+                                <div className="flex items-center gap-5">
+                                    <div className="w-16 h-16 bg-[#001738] rounded-[22px] flex items-center justify-center shadow-2xl">
+                                        <svg className="w-9 h-9 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
                                             <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
                                         </svg>
                                     </div>
-                                    <h2 className="text-2xl font-black text-[#001738] uppercase tracking-[0.2em]">Live Preview</h2>
+                                    <h2 className="text-3xl font-black text-[#001738] uppercase tracking-[0.25em]">Live Preview</h2>
                                 </div>
-
-                                <div className="bg-white border-2 border-slate-100 rounded-[48px] shadow-2xl shadow-slate-200/50 flex flex-col min-h-[500px] overflow-hidden p-12 transition-all hover:border-[#001738]">
-                                    <div className="flex-1 flex items-center justify-center">
-                                        <div className="text-center space-y-6 max-w-sm">
-                                            <div className="w-20 h-20 rounded-[24px] bg-slate-50 border-2 border-slate-100 flex items-center justify-center text-slate-200 mx-auto">
-                                                <SparklesIcon className="w-10 h-10" />
-                                            </div>
-                                            <h3 className="text-xl font-black text-[#001738] uppercase tracking-widest">Awaiting Input</h3>
-                                            <p className="text-slate-400 text-sm font-bold leading-relaxed">
-                                                Enter your content idea on the left to generate professional posts instantly.
-                                            </p>
-                                        </div>
+                                <div className="space-y-6 max-w-sm">
+                                    <div className="w-24 h-24 rounded-[32px] bg-slate-50 border-2 border-slate-100 flex items-center justify-center text-slate-200 mx-auto">
+                                        <SparklesIcon className="w-12 h-12" />
                                     </div>
+                                    <h3 className="text-xl font-black text-[#001738] uppercase tracking-widest">Awaiting Input</h3>
+                                    <p className="text-slate-400 text-sm font-bold leading-relaxed">
+                                        Enter your content idea on the left to generate professional posts instantly.
+                                    </p>
                                 </div>
                             </div>
                         ) : (
                             results.map((res, gIdx) => {
                                 const theme = getPlatformTheme(res.platform);
                                 return (
-                                    <div key={res.platform} className={activeTab === gIdx ? 'block animate-in fade-in slide-in-from-bottom-4 duration-700' : 'hidden'}>
-                                        <div className="space-y-10">
+                                    <div key={res.platform} className={activeTab === gIdx ? 'block animate-in fade-in duration-500' : 'hidden'}>
+                                        <div className="divide-y-2 divide-slate-50">
                                             {res.data.map((text, iIdx) => (
-                                                <div key={iIdx} className="group relative bg-white border-2 border-slate-100 rounded-[48px] shadow-2xl shadow-slate-200/50 hover:border-[#001738] transition-all duration-500 flex flex-col min-h-[500px] overflow-hidden p-12">
+                                                <div key={iIdx} className="p-12 flex flex-col min-h-[500px] relative">
 
-                                                    {/* Platform Icon Header */}
+                                                    {/* Central Icon Header - Shows only for first variant or all? Let's show for all but maybe smaller for others? */}
                                                     <div className="flex items-center justify-center mb-10">
                                                         <div className="transform transition-transform group-hover:scale-110 duration-500">
                                                             {theme.icon}
@@ -233,9 +236,8 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                         </div>
                                                     </div>
 
-                                                    {/* Actions Grid - Stacked Layout (Mobile Style for All) */}
+                                                    {/* Actions Grid */}
                                                     <div className="flex flex-col gap-4">
-                                                        {/* Preview - Full Width */}
                                                         <button
                                                             onClick={() => setPreviewState({ isOpen: true, platform: res.platform, text })}
                                                             className="flex items-center justify-center gap-3 py-5 rounded-[24px] bg-white text-xs font-black text-[#001738] border-2 border-slate-100 hover:border-[#001738] hover:bg-slate-50 transition-all uppercase tracking-widest shadow-sm"
@@ -244,7 +246,6 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                             <span>Preview</span>
                                                         </button>
 
-                                                        {/* Retry + Refine - Side by Side */}
                                                         <div className="grid grid-cols-2 gap-3">
                                                             <button
                                                                 onClick={() => onRegenerateSingle(res.platform)}
@@ -262,7 +263,6 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                             </button>
                                                         </div>
 
-                                                        {/* SNS Launch Button - Full Width */}
                                                         <button
                                                             onClick={() => onShare(res.platform, text)}
                                                             className={`flex items-center justify-center gap-4 py-6 rounded-[28px] text-white font-black text-lg transition-all shadow-2xl shadow-slate-200 uppercase tracking-[0.2em] group ${theme.actionColor}`}
@@ -272,7 +272,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                         </button>
                                                     </div>
 
-                                                    {/* AI Refinement Overlay - CastMe Style */}
+                                                    {/* Refinement Overlay (per variant) */}
                                                     {refiningKey === `${gIdx}-${iIdx}` && (
                                                         <div className="absolute inset-0 bg-[#001738]/95 backdrop-blur-xl z-20 flex flex-col p-12 animate-in fade-in zoom-in duration-300 rounded-[48px]">
                                                             <div className="flex-1 flex flex-col">
