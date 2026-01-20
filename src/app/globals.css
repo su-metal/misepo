@@ -1,50 +1,72 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  /* Brand Colors */
-  --primary: #001738;    /* Navy - Main Brand Color */
-  --primary-light: #1e293b; 
-  --accent: #B8E600;     /* Lime - Main Accent */
-  --accent-green: #34A853; /* Green - Google Maps */
+  /* Glassmorphism Brand Colors */
+  --primary: #5266eb;     /* Soft Indigo - Main Brand Color (Reference: View All button) */
+  --primary-dark: #3b4cca;
+  --accent: #B8E600;      /* Lime - Retained for key actions */
+  --accent-secondary: #aa9cff; /* Soft Purple - Gradient/Accent */
   
-  /* Legacy/Other */
-  --slate-900: #0f172a;
-  --slate-800: #1e293b;
-  --slate-700: #334155;
-  --slate-600: #475569;
-  --slate-500: #64748b;
-  --slate-100: #f1f5f9;
-  --slate-50: #f8fafc;
+  /* Text Colors */
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+
+  /* Glass Effects */
+  --glass-bg: rgba(255, 255, 255, 0.45);
+  --glass-border: rgba(255, 255, 255, 0.6);
+  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
 }
 
 body {
-  font-family: 'Inter', 'Noto Sans JP', sans-serif;
-  background-color: var(--slate-50);
-  color: var(--primary);
+  font-family: 'Outfit', 'Inter', 'Noto Sans JP', sans-serif;
+  /* Multi-layered soft gradient background for a more "gradient" feel */
+  background: 
+    linear-gradient(135deg, #e0f2fe 0%, #e0e7ff 40%, #f1f5f9 100%);
+  background-attachment: fixed;
+  color: var(--text-main);
+  min-height: 100vh;
+}
+
+/* Glass Utility Classes */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+
+.glass-panel-dark {
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.glass-button {
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+}
+.glass-button:hover {
+    background: rgba(255, 255, 255, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
 }
 
 /* Color Utilities using CSS Variables */
-/* Primary (Navy) */
 .bg-primary { background-color: var(--primary) !important; }
 .text-primary { color: var(--primary) !important; }
 .border-primary { border-color: var(--primary) !important; }
-.ring-primary { --tw-ring-color: var(--primary) !important; }
-.shadow-primary { box-shadow: 0 10px 25px -5px rgba(0, 23, 56, 0.3) !important; }
 
-/* Accent (Lime) */
 .bg-accent { background-color: var(--accent) !important; }
 .text-accent { color: var(--accent) !important; }
 .border-accent { border-color: var(--accent) !important; }
-.ring-accent { --tw-ring-color: var(--accent) !important; }
-.shadow-accent { box-shadow: 0 10px 25px -5px rgba(184, 230, 0, 0.3) !important; }
-
-/* Brand Green (Google Maps) */
-.bg-brand-green { background-color: var(--accent-green) !important; }
-.text-brand-green { color: var(--accent-green) !important; }
-.border-brand-green { border-color: var(--accent-green) !important; }
 
 /* Custom Scrollbar */
 .scrollbar-hide::-webkit-scrollbar {
@@ -58,69 +80,6 @@ body {
 /* Smooth transitions for all interactive elements */
 button, input, textarea, select {
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Animations */
-@keyframes marquee {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-.animate-marquee {
-  animation: marquee 30s linear infinite;
-  will-change: transform;
-}
-.animate-marquee-reverse {
-  animation: marquee 30s linear infinite reverse;
-  will-change: transform;
-}
-
-@keyframes reveal-up {
-  0% { opacity: 0; transform: translateY(40px) skewY(2deg); }
-  100% { opacity: 1; transform: translateY(0) skewY(0); }
-}
-.animate-reveal {
-  animation: reveal-up 1s cubic-bezier(0.2, 1, 0.3, 1) forwards;
-  opacity: 0;
-}
-.delay-100 { animation-delay: 0.1s; }
-.delay-200 { animation-delay: 0.2s; }
-.delay-300 { animation-delay: 0.3s; }
-
-/* Grain Texture for that 'Analog' feel */
-.bg-grain {
-  position: relative;
-}
-.bg-grain::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; width: 100%; height: 100%;
-  pointer-events: none;
-  z-index: 50;
-  opacity: 0.04;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-}
-
-/* Custom Scrollbar */
-.scrollbar-hide::-webkit-scrollbar { display: none; }
-.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-
-/* Brutalist Shadow Utilities */
-.shadow-brutal {
-  box-shadow: 4px 4px 0px 0px #000000;
-}
-.shadow-brutal-lg {
-  box-shadow: 8px 8px 0px 0px #000000;
-}
-.shadow-brutal-lime {
-  box-shadow: 4px 4px 0px 0px var(--lime);
-}
-.hover\:shadow-brutal-hover:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0px 0px #000000;
-}
-.active\:shadow-brutal-active:active {
-  transform: translate(2px, 2px);
-  box-shadow: 0px 0px 0px 0px #000000;
 }
 
 /* Smooth Scrolling */

@@ -172,7 +172,7 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 flex">
+    <div className="min-h-screen flex text-slate-700">
       <HistorySidebar
         isOpen={isSidebarOpen}
         toggleOpen={() => setIsSidebarOpen(false)}
