@@ -20,11 +20,11 @@ export const GeneratorHeader: React.FC<GeneratorHeaderProps> = ({
 
     return (
         <header className="sticky top-4 z-[100] w-full px-2 sm:px-0">
-            <div className="bg-white/90 backdrop-blur-2xl border border-slate-100 rounded-[2.5rem] py-3 px-8 flex items-center justify-between gap-4 shadow-2xl shadow-navy-900/5 transition-all duration-500 hover:shadow-navy-900/10 hover:border-slate-200">
+            <div className="glass-panel py-3 px-8 flex items-center justify-between gap-4 transition-all duration-500 hover:bg-white/10 hover:border-white/40 rounded-full shadow-lg shadow-indigo-900/5">
 
                 {/* Left: Brand Space */}
                 <div className="flex items-center gap-4">
-                    <span className="text-2xl font-black text-primary tracking-tighter">MisePo</span>
+                    <span className="text-2xl font-black text-primary tracking-tighter drop-shadow-sm">MisePo</span>
 
                     {/* Status Badge - CastMe Style */}
                     <div className="flex items-center">
@@ -34,8 +34,8 @@ export const GeneratorHeader: React.FC<GeneratorHeaderProps> = ({
                                 <span className="text-[10px] font-black text-accent uppercase tracking-widest leading-none">Free Trial</span>
                             </div>
                         ) : isPro ? (
-                            <div className="flex items-center gap-2 px-4 py-1.5 bg-primary border border-primary rounded-full shadow-lg shadow-navy-900/20">
-                                <div className="w-1.5 h-1.5 rounded-full bg-accent"></div>
+                            <div className="flex items-center gap-2 px-4 py-1.5 bg-primary rounded-full shadow-lg">
+                                <div className="w-1.5 h-1.5 rounded-full bg-accent shadow-[0_0_10px_rgba(184,230,0,0.8)]"></div>
                                 <span className="text-[10px] font-black text-white uppercase tracking-widest leading-none">Pro Plan</span>
                             </div>
                         ) : (
@@ -51,15 +51,15 @@ export const GeneratorHeader: React.FC<GeneratorHeaderProps> = ({
                 <div className="flex items-center">
                     <button
                         onClick={onOpenHistory}
-                        className="flex items-center gap-3 pl-4 md:pl-6 pr-2 md:pr-4 py-2 rounded-2xl bg-primary text-white hover:bg-navy-900 transition-all shadow-xl shadow-navy-900/20 active:scale-95 group border border-navy-800"
+                        className="glass-button flex items-center gap-3 pl-4 md:pl-6 pr-2 md:pr-4 py-2 rounded-2xl bg-slate-50 text-primary hover:bg-slate-100 transition-all shadow-xl active:scale-95 group border border-slate-100"
                     >
-                        <div className="w-8 h-8 md:w-9 md:h-9 rounded-xl bg-white/10 border border-white/10 flex items-center justify-center overflow-hidden transition-transform group-hover:scale-110">
+                        <div className="w-8 h-8 md:w-9 md:h-9 rounded-xl bg-primary flex items-center justify-center overflow-hidden transition-transform group-hover:scale-110">
                             <span className="text-xs md:text-sm font-black text-white">
                                 {(storeProfile?.name?.[0] || 'U').toUpperCase()}
                             </span>
                         </div>
                         <span className="text-[11px] font-black tracking-[0.2em] hidden md:inline ml-1">MENU</span>
-                        <MenuIcon className="w-4 h-4 text-slate-400 group-hover:text-white transition-colors ml-1" />
+                        <MenuIcon className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors ml-1" />
                     </button>
                 </div>
             </div>

@@ -41,6 +41,12 @@ export async function middleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
   // ルートパス（/）は LandingPage を表示するためリダイレクトしない
 
+  // 未ログインユーザーのガード
+  if (!user && pathname === '/generate') {
+    const redirectUrl = new URL('/start', req.url);
+    return applyPendingCookies(NextResponse.redirect(redirectUrl, 307));
+  }
+
   if (user) {
     const protectedPaths = ['/login', '/signup'];
     if (protectedPaths.includes(pathname)) {

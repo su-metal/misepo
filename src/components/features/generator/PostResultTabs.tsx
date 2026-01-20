@@ -75,12 +75,12 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                         <button
                             key="inst-toggle"
                             onClick={() => onIncludeFooterChange(!includeFooter)}
-                            className={`flex items-center gap-3 px-4 py-2 rounded-full transition-all text-[11px] font-black border-2 ${includeFooter
-                                ? 'bg-pink-50 text-accent border-pink-100 shadow-sm'
-                                : 'bg-slate-50 text-slate-400 border-slate-100'
+                            className={`glass-button flex items-center gap-3 px-4 py-2 rounded-full transition-all text-[11px] font-black border ${includeFooter
+                                ? 'bg-accent/20 text-accent border-accent/30'
+                                : 'bg-white/5 text-slate-400 border-white/10'
                                 }`}
                         >
-                            <span className={`w-2.5 h-2.5 rounded-full transition-colors ${includeFooter ? 'bg-accent animate-pulse' : 'bg-slate-300'}`} />
+                            <span className={`w-2.5 h-2.5 rounded-full transition-colors ${includeFooter ? 'bg-accent animate-pulse' : 'bg-slate-500'}`} />
                             <span className="tracking-widest uppercase">Show Shop Info</span>
                         </button>
                     ),
@@ -147,11 +147,11 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
             <div className={`space-y-8 animate-in fade-in duration-700 ${results.length === 0 ? 'hidden md:block' : ''}`}>
 
                 {/* Main Results Container - Tabs Integrated Inside */}
-                <div className="bg-white border-2 border-slate-100 rounded-[48px] shadow-2xl shadow-slate-200/50 flex flex-col min-h-[600px] overflow-hidden group/main hover:border-primary transition-all duration-500">
+                <div className="glass-panel text-primary rounded-[48px] shadow-2xl shadow-indigo-900/10 flex flex-col min-h-[600px] overflow-hidden group/main hover:border-white/60 transition-all duration-500">
 
                     {/* Integrated Tab Navigation Header */}
                     {results.length > 0 && (
-                        <div className="flex items-center w-full border-b border-slate-100">
+                        <div className="flex items-center w-full border-b border-white/20">
                             {results.map((res, idx) => {
                                 const isSelected = activeTab === idx;
                                 return (
@@ -162,8 +162,8 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                             flex-1 flex items-center justify-center gap-2.5 py-5 text-[10px] font-black tracking-[0.2em] transition-all uppercase relative
                                             first:rounded-tl-[46px] last:rounded-tr-[46px]
                                             ${isSelected
-                                                ? 'bg-white text-primary z-10'
-                                                : 'bg-slate-50 text-slate-400 hover:text-slate-600 hover:bg-slate-100'}
+                                                ? 'bg-white/10 text-primary z-10 backdrop-blur-md'
+                                                : 'bg-transparent text-slate-400 hover:text-primary hover:bg-white/5'}
                                         `}
                                     >
                                         {getTabIcon(res.platform, isSelected)}
@@ -188,15 +188,15 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                             // Placeholder when no results
                             <div className="p-12 h-full flex flex-col items-center justify-center text-center space-y-8 animate-in fade-in duration-1000">
                                 <div className="flex items-center gap-5">
-                                    <div className="w-16 h-16 bg-primary rounded-[22px] flex items-center justify-center shadow-2xl">
-                                        <svg className="w-9 h-9 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                                            <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
+                                    <div className="w-16 h-16 bg-white/10 rounded-[22px] flex items-center justify-center shadow-2xl border border-white/20">
+                                        <svg className="w-9 h-9 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                                            <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
                                         </svg>
                                     </div>
                                     <h2 className="text-3xl font-black text-primary uppercase tracking-[0.25em]">Live Preview</h2>
                                 </div>
                                 <div className="space-y-6 max-w-sm">
-                                    <div className="w-24 h-24 rounded-[32px] bg-slate-50 border-2 border-slate-100 flex items-center justify-center text-slate-200 mx-auto">
+                                    <div className="w-24 h-24 rounded-[32px] bg-white/5 border-2 border-white/20 flex items-center justify-center text-white/20 mx-auto">
                                         <SparklesIcon className="w-12 h-12" />
                                     </div>
                                     <h3 className="text-xl font-black text-primary uppercase tracking-widest">Awaiting Input</h3>
@@ -210,7 +210,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                 const theme = getPlatformTheme(res.platform);
                                 return (
                                     <div key={res.platform} className={activeTab === gIdx ? 'block animate-in fade-in duration-500' : 'hidden'}>
-                                        <div className="divide-y-2 divide-slate-50">
+                                        <div className="divide-y-2 divide-white/10">
                                             {res.data.map((text, iIdx) => (
                                                 <div key={iIdx} className="py-12 px-8 flex flex-col min-h-[500px] relative">
 
@@ -219,17 +219,17 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                         <AutoResizingTextarea
                                                             value={text}
                                                             onChange={(e) => onManualEdit(gIdx, iIdx, e.target.value)}
-                                                            className={`w-full bg-transparent focus:outline-none resize-none placeholder:text-slate-100 whitespace-pre-wrap ${theme.contentClasses || 'text-base text-primary font-bold'}`}
+                                                            className={`w-full bg-transparent focus:outline-none resize-none placeholder:text-primary/20 whitespace-pre-wrap ${theme.contentClasses || 'text-base text-primary font-bold'}`}
                                                             trigger={activeTab}
                                                         />
                                                     </div>
 
                                                     {/* Meta Row: Toggle & Char Count */}
-                                                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 mb-10 pt-8 border-t-2 border-slate-50">
+                                                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 mb-10 pt-8 border-t-2 border-white/10">
                                                         <div className="flex-1">
                                                             {theme.extra && theme.extra(gIdx, iIdx)}
                                                         </div>
-                                                        <div className="bg-slate-50 px-5 py-2 rounded-full">
+                                                        <div className="bg-slate-50 px-5 py-2 rounded-full border border-slate-100">
                                                             <CharCounter
                                                                 platform={res.platform}
                                                                 text={text}
@@ -242,7 +242,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                     <div className="flex flex-col gap-4">
                                                         <button
                                                             onClick={() => setPreviewState({ isOpen: true, platform: res.platform, text })}
-                                                            className="flex items-center justify-center gap-3 py-5 rounded-[24px] bg-white text-xs font-black text-primary border-2 border-slate-100 hover:border-primary hover:bg-slate-50 transition-all uppercase tracking-widest shadow-sm"
+                                                            className="glass-button flex items-center justify-center gap-3 py-5 rounded-[24px] bg-white/10 text-xs font-black text-primary border border-white/20 hover:bg-white/20 transition-all uppercase tracking-widest shadow-sm"
                                                         >
                                                             <EyeIcon className="w-5 h-5" />
                                                             <span>Preview</span>
@@ -251,14 +251,14 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                         <div className="grid grid-cols-2 gap-3">
                                                             <button
                                                                 onClick={() => onRegenerateSingle(res.platform)}
-                                                                className="flex items-center justify-center gap-3 py-5 rounded-[24px] border-2 border-slate-100 bg-white text-xs font-black text-slate-400 hover:text-primary hover:border-primary transition-all uppercase tracking-widest"
+                                                                className="glass-button flex items-center justify-center gap-3 py-5 rounded-[24px] bg-slate-50 text-xs font-black text-slate-500 hover:text-primary hover:bg-slate-100 transition-all uppercase tracking-widest border border-slate-100"
                                                             >
                                                                 <RotateCcwIcon className="w-5 h-5" />
                                                                 <span>Retry</span>
                                                             </button>
                                                             <button
                                                                 onClick={() => onRefineToggle(gIdx, iIdx)}
-                                                                className={`flex items-center justify-center gap-3 py-5 rounded-[24px] border-2 text-xs font-black transition-all uppercase tracking-widest ${refiningKey === `${gIdx}-${iIdx}` ? 'bg-primary border-primary text-white shadow-xl' : 'bg-[#FFFBEB] border-[#FEF3C7] text-[#B78822] hover:bg-white hover:border-[#FCD34D]'}`}
+                                                                className={`glass-button flex items-center justify-center gap-3 py-5 rounded-[24px] text-xs font-black transition-all uppercase tracking-widest ${refiningKey === `${gIdx}-${iIdx}` ? 'bg-primary border-primary text-white shadow-xl' : 'bg-slate-50 text-accent hover:bg-slate-100 border border-slate-100'}`}
                                                             >
                                                                 <MagicWandIcon className="w-5 h-5" />
                                                                 <span>Refine</span>

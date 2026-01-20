@@ -18,14 +18,14 @@ import { LockIcon, LogOutIcon } from './components/Icons';
 
 
 const UpgradeBanner = ({ plan, onUpgrade }: { plan: string, onUpgrade: () => void }) => (
-  <div className="bg-[#001738] p-4 flex items-center justify-between text-white text-sm border-b border-[#E5005A]/20 shadow-2xl shadow-navy-900/40 relative overflow-hidden group">
-    <div className="absolute inset-0 bg-gradient-to-r from-[#E5005A]/10 to-transparent pointer-events-none"></div>
+  <div className="bg-primary p-4 flex items-center justify-between text-white text-sm border-b border-accent/20 shadow-2xl shadow-navy-900/40 relative overflow-hidden group">
+    <div className="absolute inset-0 bg-gradient-to-r from-accent/10 to-transparent pointer-events-none"></div>
     <div className="flex items-center gap-3 relative z-10">
-      <span className="bg-[#E5005A] px-3 py-1 rounded-full text-[10px] font-black uppercase text-white shadow-lg shadow-[#E5005A]/30 tracking-widest">Free Plan</span>
+      <span className="bg-accent px-3 py-1 rounded-full text-[10px] font-black uppercase text-white shadow-lg shadow-accent/30 tracking-widest">Free Plan</span>
       <span className="font-black tracking-tight hidden sm:inline">無料枠をご利用中です。Proプランで作成回数が無制限になります。</span>
       <span className="font-black tracking-tight sm:hidden text-xs">無料枠をご利用中です。</span>
     </div>
-    <button onClick={onUpgrade} className="bg-white text-[#001738] px-5 py-2 rounded-xl font-black text-xs hover:bg-[#E5005A] hover:text-white transition-all shadow-xl shadow-white/5 active:scale-95 relative z-10 uppercase tracking-widest">
+    <button onClick={onUpgrade} className="bg-white text-primary px-5 py-2 rounded-xl font-black text-xs hover:bg-accent hover:text-white transition-all shadow-xl shadow-white/5 active:scale-95 relative z-10 uppercase tracking-widest">
       Go Pro
     </button>
   </div>
@@ -91,11 +91,7 @@ function App() {
   }, [isLoggedIn]);
 
   const fetchProfile = useCallback(async () => {
-    if (!isLoggedIn) {
-      const guest = readFromStorage<StoreProfile>('guest_profile', null) || GUEST_PROFILE;
-      setStoreProfile(guest);
-      return;
-    }
+    if (!isLoggedIn) return;
     try {
       const res = await fetch('/api/me/store-profile');
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -148,8 +144,6 @@ function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ profile }),
       });
-    } else {
-      writeToStorage('guest_profile', null, profile);
     }
   };
 
@@ -168,7 +162,7 @@ function App() {
   if (authLoading || !initDone) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-white">
-        <div className="w-10 h-10 border-4 border-slate-100 border-t-[#E5005A] rounded-full animate-spin shadow-2xl shadow-[#E5005A]/10"></div>
+        <div className="w-10 h-10 border-4 border-slate-100 border-t-accent rounded-full animate-spin shadow-2xl shadow-accent/10"></div>
       </div>
     );
   }
@@ -178,7 +172,7 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 flex">
+    <div className="min-h-screen flex text-slate-700">
       <HistorySidebar
         isOpen={isSidebarOpen}
         toggleOpen={() => setIsSidebarOpen(false)}

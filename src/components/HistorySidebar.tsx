@@ -60,17 +60,17 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
       )}
 
       <div
-        className={`fixed top-0 left-0 h-full bg-white w-80 transform transition-all duration-500 cubic-bezier(0.4, 0, 0.2, 1) z-[9999] flex flex-col shadow-[24px_0_80px_rgba(0,17,45,0.15)] overflow-hidden ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}
+        className={`fixed top-0 left-0 h-full glass-panel-dark w-80 transform transition-all duration-500 cubic-bezier(0.4, 0, 0.2, 1) z-[9999] flex flex-col overflow-hidden ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}
       >
         {/* Tech Background Effects - Grid and patterns removed for clarity */}
 
         {/* Header: User Profile & Close */}
         <div className="p-8 border-b border-slate-100 relative z-10">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="font-black text-[#001738] text-2xl tracking-tighter">MENU</h2>
+            <h2 className="font-black text-white text-2xl tracking-tighter">MENU</h2>
             <button
               onClick={toggleOpen}
-              className="w-10 h-10 flex items-center justify-center rounded-2xl bg-white text-slate-400 hover:text-[#001738] hover:bg-slate-50 transition-all border border-slate-200 active:scale-95 shadow-sm"
+              className="w-10 h-10 flex items-center justify-center rounded-2xl bg-white/10 text-white/70 hover:text-white hover:bg-white/20 transition-all border border-white/10 active:scale-95 shadow-sm"
               aria-label="Close menu"
             >
               <CloseIcon className="w-5 h-5" />
@@ -200,13 +200,13 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
         </div>
 
         {/* Footer: Legal */}
-        <div className="p-8 border-t border-slate-200 bg-white relative z-20">
+        <div className="p-8 border-t border-white/10 bg-white/5 relative z-20">
           <div className="flex items-center justify-center gap-8 mb-4">
-            <a href="/terms" className="text-[10px] font-black text-[#001738]/40 hover:text-[#E5005A] transition-colors uppercase tracking-widest">Terms</a>
-            <a href="/privacy" className="text-[10px] font-black text-[#001738]/40 hover:text-[#E5005A] transition-colors uppercase tracking-widest">Privacy</a>
-            <a href="/commercial-law" className="text-[10px] font-black text-[#001738]/40 hover:text-[#E5005A] transition-colors uppercase tracking-widest">Law</a>
+            <a href="/terms" className="text-[10px] font-black text-white/40 hover:text-accent transition-colors uppercase tracking-widest">Terms</a>
+            <a href="/privacy" className="text-[10px] font-black text-white/40 hover:text-accent transition-colors uppercase tracking-widest">Privacy</a>
+            <a href="/commercial-law" className="text-[10px] font-black text-white/40 hover:text-accent transition-colors uppercase tracking-widest">Law</a>
           </div>
-          <p className="text-[9px] font-bold text-slate-300 text-center uppercase tracking-[0.2em]">© 2026 MisePo Inc.</p>
+          <p className="text-[9px] font-bold text-white/20 text-center uppercase tracking-[0.2em]">© 2026 MisePo Inc.</p>
         </div>
       </div>
     </>
