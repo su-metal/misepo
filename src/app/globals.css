@@ -208,3 +208,8 @@ body[data-preview-modal-open="true"] .md\:hidden.fixed.bottom-0 {
 .animate-bounce-in {
     animation: bounce-in 0.5s ease-out forwards;
 }
+
+@keyframes music-bar {
+    0%, 100% { height: 30%; }
+    50% { height: 100%; }
+}

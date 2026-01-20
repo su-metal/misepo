@@ -192,21 +192,15 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                         {results.length === 0 ? (
                             // Placeholder when no results
                             <div className="p-12 h-full flex flex-col items-center justify-center text-center space-y-8 animate-in fade-in duration-1000">
-                                <div className="flex items-center gap-5">
-                                    <div className="w-16 h-16 bg-white/10 rounded-[22px] flex items-center justify-center shadow-2xl border border-white/20">
-                                        <svg className="w-9 h-9 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                                            <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
-                                        </svg>
-                                    </div>
-                                    <h2 className="text-3xl font-black text-primary uppercase tracking-[0.25em]">Live Preview</h2>
-                                </div>
+                                <h2 className="text-3xl font-black text-primary uppercase tracking-[0.25em] text-center">プレビュー (Live Preview)</h2>
+
                                 <div className="space-y-6 max-w-sm">
                                     <div className="w-24 h-24 rounded-[32px] bg-slate-100 border-2 border-slate-200 flex items-center justify-center text-slate-300 mx-auto">
                                         <SparklesIcon className="w-12 h-12" />
                                     </div>
-                                    <h3 className="text-xl font-black text-primary uppercase tracking-widest">Awaiting Input</h3>
+                                    <h3 className="text-xl font-black text-primary uppercase tracking-widest">生成待機中 (Awaiting Input)</h3>
                                     <p className="text-slate-400 text-sm font-bold leading-relaxed">
-                                        Enter your content idea on the left to generate professional posts instantly.
+                                        左側のフォームに投稿のアイデアを入力して、<br />プロフェッショナルな投稿を瞬時に生成しましょう。
                                     </p>
                                 </div>
                             </div>
