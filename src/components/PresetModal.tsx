@@ -211,6 +211,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
   const [expandingPlatform, setExpandingPlatform] = useState<Platform | null>(null);
   const [isSanitizing, setIsSanitizing] = useState(false);
   const [showSuccessToast, setShowSuccessToast] = useState(false);
+  const [suggestions, setSuggestions] = useState<any[]>([]);
+  const autocompleteService = useRef<any>(null);
 
   const sensors = useSensors(useSensor(PointerSensor));
   const goToListView = () => setMobileView('list');
@@ -249,11 +251,38 @@ const PresetModal: React.FC<PresetModalProps> = ({
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
+      setSuggestions([]);
     }
     return () => {
       document.body.style.overflow = 'unset';
     };
   }, [isOpen]);
+
+  const handleNameChange = (val: string) => {
+    setName(enforceSaveNameWidth(val));
+
+    if (!val.trim()) {
+      setSuggestions([]);
+      return;
+    }
+
+    if (!autocompleteService.current && typeof window !== 'undefined' && window.google) {
+      autocompleteService.current = new window.google.maps.places.AutocompleteService();
+    }
+
+    if (autocompleteService.current) {
+      autocompleteService.current.getPlacePredictions(
+        { input: val, types: ['establishment'] },
+        (predictions: any[] | null, status: any) => {
+          if (status === 'OK' && predictions) {
+            setSuggestions(predictions);
+          } else {
+            setSuggestions([]);
+          }
+        }
+      );
+    }
+  };
 
   const limitReached = orderedPresets.length >= 10 && !selectedPresetId;
   const isSaveDisabled = isSaving || !name.trim() || limitReached;
@@ -569,13 +598,45 @@ const PresetModal: React.FC<PresetModalProps> = ({
                   <input
                     type="text"
                     value={name}
-                    onChange={(e) => setName(enforceSaveNameWidth(e.target.value))}
+                    onChange={(e) => handleNameChange(e.target.value)}
                     placeholder="例: 店長（公式）"
                     className="w-full px-7 py-5 bg-slate-50 border-2 border-transparent focus:bg-white focus:border-[#001738] outline-none rounded-2xl text-base text-[#001738] font-black placeholder-slate-300 transition-all shadow-sm"
                   />
                   <div className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#001738] transition-colors">
                     {renderAvatar(avatar, "w-8 h-8")}
                   </div>
+
+                  {/* Google Maps Search Suggestions */}
+                  {suggestions.length > 0 && (
+                    <div className="absolute top-[calc(100%+8px)] left-0 right-0 bg-white border border-slate-100 rounded-3xl shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300">
+                      <div className="p-3 border-b border-slate-50 flex items-center justify-between bg-slate-50/20">
+                        <span className="text-[10px] font-black text-slate-400 px-3 uppercase tracking-[0.2em]">Google Mapsから選択</span>
+                        <button onClick={() => setSuggestions([])} className="p-1.5 hover:bg-slate-100 rounded-full transition-colors">
+                          <CloseIcon className="w-3.5 h-3.5 text-slate-300" />
+                        </button>
+                      </div>
+                      <div className="max-h-[320px] overflow-y-auto">
+                        {suggestions.map((s) => (
+                          <button
+                            key={s.place_id}
+                            onClick={() => {
+                              setName(enforceSaveNameWidth(s.structured_formatting.main_text));
+                              setSuggestions([]);
+                            }}
+                            className="w-full text-left px-6 py-4 hover:bg-slate-50 transition-all flex items-center justify-between group border-b border-slate-50 last:border-0"
+                          >
+                            <div className="flex flex-col gap-0.5">
+                              <span className="text-sm font-black text-[#001738] group-hover:text-[#E5005A] transition-colors">{s.structured_formatting.main_text}</span>
+                              <span className="text-[11px] font-bold text-slate-400 truncate max-w-[280px]">{s.structured_formatting.secondary_text}</span>
+                            </div>
+                            <div className="w-8 h-8 rounded-xl bg-slate-50 flex items-center justify-center text-slate-200 group-hover:bg-[#E5005A]/10 group-hover:text-[#E5005A] transition-all">
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M9 5l7 7-7 7" /></svg>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -900,3 +961,9 @@ const PresetModal: React.FC<PresetModalProps> = ({
 };
 
 export default PresetModal;
+
+declare global {
+  interface Window {
+    google: any;
+  }
+}
