@@ -631,10 +631,6 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                         </div>
                     </button>
 
-                    {/* Footnote */}
-                    <p className="text-center text-[10px] font-black text-slate-400 uppercase tracking-widest mt-8">
-                        AI-Powered High Performance Content Generation
-                    </p>
                 </div>
             </div >
         </div >

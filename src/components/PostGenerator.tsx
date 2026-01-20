@@ -183,7 +183,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
 
           {/* Right Column: Results (4 Cols) */}
           <div className="lg:col-span-4">
-            <div ref={resultsRef} className="pb-32 md:pb-20">
+            <div ref={resultsRef} className="pb-32 md:pb-20 px-2">
               <PostResultTabs
                 results={flow.resultGroups}
                 activeTab={flow.activeTab}
@@ -207,6 +207,11 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
             </div>
           </div>
         </div>
+
+        {/* Footnote - Now placed at the very bottom of the generator to avoid appearing between modules on mobile */}
+        <p className="text-center text-[10px] font-black text-slate-400 uppercase tracking-widest mt-12 pb-8 sm:pb-0 animate-in fade-in duration-1000">
+          AI-Powered High Performance Content Generation
+        </p>
       </div>
 
       {/* Mobile Fixed Generation Footer - Refined Light Glass Style */}
@@ -218,7 +223,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
           <button
             onClick={handleGenerate}
             disabled={flow.loading || !flow.inputText.trim()}
-            className={`w-full max-w-md py-4 rounded-full font-black text-base tracking-[0.2em] transition-all flex items-center justify-center gap-3 active:scale-[0.98]
+            className={`w-full max-w-md py-6 rounded-full font-black text-base tracking-[0.2em] transition-all flex items-center justify-center gap-3 active:scale-[0.98]
                 ${flow.loading || !flow.inputText.trim()
                 ? 'bg-slate-100/80 backdrop-blur-sm text-slate-400 border border-slate-200 cursor-not-allowed'
                 : 'bg-gradient-to-r from-[#4F46E5] to-[#9333EA] text-white shadow-[0_8px_32px_rgba(79,70,229,0.35)] hover:shadow-[0_8px_40px_rgba(79,70,229,0.5)] border border-white/20'
