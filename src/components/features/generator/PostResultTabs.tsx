@@ -121,7 +121,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                 {/* Tab Navigation */}
                 <div className={`space-y-12 animate-in fade-in duration-1000 ${results.length === 0 ? 'hidden md:block' : ''}`}>
                     {/* Tab Navigation - CastMe Style */}
-                    <div className={`flex items-center gap-3 p-2 bg-slate-50/50 rounded-[28px] w-fit mx-auto lg:mx-0 border-2 border-slate-100 shadow-sm ${results.length === 0 ? 'hidden md:flex' : ''}`}>
+                    <div className={`flex items-center gap-3 bg-slate-50/50 w-fit mx-auto lg:mx-0  ${results.length === 0 ? 'hidden md:flex' : ''}`}>
                         {results.map((res, idx) => {
                             const isSelected = activeTab === idx;
                             const iconClass = "w-5 h-5 transition-transform duration-300 " + (isSelected ? "scale-110" : "opacity-30");
