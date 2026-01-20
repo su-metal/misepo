@@ -37,7 +37,7 @@ import {
   GemIcon,
 } from './Icons';
 import { Platform, Preset } from '../types';
-import { AutoResizingTextarea } from './AutoResizingTextarea';
+import { AutoResizingTextarea } from './ResizableTextarea';
 
 interface PresetModalProps {
   presets: Preset[];
