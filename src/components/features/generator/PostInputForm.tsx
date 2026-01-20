@@ -232,7 +232,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                             className={`group relative py-5 px-3 rounded-[24px] transition-all duration-300 flex flex-col items-center justify-center gap-2
                                                 ${!activePresetId
                                                     ? 'bg-[#001738] text-white shadow-lg shadow-[#001738]/20 ring-2 ring-[#001738]/5 ring-offset-2'
-                                                    : 'bg-slate-50/50 hover:bg-slate-100/80 text-slate-400 hover:text-slate-600 border border-slate-100/50 hover:border-slate-200'}
+                                                    : 'bg-slate-50/50 hover:bg-slate-100/80 text-slate-400 hover:text-slate-600 border border-slate-200 hover:border-slate-300'}
                                             `}
                                         >
                                             {!activePresetId && (
@@ -254,7 +254,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                                     className={`group relative py-5 px-3 rounded-[24px] transition-all duration-300 flex flex-col items-center justify-center gap-2
                                                         ${isSelected
                                                             ? 'bg-[#001738] text-white shadow-lg shadow-[#001738]/20 ring-2 ring-[#001738]/5 ring-offset-2'
-                                                            : 'hover:bg-slate-100/80 text-slate-400 hover:text-slate-600 border border-slate-100/50 hover:border-slate-200'}
+                                                            : 'hover:bg-slate-100/80 text-slate-400 hover:text-slate-600 border border-slate-200 hover:border-slate-300'}
                                                     `}
                                                 >
                                                     {isSelected && (
@@ -388,7 +388,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                         </button>
                                     )}
                                 </div>
-                                <div className="bg-white rounded-[24px] p-4 border border-slate-100/60 shadow-sm flex items-center justify-center">
+                                <div className="bg-white rounded-[24px] p-4 border border-slate-200 shadow-sm flex items-center justify-center">
                                     <div className="flex flex-row gap-2">
                                         {[1, 2, 3, 4, 5].map((r) => (
                                             <button
@@ -415,10 +415,10 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                                     key={p.id}
                                                     onClick={() => onGmapPurposeChange(p.id as GoogleMapPurpose)}
                                                     disabled={starRating !== null}
-                                                    className={`px-3 py-2.5 rounded-[16px] text-[11px] font-black transition-all flex items-center justify-center gap-1.5
+                                                    className={`px-3 py-2.5 rounded-[16px] text-[11px] font-black transition-all flex items-center justify-center gap-1.5 border
                                                             ${isSelected
-                                                            ? 'bg-[#001738] text-white shadow-lg shadow-navy-900/20'
-                                                            : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'}`}
+                                                            ? 'bg-[#001738] text-white border-[#001738] shadow-lg shadow-navy-900/20'
+                                                            : 'text-slate-500 border-slate-200 hover:text-slate-700 hover:bg-slate-50'}`}
                                                 >
                                                     <span className={`flex items-center justify-center ${isSelected ? 'opacity-100' : 'opacity-40'}`}>{p.icon}</span>
                                                     <span>{p.label}</span>
