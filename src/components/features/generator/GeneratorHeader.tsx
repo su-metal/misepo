@@ -19,7 +19,7 @@ export const GeneratorHeader: React.FC<GeneratorHeaderProps> = ({
     const isPro = plan?.status === 'active';
 
     return (
-        <header className="sticky top-4 z-[100] w-full px-2 sm:px-0">
+        <header className="sticky top-4 z-[100] w-full sm:px-0">
             <div className="glass-panel py-3 px-8 flex items-center justify-between gap-4 transition-all duration-500 hover:bg-white/10 hover:border-white/40 rounded-full shadow-lg shadow-indigo-900/5">
 
                 {/* Left: Brand Space */}
