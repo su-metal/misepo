@@ -444,7 +444,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
     <div className="flex w-full h-full flex-col md:flex-row overflow-hidden">
       {/* SIDEBAR: Dark Tech Theme */}
       <div
-        className={`md:w-5/12 lg:w-4/12 bg-slate-50/50 border-r border-slate-100 flex flex-col shrink-0 h-full relative overflow-hidden ${listVisibilityClass}`}
+        className={`md:w-5/12 lg:w-4/12 bg-white border-r border-slate-100 flex flex-col shrink-0 h-full relative overflow-hidden ${listVisibilityClass}`}
       >
         <div className="relative z-10 p-8 flex flex-col h-full">
           <div className="mb-10 flex items-center justify-between gap-4">
@@ -718,7 +718,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
           </div>
         </div>
 
-        <div className="p-8 md:p-10 border-t border-slate-100 bg-slate-50/50 flex flex-col md:flex-row items-stretch justify-between gap-6 shrink-0 backdrop-blur-sm">
+        <div className="p-8 md:p-10 border-t border-slate-100 bg-white flex flex-col md:flex-row items-stretch justify-between gap-6 shrink-0 backdrop-blur-sm">
           <div className="flex-1 flex flex-col gap-2 relative">
             {showSuccessToast && (
               <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 z-[50] animate-in slide-in-from-bottom-2 fade-in duration-500">

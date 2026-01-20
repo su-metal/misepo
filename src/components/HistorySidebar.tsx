@@ -200,7 +200,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
         </div>
 
         {/* Footer: Legal */}
-        <div className="p-8 border-t border-slate-200 bg-slate-50/50 relative z-20">
+        <div className="p-8 border-t border-slate-200 bg-white relative z-20">
           <div className="flex items-center justify-center gap-8 mb-4">
             <a href="/terms" className="text-[10px] font-black text-[#001738]/40 hover:text-[#E5005A] transition-colors uppercase tracking-widest">Terms</a>
             <a href="/privacy" className="text-[10px] font-black text-[#001738]/40 hover:text-[#E5005A] transition-colors uppercase tracking-widest">Privacy</a>

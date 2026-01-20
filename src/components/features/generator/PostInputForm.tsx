@@ -459,6 +459,11 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                 ref={textareaRef}
                                 value={inputText}
                                 onChange={(e) => onInputTextChange(e.target.value)}
+                                onFocus={(e) => {
+                                    setTimeout(() => {
+                                        e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                    }, 100);
+                                }}
                                 placeholder="投稿したい内容や伝えたいことを自由に入力してください..."
                                 className="w-full h-full bg-transparent text-[#001738] text-lg font-bold leading-relaxed placeholder:text-slate-100 focus:outline-none resize-none"
                             />
