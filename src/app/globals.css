@@ -3,31 +3,27 @@
 @tailwind utilities;
 
 :root {
-  /* Glassmorphism Brand Colors (Restored Deep Indigo) */
-  --primary: #2c2c2c;     /* Deep Indigo - Unified AI Brand Color */
-  --primary-dark: #3b4cca;
-  --accent: #130c0a;      /* Unified Accent */
-  --accent-secondary: #aa9cff; /* Soft Purple - Gradient/Accent */
+  /* Pop & Professional Brand Colors */
+  --primary: #1a1b1e;     /* High Contrast Black */
+  --primary-light: #2c2e33;
+  --accent: #FFD700;      /* Golden Yellow - Pop Accent */
+  --accent-hover: #FACC15;
+  --accent-secondary: #A78BFA; /* Soft Purple */
   
   /* Text Colors */
-  --text-main: #1e293b;
-  --text-muted: #64748b;
+  --text-main: #1a1b1e;
+  --text-muted: #475569;
 
-  /* Glass Effects */
-  --glass-bg: rgba(255, 255, 255, 0.45);
-  --glass-border: rgba(255, 255, 255, 0.6);
-  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+  /* Glass/Card Effects */
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(26, 27, 30, 0.1); 
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
 }
 
 body {
   font-family: 'Outfit', 'Inter', 'Noto Sans JP', sans-serif;
-  /* Aurora Mist: Refined for higher contrast with white cards */
-  background: 
-    radial-gradient(at 0% 0%, #eef2ff 0%, transparent 50%),  /* Soft Indigo */
-    radial-gradient(at 100% 0%, #f7fee7 0%, transparent 50%), /* Lime Mist */
-    radial-gradient(at 100% 100%, #faf5ff 0%, transparent 50%), /* Lavender Mist */
-    radial-gradient(at 0% 100%, #f0f9ff 0%, transparent 50%), /* Sky Mist */
-    #f8fafc; /* Base Silk */
+  /* Lavender Pop Background */
+  background: linear-gradient(135deg, #F5F3FF 0%, #EDE9FE 50%, #DDD6FE 100%);
   background-attachment: fixed;
   color: var(--text-main);
   min-height: 100vh;
@@ -36,32 +32,71 @@ body {
 /* Glass Utility Classes */
 .glass-panel {
   background: var(--glass-bg);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.9);
-  box-shadow: 
-    0 10px 40px -10px rgba(0, 0, 0, 0.12),
-    0 0 0 1px rgba(0, 0, 0, 0.04);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
 }
 
-/* Solid Section Card - High Separation */
+/* Pop Section Card - White with Soft Pop Shadow */
 .section-card {
   background: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.04);
+  border: 2px solid transparent; /* Reserve for hover or specific states */
+  border-radius: 24px;
   box-shadow: 
+<<<<<<< Updated upstream
     0 12px 30px -10px rgba(0, 0, 0, 0.08),
     0 4px 12px -4px rgba(0, 0, 0, 0.03);
   transition: all 0.3s ease;
+=======
+    0 10px 40px -10px rgba(0, 0, 0, 0.08),
+    0 0 0 1px rgba(0, 0, 0, 0.03);
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+>>>>>>> Stashed changes
 }
 
 .section-card:hover {
   box-shadow: 
+<<<<<<< Updated upstream
     0 20px 40px -12px rgba(0, 0, 0, 0.12),
     0 8px 16px -8px rgba(0, 0, 0, 0.06);
+=======
+    0 20px 40px -10px rgba(167, 139, 250, 0.15), /* Purple tinted shadow */
+    0 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
+/* Pop Button Style (Requested "Library" tag style) */
+.btn-pop {
+  background-color: var(--accent);
+  color: var(--primary);
+  border: 2px solid var(--primary);
+  box-shadow: 4px 4px 0px 0px var(--primary);
+  font-weight: 800;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-pop:hover:not(:disabled) {
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0px 0px var(--primary);
+  background-color: var(--accent-hover);
+}
+
+.btn-pop:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px 0px var(--primary);
+}
+
+.btn-pop:disabled {
+  background-color: #e2e8f0;
+  color: #94a3b8;
+  border-color: #94a3b8;
+  box-shadow: none;
+  cursor: not-allowed;
+>>>>>>> Stashed changes
 }
 
 .glass-panel-dark {
-    background: rgba(15, 23, 42, 0.6);
+    background: rgba(26, 27, 30, 0.8);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -69,35 +104,39 @@ body {
 }
 
 .glass-button {
-    background: rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.5);
     backdrop-filter: blur(4px);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    border: 1px solid rgba(26, 27, 30, 0.05);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
     transition: all 0.3s ease;
 }
 .glass-button:hover {
-    background: rgba(255, 255, 255, 0.4);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    background: rgba(255, 255, 255, 0.8);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
-/* High-fidelity Neumorphic "3D Block" (Raised with thickness) */
-.active-floating {
-    background-color: var(--primary) !important;
-    transform: translateY(-1.5px) !important; /* Stable lift */
-    box-shadow: 
-        1px 2.5px 0 0 #888888,                     /* Neutral Gray Side Wall */
-        8px 10px 20px -4px rgba(0, 0, 0, 0.25),    /* Stable floor shadow */
-        -4px -4px 12px 0 rgba(255, 255, 255, 0.1),  /* Top-left light source */
-        inset 0 1px 1px 0 rgba(255, 255, 255, 0.2) !important; /* Top edge highlight */
-    filter: none !important;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 1.64, 1);
+/* 3D Pop Floating Effect (Replaces active-floating) */
+.active-pop {
+    background-color: var(--accent) !important;
+    color: var(--primary) !important;
+    border: 2px solid var(--primary) !important;
+    box-shadow: 3px 3px 0 0 var(--primary) !important;
+    transform: translate(-1px, -1px) !important;
 }
+
+.active-floating { /* Legacy mapping to active-pop for easy migration */
+    background-color: var(--accent) !important;
+    color: var(--primary) !important;
+    border: 2px solid var(--primary) !important;
+    box-shadow: 3px 3px 0 0 var(--primary) !important;
+    transform: translate(-1px, -1px) !important;
+    filter: none !important;
+}
+
 .active-floating:active {
-    transform: translateY(1px) !important;    /* "Click" down */
-    box-shadow: 
-        0 1px 0 0 #888888,
-        4px 4px 10px -2px rgba(0, 0, 0, 0.2) !important;
+    transform: translate(1px, 1px) !important;
+    box-shadow: 1px 1px 0 0 var(--primary) !important;
 }
 
 /* Color Utilities using CSS Variables */
@@ -108,6 +147,7 @@ body {
 .bg-accent { background-color: var(--accent) !important; }
 .text-accent { color: var(--accent) !important; }
 .border-accent { border-color: var(--accent) !important; }
+
 
 /* Platform Brand Colors */
 .bg-brand-green { background-color: #34A853 !important; }

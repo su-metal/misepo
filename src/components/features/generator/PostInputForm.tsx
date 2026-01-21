@@ -214,8 +214,8 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                         onClick={() => onSetActivePlatform(Platform.X)}
                         className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-full text-xs sm:text-sm font-black transition-all relative
                             ${platforms.includes(Platform.X)
-                                ? 'bg-primary text-white shadow-lg active-floating'
-                                : 'text-slate-400 hover:text-primary hover:bg-white/30'
+                                ? 'active-pop'
+                                : 'text-slate-400 hover:text-primary hover:bg-slate-50'
                             }`}
                     >
                         <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
@@ -227,8 +227,8 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                         onClick={() => onSetActivePlatform(Platform.Instagram)}
                         className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-full text-xs sm:text-sm font-black transition-all relative
                             ${platforms.includes(Platform.Instagram)
-                                ? 'bg-primary text-white shadow-lg active-floating'
-                                : 'text-slate-400 hover:text-primary hover:bg-white/30'
+                                ? 'active-pop'
+                                : 'text-slate-400 hover:text-primary hover:bg-slate-50'
                             }`}
                     >
                         <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
@@ -240,8 +240,8 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                         onClick={() => onSetActivePlatform(Platform.GoogleMaps)}
                         className={`flex-1 flex items-center justify-center gap-0 py-3 rounded-full text-xs sm:text-sm font-black transition-all relative
                             ${platforms.includes(Platform.GoogleMaps)
-                                ? 'bg-primary text-white shadow-lg active-floating'
-                                : 'text-slate-400 hover:text-primary hover:bg-white/30'
+                                ? 'active-pop'
+                                : 'text-slate-400 hover:text-primary hover:bg-slate-50'
                             }`}
                     >
                         <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
@@ -289,14 +289,14 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                     onClick={() => onApplyPreset({ id: 'plain-ai' } as any)}
                                     className={`group relative py-5 px-3 rounded-[24px] transition-all duration-300 flex flex-col items-center justify-center gap-2
                                                 ${!activePresetId
-                                            ? 'bg-primary text-white shadow-lg active-floating'
+                                            ? 'active-pop'
                                             : 'bg-slate-50 shadow-sm hover:bg-slate-100 text-slate-400 hover:text-slate-600 border border-slate-200 hover:border-slate-300'}
                                             `}
                                 >
                                     <span className={`text-2xl transition-transform duration-300 group-hover:scale-110 ${!activePresetId ? 'opacity-100' : 'opacity-60 grayscale group-hover:grayscale-0'}`}>
                                         <AutoSparklesIcon className="w-6 h-6" />
                                     </span>
-                                    <span className={`text-[11px] font-bold truncate tracking-wide text-center w-full ${!activePresetId ? 'opacity-100' : 'text-slate-00'}`}>おまかせ</span>
+                                    <span className={`text-[11px] font-black truncate tracking-wide text-center w-full ${!activePresetId ? 'opacity-100' : 'text-slate-500'}`}>おまかせ</span>
                                 </button>
 
                                 {/* Profiles Grid */}
@@ -308,14 +308,14 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                             onClick={() => onApplyPreset(p)}
                                             className={`group relative py-5 px-3 rounded-[24px] transition-all duration-300 flex flex-col items-center justify-center gap-2
                                                         ${isSelected
-                                                    ? 'bg-primary text-white shadow-lg active-floating'
+                                                    ? 'active-pop'
                                                     : 'bg-slate-50 shadow-sm hover:bg-slate-100 text-slate-400 hover:text-slate-600 border border-slate-200 hover:border-slate-300'}
                                                     `}
                                         >
                                             <span className={`text-2xl transition-transform duration-300 group-hover:scale-110 ${isSelected ? 'opacity-100' : 'opacity-60 grayscale group-hover:grayscale-0'}`}>
                                                 {renderAvatar(p.avatar, "w-6 h-6")}
                                             </span>
-                                            <span className={`text-[11px] font-bold truncate tracking-wide text-center w-full ${isSelected ? 'opacity-100' : 'opacity-60'}`}>
+                                            <span className={`text-[11px] font-black truncate tracking-wide text-center w-full ${isSelected ? 'opacity-100' : 'opacity-60'}`}>
                                                 {p.name}
                                             </span>
                                         </button>
@@ -339,7 +339,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                             onClick={() => onToneChange(t.id)}
                                             disabled={!!activePresetId}
                                             className={`flex-1 py-2 px-1 rounded-[12px] text-[10px] font-black transition-all flex items-center justify-center gap-1.5 relative ${tone === t.id
-                                                ? 'bg-primary text-white border-primary shadow-lg active-floating'
+                                                ? 'active-pop'
                                                 : 'text-slate-400 hover:text-slate-600 hover:bg-white'
                                                 }`}
                                         >
@@ -359,7 +359,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                                 key={l.id}
                                                 onClick={() => onLengthChange(l.id)}
                                                 className={`flex-1 py-2 px-1 rounded-[12px] text-[10px] font-black transition-all flex items-center justify-center gap-1.5 relative ${length === l.id
-                                                    ? 'bg-primary text-white border-primary shadow-lg active-floating'
+                                                    ? 'active-pop'
                                                     : 'text-slate-400 hover:text-slate-600 hover:bg-white'
                                                     }`}
                                             >
@@ -463,7 +463,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                                     disabled={starRating !== null}
                                                     className={`px-3 py-2.5 rounded-[16px] text-[11px] font-black transition-all flex items-center justify-center gap-1.5 border
                                                             ${isSelected
-                                                            ? 'bg-primary text-white border-primary shadow-lg shadow-slate-400/20'
+                                                            ? 'active-pop'
                                                             : 'text-slate-500 border-slate-200 hover:text-slate-700 hover:bg-slate-50'}`}
                                                 >
                                                     <span className={`flex items-center justify-center ${isSelected ? 'opacity-100' : 'opacity-40'}`}>{p.icon}</span>
