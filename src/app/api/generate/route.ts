@@ -111,7 +111,24 @@ export async function POST(req: Request) {
 
   try {
     const isPro = true; // Auth already checked above
-    const result = await generateContent(profile, config, isPro);
+    
+    // Fetch learning sources (favorites)
+    let learningSamples: string[] = [];
+    if (userId) {
+      const { data: learningData } = await supabase
+        .from('learning_sources')
+        .select('content')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false })
+        .limit(5);
+
+      if (learningData && learningData.length > 0) {
+        learningSamples = learningData.map((item: any) => item.content);
+        console.log(`[LEARNING] Fetched ${learningSamples.length} favorited samples`);
+      }
+    }
+
+    const result = await generateContent(profile, config, isPro, learningSamples);
 
     if (userId) {
       const runType =

@@ -80,7 +80,8 @@ function getServerAI() {
 export const generateContent = async (
   profile: StoreProfile,
   config: GenerationConfig,
-  isPro: boolean
+  isPro: boolean,
+  learningSamples?: string[] 
 ): Promise<string[]> => {
   const modelName = getModelName(isPro);
   const maxRetries = 3;
@@ -110,11 +111,21 @@ export const generateContent = async (
 
   const currentSample = getPlatformSample(config.post_samples as any, config.platform);
   const hasPersonaSamples = !!(currentSample && currentSample.trim());
-  const hasPersona = hasPersonaSamples || !!(config.customPrompt && config.customPrompt.trim());
+  const hasLearningSamples = learningSamples && learningSamples.length > 0;
+  const hasPersona = hasPersonaSamples || !!(config.customPrompt && config.customPrompt.trim()) || hasLearningSamples;
 
   const buildSystemInstruction = () => {
     if (hasPersona) {
       // --- Persona Mode (High Precision Mimicry) ---
+      let learningContext = "";
+      if (hasLearningSamples) {
+          learningContext = `
+【学習済みの正解データ（ユーザーがお気に入りにした過去の生成結果）】
+以下の投稿は、このユーザーが「正解」としたスタイルです。この文体、リズム、絵文字の使い方の傾向を最も優先して模倣してください。
+${learningSamples.join("\n---\n")}
+`;
+      }
+
       const personaInstructions = `
 あなたは、以下の【過去の投稿ログ】の主になりきる「AI代筆職人」です。
 
@@ -139,7 +150,10 @@ export const generateContent = async (
 - X (Twitter)の場合は、ハッシュタグは最小限（1〜2個程度、最大3個まで）に留めてください。
 
 【過去の投稿ログ】:
-${currentSample || "（カスタムプロンプトに基づき、職人として振る舞ってください）"}
+【過去の投稿ログ】:
+${currentSample || "（カスタムプロンプトまたは学習データに基づき、職人として振る舞ってください）"}
+
+${learningContext}
 
 【今回のメモ】:
 "${config.inputText}"

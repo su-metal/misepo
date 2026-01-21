@@ -5,7 +5,7 @@ import { CharCounter } from './CharCounter';
 import { AutoResizingTextarea } from './AutoResizingTextarea';
 import { RefinePanel } from './RefinePanel';
 import { PostPreviewModal } from './PostPreviewModal';
-import { CopyIcon, CrownIcon, MagicWandIcon, RotateCcwIcon, ExternalLinkIcon, EyeIcon, SparklesIcon } from '../../Icons';
+import { CopyIcon, CrownIcon, MagicWandIcon, RotateCcwIcon, ExternalLinkIcon, EyeIcon, SparklesIcon, StarIcon } from '../../Icons';
 
 interface PostResultTabsProps {
     results: GeneratedResult[];
@@ -223,10 +223,13 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                         />
                                                     </div>
 
-                                                    {/* Meta Row: Toggle & Char Count */}
                                                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4 pt-4 border-t-2 border-white/10">
-                                                        <div className="flex-1">
+                                                        <div className="flex-1 flex items-center gap-2">
                                                             {theme.extra && theme.extra(gIdx, iIdx)}
+                                                            <FavoriteButton
+                                                                platform={res.platform}
+                                                                text={text}
+                                                            />
                                                         </div>
                                                         <div className="bg-slate-50 px-5 py-2 rounded-full border border-slate-100">
                                                             <CharCounter
@@ -321,6 +324,68 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                 )}
             </div>
         </>
+    );
+};
+
+const FavoriteButton = ({ platform, text }: { platform: Platform, text: string }) => {
+    const [isFavorited, setIsFavorited] = React.useState(false);
+    const [isLoading, setIsLoading] = React.useState(false);
+
+    const handleToggle = async () => {
+        if (isLoading) return;
+        setIsLoading(true);
+
+        const newState = !isFavorited;
+        // Optimistic update
+        setIsFavorited(newState);
+
+        try {
+            const method = newState ? 'POST' : 'DELETE';
+            // For DELETE, we send content as param. For POST, as body.
+            // Simplified: This MVP component assumes 'text' is unique enough per user or handles exact match deletion.
+            // API expects content in body for POST, query param for DELETE.
+
+            let url = '/api/me/learning';
+            if (!newState) {
+                const params = new URLSearchParams({ content: text });
+                url += `?${params.toString()}`;
+            }
+
+            const res = await fetch(url, {
+                method,
+                headers: { 'Content-Type': 'application/json' },
+                body: newState ? JSON.stringify({ content: text, platform }) : undefined
+            });
+
+            if (!res.ok) throw new Error('Failed');
+
+            // Show Toast (Simple alert for now, can be replaced with proper toast lib)
+            if (newState) {
+                // Ideally use a toast library here.
+                // console.log("Saved to learning data");
+            }
+        } catch (e) {
+            console.error(e);
+            setIsFavorited(!newState); // Revert
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return (
+        <button
+            onClick={handleToggle}
+            className={`group flex items-center gap-2 px-3 py-2 rounded-full transition-all border ${isFavorited
+                ? 'bg-yellow-50 text-yellow-600 border-yellow-200'
+                : 'bg-white/5 text-slate-400 border-white/10 hover:bg-white/20'
+                }`}
+            title={isFavorited ? "お気に入り解除" : "お気に入り（学習データに追加）"}
+        >
+            <StarIcon
+                className={`w-4 h-4 transition-all duration-300 ${isFavorited ? 'fill-yellow-400 text-yellow-400 scale-110' : 'text-slate-400 group-hover:text-yellow-400'}`}
+            />
+            {isFavorited && <span className="text-[10px] font-bold animate-in fade-in slide-in-from-left-2">Saved</span>}
+        </button>
     );
 };
 
