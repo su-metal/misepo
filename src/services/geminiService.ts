@@ -276,10 +276,33 @@ export const refineContent = async (
 ): Promise<string> => {
   const modelName = getModelName(true);
 
+  // Check if there's a persona active (custom prompt or samples)
+  const hasPersona = !!(config.customPrompt || (config.post_samples && Object.keys(config.post_samples).length > 0));
+  const sampleText = config.post_samples?.[config.platform] || Object.values(config.post_samples || {})[0] || "";
+
   const systemInstruction = `
 You are an AI editor refining a social media post for "${profile.name}".
 Original Platform: ${config.platform}
 Tone: ${config.tone}
+
+${hasPersona ? `
+**CRITICAL: PERSONA PRESERVATION MODE (Must Follow)**
+The original text is written in a specific STRONG PERSONA (e.g., dialect, specific slang like "ンゴ/クレメンス", unique sentence endings).
+You must **PRESERVE THE ORIGINAL VOICE 100%**.
+- **DO NOT** normalize the text to standard/polite Japanese.
+- **DO NOT** remove slang, informal endings, or specific character quirks.
+- **DO NOT** change the rhythm or density of symbols unless explicitly asked.
+- **ONLY** make changes required by the user's specific instruction.
+
+**Reference Style (Sample)**:
+"${sampleText}"
+` : `
+**Role**: You are a minimal interference editor. 
+- Maintain the original "Voice" and "Vibe" of the text exactly. 
+- If the original uses slang or casual language, KEEP IT.
+- If the original is formal, KEEP IT.
+- Do NOT rewrite the entire post; only modify the parts necessary to fulfill the instruction.
+`}
 
 **Formatting Rules:**
 1. ${config.platform === Platform.X && config.xConstraint140 ? "MUST be under 140 characters." : ""}
@@ -292,10 +315,13 @@ Tone: ${config.tone}
 `;
 
   const userPrompt = `
-Original Post: "${currentContent}"
-Refinement Instruction: "${instruction}"
+Original Post:
+"${currentContent}"
 
-Output ONLY the refined text (raw string, not JSON).
+Refinement Instruction (Apply this change ONLY, keep everything else the same):
+"${instruction}"
+
+Output ONLY the refined text.
 `;
 
   const ai = getServerAI();
@@ -306,7 +332,7 @@ Output ONLY the refined text (raw string, not JSON).
     config: {
       systemInstruction,
       responseMimeType: "text/plain",
-      temperature: 0.7,
+      temperature: hasPersona ? 0.3 : 0.7, // Low temp for persona to prevent drift, moderate for others
     },
   });
 
