@@ -113,8 +113,10 @@ export const generateContent = async (
   const hasPersona = hasPersonaSamples || !!(config.customPrompt && config.customPrompt.trim());
 
   const buildSystemInstruction = () => {
-    const systemInstruction = `
-あなたは、以下の【過去の投稿ログ】の主になりきる「代筆職人」です。
+    if (hasPersona) {
+      // --- Persona Mode (High Precision Mimicry) ---
+      const personaInstructions = `
+あなたは、以下の【過去の投稿ログ】の主になりきる「AI代筆職人」です。
 
 以下の3点を、サンプルの「見た目」から正確に盗んでください：
 1. **記号の【密度】**: ログには複数の投稿（---区切り）が含まれています。全ての合計ではなく、**「平均的な1投稿分の量」**を再現してください。
@@ -127,7 +129,49 @@ export const generateContent = async (
 - ユーザー希望の長さ [**${config.length}**] に合わせてボリュームを調整。
 
 【過去の投稿ログ】:
-${hasPersonaSamples ? currentSample : "（サンプルなし）"}
+${currentSample || "（カスタムプロンプトに基づき、職人として振る舞ってください）"}
+
+【今回のメモ】:
+"${config.inputText}"
+
+【出力形式】:
+要素1つのJSON配列（["本文"]）で出力。
+
+【禁止事項】:
+- **感嘆符（！や！）と絵文字の併用禁止**: 文末で「！✨」のように重ねず、どちらか一方のみを使用してください。
+`;
+      
+      const combinedPersona = config.customPrompt 
+        ? personaInstructions + `\n【追加のカスタム指示】:\n${config.customPrompt}`
+        : personaInstructions;
+
+      if (config.platform === Platform.GoogleMaps) {
+        return combinedPersona + `\n【Googleマップ特記事項】: 口コミへの返信。丁寧すぎない言葉で。※絵文字・記号禁止。`;
+      }
+      return combinedPersona;
+    }
+
+    // --- Standard Mode (Omakase / Plain AI) ---
+    let standardInstructions = `
+あなたは、${profile.region}にある${profile.industry}「${profile.name}」のSNS運用を担う「プロのライター」です。
+ユーザーの「メモ」を元に、フォロワーや来店客を惹きつける魅力的で自然な文章を作成してください。
+
+【基本設定】:
+- 店名: ${profile.name}
+- 業種: ${profile.industry}
+- 地域: ${profile.region}
+- 店舗概要: ${profile.description || "なし"}
+
+【執筆ルール】:
+- 解説や挨拶は一切抜き。投稿文のみを出力。
+- 希望の長さ [**${config.length}**] に合わせて構成。
+- 改行を適切に入れ、読みやすく。
+- Instagramの場合は、文末に4-6個の関連ハッシュタグを追加。
+
+【スタイル・記号のルール】:
+- **感嘆符（！や！）と絵文字の併用禁止**: 文末は「！✨」とせず、「！」または「✨」のどちらか一方のみを使用してください。
+- ${config.includeEmojis !== false ? '絵文字を適度に使用し、明るい雰囲気に。' : '絵文字は使用しないでください。'}
+- ${config.includeSymbols ? `以下のパレットの記号を効果的に使用して、プレミアムな雰囲気を演出してください：\n${DECORATION_PALETTE}` : '特殊な記号（✧や✄等）は使用しないでください。'}
 
 【今回のメモ】:
 "${config.inputText}"
@@ -137,10 +181,16 @@ ${hasPersonaSamples ? currentSample : "（サンプルなし）"}
 `;
 
     if (config.platform === Platform.GoogleMaps) {
-       return systemInstruction + `\n【Googleマップ特記事項】: 口コミへの返信。丁寧すぎない言葉で。※絵文字禁止。`;
+      standardInstructions += `
+\n【Googleマップ特記事項（重要）】:
+- 口コミへの返信です。丁寧で真摯な言葉遣いで。
+- **謙譲語の徹底**: お客様が「店員さん」「奥様」と書かれていても、返信では「スタッフ」「妻」と謙譲語に変換してください。
+- **地域への配慮**: お客様が旅行者であると明記していない限り、「〇〇にお越しの際は」等の遠方者向け挨拶は避け、「またのご来店をお待ちしております」等の汎用メッセージを使用してください。
+- ※絵文字・ハッシュタグは一切使用禁止。
+`;
     }
 
-    return systemInstruction;
+    return standardInstructions;
   };
 
   const ai = getServerAI();
