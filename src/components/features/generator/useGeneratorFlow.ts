@@ -245,7 +245,8 @@ export function useGeneratorFlow(props: {
         includeEmojis,
         instagramFooter: (p === Platform.Instagram && includeFooter) ? storeProfile.instagramFooter : undefined,
         post_samples: currentPostSamples,
-        presetId: activePresetId || undefined // Add presetId to config
+        presetId: activePresetId || undefined,
+        gmapPurpose: (p === Platform.GoogleMaps) ? gmapPurpose : undefined
       };
 
       try {
@@ -286,12 +287,13 @@ export function useGeneratorFlow(props: {
     if (isLoggedIn && !isRegeneration) {
       const historyConfig = {
         platforms: targetPlatforms,
-        postPurpose, gmapPurpose, tone, length, inputText,
+        postPurpose, tone, length, inputText,
         starRating: starRating ?? undefined,
         language, storeSupplement, customPrompt,
         xConstraint140, includeSymbols, includeEmojis,
         instagramFooter: (targetPlatforms.includes(Platform.Instagram) && includeFooter) ? storeProfile.instagramFooter : undefined,
-        presetId: activePresetId || undefined // Add presetId to history config
+        presetId: activePresetId || undefined,
+        gmapPurpose: targetPlatforms.includes(Platform.GoogleMaps) ? gmapPurpose : undefined
       };
 
       if (targetPlatforms.length > 1) {

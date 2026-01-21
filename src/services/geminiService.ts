@@ -115,6 +115,8 @@ export const generateContent = async (
   const hasPersona = hasPersonaSamples || !!(config.customPrompt && config.customPrompt.trim()) || hasLearningSamples;
 
   const buildSystemInstruction = () => {
+    let personaInstructions = "";
+
     if (hasPersona) {
       // --- Persona Mode (High Precision Mimicry) ---
       let learningContext = "";
@@ -128,7 +130,7 @@ ${learningSamples.join("\n---\n")}
 `;
       }
 
-      const personaInstructions = `
+      personaInstructions = `
 あなたは、以下の【過去の投稿ログ】の主になりきる「AI代筆職人」です。
 
 以下の3点を、サンプルの「見た目」から正確に盗んでください：
@@ -181,7 +183,58 @@ ${learningContext}
       return combinedPersona;
     }
 
-    // --- Standard Mode (Omakase / Plain AI) ---
+    // --- Google Maps Reply Mode ---
+    // Detect if this is a reply: starRating exists OR explicit reply purpose
+    const isGMapReply = config.platform === Platform.GoogleMaps && (
+      config.starRating != null || 
+      (config.gmapPurpose && config.gmapPurpose !== GoogleMapPurpose.Auto)
+    );
+
+    if (isGMapReply) {
+      const basePersona = hasPersona ? personaInstructions : `
+あなたは${profile.name}（${profile.region}/${profile.industry}）のオーナーです。
+丁寧で温かみのあるプロの返信を作成してください。
+`;
+
+      let replyInstructions = `
+${basePersona}
+
+【Googleマップ返信ガイドライン（最優先）】:
+これは「口コミ」への返信です。上記ペルソナを維持しつつ、以下を厳守してください。
+
+1. **徹底した謙虚（自画自賛・事実化の禁止）**:
+   - 自身のことは「スタッフ・私共」と謙称。
+   - お客様の褒め言葉（味、丁寧な説明、技術等）を**語彙そのままに鸚鵡返しするのは禁止**。
+     - 🆖: 「丁寧な説明や専門知識にご信頼いただき…」（自画自賛的）
+     - 🆗: 「少しでもご不安の解消に繋がったのであれば幸いです」「私共の方針がお役に立てて安堵しました」
+   - 自分のサービスの質（丁寧、高い技術等）を店側が定義するのではなく、その結果として客様が**「どう安心したか」**に焦点を当ててください。
+2. **文脈の再構築（脱テンプレート）**:
+   - 言葉をそのまま返さず（14時→遅めのランチ等）、プロらしく言い換え。
+   - 事実の指摘（器が多い、狭い等）は不満でない限り謝罪せず「ご意見」として受諾。
+   - 人気・混雑の言及には「自慢」せず「皆様の支えへの感謝」や「窮屈さへの気遣い」に変換。
+3. **地域・状況への配慮**:
+   - 旅行家と明記がない限り地名挨拶（〇〇にお越しの際は～）は禁止（地元客想定）。
+   - **結び**: ${(config.starRating && config.starRating <= 3) 
+      ? '反省と改善の決意（またのご来店～は禁止）' 
+      : '再来店への純粋な感謝'}で締める。
+4. **学習データの適用**: 文体・リズムは学習データに従い、内容は個別返信に徹する。
+
+【今回のメモ（口コミ内容）】:
+"${config.inputText}"
+${config.starRating ? `(評価: ★${config.starRating})` : ''}
+
+【出力書式（最優先）】:
+- 文章全体を一続きの文字列として、JSON配列の1番目（index:0）にのみ格納してください。
+- 複数の要素を返却（文章の分割）することは**絶対に禁止**です。
+- OK形式: ["挨拶から結びまで全てを繋げた一文"]
+- NG形式: ["挨拶", "中身", "末尾"]
+- **絵文字・ハッシュタグは一切禁止**。3〜5行。
+- 解説や挨拶は一切不要。返信文のみを出力。
+`;
+      return replyInstructions;
+    }
+
+    // --- Standard Mode (Omakase / Plain AI / Promotion) ---
     let standardInstructions = `
 あなたは、${profile.region}にある${profile.industry}「${profile.name}」のSNS運用を担う「プロのライター」です。
 ユーザーの「メモ」を元に、フォロワーや来店客を惹きつける魅力的で自然な文章を作成してください。
