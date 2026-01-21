@@ -864,13 +864,15 @@ open11:00-close 17:00
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
                         {problems.map((prob, index) => (
-                            <div key={index} className="group relative bg-white rounded-[2rem] p-8 border border-slate-100 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-2 transition-all duration-300 flex flex-col items-center text-center">
-                                <div className={`w-16 h-16 rounded-2xl ${prob.bg} flex items-center justify-center mb-6 text-white shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300`}>
-                                    {prob.icon}
+                            <div key={index} className="group relative bg-white rounded-[2rem] p-6 md:p-8 border border-slate-100 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-2 transition-all duration-300">
+                                <div className="flex flex-row md:flex-col items-center md:text-center gap-4 md:gap-0">
+                                    <div className={`w-12 h-12 md:w-16 md:h-16 rounded-2xl ${prob.bg} flex items-center justify-center md:mb-6 text-white shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shrink-0`}>
+                                        {React.cloneElement(prob.icon, { size: isMobile ? 24 : 28 })}
+                                    </div>
+                                    <h3 className="text-lg md:text-xl font-bold text-slate-900 whitespace-pre-line leading-tight">{prob.title}</h3>
                                 </div>
-                                <h3 className="text-xl font-bold text-slate-900 mb-4 whitespace-pre-line leading-tight">{prob.title}</h3>
-                                <div className="h-px w-12 bg-slate-100 mb-4 group-hover:w-full group-hover:bg-indigo-100 transition-all duration-500" />
-                                <p className="text-sm text-slate-500 leading-relaxed">{prob.desc}</p>
+                                <div className="h-px w-full bg-slate-100 my-4 md:my-4 group-hover:bg-indigo-100 transition-all duration-500" />
+                                <p className="text-sm text-slate-500 leading-relaxed md:text-center">{prob.desc}</p>
                             </div>
                         ))}
                     </div>
@@ -973,43 +975,52 @@ open11:00-close 17:00
                     </div>
 
                     <div className="grid md:grid-cols-3 gap-8 lg:gap-12 max-w-6xl mx-auto mb-24">
-                        {/* Benefit 1: Learning (Step 1 Focus) */}
                         <div className="bg-slate-800/50 backdrop-blur-xl rounded-3xl p-6 md:p-8 border border-slate-700 relative group hover:border-indigo-500 hover:shadow-[0_0_20px_rgba(99,102,241,0.3)] transition-all duration-300">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-indigo-500/20 to-transparent rounded-bl-full opacity-50" />
-                            <div className="w-14 h-14 bg-indigo-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-indigo-900/20 mb-6 group-hover:scale-110 transition-transform duration-300">
-                                <Icons.Bot size={28} />
+                            <div className="flex flex-row md:flex-col items-center gap-4 md:gap-0">
+                                <div className="w-14 h-14 bg-indigo-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-indigo-900/20 md:mb-6 group-hover:scale-110 transition-transform duration-300 shrink-0">
+                                    <Icons.Bot size={28} />
+                                </div>
+                                <div className="flex flex-col md:items-start">
+                                    <div className="inline-block px-3 py-1 bg-indigo-500/20 text-indigo-300 rounded-full text-xs font-bold mb-1 md:mb-3 border border-indigo-500/30 w-fit">Step 1</div>
+                                    <h3 className="text-xl md:text-2xl font-bold">あなたの『書き癖』を学習</h3>
+                                </div>
                             </div>
-                            <div className="inline-block px-3 py-1 bg-indigo-500/20 text-indigo-300 rounded-full text-xs font-bold mb-3 border border-indigo-500/30">Step 1</div>
-                            <h3 className="text-2xl font-bold mb-3">あなたの『書き癖』を<br />学習</h3>
-                            <p className="text-slate-400 leading-relaxed">
+                            <p className="text-slate-400 leading-relaxed mt-4 md:mt-0">
                                 過去の投稿を数件読み込ませるだけで、MisePoがあなたのリズムをコピー。<br />
                                 <span className="text-white font-bold">過去の投稿がない方</span>は、理想のお店の文章を学習させることも可能です。
                             </p>
                         </div>
 
-                        {/* Benefit 2: Persona Switching */}
                         <div className="bg-slate-800/50 backdrop-blur-xl rounded-3xl p-6 md:p-8 border border-slate-700 relative group hover:border-pink-500 hover:shadow-[0_0_20px_rgba(236,72,153,0.3)] transition-all duration-300">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-pink-500/20 to-transparent rounded-bl-full opacity-50" />
-                            <div className="w-14 h-14 bg-pink-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-pink-900/20 mb-6 group-hover:scale-110 transition-transform duration-300">
-                                <Icons.Users size={28} />
+                            <div className="flex flex-row md:flex-col items-center gap-4 md:gap-0">
+                                <div className="w-14 h-14 bg-pink-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-pink-900/20 md:mb-6 group-hover:scale-110 transition-transform duration-300 shrink-0">
+                                    <Icons.Users size={28} />
+                                </div>
+                                <div className="flex flex-col md:items-start">
+                                    <div className="inline-block px-3 py-1 bg-pink-500/20 text-pink-300 rounded-full text-xs font-bold mb-1 md:mb-3 border border-pink-500/30 w-fit">Step 2</div>
+                                    <h3 className="text-xl md:text-2xl font-bold">「中の人」を自由自在に</h3>
+                                </div>
                             </div>
-                            <div className="inline-block px-3 py-1 bg-pink-500/20 text-pink-300 rounded-full text-xs font-bold mb-3 border border-pink-500/30">Step 2</div>
-                            <h3 className="text-2xl font-bold mb-3">「中の人」を<br />自由自在に</h3>
-                            <p className="text-slate-400 leading-relaxed">
+                            <p className="text-slate-400 leading-relaxed mt-4 md:mt-0">
                                 「熱い店長」「親しみやすい看板娘」など、投稿の目的に合わせて<span className="text-white font-bold">人格を切り替え</span>。<br />
                                 複数のスタッフで運営しているような多様性を。
                             </p>
                         </div>
 
-                        {/* Benefit 3: Review Replies */}
                         <div className="bg-slate-800/50 backdrop-blur-xl rounded-3xl p-6 md:p-8 border border-slate-700 relative group hover:border-green-500 hover:shadow-[0_0_20px_rgba(34,197,94,0.3)] transition-all duration-300">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-green-500/20 to-transparent rounded-bl-full opacity-50" />
-                            <div className="w-14 h-14 bg-green-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-green-900/20 mb-6 group-hover:scale-110 transition-transform duration-300">
-                                <Icons.Heart size={28} />
+                            <div className="flex flex-row md:flex-col items-center gap-4 md:gap-0">
+                                <div className="w-14 h-14 bg-green-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-green-900/20 md:mb-6 group-hover:scale-110 transition-transform duration-300 shrink-0">
+                                    <Icons.Heart size={28} />
+                                </div>
+                                <div className="flex flex-col md:items-start">
+                                    <div className="inline-block px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-xs font-bold mb-1 md:mb-3 border border-green-500/30 w-fit">Result</div>
+                                    <h3 className="text-xl md:text-2xl font-bold">クチコミ返信の「壁」を撤去</h3>
+                                </div>
                             </div>
-                            <div className="inline-block px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-xs font-bold mb-3 border border-green-500/30">Result</div>
-                            <h3 className="text-2xl font-bold mb-3">クチコミ返信の<br />「壁」を撤去</h3>
-                            <p className="text-slate-400 leading-relaxed">
+                            <p className="text-slate-400 leading-relaxed mt-4 md:mt-0">
                                 コピペするだけで、誠実であなたらしい返信案を<span className="text-white font-bold">30秒で作成</span>。<br />
                                 お客様との絆を深める時間を短縮します。
                             </p>
@@ -1116,11 +1127,13 @@ open11:00-close 17:00
                         </p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[minmax(280px,auto)]">
-                        <div className="md:col-span-2 bg-white rounded-[2rem] p-8 md:p-10 border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden group">
+                        <div className="md:col-span-2 bg-white rounded-[2rem] p-6 md:p-10 border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden group">
                             <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-100 rounded-full blur-[80px] -mr-16 -mt-16 transition-opacity group-hover:opacity-70" />
                             <div className="relative z-10 flex flex-col h-full items-start">
-                                <div className="w-12 h-12 bg-gradient-to-tr from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center text-white mb-6 shadow-lg shadow-indigo-200"><Icons.Maximize2 size={24} /></div>
-                                <h3 className="text-2xl font-bold text-slate-900 mb-2">3大プラットフォーム<br className="md:hidden" />一括管理</h3>
+                                <div className="flex flex-row md:flex-col items-center gap-4 md:gap-0 md:items-start mb-6 md:mb-0">
+                                    <div className="w-11 h-11 md:w-12 md:h-12 bg-gradient-to-tr from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-200 shrink-0 md:mb-6"><Icons.Maximize2 size={isMobile ? 22 : 24} /></div>
+                                    <h3 className="text-xl md:text-2xl font-bold text-slate-900 leading-tight">3大プラットフォーム<br className="md:hidden" />一括管理</h3>
+                                </div>
                                 <p className="text-slate-600 mb-6 max-w-md">
                                     Instagram、X (Twitter)、Googleビジネスプロフィールの投稿・返信を1つのアプリで完結。
                                     <br />
@@ -1141,11 +1154,13 @@ open11:00-close 17:00
                                 </div>
                             </div>
                         </div>
-                        <div className="bg-white rounded-[2rem] p-8 border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden group">
+                        <div className="bg-white rounded-[2rem] p-7 md:p-8 border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden group">
                             <div className="absolute bottom-0 left-0 w-full h-1 bg-green-500" />
-                            <div className="w-12 h-12 bg-green-100 text-green-600 rounded-xl flex items-center justify-center mb-6"><Icons.Globe size={24} /></div>
-                            <h3 className="text-xl font-bold text-slate-900 mb-2">多言語翻訳 &<br />インバウンド対応</h3>
-                            <p className="text-slate-600 text-sm mb-4">
+                            <div className="flex flex-row md:flex-col items-center gap-4 md:gap-0 md:items-start">
+                                <div className="w-12 h-12 bg-green-100 text-green-600 rounded-xl flex items-center justify-center md:mb-6 shrink-0"><Icons.Globe size={24} /></div>
+                                <h3 className="text-lg md:text-xl font-bold text-slate-900 leading-tight">多言語翻訳 &<br className="hidden md:block" />インバウンド対応</h3>
+                            </div>
+                            <p className="text-slate-600 text-sm mt-4 md:mt-2 mb-4">
                                 日本語の投稿から、英語・中国語・韓国語をワンタップで生成。外国人観光客へのアピールも自動化できます。
                             </p>
                             <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
@@ -1157,11 +1172,13 @@ open11:00-close 17:00
                                 <div className="text-[10px] text-slate-500">Welcome to our cafe...</div>
                             </div>
                         </div>
-                        <div className="bg-white rounded-[2rem] p-8 border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden group">
+                        <div className="bg-white rounded-[2rem] p-7 md:p-8 border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden group">
                             <div className="absolute bottom-0 left-0 w-full h-1 bg-sky-500" />
-                            <div className="w-12 h-12 bg-sky-100 text-sky-500 rounded-xl flex items-center justify-center mb-6"><Icons.History size={24} /></div>
-                            <h3 className="text-xl font-bold text-slate-900 mb-2">過去投稿の<br />スタイル同期</h3>
-                            <p className="text-slate-600 text-sm mb-4">
+                            <div className="flex flex-row md:flex-col items-center gap-4 md:gap-0 md:items-start">
+                                <div className="w-12 h-12 bg-sky-100 text-sky-500 rounded-xl flex items-center justify-center md:mb-6 shrink-0"><Icons.History size={24} /></div>
+                                <h3 className="text-lg md:text-xl font-bold text-slate-900 leading-tight">過去投稿の<br className="hidden md:block" />スタイル同期</h3>
+                            </div>
+                            <p className="text-slate-600 text-sm mt-4 md:mt-2 mb-4">
                                 過去数年分の投稿データを解析し、あなただけの「書き癖」データベースを構築。使えば使うほど精度が向上します。
                             </p>
                             <div className="flex items-center gap-2 mt-auto">
