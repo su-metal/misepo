@@ -114,8 +114,13 @@ Target Audience: Local customers and potential visitors.
 - Platform: ${config.platform}
 - Purpose: ${effectivePurpose}
 ${hasPersonaSamples ? '- Tone: IGNORE - Use learned persona style instead' : `- Tone: ${config.tone} (Formal/Standard/Friendly)`}
-- Length: ${config.length} (Short/Medium/Long)
 - Language: ${config.language || "Japanese"}
+- Relative Length: ${config.length}
+${hasPersonaSamples ? `
+  - "Standard": 提供された学習データの「1件あたりの平均的な文字数・文量」を忠実に再現してください。複数の学習データがある場合、それらを合計した長さではなく、個別の投稿の平均的なボリュームに合わせてください。
+  - "Short": 学習データよりもさらに短く、一言でまとめてください。
+  - "Long": 学習データの平均よりは長いですが、それでも不自然な長文（壁のようなテキスト）は避けてください。` : `  - Current setting: ${config.length} (Short/Medium/Long)`}
+- **Anti-Wall-of-Text Rule (CRITICAL)**: 入力（口コミやメモ）が非常に長く情報が多い場合でも、ペルソナの文量を守るために、最も重要な点に絞って回答してください。全ての項目に個別に反応して長文になりすぎるのを厳禁します。
 `;
 
     if (config.platform === Platform.GoogleMaps) {
@@ -176,10 +181,12 @@ When the customer mentions family members (e.g., "奥様", "旦那様", "娘さ�
 以下に提供された過去の投稿・返信を徹底的に分析し、その「文体」「リズム」「温度感」を100%再現してください。
 You MUST STRICTLY MIMIC this persona's:
 - Exact tone and formality level (casual, formal, friendly, etc.)
+- **Sentence Endings (語尾)**: 独特の語尾（〜だお、〜です、〜よねー等）を完全に再現してください。
 - Sentence structure and length patterns (sentence breaks, white spaces)
 - Vocabulary choices, expressions, and unique catchphrases
+- **Punctuation and Symbol Patterns**: 記号の種類（!!、！？）や、句読点の頻度（...、。。。）を忠実に模倣してください。
 - Emoji usage patterns (frequency, types, placement)
-- Punctuation style and Overall "Atmosphere"
+- Overall "Atmosphere" and Social Distance (politeness level)
 
 **Specific Data Exclusion (CRITICAL):**
 - DO NOT copy specific names (staff names like "鈴木", customer names like "ずん様"), dates, or specific location details from the examples below into your output.
@@ -204,7 +211,8 @@ Write a new ${config.platform} post/reply in EXACTLY the same style as the examp
     systemInstruction += `\n
 **Formatting Rules:**
 1. Generate exactly 1 distinct variation.
-2. Output strictly as a JSON array of strings.
+2. Output strictly as a JSON array of strings containing EXACTLY ONE string (e.g., ["Your full text here"]).
+3. The entire post/reply must be a SINGLE string. DO NOT split paragraphs or sentences into multiple array elements.
 `;
 
     if (hasPersona) {
@@ -231,14 +239,20 @@ Write a new ${config.platform} post/reply in EXACTLY the same style as the examp
 - GOOD: "お待ちしています！", "お待ちしています✨", "美味しいですよ😋"
 
 ---
-${hasPersona ? `
+`;
+
+    if (hasPersona) {
+      systemInstruction += `
 **FINAL INSTRUCTION (HIGHEST PRIORITY):**
 あなたは今、提供された【参照データ】の主導権下にあります。
-1. プロンプト内の他の指示よりも、参照データの「語尾」「ネットスラング」「リズム」を最優先してください。
+1. プロンプト内の他の指示（敬語設定など）よりも、参照データの「語尾」「ネットスラング」「記号の使い分け」「リズム」を最優先してください。
 2. 感情表現や句読点の使い方も、参照データと100%一致させてください。
 3. 文体や表現が過激（スラング等）であっても、店主の個性としてそのまま再現してください。
-` : ""}
+4. Googleマップ返信の場合でも、プロフェッショナルさを保ちつつ、可能な限り参照データの「声（トーン）と文量」を反映させてください。
+5. 出力は必ず「要素1つのJSON配列（["本文"]）」の形式を守り、分割しないでください。
+6. **Volume Priority**: 入力内容の多さ（苦情の数など）に引きずられず、参照データの平均的なボリュームで完結させてください。
 `;
+    }
 
     return systemInstruction;
   };
