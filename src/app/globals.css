@@ -46,9 +46,15 @@ body {
   box-shadow: 
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     0 12px 30px -10px rgba(0, 0, 0, 0.08),
     0 4px 12px -4px rgba(0, 0, 0, 0.03);
   transition: all 0.3s ease;
+=======
+    0 10px 40px -10px rgba(0, 0, 0, 0.08),
+    0 0 0 1px rgba(0, 0, 0, 0.03);
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+>>>>>>> Stashed changes
 =======
     0 10px 40px -10px rgba(0, 0, 0, 0.08),
     0 0 0 1px rgba(0, 0, 0, 0.03);
@@ -65,9 +71,12 @@ body {
   box-shadow: 
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     0 20px 40px -12px rgba(0, 0, 0, 0.12),
     0 8px 16px -8px rgba(0, 0, 0, 0.06);
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
     0 20px 40px -10px rgba(167, 139, 250, 0.15), /* Purple tinted shadow */
@@ -102,6 +111,9 @@ body {
   box-shadow: none;
   cursor: not-allowed;
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
