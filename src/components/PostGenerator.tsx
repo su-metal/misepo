@@ -227,30 +227,29 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
 
       {/* Sticky Generation Footer */}
       <div className="fixed bottom-0 left-0 right-0 z-[90]">
-        <div className="absolute inset-x-0 bottom-0 h-24 md:h-32 bg-gradient-to-t from-white via-white/90 to-transparent pointer-events-none" />
+        <div className="absolute inset-x-0 bottom-0 h-24 md:h-32 bg-gradient-to-t from-[#EDE9FE] via-[#EDE9FE]/90 to-transparent pointer-events-none" />
         <div className="relative px-4 py-3 pb-8 md:pb-12 safe-area-bottom flex items-center justify-center">
           <button
             onClick={handleGenerate}
             disabled={flow.loading || !flow.inputText.trim()}
-            className={`w-full max-w-xl py-6 md:py-8 rounded-full font-black text-lg md:text-2xl tracking-[0.2em] transition-all flex items-center justify-center gap-3 md:gap-5 active:scale-[0.98] shadow-2xl group
+            className={`w-full max-w-xl py-6 md:py-8 rounded-2xl font-black text-lg md:text-2xl tracking-[0.2em] flex items-center justify-center gap-3 md:gap-5 group
                 ${flow.loading || !flow.inputText.trim()
-                ? 'bg-slate-100/90 backdrop-blur-sm text-slate-400 border border-slate-200 cursor-not-allowed'
-                : 'bg-gradient-to-r from-[#4F46E5] to-[#9333EA] text-white hover:shadow-[0_8px_40px_rgba(79,70,229,0.5)] border border-white/20'
+                ? 'bg-slate-200 text-slate-400 border-2 border-slate-300 cursor-not-allowed'
+                : 'btn-pop'
               }`}
           >
             <div className="flex items-center justify-center gap-3 md:gap-5 relative z-10">
               {flow.loading ? (
                 <>
-                  <div className="w-6 h-6 md:w-8 md:h-8 border-4 border-white/20 border-t-white rounded-full animate-spin"></div>
+                  <div className="w-6 h-6 md:w-8 md:h-8 border-4 border-slate-400 border-t-slate-600 rounded-full animate-spin"></div>
                   <span className="opacity-80">PROCESSING...</span>
                 </>
               ) : (
                 <>
                   <div className="relative">
-                    <SparklesIcon className="w-6 h-6 md:w-8 md:h-8 group-hover:rotate-12 transition-transform" />
-                    <div className="absolute inset-0 bg-white/50 blur-lg animate-ping-slow opacity-50" />
+                    <SparklesIcon className="w-6 h-6 md:w-8 md:h-8 group-hover:rotate-12 transition-transform text-primary" />
                   </div>
-                  <span className="drop-shadow-sm uppercase">Generate Post</span>
+                  <span className="drop-shadow-none uppercase text-primary">Generate Post</span>
                 </>
               )}
             </div>
