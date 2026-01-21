@@ -26,6 +26,7 @@ interface PostResultTabsProps {
     isRefining: boolean;
     includeFooter: boolean;
     onIncludeFooterChange: (val: boolean) => void;
+    presetId?: string; // Add presetId
 }
 
 export const PostResultTabs: React.FC<PostResultTabsProps> = ({
@@ -46,7 +47,8 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
     onPerformRefine,
     isRefining,
     includeFooter,
-    onIncludeFooterChange
+    onIncludeFooterChange,
+    presetId,
 }) => {
     const [previewState, setPreviewState] = React.useState<{ isOpen: boolean, platform: Platform, text: string } | null>(null);
 
@@ -229,6 +231,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                             <FavoriteButton
                                                                 platform={res.platform}
                                                                 text={text}
+                                                                presetId={presetId}
                                                             />
                                                         </div>
                                                         <div className="bg-slate-50 px-5 py-2 rounded-full border border-slate-100">
@@ -327,12 +330,18 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
     );
 };
 
-const FavoriteButton = ({ platform, text }: { platform: Platform, text: string }) => {
+const FavoriteButton = ({ platform, text, presetId }: { platform: Platform, text: string, presetId?: string }) => {
     const [isFavorited, setIsFavorited] = React.useState(false);
     const [isLoading, setIsLoading] = React.useState(false);
 
     const handleToggle = async () => {
         if (isLoading) return;
+
+        if (!presetId) {
+            alert("プリセットが選択されていません");
+            return;
+        }
+
         setIsLoading(true);
 
         const newState = !isFavorited;
@@ -341,29 +350,19 @@ const FavoriteButton = ({ platform, text }: { platform: Platform, text: string }
 
         try {
             const method = newState ? 'POST' : 'DELETE';
-            // For DELETE, we send content as param. For POST, as body.
-            // Simplified: This MVP component assumes 'text' is unique enough per user or handles exact match deletion.
-            // API expects content in body for POST, query param for DELETE.
-
             let url = '/api/me/learning';
             if (!newState) {
-                const params = new URLSearchParams({ content: text });
+                const params = new URLSearchParams({ content: text }); // DELETE needs content to identify
                 url += `?${params.toString()}`;
             }
 
             const res = await fetch(url, {
                 method,
                 headers: { 'Content-Type': 'application/json' },
-                body: newState ? JSON.stringify({ content: text, platform }) : undefined
+                body: newState ? JSON.stringify({ content: text, platform, presetId }) : undefined
             });
 
             if (!res.ok) throw new Error('Failed');
-
-            // Show Toast (Simple alert for now, can be replaced with proper toast lib)
-            if (newState) {
-                // Ideally use a toast library here.
-                // console.log("Saved to learning data");
-            }
         } catch (e) {
             console.error(e);
             setIsFavorited(!newState); // Revert

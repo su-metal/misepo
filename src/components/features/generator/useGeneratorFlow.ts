@@ -256,6 +256,7 @@ export function useGeneratorFlow(props: {
             config,
             save_history: targetPlatforms.length === 1,
             run_type: "generation",
+            presetId: activePresetId // Include presetId in the request body
           }),
         });
 

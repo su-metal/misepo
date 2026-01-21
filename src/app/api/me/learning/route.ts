@@ -11,17 +11,18 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { content, platform } = body;
+    const { content, platform, presetId } = body;
 
-    if (!content || !platform) {
-      return NextResponse.json({ error: 'Missing content or platform' }, { status: 400 });
+    if (!content || !platform || !presetId) {
+      return NextResponse.json({ error: 'Missing content, platform, or presetId' }, { status: 400 });
     }
 
-    // Check if duplicate content already exists for this user to avoid spamming same text
+    // Check if duplicate content already exists for this user AND preset
     const { data: existing } = await supabase
       .from('learning_sources')
       .select('id')
       .eq('user_id', user.id)
+      .eq('preset_id', presetId)
       .eq('content', content)
       .single();
 
@@ -35,6 +36,7 @@ export async function POST(req: NextRequest) {
         user_id: user.id,
         content,
         platform,
+        preset_id: presetId
       })
       .select('id')
       .single();
