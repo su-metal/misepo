@@ -119,8 +119,8 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
     <div className="min-h-screen text-slate-100 overflow-x-hidden">
 
       <div className="max-w-[1400px] mx-auto py-4 sm:py-8 relative z-10">
-        {/* Header Module - Solid Section Card */}
-        <div className="section-card mx-3 sm:mx-8 mb-6 p-4 sm:p-6 transition-all duration-1000 animate-in fade-in slide-in-from-top-4">
+        {/* Header Module */}
+        <div className="mx-3 sm:mx-8 mb-6 transition-all duration-1000 animate-in fade-in slide-in-from-top-4">
           <GeneratorHeader
             onOpenHistory={onOpenHistory || (() => { })}
             storeProfile={storeProfile}
