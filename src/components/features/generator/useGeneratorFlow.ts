@@ -262,7 +262,7 @@ export function useGeneratorFlow(props: {
         const data = await res.json();
         if (!res.ok || !data.ok) throw new Error(data.error ?? "Generate failed");
 
-        const content = data.result as string[];
+        const content = (data.result as string[]).map(t => t.replace(/\\n/g, '\n'));
         latestRunId = data.run_id?.toString() || null;
 
         let finalContent = content;
@@ -316,7 +316,7 @@ export function useGeneratorFlow(props: {
     setResultGroups(prev => {
       const next = [...prev];
       const nextData = [...next[gIdx].data];
-      nextData[iIdx] = text;
+      nextData[iIdx] = text.replace(/\\n/g, '\n');
       next[gIdx] = { ...next[gIdx], data: nextData };
       return next;
     });
@@ -368,7 +368,7 @@ export function useGeneratorFlow(props: {
       setResultGroups(prev => {
         const next = [...prev];
         const nextData = [...next[gIdx].data];
-        nextData[iIdx] = data.result;
+        nextData[iIdx] = data.result.replace(/\\n/g, '\n');
         next[gIdx] = { ...next[gIdx], data: nextData };
         return next;
       });
