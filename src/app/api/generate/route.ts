@@ -107,11 +107,32 @@ export async function POST(req: Request) {
 
   let savedRunId: string | null = null;
 
+  // Extract presetId from body (it's passed as part of generation context)
+  const presetId = body.presetId as string | undefined;
+
   console.debug("Generating content for user", userId);
 
   try {
     const isPro = true; // Auth already checked above
-    const result = await generateContent(profile, config, isPro);
+    
+    // Fetch learning sources (favorites) - Filter by presetId
+    let learningSamples: string[] = [];
+    if (userId && presetId) {
+      const { data: learningData } = await supabase
+        .from('learning_sources')
+        .select('content')
+        .eq('user_id', userId)
+        .eq('preset_id', presetId)
+        .order('created_at', { ascending: false })
+        .limit(5);
+
+      if (learningData && learningData.length > 0) {
+        learningSamples = learningData.map((item: any) => item.content);
+        console.log(`[LEARNING] Fetched ${learningSamples.length} favorited samples for preset ${presetId}`);
+      }
+    }
+
+    const result = await generateContent(profile, config, isPro, learningSamples);
 
     if (userId) {
       const runType =

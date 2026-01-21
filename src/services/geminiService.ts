@@ -80,7 +80,8 @@ function getServerAI() {
 export const generateContent = async (
   profile: StoreProfile,
   config: GenerationConfig,
-  isPro: boolean
+  isPro: boolean,
+  learningSamples?: string[] 
 ): Promise<string[]> => {
   const modelName = getModelName(isPro);
   const maxRetries = 3;
@@ -110,11 +111,23 @@ export const generateContent = async (
 
   const currentSample = getPlatformSample(config.post_samples as any, config.platform);
   const hasPersonaSamples = !!(currentSample && currentSample.trim());
-  const hasPersona = hasPersonaSamples || !!(config.customPrompt && config.customPrompt.trim());
+  const hasLearningSamples = learningSamples && learningSamples.length > 0;
+  const hasPersona = hasPersonaSamples || !!(config.customPrompt && config.customPrompt.trim()) || hasLearningSamples;
 
   const buildSystemInstruction = () => {
     if (hasPersona) {
       // --- Persona Mode (High Precision Mimicry) ---
+      let learningContext = "";
+      if (hasLearningSamples) {
+          learningContext = `
+【重要：スタイル学習用データ（厳守）】
+以下は「ユーザーが好む文体見本」です。ここからコピーしてよいのは「文体・口調・リズム・絵文字の頻度」**のみ**です。
+- **禁止**: この見本の中に書かれている「具体的な内容（メニュー名、日付、エピソードなど）」を、今回の生成に混入させることは**絶対禁止**です。
+- **指示**: あくまで「書き方」だけを真似て、内容は「今回のメモ」だけで構成してください。
+${learningSamples.join("\n---\n")}
+`;
+      }
+
       const personaInstructions = `
 あなたは、以下の【過去の投稿ログ】の主になりきる「AI代筆職人」です。
 
@@ -124,6 +137,7 @@ export const generateContent = async (
 3. **行の長さの完全同期（ポエム化の防止）**:
    - サンプルの**「1行あたりの文字数」**を分析し、それに合わせてください。
    - **ケースA（長い行）**: サンプルが「20文字前後で改行」している場合、あなたも同様に長く続けてください。
+     - **禁止**: 「読点（、）」の直後で毎回改行することは**厳禁**です。
      - **禁止**: 「ひとつめは（改行）」「優しい甘さの（改行）」のように、短いフレーズで細かく切る（ポエム風にする）ことは**厳禁**です。
    - **ケースB（短い行）**: サンプルが「5〜10文字で細かく改行」している場合のみ、あなたも短く切ってください。
 
@@ -139,7 +153,10 @@ export const generateContent = async (
 - X (Twitter)の場合は、ハッシュタグは最小限（1〜2個程度、最大3個まで）に留めてください。
 
 【過去の投稿ログ】:
-${currentSample || "（カスタムプロンプトに基づき、職人として振る舞ってください）"}
+【過去の投稿ログ】:
+${currentSample || "（カスタムプロンプトまたは学習データに基づき、職人として振る舞ってください）"}
+
+${learningContext}
 
 【今回のメモ】:
 "${config.inputText}"

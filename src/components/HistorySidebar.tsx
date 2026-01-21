@@ -1,6 +1,6 @@
 import React from 'react';
 import { GeneratedPost, Platform, GeneratedResult, StoreProfile } from '../types';
-import { CloseIcon, XIcon, InstagramIcon, GoogleMapsIcon, LockIcon, TrashIcon, HistoryIcon, HelpIcon, LogOutIcon, ChevronDownIcon } from './Icons';
+import { CloseIcon, XIcon, InstagramIcon, GoogleMapsIcon, LockIcon, TrashIcon, HistoryIcon, HelpIcon, LogOutIcon, ChevronDownIcon, StarIcon } from './Icons';
 
 interface HistorySidebarProps {
   history: GeneratedPost[];
@@ -15,6 +15,8 @@ interface HistorySidebarProps {
   onOpenAccount?: () => void;
   onLogout?: () => void;
   storeProfile?: StoreProfile | null;
+  favorites: Set<string>;
+  onToggleFavorite: (text: string, platform: Platform, presetId: string | null) => Promise<void>;
 }
 
 const HistorySidebar: React.FC<HistorySidebarProps> = ({
@@ -29,9 +31,41 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
   onOpenSettings,
   onOpenAccount,
   onLogout,
-  storeProfile
+  storeProfile,
+  favorites,
+  onToggleFavorite
 }) => {
-  const displayHistory = history;
+  const [showFavoritesOnly, setShowFavoritesOnly] = React.useState(false);
+
+  // Helper to pick representative text
+  const pickFirstText = (item: GeneratedPost): string => {
+    if (Array.isArray(item.results) && item.results.length > 0) {
+      const group = item.results.find(
+        (group) => group && Array.isArray(group.data) && group.data.length > 0
+      );
+      if (group) {
+        const validEntry = group.data.find(
+          (entry) => typeof entry === "string" && entry.trim()
+        );
+        if (typeof validEntry === "string") return validEntry;
+      }
+    }
+    return "";
+  };
+
+  // Helper to check if ANY text in the history item is favorited
+  const checkIfFavorited = React.useCallback((item: GeneratedPost) => {
+    if (!item.results) return false;
+    // Flatten all data arrays
+    const allTexts = item.results.flatMap(r => r.data || []);
+    // Check if any text is in favorites (using trim for robustness)
+    return allTexts.some(text => text && favorites.has(text.trim()));
+  }, [favorites]);
+
+  const displayHistory = React.useMemo(() => {
+    if (!showFavoritesOnly) return history;
+    return history.filter(item => checkIfFavorited(item));
+  }, [history, showFavoritesOnly, checkIfFavorited]);
 
   const getPlatformIcon = (p: Platform) => {
     switch (p) {
@@ -132,11 +166,24 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
 
         {/* Content Segment: History */}
         <div className="flex-1 overflow-y-auto overscroll-contain p-6 md:p-8 relative z-10 space-y-6 no-scrollbar bg-slate-50/30">
-          <div className="flex items-center gap-3 px-2">
-            <div className="p-2 bg-white rounded-lg shadow-sm border border-slate-100">
-              <HistoryIcon className="w-4 h-4 text-slate-400" />
+          <div className="flex items-center justify-between px-2">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-white rounded-lg shadow-sm border border-slate-100">
+                <HistoryIcon className="w-4 h-4 text-slate-400" />
+              </div>
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">History</span>
             </div>
-            <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">History Archive</span>
+
+            <button
+              onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] font-bold border transition-all ${showFavoritesOnly
+                ? 'bg-yellow-50 border-yellow-200 text-yellow-600 shadow-sm'
+                : 'bg-white border-slate-200 text-slate-400 hover:text-slate-600'
+                }`}
+            >
+              <StarIcon className={`w-3 h-3 ${showFavoritesOnly ? 'fill-yellow-500 text-yellow-500' : ''}`} />
+              Favorites Only
+            </button>
           </div>
 
           <div className="space-y-4">
@@ -150,24 +197,14 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                 </div>
               ) : (
                 displayHistory.map((item, idx) => {
-                  const pickFirstText = (results: GeneratedResult[] | unknown): string => {
-                    if (Array.isArray(results) && results.length > 0) {
-                      const group = (results as GeneratedResult[]).find(
-                        (group) => group && Array.isArray(group.data) && group.data.length > 0
-                      );
-
-                      if (group) {
-                        const validEntry = group.data.find(
-                          (entry) => typeof entry === "string" && entry.trim()
-                        );
-                        if (typeof validEntry === "string") return validEntry;
-                      }
-                    }
-                    return typeof results === "string" ? results : "";
-                  };
-
-                  const firstResult = pickFirstText(item.results);
+                  const firstResult = pickFirstText(item);
                   const previewText = (firstResult && firstResult.trim()) || item.config.inputText || "...";
+
+                  // Check if this card contains ANY favorited text
+                  const isFavorited = checkIfFavorited(item);
+
+                  // Extract platform for favorite toggle (use first platform of generation)
+                  const primaryPlatform = item.config.platforms[0] || Platform.Instagram;
 
                   return (
                     <div
@@ -199,6 +236,34 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                       >
                         <TrashIcon className="w-4 h-4" />
                       </button>
+
+                      {/* Favorite Button */}
+                      {firstResult && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            // Logic: If already favorited (any text), we assume user wants to UNFAVORITE the matched one(s).
+                            // Ideally we find WHICH one is favorited.
+                            if (isFavorited) {
+                              // Find the text that is favorited
+                              const allTexts = item.results.flatMap(r => r.data || []);
+                              const favoritedText = allTexts.find(t => favorites.has(t?.trim()));
+                              if (favoritedText) {
+                                onToggleFavorite(favoritedText.trim(), primaryPlatform, item.config.presetId || null);
+                              }
+                            } else {
+                              // If not favorited, favorite the primary/preview text
+                              onToggleFavorite(firstResult.trim(), primaryPlatform, item.config.presetId || null);
+                            }
+                          }}
+                          className={`absolute bottom-6 right-6 w-9 h-9 flex items-center justify-center rounded-full border transition-all shadow-sm z-20 ${isFavorited
+                            ? 'bg-white border-yellow-200 text-yellow-500 shadow-yellow-100'
+                            : 'bg-white border-slate-100 text-slate-300 hover:text-yellow-400 hover:border-yellow-200 opacity-0 group-hover:opacity-100 transform scale-90 group-hover:scale-100'
+                            }`}
+                        >
+                          <StarIcon className={`w-4 h-4 ${isFavorited ? 'fill-yellow-500' : ''}`} />
+                        </button>
+                      )}
                     </div>
                   );
                 })

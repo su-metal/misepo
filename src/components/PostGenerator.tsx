@@ -213,6 +213,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
                 isRefining={flow.isRefining}
                 includeFooter={flow.includeFooter}
                 onIncludeFooterChange={flow.setIncludeFooter}
+                presetId={flow.activePresetId}
               />
             </div>
           </div>
