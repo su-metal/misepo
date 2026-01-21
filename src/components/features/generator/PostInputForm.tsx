@@ -204,12 +204,6 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
         }
     }, [isGoogleMaps, postPurpose, onPostPurposeChange]);
 
-    // Force Auto Purpose when Rating is selected
-    React.useEffect(() => {
-        if (isGoogleMaps && starRating !== null && gmapPurpose !== GoogleMapPurpose.Auto) {
-            onGmapPurposeChange(GoogleMapPurpose.Auto);
-        }
-    }, [isGoogleMaps, starRating, gmapPurpose, onGmapPurposeChange]);
 
     return (
         <div className="flex flex-col">

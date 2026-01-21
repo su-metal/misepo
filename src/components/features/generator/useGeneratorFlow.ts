@@ -122,15 +122,7 @@ export function useGeneratorFlow(props: {
 
   const handleStarRatingChange = (rating: number) => {
     setStarRating(rating);
-    // Auto-judgment logic:
-    // 4-5 stars -> Thanks
-    // 1-2 stars -> Apology
-    // 3 stars -> Thanks (usually neutral/minor issues)
-    if (gmapPurpose === GoogleMapPurpose.Auto || gmapPurpose === GoogleMapPurpose.Thanks || gmapPurpose === GoogleMapPurpose.Apology) {
-      if (rating >= 4) setGmapPurpose(GoogleMapPurpose.Thanks);
-      else if (rating <= 2) setGmapPurpose(GoogleMapPurpose.Apology);
-      else setGmapPurpose(GoogleMapPurpose.Thanks);
-    }
+    setGmapPurpose(GoogleMapPurpose.Auto);
   };
 
   const handleSetActivePlatform = (p: Platform) => {

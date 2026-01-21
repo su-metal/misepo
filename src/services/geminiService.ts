@@ -91,8 +91,15 @@ export const generateContent = async (
   const hasPersona = hasPersonaSamples || !!(config.customPrompt && config.customPrompt.trim());
 
   const buildSystemInstruction = () => {
+    const getAutoPurposeDescription = () => {
+      if (config.platform === Platform.GoogleMaps) {
+        return "Auto-Detect (Determine if the response should be a Thank-you, Apology, or Explanation based on the star rating and review content)";
+      }
+      return "Auto-Detect (Analyze the input text and infer the most appropriate purpose, e.g., Promotion, Story, or Engagement)";
+    };
+
     const effectivePurpose = config.purpose === 'auto' 
-      ? "Auto-Detect (Analyze the input text and infer the most appropriate purpose, e.g., Promotion, Story, or Engagement)" 
+      ? getAutoPurposeDescription()
       : config.purpose;
 
     let systemInstruction = `
@@ -112,8 +119,16 @@ ${hasPersonaSamples ? '- Tone: IGNORE - Use learned persona style instead' : `- 
 `;
 
     if (config.platform === Platform.GoogleMaps) {
+      const risk = scoreRisk(config.starRating || 3, config.inputText);
+      if (risk.tier !== "low") {
+        systemInstruction += `\n**CRITICAL: Risk Analysis Detected (${risk.tier.toUpperCase()})**
+- This review has been flagged for: ${risk.signals.join(", ")}
+- You MUST address these specific concerns with extreme care and sincerity.
+- If it's a hygiene or legal concern, be professional and take it seriously.`;
+      }
       if (config.starRating) {
-        systemInstruction += `\n- Context: Replying to a customer review with a ${config.starRating}-star rating. Adjust the gratitude/apology level accordingly.`;
+        systemInstruction += `\n- Context: Replying to a customer review with a ${config.starRating}-star rating.
+- Judgment: Based on the ${config.starRating}-star rating and text, this is a ${config.starRating <= 2 ? 'NEGATIVE (Apology required)' : (config.starRating >= 4 ? 'POSITIVE (Gratitude focus)' : 'NEUTRAL')} review. Adjust your tone accordingly.`;
       }
       if (config.purpose === GoogleMapPurpose.Apology) {
         systemInstruction += `\n- Focus: Sincere apology, explanation of improvement, and inviting them back.`;
@@ -126,9 +141,11 @@ When the customer mentions family members (e.g., "奥様", "旦那様", "娘さ�
 - NEVER repeat the customer's honorifics when referring to your own side.
 
 **Anti-Echoing & Natural Conversation Rule (CRITICAL):**
-- DO NOT repeat the customer's input verbatim (e.g., "14時頃のお食事処をお探しの中" / "Searching for a place around 2 PM"). This sounds like a bot.
-- Instead, convert the customer's situation into "empathy" or "shop-side context" (e.g., "ランチ難民になりやすいお時間でしたね、無事にお召し上がりいただけて良かったです" / "That's a tricky time for lunch, glad we could serve you").
-- If a customer mentions a specific detail (like a price or menu layout), explain the reason or share a positive "inside story" (e.g., "こだわり抜いた食材のため＋50円を頂戴しておりますが、喜んでいただけて何よりです").
+- DO NOT repeat the customer's input verbatim.
+- **NEVER apologize for situations outside the store's control** (e.g., traffic, weather, customers having trouble finding lunch elsewhere).
+  - BAD: "お店探しにご苦労をおかけし、申し訳ございませんでした" (Apologizing for their trouble)
+  - GOOD: "ランチ難民になりやすい時間帯ですが、当店を見つけていただき救世主になれて光栄です！" (Positive gratitude/empathy)
+- Convert the customer's negative context or struggles into "Gratitude for choosing us" or "Empathy without apology."
 - Talk like a human business owner welcoming a guest, not a summary tool.
 
 **Location-Based Greeting Rule (CRITICAL):**
