@@ -181,7 +181,10 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                 : 'bg-white border-slate-200 text-slate-400 hover:text-slate-600'
                 }`}
             >
-              <StarIcon className={`w-3 h-3 ${showFavoritesOnly ? 'fill-yellow-500 text-yellow-500' : ''}`} />
+              <StarIcon
+                className={`w-3 h-3 ${showFavoritesOnly ? 'text-yellow-500' : ''}`}
+                fill={showFavoritesOnly ? "currentColor" : "none"}
+              />
               Favorites Only
             </button>
           </div>
@@ -257,11 +260,14 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                             }
                           }}
                           className={`absolute bottom-6 right-6 w-9 h-9 flex items-center justify-center rounded-full border transition-all shadow-sm z-20 ${isFavorited
-                            ? 'bg-white border-yellow-200 text-yellow-500 shadow-yellow-100'
-                            : 'bg-white border-slate-100 text-slate-300 hover:text-yellow-400 hover:border-yellow-200 opacity-0 group-hover:opacity-100 transform scale-90 group-hover:scale-100'
+                              ? 'bg-white border-yellow-200 text-yellow-500 shadow-yellow-100'
+                              : 'bg-white border-slate-100 text-slate-300 hover:text-yellow-400 hover:border-yellow-200 opacity-0 group-hover:opacity-100 transform scale-90 group-hover:scale-100'
                             }`}
                         >
-                          <StarIcon className={`w-4 h-4 ${isFavorited ? 'fill-yellow-500' : ''}`} />
+                          <StarIcon
+                            className="w-4 h-4"
+                            fill={isFavorited ? "currentColor" : "none"}
+                          />
                         </button>
                       )}
                     </div>
