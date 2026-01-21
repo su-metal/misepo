@@ -474,7 +474,7 @@ open11:00-close 17:00
                                 <a key={item} href={['#problem', '#features', '#demo', '#pricing'][i]} className="block px-4 py-3 text-base font-bold text-slate-700 hover:bg-slate-50 rounded-xl transition-colors" onClick={() => setIsMenuOpen(false)}>{item}</a>
                             ))}
                             <div className="pt-4 flex flex-col gap-3 px-4">
-                                <button className="w-full bg-indigo-50 text-indigo-700 px-5 py-3.5 rounded-xl font-bold hover:bg-indigo-100 transition-colors">ログイン</button>
+                                <button onClick={() => loginWithGoogle('login')} className="w-full bg-indigo-50 text-indigo-700 px-5 py-3.5 rounded-xl font-bold hover:bg-indigo-100 transition-colors">ログイン</button>
                                 <button onClick={() => window.location.href = '/start'} className="w-full bg-indigo-600 text-white px-5 py-3.5 rounded-xl font-bold shadow-lg shadow-indigo-200">無料で始める</button>
                             </div>
                         </div>
@@ -485,7 +485,7 @@ open11:00-close 17:00
             {/* New Hero Section (Auto-Loop Animation) */}
             <div className="relative z-10 h-auto">
                 <div
-                    className="relative h-[150vh] md:h-screen w-full overflow-hidden flex flex-col"
+                    className="relative h-[110vh] md:h-screen w-full overflow-hidden flex flex-col"
                 >
                     <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/50 via-white to-purple-50/50" />
 
@@ -504,6 +504,15 @@ open11:00-close 17:00
                             MisePoはあなたの「書き癖」を学習し、<br />
                             店主の『分身』としてSNS運用を代行します。
                         </p>
+                        <div className="flex flex-col gap-3 max-w-sm mx-auto mt-8 px-4">
+                            <button onClick={() => window.location.href = '/start'} className="w-full px-6 py-3.5 bg-slate-900 text-white rounded-full font-bold hover:bg-slate-800 transition-all shadow-lg shadow-slate-900/20 flex items-center justify-center gap-2">
+                                <Icons.Sparkles size={18} className="text-yellow-400" />
+                                無料で試してみる
+                            </button>
+                            <button onClick={() => window.location.href = '#pricing'} className="w-full px-6 py-3.5 bg-white text-slate-900 rounded-full font-bold border-2 border-slate-100 hover:border-slate-200 hover:bg-slate-50 transition-all">
+                                料金プラン
+                            </button>
+                        </div>
                     </div>
 
                     {/* Desktop Text (Absolute) */}
@@ -530,15 +539,15 @@ open11:00-close 17:00
                                 <Icons.Sparkles size={20} className="text-yellow-400" />
                                 無料で試してみる
                             </button>
-                            <button className="px-8 py-4 bg-white text-slate-900 rounded-full font-bold border-2 border-slate-100 hover:border-slate-200 hover:bg-slate-50 transition-all">
+                            <button onClick={() => window.location.href = '#pricing'} className="px-8 py-4 bg-white text-slate-900 rounded-full font-bold border-2 border-slate-100 hover:border-slate-200 hover:bg-slate-50 transition-all">
                                 料金プラン
                             </button>
                         </div>
                     </div>
 
                     {/* Phone Animation Container */}
-                    <div className="absolute inset-0 md:left-1/3 flex items-start md:items-center justify-center pointer-events-none pt-[22rem] md:pt-0">
-                        <div className="relative w-[300px] h-[600px] scale-90 md:scale-100 origin-center">
+                    <div className="absolute inset-0 md:left-1/3 flex items-start md:items-center justify-center pointer-events-none pt-[32rem] md:pt-0">
+                        <div className="relative w-[300px] h-[600px] scale-[0.55] md:scale-100 origin-top md:origin-center">
 
                             {/* CENTER PHONE (MisePo) */}
                             <div
@@ -827,18 +836,7 @@ open11:00-close 17:00
                         </div>
                     </div>
 
-                    {/* Mobile CTA Buttons (Below Phone) */}
-                    <div className="md:hidden absolute top-[62rem] left-0 right-0 px-4 z-20">
-                        <div className="flex flex-col gap-3 max-w-sm mx-auto">
-                            <button onClick={() => window.location.href = '/start'} className="w-full px-6 py-3.5 bg-slate-900 text-white rounded-full font-bold hover:bg-slate-800 transition-all shadow-lg shadow-slate-900/20 flex items-center justify-center gap-2">
-                                <Icons.Sparkles size={18} className="text-yellow-400" />
-                                無料で試してみる
-                            </button>
-                            <button className="w-full px-6 py-3.5 bg-white text-slate-900 rounded-full font-bold border-2 border-slate-100 hover:border-slate-200 hover:bg-slate-50 transition-all">
-                                料金プラン
-                            </button>
-                        </div>
-                    </div>
+
                 </div>
             </div>
 
@@ -866,13 +864,15 @@ open11:00-close 17:00
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
                         {problems.map((prob, index) => (
-                            <div key={index} className="group relative bg-white rounded-[2rem] p-8 border border-slate-100 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-2 transition-all duration-300 flex flex-col items-center text-center">
-                                <div className={`w-16 h-16 rounded-2xl ${prob.bg} flex items-center justify-center mb-6 text-white shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300`}>
-                                    {prob.icon}
+                            <div key={index} className="group relative bg-white rounded-[2rem] p-6 md:p-8 border border-slate-100 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-2 transition-all duration-300">
+                                <div className="flex flex-row md:flex-col items-center md:text-center gap-4 md:gap-0">
+                                    <div className={`w-12 h-12 md:w-16 md:h-16 rounded-2xl ${prob.bg} flex items-center justify-center md:mb-6 text-white shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shrink-0`}>
+                                        {React.cloneElement(prob.icon, { size: isMobile ? 24 : 28 })}
+                                    </div>
+                                    <h3 className="text-lg md:text-xl font-bold text-slate-900 whitespace-pre-line leading-tight">{prob.title}</h3>
                                 </div>
-                                <h3 className="text-xl font-bold text-slate-900 mb-4 whitespace-pre-line leading-tight">{prob.title}</h3>
-                                <div className="h-px w-12 bg-slate-100 mb-4 group-hover:w-full group-hover:bg-indigo-100 transition-all duration-500" />
-                                <p className="text-sm text-slate-500 leading-relaxed">{prob.desc}</p>
+                                <div className="h-px w-full bg-slate-100 my-4 md:my-4 group-hover:bg-indigo-100 transition-all duration-500" />
+                                <p className="text-sm text-slate-500 leading-relaxed md:text-center">{prob.desc}</p>
                             </div>
                         ))}
                     </div>
@@ -957,7 +957,7 @@ open11:00-close 17:00
             </section>
 
             {/* Solution (Benefits) */}
-            <section id="features" className="py-16 md:py-24 bg-slate-900 text-white overflow-hidden relative" >
+            <section id="solution" className="py-16 md:py-24 bg-slate-900 text-white overflow-hidden relative" >
                 <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
                     <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-indigo-500/20 rounded-full blur-[100px]" />
                     <div className="absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] bg-purple-500/20 rounded-full blur-[100px]" />
@@ -969,51 +969,59 @@ open11:00-close 17:00
                             AIが、<br className="md:hidden" /><span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-pink-400">あなたの<br className="md:hidden" />『分身』になる。</span>
                         </h2>
                         <p className="text-slate-400 text-lg max-w-2xl mx-auto leading-relaxed">
-                            MisePoは単なる<br className="md:hidden" />自動生成ツールではありません。<br />
-                            あなたの過去の投稿を学習し、まるで<br className="md:hidden" />あなたが書いたかのような文章を生み出します。
+                            MisePoは単なる自動生成ツール<br className="md:hidden" />ではありません。<br />
+                            あなたの過去の投稿を学習し、まるで<br className="md:hidden" />あなたが書いたかのような文章を<br className="md:hidden" />生み出します。
                         </p>
                     </div>
 
                     <div className="grid md:grid-cols-3 gap-8 lg:gap-12 max-w-6xl mx-auto mb-24">
-                        {/* Benefit 1: Learning (Step 1 Focus) */}
                         <div className="bg-slate-800/50 backdrop-blur-xl rounded-3xl p-6 md:p-8 border border-slate-700 relative group hover:border-indigo-500 hover:shadow-[0_0_20px_rgba(99,102,241,0.3)] transition-all duration-300">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-indigo-500/20 to-transparent rounded-bl-full opacity-50" />
-                            <div className="w-14 h-14 bg-indigo-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-indigo-900/20 mb-6 group-hover:scale-110 transition-transform duration-300">
-                                <Icons.Bot size={28} />
+                            <div className="flex flex-row md:flex-col items-center gap-4 md:gap-0">
+                                <div className="w-14 h-14 bg-indigo-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-indigo-900/20 md:mb-6 group-hover:scale-110 transition-transform duration-300 shrink-0">
+                                    <Icons.Bot size={28} />
+                                </div>
+                                <div className="flex flex-col md:items-start">
+                                    <div className="inline-block px-3 py-1 bg-indigo-500/20 text-indigo-300 rounded-full text-xs font-bold mb-1 md:mb-3 border border-indigo-500/30 w-fit">Step 1</div>
+                                    <h3 className="text-xl md:text-2xl font-bold">あなたの『書き癖』を学習</h3>
+                                </div>
                             </div>
-                            <div className="inline-block px-3 py-1 bg-indigo-500/20 text-indigo-300 rounded-full text-xs font-bold mb-3 border border-indigo-500/30">Step 1</div>
-                            <h3 className="text-2xl font-bold mb-3">あなたの『書き癖』を<br />学習</h3>
-                            <p className="text-slate-400 leading-relaxed">
-                                過去の投稿を数件読み込ませるだけで、MisePoがあなたのリズムをコピー。<br />
-                                <span className="text-white font-bold">過去の投稿がない方</span>は、理想のお店の文章を学習させることも可能です。
+                            <p className="text-slate-400 leading-relaxed mt-4 md:mt-0">
+                                過去の投稿の<span className="text-white font-bold">スクショをアップロードするだけ</span>。<br />
+                                面倒な連携やコピペは不要。画像からあなたの「口癖」や「絵文字の使い所」まで瞬時に学習します。
                             </p>
                         </div>
 
-                        {/* Benefit 2: Persona Switching */}
                         <div className="bg-slate-800/50 backdrop-blur-xl rounded-3xl p-6 md:p-8 border border-slate-700 relative group hover:border-pink-500 hover:shadow-[0_0_20px_rgba(236,72,153,0.3)] transition-all duration-300">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-pink-500/20 to-transparent rounded-bl-full opacity-50" />
-                            <div className="w-14 h-14 bg-pink-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-pink-900/20 mb-6 group-hover:scale-110 transition-transform duration-300">
-                                <Icons.Users size={28} />
+                            <div className="flex flex-row md:flex-col items-center gap-4 md:gap-0">
+                                <div className="w-14 h-14 bg-pink-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-pink-900/20 md:mb-6 group-hover:scale-110 transition-transform duration-300 shrink-0">
+                                    <Icons.Users size={28} />
+                                </div>
+                                <div className="flex flex-col md:items-start">
+                                    <div className="inline-block px-3 py-1 bg-pink-500/20 text-pink-300 rounded-full text-xs font-bold mb-1 md:mb-3 border border-pink-500/30 w-fit">Step 2</div>
+                                    <h3 className="text-xl md:text-2xl font-bold">「中の人」を自由自在に</h3>
+                                </div>
                             </div>
-                            <div className="inline-block px-3 py-1 bg-pink-500/20 text-pink-300 rounded-full text-xs font-bold mb-3 border border-pink-500/30">Step 2</div>
-                            <h3 className="text-2xl font-bold mb-3">「中の人」を<br />自由自在に</h3>
-                            <p className="text-slate-400 leading-relaxed">
+                            <p className="text-slate-400 leading-relaxed mt-4 md:mt-0">
                                 「熱い店長」「親しみやすい看板娘」など、投稿の目的に合わせて<span className="text-white font-bold">人格を切り替え</span>。<br />
                                 複数のスタッフで運営しているような多様性を。
                             </p>
                         </div>
 
-                        {/* Benefit 3: Review Replies */}
                         <div className="bg-slate-800/50 backdrop-blur-xl rounded-3xl p-6 md:p-8 border border-slate-700 relative group hover:border-green-500 hover:shadow-[0_0_20px_rgba(34,197,94,0.3)] transition-all duration-300">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-green-500/20 to-transparent rounded-bl-full opacity-50" />
-                            <div className="w-14 h-14 bg-green-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-green-900/20 mb-6 group-hover:scale-110 transition-transform duration-300">
-                                <Icons.Heart size={28} />
+                            <div className="flex flex-row md:flex-col items-center gap-4 md:gap-0">
+                                <div className="w-14 h-14 bg-green-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-green-900/20 md:mb-6 group-hover:scale-110 transition-transform duration-300 shrink-0">
+                                    <Icons.Heart size={28} />
+                                </div>
+                                <div className="flex flex-col md:items-start">
+                                    <div className="inline-block px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-xs font-bold mb-1 md:mb-3 border border-green-500/30 w-fit">Result</div>
+                                    <h3 className="text-xl md:text-2xl font-bold">クチコミ返信の「壁」を撤去</h3>
+                                </div>
                             </div>
-                            <div className="inline-block px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-xs font-bold mb-3 border border-green-500/30">Result</div>
-                            <h3 className="text-2xl font-bold mb-3">クチコミ返信の<br />「壁」を撤去</h3>
-                            <p className="text-slate-400 leading-relaxed">
-                                コピペするだけで、誠実であなたらしい返信案を<span className="text-white font-bold">30秒で作成</span>。<br />
-                                お客様との絆を深める時間を短縮します。
+                            <p className="text-slate-400 leading-relaxed mt-4 md:mt-0">
+                                生成された文章はアイコンをタップするだけで<span className="text-white font-bold">自動コピー</span>。各SNSの投稿画面へ直接ジャンプできるので、投稿作業が驚くほどスムーズになります。
                             </p>
                         </div>
                     </div>
@@ -1118,12 +1126,14 @@ open11:00-close 17:00
                         </p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[minmax(280px,auto)]">
-                        <div className="md:col-span-2 bg-white rounded-[2rem] p-8 md:p-10 border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden group">
+                        <div className="md:col-span-2 bg-white rounded-[2rem] p-6 md:p-10 border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden group">
                             <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-100 rounded-full blur-[80px] -mr-16 -mt-16 transition-opacity group-hover:opacity-70" />
                             <div className="relative z-10 flex flex-col h-full items-start">
-                                <div className="w-12 h-12 bg-gradient-to-tr from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center text-white mb-6 shadow-lg shadow-indigo-200"><Icons.Maximize2 size={24} /></div>
-                                <h3 className="text-2xl font-bold text-slate-900 mb-2">3大プラットフォーム<br className="md:hidden" />一括管理</h3>
-                                <p className="text-slate-600 mb-6 max-w-md">
+                                <div className="flex flex-row md:flex-col items-center gap-4 md:gap-0 md:items-start mb-6 md:mb-0">
+                                    <div className="w-11 h-11 md:w-12 md:h-12 bg-gradient-to-tr from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-200 shrink-0 md:mb-6"><Icons.Maximize2 size={isMobile ? 22 : 24} /></div>
+                                    <h3 className="text-xl md:text-2xl font-bold text-slate-900 leading-tight">3大プラットフォーム<br className="md:hidden" />一括管理</h3>
+                                </div>
+                                <p className="text-slate-600 text-sm md:text-base mb-6 max-w-md mt-4 md:mt-0">
                                     Instagram、X (Twitter)、Googleビジネスプロフィールの投稿・返信を1つのアプリで完結。
                                     <br />
                                     媒体ごとのアプリを行き来する手間をゼロにします。
@@ -1143,11 +1153,13 @@ open11:00-close 17:00
                                 </div>
                             </div>
                         </div>
-                        <div className="bg-white rounded-[2rem] p-8 border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden group">
+                        <div className="bg-white rounded-[2rem] p-7 md:p-8 border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden group">
                             <div className="absolute bottom-0 left-0 w-full h-1 bg-green-500" />
-                            <div className="w-12 h-12 bg-green-100 text-green-600 rounded-xl flex items-center justify-center mb-6"><Icons.Globe size={24} /></div>
-                            <h3 className="text-xl font-bold text-slate-900 mb-2">多言語翻訳 &<br />インバウンド対応</h3>
-                            <p className="text-slate-600 text-sm mb-4">
+                            <div className="flex flex-row md:flex-col items-center gap-4 md:gap-0 md:items-start">
+                                <div className="w-12 h-12 bg-green-100 text-green-600 rounded-xl flex items-center justify-center md:mb-6 shrink-0"><Icons.Globe size={24} /></div>
+                                <h3 className="text-xl md:text-2xl font-bold text-slate-900 leading-tight">多言語翻訳 &<br className="hidden md:block" />インバウンド対応</h3>
+                            </div>
+                            <p className="text-slate-600 text-sm md:text-base mt-4 md:mt-2 mb-4">
                                 日本語の投稿から、英語・中国語・韓国語をワンタップで生成。外国人観光客へのアピールも自動化できます。
                             </p>
                             <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
@@ -1159,11 +1171,13 @@ open11:00-close 17:00
                                 <div className="text-[10px] text-slate-500">Welcome to our cafe...</div>
                             </div>
                         </div>
-                        <div className="bg-white rounded-[2rem] p-8 border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden group">
+                        <div className="bg-white rounded-[2rem] p-7 md:p-8 border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden group">
                             <div className="absolute bottom-0 left-0 w-full h-1 bg-sky-500" />
-                            <div className="w-12 h-12 bg-sky-100 text-sky-500 rounded-xl flex items-center justify-center mb-6"><Icons.History size={24} /></div>
-                            <h3 className="text-xl font-bold text-slate-900 mb-2">過去投稿の<br />スタイル同期</h3>
-                            <p className="text-slate-600 text-sm mb-4">
+                            <div className="flex flex-row md:flex-col items-center gap-4 md:gap-0 md:items-start">
+                                <div className="w-12 h-12 bg-sky-100 text-sky-500 rounded-xl flex items-center justify-center md:mb-6 shrink-0"><Icons.History size={24} /></div>
+                                <h3 className="text-xl md:text-2xl font-bold text-slate-900 leading-tight">過去投稿の<br className="hidden md:block" />スタイル同期</h3>
+                            </div>
+                            <p className="text-slate-600 text-sm md:text-base mt-4 md:mt-2 mb-4">
                                 過去数年分の投稿データを解析し、あなただけの「書き癖」データベースを構築。使えば使うほど精度が向上します。
                             </p>
                             <div className="flex items-center gap-2 mt-auto">
@@ -1192,6 +1206,62 @@ open11:00-close 17:00
                                         <div className="text-xs text-slate-500 font-bold uppercase tracking-widest">Startup Time</div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>            {/* Seamless Posting Step */}
+            <section className="py-20 bg-white overflow-hidden" >
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center max-w-3xl mx-auto mb-16">
+                        <span className="text-indigo-600 font-bold tracking-wider text-sm uppercase mb-2 block">Seamless Workflow</span>
+                        <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-6 tracking-tight">
+                            「作成」から「投稿」まで、<br />
+                            <span className="gradient-text">流れるように。</span>
+                        </h2>
+                        <p className="text-slate-600 text-lg">
+                            文章をコピーする手間すら、MisePoが引き受けます。<br className="hidden md:block" />
+                            ボタン一押しで、各SNSの最適なページへあなたを案内します。
+                        </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        {/* X (Twitter) */}
+                        <div className="bg-slate-50 rounded-[2rem] p-8 border border-slate-100 hover:shadow-xl transition-all duration-300">
+                            <div className="w-12 h-12 bg-slate-900 text-white rounded-xl flex items-center justify-center mb-6 shadow-lg"><Icons.Twitter size={24} /></div>
+                            <h3 className="text-xl font-bold text-slate-900 mb-3">X (Twitter)</h3>
+                            <p className="text-slate-600 text-sm leading-relaxed mb-6">
+                                生成された文章が自動コピーされ、そのまま<span className="font-bold text-slate-900">投稿画面</span>が立ち上がります。あとは貼り付けて投稿ボタンを押すだけ。
+                            </p>
+                            <div className="inline-flex items-center gap-2 text-indigo-600 font-bold text-sm">
+                                <span>そのまま投稿画面へ</span>
+                                <Icons.ChevronDown size={14} className="-rotate-90" />
+                            </div>
+                        </div>
+
+                        {/* Instagram */}
+                        <div className="bg-slate-50 rounded-[2rem] p-8 border border-slate-100 hover:shadow-xl transition-all duration-300">
+                            <div className="w-12 h-12 bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 text-white rounded-xl flex items-center justify-center mb-6 shadow-lg"><Icons.Instagram size={24} /></div>
+                            <h3 className="text-xl font-bold text-slate-900 mb-3">Instagram</h3>
+                            <p className="text-slate-600 text-sm leading-relaxed mb-6">
+                                文章を保持した状態で<span className="font-bold text-slate-900">Instagramアプリ</span>へジャンプ。ハッシュタグも含めて一気にコピーされるので手間いらずです。
+                            </p>
+                            <div className="inline-flex items-center gap-2 text-pink-600 font-bold text-sm">
+                                <span>アプリを自動起動</span>
+                                <Icons.ChevronDown size={14} className="-rotate-90" />
+                            </div>
+                        </div>
+
+                        {/* Google Maps */}
+                        <div className="bg-slate-50 rounded-[2rem] p-8 border border-slate-100 hover:shadow-xl transition-all duration-300">
+                            <div className="w-12 h-12 bg-green-100 text-green-600 rounded-xl flex items-center justify-center mb-6 shadow-lg"><Icons.MapPin size={24} /></div>
+                            <h3 className="text-xl font-bold text-slate-900 mb-3">Googleビジネス</h3>
+                            <p className="text-slate-600 text-sm leading-relaxed mb-6">
+                                あなたのお店の<span className="font-bold text-slate-900">クチコミ管理ページ</span>へ直行。どのクチコミに返信するか迷う時間をゼロにします。
+                            </p>
+                            <div className="inline-flex items-center gap-2 text-green-600 font-bold text-sm">
+                                <span>クチコミページへ直行</span>
+                                <Icons.ChevronDown size={14} className="-rotate-90" />
                             </div>
                         </div>
                     </div>
@@ -1237,9 +1307,9 @@ open11:00-close 17:00
                                 )}
                             </button>
                             <div className="mt-auto pt-6">
-                                <div className="flex items-center gap-2 mb-4"><Icons.Zap size={16} className="text-yellow-400" fill="currentColor" /><h3 className="font-bold text-slate-200 text-sm">Proプランなら...</h3></div>
+                                <div className="flex items-center gap-2 mb-4"><Icons.Zap size={16} className="text-yellow-400" fill="currentColor" /><h3 className="font-bold text-slate-200 text-sm">MisePoならすべて可能</h3></div>
                                 <div className="grid grid-cols-2 gap-y-2 gap-x-4">
-                                    {["3パターン同時提案", "Instagram / X 同時作成", "Googleマップ返信", "多言語翻訳 (英/中/韓)"].map((item, i) => (
+                                    {["Instagram / X 同時作成", "Googleマップ クチコミ返信", "あなた独自の『書き癖』学習", "多言語翻訳 (英/中/韓)"].map((item, i) => (
                                         <div key={i} className="flex items-center gap-2 text-xs text-slate-400"><Icons.CheckCircle size={12} className="text-indigo-400 shrink-0" /><span>{item}</span></div>
                                     ))}
                                 </div>
@@ -1327,12 +1397,12 @@ open11:00-close 17:00
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
                         <div className="lg:w-1/2">
-                            <div className="inline-block px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold mb-3">ダウンロード不要</div>
+                            <div className="inline-block px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-bold mb-3">マルチデバイス対応</div>
                             <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4 leading-tight">
-                                アイコンタップから<br />
-                                <span className="text-indigo-600">5秒で投稿完了。</span>
+                                スマホ、タブレット、PC。<br />
+                                <span className="text-indigo-600">お好きなデバイスで。</span>
                             </h2>
-                            <p className="text-base text-gray-600 mb-6 leading-relaxed">MisePoは、アプリストアからのダウンロードは不要。Webサイトを「ホーム画面に追加」するだけで、普通のスマホアプリと同じようにサクサク動きます。</p>
+                            <p className="text-base text-gray-600 mb-6 leading-relaxed">MisePoは、ブラウザがあればどこでも使えます。店外ではスマホ、バックヤードではタブレット、レジ横のPCなど、店舗のオペレーションに合わせて柔軟にご利用いただけます。</p>
                             <div className="space-y-3">
                                 <div className="flex items-start gap-3">
                                     <div className="bg-indigo-50 p-2 rounded-lg text-indigo-600 mt-1"><Icons.Clock size={18} /></div>
@@ -1344,15 +1414,22 @@ open11:00-close 17:00
                                 <div className="flex items-start gap-3">
                                     <div className="bg-green-50 p-2 rounded-lg text-green-600 mt-1"><Icons.Smartphone size={18} /></div>
                                     <div>
-                                        <h3 className="font-bold text-gray-900 text-sm">スマホ容量を圧迫しない</h3>
-                                        <p className="text-xs text-gray-600">数MBの軽量設計。写真や動画の保存容量を気にせず使えます。</p>
+                                        <h3 className="font-bold text-gray-900 text-sm">スマホならアプリ感覚で</h3>
+                                        <p className="text-xs text-gray-600">PWA技術を採用。「ホーム画面に追加」するだけで、ストアからのDL不要でアプリと同じようにサクサク起動します。</p>
+                                    </div>
+                                </div>
+                                <div className="flex items-start gap-3">
+                                    <div className="bg-indigo-50 p-2 rounded-lg text-indigo-600 mt-1"><Icons.Bot size={18} /></div>
+                                    <div>
+                                        <h3 className="font-bold text-gray-900 text-sm">PCでも快速動作</h3>
+                                        <p className="text-xs text-gray-600">高価なPCスペックは不要。お手持ちのPCのブラウザからログインするだけで、すぐにAI生成を開始できます。</p>
                                     </div>
                                 </div>
                                 <div className="flex items-start gap-3">
                                     <div className="bg-indigo-50 p-2 rounded-lg text-indigo-600 mt-1"><Icons.ShieldCheck size={18} /></div>
                                     <div>
-                                        <h3 className="font-bold text-gray-900 text-sm">常に最新バージョン</h3>
-                                        <p className="text-xs text-gray-600">アプリの更新作業は不要。アクセスするだけで常に最新のAIモデルを利用できます。</p>
+                                        <h3 className="font-bold text-gray-900 text-sm">常に最新版をシェア</h3>
+                                        <p className="text-xs text-gray-600">アプリの更新作業は一切不要。どのデバイスからアクセスしても、常に最新のAIモデルを利用できます。</p>
                                     </div>
                                 </div>
                             </div>
@@ -1691,7 +1768,7 @@ open11:00-close 17:00
                                 今すぐ「分身」を作る <Icons.ChevronUp className="rotate-90" size={20} />
                             </button>
                             <p className="text-center text-xs text-slate-500 mt-6">
-                                ✓ 7日間の無料体験を実施中<br />
+                                ✓ 7日間の無料体験を実施中（※要クレジットカード登録）<br />
                                 ※8日目以降は月額1,480円で自動更新。違約金なしでいつでも解約OK。
                             </p>
                         </div>
@@ -1748,7 +1825,7 @@ open11:00-close 17:00
                             <Icons.ChevronUp className="rotate-90 group-hover:translate-x-1 transition-transform" size={20} />
                         </button>
                         <p className="text-sm text-slate-400">
-                            クレジットカード登録不要・7日間無料
+                            まずは7日間、無料で体験
                         </p>
                     </div>
                 </div>
