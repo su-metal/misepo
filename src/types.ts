@@ -69,6 +69,7 @@ export interface GenerationConfig {
   xConstraint140?: boolean; // X (Twitter) only
   instagramFooter?: string; // New: Footer text to append
   post_samples?: { [key in Platform]?: string }; // Passed from active preset
+  presetId?: string; // ID of the preset used for this generation
 }
 
 export interface GeneratedResult {
@@ -95,6 +96,7 @@ export interface GeneratedPost {
     includeEmojis?: boolean;
     xConstraint140?: boolean;
     instagramFooter?: string;
+    presetId?: string; // Add presetId here too for history
   };
   results: GeneratedResult[];
 }

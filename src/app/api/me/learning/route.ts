@@ -45,8 +45,32 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ id: data.id, message: 'Saved to favorites' });
   } catch (error: any) {
-    console.error('Error saving favorite:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error('Error in POST learning source:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+  }
+}
+
+export async function GET(req: Request) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  try {
+    const { data } = await supabase
+      .from('learning_sources')
+      .select('content')
+      .eq('user_id', user.id);
+
+    return NextResponse.json({ 
+      ok: true, 
+      favorites: data?.map((d: any) => d.content) || [] 
+    });
+  } catch (error) {
+    console.error('Error fetching learning sources:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 

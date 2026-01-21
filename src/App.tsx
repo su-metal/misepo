@@ -42,6 +42,7 @@ function App() {
   const [presets, setPresets] = useState<Preset[]>([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activeHistoryItem, setActiveHistoryItem] = useState<GeneratedPost | null>(null);
+  const [favorites, setFavorites] = useState<Set<string>>(new Set());
 
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showGuide, setShowGuide] = useState(false);
@@ -79,16 +80,27 @@ function App() {
     try {
       const res = await fetch('/api/me/history', { cache: 'no-store' });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const contentType = res.headers.get('content-type');
-      if (!contentType || !contentType.includes('application/json')) {
-        throw new Error('Response is not JSON');
-      }
       const data = await res.json();
       if (data.ok) {
         setHistory((data.history || []).map(mapHistoryEntry));
       }
     } catch (err) {
       console.error('Failed to fetch history:', err);
+    }
+  }, [isLoggedIn]);
+
+  const fetchFavorites = useCallback(async () => {
+    if (!isLoggedIn) return;
+    try {
+      const res = await fetch('/api/me/learning', { cache: 'no-store' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      if (data.ok && Array.isArray(data.favorites)) {
+        // Normalize: trim all loaded favorites
+        setFavorites(new Set(data.favorites.map((s: string) => s.trim())));
+      }
+    } catch (err) {
+      console.error('Failed to fetch favorites:', err);
     }
   }, [isLoggedIn]);
 
@@ -120,11 +132,11 @@ function App() {
   useEffect(() => {
     if (authLoading) return;
     const init = async () => {
-      await Promise.all([fetchProfile(), fetchHistory(), fetchPresets()]);
+      await Promise.all([fetchProfile(), fetchHistory(), fetchPresets(), fetchFavorites()]);
       setInitDone(true);
     };
     init();
-  }, [authLoading, fetchProfile, fetchHistory, fetchPresets]);
+  }, [authLoading, fetchProfile, fetchHistory, fetchPresets, fetchFavorites]);
 
   // Strict Redirect for Paid-Only Model
   useEffect(() => {
@@ -161,6 +173,58 @@ function App() {
     }
   };
 
+  const handleToggleFavorite = async (text: string, platform: any, presetId: string | null) => {
+    if (!isLoggedIn) return;
+
+    const normalizedText = text.trim();
+    const isFavorited = favorites.has(normalizedText);
+
+    // Optimistic Update
+    setFavorites(prev => {
+      const next = new Set(prev);
+      if (isFavorited) next.delete(normalizedText);
+      else next.add(normalizedText);
+      return next;
+    });
+
+    try {
+      const method = !isFavorited ? 'POST' : 'DELETE';
+      let url = '/api/me/learning';
+      if (isFavorited) {
+        const params = new URLSearchParams({ content: normalizedText });
+        url += `?${params.toString()}`;
+      }
+
+      // Handle legacy history items without presetId
+      // Default to the first preset if available, or a fallback string (though DB likely won't block it, API might require valid preset logic in future)
+      const effectivePresetId = presetId || presets[0]?.id || 'legacy_history_default';
+
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: !isFavorited ? JSON.stringify({ content: normalizedText, platform, presetId: effectivePresetId }) : undefined
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ error: 'Unknown error' }));
+        throw new Error(errorData.error || errorData.message || 'Failed to toggle favorite');
+      }
+
+      // Re-fetch to sync (optional, but safer)
+      // fetchFavorites(); 
+    } catch (err) {
+      console.error('Toggle favorite failed:', err);
+      // Revert
+      setFavorites(prev => {
+        const next = new Set(prev);
+        if (isFavorited) next.add(normalizedText); // was true, failed to delete -> add back
+        else next.delete(normalizedText); // was false, failed to add -> delete
+        return next;
+      });
+      alert(`お気に入りの更新に失敗しました: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    }
+  };
+
   if (authLoading || !initDone) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-white">
@@ -191,6 +255,8 @@ function App() {
         onOpenAccount={() => setShowAccountSettings(true)}
         onLogout={logout}
         storeProfile={storeProfile}
+        favorites={favorites}
+        onToggleFavorite={handleToggleFavorite}
       />
 
       <div className="flex-1 flex flex-col min-w-0">

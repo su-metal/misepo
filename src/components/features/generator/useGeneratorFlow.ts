@@ -244,7 +244,8 @@ export function useGeneratorFlow(props: {
         includeSymbols,
         includeEmojis,
         instagramFooter: (p === Platform.Instagram && includeFooter) ? storeProfile.instagramFooter : undefined,
-        post_samples: currentPostSamples
+        post_samples: currentPostSamples,
+        presetId: activePresetId || undefined // Add presetId to config
       };
 
       try {
@@ -290,6 +291,7 @@ export function useGeneratorFlow(props: {
         language, storeSupplement, customPrompt,
         xConstraint140, includeSymbols, includeEmojis,
         instagramFooter: (targetPlatforms.includes(Platform.Instagram) && includeFooter) ? storeProfile.instagramFooter : undefined,
+        presetId: activePresetId || undefined // Add presetId to history config
       };
 
       if (targetPlatforms.length > 1) {
