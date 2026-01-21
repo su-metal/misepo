@@ -85,6 +85,16 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
       if (!res.ok) throw new Error('Failed to save preset');
 
       await props.refreshPresets();
+
+      // If the saved preset is the currently active one, update the flow state immediately
+      // This ensures that changes (like deleting samples) are reflected without needing to re-select
+      if (preset.id && preset.id === flow.activePresetId) {
+        const currentActiveInfo = presets.find(p => p.id === preset.id);
+        if (currentActiveInfo) {
+          const updated = { ...currentActiveInfo, ...preset } as Preset;
+          flow.handleApplyPreset(updated);
+        }
+      }
     } catch (error) {
       console.error('Failed to save preset:', error);
       alert('プロファイルの保存に失敗しました。');
