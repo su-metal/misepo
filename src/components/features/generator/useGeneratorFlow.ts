@@ -115,7 +115,7 @@ export function useGeneratorFlow(props: {
     } else {
       // Apply preset (even if it's the same one - keep it applied)
       setCustomPrompt(preset.custom_prompt ?? '');
-      setCurrentPostSamples(preset.postSamples || {});
+      setCurrentPostSamples(preset.post_samples || {});
       setActivePresetId(preset.id);
     }
   };
@@ -252,7 +252,7 @@ export function useGeneratorFlow(props: {
         includeSymbols,
         includeEmojis,
         instagramFooter: (p === Platform.Instagram && includeFooter) ? storeProfile.instagramFooter : undefined,
-        postSamples: currentPostSamples
+        post_samples: currentPostSamples
       };
 
       try {

@@ -85,18 +85,21 @@ export const generateContent = async (
   const maxRetries = 3;
   const charLimit = 140;
   const isXWith140Limit = config.platform === Platform.X && config.xConstraint140;
+  
+  // Define persona presence early for all scopes
+  const hasPersonaSamples = !!(config.post_samples?.[config.platform] && config.post_samples[config.platform]!.trim());
+  const hasPersona = hasPersonaSamples || !!(config.customPrompt && config.customPrompt.trim());
 
   const buildSystemInstruction = () => {
     const effectivePurpose = config.purpose === 'auto' 
       ? "Auto-Detect (Analyze the input text and infer the most appropriate purpose, e.g., Promotion, Story, or Engagement)" 
       : config.purpose;
 
-    // Check if persona learning is available
-    const hasPersonaSamples = config.postSamples?.[config.platform] && config.postSamples[config.platform]!.trim();
-
     let systemInstruction = `
-You are a skilled and friendly social media manager for a physical business.
-Your goal is to write engaging, natural, and effective posts for a ${profile.industry} named "${profile.name}" located in ${profile.region}.
+【前提条件】
+あなたは、${profile.region}にある${profile.industry}「${profile.name}」のオーナー専属の「影武者ライター（Ghostwriter）」です。
+店主本人の代わりに、お客様やフォロワーに直接語りかける文章を作成します。常に「店主本人」として振る舞ってください。
+
 Store Description: ${profile.description || "N/A"}
 Target Audience: Local customers and potential visitors.
 
@@ -115,11 +118,18 @@ ${hasPersonaSamples ? '- Tone: IGNORE - Use learned persona style instead' : `- 
       if (config.purpose === GoogleMapPurpose.Apology) {
         systemInstruction += `\n- Focus: Sincere apology, explanation of improvement, and inviting them back.`;
       }
-      systemInstruction += `\n
+
+      systemInstruction += `
 **Humble Language Enforcement (CRITICAL):**
 When the customer mentions family members (e.g., "奥様", "旦那様", "娘さん") or staff (e.g., "店員さん", "スタッフの方") in their review:
 - You MUST convert these to humble forms suitable for the store owner (e.g., "妻" or "家内", "主人" or "夫", "娘", "スタッフ").
 - NEVER repeat the customer's honorifics when referring to your own side.
+
+**Anti-Echoing & Natural Conversation Rule (CRITICAL):**
+- DO NOT repeat the customer's input verbatim (e.g., "14時頃のお食事処をお探しの中" / "Searching for a place around 2 PM"). This sounds like a bot.
+- Instead, convert the customer's situation into "empathy" or "shop-side context" (e.g., "ランチ難民になりやすいお時間でしたね、無事にお召し上がりいただけて良かったです" / "That's a tricky time for lunch, glad we could serve you").
+- If a customer mentions a specific detail (like a price or menu layout), explain the reason or share a positive "inside story" (e.g., "こだわり抜いた食材のため＋50円を頂戴しておりますが、喜んでいただけて何よりです").
+- Talk like a human business owner welcoming a guest, not a summary tool.
 
 **Location-Based Greeting Rule (CRITICAL):**
 - Do NOT assume the customer is from out of town (e.g., "豊橋にお越しの際は" / "when you come to [Region]") UNLESS they explicitly mention traveling, visiting from afar, or being a tourist.
@@ -139,20 +149,20 @@ When the customer mentions family members (e.g., "奥様", "旦那様", "娘さ�
 
 
     // Inject Post Samples for Few-Shot Learning
-    if (config.postSamples?.[config.platform]) {
-      const sample = config.postSamples[config.platform];
+    if (config.post_samples?.[config.platform]) {
+      const sample = config.post_samples[config.platform];
       
       if (sample && sample.trim()) {
         systemInstruction += `\n
 **CRITICAL: Persona Adoption (Few-Shot Style Learning)**
-The user has provided past posts/replies from a specific persona below.
+【参照データ：過去の投稿（学習データ）】
+以下に提供された過去の投稿・返信を徹底的に分析し、その「文体」「リズム」「温度感」を100%再現してください。
 You MUST STRICTLY MIMIC this persona's:
 - Exact tone and formality level (casual, formal, friendly, etc.)
-- Sentence structure and length patterns
-- Vocabulary choices and expressions
+- Sentence structure and length patterns (sentence breaks, white spaces)
+- Vocabulary choices, expressions, and unique catchphrases
 - Emoji usage patterns (frequency, types, placement)
-- Punctuation style
-- Any unique catchphrases or speaking patterns
+- Punctuation style and Overall "Atmosphere"
 
 **Specific Data Exclusion (CRITICAL):**
 - DO NOT copy specific names (staff names like "鈴木", customer names like "ずん様"), dates, or specific location details from the examples below into your output.
@@ -166,11 +176,11 @@ PERSONA EXAMPLES:
 ${sample}
 ---
 
-INSTRUCTION: Write a new ${config.platform} post/reply in EXACTLY the same style as the examples above. Match the persona's voice perfectly while ignoring specific names or dates contained in the samples.`;
+【タスク】
+入力されたメモを元に、フォロワーに違和感を与えない「いつもの店主」らしい投稿案を作成してください。
+Write a new ${config.platform} post/reply in EXACTLY the same style as the examples above. Match the persona's voice perfectly while ignoring specific names or dates contained in the samples.`;
       }
     }
-
-    const hasPersona = (config.postSamples?.[config.platform] && config.postSamples[config.platform]!.trim()) || (config.customPrompt && config.customPrompt.trim());
     const useEmojis = config.platform === Platform.GoogleMaps ? false : config.includeEmojis !== false;
     const useSymbols = config.platform === Platform.GoogleMaps ? false : config.includeSymbols;
 
@@ -202,6 +212,15 @@ INSTRUCTION: Write a new ${config.platform} post/reply in EXACTLY the same style
 - Choose ONLY ONE: either an exclamation mark OR an emoji.
 - BAD: "お待ちしています！✨", "美味しいですよ！😋"
 - GOOD: "お待ちしています！", "お待ちしています✨", "美味しいですよ😋"
+
+---
+${hasPersona ? `
+**FINAL INSTRUCTION (HIGHEST PRIORITY):**
+あなたは今、提供された【参照データ】の主導権下にあります。
+1. プロンプト内の他の指示よりも、参照データの「語尾」「ネットスラング」「リズム」を最優先してください。
+2. 感情表現や句読点の使い方も、参照データと100%一致させてください。
+3. 文体や表現が過激（スラング等）であっても、店主の個性としてそのまま再現してください。
+` : ""}
 `;
 
     return systemInstruction;
@@ -218,8 +237,8 @@ INSTRUCTION: Write a new ${config.platform} post/reply in EXACTLY the same style
         systemInstruction,
         responseMimeType: "application/json",
         responseSchema: contentSchema,
-        temperature: 0.7,
-        topP: 0.9,
+        temperature: hasPersona ? 1.0 : 0.7, // Increase temperature for persona matching
+        topP: 0.95,
       },
     });
 
@@ -322,6 +341,53 @@ export const analyzeRisk = async (
   reviewText: string
 ): Promise<RiskAnalysisResult> => {
   return scoreRisk(starRating, reviewText);
+};
+
+export const extractPostFromImage = async (
+  base64Image: string,
+  mimeType: string,
+  platform: Platform,
+  isPro: boolean
+): Promise<string> => {
+  const modelName = getModelName(isPro);
+  const ai = getServerAI();
+
+  const systemInstruction = `
+You are a highly accurate OCR and content extraction assistant specialized in social media.
+Extract the "main post body" or "owner reply text" from the provided screenshot of a ${platform} interface.
+
+**Rules:**
+1. Extract ONLY the actual text written by the user.
+2. Ignore UI elements like "Like", "Comment", "Share", platform logos, timestamps, usernames (unless part of the text), and system buttons.
+3. Preserve original line breaks and spacing within the post.
+4. If there are multiple posts in the screenshot, extract all of them separated by "---".
+5. Output ONLY the extracted text. No explanations or extra commentary.
+6. If no post text is found, return an empty string.
+`;
+
+  const response = await ai.models.generateContent({
+    model: modelName,
+    contents: [
+      {
+        role: "user",
+        parts: [
+          {
+            inlineData: {
+              data: base64Image.split(",")[1] || base64Image,
+              mimeType: mimeType,
+            },
+          },
+          { text: `Extract the post text from this ${platform} screenshot.` },
+        ],
+      },
+    ],
+    config: {
+      systemInstruction,
+      temperature: 0.1,
+    },
+  });
+
+  return response.text || "";
 };
 
 export const sanitizePostSamples = async (

@@ -155,7 +155,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
   const [name, setName] = useState('');
   const [avatar, setAvatar] = useState('shop');
   const [customPrompt, setCustomPrompt] = useState('');
-  const [postSamples, setPostSamples] = useState<Record<string, string>>({});
+  const [post_samples, setPostSamples] = useState<Record<string, string>>({});
   const [isInternalSaving, setIsInternalSaving] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [orderedPresets, setOrderedPresets] = useState<Preset[]>([]);
@@ -165,6 +165,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [expandingPlatform, setExpandingPlatform] = useState<Platform | null>(null);
   const [isSanitizing, setIsSanitizing] = useState(false);
+  const [isAnalyzingImage, setIsAnalyzingImage] = useState(false);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const [isIconSelectorOpen, setIsIconSelectorOpen] = useState(false);
 
@@ -196,7 +198,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
       setName(preset.name);
       setAvatar(preset.avatar || 'shop');
       setCustomPrompt(preset.custom_prompt || '');
-      setPostSamples(preset.postSamples || {});
+      setPostSamples(preset.post_samples || {});
       setMobileView('edit');
     }
   };
@@ -219,7 +221,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
         name,
         avatar,
         custom_prompt: customPrompt,
-        postSamples: postSamples,
+        post_samples: post_samples,
       });
       setShowSuccessToast(true);
       setTimeout(() => setShowSuccessToast(false), 3000);
@@ -582,7 +584,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                   </button>
                 </div>
                 <AutoResizingTextarea
-                  value={postSamples[Platform.Instagram] || ''}
+                  value={post_samples[Platform.Instagram] || ''}
                   onChange={(val) => setPostSamples(prev => ({ ...prev, [Platform.Instagram]: val }))}
                   placeholder={'例：\nこんにちは！今日のランチは... 🍝\n---\n新作のケーキが焼き上がりました！ 🍰\n---\n(このように「---」で区切る)'}
                   className="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-100 focus:bg-white focus:border-pink-300 outline-none transition-all resize-none text-xs text-slate-800 font-bold leading-relaxed placeholder-slate-300 min-h-[100px]"
@@ -608,7 +610,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                   </button>
                 </div>
                 <AutoResizingTextarea
-                  value={postSamples[Platform.X] || ''}
+                  value={post_samples[Platform.X] || ''}
                   onChange={(val) => setPostSamples(prev => ({ ...prev, [Platform.X]: val }))}
                   placeholder="過去の気に入っている投稿を3件ほど貼り付けてください..."
                   className="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-100 focus:bg-white focus:border-slate-400 outline-none transition-all resize-none text-xs text-slate-800 font-bold leading-relaxed placeholder-slate-300 min-h-[80px]"
@@ -634,7 +636,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                   </button>
                 </div>
                 <AutoResizingTextarea
-                  value={postSamples[Platform.GoogleMaps] || ''}
+                  value={post_samples[Platform.GoogleMaps] || ''}
                   onChange={(val) => setPostSamples(prev => ({ ...prev, [Platform.GoogleMaps]: val }))}
                   placeholder="過去のオーナー返信を3件ほど貼り付けてください..."
                   className="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-100 focus:bg-white focus:border-blue-300 outline-none transition-all resize-none text-xs text-slate-800 font-bold leading-relaxed placeholder-slate-300 min-h-[80px]"
@@ -716,9 +718,72 @@ const PresetModal: React.FC<PresetModalProps> = ({
             </div>
           </div>
           <div className="flex items-center gap-2 md:gap-3 w-full md:w-auto">
+            <input
+              type="file"
+              ref={fileInputRef}
+              className="hidden"
+              accept="image/*"
+              onChange={async (e) => {
+                const file = e.target.files?.[0];
+                if (!file || !expandingPlatform) return;
+
+                setIsAnalyzingImage(true);
+                try {
+                  const reader = new FileReader();
+                  reader.onloadend = async () => {
+                    const base64 = reader.result as string;
+                    const res = await fetch('/api/ai/analyze-screenshot', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        image: base64,
+                        mimeType: file.type,
+                        platform: expandingPlatform,
+                      }),
+                    });
+                    const data = await res.json();
+                    if (data.ok && data.text) {
+                      setPostSamples(prev => {
+                        const existing = prev[expandingPlatform] || '';
+                        const separator = existing.trim() ? '\n---\n' : '';
+                        return { ...prev, [expandingPlatform]: existing + separator + data.text };
+                      });
+                    }
+                  };
+                  reader.readAsDataURL(file);
+                } catch (err) {
+                  console.error('Image analysis failed:', err);
+                } finally {
+                  setIsAnalyzingImage(false);
+                  if (fileInputRef.current) fileInputRef.current.value = '';
+                }
+              }}
+            />
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isAnalyzingImage}
+              className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-4 md:px-5 py-3 rounded-2xl font-black text-[10px] md:text-[11px] transition-all transform hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 border-2 ${expandingPlatform === Platform.Instagram ? 'bg-white border-pink-100 text-pink-500 hover:bg-pink-50' :
+                expandingPlatform === Platform.X ? 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50' :
+                  'bg-white border-blue-100 text-blue-600 hover:bg-blue-50'
+                }`}
+            >
+              {isAnalyzingImage ? (
+                <>
+                  <div className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+                  <span>解析中...</span>
+                </>
+              ) : (
+                <>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" /><circle cx="12" cy="13" r="4" /></svg>
+                  <span className="hidden md:inline">スクショから読み込む</span>
+                  <span className="md:hidden">スクショ読込</span>
+                </>
+              )}
+            </button>
             <button
               onClick={async () => {
-                const currentText = postSamples[expandingPlatform!] || '';
+                const currentText = post_samples[expandingPlatform!] || '';
                 if (!currentText.trim() || isSanitizing) return;
                 setIsSanitizing(true);
                 try {
@@ -737,7 +802,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                   setIsSanitizing(false);
                 }
               }}
-              disabled={isSanitizing || !(postSamples[expandingPlatform!] || '').trim()}
+              disabled={isSanitizing || !(post_samples[expandingPlatform!] || '').trim()}
               className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-4 md:px-5 py-3 rounded-2xl font-black text-[10px] md:text-[11px] transition-all transform hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 ${expandingPlatform === Platform.Instagram ? 'bg-pink-50 text-pink-600 hover:bg-pink-100' :
                 expandingPlatform === Platform.X ? 'bg-slate-100 text-slate-700 hover:bg-slate-200' :
                   'bg-blue-50 text-blue-600 hover:bg-blue-100'
@@ -770,7 +835,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
           <div className="flex-1 p-5 md:p-8 overflow-y-auto">
             <textarea
               autoFocus
-              value={postSamples[expandingPlatform] || ''}
+              value={post_samples[expandingPlatform] || ''}
               onChange={(e) => setPostSamples(prev => ({ ...prev, [expandingPlatform]: e.target.value }))}
               className="w-full h-full min-h-[400px] bg-transparent outline-none text-base md:text-lg text-slate-800 font-bold leading-loose placeholder-slate-300 resize-none no-scrollbar"
               placeholder={'ここに過去の投稿を貼り付けてください...\n複数の投稿を入れる場合は「---」で区切ってください。'}
