@@ -54,7 +54,7 @@ function App() {
   // --- Fetching Logic ---
   const fetchPresets = useCallback(async () => {
     try {
-      const res = await fetch('/api/me/presets');
+      const res = await fetch('/api/me/presets', { cache: 'no-store' });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const contentType = res.headers.get('content-type');
       if (!contentType || !contentType.includes('application/json')) {
@@ -77,7 +77,7 @@ function App() {
   const fetchHistory = useCallback(async () => {
     if (!isLoggedIn) return;
     try {
-      const res = await fetch('/api/me/history');
+      const res = await fetch('/api/me/history', { cache: 'no-store' });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const contentType = res.headers.get('content-type');
       if (!contentType || !contentType.includes('application/json')) {
@@ -95,7 +95,7 @@ function App() {
   const fetchProfile = useCallback(async () => {
     if (!isLoggedIn) return;
     try {
-      const res = await fetch('/api/me/store-profile');
+      const res = await fetch('/api/me/store-profile', { cache: 'no-store' });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
       const contentType = res.headers.get('content-type');

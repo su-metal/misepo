@@ -3,6 +3,9 @@ import { createClient } from "@/lib/supabase/server";
 import { env } from "@/lib/env";
 
 const APP_ID = env.APP_ID;
+const NO_STORE_HEADERS = { "Cache-Control": "no-store" };
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 interface Preset {
   id?: string;
