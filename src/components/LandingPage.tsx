@@ -474,7 +474,7 @@ open11:00-close 17:00
                                 <a key={item} href={['#problem', '#features', '#demo', '#pricing'][i]} className="block px-4 py-3 text-base font-bold text-slate-700 hover:bg-slate-50 rounded-xl transition-colors" onClick={() => setIsMenuOpen(false)}>{item}</a>
                             ))}
                             <div className="pt-4 flex flex-col gap-3 px-4">
-                                <button className="w-full bg-indigo-50 text-indigo-700 px-5 py-3.5 rounded-xl font-bold hover:bg-indigo-100 transition-colors">ログイン</button>
+                                <button onClick={() => loginWithGoogle('login')} className="w-full bg-indigo-50 text-indigo-700 px-5 py-3.5 rounded-xl font-bold hover:bg-indigo-100 transition-colors">ログイン</button>
                                 <button onClick={() => window.location.href = '/start'} className="w-full bg-indigo-600 text-white px-5 py-3.5 rounded-xl font-bold shadow-lg shadow-indigo-200">無料で始める</button>
                             </div>
                         </div>
@@ -485,7 +485,7 @@ open11:00-close 17:00
             {/* New Hero Section (Auto-Loop Animation) */}
             <div className="relative z-10 h-auto">
                 <div
-                    className="relative h-[150vh] md:h-screen w-full overflow-hidden flex flex-col"
+                    className="relative h-[110vh] md:h-screen w-full overflow-hidden flex flex-col"
                 >
                     <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/50 via-white to-purple-50/50" />
 
@@ -504,6 +504,15 @@ open11:00-close 17:00
                             MisePoはあなたの「書き癖」を学習し、<br />
                             店主の『分身』としてSNS運用を代行します。
                         </p>
+                        <div className="flex flex-col gap-3 max-w-sm mx-auto mt-8 px-4">
+                            <button onClick={() => window.location.href = '/start'} className="w-full px-6 py-3.5 bg-slate-900 text-white rounded-full font-bold hover:bg-slate-800 transition-all shadow-lg shadow-slate-900/20 flex items-center justify-center gap-2">
+                                <Icons.Sparkles size={18} className="text-yellow-400" />
+                                無料で試してみる
+                            </button>
+                            <button onClick={() => window.location.href = '#pricing'} className="w-full px-6 py-3.5 bg-white text-slate-900 rounded-full font-bold border-2 border-slate-100 hover:border-slate-200 hover:bg-slate-50 transition-all">
+                                料金プラン
+                            </button>
+                        </div>
                     </div>
 
                     {/* Desktop Text (Absolute) */}
@@ -530,15 +539,15 @@ open11:00-close 17:00
                                 <Icons.Sparkles size={20} className="text-yellow-400" />
                                 無料で試してみる
                             </button>
-                            <button className="px-8 py-4 bg-white text-slate-900 rounded-full font-bold border-2 border-slate-100 hover:border-slate-200 hover:bg-slate-50 transition-all">
+                            <button onClick={() => window.location.href = '#pricing'} className="px-8 py-4 bg-white text-slate-900 rounded-full font-bold border-2 border-slate-100 hover:border-slate-200 hover:bg-slate-50 transition-all">
                                 料金プラン
                             </button>
                         </div>
                     </div>
 
                     {/* Phone Animation Container */}
-                    <div className="absolute inset-0 md:left-1/3 flex items-start md:items-center justify-center pointer-events-none pt-[22rem] md:pt-0">
-                        <div className="relative w-[300px] h-[600px] scale-90 md:scale-100 origin-center">
+                    <div className="absolute inset-0 md:left-1/3 flex items-start md:items-center justify-center pointer-events-none pt-[32rem] md:pt-0">
+                        <div className="relative w-[300px] h-[600px] scale-[0.55] md:scale-100 origin-top md:origin-center">
 
                             {/* CENTER PHONE (MisePo) */}
                             <div
@@ -827,18 +836,7 @@ open11:00-close 17:00
                         </div>
                     </div>
 
-                    {/* Mobile CTA Buttons (Below Phone) */}
-                    <div className="md:hidden absolute top-[62rem] left-0 right-0 px-4 z-20">
-                        <div className="flex flex-col gap-3 max-w-sm mx-auto">
-                            <button onClick={() => window.location.href = '/start'} className="w-full px-6 py-3.5 bg-slate-900 text-white rounded-full font-bold hover:bg-slate-800 transition-all shadow-lg shadow-slate-900/20 flex items-center justify-center gap-2">
-                                <Icons.Sparkles size={18} className="text-yellow-400" />
-                                無料で試してみる
-                            </button>
-                            <button className="w-full px-6 py-3.5 bg-white text-slate-900 rounded-full font-bold border-2 border-slate-100 hover:border-slate-200 hover:bg-slate-50 transition-all">
-                                料金プラン
-                            </button>
-                        </div>
-                    </div>
+
                 </div>
             </div>
 
@@ -969,8 +967,8 @@ open11:00-close 17:00
                             AIが、<br className="md:hidden" /><span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-pink-400">あなたの<br className="md:hidden" />『分身』になる。</span>
                         </h2>
                         <p className="text-slate-400 text-lg max-w-2xl mx-auto leading-relaxed">
-                            MisePoは単なる<br className="md:hidden" />自動生成ツールではありません。<br />
-                            あなたの過去の投稿を学習し、まるで<br className="md:hidden" />あなたが書いたかのような文章を生み出します。
+                            MisePoは単なる自動生成ツール<br className="md:hidden" />ではありません。<br />
+                            あなたの過去の投稿を学習し、まるで<br className="md:hidden" />あなたが書いたかのような文章を<br className="md:hidden" />生み出します。
                         </p>
                     </div>
 
@@ -1691,7 +1689,7 @@ open11:00-close 17:00
                                 今すぐ「分身」を作る <Icons.ChevronUp className="rotate-90" size={20} />
                             </button>
                             <p className="text-center text-xs text-slate-500 mt-6">
-                                ✓ 7日間の無料体験を実施中<br />
+                                ✓ 7日間の無料体験を実施中（※要クレジットカード登録）<br />
                                 ※8日目以降は月額1,480円で自動更新。違約金なしでいつでも解約OK。
                             </p>
                         </div>
@@ -1748,7 +1746,7 @@ open11:00-close 17:00
                             <Icons.ChevronUp className="rotate-90 group-hover:translate-x-1 transition-transform" size={20} />
                         </button>
                         <p className="text-sm text-slate-400">
-                            クレジットカード登録不要・7日間無料
+                            まずは7日間、無料で体験
                         </p>
                     </div>
                 </div>
