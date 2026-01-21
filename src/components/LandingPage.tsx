@@ -957,7 +957,7 @@ open11:00-close 17:00
             </section>
 
             {/* Solution (Benefits) */}
-            <section id="features" className="py-16 md:py-24 bg-slate-900 text-white overflow-hidden relative" >
+            <section id="solution" className="py-16 md:py-24 bg-slate-900 text-white overflow-hidden relative" >
                 <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
                     <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-indigo-500/20 rounded-full blur-[100px]" />
                     <div className="absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] bg-purple-500/20 rounded-full blur-[100px]" />
@@ -987,8 +987,8 @@ open11:00-close 17:00
                                 </div>
                             </div>
                             <p className="text-slate-400 leading-relaxed mt-4 md:mt-0">
-                                過去の投稿を数件読み込ませるだけで、MisePoがあなたのリズムをコピー。<br />
-                                <span className="text-white font-bold">過去の投稿がない方</span>は、理想のお店の文章を学習させることも可能です。
+                                過去の投稿の<span className="text-white font-bold">スクショをアップロードするだけ</span>。<br />
+                                面倒な連携やコピペは不要。画像からあなたの「口癖」や「絵文字の使い所」まで瞬時に学習します。
                             </p>
                         </div>
 
@@ -1021,8 +1021,7 @@ open11:00-close 17:00
                                 </div>
                             </div>
                             <p className="text-slate-400 leading-relaxed mt-4 md:mt-0">
-                                コピペするだけで、誠実であなたらしい返信案を<span className="text-white font-bold">30秒で作成</span>。<br />
-                                お客様との絆を深める時間を短縮します。
+                                生成された文章はアイコンをタップするだけで<span className="text-white font-bold">自動コピー</span>。各SNSの投稿画面へ直接ジャンプできるので、投稿作業が驚くほどスムーズになります。
                             </p>
                         </div>
                     </div>
@@ -1211,6 +1210,62 @@ open11:00-close 17:00
                         </div>
                     </div>
                 </div>
+            </section>            {/* Seamless Posting Step */}
+            <section className="py-20 bg-white overflow-hidden" >
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center max-w-3xl mx-auto mb-16">
+                        <span className="text-indigo-600 font-bold tracking-wider text-sm uppercase mb-2 block">Seamless Workflow</span>
+                        <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-6 tracking-tight">
+                            「作成」から「投稿」まで、<br />
+                            <span className="gradient-text">流れるように。</span>
+                        </h2>
+                        <p className="text-slate-600 text-lg">
+                            文章をコピーする手間すら、MisePoが引き受けます。<br className="hidden md:block" />
+                            ボタン一押しで、各SNSの最適なページへあなたを案内します。
+                        </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        {/* X (Twitter) */}
+                        <div className="bg-slate-50 rounded-[2rem] p-8 border border-slate-100 hover:shadow-xl transition-all duration-300">
+                            <div className="w-12 h-12 bg-slate-900 text-white rounded-xl flex items-center justify-center mb-6 shadow-lg"><Icons.Twitter size={24} /></div>
+                            <h3 className="text-xl font-bold text-slate-900 mb-3">X (Twitter)</h3>
+                            <p className="text-slate-600 text-sm leading-relaxed mb-6">
+                                生成された文章が自動コピーされ、そのまま<span className="font-bold text-slate-900">投稿画面</span>が立ち上がります。あとは貼り付けて投稿ボタンを押すだけ。
+                            </p>
+                            <div className="inline-flex items-center gap-2 text-indigo-600 font-bold text-sm">
+                                <span>そのまま投稿画面へ</span>
+                                <Icons.ChevronDown size={14} className="-rotate-90" />
+                            </div>
+                        </div>
+
+                        {/* Instagram */}
+                        <div className="bg-slate-50 rounded-[2rem] p-8 border border-slate-100 hover:shadow-xl transition-all duration-300">
+                            <div className="w-12 h-12 bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 text-white rounded-xl flex items-center justify-center mb-6 shadow-lg"><Icons.Instagram size={24} /></div>
+                            <h3 className="text-xl font-bold text-slate-900 mb-3">Instagram</h3>
+                            <p className="text-slate-600 text-sm leading-relaxed mb-6">
+                                文章を保持した状態で<span className="font-bold text-slate-900">Instagramアプリ</span>へジャンプ。ハッシュタグも含めて一気にコピーされるので手間いらずです。
+                            </p>
+                            <div className="inline-flex items-center gap-2 text-pink-600 font-bold text-sm">
+                                <span>アプリを自動起動</span>
+                                <Icons.ChevronDown size={14} className="-rotate-90" />
+                            </div>
+                        </div>
+
+                        {/* Google Maps */}
+                        <div className="bg-slate-50 rounded-[2rem] p-8 border border-slate-100 hover:shadow-xl transition-all duration-300">
+                            <div className="w-12 h-12 bg-green-100 text-green-600 rounded-xl flex items-center justify-center mb-6 shadow-lg"><Icons.MapPin size={24} /></div>
+                            <h3 className="text-xl font-bold text-slate-900 mb-3">Googleビジネス</h3>
+                            <p className="text-slate-600 text-sm leading-relaxed mb-6">
+                                あなたのお店の<span className="font-bold text-slate-900">クチコミ管理ページ</span>へ直行。どのクチコミに返信するか迷う時間をゼロにします。
+                            </p>
+                            <div className="inline-flex items-center gap-2 text-green-600 font-bold text-sm">
+                                <span>クチコミページへ直行</span>
+                                <Icons.ChevronDown size={14} className="-rotate-90" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </section>
 
             {/* Demo */}
@@ -1342,12 +1397,12 @@ open11:00-close 17:00
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
                         <div className="lg:w-1/2">
-                            <div className="inline-block px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold mb-3">ダウンロード不要</div>
+                            <div className="inline-block px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-bold mb-3">マルチデバイス対応</div>
                             <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4 leading-tight">
-                                アイコンタップから<br />
-                                <span className="text-indigo-600">5秒で投稿完了。</span>
+                                スマホ、タブレット、PC。<br />
+                                <span className="text-indigo-600">お好きなデバイスで。</span>
                             </h2>
-                            <p className="text-base text-gray-600 mb-6 leading-relaxed">MisePoは、アプリストアからのダウンロードは不要。Webサイトを「ホーム画面に追加」するだけで、普通のスマホアプリと同じようにサクサク動きます。</p>
+                            <p className="text-base text-gray-600 mb-6 leading-relaxed">MisePoは、ブラウザがあればどこでも使えます。店外ではスマホ、バックヤードではタブレット、レジ横のPCなど、店舗のオペレーションに合わせて柔軟にご利用いただけます。</p>
                             <div className="space-y-3">
                                 <div className="flex items-start gap-3">
                                     <div className="bg-indigo-50 p-2 rounded-lg text-indigo-600 mt-1"><Icons.Clock size={18} /></div>
@@ -1359,15 +1414,22 @@ open11:00-close 17:00
                                 <div className="flex items-start gap-3">
                                     <div className="bg-green-50 p-2 rounded-lg text-green-600 mt-1"><Icons.Smartphone size={18} /></div>
                                     <div>
-                                        <h3 className="font-bold text-gray-900 text-sm">スマホ容量を圧迫しない</h3>
-                                        <p className="text-xs text-gray-600">数MBの軽量設計。写真や動画の保存容量を気にせず使えます。</p>
+                                        <h3 className="font-bold text-gray-900 text-sm">スマホならアプリ感覚で</h3>
+                                        <p className="text-xs text-gray-600">PWA技術を採用。「ホーム画面に追加」するだけで、ストアからのDL不要でアプリと同じようにサクサク起動します。</p>
+                                    </div>
+                                </div>
+                                <div className="flex items-start gap-3">
+                                    <div className="bg-indigo-50 p-2 rounded-lg text-indigo-600 mt-1"><Icons.Bot size={18} /></div>
+                                    <div>
+                                        <h3 className="font-bold text-gray-900 text-sm">PCでも快速動作</h3>
+                                        <p className="text-xs text-gray-600">高価なPCスペックは不要。お手持ちのPCのブラウザからログインするだけで、すぐにAI生成を開始できます。</p>
                                     </div>
                                 </div>
                                 <div className="flex items-start gap-3">
                                     <div className="bg-indigo-50 p-2 rounded-lg text-indigo-600 mt-1"><Icons.ShieldCheck size={18} /></div>
                                     <div>
-                                        <h3 className="font-bold text-gray-900 text-sm">常に最新バージョン</h3>
-                                        <p className="text-xs text-gray-600">アプリの更新作業は不要。アクセスするだけで常に最新のAIモデルを利用できます。</p>
+                                        <h3 className="font-bold text-gray-900 text-sm">常に最新版をシェア</h3>
+                                        <p className="text-xs text-gray-600">アプリの更新作業は一切不要。どのデバイスからアクセスしても、常に最新のAIモデルを利用できます。</p>
                                     </div>
                                 </div>
                             </div>
