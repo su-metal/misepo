@@ -1134,7 +1134,7 @@ open11:00-close 17:00
                                     <div className="w-11 h-11 md:w-12 md:h-12 bg-gradient-to-tr from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-200 shrink-0 md:mb-6"><Icons.Maximize2 size={isMobile ? 22 : 24} /></div>
                                     <h3 className="text-xl md:text-2xl font-bold text-slate-900 leading-tight">3大プラットフォーム<br className="md:hidden" />一括管理</h3>
                                 </div>
-                                <p className="text-slate-600 mb-6 max-w-md">
+                                <p className="text-slate-600 text-sm md:text-base mb-6 max-w-md mt-4 md:mt-0">
                                     Instagram、X (Twitter)、Googleビジネスプロフィールの投稿・返信を1つのアプリで完結。
                                     <br />
                                     媒体ごとのアプリを行き来する手間をゼロにします。
@@ -1158,9 +1158,9 @@ open11:00-close 17:00
                             <div className="absolute bottom-0 left-0 w-full h-1 bg-green-500" />
                             <div className="flex flex-row md:flex-col items-center gap-4 md:gap-0 md:items-start">
                                 <div className="w-12 h-12 bg-green-100 text-green-600 rounded-xl flex items-center justify-center md:mb-6 shrink-0"><Icons.Globe size={24} /></div>
-                                <h3 className="text-lg md:text-xl font-bold text-slate-900 leading-tight">多言語翻訳 &<br className="hidden md:block" />インバウンド対応</h3>
+                                <h3 className="text-xl md:text-2xl font-bold text-slate-900 leading-tight">多言語翻訳 &<br className="hidden md:block" />インバウンド対応</h3>
                             </div>
-                            <p className="text-slate-600 text-sm mt-4 md:mt-2 mb-4">
+                            <p className="text-slate-600 text-sm md:text-base mt-4 md:mt-2 mb-4">
                                 日本語の投稿から、英語・中国語・韓国語をワンタップで生成。外国人観光客へのアピールも自動化できます。
                             </p>
                             <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
@@ -1176,9 +1176,9 @@ open11:00-close 17:00
                             <div className="absolute bottom-0 left-0 w-full h-1 bg-sky-500" />
                             <div className="flex flex-row md:flex-col items-center gap-4 md:gap-0 md:items-start">
                                 <div className="w-12 h-12 bg-sky-100 text-sky-500 rounded-xl flex items-center justify-center md:mb-6 shrink-0"><Icons.History size={24} /></div>
-                                <h3 className="text-lg md:text-xl font-bold text-slate-900 leading-tight">過去投稿の<br className="hidden md:block" />スタイル同期</h3>
+                                <h3 className="text-xl md:text-2xl font-bold text-slate-900 leading-tight">過去投稿の<br className="hidden md:block" />スタイル同期</h3>
                             </div>
-                            <p className="text-slate-600 text-sm mt-4 md:mt-2 mb-4">
+                            <p className="text-slate-600 text-sm md:text-base mt-4 md:mt-2 mb-4">
                                 過去数年分の投稿データを解析し、あなただけの「書き癖」データベースを構築。使えば使うほど精度が向上します。
                             </p>
                             <div className="flex items-center gap-2 mt-auto">
@@ -1252,9 +1252,9 @@ open11:00-close 17:00
                                 )}
                             </button>
                             <div className="mt-auto pt-6">
-                                <div className="flex items-center gap-2 mb-4"><Icons.Zap size={16} className="text-yellow-400" fill="currentColor" /><h3 className="font-bold text-slate-200 text-sm">Proプランなら...</h3></div>
+                                <div className="flex items-center gap-2 mb-4"><Icons.Zap size={16} className="text-yellow-400" fill="currentColor" /><h3 className="font-bold text-slate-200 text-sm">MisePoならすべて可能</h3></div>
                                 <div className="grid grid-cols-2 gap-y-2 gap-x-4">
-                                    {["3パターン同時提案", "Instagram / X 同時作成", "Googleマップ返信", "多言語翻訳 (英/中/韓)"].map((item, i) => (
+                                    {["Instagram / X 同時作成", "Googleマップ クチコミ返信", "あなた独自の『書き癖』学習", "多言語翻訳 (英/中/韓)"].map((item, i) => (
                                         <div key={i} className="flex items-center gap-2 text-xs text-slate-400"><Icons.CheckCircle size={12} className="text-indigo-400 shrink-0" /><span>{item}</span></div>
                                     ))}
                                 </div>
