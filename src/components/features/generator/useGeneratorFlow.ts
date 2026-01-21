@@ -287,7 +287,7 @@ export function useGeneratorFlow(props: {
     if (isLoggedIn && !isRegeneration) {
       const historyConfig = {
         platforms: targetPlatforms,
-        postPurpose, gmapPurpose, tone, length, inputText,
+        postPurpose, tone, length, inputText,
         starRating: starRating ?? undefined,
         language, storeSupplement, customPrompt,
         xConstraint140, includeSymbols, includeEmojis,

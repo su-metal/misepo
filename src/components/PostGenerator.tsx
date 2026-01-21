@@ -119,8 +119,8 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
     <div className="min-h-screen text-slate-100 overflow-x-hidden">
 
       <div className="max-w-[1400px] mx-auto py-4 sm:py-8 relative z-10">
-        {/* Header Module - Floating Glass */}
-        <div className="mb-6 px-3 sm:px-8 animate-in fade-in slide-in-from-top-4 duration-1000">
+        {/* Header Module - Solid Section Card */}
+        <div className="section-card mx-3 sm:mx-8 mb-6 p-4 sm:p-6 transition-all duration-1000 animate-in fade-in slide-in-from-top-4">
           <GeneratorHeader
             onOpenHistory={onOpenHistory || (() => { })}
             storeProfile={storeProfile}
@@ -219,17 +219,15 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
           </div>
         </div>
 
-        {/* Footnote - Now placed at the very bottom of the generator to avoid appearing between modules on mobile */}
+        {/* Footnote */}
         <p className="text-center text-[10px] font-black text-slate-400 uppercase tracking-widest mt-12 pb-8 sm:pb-0 animate-in fade-in duration-1000">
           AI-Powered High Performance Content Generation
         </p>
       </div>
 
-      {/* Sticky Generation Footer: Combined Mobile & PC for ease of access */}
+      {/* Sticky Generation Footer */}
       <div className="fixed bottom-0 left-0 right-0 z-[90]">
-        {/* Gradient Fade Overlay - Provides visual separation from content */}
         <div className="absolute inset-x-0 bottom-0 h-24 md:h-32 bg-gradient-to-t from-white via-white/90 to-transparent pointer-events-none" />
-
         <div className="relative px-4 py-3 pb-8 md:pb-12 safe-area-bottom flex items-center justify-center">
           <button
             onClick={handleGenerate}
@@ -270,7 +268,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
             flow.handleApplyPreset(p);
             setIsPresetModalOpen(false);
           }}
-          initialPresetId={undefined} // Or pass if needed
+          initialPresetId={undefined}
           isSaving={isSavingPreset}
         />
       )}

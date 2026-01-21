@@ -207,9 +207,9 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
 
     return (
         <div className="flex flex-col">
-            {/* Platform Tabs & Multi-gen Toggle - Glass Style */}
+            {/* Platform Tabs & Multi-gen Toggle - Solid Card Style */}
             <div className="flex flex-col lg:flex-row lg:items-center gap-4 px-3 sm:px-6 pb-4">
-                <div className="flex items-stretch flex-1 px-4 py-2 gap-1 glass-panel rounded-full border border-white/40 shadow-sm">
+                <div className="flex items-stretch flex-1 px-4 py-2 gap-1 section-card rounded-full border border-slate-100 shadow-sm">
                     <button
                         onClick={() => onSetActivePlatform(Platform.X)}
                         className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-full text-xs sm:text-sm font-black transition-all relative
@@ -251,7 +251,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                     </button>
                 </div>
 
-                <div className="flex items-center gap-3 px-5 py-2.5 glass-panel rounded-full border border-white/40 shadow-sm">
+                <div className="flex items-center gap-3 px-5 py-2.5 section-card rounded-full border border-slate-100 shadow-sm">
                     <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em] leading-none">同時生成</span>
                     <button
                         onClick={onToggleMultiGen}
@@ -272,7 +272,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                     <div className="flex flex-col lg:flex-row gap-6 lg:items-stretch">
 
                         {/* LEFT COL: Profiles */}
-                        <div className="glass-panel p-5 rounded-[32px] border border-white/40 shadow-sm flex flex-col gap-4 flex-1">
+                        <div className="section-card p-5 rounded-[40px] flex flex-col gap-4 flex-1">
                             <div className="flex items-center justify-between px-2">
                                 <h3 className="text-xs font-black text-primary uppercase tracking-[0.25em]">Profiles</h3>
                                 <button
@@ -324,8 +324,8 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                             </div>
                         </div>
 
-                        {/* RIGHT COL: Style Settings (Tone, Length, X Limit, Emojis) */}
-                        <div className="glass-panel p-5 rounded-[32px] border border-white/40 shadow-sm flex flex-col gap-5 flex-1">
+                        {/* RIGHT COL: Style Settings */}
+                        <div className="section-card p-5 rounded-[40px] flex flex-col gap-5 flex-1">
                             <div className="flex items-center justify-between px-2">
                                 <h3 className="text-xs font-black text-primary uppercase tracking-[0.25em]">Style</h3>
                             </div>
@@ -434,7 +434,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                         </button>
                                     )}
                                 </div>
-                                <div className="glass-panel rounded-[24px] p-8 flex items-center justify-center">
+                                <div className="section-card rounded-[32px] p-8 flex items-center justify-center">
                                     <div className="flex flex-row gap-4">
                                         {[1, 2, 3, 4, 5].map((r) => (
                                             <button
@@ -452,7 +452,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                             {/* Purpose (Right Column) */}
                             <div className="flex-1 w-full lg:w-1/2 flex flex-col gap-4 relative">
                                 <h3 className="text-xs font-black text-primary uppercase tracking-[0.25em] px-2">返信の目的</h3>
-                                <div className="glass-panel flex items-center justify-center h-full relative overflow-hidden group rounded-[24px] p-3">
+                                <div className="section-card flex items-center justify-center h-full relative overflow-hidden group rounded-[32px] p-3">
                                     <div className={`grid grid-cols-2 gap-3 w-full transition-all duration-500 ${starRating !== null ? 'blur-[2px] opacity-40' : ''}`}>
                                         {GMAP_PURPOSES.map((p) => {
                                             const isSelected = gmapPurpose === p.id;
@@ -490,7 +490,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
 
                 {/* Right Column: Input Canvas */}
                 <div className="flex-1 flex flex-col gap-8 order-2 min-w-0">
-                    <div className="glass-panel bg-white/40 rounded-[40px] lg:rounded-[48px] p-8 lg:p-14 border-2 border-white/60 flex flex-col group transition-all hover:border-primary/30 shadow-2xl shadow-indigo-900/10 relative isolate min-h-[400px]">
+                    <div className="section-card rounded-[48px] lg:rounded-[64px] p-8 lg:p-14 border-2 border-white flex flex-col group transition-all hover:border-primary/20 shadow-2xl relative isolate min-h-[400px]">
 
                         {/* Shimmer effect for focus */}
                         <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-transparent to-transparent opacity-0 group-focus-within:opacity-100 transition-opacity pointer-events-none" />
