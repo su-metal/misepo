@@ -59,11 +59,12 @@ export interface GenerationConfig {
   // Optional output controls
   language?: string;
   storeSupplement?: string; // Google Maps only
-  customPrompt?: string;
+  customPrompt?: string; // Additional instructions for the AI
 
   // Decoration Control
-  includeSymbols?: boolean; // e.g., ✦, ▷
-  includeEmojis?: boolean; // e.g., ✨, 😊
+  includeSymbols?: boolean; // Whether to include decorative symbols
+  includeEmojis?: boolean; // Whether to include emojis
+  gmapPurpose?: GoogleMapPurpose; // Explicit purpose for Google Maps (Reply vs Promotion)
   
   // Platform specific
   xConstraint140?: boolean; // X (Twitter) only
