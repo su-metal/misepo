@@ -39,10 +39,10 @@ export const RefinePanel: React.FC<RefinePanelProps> = ({
                     <button
                         onClick={onRefine}
                         disabled={isRefining || !refineText.trim()}
-                        className="flex items-center gap-2 px-6 py-1.5 rounded-full bg-accent text-primary text-xs font-black hover:scale-[1.02] active:scale-[0.98] transition shadow-md disabled:opacity-50"
+                        className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white text-xs font-black hover:bg-black hover:scale-[1.02] active:scale-[0.98] transition shadow-lg disabled:opacity-50 disabled:shadow-none"
                     >
                         {isRefining ? (
-                            <div className="w-3.5 h-3.5 border-2 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+                            <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                         ) : (
                             <RotateCcwIcon className="w-3.5 h-3.5" />
                         )}

@@ -5,6 +5,8 @@ import { env } from "@/lib/env";
 import { computeCanUseApp } from "@/lib/entitlements/canUseApp";
 
 const APP_ID = env.APP_ID;
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export async function GET() {
   const supabase = await createClient();

@@ -6,6 +6,7 @@ import {
   StoreProfile,
   GoogleMapPurpose,
   RiskTier,
+  Length,
 } from "../types";
 
 // Define the schema for structured output (Array of strings)
@@ -85,126 +86,132 @@ export const generateContent = async (
   const maxRetries = 3;
   const charLimit = 140;
   const isXWith140Limit = config.platform === Platform.X && config.xConstraint140;
+  
+  // Helper to safely get platform samples even if key names vary (e.g., 'X' vs 'X (Twitter)')
+  const getPlatformSample = (samples: Record<string, string | undefined> | undefined, targetPlatform: Platform): string | undefined => {
+    if (!samples) return undefined;
+    
+    // 1. Direct match
+    if (samples[targetPlatform]) return samples[targetPlatform];
+    
+    // 2. Fuzzy match for target platform
+    const target = targetPlatform.toLowerCase();
+    const keys = Object.keys(samples);
+    const targetKey = keys.find(k => {
+      const lowerK = k.toLowerCase();
+      if (target.includes('x') || target.includes('twitter')) return lowerK.includes('x') || lowerK.includes('twitter');
+      if (target.includes('insta')) return lowerK.includes('insta');
+      if (target.includes('goog') || target.includes('map')) return lowerK.includes('goog') || lowerK.includes('map');
+      return lowerK === target;
+    });
+    
+    return targetKey ? samples[targetKey] : undefined;
+  };
+
+  const currentSample = getPlatformSample(config.post_samples as any, config.platform);
+  const hasPersonaSamples = !!(currentSample && currentSample.trim());
+  const hasPersona = hasPersonaSamples || !!(config.customPrompt && config.customPrompt.trim());
 
   const buildSystemInstruction = () => {
-    const effectivePurpose = config.purpose === 'auto' 
-      ? "Auto-Detect (Analyze the input text and infer the most appropriate purpose, e.g., Promotion, Story, or Engagement)" 
-      : config.purpose;
+    if (hasPersona) {
+      // --- Persona Mode (High Precision Mimicry) ---
+      const personaInstructions = `
+あなたは、以下の【過去の投稿ログ】の主になりきる「AI代筆職人」です。
 
-    // Check if persona learning is available
-    const hasPersonaSamples = config.postSamples?.[config.platform] && config.postSamples[config.platform]!.trim();
+以下の3点を、サンプルの「見た目」から正確に盗んでください：
+1. **記号の【密度】**: ログには複数の投稿（---区切り）が含まれています。全ての合計ではなく、**「平均的な1投稿分の量」**を再現してください。
+2. **記号の【種類】**: サンプルにない汎用的な絵文字（🙌✨🥰等）は使用禁止です。サンプルにある特定の文字・記号（♡、♪、🍓等）のみを優先してください。
+3. **行の長さの完全同期（ポエム化の防止）**:
+   - サンプルの**「1行あたりの文字数」**を分析し、それに合わせてください。
+   - **ケースA（長い行）**: サンプルが「20文字前後で改行」している場合、あなたも同様に長く続けてください。
+     - **禁止**: 「ひとつめは（改行）」「優しい甘さの（改行）」のように、短いフレーズで細かく切る（ポエム風にする）ことは**厳禁**です。
+   - **ケースB（短い行）**: サンプルが「5〜10文字で細かく改行」している場合のみ、あなたも短く切ってください。
 
-    let systemInstruction = `
-You are a skilled and friendly social media manager for a physical business.
-Your goal is to write engaging, natural, and effective posts for a ${profile.industry} named "${profile.name}" located in ${profile.region}.
-Store Description: ${profile.description || "N/A"}
-Target Audience: Local customers and potential visitors.
+【文体と素材の完全分離（最重要）】:
+- **ソースの使い分け**:
+  - **文体（ガワ）**: 「過去の投稿ログ」から、語尾（〜だね、〜です）、絵文字のクセ、改行リズム、雰囲気だけを抽出してください。
+  - **素材（中身）**: 「今回のメモ」の内容**のみ**を使用してください。
 
-**Current Task Configuration:**
-- Platform: ${config.platform}
-- Purpose: ${effectivePurpose}
-${hasPersonaSamples ? '- Tone: IGNORE - Use learned persona style instead' : `- Tone: ${config.tone} (Formal/Standard/Friendly)`}
-- Length: ${config.length} (Short/Medium/Long)
-- Language: ${config.language || "Japanese"}
+【執筆ルール】:
+- 解説や挨拶は一切抜き。投稿文のみを出力。
+- メモが短い場合は、店主の価値観（こだわり、想い）に沿って自然に膨らませる。
+- ユーザー希望の長さ [**${config.length}**] に合わせてボリュームを調整。
+- X (Twitter)の場合は、ハッシュタグは最小限（1〜2個程度、最大3個まで）に留めてください。
+
+【過去の投稿ログ】:
+${currentSample || "（カスタムプロンプトに基づき、職人として振る舞ってください）"}
+
+【今回のメモ】:
+"${config.inputText}"
+
+【出力形式】:
+要素1つのJSON配列（["本文"]）で出力。
+
+【禁止事項】:
+- **「過去の投稿ログ」にある具体的なエピソード（「大変な道を突き進みます」等の固有フレーズ）のコピペ・流用は厳禁です。**
+- **「短いフレーズでの連続改行（ポエム化）」は、サンプルがそうでない限り厳禁です。**
+- **サンプルに反して「長文の塊」を出力することは禁止です。頻繁に改行してください。**
+- **感嘆符（！や！）と絵文字の併用禁止**: 文末で「！✨」のように重ねず、どちらか一方のみを使用してください。
+`;
+      
+      const combinedPersona = config.customPrompt 
+        ? personaInstructions + `\n【追加のカスタム指示】:\n${config.customPrompt}`
+        : personaInstructions;
+
+      if (config.platform === Platform.GoogleMaps) {
+        return combinedPersona + `\n【Googleマップ特記事項】: 口コミへの返信。丁寧すぎない言葉で。※絵文字・記号禁止。`;
+      }
+      return combinedPersona;
+    }
+
+    // --- Standard Mode (Omakase / Plain AI) ---
+    let standardInstructions = `
+あなたは、${profile.region}にある${profile.industry}「${profile.name}」のSNS運用を担う「プロのライター」です。
+ユーザーの「メモ」を元に、フォロワーや来店客を惹きつける魅力的で自然な文章を作成してください。
+
+【基本設定】:
+- 店名: ${profile.name}
+- 業種: ${profile.industry}
+- 地域: ${profile.region}
+- 店舗概要: ${profile.description || "なし"}
+
+【執筆ルール】:
+- 解説や挨拶は一切抜き。投稿文のみを出力。
+- 希望の長さ [**${config.length}**] に合わせて構成。
+- **視覚的な読みやすさ（重要）**: 2〜3文ごとに改行を入れ、内容の区切りには空行（1行あき）を設けてください。
+- Instagramの場合は、文末に4-6個の関連ハッシュタグを追加。
+- X (Twitter)の場合は、ハッシュタグは最小限（1〜2個程度、最大3個まで）に留めてください。
+
+【ビジュアル・構成イメージ】:
+リード文（キャッチーに）
+（空行）
+詳細やこだわり
+（空行）
+予約やアクセスの案内
+
+【スタイル・記号のルール】:
+- **感嘆符（！や！）と絵文字の併用禁止**: 文末は「！✨」とせず、「！」または「✨」のどちらか一方のみを使用してください。
+- ${config.includeEmojis !== false ? '絵文字を適度に使用し、明るい雰囲気に。' : '絵文字は使用しないでください。'}
+- ${config.includeSymbols ? `以下のパレットの記号を効果的に使用して、プレミアムな雰囲気を演出してください：\n${DECORATION_PALETTE}` : '特殊な記号（✧や✄等）は使用しないでください。'}
+
+【今回のメモ】:
+"${config.inputText}"
+
+【出力形式】:
+要素1つのJSON配列（["本文"]）で出力。
 `;
 
     if (config.platform === Platform.GoogleMaps) {
-      if (config.starRating) {
-        systemInstruction += `\n- Context: Replying to a customer review with a ${config.starRating}-star rating. Adjust the gratitude/apology level accordingly.`;
-      }
-      if (config.purpose === GoogleMapPurpose.Apology) {
-        systemInstruction += `\n- Focus: Sincere apology, explanation of improvement, and inviting them back.`;
-      }
-      systemInstruction += `\n
-**Humble Language Enforcement (CRITICAL):**
-When the customer mentions family members (e.g., "奥様", "旦那様", "娘さん") or staff (e.g., "店員さん", "スタッフの方") in their review:
-- You MUST convert these to humble forms suitable for the store owner (e.g., "妻" or "家内", "主人" or "夫", "娘", "スタッフ").
-- NEVER repeat the customer's honorifics when referring to your own side.
-
-**Location-Based Greeting Rule (CRITICAL):**
-- Do NOT assume the customer is from out of town (e.g., "豊橋にお越しの際は" / "when you come to [Region]") UNLESS they explicitly mention traveling, visiting from afar, or being a tourist.
-- If the customer does NOT mention being from far away, assume they are potentially local.
-- Instead of "If you visit [Region] again," use generic welcoming phrases like "We look forward to your next visit" (またのご来店を心よりお待ちしております) or "We hope to see you again soon."`;
-    }
-
-    if (config.storeSupplement) {
-      systemInstruction += `\n- Additional Store Info (Use this context): ${config.storeSupplement}`;
-    }
-    if (config.customPrompt) {
-      systemInstruction += `\n- Special User Instruction: ${config.customPrompt}`;
-    }
-    if (config.instagramFooter) {
-      systemInstruction += `\n- Context (Store Info): "${config.instagramFooter}"\nNOTE: Do NOT include this store info footer in your generated output. It will be appended programmatically later. Only use this for context to avoid repeating information.`;
-    }
-
-
-    // Inject Post Samples for Few-Shot Learning
-    if (config.postSamples?.[config.platform]) {
-      const sample = config.postSamples[config.platform];
-      
-      if (sample && sample.trim()) {
-        systemInstruction += `\n
-**CRITICAL: Persona Adoption (Few-Shot Style Learning)**
-The user has provided past posts/replies from a specific persona below.
-You MUST STRICTLY MIMIC this persona's:
-- Exact tone and formality level (casual, formal, friendly, etc.)
-- Sentence structure and length patterns
-- Vocabulary choices and expressions
-- Emoji usage patterns (frequency, types, placement)
-- Punctuation style
-- Any unique catchphrases or speaking patterns
-
-**Specific Data Exclusion (CRITICAL):**
-- DO NOT copy specific names (staff names like "鈴木", customer names like "ずん様"), dates, or specific location details from the examples below into your output.
-- These are "placeholders" for style reference only.
-- In your output, use the current store's information or generic terms (e.g., "[名前]" or context-appropriate generic references) instead of copying the specific names from the samples.
-
-IGNORE any conflicting tone/style settings above. The examples below are your ONLY style guide.
-
----
-PERSONA EXAMPLES:
-${sample}
----
-
-INSTRUCTION: Write a new ${config.platform} post/reply in EXACTLY the same style as the examples above. Match the persona's voice perfectly while ignoring specific names or dates contained in the samples.`;
-      }
-    }
-
-    const hasPersona = (config.postSamples?.[config.platform] && config.postSamples[config.platform]!.trim()) || (config.customPrompt && config.customPrompt.trim());
-    const useEmojis = config.platform === Platform.GoogleMaps ? false : config.includeEmojis !== false;
-    const useSymbols = config.platform === Platform.GoogleMaps ? false : config.includeSymbols;
-
-    systemInstruction += `\n
-**Formatting Rules:**
-1. Generate exactly 1 distinct variation.
-2. Output strictly as a JSON array of strings.
-`;
-
-    if (hasPersona) {
-      systemInstruction += `
-3. **Persona Habit Override**: Ignore manual emoji/symbol settings. Instead, strictly adopt the learned persona's habits regarding emojis and decorative symbols from the provided samples and instructions. ${config.platform === Platform.GoogleMaps ? '(CRITICAL: Despite persona habits, do NOT use emojis or symbols for Google Maps.)' : ''}
-4. ${isXWith140Limit ? `CRITICAL: The post MUST be BETWEEN 120 AND ${charLimit} characters. This is a hard limit. Count every character carefully (including spaces and emojis). Aim to be as close to ${charLimit} characters as possible while staying STRICTLY UNDER the limit. (日本語指示: 140文字ギリギリまで情報を詰め込み、絶対に140文字を超えないでください)` : ""}
-`;
-    } else {
-      systemInstruction += `
-3. ${useEmojis ? 'Use emojis naturally. Even in "Standard" tone, use emojis moderately (e.g., ✨, 😊, ☕️) to ensure the post isn\'t too dry.' : "Do NOT use emojis."}
-4. ${useSymbols ? `Use text decorations from this palette if appropriate: ${DECORATION_PALETTE}` : "Do NOT use complex text decorations/symbols (like ✧ or ✄), but simple emojis are allowed if enabled."}
-5. ${isXWith140Limit ? `CRITICAL: The post MUST be BETWEEN 120 AND ${charLimit} characters. This is a hard limit. Count every character carefully (including spaces and emojis). Aim to be as close to ${charLimit} characters as possible while staying STRICTLY UNDER the limit. (日本語指示: 140文字ギリギリまで情報を詰め込み、絶対に140文字を超えないでください)` : ""}
+      standardInstructions += `
+\n【Googleマップ特記事項（重要）】:
+- 口コミへの返信です。丁寧で真摯な言葉遣いで。
+- **謙譲語の徹底**: お客様が「店員さん」「奥様」と書かれていても、返信では「スタッフ」「妻」と謙譲語に変換してください。
+- **地域への配慮**: お客様が旅行者であると明記していない限り、「〇〇にお越しの際は」等の遠方者向け挨拶は避け、「またのご来店をお待ちしております」等の汎用メッセージを使用してください。
+- ※絵文字・ハッシュタグは一切使用禁止。
 `;
     }
 
-    systemInstruction += `
-6. If Instagram: Use line breaks for readability and add 4-6 relevant hashtags at the bottom.
-7. If Google Maps: Be professional, concise, and do NOT use hashtags. Do NOT use emojis.
-
-**Style Constraint (CRITICAL):**
-- **Do NOT combine exclamation marks (! or ！) with emojis at the end of a sentence.**
-- Choose ONLY ONE: either an exclamation mark OR an emoji.
-- BAD: "お待ちしています！✨", "美味しいですよ！😋"
-- GOOD: "お待ちしています！", "お待ちしています✨", "美味しいですよ😋"
-`;
-
-    return systemInstruction;
+    return standardInstructions;
   };
 
   const ai = getServerAI();
@@ -218,8 +225,8 @@ INSTRUCTION: Write a new ${config.platform} post/reply in EXACTLY the same style
         systemInstruction,
         responseMimeType: "application/json",
         responseSchema: contentSchema,
-        temperature: 0.7,
-        topP: 0.9,
+        temperature: hasPersona ? 1.0 : 0.7, // Increase temperature for persona matching
+        topP: 0.95,
       },
     });
 
@@ -256,10 +263,10 @@ INSTRUCTION: Write a new ${config.platform} post/reply in EXACTLY the same style
       );
 
       userPrompt = `Your previous post was ${currentLength} characters, but it MUST be under ${charLimit} characters.
-Please shorten this post while keeping the core message:
+Please shorten this post while STRICTLY maintaining the "Persona Style/Voice" (sentence endings, slang, atmosphere) from the reference data:
 "${firstPost}"
 
-IMPORTANT: The result must be UNDER ${charLimit} characters. Remove unnecessary words, use shorter expressions, or simplify the message.`;
+IMPORTANT: The result must be UNDER ${charLimit} characters. Remove filler words while keeping the persona's distinct flavor intact.`;
 
     } catch (parseError) {
       console.error("Generation attempt failed:", parseError);
@@ -280,10 +287,33 @@ export const refineContent = async (
 ): Promise<string> => {
   const modelName = getModelName(true);
 
+  // Check if there's a persona active (custom prompt or samples)
+  const hasPersona = !!(config.customPrompt || (config.post_samples && Object.keys(config.post_samples).length > 0));
+  const sampleText = config.post_samples?.[config.platform] || Object.values(config.post_samples || {})[0] || "";
+
   const systemInstruction = `
 You are an AI editor refining a social media post for "${profile.name}".
 Original Platform: ${config.platform}
 Tone: ${config.tone}
+
+${hasPersona ? `
+**CRITICAL: PERSONA PRESERVATION MODE (Must Follow)**
+The original text is written in a specific STRONG PERSONA (e.g., dialect, specific slang like "ンゴ/クレメンス", unique sentence endings).
+You must **PRESERVE THE ORIGINAL VOICE 100%**.
+- **DO NOT** normalize the text to standard/polite Japanese.
+- **DO NOT** remove slang, informal endings, or specific character quirks.
+- **DO NOT** change the rhythm or density of symbols unless explicitly asked.
+- **ONLY** make changes required by the user's specific instruction.
+
+**Reference Style (Sample)**:
+"${sampleText}"
+` : `
+**Role**: You are a minimal interference editor. 
+- Maintain the original "Voice" and "Vibe" of the text exactly. 
+- If the original uses slang or casual language, KEEP IT.
+- If the original is formal, KEEP IT.
+- Do NOT rewrite the entire post; only modify the parts necessary to fulfill the instruction.
+`}
 
 **Formatting Rules:**
 1. ${config.platform === Platform.X && config.xConstraint140 ? "MUST be under 140 characters." : ""}
@@ -296,10 +326,13 @@ Tone: ${config.tone}
 `;
 
   const userPrompt = `
-Original Post: "${currentContent}"
-Refinement Instruction: "${instruction}"
+Original Post:
+"${currentContent}"
 
-Output ONLY the refined text (raw string, not JSON).
+Refinement Instruction (Apply this change ONLY, keep everything else the same):
+"${instruction}"
+
+Output ONLY the refined text.
 `;
 
   const ai = getServerAI();
@@ -310,7 +343,7 @@ Output ONLY the refined text (raw string, not JSON).
     config: {
       systemInstruction,
       responseMimeType: "text/plain",
-      temperature: 0.7,
+      temperature: hasPersona ? 0.3 : 0.7, // Low temp for persona to prevent drift, moderate for others
     },
   });
 
@@ -322,6 +355,53 @@ export const analyzeRisk = async (
   reviewText: string
 ): Promise<RiskAnalysisResult> => {
   return scoreRisk(starRating, reviewText);
+};
+
+export const extractPostFromImage = async (
+  base64Image: string,
+  mimeType: string,
+  platform: Platform,
+  isPro: boolean
+): Promise<string> => {
+  const modelName = getModelName(isPro);
+  const ai = getServerAI();
+
+  const systemInstruction = `
+You are a highly accurate OCR and content extraction assistant specialized in social media.
+Extract the "main post body" or "owner reply text" from the provided screenshot of a ${platform} interface.
+
+**Rules:**
+1. Extract ONLY the actual text written by the user.
+2. Ignore UI elements like "Like", "Comment", "Share", platform logos, timestamps, usernames (unless part of the text), and system buttons.
+3. Preserve original line breaks and spacing within the post.
+4. If there are multiple posts in the screenshot, extract all of them separated by "---".
+5. Output ONLY the extracted text. No explanations or extra commentary.
+6. If no post text is found, return an empty string.
+`;
+
+  const response = await ai.models.generateContent({
+    model: modelName,
+    contents: [
+      {
+        role: "user",
+        parts: [
+          {
+            inlineData: {
+              data: base64Image.split(",")[1] || base64Image,
+              mimeType: mimeType,
+            },
+          },
+          { text: `Extract the post text from this ${platform} screenshot.` },
+        ],
+      },
+    ],
+    config: {
+      systemInstruction,
+      temperature: 0.1,
+    },
+  });
+
+  return response.text || "";
 };
 
 export const sanitizePostSamples = async (

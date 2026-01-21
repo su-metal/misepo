@@ -115,22 +115,14 @@ export function useGeneratorFlow(props: {
     } else {
       // Apply preset (even if it's the same one - keep it applied)
       setCustomPrompt(preset.custom_prompt ?? '');
-      setCurrentPostSamples(preset.postSamples || {});
+      setCurrentPostSamples(preset.post_samples || {});
       setActivePresetId(preset.id);
     }
   };
 
   const handleStarRatingChange = (rating: number) => {
     setStarRating(rating);
-    // Auto-judgment logic:
-    // 4-5 stars -> Thanks
-    // 1-2 stars -> Apology
-    // 3 stars -> Thanks (usually neutral/minor issues)
-    if (gmapPurpose === GoogleMapPurpose.Auto || gmapPurpose === GoogleMapPurpose.Thanks || gmapPurpose === GoogleMapPurpose.Apology) {
-      if (rating >= 4) setGmapPurpose(GoogleMapPurpose.Thanks);
-      else if (rating <= 2) setGmapPurpose(GoogleMapPurpose.Apology);
-      else setGmapPurpose(GoogleMapPurpose.Thanks);
-    }
+    setGmapPurpose(GoogleMapPurpose.Auto);
   };
 
   const handleSetActivePlatform = (p: Platform) => {
@@ -252,7 +244,7 @@ export function useGeneratorFlow(props: {
         includeSymbols,
         includeEmojis,
         instagramFooter: (p === Platform.Instagram && includeFooter) ? storeProfile.instagramFooter : undefined,
-        postSamples: currentPostSamples
+        post_samples: currentPostSamples
       };
 
       try {
@@ -270,7 +262,7 @@ export function useGeneratorFlow(props: {
         const data = await res.json();
         if (!res.ok || !data.ok) throw new Error(data.error ?? "Generate failed");
 
-        const content = data.result as string[];
+        const content = (data.result as string[]).map(t => t.replace(/\\n/g, '\n'));
         latestRunId = data.run_id?.toString() || null;
 
         let finalContent = content;
@@ -324,7 +316,7 @@ export function useGeneratorFlow(props: {
     setResultGroups(prev => {
       const next = [...prev];
       const nextData = [...next[gIdx].data];
-      nextData[iIdx] = text;
+      nextData[iIdx] = text.replace(/\\n/g, '\n');
       next[gIdx] = { ...next[gIdx], data: nextData };
       return next;
     });
@@ -357,6 +349,7 @@ export function useGeneratorFlow(props: {
 
   const performRefine = async (gIdx: number, iIdx: number) => {
     if (!refineText.trim()) return;
+    setLoading(true);
     setIsRefining(true);
     const group = resultGroups[gIdx];
     try {
@@ -376,7 +369,7 @@ export function useGeneratorFlow(props: {
       setResultGroups(prev => {
         const next = [...prev];
         const nextData = [...next[gIdx].data];
-        nextData[iIdx] = data.result;
+        nextData[iIdx] = data.result.replace(/\\n/g, '\n');
         next[gIdx] = { ...next[gIdx], data: nextData };
         return next;
       });
@@ -385,6 +378,7 @@ export function useGeneratorFlow(props: {
     } catch (e) {
       alert("再生成に失敗しました");
     } finally {
+      setLoading(false);
       setIsRefining(false);
     }
   };
