@@ -86,8 +86,29 @@ export const generateContent = async (
   const charLimit = 140;
   const isXWith140Limit = config.platform === Platform.X && config.xConstraint140;
   
-  // Define persona presence early for all scopes
-  const hasPersonaSamples = !!(config.post_samples?.[config.platform] && config.post_samples[config.platform]!.trim());
+  // Helper to safely get platform samples even if key names vary (e.g., 'X' vs 'X (Twitter)')
+  const getPlatformSample = (samples: Record<string, string | undefined> | undefined, targetPlatform: Platform): string | undefined => {
+    if (!samples) return undefined;
+    
+    // 1. Direct match
+    if (samples[targetPlatform]) return samples[targetPlatform];
+    
+    // 2. Fuzzy match for target platform
+    const target = targetPlatform.toLowerCase();
+    const keys = Object.keys(samples);
+    const targetKey = keys.find(k => {
+      const lowerK = k.toLowerCase();
+      if (target.includes('x') || target.includes('twitter')) return lowerK.includes('x') || lowerK.includes('twitter');
+      if (target.includes('insta')) return lowerK.includes('insta');
+      if (target.includes('goog') || target.includes('map')) return lowerK.includes('goog') || lowerK.includes('map');
+      return lowerK === target;
+    });
+    
+    return targetKey ? samples[targetKey] : undefined;
+  };
+
+  const currentSample = getPlatformSample(config.post_samples as any, config.platform);
+  const hasPersonaSamples = !!(currentSample && currentSample.trim());
   const hasPersona = hasPersonaSamples || !!(config.customPrompt && config.customPrompt.trim());
 
   const buildSystemInstruction = () => {
@@ -171,8 +192,8 @@ When the customer mentions family members (e.g., "奥様", "旦那様", "娘さ�
 
 
     // Inject Post Samples for Few-Shot Learning
-    if (config.post_samples?.[config.platform]) {
-      const sample = config.post_samples[config.platform];
+    if (hasPersonaSamples) {
+      const sample = currentSample;
       
       if (sample && sample.trim()) {
         systemInstruction += `\n
@@ -218,7 +239,7 @@ Write a new ${config.platform} post/reply in EXACTLY the same style as the examp
     if (hasPersona) {
       systemInstruction += `
 3. **Persona Habit Override**: Ignore manual emoji/symbol settings. Instead, strictly adopt the learned persona's habits regarding emojis and decorative symbols from the provided samples and instructions. ${config.platform === Platform.GoogleMaps ? '(CRITICAL: Despite persona habits, do NOT use emojis or symbols for Google Maps.)' : ''}
-4. ${isXWith140Limit ? `CRITICAL: The post MUST be BETWEEN 120 AND ${charLimit} characters. This is a hard limit. Count every character carefully (including spaces and emojis). Aim to be as close to ${charLimit} characters as possible while staying STRICTLY UNDER the limit. (日本語指示: 140文字ギリギリまで情報を詰め込み、絶対に140文字を超えないでください)` : ""}
+4. ${isXWith140Limit ? `CRITICAL: The post MUST be BETWEEN 120 AND ${charLimit} characters. count every character carefully. WHILE STAYING UNDER THE LIMIT, YOU MUST MAINTAIN THE PERSONA'S "VOICE" (sentence endings, slang) AT ALL COSTS. (日本語指示: 140文字制限内であっても、参照データの「口調・魂」を絶対に捨てないでください。情報の取捨選択を行い、短い言葉の中にいつもの個性を凝縮させること。)` : ""}
 `;
     } else {
       systemInstruction += `
@@ -231,6 +252,7 @@ Write a new ${config.platform} post/reply in EXACTLY the same style as the examp
     systemInstruction += `
 6. If Instagram: Use line breaks for readability and add 4-6 relevant hashtags at the bottom.
 7. If Google Maps: Be professional, concise, and do NOT use hashtags. Do NOT use emojis.
+8. If X (Twitter): Be concise but strictly maintain the learned persona's voice and catchphrases.
 
 **Style Constraint (CRITICAL):**
 - **Do NOT combine exclamation marks (! or ！) with emojis at the end of a sentence.**
@@ -306,10 +328,10 @@ Write a new ${config.platform} post/reply in EXACTLY the same style as the examp
       );
 
       userPrompt = `Your previous post was ${currentLength} characters, but it MUST be under ${charLimit} characters.
-Please shorten this post while keeping the core message:
+Please shorten this post while STRICTLY maintaining the "Persona Style/Voice" (sentence endings, slang, atmosphere) from the reference data:
 "${firstPost}"
 
-IMPORTANT: The result must be UNDER ${charLimit} characters. Remove unnecessary words, use shorter expressions, or simplify the message.`;
+IMPORTANT: The result must be UNDER ${charLimit} characters. Remove filler words while keeping the persona's distinct flavor intact.`;
 
     } catch (parseError) {
       console.error("Generation attempt failed:", parseError);
