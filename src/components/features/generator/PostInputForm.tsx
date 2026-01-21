@@ -596,35 +596,6 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                         </div>
                     </div>
 
-                    {/* CTA: Generate Button - CastMe Style High Performance - Hidden on Mobile */}
-                    <button
-                        ref={generateButtonRef}
-                        onClick={onGenerate}
-                        disabled={isGenerating || !inputText.trim()}
-                        className={`hidden lg:flex w-full py-8 rounded-[32px] font-black text-2xl tracking-[0.3em] transition-all relative overflow-hidden shadow-2xl group flex-row items-center justify-center
-                            ${isGenerating || !inputText.trim()
-                                ? 'bg-slate-100 text-slate-300 cursor-not-allowed border border-slate-200'
-                                : 'bg-gradient-to-r from-[#4F46E5] to-[#9333EA] text-white shadow-[0_8px_32px_rgba(79,70,229,0.35)] hover:shadow-[0_8px_40px_rgba(79,70,229,0.5)] active:scale-[0.98] border border-white/20'
-                            }`}
-                    >
-                        <div className="flex items-center justify-center gap-5 relative z-10">
-                            {isGenerating ? (
-                                <>
-                                    <div className="w-8 h-8 border-4 border-primary/10 border-t-primary rounded-full animate-spin"></div>
-                                    <span className="opacity-80">PROCESSING...</span>
-                                </>
-                            ) : (
-                                <>
-                                    <div className="relative">
-                                        <SparklesIcon className="w-8 h-8 group-hover:rotate-12 transition-transform drop-shadow-sm" />
-                                        <div className="absolute inset-0 bg-white/50 blur-lg animate-ping-slow opacity-50" />
-                                    </div>
-                                    <span className="drop-shadow-sm">GENERATE POST</span>
-                                </>
-                            )}
-                        </div>
-                    </button>
-
                 </div>
             </div >
         </div >
