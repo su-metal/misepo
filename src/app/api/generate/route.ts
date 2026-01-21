@@ -25,15 +25,9 @@ export async function POST(req: Request) {
     );
   }
 
-  const allowGuest = body.allowGuest === true;
-
   const userId = user?.id ?? null;
-
-  if ((authError || !user) && !allowGuest) {
-    return NextResponse.json(
-      { ok: false, error: "Unauthorized" },
-      { status: 401 }
-    );
+  if (!userId) {
+    return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
   }
 
   if (userId) {
@@ -113,10 +107,10 @@ export async function POST(req: Request) {
 
   let savedRunId: string | null = null;
 
-  console.debug("Generating content for user", userId ?? "guest");
+  console.debug("Generating content for user", userId);
 
   try {
-    const isPro = userId ? true : false; // For now, if logged in and passed the canUseApp check, they get "pro" features (trial/paid)
+    const isPro = true; // Auth already checked above
     const result = await generateContent(profile, config, isPro);
 
     if (userId) {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Platform, StoreProfile } from '../../../types';
 import { getPlatformIcon } from './utils';
-import { XIcon, HeartIcon, MessageCircleIcon, SendIcon, BookmarkIcon, MoreHorizontalIcon, ShareIcon, RotateCcwIcon } from '../../Icons';
+import { CloseIcon, HeartIcon, MessageCircleIcon, SendIcon, BookmarkIcon, MoreHorizontalIcon, ShareIcon, RotateCcwIcon } from '../../Icons';
 
 interface PostPreviewModalProps {
     isOpen: boolean;
@@ -54,13 +54,13 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
                         onClick={onClose}
                         className="w-8 h-8 flex items-center justify-center rounded-xl bg-white border border-stone-200 text-stone-400 hover:text-stone-800 hover:border-stone-400 transition-all active:scale-90"
                     >
-                        <XIcon className="w-4 h-4" />
+                        <CloseIcon className="w-4 h-4" />
                     </button>
                 </div>
 
                 <div className="p-0 bg-stone-50/30 max-h-[70vh] overflow-y-auto">
                     {/* Platform Specific Preview */}
-                    <div className="flex justify-center p-6 bg-gradient-to-b from-stone-50 to-white">
+                    <div className="flex justify-center px-2 py-6 bg-gradient-to-b from-stone-50 to-white">
 
                         {/* Instagram Preview */}
                         {platform === Platform.Instagram && (

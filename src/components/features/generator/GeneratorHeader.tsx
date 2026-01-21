@@ -19,29 +19,29 @@ export const GeneratorHeader: React.FC<GeneratorHeaderProps> = ({
     const isPro = plan?.status === 'active';
 
     return (
-        <header className="sticky top-4 z-[100] w-full">
-            <div className="bg-white/60 backdrop-blur-2xl border border-stone-200 rounded-[2rem] py-2 px-6 flex items-center justify-between gap-4 shadow-xl shadow-stone-200/50">
+        <header className="sticky top-4 z-[100] w-full sm:px-0">
+            <div className="glass-panel py-3 px-8 flex items-center justify-between gap-4 transition-all duration-500 hover:bg-white/10 hover:border-white/40 rounded-full shadow-lg shadow-indigo-900/5">
 
                 {/* Left: Brand Space */}
-                <div className="flex items-center gap-3">
-                    <span className="text-xl font-black text-stone-800 tracking-tighter">MisePo</span>
+                <div className="flex items-center gap-4">
+                    <span className="text-2xl font-black text-primary tracking-tighter drop-shadow-sm">MisePo</span>
 
-                    {/* Status Badge */}
+                    {/* Status Badge - CastMe Style */}
                     <div className="flex items-center">
                         {isTrial ? (
-                            <div className="flex items-center gap-1.5 px-3 py-1 bg-lime/10 border border-lime/20 rounded-full shadow-sm">
-                                <StarIcon className="w-3 h-3 text-lime fill-current animate-pulse" />
-                                <span className="text-[9px] font-black text-lime-700 uppercase tracking-widest">Free Trial</span>
+                            <div className="flex items-center gap-2 px-4 py-1.5 bg-slate-100 border border-slate-200 rounded-full shadow-sm">
+                                <StarIcon className="w-3 h-3 text-slate-400 fill-current animate-pulse" />
+                                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none">Free Trial</span>
                             </div>
                         ) : isPro ? (
-                            <div className="flex items-center gap-1.5 px-3 py-1 bg-stone-900 border border-stone-800 rounded-full shadow-lg shadow-black/10">
-                                <div className="w-1.5 h-1.5 rounded-full bg-lime"></div>
-                                <span className="text-[9px] font-black text-white uppercase tracking-widest">Pro Plan</span>
+                            <div className="flex items-center gap-2 px-4 py-1.5 bg-primary rounded-full shadow-lg">
+                                <div className="w-1.5 h-1.5 rounded-full bg-indigo-400 shadow-[0_0_10px_rgba(129,140,248,0.8)]"></div>
+                                <span className="text-[10px] font-black text-white uppercase tracking-widest leading-none">Pro Plan</span>
                             </div>
                         ) : (
-                            <div className="flex items-center gap-1.5 px-3 py-1 bg-stone-100 border border-stone-200 rounded-full">
-                                <div className="w-1.5 h-1.5 rounded-full bg-stone-300"></div>
-                                <span className="text-[9px] font-black text-stone-400 uppercase tracking-widest">Free Plan</span>
+                            <div className="flex items-center gap-2 px-4 py-1.5 bg-slate-50 border border-slate-100 rounded-full">
+                                <div className="w-1.5 h-1.5 rounded-full bg-slate-300"></div>
+                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Free Plan</span>
                             </div>
                         )}
                     </div>
@@ -51,15 +51,15 @@ export const GeneratorHeader: React.FC<GeneratorHeaderProps> = ({
                 <div className="flex items-center">
                     <button
                         onClick={onOpenHistory}
-                        className="flex items-center gap-2 pl-3 md:pl-5 pr-2 md:pr-4 py-1.5 rounded-2xl bg-stone-900 text-white hover:bg-stone-800 transition-all shadow-lg shadow-black/10 active:scale-95 group"
+                        className="glass-button flex items-center gap-3 pl-4 md:pl-6 pr-2 md:pr-4 py-2 rounded-2xl bg-slate-50 text-primary hover:bg-slate-100 transition-all shadow-xl active:scale-95 group border border-slate-100"
                     >
-                        <div className="w-7 h-7 md:w-8 md:h-8 rounded-xl bg-white/10 border border-white/10 flex items-center justify-center overflow-hidden">
-                            <span className="text-[9px] md:text-[10px] font-black text-white/90">
+                        <div className="w-8 h-8 md:w-9 md:h-9 rounded-xl bg-primary flex items-center justify-center overflow-hidden transition-transform group-hover:scale-110">
+                            <span className="text-xs md:text-sm font-black text-white">
                                 {(storeProfile?.name?.[0] || 'U').toUpperCase()}
                             </span>
                         </div>
-                        <span className="text-[10px] font-black tracking-widest hidden md:inline">MENU</span>
-                        <MenuIcon className="w-4 h-4 text-stone-400 group-hover:text-white transition-colors ml-1" />
+                        <span className="text-[11px] font-black tracking-[0.2em] hidden md:inline ml-1">MENU</span>
+                        <MenuIcon className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors ml-1" />
                     </button>
                 </div>
             </div>

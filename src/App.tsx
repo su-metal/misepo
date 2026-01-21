@@ -12,28 +12,22 @@ import { GUEST_PROFILE } from './constants';
 import PostGenerator from './components/PostGenerator';
 import OnboardingFlow from './components/Onboarding'; // Corrected
 import HistorySidebar from './components/HistorySidebar'; // Corrected
+import AccountSettingsModal from './components/AccountSettingsModal';
 import GuestDemoModal from './components/GuestDemoModal';
 import GuideModal from './components/GuideModal';
 import { LockIcon, LogOutIcon } from './components/Icons';
 
-// Inline simple components for now
-const MobileHeader = ({ onOpenSidebar }: { onOpenSidebar: () => void }) => (
-  <header className="md:hidden flex items-center justify-between p-4 bg-white border-b border-stone-100 sticky top-0 z-30">
-    <h1 className="text-xl font-black text-stone-800">MisePo</h1>
-    <button onClick={onOpenSidebar} className="p-2 bg-stone-50 rounded-lg text-stone-600">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-    </button>
-  </header>
-);
 
 const UpgradeBanner = ({ plan, onUpgrade }: { plan: string, onUpgrade: () => void }) => (
-  <div className="bg-black p-4 flex items-center justify-between text-white text-sm border-b border-lime/20 shadow-lg shadow-black/40">
-    <div className="flex items-center gap-2">
-      <span className="bg-lime px-2 py-0.5 rounded text-[10px] font-black uppercase text-black">Free Plan</span>
-      <span className="font-bold">無料枠をご利用中です。Proプランで作成回数が無制限になります。</span>
+  <div className="bg-primary p-4 flex items-center justify-between text-white text-sm border-b border-accent/20 shadow-2xl shadow-navy-900/40 relative overflow-hidden group">
+    <div className="absolute inset-0 bg-gradient-to-r from-accent/10 to-transparent pointer-events-none"></div>
+    <div className="flex items-center gap-3 relative z-10">
+      <span className="bg-accent px-3 py-1 rounded-full text-[10px] font-black uppercase text-white shadow-lg shadow-accent/30 tracking-widest">Free Plan</span>
+      <span className="font-black tracking-tight hidden sm:inline">無料枠をご利用中です。Proプランで作成回数が無制限になります。</span>
+      <span className="font-black tracking-tight sm:hidden text-xs">無料枠をご利用中です。</span>
     </div>
-    <button onClick={onUpgrade} className="bg-lime text-black px-4 py-1.5 rounded-lg font-black text-xs hover:bg-lime-light transition shadow-lg shadow-lime/20">
-      Proへアップグレード
+    <button onClick={onUpgrade} className="bg-white text-primary px-5 py-2 rounded-xl font-black text-xs hover:bg-accent hover:text-white transition-all shadow-xl shadow-white/5 active:scale-95 relative z-10 uppercase tracking-widest">
+      Go Pro
     </button>
   </div>
 );
@@ -52,6 +46,7 @@ function App() {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showGuide, setShowGuide] = useState(false);
   const [showGuestDemo, setShowGuestDemo] = useState(false);
+  const [showAccountSettings, setShowAccountSettings] = useState(false);
   const [initDone, setInitDone] = useState(false);
 
   const isLoggedIn = !!user;
@@ -67,7 +62,12 @@ function App() {
       }
       const data = await res.json();
       if (data.ok) {
-        setPresets(data.presets || []);
+        // Map snake_case from DB to camelCase for frontend
+        const mappedPresets = (data.presets || []).map((p: any) => ({
+          ...p,
+          postSamples: p.post_samples || {},
+        }));
+        setPresets(mappedPresets);
       }
     } catch (err) {
       console.error('Failed to fetch presets:', err);
@@ -93,11 +93,7 @@ function App() {
   }, [isLoggedIn]);
 
   const fetchProfile = useCallback(async () => {
-    if (!isLoggedIn) {
-      const guest = readFromStorage<StoreProfile>('guest_profile', null) || GUEST_PROFILE;
-      setStoreProfile(guest);
-      return;
-    }
+    if (!isLoggedIn) return;
     try {
       const res = await fetch('/api/me/store-profile');
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -128,7 +124,6 @@ function App() {
       setInitDone(true);
     };
     init();
-    init();
   }, [authLoading, fetchProfile, fetchHistory, fetchPresets]);
 
   // Strict Redirect for Paid-Only Model
@@ -151,8 +146,6 @@ function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ profile }),
       });
-    } else {
-      writeToStorage('guest_profile', null, profile);
     }
   };
 
@@ -170,18 +163,18 @@ function App() {
 
   if (authLoading || !initDone) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-stone-50">
-        <div className="w-8 h-8 border-4 border-stone-200 border-t-black rounded-full animate-spin"></div>
+      <div className="flex items-center justify-center min-h-screen bg-white">
+        <div className="w-10 h-10 border-4 border-slate-100 border-t-accent rounded-full animate-spin shadow-2xl shadow-accent/10"></div>
       </div>
     );
   }
 
   if (showOnboarding) {
-    return <OnboardingFlow onSave={handleOnboardingSave} initialProfile={storeProfile!} />;
+    return <OnboardingFlow onSave={handleOnboardingSave} initialProfile={storeProfile!} onCancel={storeProfile ? () => setShowOnboarding(false) : undefined} />;
   }
 
   return (
-    <div className="min-h-screen bg-stone-50 flex">
+    <div className="min-h-screen flex text-slate-700">
       <HistorySidebar
         isOpen={isSidebarOpen}
         toggleOpen={() => setIsSidebarOpen(false)}
@@ -195,11 +188,14 @@ function App() {
         onOpenLogin={() => router.push('/start')}
         onOpenGuide={() => setShowGuide(true)}
         onOpenSettings={() => setShowOnboarding(true)}
+        onOpenAccount={() => setShowAccountSettings(true)}
         onLogout={logout}
         storeProfile={storeProfile}
       />
 
       <div className="flex-1 flex flex-col min-w-0">
+        {!plan.isPro && isLoggedIn && <UpgradeBanner plan={plan.plan} onUpgrade={() => router.push('/start')} />}
+
         <main className="flex-1 overflow-y-auto overflow-x-hidden">
           <PostGenerator
             storeProfile={storeProfile!}
@@ -220,7 +216,15 @@ function App() {
       </div>
 
       {showGuide && <GuideModal isOpen={showGuide} onClose={() => setShowGuide(false)} />}
-      {showGuestDemo && <GuestDemoModal onClose={() => setShowGuestDemo(false)} />}
+
+      {showAccountSettings && (
+        <AccountSettingsModal
+          user={user}
+          plan={plan}
+          onClose={() => setShowAccountSettings(false)}
+          onLogout={logout}
+        />
+      )}
     </div>
   );
 }

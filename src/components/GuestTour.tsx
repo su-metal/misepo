@@ -173,30 +173,30 @@ const GuestTour: React.FC<GuestTourProps> = ({ isOpen, onClose, inputRef, button
         className="absolute z-20 flex flex-col items-center transition-all duration-500 ease-in-out pointer-events-none"
         style={tooltipStyle}
       >
-        <div className="bg-black text-lime px-6 py-4 rounded-2xl shadow-2xl relative animate-in fade-in zoom-in-95 duration-300 flex flex-col items-center gap-2 border border-lime/20">
+        <div className="bg-[#001738] text-white px-8 py-5 rounded-[24px] shadow-[0_20px_60px_rgba(0,17,45,0.4)] relative animate-in fade-in zoom-in-95 duration-300 flex flex-col items-center gap-3 border border-white/10">
           {/* 吹き出しの三角 */}
-          <div className={arrowClass}></div>
+          <div className={`${arrowClass} bg-[#001738] border-inherit`}></div>
 
-          <p className="font-bold text-base md:text-lg text-center leading-snug">
+          <p className="font-black text-lg md:text-xl text-center leading-snug tracking-tight">
             {(currentStep as any).text}
           </p>
 
           {(currentStep as any).subText && (
-            <p className="text-xs text-lime/60 font-medium text-center">
+            <p className="text-[11px] text-slate-400 font-black text-center uppercase tracking-widest bg-white/5 py-1 px-3 rounded-full">
               {(currentStep as any).subText}
             </p>
           )}
 
-          <div className="flex items-center gap-1 mt-1">
+          <div className="flex items-center gap-2 mt-2">
             {steps.map((_, i) => (
-              <div key={i} className={`w-1.5 h-1.5 rounded-full transition-colors ${step === i ? 'bg-lime' : 'bg-stone-700'}`}></div>
+              <div key={i} className={`w-2 h-2 rounded-full transition-all duration-300 ${step === i ? 'bg-[#E5005A] w-6 shadow-[0_0_12px_rgba(229,0,90,0.5)]' : 'bg-navy-800'}`}></div>
             ))}
           </div>
         </div>
 
         {/* 誘導メッセージ */}
-        <p className={`text-white text-xs font-bold mt-3 animate-pulse drop-shadow-md pointer-events-none ${isLastStep ? 'text-sm text-lime scale-110' : ''}`}>
-          {isLastStep ? '👇 ボタンをタップして生成！' : '画面をタップして進む'}
+        <p className={`text-white text-[11px] font-black mt-4 animate-pulse drop-shadow-lg pointer-events-none uppercase tracking-[0.2em] ${isLastStep ? 'text-sm text-[#E5005A] scale-110' : ''}`}>
+          {isLastStep ? '👇 ボタンをタップして書き出す' : '画面をタップして次へ'}
         </p>
       </div>
 

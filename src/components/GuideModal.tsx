@@ -1,26 +1,14 @@
-import React, { useEffect } from 'react';
-import { CloseIcon, MagicWandIcon } from './Icons';
-import { LOADING_TIPS } from '../constants';
+import React, { useEffect, useState } from 'react';
+import { CloseIcon, MagicWandIcon, ChevronDownIcon, AutoSparklesIcon, ClockIcon, BookOpenIcon } from './Icons';
 
 interface GuideModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-// Local Icons for the guide steps to match the requested visual style
-const TapIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0" /><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2" /><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8" /><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15" /></svg>
-);
-
-const PenIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9" /><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" /></svg>
-);
-
-const SparklesLargeIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L12 3Z" /><path d="M5 3v4" /><path d="M9 3v4" /><path d="M3 7h4" /><path d="M3 5h4" /></svg>
-);
-
 const GuideModal: React.FC<GuideModalProps> = ({ isOpen, onClose }) => {
+  const [activeTab, setActiveTab] = useState<'basics' | 'advanced'>('basics');
+
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -35,108 +23,160 @@ const GuideModal: React.FC<GuideModalProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[150] flex items-center justify-center p-0 md:p-6 bg-stone-950/80 backdrop-blur-md animate-in fade-in duration-500" onClick={onClose}>
+    <div className="fixed inset-0 z-[150] flex items-center justify-center p-0 md:p-6 bg-slate-900/40 backdrop-blur-md animate-in fade-in duration-500" onClick={onClose}>
       <div
-        className="bg-white rounded-t-[32px] md:rounded-[32px] shadow-[0_32px_128px_-32px_rgba(0,0,0,0.5)] w-full max-w-3xl max-h-[95vh] md:max-h-[85vh] overflow-hidden flex flex-col relative border border-white/20 animate-in zoom-in-95 duration-500 scale-100"
+        className="bg-white rounded-none md:rounded-[32px] shadow-2xl w-full max-w-4xl h-full md:h-auto md:max-h-[85vh] overflow-hidden flex flex-col relative border border-white/50 ring-1 ring-white/50 animate-in zoom-in-95 duration-500 scale-100 mobile-scroll-container"
         onClick={e => e.stopPropagation()}
       >
-        {/* Background Pattern */}
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(15,23,42,0.01)_1px,transparent_1px),linear-gradient(90deg,rgba(15,23,42,0.01)_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none"></div>
-
         {/* Header */}
-        <div className="p-8 md:p-10 border-b border-stone-100 flex items-center justify-between bg-white/50 backdrop-blur-sm sticky top-0 z-10">
+        <div className="p-6 md:p-8 border-b border-slate-100 flex items-center justify-between bg-white/90 backdrop-blur-md sticky top-0 z-20">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-black flex items-center justify-center text-lime shadow-lg shadow-black/20">
-              <MagicWandIcon className="w-6 h-6" />
+            <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 shadow-sm border border-indigo-100">
+              <MagicWandIcon className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-2xl font-black text-stone-900 tracking-tight leading-none">
-                使い方ガイド
+              <h2 className="text-xl md:text-2xl font-black text-slate-800 tracking-tight leading-none">
+                使いこなしガイド
               </h2>
-              <p className="text-[11px] font-black text-lime uppercase tracking-[0.2em] mt-2">Professional 3-Step Flow</p>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Master Class</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-3 hover:bg-rose-50 rounded-2xl text-stone-300 hover:text-rose-500 transition-all active:scale-90"
+            className="w-10 h-10 flex items-center justify-center hover:bg-slate-100 rounded-full text-slate-400 hover:text-slate-600 transition-all"
           >
-            <CloseIcon className="w-7 h-7" />
+            <CloseIcon className="w-6 h-6" />
           </button>
         </div>
 
-        {/* Content */}
-        <div className="overflow-y-auto overscroll-contain flex-1 p-8 md:p-12 space-y-12 relative">
+        {/* Scrollable Content */}
+        <div className="overflow-y-auto overscroll-contain flex-1 p-6 md:p-10 space-y-12 bg-white">
 
-          {/* Step Cards */}
-          <section className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* SECTION 1: 3-STEP FLOW (Compact) */}
+          <section>
+            <div className="flex items-center gap-3 mb-6">
+              <span className="bg-slate-800 text-white text-[10px] font-black px-2 py-1 rounded-md uppercase tracking-wider">Basic</span>
+              <h3 className="text-lg font-black text-slate-800">基本の3ステップ</h3>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* Step 1 */}
-              <div className="group relative flex flex-col items-center p-8 rounded-[32px] bg-stone-50 border-2 border-transparent hover:border-lime/20 hover:bg-white hover:shadow-2xl hover:shadow-lime/5 transition-all duration-500 animate-in slide-in-from-bottom-4">
-                <span className="absolute top-4 left-6 text-[10px] font-black text-stone-300 tracking-[0.2em]">01</span>
-                <div className="w-20 h-20 rounded-[24px] bg-white text-black flex items-center justify-center mb-6 shadow-inner group-hover:scale-110 transition-transform duration-500">
-                  <TapIcon />
+              <div className="flex flex-row md:flex-col items-center md:items-start gap-4 p-5 rounded-2xl bg-slate-50 border border-slate-100">
+                <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center text-indigo-600 shadow-sm border border-indigo-50 shrink-0 font-black text-lg">
+                  1
                 </div>
-                <h4 className="font-black text-stone-900 text-base mb-2">条件を選ぶ</h4>
-                <p className="text-xs text-stone-500 font-bold text-center leading-relaxed">
-                  SNSの種類や<br />投稿のスタイルを選択
-                </p>
+                <div>
+                  <h4 className="font-bold text-slate-800 text-sm mb-1">条件を選ぶ</h4>
+                  <p className="text-xs text-slate-500 leading-relaxed font-medium">投稿するSNSや、お店の状況に合わせたスタイルを選択します。</p>
+                </div>
               </div>
 
               {/* Step 2 */}
-              <div className="group relative flex flex-col items-center p-8 rounded-[32px] bg-stone-50 border-2 border-transparent hover:border-lime/20 hover:bg-white hover:shadow-2xl hover:shadow-lime/5 transition-all duration-500 animate-in slide-in-from-bottom-4 delay-100">
-                <span className="absolute top-4 left-6 text-[10px] font-black text-stone-300 tracking-[0.2em]">02</span>
-                <div className="w-20 h-20 rounded-[24px] bg-white text-black flex items-center justify-center mb-6 shadow-inner group-hover:scale-110 transition-transform duration-500">
-                  <PenIcon />
+              <div className="flex flex-row md:flex-col items-center md:items-start gap-4 p-5 rounded-2xl bg-slate-50 border border-slate-100">
+                <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center text-indigo-600 shadow-sm border border-indigo-50 shrink-0 font-black text-lg">
+                  2
                 </div>
-                <h4 className="font-black text-stone-900 text-base mb-2">メモを入力</h4>
-                <p className="text-xs text-stone-500 font-bold text-center leading-relaxed">
-                  伝えたいことを<br />自由に箇条書き
-                </p>
+                <div>
+                  <h4 className="font-bold text-slate-800 text-sm mb-1">メモを入力</h4>
+                  <p className="text-xs text-slate-500 leading-relaxed font-medium">「新商品入荷！」「雨の日セール」など、伝えたいことを箇条書きでOK。</p>
+                </div>
               </div>
 
               {/* Step 3 */}
-              <div className="group relative flex flex-col items-center p-8 rounded-[32px] bg-[#0F172A] text-white shadow-2xl shadow-black/20 transition-all duration-500 animate-in slide-in-from-bottom-4 delay-200">
-                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.05] pointer-events-none rounded-[32px]"></div>
-                <span className="absolute top-4 left-6 text-[10px] font-black text-stone-600 tracking-[0.2em]">03</span>
-                <div className="w-20 h-20 rounded-[24px] bg-lime text-black flex items-center justify-center mb-6 shadow-lg shadow-lime/20 group-hover:scale-110 transition-transform duration-500">
-                  <SparklesLargeIcon />
+              <div className="flex flex-row md:flex-col items-center md:items-start gap-4 p-5 rounded-2xl bg-indigo-50 border border-indigo-100 relative overflow-hidden group">
+                <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:opacity-20 transition-opacity">
+                  <AutoSparklesIcon className="w-16 h-16 text-indigo-600" />
                 </div>
-                <h4 className="font-black text-white text-base mb-2">AIが生成</h4>
-                <p className="text-xs text-stone-400 font-bold text-center leading-relaxed">
-                  ワンタップで<br />プロ級の投稿が完成
-                </p>
+                <div className="w-12 h-12 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-lg shadow-indigo-200 shrink-0 font-black text-lg relative z-10">
+                  3
+                </div>
+                <div className="relative z-10">
+                  <h4 className="font-bold text-indigo-900 text-sm mb-1">AI生成・調整</h4>
+                  <p className="text-xs text-indigo-700 leading-relaxed font-medium">ワンクリックで投稿文が完成。必要に応じて微調整してコピーするだけ。</p>
+                </div>
               </div>
             </div>
           </section>
 
-          {/* Pro Tips Section */}
-          <section className="bg-stone-50 rounded-[32px] p-8 md:p-10 border border-stone-100 animate-in fade-in duration-1000 delay-300">
-            <div className="flex items-center gap-3 mb-8">
-              <div className="w-8 h-8 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-500">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v2" /><path d="M12 20v2" /><path d="m4.93 4.93 1.41 1.41" /><path d="m17.66 17.66 1.41 1.41" /><path d="M2 12h2" /><path d="M20 12h2" /><path d="m6.34 17.66-1.41 1.41" /><path d="m19.07 4.93-1.41 1.41" /></svg>
-              </div>
-              <h3 className="font-black text-stone-900 tracking-tight uppercase text-sm">Pro Tips for Success</h3>
+          {/* SECTION 2: ADVANCED FEATURES (Grid) */}
+          <section>
+            <div className="flex items-center gap-3 mb-6">
+              <span className="bg-pink-500 text-white text-[10px] font-black px-2 py-1 rounded-md uppercase tracking-wider">Pro Tips</span>
+              <h3 className="text-lg font-black text-slate-800">便利な機能・設定</h3>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {LOADING_TIPS.map((tip, idx) => (
-                <div key={idx} className="bg-white p-5 rounded-2xl border border-stone-100 shadow-sm flex gap-4 items-start group hover:border-lime/30 transition-colors">
-                  <div className="w-2 h-2 rounded-full bg-lime mt-2 shrink-0 group-hover:scale-150 transition-transform"></div>
-                  <p className="text-xs text-stone-600 font-bold leading-relaxed">
-                    {tip.replace('💡 ', '')}
-                  </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+              {/* Feature: Profile Settings */}
+              <div className="group border border-slate-100 rounded-2xl p-5 hover:border-indigo-100 hover:shadow-lg hover:shadow-indigo-50/50 transition-all bg-white">
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-full bg-slate-100 group-hover:bg-indigo-50 flex items-center justify-center text-slate-500 group-hover:text-indigo-600 transition-colors shrink-0">
+                    <MagicWandIcon className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-slate-800 text-sm mb-2">店舗設定の最適化</h4>
+                    <p className="text-[11px] text-slate-500 leading-relaxed font-medium">
+                      お店の名前、業種、コンセプトを登録すると、AIが「お店らしい」トーンを学習し、より精度の高い文章を提案します。
+                    </p>
+                  </div>
                 </div>
-              ))}
+              </div>
+
+              {/* Feature: Presets */}
+              <div className="group border border-slate-100 rounded-2xl p-5 hover:border-indigo-100 hover:shadow-lg hover:shadow-indigo-50/50 transition-all bg-white">
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-full bg-slate-100 group-hover:bg-indigo-50 flex items-center justify-center text-slate-500 group-hover:text-indigo-600 transition-colors shrink-0">
+                    <BookOpenIcon className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-slate-800 text-sm mb-2">スタイル（プリセット）保存</h4>
+                    <p className="text-[11px] text-slate-500 leading-relaxed font-medium">
+                      「店長風」「スタッフAちゃん風」など、よく使う文体を保存して切り替えることができます。
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Feature: History */}
+              <div className="group border border-slate-100 rounded-2xl p-5 hover:border-indigo-100 hover:shadow-lg hover:shadow-indigo-50/50 transition-all bg-white">
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-full bg-slate-100 group-hover:bg-indigo-50 flex items-center justify-center text-slate-500 group-hover:text-indigo-600 transition-colors shrink-0">
+                    <ClockIcon className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-slate-800 text-sm mb-2">履歴から復元</h4>
+                    <p className="text-[11px] text-slate-500 leading-relaxed font-medium">
+                      過去に生成した投稿は自動保存されています。サイドバーからいつでも確認・再利用が可能です。
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Feature: Tone & Length */}
+              <div className="group border border-slate-100 rounded-2xl p-5 hover:border-indigo-100 hover:shadow-lg hover:shadow-indigo-50/50 transition-all bg-white">
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-full bg-slate-100 group-hover:bg-indigo-50 flex items-center justify-center text-slate-500 group-hover:text-indigo-600 transition-colors shrink-0">
+                    <AutoSparklesIcon className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-slate-800 text-sm mb-2">トーン・長さ調整</h4>
+                    <p className="text-[11px] text-slate-500 leading-relaxed font-medium">
+                      「親しみやすく」「きっちり」、「短め」「長め」など、投稿の雰囲気をボタン一つで微調整できます。
+                    </p>
+                  </div>
+                </div>
+              </div>
+
             </div>
           </section>
 
-          {/* Final Action */}
-          <div className="text-center pt-4">
+          {/* CTA */}
+          <div className="pt-8 pb-4 text-center">
             <button
               onClick={onClose}
-              className="inline-flex items-center gap-3 bg-[#0F172A] hover:bg-stone-800 text-white font-black py-6 px-16 rounded-[24px] transition-all transform hover:-transtone-y-1 active:transtone-y-0 shadow-2xl shadow-stone-200 group"
+              className="w-full sm:w-auto px-12 py-4 bg-slate-900 text-white rounded-full font-black text-sm hover:bg-slate-800 transition-colors shadow-xl shadow-slate-900/20 active:scale-95"
             >
-              <span className="text-sm uppercase tracking-widest">さっそくはじめる</span>
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="group-hover:transtone-x-1 transition-transform"><path d="M5 12h14m-7-7 7 7-7 7" /></svg>
+              理解した
             </button>
           </div>
 

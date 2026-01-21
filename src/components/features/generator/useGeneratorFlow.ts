@@ -100,27 +100,29 @@ export function useGeneratorFlow(props: {
   // --- Logic ---
 
   const handleApplyPreset = (preset: Preset) => {
-    if (activePresetId === preset.id) {
+    if (preset.id === 'plain-ai') {
+      // Full reset to default state
       setCustomPrompt('');
+      setCurrentPostSamples({});
+      setPostPurpose(PostPurpose.Auto);
+      setGmapPurpose(GoogleMapPurpose.Auto);
+      setTone(Tone.Standard);
+      setLength(Length.Medium);
+      setIncludeEmojis(true);
+      setIncludeSymbols(false);
+      setXConstraint140(true);
       setActivePresetId(null);
     } else {
+      // Apply preset (even if it's the same one - keep it applied)
       setCustomPrompt(preset.custom_prompt ?? '');
-      setCurrentPostSamples(preset.postSamples || {});
+      setCurrentPostSamples(preset.post_samples || {});
       setActivePresetId(preset.id);
     }
   };
 
   const handleStarRatingChange = (rating: number) => {
     setStarRating(rating);
-    // Auto-judgment logic:
-    // 4-5 stars -> Thanks
-    // 1-2 stars -> Apology
-    // 3 stars -> Thanks (usually neutral/minor issues)
-    if (gmapPurpose === GoogleMapPurpose.Auto || gmapPurpose === GoogleMapPurpose.Thanks || gmapPurpose === GoogleMapPurpose.Apology) {
-      if (rating >= 4) setGmapPurpose(GoogleMapPurpose.Thanks);
-      else if (rating <= 2) setGmapPurpose(GoogleMapPurpose.Apology);
-      else setGmapPurpose(GoogleMapPurpose.Thanks);
-    }
+    setGmapPurpose(GoogleMapPurpose.Auto);
   };
 
   const handleSetActivePlatform = (p: Platform) => {
@@ -128,21 +130,27 @@ export function useGeneratorFlow(props: {
       if (p === Platform.GoogleMaps) {
         setPlatforms([Platform.GoogleMaps]);
         setIsMultiGenMode(false);
+        setIncludeEmojis(false);
+        setIncludeSymbols(false);
       } else {
         // If it's X or Instagram and we're in multi-gen, keep both
         setPlatforms([Platform.X, Platform.Instagram]);
       }
     } else {
       setPlatforms([p]);
+      if (p === Platform.GoogleMaps) {
+        setIncludeEmojis(false);
+        setIncludeSymbols(false);
+      }
     }
   };
 
   const handlePlatformToggle = (p: Platform) => {
-    if (!isLoggedIn && p !== Platform.Instagram) return;
-    
     if (p === Platform.GoogleMaps) {
       setPlatforms([Platform.GoogleMaps]);
       setIsMultiGenMode(false);
+      setIncludeEmojis(false);
+      setIncludeSymbols(false);
       return;
     }
 
@@ -236,7 +244,7 @@ export function useGeneratorFlow(props: {
         includeSymbols,
         includeEmojis,
         instagramFooter: (p === Platform.Instagram && includeFooter) ? storeProfile.instagramFooter : undefined,
-        postSamples: currentPostSamples
+        post_samples: currentPostSamples
       };
 
       try {
@@ -246,7 +254,6 @@ export function useGeneratorFlow(props: {
           body: JSON.stringify({
             profile: storeProfile,
             config,
-            allowGuest: !isLoggedIn,
             save_history: targetPlatforms.length === 1,
             run_type: "generation",
           }),
@@ -396,7 +403,18 @@ export function useGeneratorFlow(props: {
           window.open("https://www.instagram.com/", "_blank");
           break;
         case Platform.GoogleMaps:
-          window.open("https://business.google.com/", "_blank");
+          if (storeProfile.googlePlaceId) {
+            const query = encodeURIComponent(storeProfile.name || 'Store');
+            window.open(`https://www.google.com/maps/search/?api=1&query=${query}&query_place_id=${storeProfile.googlePlaceId}`, "_blank");
+          } else {
+            // Fallback: Search by name if Place ID is missing
+            const query = encodeURIComponent(storeProfile.name || '');
+            if (query) {
+              window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, "_blank");
+            } else {
+              window.open("https://business.google.com/", "_blank");
+            }
+          }
           break;
       }
     }, 1200);
@@ -425,9 +443,7 @@ export function useGeneratorFlow(props: {
     }
   }, [restorePost]);
 
-  useEffect(() => {
-    if (!isLoggedIn) setInputText(DEMO_SAMPLE_TEXT);
-  }, [isLoggedIn]);
+  // Demo text logic removed as /generate is now auth-only
 
   useEffect(() => {
     if (resetResultsTrigger) setResultGroups([]);

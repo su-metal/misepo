@@ -7,6 +7,8 @@ export const AutoResizingTextarea = forwardRef<
         onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
         className?: string;
         placeholder?: string;
+        onFocus?: (e: React.FocusEvent<HTMLTextAreaElement>) => void;
+        onBlur?: (e: React.FocusEvent<HTMLTextAreaElement>) => void;
         trigger?: any;
     }
 >(({
@@ -14,6 +16,8 @@ export const AutoResizingTextarea = forwardRef<
     onChange,
     className,
     placeholder,
+    onFocus,
+    onBlur,
     trigger
 }, ref) => {
     const internalRef = useRef<HTMLTextAreaElement>(null);
@@ -36,6 +40,8 @@ export const AutoResizingTextarea = forwardRef<
             onChange={onChange}
             className={className}
             placeholder={placeholder}
+            onFocus={onFocus}
+            onBlur={onBlur}
             rows={1}
         />
     );
