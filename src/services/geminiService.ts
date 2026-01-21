@@ -187,7 +187,7 @@ ${learningContext}
     // Detect if this is a reply: starRating exists OR explicit reply purpose
     const isGMapReply = config.platform === Platform.GoogleMaps && (
       config.starRating != null || 
-      (config.gmapPurpose && config.gmapPurpose !== GoogleMapPurpose.Auto)
+      config.gmapPurpose !== undefined // On Google Maps tab, we always default to reply-style instructions
     );
 
     if (isGMapReply) {
