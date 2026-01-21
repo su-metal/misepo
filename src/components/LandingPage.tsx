@@ -885,7 +885,7 @@ open11:00-close 17:00
                     <div className="text-center mb-16">
                         <span className="text-indigo-600 font-bold tracking-wider text-sm uppercase mb-3 block">Why MisePo?</span>
                         <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-6 tracking-tight leading-tight">
-                            なぜ今、<br className="md:hidden" /><span className="text-indigo-600">MisePo（分身）</span>が必要なのか？
+                            なぜ今、<br className="md:hidden" /><span className="text-indigo-600">MisePo（分身）</span>が<br className="md:hidden" />必要なのか？
                         </h2>
                         <p className="text-slate-500 text-lg max-w-2xl mx-auto leading-relaxed">
                             SNSはただの宣伝ツールではありません。<br />
@@ -966,11 +966,11 @@ open11:00-close 17:00
                     <div className="text-center mb-20">
                         <span className="text-indigo-400 font-bold tracking-wider text-sm uppercase mb-3 block">Solution</span>
                         <h2 className="text-4xl md:text-6xl font-black mb-6 tracking-tight">
-                            AIが、<span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-pink-400">あなたの『分身』になる。</span>
+                            AIが、<br className="md:hidden" /><span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-pink-400">あなたの<br className="md:hidden" />『分身』になる。</span>
                         </h2>
                         <p className="text-slate-400 text-lg max-w-2xl mx-auto leading-relaxed">
-                            MisePoは単なる自動生成ツールではありません。<br />
-                            あなたの過去の投稿を学習し、まるであなたが書いたかのような文章を生み出します。
+                            MisePoは単なる<br className="md:hidden" />自動生成ツールではありません。<br />
+                            あなたの過去の投稿を学習し、まるで<br className="md:hidden" />あなたが書いたかのような文章を生み出します。
                         </p>
                     </div>
 
@@ -1021,7 +1021,7 @@ open11:00-close 17:00
                     {/* Before / After Comparison */}
                     <div className="max-w-5xl mx-auto bg-slate-800/30 rounded-[2rem] md:rounded-[3rem] p-6 md:p-12 border border-slate-700 backdrop-blur-sm">
                         <div className="text-center mb-10">
-                            <h3 className="text-2xl md:text-3xl font-bold mb-4">MisePoなら、ここまで変わる。</h3>
+                            <h3 className="text-2xl md:text-3xl font-bold mb-4">MisePoなら、<br className="md:hidden" />ここまで変わる。</h3>
                             <p className="text-slate-400">「標準的なAI」と「あなたの分身（MisePo）」の違いをご覧ください。</p>
                         </div>
 
@@ -1113,8 +1113,8 @@ open11:00-close 17:00
                             <span className="gradient-text">このアプリひとつだけ。</span>
                         </h2>
                         <p className="text-slate-600 text-lg">
-                            店舗集客に必要な3大プラットフォームを完全網羅。<br />
-                            それぞれの媒体特性に合わせて、AIが最適な「振る舞い」をします。
+                            店舗集客に必要な<br className="md:hidden" />3大プラットフォームを完全網羅。<br />
+                            それぞれの媒体特性に合わせて、<br className="md:hidden" />AIが最適な「振る舞い」をします。
                         </p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[minmax(280px,auto)]">
@@ -1122,7 +1122,7 @@ open11:00-close 17:00
                             <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-100 rounded-full blur-[80px] -mr-16 -mt-16 transition-opacity group-hover:opacity-70" />
                             <div className="relative z-10 flex flex-col h-full items-start">
                                 <div className="w-12 h-12 bg-gradient-to-tr from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center text-white mb-6 shadow-lg shadow-indigo-200"><Icons.Maximize2 size={24} /></div>
-                                <h3 className="text-2xl font-bold text-slate-900 mb-2">3大プラットフォーム一括管理</h3>
+                                <h3 className="text-2xl font-bold text-slate-900 mb-2">3大プラットフォーム<br className="md:hidden" />一括管理</h3>
                                 <p className="text-slate-600 mb-6 max-w-md">
                                     Instagram、X (Twitter)、Googleビジネスプロフィールの投稿・返信を1つのアプリで完結。
                                     <br />
@@ -1208,9 +1208,9 @@ open11:00-close 17:00
                 <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     <div className="text-center mb-16">
                         <h2 className="text-4xl md:text-6xl font-black mb-6 tracking-tight">
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-orange-400">AIの実力</span>を今すぐ体験
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-orange-400">AIの実力</span>を<br className="md:hidden" />今すぐ体験
                         </h2>
-                        <p className="text-slate-300 text-lg">1行のメモから、プロ並みの投稿文が数秒で完成します。</p>
+                        <p className="text-slate-300 text-lg">1行のメモから、<br className="md:hidden" />プロ並みの投稿文が数秒で完成します。</p>
                     </div>
                     <div className="bg-white/5 backdrop-blur-sm rounded-3xl border border-white/10 shadow-2xl overflow-hidden max-w-5xl mx-auto flex flex-col md:flex-row min-h-[550px]">
                         <div className="p-8 md:w-1/2 border-b md:border-b-0 md:border-r border-white/10 flex flex-col bg-slate-900/50">
@@ -1491,7 +1491,7 @@ open11:00-close 17:00
                             ユーザーの声
                         </h2>
                         <p className="text-slate-600 text-lg max-w-xl mx-auto">
-                            実際にMisePoをご利用いただいている店主様の声をご紹介します。
+                            実際にMisePoを<br className="md:hidden" />ご利用いただいている店主様の声<br className="md:hidden" />をご紹介します。
                         </p>
                     </div>
 
@@ -1539,10 +1539,10 @@ open11:00-close 17:00
                     <div className="text-center mb-16">
                         <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-6 tracking-tight">
                             賢い店主は、<br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">「コスト」と「質」で選んでいます。</span>
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">「コスト」と「質」で<br className="md:hidden" />選んでいます。</span>
                         </h2>
                         <p className="text-slate-500 text-lg max-w-2xl mx-auto">
-                            「自分でやる」のは限界。「業者に頼む」のは高すぎる。<br />
+                            「自分でやる」のは限界。<br className="md:hidden" />「業者に頼む」のは高すぎる。<br />
                             MisePoは、第3の選択肢です。
                         </p>
                     </div>
@@ -1732,11 +1732,11 @@ open11:00-close 17:00
                         </div>
                     </div>
                     <h2 className="text-4xl md:text-6xl font-black mb-8 leading-tight">
-                        365日のSNSの悩み、<br />
+                        365日の<br className="md:hidden" />SNSの悩み、<br />
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 to-pink-300">これでおしまい。</span>
                     </h2>
                     <p className="text-xl md:text-2xl text-slate-300 leading-relaxed mb-12 max-w-2xl mx-auto">
-                        あなたの情熱は、本来のお客様のために。<br />
+                        あなたの情熱は、<br className="md:hidden" />本来のお客様のために。<br />
                         文章作成は、あなたの『分身』に任せてください。
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
