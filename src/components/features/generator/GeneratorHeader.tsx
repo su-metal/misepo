@@ -50,14 +50,14 @@ export const GeneratorHeader: React.FC<GeneratorHeaderProps> = ({
                 <div className="flex items-center">
                     <button
                         onClick={onOpenHistory}
-                        className="flex items-center gap-3 pl-4 md:pl-6 pr-2 md:pr-4 py-2 rounded-2xl bg-white text-primary hover:bg-slate-50 transition-all active:scale-95 group border-2 border-primary shadow-[3px_3px_0px_0px_var(--primary)] active:shadow-[1px_1px_0px_0px_var(--primary)] active:translate-x-[2px] active:translate-y-[2px]"
+                        className="flex items-center gap-3 pl-4 md:pl-6 pr-2 md:pr-4 py-2 transition-all active:scale-95 group"
                     >
                         <div className="w-8 h-8 md:w-9 md:h-9 rounded-xl bg-primary flex items-center justify-center overflow-hidden transition-transform group-hover:scale-110">
                             <span className="text-xs md:text-sm font-black text-white">
                                 {(storeProfile?.name?.[0] || 'U').toUpperCase()}
                             </span>
                         </div>
-                        <span className="text-[11px] font-black tracking-[0.2em] hidden md:inline ml-1">MENU</span>
+                        <span className="text-[11px] font-black text-primary tracking-[0.2em] hidden md:inline ml-1">MENU</span>
                         <MenuIcon className="w-4 h-4 text-primary transition-colors ml-1" />
                     </button>
                 </div>
