@@ -349,6 +349,7 @@ export function useGeneratorFlow(props: {
 
   const performRefine = async (gIdx: number, iIdx: number) => {
     if (!refineText.trim()) return;
+    setLoading(true);
     setIsRefining(true);
     const group = resultGroups[gIdx];
     try {
@@ -377,6 +378,7 @@ export function useGeneratorFlow(props: {
     } catch (e) {
       alert("再生成に失敗しました");
     } finally {
+      setLoading(false);
       setIsRefining(false);
     }
   };

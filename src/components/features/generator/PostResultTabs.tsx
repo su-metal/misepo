@@ -275,16 +275,19 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
 
                                                     {/* Refinement Overlay (per variant) */}
                                                     {refiningKey === `${gIdx}-${iIdx}` && (
-                                                        <div className="absolute inset-0 bg-primary/95 backdrop-blur-xl z-20 flex flex-col p-12 animate-in fade-in zoom-in duration-300 rounded-[48px]">
-                                                            <div className="flex-1 flex flex-col">
-                                                                <div className="mb-10 text-center">
-                                                                    <div className="w-16 h-16 bg-accent rounded-[18px] flex items-center justify-center shadow-lg mx-auto mb-6">
-                                                                        <MagicWandIcon className="w-8 h-8 text-white" />
+                                                        <div className="absolute inset-0 bg-white/80 backdrop-blur-xl z-20 flex flex-col p-8 animate-in fade-in zoom-in duration-300 rounded-[48px] border border-white/50 shadow-inner">
+                                                            <div className="flex-1 flex flex-col items-center justify-center max-w-lg mx-auto w-full">
+                                                                <div className="mb-8 text-center space-y-4">
+                                                                    <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-100 mx-auto border border-indigo-50">
+                                                                        <MagicWandIcon className="w-8 h-8 text-indigo-500" />
                                                                     </div>
-                                                                    <h4 className="text-[10px] font-black text-pink-400 uppercase tracking-[0.4em] mb-2">Advanced Refinement</h4>
-                                                                    <p className="text-3xl font-black text-white leading-tight">What would you like <br />to change?</p>
+                                                                    <div>
+                                                                        <h4 className="text-[11px] font-black text-indigo-400 uppercase tracking-[0.3em] mb-2">AI Refinement</h4>
+                                                                        <p className="text-2xl font-black text-slate-800 leading-tight">修正内容を教えてください</p>
+                                                                    </div>
                                                                 </div>
-                                                                <div className="flex-1 bg-white/5 rounded-[32px] p-2 border border-white/10">
+
+                                                                <div className="w-full">
                                                                     <RefinePanel
                                                                         refineText={refineText}
                                                                         onRefineTextChange={onRefineTextChange}
