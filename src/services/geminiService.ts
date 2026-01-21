@@ -115,6 +115,8 @@ export const generateContent = async (
   const hasPersona = hasPersonaSamples || !!(config.customPrompt && config.customPrompt.trim()) || hasLearningSamples;
 
   const buildSystemInstruction = () => {
+    let personaInstructions = "";
+
     if (hasPersona) {
       // --- Persona Mode (High Precision Mimicry) ---
       let learningContext = "";
@@ -128,7 +130,7 @@ ${learningSamples.join("\n---\n")}
 `;
       }
 
-      const personaInstructions = `
+      personaInstructions = `
 あなたは、以下の【過去の投稿ログ】の主になりきる「AI代筆職人」です。
 
 以下の3点を、サンプルの「見た目」から正確に盗んでください：
@@ -189,31 +191,38 @@ ${learningContext}
     );
 
     if (isGMapReply) {
-      let replyInstructions = `
+      // If persona exists, we want to use its "Tone/Style" but override the "Objective" to be a reply.
+      const basePersona = hasPersona ? personaInstructions : `
 あなたは、${profile.region}にある${profile.industry}「${profile.name}」のオーナーまたは店長です。
-Googleマップに投稿された「お客様の口コミ」に対して、丁寧かつ温かみのある返信文を作成してください。
+丁寧かつ温かみのある返信文を作成してください。
+【基本情報】: 店名:${profile.name}, 業種:${profile.industry}, 地域:${profile.region}
+`;
 
-【基本情報】:
-- 店名: ${profile.name}
-- 業種: ${profile.industry}
-- 地域: ${profile.region}
+      let replyInstructions = `
+${basePersona}
 
-【返信の方針】:
-- **感謝と共感**: まず来店と投稿への感謝を伝え、お客様の言葉（「美味しかった」「楽しかった」等）に共感してください。
-- **謙譲語の徹底**: お客様が「店員さん」「奥様」と書いていても、自身のことは「スタッフ」「妻」と謙譲語で表現してください。
-- **次回の提案**: さりげなく「またのご来店」を促す結びの言葉を入れてください。
-- **宣伝色を消す**: 「キャンペーン中！」などの強い宣伝は避け、あくまで返信（コミュニケーション）に徹してください。
+【Googleマップ返信作成（最優先指示）】:
+これは「お客様の口コミ」への返信です。上記の設定（ペルソナ・文体）を維持しつつ、以下のルールで返信を作成してください。
+1. **文脈の言い換え（脱オウム返し）**: 口コミのキーワードを機械的に繰り返すのではなく、**文脈に合わせてプロらしく言い換えて**ください。
+   - 例: 「14時頃」「ランチ終わってた」→「ランチタイムを過ぎたお時間でも」「遅めのランチに」
+   - 例: 「探した」→「数あるお店の中から当店を見つけていただき」
+   - **注意**: 「お店が忙しい（行列）」を「（お客様の）お忙しい時間」と取り違えないこと。「お待ちいただいたことへの感謝」に変換してください。
+2. **客観性の保持（自画自賛の禁止）**: お客様の主観的な褒め言葉（「奥深い味」「分厚い」等）を、そのまま自分の言葉として「当店の奥深い味は…」と返すと傲慢に聞こえます。「〜とのお言葉、光栄です」「〜を楽しんでいただけて」と受け止める形式にしてください。
+3. **感謝と共感**: お客様の感情（「美味しかった」「嬉しかった」「残念だった」）に寄り添う言葉を選んでください。
+4. **謙譲語の徹底**: お客様が「店員さん」と書いていても、自身のことは「スタッフ」「私共」と謙譲語で表現してください。
+5. **宣伝色を消す**: 「キャンペーン中！」などの強い宣伝は避け、あくまで会話（コミュニケーション）に徹してください。
+6. **学習データの適用**: 文体（口調・リズム）は学習データに従いますが、内容は**この口コミへの個別返信**に徹してください。
 
 【今回の口コミ内容（メモ）】:
 "${config.inputText}"
 ${config.starRating ? `(評価: ★${config.starRating})` : ''}
 
-【出力ルール】:
+【出力ルール・禁止事項（上書き）】:
 - 解説や挨拶は不要。返信文のみを出力。
-- 丁寧語（です・ます）を使用。
-- 絵文字は一切使用禁止。
+- **絵文字は一切使用禁止**（Googleマップの規約・マナー重視）。
 - ハッシュタグは一切使用禁止。
-- 3〜5行程度の簡潔な文章にまとめてください。
+- 3〜5行程度の簡潔な文章。
+- 文体はペルソナ（または学習データ）に従うが、内容は「返信」に限定する。
 
 【出力形式】:
 要素1つのJSON配列（["返信本文"]）で出力。
