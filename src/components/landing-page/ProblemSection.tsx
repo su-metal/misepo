@@ -37,7 +37,7 @@ export const ProblemSection = ({ problems, isMobile }: { problems: Problem[]; is
                     {problems.map((prob, index) => (
                         <div key={index} className="group relative bg-white border-[4px] border-black rounded-2xl p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-4px] hover:translate-y-[-4px] hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] transition-all duration-200">
                             <div className="flex flex-col items-center text-center gap-6">
-                                <div className={`w-16 h-16 border-[3px] border-black rounded-2xl ${prob.bg} flex items-center justify-center text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group-hover:rotate-6 transition-transform duration-200 shrink-0`}>
+                                <div className={`w-16 h-16 border-[3px] border-black rounded-2xl ${prob.bg} flex items-center justify-center text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group-hover:rotate-6 transition-transform duration-200 shrink-0`}>
                                     {React.cloneElement(prob.icon as any, { size: 32 })}
                                 </div>
                                 <h3 className="text-xl md:text-2xl font-black text-black whitespace-pre-line leading-tight">{prob.title}</h3>

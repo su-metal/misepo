@@ -44,7 +44,7 @@ export const PricingSection = () => {
                         </div>
 
                         <div className="bg-white border-[6px] border-black rounded-2xl p-10 text-center shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] relative transform md:-translate-y-6 z-10 flex flex-col hover:translate-x-[-4px] hover:translate-y-[-10px] hover:shadow-[20px_20px_0px_0px_rgba(0,0,0,1)] transition-all">
-                            <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-[#E88BA3] text-white text-xs font-black px-6 py-2 border-[3px] border-black rounded-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rounded-2xl uppercase tracking-[0.2em] whitespace-nowrap -rotate-2">
+                            <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-[#E88BA3] text-black text-xs font-black px-6 py-2 border-[3px] border-black rounded-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rounded-2xl uppercase tracking-[0.2em] whitespace-nowrap -rotate-2">
                                 Best Choice
                             </div>
                             <h3 className="text-2xl font-black text-black mb-6 mt-4 uppercase italic">MisePo (AI)</h3>
@@ -89,7 +89,7 @@ export const PricingSection = () => {
                                     </div>
                                 </div>
                                 <div className="flex gap-6">
-                                    <div className="w-14 h-14 bg-[#E88BA3] border-[3px] border-black rounded-2xl flex items-center justify-center text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] shrink-0">
+                                    <div className="w-14 h-14 bg-[#E88BA3] border-[3px] border-black rounded-2xl flex items-center justify-center text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] shrink-0">
                                         <Icons.Instagram size={28} />
                                     </div>
                                     <div>
@@ -98,7 +98,7 @@ export const PricingSection = () => {
                                     </div>
                                 </div>
                                 <div className="flex gap-6">
-                                    <div className="w-14 h-14 bg-[#4DB39A] border-[3px] border-black rounded-2xl flex items-center justify-center text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] shrink-0">
+                                    <div className="w-14 h-14 bg-[#4DB39A] border-[3px] border-black rounded-2xl flex items-center justify-center text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] shrink-0">
                                         <Icons.MessageCircle size={28} />
                                     </div>
                                     <div>
@@ -111,7 +111,7 @@ export const PricingSection = () => {
 
                         <div className="relative border-[6px] border-black rounded-2xl p-8 md:p-12 flex flex-col bg-black text-white shadow-[20px_20px_0px_0px_rgba(0,0,0,0.1)] overflow-hidden group">
                             <div className="relative z-10 text-center mb-12">
-                                <div className="inline-flex items-center gap-3 px-6 py-2 bg-[#E88BA3] text-white text-sm font-black border-[3px] border-white rounded-2xl shadow-[6px_6px_0px_0px_rgba(255,255,255,0.2)] mb-10 animate-pulse uppercase tracking-[0.2em] italic">
+                                <div className="inline-flex items-center gap-3 px-6 py-2 bg-[#E88BA3] text-black text-sm font-black border-[3px] border-white rounded-2xl shadow-[6px_6px_0px_0px_rgba(255,255,255,0.2)] mb-10 animate-pulse uppercase tracking-[0.2em] italic">
                                     <Icons.Sparkles size={18} fill="currentColor" />
                                     Limited Monitor Price
                                 </div>
@@ -141,7 +141,7 @@ export const PricingSection = () => {
                                 ].map((feature, idx) => (
                                     <li key={idx} className="flex items-center gap-4">
                                         <div className="w-6 h-6 bg-[#4DB39A] border-[2px] border-white rounded-2xl flex items-center justify-center shrink-0">
-                                            <Icons.Check size={14} className="text-white stroke-[4px]" />
+                                            <Icons.Check size={14} className="text-black stroke-[4px]" />
                                         </div>
                                         <span className="font-black text-white text-lg uppercase tracking-tight">{feature}</span>
                                     </li>

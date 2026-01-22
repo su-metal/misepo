@@ -8,7 +8,7 @@ export const PWASection = () => {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
                     <div className="lg:w-1/2">
-                        <div className="inline-block px-4 py-2 bg-[#E88BA3] text-white border-[3px] border-black rounded-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rounded-2xl text-xs font-black uppercase tracking-widest mb-6">マルチデバイス対応</div>
+                        <div className="inline-block px-4 py-2 bg-[#E88BA3] text-black border-[3px] border-black rounded-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rounded-2xl text-xs font-black uppercase tracking-widest mb-6">マルチデバイス対応</div>
                         <h2 className="text-3xl md:text-5xl font-black text-black mb-8 leading-tight italic uppercase">
                             スマホ、タブレット、PC。<br />
                             <span className="underline decoration-[6px] decoration-[#F5CC6D]">お好きなデバイスで。</span>
@@ -23,14 +23,14 @@ export const PWASection = () => {
                                 </div>
                             </div>
                             <div className="flex items-start gap-4 p-4 border-[3px] border-black rounded-2xl bg-white shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
-                                <div className="bg-[#4DB39A] p-2 text-white border-[2px] border-black rounded-2xl mt-1 shadow-[2px_2px_0px_0px_rgba(0,0,0,0.2)]"><Icons.Smartphone size={20} /></div>
+                                <div className="bg-[#4DB39A] p-2 text-black border-[2px] border-black rounded-2xl mt-1 shadow-[2px_2px_0px_0px_rgba(0,0,0,0.2)]"><Icons.Smartphone size={20} /></div>
                                 <div>
                                     <h3 className="font-black text-black text-sm uppercase tracking-tight">スマホならアプリ感覚で</h3>
                                     <p className="text-xs text-black font-bold opacity-70 mt-1">PWA技術を採用。「ホーム画面に追加」するだけで、ストアからのDL不要でアプリと同じようにサクサク起動します。</p>
                                 </div>
                             </div>
                             <div className="flex items-start gap-4 p-4 border-[3px] border-black rounded-2xl bg-white shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
-                                <div className="bg-[#9B8FD4] p-2 text-white border-[2px] border-black rounded-2xl mt-1 shadow-[2px_2px_0px_0px_rgba(0,0,0,0.2)]"><Icons.Bot size={20} /></div>
+                                <div className="bg-[#9B8FD4] p-2 text-black border-[2px] border-black rounded-2xl mt-1 shadow-[2px_2px_0px_0px_rgba(0,0,0,0.2)]"><Icons.Bot size={20} /></div>
                                 <div>
                                     <h3 className="font-black text-black text-sm uppercase tracking-tight">PCでも快速動作</h3>
                                     <p className="text-xs text-black font-bold opacity-70 mt-1">高価なPCスペックは不要。お手持ちのPCのブラウザからログインするだけで、すぐにAI生成を開始できます。</p>
@@ -55,7 +55,7 @@ export const PWASection = () => {
                                             <div className="w-24 h-4 bg-black/10" />
                                         </div>
                                         <div className="w-8 h-8 bg-[#E88BA3] border-[2px] border-black rounded-2xl flex items-center justify-center animate-pulse">
-                                            <Icons.Share size={14} className="text-white" />
+                                            <Icons.Share size={14} className="text-black" />
                                         </div>
                                     </div>
                                     <div className="p-4 space-y-4 opacity-30">
@@ -85,7 +85,7 @@ export const PWASection = () => {
                                         <div className="bg-white border-[4px] border-black rounded-2xl shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] rounded-2xl p-6 w-full max-w-[200px] animate-scale-in">
                                             <div className="flex items-center gap-4 mb-6">
                                                 <div className="w-14 h-14 bg-[#E88BA3] border-[2px] border-black rounded-2xl flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,0.3)]">
-                                                    <Icons.Sparkles size={28} className="text-white" />
+                                                    <Icons.Sparkles size={28} className="text-black" />
                                                 </div>
                                                 <div>
                                                     <p className="font-black text-black text-sm uppercase italic">MisePo</p>
@@ -115,7 +115,7 @@ export const PWASection = () => {
                                             ))}
                                             <div className="flex flex-col items-center gap-2 animate-bounce-in">
                                                 <div className="w-12 h-12 bg-[#E88BA3] border-[3px] border-white rounded-2xl flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,0.3)] animate-pulse">
-                                                    <Icons.Sparkles size={24} className="text-white" />
+                                                    <Icons.Sparkles size={24} className="text-black" />
                                                 </div>
                                                 <span className="text-[8px] text-white font-black uppercase italic">MisePo</span>
                                             </div>

@@ -116,7 +116,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
   };
 
   return (
-    <div className="min-h-screen text-slate-100 overflow-x-hidden">
+    <div className="min-h-screen overflow-x-hidden">
 
       <div className="max-w-[1400px] mx-auto py-4 sm:py-8 relative z-10">
         {/* Header Module */}
@@ -220,14 +220,14 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
         </div>
 
         {/* Footnote */}
-        <p className="text-center text-[10px] font-black text-slate-400 uppercase tracking-widest mt-12 pb-8 sm:pb-0 animate-in fade-in duration-1000">
+        <p className="text-center text-[10px] font-black text-black opacity-30 uppercase tracking-widest mt-12 pb-8 sm:pb-0 animate-in fade-in duration-1000">
           AI-Powered High Performance Content Generation
         </p>
       </div>
 
       {/* Sticky Generation Footer */}
       <div className="fixed bottom-0 left-0 right-0 z-[90]">
-        <div className="absolute inset-x-0 bottom-0 h-24 md:h-32 bg-gradient-to-t from-[#EDE9FE] via-[#EDE9FE]/90 to-transparent pointer-events-none" />
+        <div className="absolute inset-x-0 bottom-0 h-24 md:h-32 bg-gradient-to-t from-[#f9f5f2] via-[#f9f5f2]/90 to-transparent pointer-events-none" />
         <div className="relative px-4 py-3 pb-8 md:pb-12 safe-area-bottom flex items-center justify-center">
           <button
             onClick={handleGenerate}

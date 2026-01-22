@@ -3,28 +3,29 @@
 @tailwind utilities;
 
 :root {
-  /* Pop & Professional Brand Colors */
-  --primary: #1a1b1e;     /* High Contrast Black */
-  --primary-light: #2c2e33;
-  --accent: #FFD700;      /* Golden Yellow - Pop Accent */
-  --accent-hover: #FACC15;
-  --accent-secondary: #A78BFA; /* Soft Purple */
+  /* Refined Neo Brutalism Saturated Palette */
+  --teal: #4DB39A;
+  --gold: #F5CC6D;
+  --rose: #E88BA3;
+  --lavender: #9B8FD4;
+  --bg-beige: #f9f5f2;
+
+  --primary: #000000;     /* Pure Black for Text and Borders */
+  --accent: var(--teal);
+  --accent-secondary: var(--lavender);
   
   /* Text Colors */
-  --text-main: #1a1b1e;
+  --text-main: #000000;
   --text-muted: #475569;
 
-  /* Glass/Card Effects */
-  --glass-bg: rgba(255, 255, 255, 0.7);
-  --glass-border: rgba(26, 27, 30, 0.1); 
-  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
+  /* Layout Utilities */
+  --card-bg: #ffffff;
+  --border-thick: 3px solid #000000;
 }
 
 body {
   font-family: 'Outfit', 'Inter', 'Noto Sans JP', sans-serif;
-  /* Lavender Pop Background */
-  background: linear-gradient(135deg, #F5F3FF 0%, #EDE9FE 50%, #DDD6FE 100%);
-  background-attachment: fixed;
+  background-color: var(--bg-beige);
   color: var(--text-main);
   min-height: 100vh;
 }
@@ -52,26 +53,26 @@ body {
   box-shadow: 8px 8px 0px 0px rgba(0, 0, 0, 1);
 }
 
-/* Pop Button Style (Requested "Library" tag style) - Neo Brutalism */
+/* Pop Button Style - Neo Brutalism */
 .btn-pop {
-  background-color: #F5CC6D; /* Saturated Gold */
+  background-color: var(--gold);
   color: #000000;
-  border: 3px solid #000000;
-  border-radius: 0.75rem; /* 12px */
-  box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
-  font-weight: 800;
+  border: var(--border-thick);
+  border-radius: 1rem;
+  box-shadow: 6px 6px 0px 0px rgba(0, 0, 0, 1);
+  font-weight: 900;
   transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btn-pop:hover:not(:disabled) {
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0px 0px rgba(0, 0, 0, 1);
-  background-color: #E88BA3; /* Saturated Rose on hover */
+  transform: translate(-3px, -3px);
+  box-shadow: 9px 9px 0px 0px rgba(0, 0, 0, 1);
+  background-color: var(--rose);
 }
 
 .btn-pop:active:not(:disabled) {
-  transform: translate(2px, 2px);
-  box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 1);
+  transform: translate(3px, 3px);
+  box-shadow: 3px 3px 0px 0px rgba(0, 0, 0, 1);
 }
 
 .btn-pop:disabled {
@@ -104,14 +105,14 @@ body {
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
-/* 3D Pop Floating Effect (Replaces active-floating) - Neo Brutalism */
+/* 3D Pop Floating Effect - Neo Brutalism */
 .active-pop {
-    background-color: #4DB39A !important; /* Saturated Teal */
+    background-color: var(--teal) !important;
     color: #000000 !important;
-    border: 3px solid #000000 !important;
+    border: var(--border-thick) !important;
     box-shadow: 4px 4px 0 0 rgba(0, 0, 0, 1) !important;
     transform: translate(-2px, -2px) !important;
-    border-radius: 0.75rem !important; /* 12px */
+    border-radius: 1rem !important;
 }
 
 .active-floating { /* Legacy mapping to active-pop for easy migration */
@@ -139,14 +140,14 @@ body {
 .border-accent { border-color: var(--accent) !important; }
 
 
-/* Platform Brand Colors */
-.bg-brand-green { background-color: #34A853 !important; }
-.text-brand-green { color: #34A853 !important; }
-.border-brand-green { border-color: #34A853 !important; }
+/* Platform Brand Colors mapping to new palette */
+.bg-brand-green { background-color: var(--teal) !important; }
+.text-brand-green { color: var(--teal) !important; }
+.border-brand-green { border-color: var(--teal) !important; }
 
-.bg-brand-instagram { background-color: #E1306C !important; }
-.text-brand-instagram { color: #E1306C !important; }
-.border-brand-instagram { border-color: #E1306C !important; }
+.bg-brand-instagram { background-color: var(--rose) !important; }
+.text-brand-instagram { color: var(--rose) !important; }
+.border-brand-instagram { border-color: var(--rose) !important; }
 
 /* Custom Scrollbar */
 .scrollbar-hide::-webkit-scrollbar {
