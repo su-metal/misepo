@@ -135,7 +135,7 @@ export const PricingSection = () => {
                                     "AI投稿生成 (無制限)",
                                     "Instagram / X / Google 全対応",
                                     "3パターン同時提案",
-                                    "書き癖学習 (分身機能)",
+                                    "お手本学習 (分身機能)",
                                     "多言語翻訳 (英・中・韓)",
                                     "チャットサポート"
                                 ].map((feature, idx) => (

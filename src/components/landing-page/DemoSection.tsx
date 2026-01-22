@@ -53,7 +53,7 @@ export const DemoSection = ({ demoInput, isDemoGenerating, demoResult, handleDem
                                 <h3 className="font-black text-black text-sm uppercase tracking-wider">MisePo Features</h3>
                             </div>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6">
-                                {["Instagram / X 同時作成", "Googleマップ クチコミ返信", "あなた独自の『書き癖』学習", "多言語翻訳 (英/中/韓)"].map((item, i) => (
+                                {["Instagram / X 同時作成", "Googleマップ クチコミ返信", "AIお手本学習 (分身機能)", "多言語翻訳 (英/中/韓)"].map((item, i) => (
                                     <div key={i} className="flex items-center gap-2 text-xs font-black uppercase tracking-tighter">
                                         <Icons.CheckCircle size={14} className="text-[#4DB39A] shrink-0" />
                                         <span>{item}</span>

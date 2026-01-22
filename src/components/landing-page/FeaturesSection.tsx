@@ -71,10 +71,10 @@ export const FeaturesSection = ({ isMobile }: { isMobile: boolean }) => {
                     <div className="bg-white border-[4px] border-black rounded-2xl p-8 shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] relative overflow-hidden group hover:translate-x-[-4px] hover:translate-y-[-4px] hover:shadow-[14px_14px_0px_0px_rgba(0,0,0,1)] transition-all">
                         <div className="flex flex-row md:flex-col items-center gap-6 md:gap-0 md:items-start">
                             <div className="w-14 h-14 bg-[#F5CC6D] border-[3px] border-black rounded-2xl text-black flex items-center justify-center md:mb-8 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group-hover:rotate-12 transition-transform shrink-0"><Icons.History size={28} /></div>
-                            <h3 className="text-2xl md:text-3xl font-black text-black leading-tight uppercase italic">過去投稿の<br className="hidden md:block" />スタイル同期</h3>
+                            <h3 className="text-2xl md:text-3xl font-black text-black leading-tight uppercase italic">お手本学習 /<br className="hidden md:block" />分身機能</h3>
                         </div>
                         <p className="text-black text-lg font-bold opacity-80 mt-6 md:mt-2 mb-6">
-                            過去数年分の投稿データを解析し、あなただけの「書き癖」データベースを構築。使えば使うほど精度が向上します。
+                            数件のお手本を読み込ませるだけで、あなた独自の「書き癖」をAIが忠実に再現。使えば使うほど生成のコツが掴めます。
                         </p>
                         <div className="flex items-center gap-4 mt-auto">
                             <div className="flex-1 h-4 bg-black border-[2px] border-black rounded-2xl shadow-[3px_3px_0px_0px_rgba(0,0,0,0.2)] rounded-2xl overflow-hidden">

@@ -97,7 +97,7 @@ export const BenefitSection = () => {
                         </h2>
                         <p className="text-white/70 text-xl max-w-2xl mx-auto leading-relaxed font-bold">
                             MisePoは単なる自動生成ツールではありません。<br />
-                            あなたの過去の投稿を学習し、まるで<br className="md:hidden" />あなたが書いたかのような文章を生み出します。
+                            あなたのお手本を学習し、まるで<br className="md:hidden" />あなたが書いたかのような文章を生み出します。
                         </p>
                     </div>
 
@@ -110,12 +110,12 @@ export const BenefitSection = () => {
                                 </div>
                                 <div className="space-y-3">
                                     <div className="inline-block px-4 py-1 bg-[#4DB39A] text-black text-xs font-black uppercase border-[2px] border-white rounded-2xl">Step 1</div>
-                                    <h3 className="text-2xl font-black text-white">あなたの『書き癖』を学習</h3>
+                                    <h3 className="text-2xl font-black text-white">お手本を学習</h3>
                                 </div>
                             </div>
                             <p className="text-white/70 leading-relaxed mt-6 font-bold">
-                                過去の投稿の<span className="text-[#4DB39A] underline decoration-2">スクショをアップロードするだけ</span>。<br />
-                                画像からあなたの「口癖」や「絵文字の使い所」まで瞬時に学習します。
+                                過去の投稿の<span className="text-[#4DB39A] underline decoration-2">スクショや文章を登録するだけ</span>。<br />
+                                AIがあなた独自の「口癖」や「絵文字の使い所」を忠実に再現します。
                             </p>
                         </div>
 
