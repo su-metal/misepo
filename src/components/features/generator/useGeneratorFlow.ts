@@ -18,12 +18,14 @@ export function useGeneratorFlow(props: {
   onOpenLogin: () => void;
   onGenerateSuccess: (post: GeneratedPost) => void;
   onTaskComplete: () => void;
+  favorites: Set<string>;
+  onToggleFavorite: (text: string, platform: Platform, presetId: string | null) => Promise<void>;
   restorePost?: GeneratedPost | null;
   resetResultsTrigger?: number;
 }) {
   const { 
     storeProfile, isLoggedIn, onOpenLogin, onGenerateSuccess, 
-    onTaskComplete, restorePost, resetResultsTrigger 
+    onTaskComplete, favorites, onToggleFavorite, restorePost, resetResultsTrigger 
   } = props;
 
   // --- State ---
@@ -515,6 +517,8 @@ export function useGeneratorFlow(props: {
     handleRefineToggle,
     performRefine,
     handleShare,
-    activePresetId
+    activePresetId,
+    favorites,
+    onToggleFavorite
   };
 }

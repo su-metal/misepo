@@ -271,6 +271,8 @@ function App() {
             refreshPresets={fetchPresets}
             onGenerateSuccess={handleGenerateSuccess}
             onTaskComplete={() => { /* no-op */ }}
+            favorites={favorites}
+            onToggleFavorite={handleToggleFavorite}
             restorePost={activeHistoryItem}
             onOpenGuide={() => setShowGuide(true)}
             onOpenSettings={() => setShowOnboarding(true)}

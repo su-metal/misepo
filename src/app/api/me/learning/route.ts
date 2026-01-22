@@ -83,11 +83,19 @@ export async function DELETE(req: NextRequest) {
   }
 
   try {
-    const { searchParams } = new URL(req.url);
-    const content = searchParams.get('content');
+    // Attempt to get content from Body first (for long posts), fallback to searchParams
+    let content: string | null = null;
+    
+    try {
+      const body = await req.json();
+      content = body.content;
+    } catch {
+      const { searchParams } = new URL(req.url);
+      content = searchParams.get('content');
+    }
 
     if (!content) {
-       return NextResponse.json({ error: 'Missing content param' }, { status: 400 });
+       return NextResponse.json({ error: 'Missing content' }, { status: 400 });
     }
 
     const { error } = await supabase
@@ -101,6 +109,19 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ message: 'Removed from favorites' });
   } catch (error: any) {
     console.error('Error removing favorite:', error);
+    try {
+      const { searchParams } = new URL(req.url);
+      const content = searchParams.get('content');
+      if (content) {
+        const { error: fallbackError } = await supabase
+          .from('learning_sources')
+          .delete()
+          .eq('user_id', user.id)
+          .eq('content', content);
+        if (!fallbackError) return NextResponse.json({ message: 'Removed from favorites (fallback)' });
+      }
+    } catch {}
+
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

@@ -20,10 +20,12 @@ interface PostGeneratorProps {
   refreshPresets: () => Promise<void>;
   onGenerateSuccess: (post: GeneratedPost) => void;
   onTaskComplete: () => void;
+  favorites: Set<string>;
+  onToggleFavorite: (text: string, platform: Platform, presetId: string | null) => Promise<void>;
   restorePost?: GeneratedPost | null;
   onOpenGuide?: () => void;
   onOpenSettings: () => void;
-  onOpenHistory?: () => void; // Added onOpenHistory
+  onOpenHistory?: () => void;
   onLogout: () => void;
   plan: UserPlan;
   resetResultsTrigger?: number;
@@ -33,14 +35,14 @@ interface PostGeneratorProps {
 const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
   const {
     storeProfile, isLoggedIn, onOpenLogin, presets,
-    onGenerateSuccess, onTaskComplete, restorePost,
+    onGenerateSuccess, onTaskComplete, favorites, onToggleFavorite, restorePost,
     onOpenGuide, onOpenSettings, onOpenHistory, onLogout,
-    plan, resetResultsTrigger, shouldShowTour // Destructured onOpenHistory, onLogout, plan
+    plan, resetResultsTrigger, shouldShowTour
   } = props;
 
   const flow = useGeneratorFlow({
     storeProfile, isLoggedIn, onOpenLogin,
-    onGenerateSuccess, onTaskComplete, restorePost,
+    onGenerateSuccess, onTaskComplete, favorites, onToggleFavorite, restorePost,
     resetResultsTrigger
   });
 
@@ -200,8 +202,8 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
                 onTabChange={flow.setActiveTab}
                 onManualEdit={flow.handleManualEdit}
                 onToggleFooter={flow.handleToggleFooter}
-                onRefine={() => { }}
-                onRegenerateSingle={(p) => flow.performGeneration([p], true)}
+                onRefine={flow.performRefine}
+                onRegenerateSingle={(platform) => flow.performGeneration([platform], true)}
                 onShare={flow.handleShare}
                 getShareButtonLabel={getShareButtonLabel}
                 storeProfile={storeProfile}
@@ -213,7 +215,9 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
                 isRefining={flow.isRefining}
                 includeFooter={flow.includeFooter}
                 onIncludeFooterChange={flow.setIncludeFooter}
-                presetId={flow.activePresetId}
+                presetId={flow.activePresetId || undefined}
+                favorites={flow.favorites}
+                onToggleFavorite={flow.onToggleFavorite}
               />
             </div>
           </div>
