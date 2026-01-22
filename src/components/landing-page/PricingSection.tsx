@@ -21,9 +21,9 @@ export const PricingSection = () => {
 
                     <div className="grid md:grid-cols-3 gap-10 max-w-6xl mx-auto items-stretch">
                         <div className="bg-white border-[4px] border-black rounded-2xl p-8 text-center opacity-60 scale-95 grayscale hover:grayscale-0 hover:opacity-100 hover:scale-100 transition-all duration-300 flex flex-col">
-                            <h3 className="text-xl font-black text-black opacity-40 mb-6 uppercase italic">Staff / Self</h3>
+                            <h3 className="text-xl font-black text-black opacity-40 mb-6 uppercase italic">自力・スタッフ負担</h3>
                             <div className="text-5xl font-black text-black opacity-30 mb-2 italic">¥0</div>
-                            <p className="text-xs text-black font-black opacity-30 mb-10 uppercase tracking-widest">(But high mental cost)</p>
+                            <p className="text-xs text-black font-black opacity-30 mb-10 uppercase tracking-widest">（精神的負担・コストは大）</p>
                             <ul className="space-y-4 text-sm font-bold text-black opacity-40 text-left mt-auto">
                                 <li className="flex gap-3"><Icons.X size={18} className="shrink-0" /> 閉店後の作業が辛い</li>
                                 <li className="flex gap-3"><Icons.X size={18} className="shrink-0" /> 文才に自信がない</li>
@@ -32,10 +32,10 @@ export const PricingSection = () => {
                         </div>
 
                         <div className="bg-white border-[4px] border-black rounded-2xl p-8 text-center opacity-60 scale-95 grayscale hover:grayscale-0 hover:opacity-100 hover:scale-100 transition-all duration-300 relative flex flex-col">
-                            <div className="absolute -top-3 -right-3 bg-black text-white text-[10px] px-3 py-1 font-black uppercase tracking-widest italic border-[2px] border-white rounded-2xl z-10">Standard</div>
-                            <h3 className="text-xl font-black text-black opacity-40 mb-6 uppercase italic">Outsourcing</h3>
+                            <div className="absolute -top-3 -right-3 bg-black text-white text-[10px] px-3 py-1 font-black uppercase tracking-widest italic border-[2px] border-white rounded-2xl z-10">一般的</div>
+                            <h3 className="text-xl font-black text-black opacity-40 mb-6 uppercase italic">制作会社・外注</h3>
                             <div className="text-5xl font-black text-black opacity-30 mb-2 italic">¥50,000<span className="text-xl font-black opacity-50 ml-1">+</span></div>
-                            <p className="text-xs text-black font-black opacity-30 mb-10 uppercase tracking-widest">/ MONTH (Premium Price)</p>
+                            <p className="text-xs text-black font-black opacity-30 mb-10 uppercase tracking-widest">/ 月（高コスト）</p>
                             <ul className="space-y-4 text-sm font-bold text-black opacity-40 text-left mt-auto">
                                 <li className="flex gap-3"><Icons.X size={18} className="shrink-0" /> コストが高すぎる</li>
                                 <li className="flex gap-3"><Icons.X size={18} className="shrink-0" /> 確認のやり取りが面倒</li>
@@ -45,18 +45,18 @@ export const PricingSection = () => {
 
                         <div className="bg-white border-[6px] border-black rounded-2xl p-10 text-center shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] relative transform md:-translate-y-6 z-10 flex flex-col hover:translate-x-[-4px] hover:translate-y-[-10px] hover:shadow-[20px_20px_0px_0px_rgba(0,0,0,1)] transition-all">
                             <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-[#E88BA3] text-black text-xs font-black px-6 py-2 border-[3px] border-black rounded-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rounded-2xl uppercase tracking-[0.2em] whitespace-nowrap -rotate-2">
-                                Best Choice
+                                ミセポの正解
                             </div>
                             <h3 className="text-2xl font-black text-black mb-6 mt-4 uppercase italic">MisePo (AI)</h3>
                             <div className="flex items-center justify-center gap-3 mb-2">
                                 <span className="text-black opacity-20 line-through font-black text-xl italic">¥2,980</span>
-                                <span className="text-5xl md:text-6xl font-black text-black italic">¥1,480</span>
+                                <span className="text-5xl md:text-6xl font-black text-black italic">¥1,980</span>
                             </div>
-                            <p className="text-sm text-[#E88BA3] font-black uppercase tracking-widest mb-10 italic">Only ¥49 / Day</p>
+                            <p className="text-sm text-[#E88BA3] font-black uppercase tracking-widest mb-10 italic">先着100名限定 / 1日約66円</p>
                             <ul className="space-y-4 text-sm font-black text-black text-left bg-black/[0.03] border-[2px] border-dashed border-black/20 p-6 mt-auto">
-                                <li className="flex gap-3 items-start"><Icons.CheckCircle size={20} className="text-[#4DB39A] shrink-0" /> <span className="uppercase">Cost Performance No.1</span></li>
-                                <li className="flex gap-3 items-start"><Icons.CheckCircle size={20} className="text-[#4DB39A] shrink-0" /> <span className="uppercase">Instant Gen / Edit</span></li>
-                                <li className="flex gap-3 items-start"><Icons.CheckCircle size={20} className="text-[#4DB39A] shrink-0" /> <span className="uppercase">Your Style & Voice</span></li>
+                                <li className="flex gap-3 items-start"><Icons.CheckCircle size={20} className="text-[#4DB39A] shrink-0" /> <span>圧倒的なコスパ</span></li>
+                                <li className="flex gap-3 items-start"><Icons.CheckCircle size={20} className="text-[#4DB39A] shrink-0" /> <span>爆速生成・自由編集</span></li>
+                                <li className="flex gap-3 items-start"><Icons.CheckCircle size={20} className="text-[#4DB39A] shrink-0" /> <span>あなたの「書き癖」を学習</span></li>
                             </ul>
                         </div>
                     </div>
@@ -68,7 +68,7 @@ export const PricingSection = () => {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
                         <div className="text-left">
-                            <span className="inline-block px-4 py-2 bg-[#F5CC6D] text-black border-[3px] border-black rounded-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rounded-2xl text-xs font-black uppercase tracking-widest mb-6 -rotate-1">Simple Pricing</span>
+                            <span className="inline-block px-4 py-2 bg-[#F5CC6D] text-black border-[3px] border-black rounded-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rounded-2xl text-xs font-black uppercase tracking-widest mb-6 -rotate-1">シンプルな料金プラン</span>
                             <h2 className="text-4xl md:text-6xl font-black text-black mb-8 leading-tight italic uppercase">
                                 お店の成長に<br />
                                 <span className="underline decoration-[6px] decoration-[#E88BA3]">必要なすべてを。</span>
@@ -111,20 +111,23 @@ export const PricingSection = () => {
 
                         <div className="relative border-[6px] border-black rounded-2xl p-8 md:p-12 flex flex-col bg-black text-white shadow-[20px_20px_0px_0px_rgba(0,0,0,0.1)] overflow-hidden group">
                             <div className="relative z-10 text-center mb-12">
-                                <div className="inline-flex items-center gap-3 px-6 py-2 bg-[#E88BA3] text-black text-sm font-black border-[3px] border-white rounded-2xl shadow-[6px_6px_0px_0px_rgba(255,255,255,0.2)] mb-10 animate-pulse uppercase tracking-[0.2em] italic">
-                                    <Icons.Sparkles size={18} fill="currentColor" />
-                                    Limited Monitor Price
+                                <div className="inline-flex flex-col items-center gap-1 px-6 py-2 bg-[#E88BA3] text-black border-[3px] border-white shadow-[6px_6px_0px_0px_rgba(255,255,255,0.2)] mb-10 animate-pulse rounded-2xl">
+                                    <div className="flex items-center gap-2 text-sm font-black uppercase tracking-[0.2em] italic">
+                                        <Icons.Sparkles size={18} fill="currentColor" />
+                                        先着限定・早期割引
+                                    </div>
+                                    <div className="text-[10px] font-black opacity-70 uppercase tracking-widest">先着100名様までの特別価格</div>
                                 </div>
-                                <h3 className="text-2xl font-black mb-4 text-[#F5CC6D] uppercase italic tracking-[0.1em]">Pro Plan</h3>
+                                <h3 className="text-2xl font-black mb-4 text-[#F5CC6D] uppercase italic tracking-[0.1em]">プロプラン</h3>
                                 <div className="flex items-center justify-center gap-4 mb-4">
                                     <span className="text-white/30 line-through font-black text-2xl italic">¥2,980</span>
                                     <div className="flex items-baseline gap-2">
-                                        <span className="text-6xl md:text-7xl font-black tracking-tighter italic">¥1,480</span>
-                                        <span className="text-white/50 font-black text-xl italic">/mo</span>
+                                        <span className="text-6xl md:text-7xl font-black tracking-tighter italic">¥1,980</span>
+                                        <span className="text-white/50 font-black text-xl italic">/月</span>
                                     </div>
                                 </div>
                                 <p className="text-sm font-black text-[#4DB39A] uppercase tracking-[0.3em] mb-2">
-                                    ONLY ¥49 PER DAY
+                                    1日あたり約66円
                                 </p>
                             </div>
 
@@ -134,10 +137,10 @@ export const PricingSection = () => {
                                 {[
                                     "AI投稿生成 (無制限)",
                                     "Instagram / X / Google 全対応",
-                                    "3パターン同時提案",
+                                    "口コミ返信 AI自動生成",
                                     "お手本学習 (分身機能)",
                                     "多言語翻訳 (英・中・韓)",
-                                    "チャットサポート"
+                                    "マルチデバイス対応 (PC/スマホ/タブ)"
                                 ].map((feature, idx) => (
                                     <li key={idx} className="flex items-center gap-4">
                                         <div className="w-6 h-6 bg-[#4DB39A] border-[2px] border-white rounded-2xl flex items-center justify-center shrink-0">
@@ -149,12 +152,12 @@ export const PricingSection = () => {
                             </ul>
 
                             <button onClick={() => window.location.href = '/start'} className="w-full py-6 bg-[#F5CC6D] text-black font-black text-2xl uppercase italic border-[4px] border-white rounded-2xl shadow-[8px_8px_0px_0px_rgba(255,255,255,0.2)] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] transition-all flex items-center justify-center gap-3">
-                                Start Your AI <Icons.ChevronUp className="rotate-90 stroke-[4px]" size={24} />
+                                7日間無料で始める <Icons.ChevronUp className="rotate-90 stroke-[4px]" size={24} />
                             </button>
                             <div className="mt-8 pt-8 border-t border-white/10">
                                 <p className="text-center text-[10px] text-white/40 font-bold leading-relaxed uppercase tracking-widest">
-                                    ✓ 7-day free trial (Requires credit card registration)<br />
-                                    ※ Auto-renews at ¥1,480/mo. Cancel anytime.
+                                    ✓ 7日間の無料体験（クレジットカード登録が必要です）<br />
+                                    ※体験終了後は月額 ¥1,980（先着限定価格）が適用されます。いつでも解約可能です。
                                 </p>
                             </div>
                         </div>
