@@ -108,6 +108,7 @@ export const generateContent = async (
   const hasPersonaSamples = !!(currentSample && currentSample.trim());
   const hasLearningSamples = learningSamples && learningSamples.length > 0;
   const hasPersona = hasPersonaSamples || !!(config.customPrompt && config.customPrompt.trim()) || hasLearningSamples;
+  console.debug("[LEARNING] hasPersona:", hasPersona, "hasLearningSamples:", !!hasLearningSamples, "hasPersonaSamples:", hasPersonaSamples);
 
   const buildSystemInstruction = () => {
     const isInstagram = config.platform === Platform.Instagram;
@@ -119,9 +120,21 @@ export const generateContent = async (
 【文体見本（コピペ禁止・リズムのみ学習）】
 ${learningSamples.join("\n---\n")}
 ` : "";
+      const personaSampleContext = hasPersonaSamples ? `
+【文体見本（最優先で模倣）】
+${currentSample}
+` : "";
 
       return `
 あなたは「店主の魂」を宿したAI代筆職人です。サンプルの「書き癖（エッセンス）」を継承し、今回のメモを魅力的に綴ってください。
+
+【最優先ルール】
+- 文体/語尾/改行リズム/記号・絵文字密度が最優先。内容の膨らませは文体を崩さない範囲でのみ実施。
+- もし衝突するなら、必ず文体を優先し、内容の膨らませを削る。
+
+【膨らませの許可範囲】
+- 解釈・脚色は許可。ただし「言い換え」「感覚・様子の具体化」「気分・余韻」「軽い背景」「次回への一言」のみ。
+- 文体の癖（語尾/語彙/改行/記号）は一切変えない。
 
 【重要：人格の完全継承（厳守）】
 - サンプルの文体、スラング（例：ワイ、〜ンゴ、〜メンス）、独特の語尾、改行リズムを**100%継承**してください。
@@ -132,6 +145,7 @@ ${learningSamples.join("\n---\n")}
 1. **人格プロファイリング**: サンプルの奥に潜む「店主のキャラクター」を分析・定義。
 2. **内容の魅力化**: 「今回のメモ」の内容を、上記キャラならどう語るかを思考。
 3. **エッセンスの出力**: 語尾の出現頻度、改行リズム、絵文字・記号の密度を**サンプル通りに**再現。
+4. **長さの目安**: ${config.length === Length.Short ? "短めで要点を絞る。" : config.length === Length.Medium ? "標準の厚み（3-5文、2-3改行）。" : "長めの厚み（5-8文、3-5改行）。"}
 
 【${config.platform}専用ルール】
 ${isInstagram ? `- 自慢の写真を際立たせる視覚的なリズムで作成。\n- 文末に関連ハッシュタグを4-6個追加。` : ""}
@@ -144,6 +158,7 @@ ${config.includeSymbols ? `
 ${DECORATION_PALETTE}
 ` : ""}
 
+${personaSampleContext}
 ${learningContext}
 【今回のメモ】: "${config.inputText}"
 
@@ -161,6 +176,7 @@ ${learningContext}
 【執筆ルール】
 - 希望の長さ [**${config.length}**] に従う。
 - 解説や挨拶なし、本文のみ。
+- 長さの目安: ${config.length === Length.Short ? "短めで要点を絞る。" : config.length === Length.Medium ? "標準の厚み（3-5文、2-3改行）。" : "長めの厚み（5-8文、3-5改行）。"}
 - ${isInstagram ? '視覚的な読みやすさを重視（2-3文で改行）。ハッシュタグ4-6個。' : ''}
 ${isX ? '140文字以内で要点を凝縮。ハッシュタグ1-2個。' : ''}
 ${isGMap ? 'Googleマップ返信。丁寧な言葉。絵文字禁止。' : ''}
