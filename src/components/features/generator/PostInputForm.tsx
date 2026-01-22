@@ -502,114 +502,114 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                         </div>
                     )}
                 </div>
-            </div>
 
-            {/* Right Column: Input Canvas */}
-            <div className="flex-1 flex flex-col gap-4 order-2 min-w-0">
-                <div className="flex items-center gap-2 px-4 translate-y-2 relative z-20">
-                    <span className="w-6 h-6 rounded-full bg-black text-white flex items-center justify-center text-[11px] font-black">4</span>
-                    <h3 className="text-xs font-black text-black/60 uppercase tracking-widest">本文を入力する</h3>
-                </div>
-                <div className="section-card rounded-[48px] lg:rounded-[64px] p-8 lg:p-14 border-black flex flex-col group transition-all relative isolate min-h-[400px]">
-
-                    {/* Subtle background color for canvas */}
-                    <div className="absolute inset-0 bg-white/50 rounded-[45px] lg:rounded-[61px] -z-10" />
-
-                    {/* Main Text Area */}
-                    <div className="relative z-10 min-h-[120px]">
-                        <AutoResizingTextarea
-                            ref={textareaRef}
-                            value={inputText}
-                            onChange={(e) => onInputTextChange(e.target.value)}
-                            onFocus={(e) => {
-                                setTimeout(() => {
-                                    e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                }, 100);
-                            }}
-                            placeholder="投稿したい内容や伝えたいことを自由に入力してください..."
-                            className="w-full h-full bg-transparent text-black text-lg font-bold leading-relaxed placeholder:text-black/10 focus:outline-none resize-none"
-                        />
+                {/* Right Column: Input Canvas */}
+                <div className="flex-1 flex flex-col gap-4 order-2 min-w-0">
+                    <div className="flex items-center gap-2 px-4 translate-y-2 relative z-20">
+                        <span className="w-6 h-6 rounded-full bg-black text-white flex items-center justify-center text-[11px] font-black">4</span>
+                        <h3 className="text-xs font-black text-black/60 uppercase tracking-widest">本文を入力する</h3>
                     </div>
+                    <div className="section-card rounded-[48px] lg:rounded-[64px] p-8 lg:p-14 border-black flex flex-col group transition-all relative isolate min-h-[400px]">
 
-                    {/* Canvas Footer */}
-                    <div className="mt-10 pt-8 border-t-2 border-black/5 relative z-10">
-                        {/* Additional Instructions Indicator / Field */}
-                        {!isPromptExpanded ? (
-                            <button
-                                onClick={() => setIsPromptExpanded(true)}
-                                className="flex items-center gap-3 py-2 px-1 text-black/40 hover:text-black transition-colors group mb-4"
-                            >
-                                <div className="w-8 h-8 rounded-xl bg-black/5 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                    <AutoSparklesIcon className="w-4 h-4 text-black/40" />
+                        {/* Subtle background color for canvas */}
+                        <div className="absolute inset-0 bg-white/50 rounded-[45px] lg:rounded-[61px] -z-10" />
+
+                        {/* Main Text Area */}
+                        <div className="relative z-10 min-h-[120px]">
+                            <AutoResizingTextarea
+                                ref={textareaRef}
+                                value={inputText}
+                                onChange={(e) => onInputTextChange(e.target.value)}
+                                onFocus={(e) => {
+                                    setTimeout(() => {
+                                        e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                    }, 100);
+                                }}
+                                placeholder="投稿したい内容や伝えたいことを自由に入力してください..."
+                                className="w-full h-full bg-transparent text-black text-lg font-bold leading-relaxed placeholder:text-black/10 focus:outline-none resize-none"
+                            />
+                        </div>
+
+                        {/* Canvas Footer */}
+                        <div className="mt-10 pt-8 border-t-2 border-black/5 relative z-10">
+                            {/* Additional Instructions Indicator / Field */}
+                            {!isPromptExpanded ? (
+                                <button
+                                    onClick={() => setIsPromptExpanded(true)}
+                                    className="flex items-center gap-3 py-2 px-1 text-black/40 hover:text-black transition-colors group mb-4"
+                                >
+                                    <div className="w-8 h-8 rounded-xl bg-black/5 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <AutoSparklesIcon className="w-4 h-4 text-black/40" />
+                                    </div>
+                                    <span className="text-[11px] font-black uppercase tracking-wider">AIへの追加指示（任意）</span>
+                                </button>
+                            ) : (
+                                <div className="flex items-center gap-3 bg-[#4DB39A]/10 border-[3px] border-[#4DB39A] rounded-2xl pl-5 pr-2 py-2 mb-4 animate-in zoom-in-95 duration-200">
+                                    <AutoSparklesIcon className="w-4 h-4 text-black shrink-0" />
+                                    <input
+                                        type="text"
+                                        value={customPrompt}
+                                        onChange={(e) => onCustomPromptChange(e.target.value)}
+                                        placeholder="例：絵文字多めで、テンション高めに..."
+                                        className="flex-1 bg-transparent border-none focus:outline-none text-[13px] font-bold text-black placeholder:text-black/20"
+                                        autoFocus
+                                    />
+                                    <button
+                                        onClick={() => {
+                                            onCustomPromptChange("");
+                                            setIsPromptExpanded(false);
+                                        }}
+                                        className="w-8 h-8 flex items-center justify-center text-black/40 hover:text-black hover:bg-black/5 rounded-xl transition-all"
+                                    >
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><path d="M18 6L6 18M6 6l12 12" /></svg>
+                                    </button>
                                 </div>
-                                <span className="text-[11px] font-black uppercase tracking-wider">AIへの追加指示（任意）</span>
-                            </button>
-                        ) : (
-                            <div className="flex items-center gap-3 bg-[#4DB39A]/10 border-[3px] border-[#4DB39A] rounded-2xl pl-5 pr-2 py-2 mb-4 animate-in zoom-in-95 duration-200">
-                                <AutoSparklesIcon className="w-4 h-4 text-black shrink-0" />
-                                <input
-                                    type="text"
-                                    value={customPrompt}
-                                    onChange={(e) => onCustomPromptChange(e.target.value)}
-                                    placeholder="例：絵文字多めで、テンション高めに..."
-                                    className="flex-1 bg-transparent border-none focus:outline-none text-[13px] font-bold text-black placeholder:text-black/20"
-                                    autoFocus
-                                />
-                                <button
-                                    onClick={() => {
-                                        onCustomPromptChange("");
-                                        setIsPromptExpanded(false);
-                                    }}
-                                    className="w-8 h-8 flex items-center justify-center text-black/40 hover:text-black hover:bg-black/5 rounded-xl transition-all"
-                                >
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><path d="M18 6L6 18M6 6l12 12" /></svg>
-                                </button>
-                            </div>
-                        )}
+                            )}
 
-                        <div className="flex items-center justify-between">
-                            <div className="text-[10px] font-black text-black/40 tracking-[0.3em] uppercase flex items-center gap-4">
-                                <span className="bg-black/5 text-black/60 px-3 py-1 rounded-xl">{inputText.length} 文字</span>
-                            </div>
+                            <div className="flex items-center justify-between">
+                                <div className="text-[10px] font-black text-black/40 tracking-[0.3em] uppercase flex items-center gap-4">
+                                    <span className="bg-black/5 text-black/60 px-3 py-1 rounded-xl">{inputText.length} 文字</span>
+                                </div>
 
-                            {/* Tools: Clear & Voice */}
-                            <div className="flex items-center gap-2">
-                                {/* Clear Button */}
-                                <button
-                                    onClick={handleClear}
-                                    disabled={!inputText}
-                                    className="p-2 rounded-xl text-black/40 hover:text-black hover:bg-black/5 transition-all disabled:opacity-30 disabled:cursor-not-allowed group/clear"
-                                    title="入力をクリア"
-                                >
-                                    <EraserIcon className="w-5 h-5" />
-                                </button>
+                                {/* Tools: Clear & Voice */}
+                                <div className="flex items-center gap-2">
+                                    {/* Clear Button */}
+                                    <button
+                                        onClick={handleClear}
+                                        disabled={!inputText}
+                                        className="p-2 rounded-xl text-black/40 hover:text-black hover:bg-black/5 transition-all disabled:opacity-30 disabled:cursor-not-allowed group/clear"
+                                        title="入力をクリア"
+                                    >
+                                        <EraserIcon className="w-5 h-5" />
+                                    </button>
 
-                                {/* Voice Input Button */}
-                                <button
-                                    onClick={toggleVoiceInput}
-                                    className={`p-2 rounded-xl transition-all flex items-center gap-2 relative ${isListening
-                                        ? 'bg-[#4DB39A] text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] border-[2px] border-black pr-4'
-                                        : 'text-black/40 hover:text-black hover:bg-black/5'
-                                        }`}
-                                    title={isListening ? '音声入力を停止' : '音声入力'}
-                                >
-                                    {isListening ? (
-                                        <>
-                                            <div className="relative w-5 h-5 flex items-center justify-center">
-                                                <MicIcon className="w-5 h-5 relative z-10" />
-                                                <div className="absolute inset-0 bg-[#4DB39A] rounded-xl animate-ping opacity-75"></div>
-                                            </div>
-                                            <div className="flex items-center gap-0.5 h-3 ml-1">
-                                                <div className="w-0.5 bg-black rounded-xl h-full animate-[music-bar_0.5s_ease-in-out_infinite]"></div>
-                                                <div className="w-0.5 bg-black rounded-xl h-2/3 animate-[music-bar_0.5s_ease-in-out_0.1s_infinite]"></div>
-                                                <div className="w-0.5 bg-black rounded-xl h-full animate-[music-bar_0.5s_ease-in-out_0.2s_infinite]"></div>
-                                                <div className="w-0.5 bg-black rounded-xl h-1/2 animate-[music-bar_0.5s_ease-in-out_0.3s_infinite]"></div>
-                                            </div>
-                                        </>
-                                    ) : (
-                                        <MicIcon className="w-5 h-5" />
-                                    )}
-                                </button>
+                                    {/* Voice Input Button */}
+                                    <button
+                                        onClick={toggleVoiceInput}
+                                        className={`p-2 rounded-xl transition-all flex items-center gap-2 relative ${isListening
+                                            ? 'bg-[#4DB39A] text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] border-[2px] border-black pr-4'
+                                            : 'text-black/40 hover:text-black hover:bg-black/5'
+                                            }`}
+                                        title={isListening ? '音声入力を停止' : '音声入力'}
+                                    >
+                                        {isListening ? (
+                                            <>
+                                                <div className="relative w-5 h-5 flex items-center justify-center">
+                                                    <MicIcon className="w-5 h-5 relative z-10" />
+                                                    <div className="absolute inset-0 bg-[#4DB39A] rounded-xl animate-ping opacity-75"></div>
+                                                </div>
+                                                <div className="flex items-center gap-0.5 h-3 ml-1">
+                                                    <div className="w-0.5 bg-black rounded-xl h-full animate-[music-bar_0.5s_ease-in-out_infinite]"></div>
+                                                    <div className="w-0.5 bg-black rounded-xl h-2/3 animate-[music-bar_0.5s_ease-in-out_0.1s_infinite]"></div>
+                                                    <div className="w-0.5 bg-black rounded-xl h-full animate-[music-bar_0.5s_ease-in-out_0.2s_infinite]"></div>
+                                                    <div className="w-0.5 bg-black rounded-xl h-1/2 animate-[music-bar_0.5s_ease-in-out_0.3s_infinite]"></div>
+                                                </div>
+                                            </>
+                                        ) : (
+                                            <MicIcon className="w-5 h-5" />
+                                        )}
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
