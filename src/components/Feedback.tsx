@@ -1,11 +1,17 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { CloseIcon, SendIcon, StarIcon, MessageCircleIcon } from './Icons';
 
 export const Feedback = () => {
+    const pathname = usePathname();
     const [isOpen, setIsOpen] = useState(false);
+
+    // Only show on Landing Page (/) and App/Generator pages (/generate, etc.)
+    const showFeedback = pathname === '/' || pathname?.startsWith('/generate') || pathname?.startsWith('/preview');
+
     const [rating, setRating] = useState(0);
     const [hoverRating, setHoverRating] = useState(0);
     const [content, setContent] = useState('');
@@ -69,6 +75,8 @@ export const Feedback = () => {
         setError(null);
     };
 
+    if (!showFeedback) return null;
+
     return (
         <>
             {/* Floating Button */}
@@ -96,7 +104,7 @@ export const Feedback = () => {
                                 <div className="w-12 h-12 rounded-xl bg-black border-[3px] border-black flex items-center justify-center text-[#E88BA3]">
                                     <HeartIconContainer />
                                 </div>
-                                <div>
+                                <div className="text-left">
                                     <h2 className="text-xl md:text-2xl font-black text-black tracking-tight italic uppercase">フィードバックを送る</h2>
                                     <p className="text-[10px] font-black text-black/40 uppercase tracking-widest mt-1">We value your voice</p>
                                 </div>

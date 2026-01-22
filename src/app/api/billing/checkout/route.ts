@@ -189,6 +189,19 @@ export async function POST(req: Request) {
       success_url: successUrl,
       cancel_url: cancelUrl,
       client_reference_id: userId,
+      custom_text: {
+        submit: {
+          message: `${
+            priceId === process.env.STRIPE_PRICE_MONTHLY_EARLY_BIRD_ID 
+              ? "先着100名様限定の「早期割引プラン」が適用されています。" 
+              : ""
+          }${
+            trialDaysToApply > 0 
+              ? `\n本日より${trialDaysToApply}日間は無料でご利用いただけます。` 
+              : ""
+          }`.trim() || undefined
+        }
+      },
 
       // 推奨：支払い方法は最初に回収（payment_method_collection は指定しない）
       // payment_method_collection: "if_required", // ←カードなしトライアルにしたい時だけ
