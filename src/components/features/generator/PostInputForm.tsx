@@ -68,6 +68,7 @@ interface PostInputFormProps {
     onOpenPresetModal: () => void;
     customPrompt: string;
     onCustomPromptChange: (val: string) => void;
+    onOpenGuide?: () => void;
 }
 
 const PURPOSES = [
@@ -132,7 +133,8 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
     onApplyPreset,
     onOpenPresetModal,
     customPrompt,
-    onCustomPromptChange
+    onCustomPromptChange,
+    onOpenGuide
 }) => {
     const textareaRef = React.useRef<HTMLTextAreaElement>(null);
     const [isPromptExpanded, setIsPromptExpanded] = React.useState(!!customPrompt);
@@ -209,9 +211,24 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
         <div className="flex flex-col">
             {/* Platform Tabs & Multi-gen Toggle - Solid Card Style */}
             <div className="flex flex-col gap-2 px-3 sm:px-0 pb-4">
-                <div className="flex items-center gap-2 px-2">
-                    <span className="w-6 h-6 rounded-full bg-black text-white flex items-center justify-center text-[11px] font-black">1</span>
-                    <h3 className="text-xs font-black text-black/60 uppercase tracking-widest">投稿先を選ぶ</h3>
+                <div className="flex items-center justify-between px-2">
+                    <div className="flex items-center gap-2">
+                        <span className="w-6 h-6 rounded-full bg-black text-white flex items-center justify-center text-[11px] font-black">1</span>
+                        <h3 className="text-xs font-black text-black/60 uppercase tracking-widest">投稿先を選ぶ</h3>
+                    </div>
+                    {onOpenGuide && (
+                        <button
+                            onClick={onOpenGuide}
+                            className="flex items-center gap-1.5 text-slate-400 hover:text-black transition-colors text-[10px] font-black uppercase tracking-widest"
+                        >
+                            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                                <path d="M12 17h.01" />
+                            </svg>
+                            <span>使い方ガイド</span>
+                        </button>
+                    )}
                 </div>
                 <div className="flex flex-col lg:flex-row lg:items-center gap-4">
                     <div className="flex items-stretch flex-1 px-4 py-2 gap-1 section-card rounded-2xl border-black">
