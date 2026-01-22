@@ -19,7 +19,7 @@ export const FAQSection = ({ faqs, openFaq, setOpenFaq }: { faqs: FAQ[]; openFaq
                         <div key={index} className="border-[3px] border-black rounded-2xl bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] transition-all overflow-hidden group">
                             <button className="w-full px-8 py-6 text-left flex justify-between items-center bg-white group-hover:bg-[#f9f5f2]/30 transition-colors" onClick={() => setOpenFaq(openFaq === index ? null : index)} aria-expanded={openFaq === index}>
                                 <span className="font-black text-black text-xl md:text-2xl uppercase tracking-tight">{faq.q}</span>
-                                <div className={`w-10 h-10 border-[3px] border-black rounded-2xl flex items-center justify-center transition-all duration-300 ${openFaq === index ? 'bg-[#E88BA3] text-white rotate-0 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)]' : 'bg-white text-black -rotate-180'}`}>
+                                <div className={`w-10 h-10 border-[3px] border-black rounded-2xl flex items-center justify-center transition-all duration-300 ${openFaq === index ? 'bg-[#E88BA3] text-black rotate-0 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)]' : 'bg-white text-black -rotate-180'}`}>
                                     <Icons.ChevronUp size={20} className="stroke-[4px]" />
                                 </div>
                             </button>

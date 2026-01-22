@@ -22,13 +22,13 @@ export const CTASection = () => {
                 <div className="flex flex-col gap-8 justify-center items-center">
                     <button
                         onClick={() => window.location.href = '/start'}
-                        className="group px-12 py-7 bg-[無料で始める] text-white border-[4px] border-white rounded-2xl font-black text-3xl uppercase italic shadow-[12px_12px_0px_0px_rgba(255,255,255,0.2)] hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-none transition-all flex items-center gap-4"
+                        className="group px-12 py-7 bg-[#4DB39A] text-black border-[4px] border-white rounded-2xl font-black text-3xl uppercase italic shadow-[12px_12px_0px_0px_rgba(255,255,255,0.2)] hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-none transition-all flex items-center gap-4"
                     >
                         今すぐ無料で始める
                         <Icons.ChevronUp className="rotate-90 stroke-[5px] group-hover:translate-x-2 transition-transform" size={32} />
                     </button>
                     <div className="bg-[#4DB39A] px-6 py-2 border-[2px] border-white rounded-2xl shadow-[4px_4px_0px_0px_rgba(255,255,255,0.2)] rotate-1">
-                        <p className="text-sm text-white font-black uppercase tracking-[0.2em]">
+                        <p className="text-sm text-black font-black uppercase tracking-[0.2em]">
                             まずは7日間、無料で体験
                         </p>
                     </div>

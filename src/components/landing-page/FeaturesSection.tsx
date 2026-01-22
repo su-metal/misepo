@@ -7,7 +7,7 @@ export const FeaturesSection = ({ isMobile }: { isMobile: boolean }) => {
         <section id="features" className="py-20 md:py-32 bg-[#f9f5f2] overflow-hidden border-b-[6px] border-black">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center max-w-3xl mx-auto mb-20">
-                    <span className="bg-[#E88BA3] text-white font-black tracking-tight text-sm uppercase mb-6 px-4 py-2 border-[3px] border-black rounded-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rounded-2xl inline-block">All-in-One Platform</span>
+                    <span className="bg-[#E88BA3] text-black font-black tracking-tight text-sm uppercase mb-6 px-4 py-2 border-[3px] border-black rounded-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rounded-2xl inline-block">All-in-One Platform</span>
                     <h2 className="text-4xl md:text-7xl font-black text-black mb-8 tracking-tight leading-tight">
                         必要なのは、<br />
                         <span className="underline decoration-[8px] decoration-[#F5CC6D]">このアプリひとつだけ。</span>
@@ -22,7 +22,7 @@ export const FeaturesSection = ({ isMobile }: { isMobile: boolean }) => {
                     <div className="md:col-span-2 bg-white border-[4px] border-black rounded-2xl p-8 md:p-12 shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] relative overflow-hidden group hover:translate-x-[-4px] hover:translate-y-[-4px] hover:shadow-[14px_14px_0px_0px_rgba(0,0,0,1)] transition-all">
                         <div className="relative z-10 flex flex-col h-full items-start">
                             <div className="flex flex-row md:flex-col items-center gap-6 md:gap-0 md:items-start mb-8 md:mb-0">
-                                <div className="w-16 h-16 bg-[#9B8FD4] border-[3px] border-black rounded-2xl flex items-center justify-center text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group-hover:rotate-6 transition-transform shrink-0 md:mb-8">
+                                <div className="w-16 h-16 bg-[#9B8FD4] border-[3px] border-black rounded-2xl flex items-center justify-center text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group-hover:rotate-6 transition-transform shrink-0 md:mb-8">
                                     <Icons.Maximize2 size={isMobile ? 28 : 32} />
                                 </div>
                                 <h3 className="text-2xl md:text-4xl font-black text-black leading-tight uppercase italic">3大プラットフォーム<br className="md:hidden" />一括管理</h3>
@@ -51,7 +51,7 @@ export const FeaturesSection = ({ isMobile }: { isMobile: boolean }) => {
                     {/* Feature 2: Translation */}
                     <div className="bg-white border-[4px] border-black rounded-2xl p-8 shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] relative overflow-hidden group hover:translate-x-[-4px] hover:translate-y-[-4px] hover:shadow-[14px_14px_0px_0px_rgba(0,0,0,1)] transition-all">
                         <div className="flex flex-row md:flex-col items-center gap-6 md:gap-0 md:items-start">
-                            <div className="w-14 h-14 bg-[#4DB39A] border-[3px] border-black rounded-2xl text-white flex items-center justify-center md:mb-8 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group-hover:-rotate-6 transition-transform shrink-0"><Icons.Globe size={28} /></div>
+                            <div className="w-14 h-14 bg-[#4DB39A] border-[3px] border-black rounded-2xl text-black flex items-center justify-center md:mb-8 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group-hover:-rotate-6 transition-transform shrink-0"><Icons.Globe size={28} /></div>
                             <h3 className="text-2xl md:text-3xl font-black text-black leading-tight uppercase italic">多言語翻訳 &<br className="hidden md:block" />インバウンド</h3>
                         </div>
                         <p className="text-black text-lg font-bold opacity-80 mt-6 md:mt-2 mb-6">
@@ -88,7 +88,7 @@ export const FeaturesSection = ({ isMobile }: { isMobile: boolean }) => {
                     <div className="md:col-span-2 bg-black border-[4px] border-white rounded-2xl p-8 md:p-12 text-white relative shadow-[10px_10px_0px_0px_rgba(255,255,255,0.1)] overflow-hidden group hover:translate-x-[-4px] hover:translate-y-[-4px] hover:shadow-[14px_14px_0px_0px_rgba(255,255,255,0.2)] transition-all">
                         <div className="relative z-10 flex flex-col md:flex-row items-center gap-10">
                             <div className="flex-1 text-center md:text-left">
-                                <div className="inline-flex items-center gap-2 bg-[#E88BA3] text-white px-4 py-1 border-[2px] border-white rounded-2xl font-black text-xs uppercase tracking-widest mb-6"><Icons.Zap size={16} /> Performance</div>
+                                <div className="inline-flex items-center gap-2 bg-[#E88BA3] text-black px-4 py-1 border-[2px] border-white rounded-2xl font-black text-xs uppercase tracking-widest mb-6"><Icons.Zap size={16} /> Performance</div>
                                 <h3 className="text-3xl md:text-5xl font-black mb-6 uppercase italic leading-tight">圧倒的な<br className="md:hidden" />スピード</h3>
                                 <p className="text-white/70 text-lg font-bold">PWA（プログレッシブウェブアプリ）技術により、ネイティブアプリ同等の起動速度を実現。お客様対応の合間にもストレスなく利用できます。</p>
                             </div>

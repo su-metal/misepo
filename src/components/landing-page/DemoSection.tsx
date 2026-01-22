@@ -16,7 +16,7 @@ export const DemoSection = ({ demoInput, isDemoGenerating, demoResult, handleDem
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div className="text-center mb-20">
                     <h2 className="text-4xl md:text-7xl font-black mb-8 tracking-tight italic uppercase">
-                        <span className="bg-[#E88BA3] px-4 py-2 border-[4px] border-white rounded-2xl shadow-[8px_8px_0px_0px_rgba(255,255,255,0.2)] inline-block -rotate-2">AIの実力</span>を<br className="md:hidden" />今すぐ体験
+                        <span className="bg-[#E88BA3] px-4 py-2 border-[4px] border-white rounded-2xl shadow-[8px_8px_0px_0px_rgba(255,255,255,0.2)] inline-block -rotate-2 text-black">AIの実力</span>を<br className="md:hidden" />今すぐ体験
                     </h2>
                     <p className="text-white/60 text-xl font-bold uppercase tracking-widest">1行のメモから、プロ並みの投稿文が数秒で完成します。</p>
                 </div>
@@ -38,7 +38,7 @@ export const DemoSection = ({ demoInput, isDemoGenerating, demoResult, handleDem
                             disabled={isDemoGenerating}
                             className={`w-full py-5 border-[4px] border-black rounded-2xl font-black text-xl uppercase italic flex items-center justify-center gap-3 transition-all relative overflow-hidden group ${isDemoGenerating
                                 ? 'bg-white text-black cursor-wait shadow-none translate-x-[4px] translate-y-[4px]'
-                                : 'bg-[#E88BA3] text-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none'
+                                : 'bg-[#E88BA3] text-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none'
                                 }`}
                         >
                             {isDemoGenerating ? (
@@ -67,8 +67,8 @@ export const DemoSection = ({ demoInput, isDemoGenerating, demoResult, handleDem
                             <div className="bg-white border-[4px] border-black rounded-none max-w-xs mx-auto shadow-[12px_12px_0px_0px_rgba(255,255,255,0.1)] overflow-hidden text-sm flex flex-col h-[500px] relative group">
                                 {demoResult && (
                                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 animate-bounce-in">
-                                        <div className="bg-[#E88BA3] text-white px-8 py-4 border-[3px] border-black rounded-2xl font-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] flex items-center gap-2 whitespace-nowrap -rotate-3">
-                                            <Icons.CheckCircle size={28} className="text-white" />
+                                        <div className="bg-[#E88BA3] text-black px-8 py-4 border-[3px] border-black rounded-2xl font-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] flex items-center gap-2 whitespace-nowrap -rotate-3">
+                                            <Icons.CheckCircle size={28} className="text-black" />
                                             <span className="text-xl uppercase italic">Success!</span>
                                         </div>
                                     </div>
