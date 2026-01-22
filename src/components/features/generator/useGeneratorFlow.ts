@@ -230,7 +230,7 @@ export function useGeneratorFlow(props: {
     const newGroups: ResultGroup[] = [];
     let latestRunId: string | null = null;
 
-    for (const p of targetPlatforms) {
+    const resultsPromises = targetPlatforms.map(async (p) => {
       const purpose = p === Platform.GoogleMaps ? gmapPurpose : postPurpose;
       const config: GenerationConfig = {
         platform: p,
@@ -273,20 +273,28 @@ export function useGeneratorFlow(props: {
         if (!res.ok || !data.ok) throw new Error(data.error ?? "Generate failed");
 
         const content = (data.result as string[]).map(t => t.replace(/\\n/g, '\n'));
-        latestRunId = data.run_id?.toString() || null;
-
+        
         let finalContent = content;
         if (p === Platform.Instagram && includeFooter && storeProfile.instagramFooter) {
           finalContent = content.map(text => insertInstagramFooter(text, storeProfile.instagramFooter!));
         }
 
-        const group = { platform: p, data: finalContent, config };
-        newGroups.push(group);
-        generatedResults.push({ platform: p, data: finalContent });
+        return { platform: p, data: finalContent, config, run_id: data.run_id?.toString() || null };
       } catch (e) {
         console.error(`Error generating for ${p}`, e);
+        return null;
       }
-    }
+    });
+
+    const settledResults = await Promise.all(resultsPromises);
+    
+    settledResults.forEach(res => {
+      if (res) {
+        newGroups.push({ platform: res.platform, data: res.data, config: res.config });
+        generatedResults.push({ platform: res.platform, data: res.data });
+        if (res.run_id) latestRunId = res.run_id;
+      }
+    });
 
     setResultGroups(newGroups);
     setLoading(false);

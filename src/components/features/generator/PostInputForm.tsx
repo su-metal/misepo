@@ -68,6 +68,8 @@ interface PostInputFormProps {
     onOpenPresetModal: () => void;
     customPrompt: string;
     onCustomPromptChange: (val: string) => void;
+    language: string;
+    onLanguageChange: (val: string) => void;
     onOpenGuide?: () => void;
 }
 
@@ -134,6 +136,8 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
     onOpenPresetModal,
     customPrompt,
     onCustomPromptChange,
+    language,
+    onLanguageChange,
     onOpenGuide
 }) => {
     const textareaRef = React.useRef<HTMLTextAreaElement>(null);
@@ -447,6 +451,31 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                     </div>
                                 </section>
                             )}
+
+                            {/* Output Language Selection */}
+                            <section>
+                                <h3 className="text-[10px] font-black text-black/30 uppercase tracking-widest mb-1.5 px-1">出力言語</h3>
+                                <div className="flex flex-row gap-1 bg-black/5 p-1 rounded-[16px] border border-black/10">
+                                    {[
+                                        { id: 'Japanese', label: 'JP', full: '日本語' },
+                                        { id: 'English', label: 'EN', full: '英語' },
+                                        { id: 'Chinese', label: 'CN', full: '中国語' },
+                                        { id: 'Korean', label: 'KR', full: '韓国語' },
+                                    ].map((lang) => (
+                                        <button
+                                            key={lang.id}
+                                            onClick={() => onLanguageChange(lang.id)}
+                                            className={`flex-1 py-1 px-1 rounded-[12px] text-[10px] font-black transition-all flex flex-col items-center justify-center leading-none border-2 ${language === lang.id
+                                                ? 'bg-[#4DB39A] text-black border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] -translate-y-[1px]'
+                                                : 'text-black/40 hover:text-black hover:bg-white border-transparent'
+                                                }`}
+                                            title={lang.full}
+                                        >
+                                            <span className="mb-0.5">{lang.label}</span>
+                                        </button>
+                                    ))}
+                                </div>
+                            </section>
                         </div>
                     </div>
 

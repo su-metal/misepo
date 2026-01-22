@@ -8,6 +8,10 @@ import { env } from "@/lib/env";
 import { computeCanUseApp } from "@/lib/entitlements/canUseApp";
 
 const APP_ID = env.APP_ID;
+
+export const maxDuration = 60; // 60 seconds (requires Pro plan on Vercel)
+export const dynamic = "force-dynamic";
+
 export async function POST(req: Request) {
   const supabase = await createClient();
   const {

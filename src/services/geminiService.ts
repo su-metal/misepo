@@ -79,7 +79,6 @@ export const generateContent = async (
   learningSamples?: string[] 
 ): Promise<string[]> => {
   const modelName = getModelName(isPro);
-  const maxRetries = 3;
   const charLimit = 140;
   const isXWith140Limit = config.platform === Platform.X && config.xConstraint140;
   
@@ -116,6 +115,9 @@ export const generateContent = async (
     const isGMap = config.platform === Platform.GoogleMaps;
 
     if (hasPersona) {
+    const languageRule = config.language && config.language !== 'Japanese' 
+      ? `\n【出力言語追加ルール】\n- 本文は必ず **${config.language}** で作成してください。\n- 言語が異なっても、サンプルの「店主のキャラクター（親しみやすさ、情熱、専門性など）」を ${config.language} の文脈で最大限に再現してください。`
+      : "";
       const learningContext = hasLearningSamples ? `
 【文体見本（コピペ禁止・リズムのみ学習）】
 ${learningSamples.join("\n---\n")}
@@ -125,69 +127,41 @@ ${learningSamples.join("\n---\n")}
 ${currentSample}
 ` : "";
 
-      return `
-あなたは「店主の魂」を宿したAI代筆職人です。サンプルの「書き癖（エッセンス）」を継承し、今回のメモを魅力的に綴ってください。
+      return `あなたは「店主の代筆職人」です。
 
-【最優先ルール】
-- 文体/語尾/改行リズム/記号・絵文字密度が最優先。内容の膨らませは文体を崩さない範囲でのみ実施。
-- もし衝突するなら、必ず文体を優先し、内容の膨らませを削る。
+【執筆ルール（最優先）】
+- **脱テンプレート（重要）**: サンプルの「話の構成・順序」は模倣禁止。書き出しや展開はメモの内容に合わせて毎回ゼロから再構築する。
+- **統計的継承**: サンプルの「文末分布（句点/記号/絵文字の比率）」を忠実に再現。
+- **癖の制限**: 目立つ特徴（例：「〜ですょ」）は連続使用不可。1投稿につき1〜2回までの「アクセント」に留める。
+- **完全継承**: 語順・改行リズム・絵文字密度を模倣。AIらしい丁寧語への浄化は厳禁。
+- **指示遵守**: 言語[**${config.language || '日本語'}**]、長さ[**${config.length}**]、プラットフォーム[${config.platform}]ルールを厳守。
+${languageRule}
+${config.includeSymbols ? `【記号の活用】\n${DECORATION_PALETTE}` : ""}
 
-【膨らませの許可範囲】
-- 解釈・脚色は許可。ただし「言い換え」「感覚・様子の具体化」「気分・余韻」「軽い背景」「次回への一言」のみ。
-- 文体の癖（語尾/語彙/改行/記号）は一切変えない。
+【情報の優先順位】
+1. **店名**: 必ず「${profile.name}」を使用。サンプル内の店名は無視。
+2. **内容**: 投稿の中身は「今回のメモ」のみをソースとする。サンプルのエピソードや過去メニューは絶対に使用禁止。
 
-【重要：人格の完全継承（厳守）】
-- サンプルの文体、スラング（例：ワイ、〜ンゴ、〜メンス）、独特の語尾、改行リズムを**100%継承**してください。
-- **標準的な丁寧語や、AIらしい「お利口な文章」への自動変換・浄化は絶対に禁止です。**
-- サンプルが「崩れた口調」であれば、誇りを持ってその通りに崩して書いてください。
-
-【執筆の要点】
-1. **人格プロファイリング**: サンプルの奥に潜む「店主のキャラクター」を分析・定義。
-2. **内容の魅力化**: 「今回のメモ」の内容を、上記キャラならどう語るかを思考。
-3. **エッセンスの出力**: 語尾の出現頻度、改行リズム、絵文字・記号の密度を**サンプル通りに**再現。
-4. **長さの目安**: ${config.length === Length.Short ? "短めで要点を絞る。" : config.length === Length.Medium ? "標準の厚み（3-5文、2-3改行）。" : "長めの厚み（5-8文、3-5改行）。"}
-5. **文末の統計**: 句点/絵文字/記号で終わる割合をサンプルと同等にする。サンプルにない文末絵文字・記号は使用禁止。
-
-【${config.platform}専用ルール】
-${isInstagram ? `- 自慢の写真を際立たせる視覚的なリズムで作成。\n- 文末に関連ハッシュタグを4-6個追加。` : ""}
-${isX ? `- 140文字以内。ハッシュタグ1-2個。` : ""}
-${isGMap ? `- Googleマップ返信。丁寧な言葉。絵文字禁止。\n- 謝罪内容が複数ある場合は項目をまとめ、一度で深く謝罪してください。何度も謝罪を繰り返すと誠実さが薄れるため、まとめることが重要です。\n- 「何卒ご容赦ください」「何卒ご了承いただけますよう」といった、定型文的・事務的な謝罪表現は誠実さを欠くため使用禁止です。\n- 返信文全体を1つの文字列として扱い、分割せずに配列の最初の要素（index 0）に格納してください。` : ""}
-
-${config.includeSymbols ? `
-【特殊記号の活用テンプレート（表現の幅を広げる）】
-以下のパターンを、サンプルの雰囲気に合わせて自由に取り入れてください：
-${DECORATION_PALETTE}
-` : ""}
-
+【今回のメモ】: "${config.inputText}"
 ${personaSampleContext}
 ${learningContext}
-【今回のメモ】: "${config.inputText}"
 
-【禁止事項（厳守）】
-- **AIの思考プロセスの出力禁止**: 「〜しちゃいましたっ…じゃなくて、〜」といった独り言や自己修正は絶対に含めないでください。完成文のみを出力。
-- **語尾の最適化**: サンプル全体のすべての文末を分析し、各語尾の出現率（％）を再現してください。サンプルにない「っ」を文末に付け足さないでください。
-要素1つのJSON配列（["本文"]）で出力。
+JSON配列（["本文"]）で完成文のみを出力。自己解説・思考プロセスは一切不要。
 `;
     }
 
     // Standard Omakase Mode
-    return `
-あなたは「${profile.name}」のSNS運用を行うプロのライターです。メモを元に魅力的な${config.platform}投稿を作成してください。
+    return `あなたは「${profile.name}」のSNS担当。メモから魅力的な${config.platform}投稿を作成。
 
-【執筆ルール】
-- 希望の長さ [**${config.length}**] に従う。
-- 解説や挨拶なし、本文のみ。
-- 長さの目安: ${config.length === Length.Short ? "短めで要点を絞る。" : config.length === Length.Medium ? "標準の厚み（3-5文、2-3改行）。" : "長めの厚み（5-8文、3-5改行）。"}
-- ${isInstagram ? '視覚的な読みやすさを重視（2-3文で改行）。ハッシュタグ4-6個。' : ''}
-${isX ? '140文字以内で要点を凝縮。ハッシュタグ1-2個。' : ''}
-${isGMap ? 'Googleマップ返信。丁寧な言葉。絵文字禁止。複数の不手際がある場合は項目をまとめ、一度で丁寧に謝罪してください。「何卒ご容赦ください」等の定型表現は避け、誠意の伝わる言葉を選んでください。必ず配列の最初の1要素のみ（["返信文全体"]）で出力してください。' : ''}
-${config.includeSymbols ? `【記号の活用型】\n${DECORATION_PALETTE}` : ""}
+【ルール】
+- 言語[**${config.language || '日本語'}**]、長さ[**${config.length}**]を厳守。
+- インプットに含まれない情報は勝手に追加しない。
+- 特徴: ${isInstagram ? '視覚重視、ハッシュタグ4-6個。' : ''}${isX ? '140字以内、ハッシュタグ1-2個。' : ''}${isGMap ? '店舗返信。丁寧な言葉。絵文字不可。' : ''}
+${config.includeSymbols ? `【活用可能記号】\n${DECORATION_PALETTE}` : ""}
 
 【今回のメモ】: "${config.inputText}"
 
-【禁止事項（厳守）】
-- **AIの思考プロセスの出力禁止**: 「〜しちゃいましたっ…じゃなくて、〜」といった独り言や自己修正は絶対に含めないでください。完成文のみを出力。
-要素1つのJSON配列（["本文"]）で出力。
+JSON配列（["本文"]）で完成文のみを出力。
 `;
   };
 
@@ -224,9 +198,9 @@ ${config.includeSymbols ? `【記号の活用型】\n${DECORATION_PALETTE}` : ""
     return parsed.map((s) => String(s));
   };
 
-  let userPrompt = `Draft a post based on this input: "${config.inputText}"`;
+  let userPrompt = `Generate the post in ${config.language || 'Japanese'} based on input. Return ONLY a JSON array of strings.`;
 
-  for (let attempt = 0; attempt < maxRetries; attempt++) {
+  for (let attempt = 0; attempt < 2; attempt++) {
     try {
       const result = await attemptGeneration(userPrompt);
 
@@ -243,24 +217,20 @@ ${config.includeSymbols ? `【記号の活用型】\n${DECORATION_PALETTE}` : ""
       }
 
       console.warn(
-        `X post too long (${currentLength}/${charLimit}), retrying... (attempt ${attempt + 1}/${maxRetries})`
+        `X post too long (${currentLength}/${charLimit}), retrying... (attempt ${attempt + 1}/2)`
       );
 
-      userPrompt = `Your previous post was ${currentLength} characters, but it MUST be under ${charLimit} characters.
-Please shorten this post while STRICTLY maintaining the "Persona Style/Voice" (sentence endings, slang, atmosphere) from the reference data:
-"${firstPost}"
-
-IMPORTANT: The result must be UNDER ${charLimit} characters. Remove filler words while keeping the persona's distinct flavor intact.`;
+      userPrompt = `Previous post was ${currentLength} chars. MUST be under ${charLimit}. Shorten it but keep the Persona: "${firstPost}"`;
 
     } catch (parseError) {
       console.error("Generation attempt failed:", parseError);
-      if (attempt === maxRetries - 1) {
-        throw new Error("AI response was not valid after multiple attempts");
+      if (attempt === 1) {
+        throw new Error("AI response was not valid after 2 attempts");
       }
     }
   }
 
-  throw new Error(`Failed to generate X post under ${charLimit} characters after ${maxRetries} attempts`);
+  throw new Error(`Failed to generate X post under ${charLimit} chars after 2 attempts`);
 };
 
 export const refineContent = async (

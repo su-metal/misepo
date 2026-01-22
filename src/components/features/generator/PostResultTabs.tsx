@@ -59,15 +59,15 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
         switch (platform) {
             case Platform.X:
                 return {
-                    icon: <div className="w-10 h-10 bg-black rounded-xl flex items-center justify-center text-white text-xl font-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] border-2 border-white">𝕏</div>,
+                    icon: <div className="w-10 h-10 bg-black rounded-xl flex items-center justify-center text-white text-xl font-black shadow-[4px_4px_0px_0px_#9B8FD4] border-2 border-white/20">𝕏</div>,
                     label: 'X (Twitter)',
-                    actionColor: "bg-black hover:bg-black/80 active:scale-[0.98]",
+                    actionColor: "bg-black text-white hover:bg-black/80 active:scale-[0.98] shadow-[6px_6px_0px_0px_#9B8FD4] border-white/20",
                     actionLabel: "Xで投稿する",
                     contentClasses: "text-[16px] text-black font-bold leading-relaxed tracking-tight",
                     wrapperClass: "max-w-[375px]",
                     brandTextColor: "text-black",
                     brandBgColor: "bg-black/5",
-                    brandBorderColor: "border-black/10",
+                    brandBorderColor: "border-white/10",
                 };
             case Platform.Instagram:
                 return {
@@ -92,7 +92,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                             <span className="tracking-widest uppercase">店舗情報を表示</span>
                         </button>
                     ),
-                    actionColor: "bg-[#E88BA3] hover:bg-[#E88BA3]/90 active:scale-[0.98] text-black border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]",
+                    actionColor: "bg-[#E88BA3] hover:bg-[#E88BA3]/90 active:scale-[0.98] text-black border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]",
                     actionLabel: "Instagramを起動",
                     contentClasses: "text-[15px] text-black font-bold leading-relaxed tracking-tight",
                     wrapperClass: "max-w-[340px]",
@@ -110,7 +110,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                         </div>
                     ),
                     label: 'Google Maps',
-                    actionColor: "bg-[#4DB39A] hover:bg-[#4DB39A]/90 active:scale-[0.98] text-black border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]",
+                    actionColor: "bg-[#4DB39A] hover:bg-[#4DB39A]/90 active:scale-[0.98] text-black border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]",
                     actionLabel: "Googleマップで返信する",
                     contentClasses: "text-[15px] text-black font-bold leading-relaxed tracking-tight",
                     wrapperClass: "max-w-[325px]",
@@ -277,7 +277,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
 
                                                         <button
                                                             onClick={() => onShare(res.platform, text)}
-                                                            className={`flex items-center justify-center gap-4 py-8 rounded-[32px] font-black text-lg transition-all shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] uppercase tracking-[0.3em] group border-[3px] border-black ${theme.actionColor}`}
+                                                            className={`flex items-center justify-center gap-4 py-8 rounded-[32px] font-black text-lg transition-all uppercase tracking-[0.3em] group border-[3px] border-black ${theme.actionColor}`}
                                                         >
                                                             <span>{theme.actionLabel}</span>
                                                             <ExternalLinkIcon className="w-6 h-6 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />

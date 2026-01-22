@@ -173,6 +173,8 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
                 onOpenPresetModal={() => setIsPresetModalOpen(true)}
                 customPrompt={flow.customPrompt}
                 onCustomPromptChange={flow.setCustomPrompt}
+                language={flow.language}
+                onLanguageChange={flow.setLanguage}
                 onOpenGuide={onOpenGuide}
               />
             </div>
@@ -221,7 +223,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
           <button
             onClick={handleGenerate}
             disabled={flow.loading || !flow.inputText.trim()}
-            className={`w-full max-w-xl py-6 md:py-8 rounded-2xl font-black text-lg md:text-2xl tracking-[0.2em] flex items-center justify-center gap-3 md:gap-5 group
+            className={`w-full max-w-xl py-6 md:py-8 rounded-[32px] font-black text-lg md:text-2xl tracking-[0.2em] flex items-center justify-center gap-3 md:gap-5 group
                 ${flow.loading || !flow.inputText.trim()
                 ? 'bg-slate-200 text-slate-400 border-2 border-slate-300 cursor-not-allowed'
                 : 'btn-pop'
