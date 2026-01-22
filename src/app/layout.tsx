@@ -8,6 +8,8 @@ export const metadata: Metadata = {
   description: "An AI-powered social media post generator specialized for physical businesses like restaurants and salons.",
 };
 
+import { Feedback } from '../components/Feedback';
+
 export default function RootLayout({
   children,
 }: {
@@ -37,6 +39,7 @@ export default function RootLayout({
       </head>
       <body>
         <div id="root">{children}</div>
+        <Feedback />
       </body>
     </html>
   );

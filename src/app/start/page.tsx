@@ -19,24 +19,18 @@ function StartPageContent() {
   // 2. Intent is trial and user is logged in (about to redirect)
   if (isRedirecting || (intent === "trial" && isLoggedIn)) {
     return (
-      <main className="min-h-screen bg-gradient-to-br from-indigo-50/50 via-white to-violet-50/50 flex items-center justify-center relative overflow-hidden">
-        {/* Decorative Orbs */}
-        <div className="fixed inset-0 pointer-events-none z-0">
-          <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-indigo-200/30 blur-[120px] rounded-full animate-pulse opacity-40"></div>
-          <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-violet-200/30 blur-[100px] rounded-full opacity-30"></div>
-        </div>
-
+      <main className="min-h-screen bg-[#f9f5f2] flex items-center justify-center relative overflow-hidden">
         <div className="relative z-10 animate-in fade-in zoom-in duration-700">
-          <div className="bg-white/70 backdrop-blur-3xl border border-white shadow-2xl shadow-indigo-100/50 rounded-3xl p-8 flex flex-col items-center gap-6">
+          <div className="bg-white border-[6px] border-black shadow-[16px_16px_0px_0px_rgba(0,0,0,0.1)] rounded-[32px] p-12 flex flex-col items-center gap-8">
             <div className="relative">
-              <div className="w-16 h-16 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin"></div>
+              <div className="w-20 h-20 border-[6px] border-black/10 border-t-black rounded-full animate-spin"></div>
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-2 h-2 bg-indigo-600 rounded-full animate-pulse"></div>
+                <div className="w-4 h-4 bg-black rounded-full animate-pulse"></div>
               </div>
             </div>
             <div className="text-center">
-              <h2 className="text-xl font-black text-slate-900 tracking-tight mb-1">Redirecting</h2>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Secure Checkout Connection...</p>
+              <h2 className="text-2xl font-black text-black tracking-tight mb-2 uppercase italic italic">Redirecting...</h2>
+              <p className="text-[10px] font-black text-black/30 uppercase tracking-[0.2em]">Secure Checkout Connection</p>
             </div>
           </div>
         </div>
@@ -45,96 +39,92 @@ function StartPageContent() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-indigo-50/50 via-white to-violet-50/50 text-slate-900 flex items-center justify-center px-4 py-12 relative overflow-hidden selection:bg-indigo-100">
-      {/* Decorative Orbs */}
+    <main className="min-h-screen bg-[#f9f5f2] text-black flex items-center justify-center px-4 py-12 relative overflow-hidden selection:bg-[#F5CC6D]">
+      {/* Decorative Elements */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-indigo-200/30 blur-[120px] rounded-full animate-pulse opacity-40"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-violet-200/30 blur-[100px] rounded-full opacity-30"></div>
+        <div className="absolute top-[10%] left-[10%] w-32 h-32 border-[4px] border-black/5 rounded-full rotate-12"></div>
+        <div className="absolute bottom-[20%] right-[10%] w-48 h-48 border-[4px] border-black/5 rounded-[40px] -rotate-12"></div>
       </div>
 
       <div className="w-full max-w-md relative z-10 animate-in fade-in zoom-in duration-1000">
-        {/* Modern Glass Card */}
-        <div className="bg-white/70 backdrop-blur-3xl border border-white shadow-2xl shadow-indigo-100/50 rounded-[2.5rem] p-8 lg:p-10 relative overflow-hidden group">
+        <div className="bg-white border-[6px] border-black shadow-[20px_20px_0px_0px_rgba(0,0,0,1)] rounded-[40px] p-8 md:p-12 relative overflow-hidden group">
 
-          {/* Back to Top */}
+          {/* Back Button */}
           <Link
             href="/"
-            className="absolute top-6 left-8 flex items-center gap-2 text-slate-400 hover:text-indigo-600 transition-all duration-300 group/back z-20"
+            className="absolute top-8 left-8 w-12 h-12 flex items-center justify-center bg-white border-[3px] border-black rounded-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all z-20 group/back hover:bg-[#F5CC6D]"
           >
             <svg
-              width="14"
-              height="14"
+              width="20"
+              height="20"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              strokeWidth="3"
+              strokeWidth="3.5"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="group-hover/back:-translate-x-1 transition-transform"
             >
               <path d="M19 12H5M12 19l-7-7 7-7" />
             </svg>
-            <span className="text-[10px] font-black uppercase tracking-widest opacity-0 group-hover/back:opacity-100 -translate-x-2 group-hover/back:translate-x-0 transition-all">Top</span>
           </Link>
 
-          <div className="text-center mb-10 pt-4">
-            <div className="inline-flex items-center gap-2 mb-4 px-3 py-1 bg-white border border-indigo-100 rounded-full shadow-sm">
-              <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></div>
-              <span className="text-[10px] font-bold text-indigo-900 uppercase tracking-widest">Ready to Start</span>
+          <div className="text-center mb-12 pt-16">
+            <div className="inline-block px-4 py-2 bg-[#F5CC6D] text-black border-[3px] border-black rounded-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-[10px] font-black uppercase tracking-[0.25em] mb-8 -rotate-1">
+              READY TO START
             </div>
-            <h1 className="text-4xl font-black text-slate-900 tracking-tight leading-none mb-2">
-              MisePo <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">Studio</span>
+            <h1 className="text-5xl font-black text-black tracking-tighter leading-none mb-4 uppercase italic">
+              MisePo <span className="text-[#E88BA3]">Studio</span>
             </h1>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Next-Gen AI Marketing Engine</p>
+            <p className="text-[10px] font-black text-black/40 uppercase tracking-[0.3em]">Next-Gen AI Marketing Engine</p>
           </div>
 
-          <div className="space-y-6">
-            <div className="bg-indigo-50/50 border border-indigo-100 rounded-2xl p-6 text-center backdrop-blur-sm">
-              <p className="text-sm font-bold text-slate-700 leading-relaxed whitespace-pre-line">
+          <div className="space-y-8">
+            <div className="bg-black/[0.03] border-[3px] border-dashed border-black/10 rounded-[28px] p-8 text-center">
+              <p className="text-base font-black text-black/80 leading-relaxed whitespace-pre-line">
                 {eligibleForTrial === false
-                  ? "プロプラン（初月割引あり）に登録して、\n全機能へのアクセス権を取得してください。"
+                  ? "プロプランに登録して、\n全機能へのアクセス権を取得してください。"
                   : "7日間の無料体験トライアルで、\nMisePoの全機能を解禁できます。"}
               </p>
             </div>
 
             <button
-              className="group relative w-full py-5 bg-slate-900 text-white font-bold text-lg rounded-2xl shadow-xl shadow-slate-200 hover:bg-slate-800 hover:scale-[1.02] active:scale-95 transition-all overflow-hidden"
+              className="group relative w-full py-6 bg-[#E88BA3] text-black border-[4px] border-black rounded-[24px] font-black text-xl italic shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] active:scale-95 transition-all overflow-hidden"
               onClick={() => startGoogleLogin("trial")}
               disabled={loading}
             >
-              <div className="flex flex-col items-center justify-center">
-                <span className="relative z-10 flex items-center gap-2">
+              <div className="flex flex-col items-center justify-center gap-1">
+                <span className="relative z-10 flex items-center gap-3">
                   {loading ? (
-                    <>
-                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      Connecting...
-                    </>
+                    <div className="w-6 h-6 border-[3px] border-black/20 border-t-black rounded-full animate-spin" />
                   ) : (
                     <>
                       {eligibleForTrial === false ? "プロプランに登録する" : "無料で試してみる"}
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" className="group-hover:translate-x-1 transition-transform">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                      </svg>
                     </>
                   )}
                 </span>
                 {!loading && (
-                  <span className="text-[9px] text-slate-400 font-medium tracking-wide mt-1 uppercase">
-                    Googleアカウントで認証
+                  <span className="text-[9px] text-black/40 font-black uppercase tracking-widest mt-1">
+                    Google ACCOUNT LOGIN
                   </span>
                 )}
               </div>
             </button>
           </div>
 
-          <div className="mt-8 pt-6 border-t border-slate-100 flex flex-col items-center gap-4">
-            <p className="text-[10px] text-slate-400 text-center font-medium leading-relaxed">
+          <div className="mt-12 pt-8 border-t-[3px] border-dashed border-black/5 flex flex-col items-center gap-6">
+            <p className="text-[10px] text-black/30 text-center font-black leading-relaxed uppercase tracking-widest">
               初回は認証後に自動でアカウントが生成されます。<br />
               安心してご利用ください。
             </p>
-            <div className="flex items-center gap-4 text-slate-300">
-              <div className="w-8 h-8 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
+            <div className="flex items-center gap-6">
+              <div className="w-12 h-12 rounded-2xl bg-white border-[3px] border-black flex items-center justify-center text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)]">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
               </div>
-              <div className="w-8 h-8 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
+              <div className="w-12 h-12 rounded-2xl bg-[#4DB39A] border-[3px] border-black flex items-center justify-center text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)]">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
               </div>
             </div>
           </div>
@@ -146,7 +136,7 @@ function StartPageContent() {
 
 export default function StartPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center">Loading...</div>}>
+    <Suspense fallback={<div className="min-h-screen bg-[#f9f5f2] flex items-center justify-center font-black italic">Loading...</div>}>
       <StartPageContent />
     </Suspense>
   );
