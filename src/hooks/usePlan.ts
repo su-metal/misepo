@@ -27,7 +27,7 @@ export function usePlan(user: any) {
 
     setLoading(true);
     try {
-      const res = await fetch('/api/me/plan', { cache: 'no-store' });
+      const res = await fetch(`/api/me/plan?t=${Date.now()}`, { cache: 'no-store' });
       const data = await res.json();
       if (res.ok && data.ok) {
         setPlan({

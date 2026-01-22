@@ -55,7 +55,7 @@ function App() {
   // --- Fetching Logic ---
   const fetchPresets = useCallback(async () => {
     try {
-      const res = await fetch('/api/me/presets', { cache: 'no-store' });
+      const res = await fetch(`/api/me/presets?t=${Date.now()}`, { cache: 'no-store' });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const contentType = res.headers.get('content-type');
       if (!contentType || !contentType.includes('application/json')) {
@@ -78,7 +78,7 @@ function App() {
   const fetchHistory = useCallback(async () => {
     if (!isLoggedIn) return;
     try {
-      const res = await fetch('/api/me/history', { cache: 'no-store' });
+      const res = await fetch(`/api/me/history?t=${Date.now()}`, { cache: 'no-store' });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       if (data.ok) {
@@ -92,7 +92,7 @@ function App() {
   const fetchFavorites = useCallback(async () => {
     if (!isLoggedIn) return;
     try {
-      const res = await fetch('/api/me/learning', { cache: 'no-store' });
+      const res = await fetch(`/api/me/learning?t=${Date.now()}`, { cache: 'no-store' });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       if (data.ok && Array.isArray(data.favorites)) {
@@ -107,7 +107,7 @@ function App() {
   const fetchProfile = useCallback(async () => {
     if (!isLoggedIn) return;
     try {
-      const res = await fetch('/api/me/store-profile', { cache: 'no-store' });
+      const res = await fetch(`/api/me/store-profile?t=${Date.now()}`, { cache: 'no-store' });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
       const contentType = res.headers.get('content-type');
@@ -131,12 +131,25 @@ function App() {
 
   useEffect(() => {
     if (authLoading) return;
+
+    // Reset state when user ID changes (or when logging out/in)
+    // This prevents User B from seeing User A's data for a split second 
+    // or indefinitely if re-fetching fails.
+    console.log('[App] Auth initialized. User:', user?.id || 'None');
+    setInitDone(false); // Reset init flag during re-fetch
+    setStoreProfile(null);
+    setHistory([]);
+    setPresets([]);
+    setFavorites(new Set());
+
     const init = async () => {
+      console.log('[App] Fetching data for user:', user?.id || 'Guest');
       await Promise.all([fetchProfile(), fetchHistory(), fetchPresets(), fetchFavorites()]);
       setInitDone(true);
+      console.log('[App] Initialization complete.');
     };
     init();
-  }, [authLoading, fetchProfile, fetchHistory, fetchPresets, fetchFavorites]);
+  }, [authLoading, user?.id, fetchProfile, fetchHistory, fetchPresets, fetchFavorites]);
 
   // Strict Redirect for Paid-Only Model
   useEffect(() => {

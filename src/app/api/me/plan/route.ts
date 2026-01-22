@@ -23,6 +23,8 @@ export async function GET() {
   );
 
   const { data: userData, error: userErr } = await supabase.auth.getUser();
+  console.log("[api/me/plan GET] user_id=", userData.user?.id || 'null', "error=", userErr?.message || 'none');
+
   if (userErr || !userData.user) {
     return NextResponse.json(
       { ok: false, error: "unauthorized" },

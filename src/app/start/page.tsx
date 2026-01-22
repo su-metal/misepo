@@ -39,15 +39,15 @@ function StartPageContent() {
   }
 
   return (
-    <main className="min-h-screen bg-[#f9f5f2] text-black flex items-center justify-center px-4 py-12 relative overflow-hidden selection:bg-[#F5CC6D]">
+    <main className="min-h-screen sm:max-h-screen bg-[#f9f5f2] text-black flex items-center justify-center px-4 py-4 relative overflow-hidden selection:bg-[#F5CC6D]">
       {/* Decorative Elements */}
       <div className="fixed inset-0 pointer-events-none z-0">
         <div className="absolute top-[10%] left-[10%] w-32 h-32 border-[4px] border-black/5 rounded-full rotate-12"></div>
         <div className="absolute bottom-[20%] right-[10%] w-48 h-48 border-[4px] border-black/5 rounded-[40px] -rotate-12"></div>
       </div>
 
-      <div className="w-full max-w-md relative z-10 animate-in fade-in zoom-in duration-1000">
-        <div className="bg-white border-[6px] border-black shadow-[20px_20px_0px_0px_rgba(0,0,0,1)] rounded-[40px] p-8 md:p-12 relative overflow-hidden group">
+      <div className="w-full max-w-md relative z-10 animate-in fade-in zoom-in duration-800">
+        <div className="bg-white border-[6px] border-black shadow-[20px_20px_0px_0px_rgba(0,0,0,1)] rounded-[40px] p-6 md:p-10 relative overflow-hidden group">
 
           {/* Back Button */}
           <Link
@@ -68,19 +68,19 @@ function StartPageContent() {
             </svg>
           </Link>
 
-          <div className="text-center mb-12 pt-16">
-            <div className="inline-block px-4 py-2 bg-[#F5CC6D] text-black border-[3px] border-black rounded-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-[10px] font-black uppercase tracking-[0.25em] mb-8 -rotate-1">
+          <div className="text-center mb-6 pt-6">
+            <div className="inline-block px-4 py-2 bg-[#F5CC6D] text-black border-[3px] border-black rounded-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-[10px] font-black uppercase tracking-[0.25em] mb-4 -rotate-1">
               READY TO START
             </div>
-            <h1 className="text-5xl font-black text-black tracking-tighter leading-none mb-4 uppercase italic">
+            <h1 className="text-4xl sm:text-5xl font-black text-black tracking-tighter leading-none mb-3 uppercase italic">
               MisePo <span className="text-[#E88BA3]">Studio</span>
             </h1>
             <p className="text-[10px] font-black text-black/40 uppercase tracking-[0.3em]">Next-Gen AI Marketing Engine</p>
           </div>
 
-          <div className="space-y-8">
-            <div className="bg-black/[0.03] border-[3px] border-dashed border-black/10 rounded-[28px] p-8 text-center">
-              <p className="text-base font-black text-black/80 leading-relaxed whitespace-pre-line">
+          <div className="space-y-6">
+            <div className="bg-black/[0.03] border-[3px] border-dashed border-black/10 rounded-[28px] p-4 text-center">
+              <p className="text-sm font-black text-black/80 leading-relaxed whitespace-pre-line">
                 {eligibleForTrial === false
                   ? "プロプランに登録して、\n全機能へのアクセス権を取得してください。"
                   : "7日間の無料体験トライアルで、\nMisePoの全機能を解禁できます。"}
@@ -88,7 +88,7 @@ function StartPageContent() {
             </div>
 
             <button
-              className="group relative w-full py-6 bg-[#E88BA3] text-black border-[4px] border-black rounded-[24px] font-black text-xl italic shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] active:scale-95 transition-all overflow-hidden"
+              className="group relative w-full py-4 bg-[#E88BA3] text-black border-[4px] border-black rounded-[24px] font-black text-lg italic shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] active:scale-95 transition-all overflow-hidden"
               onClick={() => startGoogleLogin("trial")}
               disabled={loading}
             >
@@ -114,17 +114,17 @@ function StartPageContent() {
             </button>
           </div>
 
-          <div className="mt-12 pt-8 border-t-[3px] border-dashed border-black/5 flex flex-col items-center gap-6">
-            <p className="text-[10px] text-black/30 text-center font-black leading-relaxed uppercase tracking-widest">
+          <div className="mt-6 pt-4 border-t-[3px] border-dashed border-black/5 flex flex-col items-center gap-4">
+            <p className="text-[9px] text-black/30 text-center font-black leading-relaxed uppercase tracking-widest">
               初回は認証後に自動でアカウントが生成されます。<br />
               安心してご利用ください。
             </p>
-            <div className="flex items-center gap-6">
-              <div className="w-12 h-12 rounded-2xl bg-white border-[3px] border-black flex items-center justify-center text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)]">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-2xl bg-white border-[3px] border-black flex items-center justify-center text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)]">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
               </div>
-              <div className="w-12 h-12 rounded-2xl bg-[#4DB39A] border-[3px] border-black flex items-center justify-center text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)]">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
+              <div className="w-10 h-10 rounded-2xl bg-[#4DB39A] border-[3px] border-black flex items-center justify-center text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)]">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
               </div>
             </div>
           </div>
