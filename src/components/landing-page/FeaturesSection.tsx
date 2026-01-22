@@ -34,8 +34,8 @@ export const FeaturesSection = ({ isMobile }: { isMobile: boolean }) => {
                             </p>
                             <div className="mt-auto w-full flex gap-6 items-center justify-start flex-wrap">
                                 {[
-                                    { icon: <Icons.Instagram size={24} />, bg: "bg-[#E88BA3]", text: "text-white" },
-                                    { icon: <Icons.Twitter size={24} />, bg: "bg-[#4DB39A]", text: "text-white" },
+                                    { icon: <Icons.Instagram size={24} />, bg: "bg-[#E88BA3]", text: "text-black" },
+                                    { icon: <Icons.Twitter size={24} />, bg: "bg-[#4DB39A]", text: "text-black" },
                                     { icon: <Icons.MapPin size={24} />, bg: "bg-[#F5CC6D]", text: "text-black" },
                                 ].map((item, i) => (
                                     <div key={i} className={`w-14 h-14 ${item.bg} ${item.text} border-[3px] border-black rounded-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rounded-2xl flex items-center justify-center group-hover:-translate-y-1 transition-transform`} style={{ transitionDelay: `${i * 100}ms` }}>

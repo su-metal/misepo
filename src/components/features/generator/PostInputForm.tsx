@@ -287,10 +287,10 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                 {/* Plain AI Option */}
                                 <button
                                     onClick={() => onApplyPreset({ id: 'plain-ai' } as any)}
-                                    className={`group relative py-3 px-3 rounded-[20px] transition-all duration-300 flex flex-col items-center justify-center gap-2
+                                    className={`group relative py-3 px-3 rounded-[20px] transition-all duration-300 flex flex-col items-center justify-center gap-2 border-2
                                                 ${!activePresetId
-                                            ? 'active-pop'
-                                            : 'bg-black/5 shadow-sm hover:bg-black/10 text-black/40 hover:text-black border border-black/10 hover:border-black/20'}
+                                            ? 'bg-[#4DB39A] text-black border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -translate-y-[2px]'
+                                            : 'bg-black/5 shadow-sm hover:bg-black/10 text-black/40 hover:text-black border-black/10 hover:border-black/20'}
                                             `}
                                 >
                                     <span className={`text-2xl transition-transform duration-300 group-hover:scale-110 ${!activePresetId ? 'opacity-100' : 'opacity-40 grayscale group-hover:grayscale-0'}`}>
@@ -299,17 +299,20 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                     <span className={`text-[12px] md:text-[14px] font-black truncate tracking-wide text-center w-full ${!activePresetId ? 'text-black' : 'text-black/40'}`}>おまかせ</span>
                                 </button>
 
-                                {/* Profiles Grid */}
-                                {presets.map((p) => {
+                                {presets.map((p, idx) => {
                                     const isSelected = activePresetId === p.id;
+                                    // Cycle colors for profiles: Rose, Lavender, Gold
+                                    const colors = ['bg-[#E88BA3]', 'bg-[#9B8FD4]', 'bg-[#F5CC6D]'];
+                                    const bgColor = colors[idx % colors.length];
+
                                     return (
                                         <button
                                             key={p.id}
                                             onClick={() => onApplyPreset(p)}
-                                            className={`group relative py-3 px-3 rounded-[20px] transition-all duration-300 flex flex-col items-center justify-center gap-2
+                                            className={`group relative py-3 px-3 rounded-[20px] transition-all duration-300 flex flex-col items-center justify-center gap-2 border-2
                                                         ${isSelected
-                                                    ? 'active-pop'
-                                                    : 'bg-black/5 shadow-sm hover:bg-black/10 text-black/40 hover:text-black border border-black/10 hover:border-black/20'}
+                                                    ? `${bgColor} text-black border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -translate-y-[2px]`
+                                                    : 'bg-black/5 shadow-sm hover:bg-black/10 text-black/40 hover:text-black border-black/10 hover:border-black/20'}
                                                     `}
                                         >
                                             <span className={`text-2xl transition-transform duration-300 group-hover:scale-110 ${isSelected ? 'opacity-100' : 'opacity-40 grayscale group-hover:grayscale-0'}`}>
@@ -338,9 +341,9 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                             key={t.id}
                                             onClick={() => onToneChange(t.id)}
                                             disabled={!!activePresetId}
-                                            className={`flex-1 py-2 px-1 rounded-[12px] text-[12px] font-black transition-all flex items-center justify-center gap-1.5 relative ${tone === t.id
-                                                ? 'active-pop'
-                                                : 'text-black/40 hover:text-black hover:bg-white'
+                                            className={`flex-1 py-1.5 px-1 rounded-[12px] text-[12px] font-black transition-all flex items-center justify-center gap-1.5 relative border-2 ${tone === t.id
+                                                ? 'bg-[#F5CC6D] text-black border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] -translate-y-[1px]'
+                                                : 'text-black/40 hover:text-black hover:bg-white border-transparent'
                                                 }`}
                                         >
                                             <span>{t.label}</span>
@@ -358,9 +361,9 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                             <button
                                                 key={l.id}
                                                 onClick={() => onLengthChange(l.id)}
-                                                className={`flex-1 py-2 px-1 rounded-[12px] text-[12px] font-black transition-all flex items-center justify-center gap-1.5 relative ${length === l.id
-                                                    ? 'active-pop'
-                                                    : 'text-black/40 hover:text-black hover:bg-white'
+                                                className={`flex-1 py-1.5 px-1 rounded-[12px] text-[12px] font-black transition-all flex items-center justify-center gap-1.5 relative border-2 ${length === l.id
+                                                    ? 'bg-[#9B8FD4] text-black border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] -translate-y-[1px]'
+                                                    : 'text-black/40 hover:text-black hover:bg-white border-transparent'
                                                     }`}
                                             >
                                                 <span>{l.label}</span>
@@ -380,7 +383,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                             ${xConstraint140 ? 'bg-black border-black text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]' : 'bg-white border-black/10 text-black/40 hover:border-black/30'}`}
                                     >
                                         <span className="text-[10px] font-black ml-2 uppercase tracking-widest">140 CHARS</span>
-                                        <div className={`w-4 h-4 rounded-full transition-all flex items-center justify-center mr-1 ${xConstraint140 ? 'bg-[#4DB39A]' : 'bg-black/10'}`}>
+                                        <div className={`w-4 h-4 rounded-full transition-all flex items-center justify-center mr-1 ${xConstraint140 ? 'bg-[#E88BA3]' : 'bg-black/10'}`}>
                                             {xConstraint140 && <div className="w-2 h-2 rounded-full bg-black animate-pulse" />}
                                         </div>
                                     </button>
