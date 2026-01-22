@@ -19,7 +19,7 @@ export const ProblemSection = ({ problems, isMobile }: { problems: Problem[]; is
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div className="max-w-3xl mx-auto text-center mb-20">
-                    <span className="inline-block py-2 px-4 bg-[#E5C58C] border-[3px] border-black rounded-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rounded-2xl text-black font-black tracking-tight text-sm uppercase mb-8">
+                    <span className="inline-block py-2 px-4 bg-[#F5CC6D] border-[3px] border-black rounded-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rounded-2xl text-black font-black tracking-tight text-sm uppercase mb-8">
                         Social Media Challenges
                     </span>
                     <h2 className="text-4xl md:text-7xl font-black text-black leading-[1.1] mb-8">

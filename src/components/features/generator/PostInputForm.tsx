@@ -209,10 +209,10 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
         <div className="flex flex-col">
             {/* Platform Tabs & Multi-gen Toggle - Solid Card Style */}
             <div className="flex flex-col lg:flex-row lg:items-center gap-4 px-3 sm:px-6 pb-4">
-                <div className="flex items-stretch flex-1 px-4 py-2 gap-1 section-card rounded-full border border-slate-100 shadow-sm">
+                <div className="flex items-stretch flex-1 px-4 py-2 gap-1 section-card rounded-xl border border-slate-100 shadow-sm">
                     <button
                         onClick={() => onSetActivePlatform(Platform.X)}
-                        className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-full text-xs sm:text-sm font-black transition-all relative
+                        className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-xs sm:text-sm font-black transition-all relative
                             ${platforms.includes(Platform.X)
                                 ? 'active-pop'
                                 : 'text-slate-400 hover:text-primary hover:bg-slate-50'
@@ -225,7 +225,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                     </button>
                     <button
                         onClick={() => onSetActivePlatform(Platform.Instagram)}
-                        className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-full text-xs sm:text-sm font-black transition-all relative
+                        className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-xs sm:text-sm font-black transition-all relative
                             ${platforms.includes(Platform.Instagram)
                                 ? 'active-pop'
                                 : 'text-slate-400 hover:text-primary hover:bg-slate-50'
@@ -238,7 +238,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                     </button>
                     <button
                         onClick={() => onSetActivePlatform(Platform.GoogleMaps)}
-                        className={`flex-1 flex items-center justify-center gap-0 py-3 rounded-full text-xs sm:text-sm font-black transition-all relative
+                        className={`flex-1 flex items-center justify-center gap-0 py-3 rounded-xl text-xs sm:text-sm font-black transition-all relative
                             ${platforms.includes(Platform.GoogleMaps)
                                 ? 'active-pop'
                                 : 'text-slate-400 hover:text-primary hover:bg-slate-50'
@@ -251,13 +251,13 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                     </button>
                 </div>
 
-                <div className="flex items-center gap-3 px-5 py-2.5 section-card rounded-full border border-slate-100 shadow-sm">
+                <div className="flex items-center gap-3 px-5 py-2.5 section-card rounded-xl border border-slate-100 shadow-sm">
                     <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em] leading-none">同時生成</span>
                     <button
                         onClick={onToggleMultiGen}
-                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-all duration-300 ${isMultiGen ? 'bg-accent' : 'bg-slate-200'}`}
+                        className={`relative inline-flex h-6 w-11 items-center rounded-xl transition-all duration-300 ${isMultiGen ? 'bg-accent' : 'bg-slate-200'}`}
                     >
-                        <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-300 ${isMultiGen ? 'translate-x-6' : 'translate-x-1'}`} />
+                        <span className={`inline-block h-4 w-4 transform rounded-xl bg-white transition-transform duration-300 ${isMultiGen ? 'translate-x-6' : 'translate-x-1'}`} />
                     </button>
                 </div>
             </div>
@@ -380,8 +380,8 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                             ${xConstraint140 ? 'bg-slate-900 border-slate-900 text-white shadow-xl shadow-slate-200/50' : 'bg-white border-slate-100 text-slate-500 hover:border-slate-300'}`}
                                     >
                                         <span className="text-[10px] font-black ml-2">140文字</span>
-                                        <div className={`w-4 h-4 rounded-full transition-all flex items-center justify-center mr-1 ${xConstraint140 ? 'bg-indigo-500' : 'bg-slate-100'}`}>
-                                            {xConstraint140 && <div className="w-2 h-2 rounded-full bg-white animate-pulse" />}
+                                        <div className={`w-4 h-4 rounded-xl transition-all flex items-center justify-center mr-1 ${xConstraint140 ? 'bg-indigo-500' : 'bg-slate-100'}`}>
+                                            {xConstraint140 && <div className="w-2 h-2 rounded-xl bg-white animate-pulse" />}
                                         </div>
                                     </button>
                                 </section>
@@ -396,9 +396,9 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                             <button
                                                 onClick={() => onIncludeEmojisChange(!includeEmojis)}
                                                 disabled={!!activePresetId}
-                                                className={`relative inline-flex h-4 w-7 items-center rounded-full transition-all duration-300 ${activePresetId ? 'cursor-not-allowed' : ''} ${includeEmojis ? 'bg-accent' : 'bg-slate-200'}`}
+                                                className={`relative inline-flex h-4 w-7 items-center rounded-xl transition-all duration-300 ${activePresetId ? 'cursor-not-allowed' : ''} ${includeEmojis ? 'bg-accent' : 'bg-slate-200'}`}
                                             >
-                                                <span className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform duration-300 ${includeEmojis ? 'translate-x-3.5' : 'translate-x-0.5'}`} />
+                                                <span className={`inline-block h-3 w-3 transform rounded-xl bg-white transition-transform duration-300 ${includeEmojis ? 'translate-x-3.5' : 'translate-x-0.5'}`} />
                                             </button>
                                         </div>
                                         <div className="w-px h-5 bg-slate-100" />
@@ -407,9 +407,9 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                             <button
                                                 onClick={() => onIncludeSymbolsChange(!includeSymbols)}
                                                 disabled={!!activePresetId}
-                                                className={`relative inline-flex h-4 w-7 items-center rounded-full transition-all duration-300 ${activePresetId ? 'cursor-not-allowed' : ''} ${includeSymbols ? 'bg-accent' : 'bg-slate-200'}`}
+                                                className={`relative inline-flex h-4 w-7 items-center rounded-xl transition-all duration-300 ${activePresetId ? 'cursor-not-allowed' : ''} ${includeSymbols ? 'bg-accent' : 'bg-slate-200'}`}
                                             >
-                                                <span className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform duration-300 ${includeSymbols ? 'translate-x-3.5' : 'translate-x-0.5'}`} />
+                                                <span className={`inline-block h-3 w-3 transform rounded-xl bg-white transition-transform duration-300 ${includeSymbols ? 'translate-x-3.5' : 'translate-x-0.5'}`} />
                                             </button>
                                         </div>
                                     </div>
@@ -476,7 +476,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                     {/* Lock Overlay */}
                                     {starRating !== null && (
                                         <div className="absolute inset-0 flex items-center justify-center z-20 animate-in fade-in zoom-in-95 duration-300">
-                                            <div className="bg-[#130c0a] text-white px-5 py-2.5 rounded-full shadow-xl shadow-indigo-200 flex items-center gap-2.5 transform scale-100 border border-white/20">
+                                            <div className="bg-[#130c0a] text-white px-5 py-2.5 rounded-xl shadow-xl shadow-indigo-200 flex items-center gap-2.5 transform scale-100 border border-white/20">
                                                 <AutoSparklesIcon className="w-4 h-4" />
                                                 <span className="text-[11px] font-black tracking-widest whitespace-nowrap">自動判定モード固定</span>
                                             </div>
@@ -490,7 +490,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
 
                 {/* Right Column: Input Canvas */}
                 <div className="flex-1 flex flex-col gap-8 order-2 min-w-0">
-                    <div className="section-card rounded-[48px] lg:rounded-[64px] p-8 lg:p-14 border-2 border-white flex flex-col group transition-all hover:border-primary/20 shadow-2xl relative isolate min-h-[400px]">
+                    <div className="section-card rounded-[48px] lg:rounded-[64px] p-8 lg:p-14 border-[3px] border-white flex flex-col group transition-all hover:border-primary/20 shadow-2xl relative isolate min-h-[400px]">
 
                         {/* Shimmer effect for focus */}
                         <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-transparent to-transparent opacity-0 group-focus-within:opacity-100 transition-opacity pointer-events-none" />
@@ -520,13 +520,13 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                     onClick={() => setIsPromptExpanded(true)}
                                     className="flex items-center gap-3 py-2 px-1 text-slate-500 hover:text-primary transition-colors group mb-4"
                                 >
-                                    <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <div className="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center group-hover:scale-110 transition-transform">
                                         <AutoSparklesIcon className="w-4 h-4 text-slate-500" />
                                     </div>
                                     <span className="text-[11px] font-black uppercase tracking-wider">AIへの指示を追加（任意）</span>
                                 </button>
                             ) : (
-                                <div className="flex items-center gap-3 bg-slate-100 border-2 border-slate-200 rounded-full pl-5 pr-2 py-2 mb-4 animate-in zoom-in-95 duration-200">
+                                <div className="flex items-center gap-3 bg-slate-100 border-[3px] border-slate-200 rounded-xl pl-5 pr-2 py-2 mb-4 animate-in zoom-in-95 duration-200">
                                     <AutoSparklesIcon className="w-4 h-4 text-primary shrink-0" />
                                     <input
                                         type="text"
@@ -541,7 +541,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                             onCustomPromptChange("");
                                             setIsPromptExpanded(false);
                                         }}
-                                        className="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-primary hover:bg-slate-200 rounded-full transition-all"
+                                        className="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-primary hover:bg-slate-200 rounded-xl transition-all"
                                     >
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><path d="M18 6L6 18M6 6l12 12" /></svg>
                                     </button>
@@ -550,7 +550,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
 
                             <div className="flex items-center justify-between">
                                 <div className="text-[10px] font-black text-slate-400 tracking-[0.3em] uppercase flex items-center gap-4">
-                                    <span className="bg-slate-100 text-slate-600 px-3 py-1 rounded-full">{inputText.length} CHARS</span>
+                                    <span className="bg-slate-100 text-slate-600 px-3 py-1 rounded-xl">{inputText.length} CHARS</span>
                                 </div>
 
                                 {/* Tools: Clear & Voice */}
@@ -559,7 +559,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                     <button
                                         onClick={handleClear}
                                         disabled={!inputText}
-                                        className="p-2 rounded-full text-slate-400 hover:text-primary hover:bg-slate-100 transition-all disabled:opacity-30 disabled:cursor-not-allowed group/clear"
+                                        className="p-2 rounded-xl text-slate-400 hover:text-primary hover:bg-slate-100 transition-all disabled:opacity-30 disabled:cursor-not-allowed group/clear"
                                         title="入力をクリア"
                                     >
                                         <EraserIcon className="w-5 h-5" />
@@ -568,8 +568,8 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                     {/* Voice Input Button */}
                                     <button
                                         onClick={toggleVoiceInput}
-                                        className={`p-2 rounded-full transition-all flex items-center gap-2 relative ${isListening
-                                            ? 'bg-accent text-primary shadow-lg border border-accent/50 pr-4'
+                                        className={`p-2 rounded-xl transition-all flex items-center gap-2 relative ${isListening
+                                            ? 'bg-accent text-primary shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] border border-accent/50 pr-4'
                                             : 'text-slate-400 hover:text-primary hover:bg-slate-100'
                                             }`}
                                         title={isListening ? '音声入力を停止' : '音声入力'}
@@ -578,13 +578,13 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                             <>
                                                 <div className="relative w-5 h-5 flex items-center justify-center">
                                                     <MicIcon className="w-5 h-5 relative z-10" />
-                                                    <div className="absolute inset-0 bg-accent rounded-full animate-ping opacity-75"></div>
+                                                    <div className="absolute inset-0 bg-accent rounded-xl animate-ping opacity-75"></div>
                                                 </div>
                                                 <div className="flex items-center gap-0.5 h-3 ml-1">
-                                                    <div className="w-0.5 bg-primary rounded-full h-full animate-[music-bar_0.5s_ease-in-out_infinite]"></div>
-                                                    <div className="w-0.5 bg-primary rounded-full h-2/3 animate-[music-bar_0.5s_ease-in-out_0.1s_infinite]"></div>
-                                                    <div className="w-0.5 bg-primary rounded-full h-full animate-[music-bar_0.5s_ease-in-out_0.2s_infinite]"></div>
-                                                    <div className="w-0.5 bg-primary rounded-full h-1/2 animate-[music-bar_0.5s_ease-in-out_0.3s_infinite]"></div>
+                                                    <div className="w-0.5 bg-primary rounded-xl h-full animate-[music-bar_0.5s_ease-in-out_infinite]"></div>
+                                                    <div className="w-0.5 bg-primary rounded-xl h-2/3 animate-[music-bar_0.5s_ease-in-out_0.1s_infinite]"></div>
+                                                    <div className="w-0.5 bg-primary rounded-xl h-full animate-[music-bar_0.5s_ease-in-out_0.2s_infinite]"></div>
+                                                    <div className="w-0.5 bg-primary rounded-xl h-1/2 animate-[music-bar_0.5s_ease-in-out_0.3s_infinite]"></div>
                                                 </div>
                                             </>
                                         ) : (

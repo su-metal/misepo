@@ -68,8 +68,8 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
                                 {/* Header */}
                                 <div className="flex items-center justify-between p-3 border-b border-stone-50">
                                     <div className="flex items-center gap-2">
-                                        <div className="w-8 h-8 rounded-full bg-stone-100 border border-stone-200 p-[1px]">
-                                            <div className="w-full h-full rounded-full bg-stone-50 flex items-center justify-center text-[10px] font-black text-stone-400 uppercase">
+                                        <div className="w-8 h-8 rounded-xl bg-stone-100 border border-stone-200 p-[1px]">
+                                            <div className="w-full h-full rounded-xl bg-stone-50 flex items-center justify-center text-[10px] font-black text-stone-400 uppercase">
                                                 {(storeProfile.name?.[0] || 'U').toUpperCase()}
                                             </div>
                                         </div>
@@ -117,7 +117,7 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
                         {platform === Platform.X && (
                             <div className="w-full bg-white border border-stone-100 rounded-3xl shadow-xl shadow-stone-200/50 p-5 max-w-[475px]">
                                 <div className="flex gap-4">
-                                    <div className="w-11 h-11 rounded-full bg-stone-100 border border-stone-200 flex items-center justify-center text-[12px] font-black text-stone-400 flex-shrink-0">
+                                    <div className="w-11 h-11 rounded-xl bg-stone-100 border border-stone-200 flex items-center justify-center text-[12px] font-black text-stone-400 flex-shrink-0">
                                         {(storeProfile.name?.[0] || 'U').toUpperCase()}
                                     </div>
                                     <div className="flex-1 min-w-0">
@@ -166,7 +166,7 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
                                     <div className="flex-1">
                                         <div className="flex items-center gap-4 mb-4">
                                             {/* Google blue user icon */}
-                                            <div className="w-10 h-10 rounded-full bg-[#4285f4] flex items-center justify-center shrink-0">
+                                            <div className="w-10 h-10 rounded-xl bg-[#4285f4] flex items-center justify-center shrink-0">
                                                 <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="currentColor">
                                                     <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
                                                 </svg>
