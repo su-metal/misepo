@@ -10,8 +10,8 @@ export const PricingSection = () => {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-20">
                         <h2 className="text-3xl md:text-6xl font-black text-black mb-10 tracking-tight italic uppercase">
-                            賢い店主は、<br />
-                            <span className="bg-[#F5CC6D] px-4 py-2 border-[4px] border-black rounded-2xl shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] rounded-2xl inline-block mt-4 -rotate-1">「コスト」と「質」</span>で選んでいます。
+                            納得できる「質」と、<br />
+                            <span className="bg-[#F5CC6D] px-4 py-2 border-[4px] border-black rounded-2xl shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] rounded-2xl inline-block mt-4 -rotate-1">使い続けたい「コスト」</span>の正解。
                         </h2>
                         <p className="text-black font-bold text-xl max-w-2xl mx-auto opacity-70">
                             「自分でやる」のは限界。「業者に頼む」のは高すぎる。<br />

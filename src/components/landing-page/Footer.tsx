@@ -16,16 +16,16 @@ export const Footer = () => {
                     <div>
                         <h4 className="font-black text-xl mb-6 uppercase tracking-widest text-[#F5CC6D]">Service</h4>
                         <ul className="space-y-4 text-lg font-bold">
-                            <li><a href="#" className="hover:text-[#E88BA3] transition-colors underline decoration-2 underline-offset-4">機能一覧</a></li>
-                            <li><a href="#" className="hover:text-[#E88BA3] transition-colors underline decoration-2 underline-offset-4">料金プラン</a></li>
-                            <li><a href="#" className="hover:text-[#E88BA3] transition-colors underline decoration-2 underline-offset-4">導入事例</a></li>
+                            <li><a href="/#features" className="hover:text-[#E88BA3] transition-colors underline decoration-2 underline-offset-4">機能一覧</a></li>
+                            <li><a href="/#pricing" className="hover:text-[#E88BA3] transition-colors underline decoration-2 underline-offset-4">料金プラン</a></li>
+                            <li><a href="/#demo" className="hover:text-[#E88BA3] transition-colors underline decoration-2 underline-offset-4">導入事例</a></li>
                         </ul>
                     </div>
                     <div>
                         <h4 className="font-black text-xl mb-6 uppercase tracking-widest text-[#4DB39A]">Support</h4>
                         <ul className="space-y-4 text-lg font-bold">
-                            <li><a href="#" className="hover:text-[#E88BA3] transition-colors underline decoration-2 underline-offset-4">ヘルプセンター</a></li>
-                            <li><a href="#" className="hover:text-[#E88BA3] transition-colors underline decoration-2 underline-offset-4">お問い合わせ</a></li>
+                            <li><a href="/#solution" className="hover:text-[#E88BA3] transition-colors underline decoration-2 underline-offset-4">MisePoについて</a></li>
+                            <li><a href="mailto:support@misepo.jp" className="hover:text-[#E88BA3] transition-colors underline decoration-2 underline-offset-4">お問い合わせ</a></li>
                             <li><a href="/terms" className="hover:text-[#E88BA3] transition-colors underline decoration-2 underline-offset-4">利用規約</a></li>
                             <li><a href="/privacy" className="hover:text-[#E88BA3] transition-colors underline decoration-2 underline-offset-4">プライバシーポリシー</a></li>
                             <li><a href="/commercial-law" className="hover:text-[#E88BA3] transition-colors underline decoration-2 underline-offset-4">特定商取引法に基づく表記</a></li>
