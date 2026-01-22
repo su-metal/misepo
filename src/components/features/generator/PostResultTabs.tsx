@@ -86,7 +86,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                 }`}
                         >
                             <span className={`w-2 h-2 rounded-full transition-colors ${includeFooter ? 'bg-black' : 'bg-black/20'}`} />
-                            <span className="tracking-widest uppercase">Show Shop Info</span>
+                            <span className="tracking-widest uppercase">店舗情報を表示</span>
                         </button>
                     ),
                     actionColor: "bg-[#E88BA3] hover:bg-[#E88BA3]/90 active:scale-[0.98] text-black border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]",
@@ -194,15 +194,15 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                         {results.length === 0 ? (
                             // Placeholder when no results
                             <div className="p-12 h-full flex flex-col items-center justify-center text-center space-y-8 animate-in fade-in duration-1000">
-                                <h2 className="text-3xl font-black text-black uppercase tracking-[0.25em] text-center">プレビュー (Live Preview)</h2>
+                                <h2 className="text-3xl font-black text-black uppercase tracking-[0.25em] text-center">プレビュー (ライブプレビュー)</h2>
 
                                 <div className="space-y-6 max-w-sm">
                                     <div className="w-24 h-24 rounded-[32px] bg-black/5 border-[3px] border-black flex items-center justify-center text-black/20 mx-auto">
                                         <SparklesIcon className="w-12 h-12" />
                                     </div>
-                                    <h3 className="text-xl font-black text-black uppercase tracking-widest">生成待機中 (Awaiting Input)</h3>
+                                    <h3 className="text-xl font-black text-black uppercase tracking-widest">入力待ち</h3>
                                     <p className="text-black/40 text-sm font-bold leading-relaxed">
-                                        左側のフォームに投稿のアイデアを入力して、<br />プロフェッショナルな投稿を瞬時に生成しましょう。
+                                        左側のフォームに内容やアイデアを入力して、<br />プロフェッショナルな投稿を瞬時に生成しましょう。
                                     </p>
                                 </div>
                             </div>
@@ -250,7 +250,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                             className="flex items-center justify-center gap-3 py-5 rounded-[24px] bg-black/5 text-[11px] font-black text-black/60 border-2 border-black/10 hover:border-black hover:text-black hover:bg-white transition-all uppercase tracking-[0.2em]"
                                                         >
                                                             <EyeIcon className="w-5 h-5" />
-                                                            <span>Live Preview</span>
+                                                            <span>ライブプレビュー</span>
                                                         </button>
 
                                                         <div className="grid grid-cols-2 gap-4">
@@ -259,14 +259,14 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                                 className="flex items-center justify-center gap-3 py-5 rounded-[24px] bg-white border-2 border-black/10 text-[11px] font-black text-black/40 hover:text-black hover:border-black transition-all uppercase tracking-[0.2em]"
                                                             >
                                                                 <RotateCcwIcon className="w-5 h-5" />
-                                                                <span>Retry</span>
+                                                                <span>再生成</span>
                                                             </button>
                                                             <button
                                                                 onClick={() => onRefineToggle(gIdx, iIdx)}
                                                                 className={`flex items-center justify-center gap-3 py-5 rounded-[24px] text-[11px] font-black transition-all uppercase tracking-[0.2em] border-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] ${refiningKey === `${gIdx}-${iIdx}` ? 'bg-[#9B8FD4] border-black text-black' : 'bg-white text-black/40 border-black/10 hover:border-black hover:text-black'}`}
                                                             >
                                                                 <MagicWandIcon className="w-5 h-5" />
-                                                                <span>AI Refine</span>
+                                                                <span>AI微調整</span>
                                                             </button>
                                                         </div>
 
@@ -288,7 +288,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                                         <MagicWandIcon className="w-10 h-10 text-black" />
                                                                     </div>
                                                                     <div>
-                                                                        <h4 className="text-[11px] font-black text-black/40 uppercase tracking-[0.3em] mb-2">AI Refinement</h4>
+                                                                        <h4 className="text-[11px] font-black text-black/40 uppercase tracking-[0.3em] mb-2">AI個別微調整</h4>
                                                                         <p className="text-2xl font-black text-black leading-tight">修正内容を教えてください</p>
                                                                     </div>
                                                                 </div>
@@ -314,18 +314,18 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                         )}
                     </div>
                 </div>
-
-                {/* Preview Modal */}
-                {previewState && (
-                    <PostPreviewModal
-                        isOpen={previewState.isOpen}
-                        onClose={() => setPreviewState(null)}
-                        platform={previewState.platform}
-                        text={previewState.text}
-                        storeProfile={storeProfile}
-                    />
-                )}
             </div>
+
+            {/* Preview Modal */}
+            {previewState && (
+                <PostPreviewModal
+                    isOpen={previewState.isOpen}
+                    onClose={() => setPreviewState(null)}
+                    platform={previewState.platform}
+                    text={previewState.text}
+                    storeProfile={storeProfile}
+                />
+            )}
         </>
     );
 };
@@ -383,7 +383,7 @@ const FavoriteButton = ({ platform, text, presetId }: { platform: Platform, text
             <StarIcon
                 className={`w-4 h-4 transition-all duration-300 ${isFavorited ? 'fill-black text-black scale-110' : 'text-black/20 group-hover:text-black'}`}
             />
-            {isFavorited && <span className="text-[10px] font-black animate-in fade-in slide-in-from-left-2 tracking-widest uppercase">Saved</span>}
+            {isFavorited && <span className="text-[10px] font-black animate-in fade-in slide-in-from-left-2 tracking-widest uppercase">保存済み</span>}
         </button>
     );
 };

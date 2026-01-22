@@ -208,57 +208,63 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
     return (
         <div className="flex flex-col">
             {/* Platform Tabs & Multi-gen Toggle - Solid Card Style */}
-            <div className="flex flex-col lg:flex-row lg:items-center gap-4 px-3 sm:px-6 pb-4">
-                <div className="flex items-stretch flex-1 px-4 py-2 gap-1 section-card rounded-2xl border-black">
-                    <button
-                        onClick={() => onSetActivePlatform(Platform.X)}
-                        className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-xs sm:text-sm font-black transition-all relative
-                            ${platforms.includes(Platform.X)
-                                ? 'bg-black text-white border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -translate-y-[2px]'
-                                : 'text-black/40 hover:text-black hover:bg-black/5'
-                            }`}
-                    >
-                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" />
-                        </svg>
-                        <span>X (Twitter)</span>
-                    </button>
-                    <button
-                        onClick={() => onSetActivePlatform(Platform.Instagram)}
-                        className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-xs sm:text-sm font-black transition-all relative
-                            ${platforms.includes(Platform.Instagram)
-                                ? 'bg-[#E88BA3] text-black border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -translate-y-[2px]'
-                                : 'text-black/40 hover:text-black hover:bg-black/5'
-                            }`}
-                    >
-                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2c2.717 0 3.056.01 4.122.06 1.065.05 1.79.217 2.428.465.66.254 1.216.598 1.772 1.153a4.908 4.908 0 0 1 1.153 1.772c.247.637.415 1.363.465 2.428.047 1.066.06 1.405.06 4.122 0 2.717-.01 3.056-.06 4.122-.05 1.065-.218 1.79-.465 2.428a4.883 4.883 0 0 1-1.153 1.772 4.915 4.915 0 0 1-1.772 1.153c-.637.247-1.363.415-2.428.465-1.066.047-1.405.06-4.122.06-2.717 0-3.056-.01-4.122-.06-1.065-.05-1.79-.218-2.428-.465a4.89 4.89 0 0 1-1.772-1.153 4.904 4.904 0 0 1-1.153-1.772c-.248-.637-.415-1.363-.465-2.428C2.013 15.056 2 14.717 2 12c0-2.717.01-3.056.06-4.122.05-1.066.217-1.79.465-2.428a4.88 4.88 0 0 1 1.153-1.772A4.897 4.897 0 0 1 5.45 2.525c.638-.248 1.362-.415 2.428-.465C8.944 2.013 9.283 2 12 2zm0 5a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm6.5-.25a1.25 1.25 0 1 0-2.5 0 1.25 1.25 0 0 0 2.5 0zM12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6z" />
-                        </svg>
-                        <span>Instagram</span>
-                    </button>
-                    <button
-                        onClick={() => onSetActivePlatform(Platform.GoogleMaps)}
-                        className={`flex-1 flex items-center justify-center gap-1 py-3 rounded-xl text-xs sm:text-sm font-black transition-all relative
-                            ${platforms.includes(Platform.GoogleMaps)
-                                ? 'bg-[#4DB39A] text-black border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -translate-y-[2px]'
-                                : 'text-black/40 hover:text-black hover:bg-black/5'
-                            }`}
-                    >
-                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-                        </svg>
-                        <span>Google Maps</span>
-                    </button>
+            <div className="flex flex-col gap-2 px-3 sm:px-6 pb-4">
+                <div className="flex items-center gap-2 px-2">
+                    <span className="w-6 h-6 rounded-full bg-black text-white flex items-center justify-center text-[11px] font-black">1</span>
+                    <h3 className="text-xs font-black text-black/60 uppercase tracking-widest">投稿先を選ぶ</h3>
                 </div>
+                <div className="flex flex-col lg:flex-row lg:items-center gap-4">
+                    <div className="flex items-stretch flex-1 px-4 py-2 gap-1 section-card rounded-2xl border-black">
+                        <button
+                            onClick={() => onSetActivePlatform(Platform.X)}
+                            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-xs sm:text-sm font-black transition-all relative
+                            ${platforms.includes(Platform.X)
+                                    ? 'bg-black text-white border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -translate-y-[2px]'
+                                    : 'text-black/40 hover:text-black hover:bg-black/5'
+                                }`}
+                        >
+                            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" />
+                            </svg>
+                            <span>X (Twitter)</span>
+                        </button>
+                        <button
+                            onClick={() => onSetActivePlatform(Platform.Instagram)}
+                            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-xs sm:text-sm font-black transition-all relative
+                            ${platforms.includes(Platform.Instagram)
+                                    ? 'bg-[#E88BA3] text-black border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -translate-y-[2px]'
+                                    : 'text-black/40 hover:text-black hover:bg-black/5'
+                                }`}
+                        >
+                            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2c2.717 0 3.056.01 4.122.06 1.065.05 1.79.217 2.428.465.66.254 1.216.598 1.772 1.153a4.908 4.908 0 0 1 1.153 1.772c.247.637.415 1.363.465 2.428.047 1.066.06 1.405.06 4.122 0 2.717-.01 3.056-.06 4.122-.05 1.065-.218 1.79-.465 2.428a4.883 4.883 0 0 1-1.153 1.772 4.915 4.915 0 0 1-1.772 1.153c-.637.247-1.363.415-2.428.465-1.066.047-1.405.06-4.122.06-2.717 0-3.056-.01-4.122-.06-1.065-.05-1.79-.218-2.428-.465a4.89 4.89 0 0 1-1.772-1.153 4.904 4.904 0 0 1-1.153-1.772c-.248-.637-.415-1.363-.465-2.428C2.013 15.056 2 14.717 2 12c0-2.717.01-3.056.06-4.122.05-1.066.217-1.79.465-2.428a4.88 4.88 0 0 1 1.153-1.772A4.897 4.897 0 0 1 5.45 2.525c.638-.248 1.362-.415 2.428-.465C8.944 2.013 9.283 2 12 2zm0 5a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm6.5-.25a1.25 1.25 0 1 0-2.5 0 1.25 1.25 0 0 0 2.5 0zM12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6z" />
+                            </svg>
+                            <span>Instagram</span>
+                        </button>
+                        <button
+                            onClick={() => onSetActivePlatform(Platform.GoogleMaps)}
+                            className={`flex-1 flex items-center justify-center gap-1 py-3 rounded-xl text-xs sm:text-sm font-black transition-all relative
+                            ${platforms.includes(Platform.GoogleMaps)
+                                    ? 'bg-[#4DB39A] text-black border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -translate-y-[2px]'
+                                    : 'text-black/40 hover:text-black hover:bg-black/5'
+                                }`}
+                        >
+                            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                            </svg>
+                            <span>Google Maps</span>
+                        </button>
+                    </div>
 
-                <div className="flex items-center gap-3 px-5 py-2.5 section-card rounded-2xl border-black">
-                    <span className="text-[10px] font-black text-black uppercase tracking-[0.2em] leading-none">同時生成</span>
-                    <button
-                        onClick={onToggleMultiGen}
-                        className={`relative inline-flex h-6 w-11 items-center rounded-xl transition-all duration-300 ${isMultiGen ? 'bg-[#4DB39A]' : 'bg-black/10'}`}
-                    >
-                        <span className={`inline-block h-4 w-4 transform rounded-xl bg-white transition-transform duration-300 ${isMultiGen ? 'translate-x-6' : 'translate-x-1'} shadow-sm`} />
-                    </button>
+                    <div className="flex items-center gap-3 px-5 py-2.5 section-card rounded-2xl border-black">
+                        <span className="text-[10px] font-black text-black uppercase tracking-[0.2em] leading-none">同時生成</span>
+                        <button
+                            onClick={onToggleMultiGen}
+                            className={`relative inline-flex h-6 w-11 items-center rounded-xl transition-all duration-300 ${isMultiGen ? 'bg-[#4DB39A]' : 'bg-black/10'}`}
+                        >
+                            <span className={`inline-block h-4 w-4 transform rounded-xl bg-white transition-transform duration-300 ${isMultiGen ? 'translate-x-6' : 'translate-x-1'} shadow-sm`} />
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -274,13 +280,16 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                         {/* LEFT COL: Profiles */}
                         <div className="section-card p-5 rounded-[32px] border-black flex flex-col gap-4 flex-1">
                             <div className="flex items-center justify-between px-2">
-                                <h3 className="text-xs font-black text-black uppercase tracking-[0.25em]">Profiles</h3>
+                                <div className="flex items-center gap-2">
+                                    <span className="w-5 h-5 rounded-full bg-black text-white flex items-center justify-center text-[10px] font-black">2</span>
+                                    <h3 className="text-xs font-black text-black uppercase tracking-widest">投稿者プロフィール</h3>
+                                </div>
                                 <button
                                     onClick={onOpenPresetModal}
                                     className="px-3 py-1.5 rounded-xl bg-black/5 text-black text-[10px] font-black uppercase tracking-widest hover:bg-black hover:text-white transition-all active:scale-95 flex items-center gap-1.5 border border-black/10 shadow-sm"
                                 >
                                     <MagicWandIcon className="w-3.5 h-3.5" />
-                                    <span>Manage</span>
+                                    <span>設定・管理</span>
                                 </button>
                             </div>
                             <div className="grid grid-cols-2 gap-3 md:gap-4 w-full flex-1 h-full auto-rows-fr">
@@ -330,11 +339,14 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                         {/* RIGHT COL: Style Settings */}
                         <div className="section-card p-5 rounded-[32px] border-black flex flex-col gap-5 flex-1">
                             <div className="flex items-center justify-between px-2">
-                                <h3 className="text-xs font-black text-black uppercase tracking-[0.25em]">Style</h3>
+                                <div className="flex items-center gap-2">
+                                    <span className="w-5 h-5 rounded-full bg-black text-white flex items-center justify-center text-[10px] font-black">3</span>
+                                    <h3 className="text-xs font-black text-black uppercase tracking-widest">スタイル設定</h3>
+                                </div>
                             </div>
                             {/* Tone Selection */}
                             <section>
-                                <h3 className="text-[10px] font-black text-black/30 uppercase tracking-widest mb-1.5 px-1">Tone</h3>
+                                <h3 className="text-[10px] font-black text-black/30 uppercase tracking-widest mb-1.5 px-1">トーン</h3>
                                 <div className={`flex flex-row gap-1.5 bg-black/5 p-1 rounded-[16px] border border-black/10 ${activePresetId ? 'opacity-50 cursor-not-allowed' : ''}`}>
                                     {TONES.map((t) => (
                                         <button
@@ -355,7 +367,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                             {/* Length Selection */}
                             {!isX && (
                                 <section>
-                                    <h3 className="text-[10px] font-black text-black/30 uppercase tracking-widest mb-1.5 px-1">Length</h3>
+                                    <h3 className="text-[10px] font-black text-black/30 uppercase tracking-widest mb-1.5 px-1">文章の長さ</h3>
                                     <div className="flex flex-row gap-1.5 bg-black/5 p-1 rounded-[16px] border border-black/10">
                                         {LENGTHS.map((l) => (
                                             <button
@@ -376,13 +388,13 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                             {/* X Constraint */}
                             {isX && (
                                 <section className="animate-in fade-in duration-500">
-                                    <h3 className="text-[10px] font-black text-black/30 uppercase tracking-widest mb-2 px-1">Limit</h3>
+                                    <h3 className="text-[10px] font-black text-black/30 uppercase tracking-widest mb-2 px-1">制限設定</h3>
                                     <button
                                         onClick={() => onXConstraint140Change(!xConstraint140)}
                                         className={`w-full p-2 rounded-[16px] border-[2px] transition-all flex items-center justify-between group shadow-sm
                                             ${xConstraint140 ? 'bg-black border-black text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]' : 'bg-white border-black/10 text-black/40 hover:border-black/30'}`}
                                     >
-                                        <span className="text-[10px] font-black ml-2 uppercase tracking-widest">140 CHARS</span>
+                                        <span className="text-[10px] font-black ml-2 uppercase tracking-widest">140文字制限（X）</span>
                                         <div className={`w-4 h-4 rounded-full transition-all flex items-center justify-center mr-1 ${xConstraint140 ? 'bg-[#E88BA3]' : 'bg-black/10'}`}>
                                             {xConstraint140 && <div className="w-2 h-2 rounded-full bg-black animate-pulse" />}
                                         </div>
@@ -492,7 +504,11 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                 </div>
 
                 {/* Right Column: Input Canvas */}
-                <div className="flex-1 flex flex-col gap-8 order-2 min-w-0">
+                <div className="flex-1 flex flex-col gap-4 order-2 min-w-0">
+                    <div className="flex items-center gap-2 px-4 translate-y-2 relative z-20">
+                        <span className="w-6 h-6 rounded-full bg-black text-white flex items-center justify-center text-[11px] font-black">4</span>
+                        <h3 className="text-xs font-black text-black/60 uppercase tracking-widest">本文を入力する</h3>
+                    </div>
                     <div className="section-card rounded-[48px] lg:rounded-[64px] p-8 lg:p-14 border-black flex flex-col group transition-all relative isolate min-h-[400px]">
 
                         {/* Subtle background color for canvas */}
@@ -525,7 +541,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                     <div className="w-8 h-8 rounded-xl bg-black/5 flex items-center justify-center group-hover:scale-110 transition-transform">
                                         <AutoSparklesIcon className="w-4 h-4 text-black/40" />
                                     </div>
-                                    <span className="text-[11px] font-black uppercase tracking-wider">AIへの指示を追加（任意）</span>
+                                    <span className="text-[11px] font-black uppercase tracking-wider">AIへの追加指示（任意）</span>
                                 </button>
                             ) : (
                                 <div className="flex items-center gap-3 bg-[#4DB39A]/10 border-[3px] border-[#4DB39A] rounded-2xl pl-5 pr-2 py-2 mb-4 animate-in zoom-in-95 duration-200">
@@ -552,7 +568,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
 
                             <div className="flex items-center justify-between">
                                 <div className="text-[10px] font-black text-black/40 tracking-[0.3em] uppercase flex items-center gap-4">
-                                    <span className="bg-black/5 text-black/60 px-3 py-1 rounded-xl">{inputText.length} CHARS</span>
+                                    <span className="bg-black/5 text-black/60 px-3 py-1 rounded-xl">{inputText.length} 文字</span>
                                 </div>
 
                                 {/* Tools: Clear & Voice */}
@@ -597,9 +613,8 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                             </div>
                         </div>
                     </div>
-
                 </div>
-            </div >
-        </div >
+            </div>
+        </div>
     );
 };
