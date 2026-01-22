@@ -88,7 +88,7 @@ export default function HeroSection() {
                     </div>
                     <h1 className="text-4xl font-black text-black tracking-tighter leading-[1.0] mb-4">
                         AIなのに、<br />
-                        <span className="gradient-text">私の言葉。</span>
+                        <span className="gradient-text">あなたの言葉。</span>
                     </h1>
                     <p className="text-base text-black font-bold leading-relaxed px-2 mb-6">
                         丁寧すぎて恥ずかしいAIは卒業。MisePoはあなたの「書き癖」を学習し、店主の『分身』としてSNS運用を代行します。
@@ -115,7 +115,7 @@ export default function HeroSection() {
                     </div>
                     <h1 className="text-6xl lg:text-[5.5rem] font-black text-black tracking-tighter leading-[1.0] mb-8">
                         AIなのに、<br />
-                        <span className="gradient-text">私の言葉。</span>
+                        <span className="gradient-text">あなたの言葉。</span>
                     </h1>
                     <p className="text-xl text-black font-bold leading-relaxed mb-10 max-w-lg">
                         丁寧すぎて恥ずかしいAIは卒業。MisePoはあなたの「書き癖」を学習し、常連さんが読んでも違和感のない文章を30秒で作成。店主の『分身』が、運用を代行します。
