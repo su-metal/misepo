@@ -8,10 +8,10 @@ export const PWASection = () => {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
                     <div className="lg:w-1/2">
-                        <div className="inline-block px-4 py-2 bg-[#D4849A] text-white border-[3px] border-black rounded-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rounded-2xl text-xs font-black uppercase tracking-widest mb-6">マルチデバイス対応</div>
+                        <div className="inline-block px-4 py-2 bg-[#E88BA3] text-white border-[3px] border-black rounded-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rounded-2xl text-xs font-black uppercase tracking-widest mb-6">マルチデバイス対応</div>
                         <h2 className="text-3xl md:text-5xl font-black text-black mb-8 leading-tight italic uppercase">
                             スマホ、タブレット、PC。<br />
-                            <span className="underline decoration-[6px] decoration-[#E5C58C]">お好きなデバイスで。</span>
+                            <span className="underline decoration-[6px] decoration-[#F5CC6D]">お好きなデバイスで。</span>
                         </h2>
                         <p className="text-lg text-black font-bold opacity-80 mb-10 leading-relaxed">MisePoは、ブラウザがあればどこでも使えます。店外ではスマホ、バックヤードではタブレット、レジ横のPCなど、店舗のオペレーションに合わせて柔軟にご利用いただけます。</p>
                         <div className="space-y-6">
@@ -23,21 +23,21 @@ export const PWASection = () => {
                                 </div>
                             </div>
                             <div className="flex items-start gap-4 p-4 border-[3px] border-black rounded-2xl bg-white shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
-                                <div className="bg-[#88B0A5] p-2 text-white border-[2px] border-black rounded-2xl mt-1 shadow-[2px_2px_0px_0px_rgba(0,0,0,0.2)]"><Icons.Smartphone size={20} /></div>
+                                <div className="bg-[#4DB39A] p-2 text-white border-[2px] border-black rounded-2xl mt-1 shadow-[2px_2px_0px_0px_rgba(0,0,0,0.2)]"><Icons.Smartphone size={20} /></div>
                                 <div>
                                     <h3 className="font-black text-black text-sm uppercase tracking-tight">スマホならアプリ感覚で</h3>
                                     <p className="text-xs text-black font-bold opacity-70 mt-1">PWA技術を採用。「ホーム画面に追加」するだけで、ストアからのDL不要でアプリと同じようにサクサク起動します。</p>
                                 </div>
                             </div>
                             <div className="flex items-start gap-4 p-4 border-[3px] border-black rounded-2xl bg-white shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
-                                <div className="bg-[#9B98C2] p-2 text-white border-[2px] border-black rounded-2xl mt-1 shadow-[2px_2px_0px_0px_rgba(0,0,0,0.2)]"><Icons.Bot size={20} /></div>
+                                <div className="bg-[#9B8FD4] p-2 text-white border-[2px] border-black rounded-2xl mt-1 shadow-[2px_2px_0px_0px_rgba(0,0,0,0.2)]"><Icons.Bot size={20} /></div>
                                 <div>
                                     <h3 className="font-black text-black text-sm uppercase tracking-tight">PCでも快速動作</h3>
                                     <p className="text-xs text-black font-bold opacity-70 mt-1">高価なPCスペックは不要。お手持ちのPCのブラウザからログインするだけで、すぐにAI生成を開始できます。</p>
                                 </div>
                             </div>
                             <div className="flex items-start gap-4 p-4 border-[3px] border-black rounded-2xl bg-white shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
-                                <div className="bg-[#E5C58C] p-2 text-black border-[2px] border-black rounded-2xl mt-1 shadow-[2px_2px_0px_0px_rgba(0,0,0,0.2)]"><Icons.ShieldCheck size={20} /></div>
+                                <div className="bg-[#F5CC6D] p-2 text-black border-[2px] border-black rounded-2xl mt-1 shadow-[2px_2px_0px_0px_rgba(0,0,0,0.2)]"><Icons.ShieldCheck size={20} /></div>
                                 <div>
                                     <h3 className="font-black text-black text-sm uppercase tracking-tight">常に最新版をシェア</h3>
                                     <p className="text-xs text-black font-bold opacity-70 mt-1">アプリの更新作業は一切不要。どのデバイスからアクセスしても、常に最新のAIモデルを利用できます。</p>
@@ -54,7 +54,7 @@ export const PWASection = () => {
                                             <div className="w-5 h-5 bg-black border-[2px] border-white rounded-2xl" />
                                             <div className="w-24 h-4 bg-black/10" />
                                         </div>
-                                        <div className="w-8 h-8 bg-[#D4849A] border-[2px] border-black rounded-2xl flex items-center justify-center animate-pulse">
+                                        <div className="w-8 h-8 bg-[#E88BA3] border-[2px] border-black rounded-2xl flex items-center justify-center animate-pulse">
                                             <Icons.Share size={14} className="text-white" />
                                         </div>
                                     </div>
@@ -72,10 +72,10 @@ export const PWASection = () => {
                                             <div className="flex items-center gap-4 px-4 py-3 text-black font-bold border-b border-black/5">
                                                 <Icons.Send size={18} /><span className="text-sm uppercase tracking-tight">Message</span>
                                             </div>
-                                            <div className="flex items-center gap-4 px-4 py-4 bg-[#E5C58C] text-black font-black border-[3px] border-black rounded-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rounded-2xl relative overflow-hidden animate-pulse">
+                                            <div className="flex items-center gap-4 px-4 py-4 bg-[#F5CC6D] text-black font-black border-[3px] border-black rounded-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rounded-2xl relative overflow-hidden animate-pulse">
                                                 <Icons.PlusSquare size={20} />
                                                 <span className="text-sm uppercase italic">Add to Home Screen</span>
-                                                <div className="absolute right-4 w-3 h-3 bg-[#D4849A] border-[2px] border-black rounded-2xl animate-ping" />
+                                                <div className="absolute right-4 w-3 h-3 bg-[#E88BA3] border-[2px] border-black rounded-2xl animate-ping" />
                                             </div>
                                         </div>
                                     </div>
@@ -84,7 +84,7 @@ export const PWASection = () => {
                                     <div className="h-full bg-black/5 flex items-center justify-center p-6">
                                         <div className="bg-white border-[4px] border-black rounded-2xl shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] rounded-2xl p-6 w-full max-w-[200px] animate-scale-in">
                                             <div className="flex items-center gap-4 mb-6">
-                                                <div className="w-14 h-14 bg-[#D4849A] border-[2px] border-black rounded-2xl flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,0.3)]">
+                                                <div className="w-14 h-14 bg-[#E88BA3] border-[2px] border-black rounded-2xl flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,0.3)]">
                                                     <Icons.Sparkles size={28} className="text-white" />
                                                 </div>
                                                 <div>
@@ -100,7 +100,7 @@ export const PWASection = () => {
                                     </div>
                                 </div>
                                 <div className="absolute inset-0 animate-pwa-scene3 opacity-0">
-                                    <div className="h-full bg-[#88B0A5] p-6 pt-10 border-[4px] border-black rounded-2xl">
+                                    <div className="h-full bg-[#4DB39A] p-6 pt-10 border-[4px] border-black rounded-2xl">
                                         <div className="flex justify-between text-white font-black text-[10px] mb-8 px-2 uppercase italic">
                                             <span>9:41</span>
                                             <div className="flex gap-2">
@@ -114,14 +114,14 @@ export const PWASection = () => {
                                                 </div>
                                             ))}
                                             <div className="flex flex-col items-center gap-2 animate-bounce-in">
-                                                <div className="w-12 h-12 bg-[#D4849A] border-[3px] border-white rounded-2xl flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,0.3)] animate-pulse">
+                                                <div className="w-12 h-12 bg-[#E88BA3] border-[3px] border-white rounded-2xl flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,0.3)] animate-pulse">
                                                     <Icons.Sparkles size={24} className="text-white" />
                                                 </div>
                                                 <span className="text-[8px] text-white font-black uppercase italic">MisePo</span>
                                             </div>
                                         </div>
                                         <div className="absolute bottom-12 left-4 right-4 bg-white border-[3px] border-black rounded-2xl p-4 flex items-center gap-3 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] animate-slide-up">
-                                            <Icons.CheckCircle size={20} className="text-[#88B0A5]" />
+                                            <Icons.CheckCircle size={20} className="text-[#4DB39A]" />
                                             <span className="text-[10px] font-black uppercase text-black">Added to Home!</span>
                                         </div>
                                     </div>
@@ -130,7 +130,7 @@ export const PWASection = () => {
                         </div>
                         <p className="text-center text-[10px] text-black font-black uppercase tracking-[0.3em] mt-8 bg-white border-[2px] border-black rounded-2xl py-2 inline-block px-4 mx-auto w-auto shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] ml-[50%] -translate-x-1/2">
                             <span className="inline-flex items-center gap-2">
-                                <span className="w-2.5 h-2.5 bg-[#88B0A5] border border-black animate-pulse" />
+                                <span className="w-2.5 h-2.5 bg-[#4DB39A] border border-black animate-pulse" />
                                 System Animating
                             </span>
                         </p>

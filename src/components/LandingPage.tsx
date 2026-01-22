@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
@@ -85,7 +85,7 @@ open11:00-close 17:00
     ];
 
     return (
-        <div className="min-h-screen bg-[#f9f5f2] text-slate-900 font-sans selection:bg-[#E5C58C]">
+        <div className="min-h-screen bg-[#f9f5f2] text-slate-900 font-sans selection:bg-[#F5CC6D]">
             <Header scrolled={scrolled} isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} loginWithGoogle={loginWithGoogle} />
             <HeroSection />
             <ProblemSection problems={problems} isMobile={isMobile} />
@@ -131,7 +131,7 @@ open11:00-close 17:00
                 }
                 .gradient-text { 
                   -webkit-text-stroke: 1px #000;
-                  color: #D4849A;
+                  color: #E88BA3;
                   text-shadow: 3px 3px 0px #000;
                 }
                 @keyframes float { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-10px) rotate(1deg); } }

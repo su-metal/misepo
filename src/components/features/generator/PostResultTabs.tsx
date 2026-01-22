@@ -56,7 +56,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
         switch (platform) {
             case Platform.X:
                 return {
-                    icon: <div className="w-10 h-10 bg-slate-950 rounded-full flex items-center justify-center text-white text-xl font-black shadow-lg">𝕏</div>,
+                    icon: <div className="w-10 h-10 bg-slate-950 rounded-xl flex items-center justify-center text-white text-xl font-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">𝕏</div>,
                     label: 'X (Twitter)',
                     actionColor: "bg-slate-950 hover:bg-black active:scale-[0.98]",
                     actionLabel: "Xで投稿する",
@@ -69,7 +69,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
             case Platform.Instagram:
                 return {
                     icon: (
-                        <div className="w-10 h-10 bg-gradient-to-tr from-[#FFDC80] via-[#B8E600] to-[#BC1888] rounded-2xl flex items-center justify-center text-white shadow-lg">
+                        <div className="w-10 h-10 bg-gradient-to-tr from-[#FFDC80] via-[#B8E600] to-[#BC1888] rounded-2xl flex items-center justify-center text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
                             <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M12 2c2.717 0 3.056.01 4.122.06 1.065.05 1.79.217 2.428.465.66.254 1.216.598 1.772 1.153a4.908 4.908 0 0 1 1.153 1.772c.247.637.415 1.363.465 2.428.047 1.066.06 1.405.06 4.122 0 2.717-.01 3.056-.06 4.122-.05 1.065-.218 1.79-.465 2.428a4.883 4.883 0 0 1-1.153 1.772 4.915 4.915 0 0 1-1.772 1.153c-.637.247-1.363.415-2.428.465-1.066.047-1.405.06-4.122.06-2.717 0-3.056-.01-4.122-.06-1.065-.05-1.79-.218-2.428-.465a4.89 4.89 0 0 1-1.772-1.153 4.904 4.904 0 0 1-1.153-1.772c-.248-.637-.415-1.363-.465-2.428C2.013 15.056 2 14.717 2 12c0-2.717.01-3.056.06-4.122.05-1.066.217-1.79.465-2.428a4.88 4.88 0 0 1 1.153-1.772A4.897 4.897 0 0 1 5.45 2.525c.638-.248 1.362-.415 2.428-.465C8.944 2.013 9.283 2 12 2zm0 5a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm6.5-.25a1.25 1.25 0 1 0-2.5 0 1.25 1.25 0 0 0 2.5 0zM12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6z" />
                             </svg>
@@ -80,12 +80,12 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                         <button
                             key="inst-toggle"
                             onClick={() => onIncludeFooterChange(!includeFooter)}
-                            className={`glass-button flex items-center gap-3 px-4 py-2 rounded-full transition-all text-[11px] font-black border ${includeFooter
+                            className={`glass-button flex items-center gap-3 px-4 py-2 rounded-xl transition-all text-[11px] font-black border ${includeFooter
                                 ? 'bg-accent/20 text-accent border-accent/30'
                                 : 'bg-white/5 text-slate-400 border-white/10'
                                 }`}
                         >
-                            <span className={`w-2.5 h-2.5 rounded-full transition-colors ${includeFooter ? 'bg-accent animate-pulse' : 'bg-slate-500'}`} />
+                            <span className={`w-2.5 h-2.5 rounded-xl transition-colors ${includeFooter ? 'bg-accent animate-pulse' : 'bg-slate-500'}`} />
                             <span className="tracking-widest uppercase">Show Shop Info</span>
                         </button>
                     ),
@@ -100,7 +100,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
             case Platform.GoogleMaps:
                 return {
                     icon: (
-                        <div className="w-10 h-10 bg-brand-green rounded-2xl flex items-center justify-center text-white shadow-lg">
+                        <div className="w-10 h-10 bg-brand-green rounded-2xl flex items-center justify-center text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
                             <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
                             </svg>
@@ -197,7 +197,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                 <h2 className="text-3xl font-black text-primary uppercase tracking-[0.25em] text-center">プレビュー (Live Preview)</h2>
 
                                 <div className="space-y-6 max-w-sm">
-                                    <div className="w-24 h-24 rounded-[32px] bg-slate-100 border-2 border-slate-200 flex items-center justify-center text-slate-300 mx-auto">
+                                    <div className="w-24 h-24 rounded-[32px] bg-slate-100 border-[3px] border-slate-200 flex items-center justify-center text-slate-300 mx-auto">
                                         <SparklesIcon className="w-12 h-12" />
                                     </div>
                                     <h3 className="text-xl font-black text-primary uppercase tracking-widest">生成待機中 (Awaiting Input)</h3>
@@ -234,7 +234,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                                 presetId={presetId}
                                                             />
                                                         </div>
-                                                        <div className="bg-slate-50 px-5 py-2 rounded-full border border-slate-100">
+                                                        <div className="bg-slate-50 px-5 py-2 rounded-xl border border-slate-100">
                                                             <CharCounter
                                                                 platform={res.platform}
                                                                 text={text}
@@ -284,7 +284,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                         <div className="absolute inset-0 bg-white/80 backdrop-blur-xl z-20 flex flex-col p-8 animate-in fade-in zoom-in duration-300 rounded-[48px] border border-white/50 shadow-inner">
                                                             <div className="flex-1 flex flex-col items-center justify-center max-w-lg mx-auto w-full">
                                                                 <div className="mb-8 text-center space-y-4">
-                                                                    <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-100 mx-auto border border-indigo-50">
+                                                                    <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] shadow-indigo-100 mx-auto border border-indigo-50">
                                                                         <MagicWandIcon className="w-8 h-8 text-indigo-500" />
                                                                     </div>
                                                                     <div>
@@ -374,7 +374,7 @@ const FavoriteButton = ({ platform, text, presetId }: { platform: Platform, text
     return (
         <button
             onClick={handleToggle}
-            className={`group flex items-center gap-2 px-3 py-2 rounded-full transition-all border ${isFavorited
+            className={`group flex items-center gap-2 px-3 py-2 rounded-xl transition-all border ${isFavorited
                 ? 'bg-yellow-50 text-yellow-600 border-yellow-200'
                 : 'bg-white/5 text-slate-400 border-white/10 hover:bg-white/20'
                 }`}

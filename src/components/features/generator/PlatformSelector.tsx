@@ -34,27 +34,27 @@ export const PlatformSelector: React.FC<PlatformSelectorProps> = ({
             {/* Header: Platform Choice */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h3 className="text-[10px] font-black text-lime uppercase tracking-[0.3em] mb-1">Target Engine</h3>
+                    <h3 className="text-[10px] font-black text-[#4DB39A] uppercase tracking-[0.3em] mb-1">Target Engine</h3>
                     <p className="text-xs font-black text-stone-400">プラットフォーム選択</p>
                 </div>
                 <button
                     onClick={onToggleMultiGen}
                     className={`
-                        group flex items-center gap-2 px-4 py-2 rounded-2xl border text-[10px] font-black tracking-widest transition-all
+                        group flex items-center gap-2 px-4 py-2 rounded-xl border-[3px] text-[10px] font-black tracking-widest transition-all
                         ${isMultiGen
-                            ? 'bg-black border-black text-white shadow-xl shadow-black/20'
-                            : 'bg-stone-100 border-stone-200 text-stone-500 hover:border-stone-300 hover:text-stone-700'}
+                            ? 'bg-black border-black text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]'
+                            : 'bg-white border-gray-300 text-gray-600 hover:border-gray-400 hover:text-gray-800 shadow-[2px_2px_0px_0px_rgba(0,0,0,0.1)]'}
                     `}
                 >
-                    <SparklesIcon className={`w-3.5 h-3.5 ${isMultiGen ? "text-white" : "text-lime"}`} />
+                    <SparklesIcon className={`w-3.5 h-3.5 ${isMultiGen ? "text-white" : "text-[#4DB39A]"}`} />
                     <span>BATCH MODE</span>
                     <div className={`
                         w-6 h-3.5 rounded-full relative transition-colors duration-300
-                        ${isMultiGen ? 'bg-black' : 'bg-gray-300'}
+                        ${isMultiGen ? 'bg-white' : 'bg-gray-300'}
                     `}>
                         <div className={`
-                            absolute top-0.5 w-2.5 h-2.5 bg-white rounded-full transition-all duration-300
-                            ${isMultiGen ? 'left-3' : 'left-0.5'}
+                            absolute top-0.5 w-2.5 h-2.5 rounded-full transition-all duration-300
+                            ${isMultiGen ? 'bg-black left-3' : 'bg-white left-0.5'}
                         `}></div>
                     </div>
                 </button>
@@ -69,15 +69,15 @@ export const PlatformSelector: React.FC<PlatformSelectorProps> = ({
                             key={p}
                             onClick={() => isMultiGen ? onPlatformToggle(p) : onSetActivePlatform(p)}
                             className={`
-                                relative flex flex-col items-center justify-center gap-3 p-5 rounded-[2rem] border transition-all duration-500 group
+                                relative flex flex-col items-center justify-center gap-3 p-5 rounded-2xl border-[3px] transition-all duration-300 group
                                 ${isSelected
-                                    ? 'bg-white border-black shadow-xl shadow-black/10'
-                                    : 'bg-white border-gray-100 hover:border-gray-200 hover:bg-white'}
+                                    ? 'bg-white border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]'
+                                    : 'bg-white border-gray-200 hover:border-gray-300 shadow-[2px_2px_0px_0px_rgba(0,0,0,0.1)]'}
                             `}
                         >
                             <div className={`
-                                w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-500
-                                ${isSelected ? 'bg-black text-white shadow-xl shadow-black/30' : 'bg-gray-100 text-gray-400 group-hover:bg-gray-200 group-hover:text-gray-600'}
+                                w-12 h-12 rounded-xl border-[2px] flex items-center justify-center transition-all duration-300
+                                ${isSelected ? 'bg-[#4DB39A] border-black text-white shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]' : 'bg-gray-50 border-gray-200 text-gray-400 group-hover:bg-gray-100 group-hover:text-gray-600'}
                             `}>
                                 {getPlatformIcon(p)}
                             </div>
@@ -86,12 +86,12 @@ export const PlatformSelector: React.FC<PlatformSelectorProps> = ({
                             </span>
 
                             {isMultiGen && isSelected && (
-                                <div className="absolute top-3 right-3 w-5 h-5 bg-black rounded-full flex items-center justify-center shadow-lg animate-in zoom-in duration-300">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" className="text-lime"><polyline points="20 6 9 17 4 12" /></svg>
+                                <div className="absolute top-3 right-3 w-5 h-5 bg-black border-[2px] border-white rounded-full flex items-center justify-center shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] animate-in zoom-in duration-300">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" className="text-[#4DB39A]"><polyline points="20 6 9 17 4 12" /></svg>
                                 </div>
                             )}
                             {isSelected && !isMultiGen && (
-                                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-1 bg-lime rounded-full blur-[2px]"></div>
+                                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-1 bg-[#4DB39A] rounded-full blur-[2px]"></div>
                             )}
                         </button>
                     );
@@ -123,16 +123,13 @@ export const PlatformSelector: React.FC<PlatformSelectorProps> = ({
                                     key={ps.id}
                                     onClick={() => onApplyPreset(ps)}
                                     className={`
-                                        group relative overflow-hidden w-full px-2 py-3 rounded-xl text-xs font-black tracking-widest transition-all duration-300
+                                        group relative overflow-hidden w-full px-2 py-3 rounded-xl border-[2px] text-xs font-black tracking-widest transition-all duration-300
                                         ${isActive
-                                            ? 'bg-black text-white border-black shadow-lg shadow-black/20'
-                                            : 'bg-stone-50 text-stone-500 border border-stone-100 hover:border-stone-200 hover:text-stone-800'}
+                                            ? 'bg-[#4DB39A] text-white border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]'
+                                            : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300 hover:text-gray-800 shadow-[1px_1px_0px_0px_rgba(0,0,0,0.1)]'}
                                     `}
                                 >
                                     <span className="relative z-10 block truncate w-full text-center">{ps.name.toUpperCase()}</span>
-                                    {isActive && (
-                                        <div className="absolute inset-0 bg-black"></div>
-                                    )}
                                 </button>
                             );
                         })}
