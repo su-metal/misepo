@@ -287,7 +287,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                 {/* Plain AI Option */}
                                 <button
                                     onClick={() => onApplyPreset({ id: 'plain-ai' } as any)}
-                                    className={`group relative py-5 px-3 rounded-[24px] transition-all duration-300 flex flex-col items-center justify-center gap-2
+                                    className={`group relative py-3 px-3 rounded-[24px] transition-all duration-300 flex flex-col items-center justify-center gap-2
                                                 ${!activePresetId
                                             ? 'active-pop'
                                             : 'bg-slate-50 shadow-sm hover:bg-slate-100 text-slate-400 hover:text-slate-600 border border-slate-200 hover:border-slate-300'}
@@ -306,7 +306,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                         <button
                                             key={p.id}
                                             onClick={() => onApplyPreset(p)}
-                                            className={`group relative py-5 px-3 rounded-[24px] transition-all duration-300 flex flex-col items-center justify-center gap-2
+                                            className={`group relative py-3 px-3 rounded-[24px] transition-all duration-300 flex flex-col items-center justify-center gap-2
                                                         ${isSelected
                                                     ? 'active-pop'
                                                     : 'bg-slate-50 shadow-sm hover:bg-slate-100 text-slate-400 hover:text-slate-600 border border-slate-200 hover:border-slate-300'}
