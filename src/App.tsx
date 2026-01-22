@@ -22,9 +22,9 @@ const UpgradeBanner = ({ plan, onUpgrade }: { plan: string, onUpgrade: () => voi
   <div className="bg-primary p-4 flex items-center justify-between text-white text-sm border-b border-accent/20 shadow-2xl shadow-navy-900/40 relative overflow-hidden group">
     <div className="absolute inset-0 bg-gradient-to-r from-accent/10 to-transparent pointer-events-none"></div>
     <div className="flex items-center gap-3 relative z-10">
-      <span className="bg-accent px-3 py-1 rounded-full text-[10px] font-black uppercase text-white shadow-lg shadow-accent/30 tracking-widest">Free Plan</span>
-      <span className="font-black tracking-tight hidden sm:inline">無料枠をご利用中です。Proプランで作成回数が無制限になります。</span>
-      <span className="font-black tracking-tight sm:hidden text-xs">無料枠をご利用中です。</span>
+      <span className="bg-accent px-3 py-1 rounded-full text-[10px] font-black uppercase text-white shadow-lg shadow-accent/30 tracking-widest">Trial (トライアル)</span>
+      <span className="font-black tracking-tight hidden sm:inline">現在はトライアル期間です。終了するとプランのご契約が必要になります。</span>
+      <span className="font-black tracking-tight sm:hidden text-xs">トライアル期間中。</span>
     </div>
     <button onClick={onUpgrade} className="bg-white text-primary px-5 py-2 rounded-xl font-black text-xs hover:bg-accent hover:text-white transition-all shadow-xl shadow-white/5 active:scale-95 relative z-10 uppercase tracking-widest">
       Go Pro

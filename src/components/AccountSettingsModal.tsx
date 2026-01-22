@@ -15,7 +15,35 @@ interface AccountSettingsModalProps {
 const AccountSettingsModal: React.FC<AccountSettingsModalProps> = ({ user, plan, onClose, onLogout }) => {
     if (typeof document === 'undefined') return null;
 
-    const isPro = plan?.status === 'active';
+    const isPaid = plan?.status === 'active' && plan?.plan !== 'free';
+    const isTrial = !!plan?.trial_ends_at && new Date(plan.trial_ends_at).getTime() > Date.now();
+    const isPro = isPaid || isTrial;
+
+    const [isPortalLoading, setIsPortalLoading] = React.useState(false);
+
+    const getTrialRemainingDays = () => {
+        if (!plan?.trial_ends_at) return 0;
+        const remaining = new Date(plan.trial_ends_at).getTime() - Date.now();
+        return Math.max(0, Math.ceil(remaining / (1000 * 60 * 60 * 24)));
+    };
+
+    const handleOpenPortal = async () => {
+        setIsPortalLoading(true);
+        try {
+            const res = await fetch('/api/billing/portal', { method: 'POST' });
+            const data = await res.json();
+            if (data.ok && data.url) {
+                window.location.href = data.url;
+            } else {
+                alert('ポータルの起動に失敗しました。');
+            }
+        } catch (err) {
+            console.error('Portal error:', err);
+            alert('通信エラーが発生しました。');
+        } finally {
+            setIsPortalLoading(false);
+        }
+    };
 
     return createPortal(
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-md flex items-center justify-center p-4 z-[200] animate-in fade-in duration-300" onClick={onClose}>
@@ -85,18 +113,20 @@ const AccountSettingsModal: React.FC<AccountSettingsModalProps> = ({ user, plan,
                                     <div>
                                         <div className="flex items-center gap-2 mb-1">
                                             <span className={`text-lg font-black tracking-tight ${isPro ? 'text-slate-800' : 'text-slate-500'}`}>
-                                                {isPro ? 'Pro Plan' : 'Free Plan'}
+                                                {isTrial ? 'Trial (トライアル)' : isPaid ? 'Pro Plan' : 'No Plan'}
                                             </span>
-                                            {isPro && <span className="text-[10px] bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full font-black uppercase tracking-widest">Active</span>}
+                                            {isPro && <span className="text-[10px] bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full font-black uppercase tracking-widest">{isTrial ? 'Trialing' : 'Active'}</span>}
                                         </div>
                                         <p className="text-xs font-bold text-slate-400">
-                                            {isPro
-                                                ? 'すべての機能が無制限で利用可能です'
-                                                : '現在、生成回数に制限があります'}
+                                            {isTrial
+                                                ? `無料体験中（残り ${getTrialRemainingDays()} 日）`
+                                                : isPaid
+                                                    ? 'すべての機能が無制限で利用可能です'
+                                                    : 'プランが未設定です'}
                                         </p>
                                     </div>
                                 </div>
-                                {!isPro && (
+                                {!isPaid && !isTrial && (
                                     <a href="/pricing" className="px-4 py-2 bg-slate-900 text-white text-xs font-black rounded-xl hover:bg-slate-800 transition-colors uppercase tracking-widest shrink-0">
                                         Upgrade
                                     </a>
@@ -109,23 +139,26 @@ const AccountSettingsModal: React.FC<AccountSettingsModalProps> = ({ user, plan,
 
                     {/* Actions */}
                     <div className="space-y-3">
-                        <a
-                            href="https://billing.stripe.com/p/login/test_..."
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="w-full flex items-center justify-between p-4 rounded-2xl bg-white border border-slate-200 hover:border-indigo-200 hover:bg-slate-50 transition-all group"
+                        <button
+                            onClick={handleOpenPortal}
+                            disabled={isPortalLoading}
+                            className="w-full flex items-center justify-between p-4 rounded-2xl bg-white border border-slate-200 hover:border-indigo-200 hover:bg-slate-50 transition-all group disabled:opacity-50"
                         >
                             <div className="flex items-center gap-3">
                                 <div className="p-2 bg-slate-50 rounded-lg text-slate-400 group-hover:text-indigo-500 transition-colors">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="5" rx="2" /><line x1="2" x2="22" y1="10" y2="10" /></svg>
+                                    {isPortalLoading ? (
+                                        <div className="w-5 h-5 border-2 border-slate-200 border-t-indigo-500 rounded-full animate-spin" />
+                                    ) : (
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="5" rx="2" /><line x1="2" x2="22" y1="10" y2="10" /></svg>
+                                    )}
                                 </div>
                                 <div className="text-left">
                                     <p className="text-sm font-black text-slate-700 group-hover:text-indigo-900 transition-colors">お支払い・サブスクリプション</p>
-                                    <p className="text-[10px] font-bold text-slate-400">Stripeの管理画面を開きます</p>
+                                    <p className="text-[10px] font-bold text-slate-400">プランの確認・解約・お支払い履歴</p>
                                 </div>
                             </div>
                             <ExternalLinkIcon className="w-4 h-4 text-slate-300 group-hover:text-indigo-300" />
-                        </a>
+                        </button>
 
                         <button
                             onClick={onLogout}

@@ -260,8 +260,8 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                             }
                           }}
                           className={`absolute bottom-6 right-6 w-9 h-9 flex items-center justify-center rounded-full border transition-all shadow-sm z-20 ${isFavorited
-                              ? 'bg-white border-yellow-200 text-yellow-500 shadow-yellow-100'
-                              : 'bg-white border-slate-100 text-slate-300 hover:text-yellow-400 hover:border-yellow-200 opacity-0 group-hover:opacity-100 transform scale-90 group-hover:scale-100'
+                            ? 'bg-white border-yellow-200 text-yellow-500 shadow-yellow-100'
+                            : 'bg-white border-slate-100 text-slate-300 hover:text-yellow-400 hover:border-yellow-200 opacity-0 group-hover:opacity-100 transform scale-90 group-hover:scale-100'
                             }`}
                         >
                           <StarIcon
@@ -281,11 +281,11 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
         {/* Footer: Legal */}
         <div className="p-6 border-t border-slate-100 bg-white/60 backdrop-blur-md relative z-20">
           <div className="flex items-center justify-center gap-6 mb-2">
-            <a href="/terms" className="text-[10px] font-black text-slate-300 hover:text-primary transition-colors uppercase tracking-widest">Terms</a>
-            <a href="/privacy" className="text-[10px] font-black text-slate-300 hover:text-primary transition-colors uppercase tracking-widest">Privacy</a>
-            <a href="/commercial-law" className="text-[10px] font-black text-slate-300 hover:text-primary transition-colors uppercase tracking-widest">Law</a>
+            <a href="/terms" className="text-[10px] font-black text-slate-400/80 hover:text-primary transition-colors uppercase tracking-widest">利用規約</a>
+            <a href="/privacy" className="text-[10px] font-black text-slate-400/80 hover:text-primary transition-colors uppercase tracking-widest">プライバシーポリシー</a>
+            <a href="/commercial-law" className="text-[10px] font-black text-slate-400/80 hover:text-primary transition-colors uppercase tracking-widest">特定商取引法</a>
           </div>
-          <p className="text-[9px] font-bold text-slate-300 text-center uppercase tracking-[0.2em] mt-2">© 2026 MisePo Inc.</p>
+          <p className="text-[9px] font-bold text-slate-400/80 text-center uppercase tracking-[0.2em] mt-2">© 2026 MisePo</p>
         </div>
       </div>
     </>
