@@ -208,7 +208,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
     return (
         <div className="flex flex-col">
             {/* Platform Tabs & Multi-gen Toggle - Solid Card Style */}
-            <div className="flex flex-col gap-2 px-3 sm:px-6 pb-4">
+            <div className="flex flex-col gap-2 px-3 sm:px-0 pb-4">
                 <div className="flex items-center gap-2 px-2">
                     <span className="w-6 h-6 rounded-full bg-black text-white flex items-center justify-center text-[11px] font-black">1</span>
                     <h3 className="text-xs font-black text-black/60 uppercase tracking-widest">投稿先を選ぶ</h3>
@@ -269,7 +269,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
             </div>
 
             {/* Main Content Area */}
-            <div className="flex flex-col flex-1 gap-8 px-3 sm:px-6 sm:py-6 py-2">
+            <div className="flex flex-col flex-1 gap-4 sm:gap-6 lg:gap-8 px-3 sm:px-0 pb-0 pt-2 sm:py-6">
 
                 {/* Content Rows Container (Order 1) */}
                 <div className="w-full shrink-0 flex flex-col gap-6 order-1">
@@ -509,7 +509,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                         <span className="w-6 h-6 rounded-full bg-black text-white flex items-center justify-center text-[11px] font-black">4</span>
                         <h3 className="text-xs font-black text-black/60 uppercase tracking-widest">本文を入力する</h3>
                     </div>
-                    <div className="section-card rounded-[48px] lg:rounded-[64px] p-8 lg:p-14 border-black flex flex-col group transition-all relative isolate min-h-[400px]">
+                    <div className="section-card rounded-[48px] lg:rounded-[64px] p-8 lg:p-14 border-black flex flex-col group transition-all relative isolate min-h-[200px] sm:min-h-[300px] lg:min-h-[400px]">
 
                         {/* Subtle background color for canvas */}
                         <div className="absolute inset-0 bg-white/50 rounded-[45px] lg:rounded-[61px] -z-10" />

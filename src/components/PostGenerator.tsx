@@ -150,7 +150,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
 
           {/* Left Column: Input Form (8 Cols) */}
           <div className="lg:col-span-8">
-            <div ref={inputRef} className="pb-40 lg:pb-0">
+            <div ref={inputRef} className="pb-0 lg:pb-0">
               <PostInputForm
                 platforms={flow.platforms}
                 activePlatform={flow.platforms[0] || Platform.Instagram}
@@ -193,7 +193,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
 
           {/* Right Column: Results (4 Cols) */}
           <div className="lg:col-span-4">
-            <div ref={resultsRef} className="pb-32 md:pb-20 px-2">
+            <div ref={resultsRef} className="pb-8 md:pb-20 px-2">
               <PostResultTabs
                 results={flow.resultGroups}
                 activeTab={flow.activeTab}
