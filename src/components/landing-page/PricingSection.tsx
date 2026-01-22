@@ -6,57 +6,57 @@ export const PricingSection = () => {
     return (
         <>
             {/* Comparison (Cost Performance) */}
-            <section className="py-16 md:py-24 bg-slate-50 border-t border-slate-100">
+            <section className="py-20 md:py-32 bg-[#F4EBD0] border-b-[6px] border-black">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center mb-16">
-                        <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-6 tracking-tight">
+                    <div className="text-center mb-20">
+                        <h2 className="text-3xl md:text-6xl font-black text-black mb-10 tracking-tight italic uppercase">
                             賢い店主は、<br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">「コスト」と「質」で<br className="md:hidden" />選んでいます。</span>
+                            <span className="bg-[#F2C94C] px-4 py-2 border-[4px] border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] inline-block mt-4 -rotate-1">「コスト」と「質」</span>で選んでいます。
                         </h2>
-                        <p className="text-slate-500 text-lg max-w-2xl mx-auto">
-                            「自分でやる」のは限界。<br className="md:hidden" />「業者に頼む」のは高すぎる。<br />
+                        <p className="text-black font-bold text-xl max-w-2xl mx-auto opacity-70">
+                            「自分でやる」のは限界。「業者に頼む」のは高すぎる。<br />
                             MisePoは、第3の選択肢です。
                         </p>
                     </div>
 
-                    <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto items-center">
-                        <div className="bg-white rounded-3xl p-6 md:p-8 border border-slate-200 text-center opacity-70 scale-95 grayscale hover:grayscale-0 hover:opacity-100 hover:scale-100 transition-all duration-300">
-                            <h3 className="text-xl font-bold text-slate-600 mb-4">自分・スタッフ</h3>
-                            <div className="text-4xl font-black text-slate-400 mb-2">¥0</div>
-                            <p className="text-sm text-slate-400 mb-8">（ただし、残業代・疲労）</p>
-                            <ul className="space-y-4 text-sm text-slate-500 text-left">
-                                <li className="flex gap-2"><Icons.X className="text-slate-300" /> 閉店後の作業が辛い</li>
-                                <li className="flex gap-2"><Icons.X className="text-slate-300" /> 文才に自信がない</li>
-                                <li className="flex gap-2"><Icons.X className="text-slate-300" /> 投稿が続かない</li>
+                    <div className="grid md:grid-cols-3 gap-10 max-w-6xl mx-auto items-stretch">
+                        <div className="bg-white border-[4px] border-black p-8 text-center opacity-60 scale-95 grayscale hover:grayscale-0 hover:opacity-100 hover:scale-100 transition-all duration-300 flex flex-col">
+                            <h3 className="text-xl font-black text-black opacity-40 mb-6 uppercase italic">Staff / Self</h3>
+                            <div className="text-5xl font-black text-black opacity-30 mb-2 italic">¥0</div>
+                            <p className="text-xs text-black font-black opacity-30 mb-10 uppercase tracking-widest">(But high mental cost)</p>
+                            <ul className="space-y-4 text-sm font-bold text-black opacity-40 text-left mt-auto">
+                                <li className="flex gap-3"><Icons.X size={18} className="shrink-0" /> 閉店後の作業が辛い</li>
+                                <li className="flex gap-3"><Icons.X size={18} className="shrink-0" /> 文才に自信がない</li>
+                                <li className="flex gap-3"><Icons.X size={18} className="shrink-0" /> 投稿が続かない</li>
                             </ul>
                         </div>
 
-                        <div className="bg-white rounded-3xl p-6 md:p-8 border border-slate-200 text-center opacity-70 scale-95 grayscale hover:grayscale-0 hover:opacity-100 hover:scale-100 transition-all duration-300 relative">
-                            <div className="absolute top-0 right-0 bg-slate-100 text-slate-500 text-[10px] px-2 py-1 rounded-bl-xl rounded-tr-2xl font-bold">一般的</div>
-                            <h3 className="text-xl font-bold text-slate-600 mb-4">SNS運用代行</h3>
-                            <div className="text-4xl font-black text-slate-900 mb-2">¥50,000<span className="text-sm font-normal text-slate-400 ml-1">~</span></div>
-                            <p className="text-sm text-slate-400 mb-8">/月 （非常に高額）</p>
-                            <ul className="space-y-4 text-sm text-slate-500 text-left">
-                                <li className="flex gap-2"><Icons.X className="text-red-400" /> コストが高すぎる</li>
-                                <li className="flex gap-2"><Icons.X className="text-red-400" /> 確認のやり取りが面倒</li>
-                                <li className="flex gap-2"><Icons.X className="text-red-400" /> "お店らしさ"が出ない</li>
+                        <div className="bg-white border-[4px] border-black p-8 text-center opacity-60 scale-95 grayscale hover:grayscale-0 hover:opacity-100 hover:scale-100 transition-all duration-300 relative flex flex-col">
+                            <div className="absolute -top-3 -right-3 bg-black text-white text-[10px] px-3 py-1 font-black uppercase tracking-widest italic border-[2px] border-white z-10">Standard</div>
+                            <h3 className="text-xl font-black text-black opacity-40 mb-6 uppercase italic">Outsourcing</h3>
+                            <div className="text-5xl font-black text-black opacity-30 mb-2 italic">¥50,000<span className="text-xl font-black opacity-50 ml-1">+</span></div>
+                            <p className="text-xs text-black font-black opacity-30 mb-10 uppercase tracking-widest">/ MONTH (Premium Price)</p>
+                            <ul className="space-y-4 text-sm font-bold text-black opacity-40 text-left mt-auto">
+                                <li className="flex gap-3"><Icons.X size={18} className="shrink-0" /> コストが高すぎる</li>
+                                <li className="flex gap-3"><Icons.X size={18} className="shrink-0" /> 確認のやり取りが面倒</li>
+                                <li className="flex gap-3"><Icons.X size={18} className="shrink-0" /> "お店らしさ"が出ない</li>
                             </ul>
                         </div>
 
-                        <div className="bg-white rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-8 border-2 border-indigo-500 text-center shadow-2xl shadow-indigo-200 relative transform md:-translate-y-4 z-10">
-                            <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-sm font-bold px-6 py-2 rounded-full shadow-lg whitespace-nowrap">
-                                コスパ最強の第3の選択
+                        <div className="bg-white border-[6px] border-black p-10 text-center shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] relative transform md:-translate-y-6 z-10 flex flex-col hover:translate-x-[-4px] hover:translate-y-[-10px] hover:shadow-[20px_20px_0px_0px_rgba(0,0,0,1)] transition-all">
+                            <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-[#E93E7E] text-white text-xs font-black px-6 py-2 border-[3px] border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] uppercase tracking-[0.2em] whitespace-nowrap -rotate-2">
+                                Best Choice
                             </div>
-                            <h3 className="text-2xl font-bold text-indigo-900 mb-4 mt-2">MisePo (分身AI)</h3>
-                            <div className="flex items-center justify-center gap-2 mb-2">
-                                <span className="text-gray-400 line-through font-bold text-lg">¥2,980</span>
-                                <span className="text-4xl md:text-5xl font-black text-slate-900">¥1,480</span>
+                            <h3 className="text-2xl font-black text-black mb-6 mt-4 uppercase italic">MisePo (AI)</h3>
+                            <div className="flex items-center justify-center gap-3 mb-2">
+                                <span className="text-black opacity-20 line-through font-black text-xl italic">¥2,980</span>
+                                <span className="text-5xl md:text-6xl font-black text-black italic">¥1,480</span>
                             </div>
-                            <p className="text-sm text-indigo-600 font-bold mb-8">1日あたり49円</p>
-                            <ul className="space-y-4 text-sm text-slate-700 text-left bg-indigo-50 rounded-2xl p-6">
-                                <li className="flex gap-3 items-start"><Icons.CheckCircle className="text-indigo-600 shrink-0" /> <span className="font-bold">圧倒的な低コスト</span></li>
-                                <li className="flex gap-3 items-start"><Icons.CheckCircle className="text-indigo-600 shrink-0" /> <span className="font-bold">30秒で即完成・修正</span></li>
-                                <li className="flex gap-3 items-start"><Icons.CheckCircle className="text-indigo-600 shrink-0" /> <span className="font-bold">あなたの言葉で書ける</span></li>
+                            <p className="text-sm text-[#E93E7E] font-black uppercase tracking-widest mb-10 italic">Only ¥49 / Day</p>
+                            <ul className="space-y-4 text-sm font-black text-black text-left bg-black/[0.03] border-[2px] border-dashed border-black/20 p-6 mt-auto">
+                                <li className="flex gap-3 items-start"><Icons.CheckCircle size={20} className="text-[#08A092] shrink-0" /> <span className="uppercase">Cost Performance No.1</span></li>
+                                <li className="flex gap-3 items-start"><Icons.CheckCircle size={20} className="text-[#08A092] shrink-0" /> <span className="uppercase">Instant Gen / Edit</span></li>
+                                <li className="flex gap-3 items-start"><Icons.CheckCircle size={20} className="text-[#08A092] shrink-0" /> <span className="uppercase">Your Style & Voice</span></li>
                             </ul>
                         </div>
                     </div>
@@ -64,79 +64,73 @@ export const PricingSection = () => {
             </section>
 
             {/* Pricing Details */}
-            <section id="pricing" className="py-16 md:py-24 bg-white">
+            <section id="pricing" className="py-20 md:py-32 bg-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid lg:grid-cols-2 gap-12 lg:gap-24 items-center">
+                    <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
                         <div className="text-left">
-                            <span className="text-indigo-600 font-bold tracking-wider text-sm uppercase mb-4 block">Simple Pricing</span>
-                            <h2 className="text-4xl md:text-6xl font-black text-slate-900 mb-6 leading-tight">
+                            <span className="inline-block px-4 py-2 bg-[#F2C94C] text-black border-[3px] border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-xs font-black uppercase tracking-widest mb-6 -rotate-1">Simple Pricing</span>
+                            <h2 className="text-4xl md:text-6xl font-black text-black mb-8 leading-tight italic uppercase">
                                 お店の成長に<br />
-                                <span className="text-indigo-600">必要なすべてを。</span>
+                                <span className="underline decoration-[6px] decoration-[#E93E7E]">必要なすべてを。</span>
                             </h2>
-                            <p className="text-slate-600 text-lg mb-10 leading-relaxed">
+                            <p className="text-black font-bold text-lg mb-12 leading-relaxed opacity-70">
                                 追加料金なしで、プロフェッショナルな機能を好きなだけ。<br />
                                 複雑なオプション料金はありません。
                             </p>
 
-                            <div className="space-y-6">
-                                <div className="flex gap-4">
-                                    <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600 shrink-0">
-                                        <Icons.Sparkles size={24} />
+                            <div className="space-y-8">
+                                <div className="flex gap-6">
+                                    <div className="w-14 h-14 bg-black border-[3px] border-black flex items-center justify-center text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] shrink-0">
+                                        <Icons.Sparkles size={28} />
                                     </div>
                                     <div>
-                                        <h3 className="font-bold text-slate-900 text-lg mb-1">AI投稿生成 無制限</h3>
-                                        <p className="text-slate-500">納得いくまで何度でも作り直せます。</p>
+                                        <h3 className="font-black text-black text-xl mb-1 uppercase tracking-tight">AI投稿生成 無制限</h3>
+                                        <p className="text-black font-bold opacity-50">納得いくまで何度でも作り直せます。</p>
                                     </div>
                                 </div>
-                                <div className="flex gap-4">
-                                    <div className="w-12 h-12 bg-pink-50 rounded-xl flex items-center justify-center text-pink-600 shrink-0">
-                                        <Icons.Instagram size={24} />
+                                <div className="flex gap-6">
+                                    <div className="w-14 h-14 bg-[#E93E7E] border-[3px] border-black flex items-center justify-center text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] shrink-0">
+                                        <Icons.Instagram size={28} />
                                     </div>
                                     <div>
-                                        <h3 className="font-bold text-slate-900 text-lg mb-1">全プラットフォーム対応</h3>
-                                        <p className="text-slate-500">Instagram, X, Googleマップすべてに対応。</p>
+                                        <h3 className="font-black text-black text-xl mb-1 uppercase tracking-tight">全プラットフォーム対応</h3>
+                                        <p className="text-black font-bold opacity-50">Instagram, X, Googleマップすべてに対応。</p>
                                     </div>
                                 </div>
-                                <div className="flex gap-4">
-                                    <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center text-green-600 shrink-0">
-                                        <Icons.MessageCircle size={24} />
+                                <div className="flex gap-6">
+                                    <div className="w-14 h-14 bg-[#08A092] border-[3px] border-black flex items-center justify-center text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] shrink-0">
+                                        <Icons.MessageCircle size={28} />
                                     </div>
                                     <div>
-                                        <h3 className="font-bold text-slate-900 text-lg mb-1">多言語 & 口コミ返信</h3>
-                                        <p className="text-slate-500">インバウンド対応も、丁寧な返信もお任せください。</p>
+                                        <h3 className="font-black text-black text-xl mb-1 uppercase tracking-tight">多言語 & 口コミ返信</h3>
+                                        <p className="text-black font-bold opacity-50">インバウンド対応も、丁寧な返信もお任せください。</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="relative rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-10 flex flex-col bg-slate-900 text-white shadow-2xl ring-1 ring-white/20 overflow-hidden group hover:scale-[1.02] transition-transform duration-500">
-                            <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-600/30 rounded-full blur-[100px] -mr-20 -mt-20 group-hover:bg-indigo-600/40 transition-colors" />
-                            <div className="absolute bottom-0 left-0 w-80 h-80 bg-purple-600/30 rounded-full blur-[100px] -ml-20 -mb-20 group-hover:bg-purple-600/40 transition-colors" />
-
-                            <div className="relative z-10 text-center mb-10">
-                                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-sm font-bold shadow-lg mb-6 animate-pulse">
-                                    <Icons.Sparkles size={16} fill="currentColor" />
-                                    人数限定 モニター価格
+                        <div className="relative border-[6px] border-black p-8 md:p-12 flex flex-col bg-black text-white shadow-[20px_20px_0px_0px_rgba(0,0,0,0.1)] overflow-hidden group">
+                            <div className="relative z-10 text-center mb-12">
+                                <div className="inline-flex items-center gap-3 px-6 py-2 bg-[#E93E7E] text-white text-sm font-black border-[3px] border-white shadow-[6px_6px_0px_0px_rgba(255,255,255,0.2)] mb-10 animate-pulse uppercase tracking-[0.2em] italic">
+                                    <Icons.Sparkles size={18} fill="currentColor" />
+                                    Limited Monitor Price
                                 </div>
-                                <h3 className="text-xl font-bold mb-2 text-indigo-200">Proプラン</h3>
-                                <div className="flex items-center justify-center gap-3 mb-2">
-                                    <span className="text-slate-500 line-through font-bold text-xl decoration-2 decoration-slate-500">¥2,980</span>
-                                    <div className="flex items-baseline gap-1">
-                                        <span className="text-5xl md:text-6xl font-black tracking-tight">¥1,480</span>
-                                        <span className="text-slate-400 font-bold text-lg">/月</span>
+                                <h3 className="text-2xl font-black mb-4 text-[#F2C94C] uppercase italic tracking-[0.1em]">Pro Plan</h3>
+                                <div className="flex items-center justify-center gap-4 mb-4">
+                                    <span className="text-white/30 line-through font-black text-2xl italic">¥2,980</span>
+                                    <div className="flex items-baseline gap-2">
+                                        <span className="text-6xl md:text-7xl font-black tracking-tighter italic">¥1,480</span>
+                                        <span className="text-white/50 font-black text-xl italic">/mo</span>
                                     </div>
                                 </div>
-                                <p className="text-sm font-bold text-white mb-1">
-                                    1日わずか49円。
-                                </p>
-                                <p className="text-xs text-slate-400">
-                                    時給1時間分のコストで、1ヶ月分の心の余裕を。
+                                <p className="text-sm font-black text-[#08A092] uppercase tracking-[0.3em] mb-2">
+                                    ONLY ¥49 PER DAY
                                 </p>
                             </div>
 
-                            <div className="h-px w-full bg-slate-800 mb-8" />
+                            <div className="h-[4px] w-full bg-white/10 mb-10" />
 
-                            <ul className="space-y-4 mb-10 text-left relative z-10 pl-4">
+                            <ul className="space-y-6 mb-12 text-left relative z-10">
                                 {[
                                     "AI投稿生成 (無制限)",
                                     "Instagram / X / Google 全対応",
@@ -145,22 +139,24 @@ export const PricingSection = () => {
                                     "多言語翻訳 (英・中・韓)",
                                     "チャットサポート"
                                 ].map((feature, idx) => (
-                                    <li key={idx} className="flex items-center gap-3">
-                                        <div className="rounded-full p-1 bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">
-                                            <Icons.Check size={16} strokeWidth={3} />
+                                    <li key={idx} className="flex items-center gap-4">
+                                        <div className="w-6 h-6 bg-[#08A092] border-[2px] border-white flex items-center justify-center shrink-0">
+                                            <Icons.Check size={14} className="text-white stroke-[4px]" />
                                         </div>
-                                        <span className="font-medium text-slate-200 text-lg">{feature}</span>
+                                        <span className="font-black text-white text-lg uppercase tracking-tight">{feature}</span>
                                     </li>
                                 ))}
                             </ul>
 
-                            <button onClick={() => window.location.href = '/start'} className="w-full py-5 rounded-2xl font-bold text-xl bg-white text-slate-900 hover:bg-indigo-50 transition-all duration-300 shadow-xl hover:shadow-2xl hover:translate-y-[-2px] relative z-10 flex items-center justify-center gap-2 group-hover:shadow-indigo-500/20">
-                                今すぐ「分身」を作る <Icons.ChevronUp className="rotate-90" size={20} />
+                            <button onClick={() => window.location.href = '/start'} className="w-full py-6 bg-[#F2C94C] text-black font-black text-2xl uppercase italic border-[4px] border-white shadow-[8px_8px_0px_0px_rgba(255,255,255,0.2)] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] transition-all flex items-center justify-center gap-3">
+                                Start Your AI <Icons.ChevronUp className="rotate-90 stroke-[4px]" size={24} />
                             </button>
-                            <p className="text-center text-xs text-slate-500 mt-6">
-                                ✓ 7日間の無料体験を実施中（※要クレジットカード登録）<br />
-                                ※8日目以降は月額1,480円で自動更新。違約金なしでいつでも解約OK。
-                            </p>
+                            <div className="mt-8 pt-8 border-t border-white/10">
+                                <p className="text-center text-[10px] text-white/40 font-bold leading-relaxed uppercase tracking-widest">
+                                    ✓ 7-day free trial (Requires credit card registration)<br />
+                                    ※ Auto-renews at ¥1,480/mo. Cancel anytime.
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>

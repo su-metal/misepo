@@ -9,18 +9,24 @@ interface FAQ {
 
 export const FAQSection = ({ faqs, openFaq, setOpenFaq }: { faqs: FAQ[]; openFaq: number | null; setOpenFaq: (idx: number | null) => void }) => {
     return (
-        <section id="faq" className="py-20 bg-white">
-            <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">よくある質問</h2>
-                <div className="space-y-4">
+        <section id="faq" className="py-24 bg-white border-b-[6px] border-black">
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 className="text-4xl md:text-6xl font-black text-center text-black mb-20 italic uppercase">
+                    <span className="underline decoration-[8px] decoration-[#845EF7]">よくある質問</span>
+                </h2>
+                <div className="space-y-6">
                     {faqs.map((faq, index) => (
-                        <div key={index} className="border border-gray-200 rounded-lg overflow-hidden">
-                            <button className="w-full px-6 py-4 text-left bg-white hover:bg-gray-50 flex justify-between items-center transition-colors" onClick={() => setOpenFaq(openFaq === index ? null : index)} aria-expanded={openFaq === index}>
-                                <span className="font-bold text-gray-800">{faq.q}</span>
-                                {openFaq === index ? <Icons.ChevronUp className="text-gray-400" /> : <Icons.ChevronDown className="text-gray-400" />}
+                        <div key={index} className="border-[3px] border-black bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] transition-all overflow-hidden group">
+                            <button className="w-full px-8 py-6 text-left flex justify-between items-center bg-white group-hover:bg-[#F4EBD0]/30 transition-colors" onClick={() => setOpenFaq(openFaq === index ? null : index)} aria-expanded={openFaq === index}>
+                                <span className="font-black text-black text-xl md:text-2xl uppercase tracking-tight">{faq.q}</span>
+                                <div className={`w-10 h-10 border-[3px] border-black flex items-center justify-center transition-all duration-300 ${openFaq === index ? 'bg-[#E93E7E] text-white rotate-0 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)]' : 'bg-white text-black -rotate-180'}`}>
+                                    <Icons.ChevronUp size={20} className="stroke-[4px]" />
+                                </div>
                             </button>
-                            <div className={`bg-gray-50 px-6 overflow-hidden transition-all duration-300 ease-in-out ${openFaq === index ? 'max-h-48 py-4 opacity-100' : 'max-h-0 py-0 opacity-0'}`}>
-                                <p className="text-gray-600 leading-relaxed">{faq.a}</p>
+                            <div className={`overflow-hidden transition-all duration-300 ease-in-out border-black ${openFaq === index ? 'max-h-[500px] border-t-[3px] opacity-100 bg-[#F4EBD0]/50' : 'max-h-0 opacity-0'}`}>
+                                <div className="px-8 py-8">
+                                    <p className="text-black font-bold text-lg leading-relaxed">{faq.a}</p>
+                                </div>
                             </div>
                         </div>
                     ))}

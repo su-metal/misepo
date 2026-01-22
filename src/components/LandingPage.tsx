@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
@@ -85,7 +85,7 @@ open11:00-close 17:00
     ];
 
     return (
-        <div className="min-h-screen bg-white">
+        <div className="min-h-screen bg-[#F4EBD0] text-slate-900 font-sans selection:bg-[#F2C94C]">
             <Header scrolled={scrolled} isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} loginWithGoogle={loginWithGoogle} />
             <HeroSection />
             <ProblemSection problems={problems} isMobile={isMobile} />
@@ -101,11 +101,39 @@ open11:00-close 17:00
             <Footer />
 
             <style jsx global>{`
+                :root {
+                  --border-bold: 3px solid #000;
+                  --shadow-neo: 5px 5px 0px 0px #000;
+                  --shadow-neo-lg: 8px 8px 0px 0px #000;
+                  --shadow-neo-sm: 3px 3px 0px 0px #000;
+                }
                 html { scroll-behavior: smooth; scroll-padding-top: 80px; }
-                .gradient-text { background: linear-gradient(135deg, #4f46e5 0%, #ec4899 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-                @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
-                .animate-float { animation: float 3s ease-in-out infinite; }
-                .animate-float-delayed { animation: float 3s ease-in-out infinite; animation-delay: 1.5s; }
+                .neo-brutalism-card {
+                  background: #fff;
+                  border: var(--border-bold);
+                  box-shadow: var(--shadow-neo);
+                  transition: all 0.2s ease;
+                }
+                .neo-brutalism-card:hover {
+                  transform: translate(-2px, -2px);
+                  box-shadow: 7px 7px 0px 0px #000;
+                }
+                .neo-brutalism-button {
+                  border: var(--border-bold);
+                  box-shadow: var(--shadow-neo-sm);
+                  transition: all 0.1s ease;
+                }
+                .neo-brutalism-button:active {
+                  transform: translate(2px, 2px);
+                  box-shadow: 0px 0px 0px 0px #000;
+                }
+                .gradient-text { 
+                  -webkit-text-stroke: 1px #000;
+                  color: #E93E7E;
+                  text-shadow: 3px 3px 0px #000;
+                }
+                @keyframes float { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-10px) rotate(1deg); } }
+                .animate-float { animation: float 4s ease-in-out infinite; }
                 .no-scrollbar::-webkit-scrollbar { display: none; }
                 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
             `}</style>
