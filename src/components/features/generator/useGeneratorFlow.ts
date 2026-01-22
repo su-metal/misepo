@@ -251,19 +251,24 @@ export function useGeneratorFlow(props: {
         gmapPurpose: (p === Platform.GoogleMaps) ? gmapPurpose : undefined
       };
 
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 60000); // 60s timeout
+
       try {
         const res = await fetch("/api/generate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
+          signal: controller.signal,
           body: JSON.stringify({
             profile: storeProfile,
             config,
             save_history: targetPlatforms.length === 1,
             run_type: "generation",
-            presetId: activePresetId // Include presetId in the request body
+            presetId: activePresetId
           }),
         });
 
+        clearTimeout(timeoutId);
         const data = await res.json();
         if (!res.ok || !data.ok) throw new Error(data.error ?? "Generate failed");
 
