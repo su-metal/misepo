@@ -73,7 +73,7 @@ open11:00-close 17:00
     const problems = [
         { icon: <Icons.Moon />, title: "閉店後の\nSNS作業がツラい", desc: "疲れた体でスマホを見つめて、\n手が止まる。\nそんな夜はもう終わりにしませんか。", bg: "bg-[#9B8FD4]", delay: 0 },
         { icon: <Icons.Bot />, title: "AI文章に\n違和感がある", desc: "丁寧すぎて『自分らしくない』。\nMisePoなら、あなたの口癖や\n話し方を再現します。", bg: "bg-[#E88BA3]", delay: 0.1 },
-        { icon: <Icons.MessageCircle />, title: "クチコミ返信が\n放置気味…", desc: "言葉が見つからず、\n気づけば数週間。お客様との絆を\n30秒で紡ぎ直せます。", bg: "bg-[#8fa9e9]", delay: 0.2 },
+        { icon: <Icons.MessageCircle />, title: "クチコミ返信が\n放置気味…", desc: "言葉が見つからず、\n気づけば数週間。お客様との絆を\n30秒で紡ぎ直せます。", bg: "bg-[#F5CC6D]", delay: 0.2 },
         { icon: <Icons.Users />, title: "任せたいけど\n任せられない", desc: "スタッフに頼みたいけど、\n店の雰囲気が壊れないか心配…\n『店の人格』を設定すれば解決。", bg: "bg-[#4DB39A]", delay: 0.3 },
     ];
 

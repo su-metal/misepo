@@ -29,9 +29,9 @@ export const GeneratorHeader: React.FC<GeneratorHeaderProps> = ({
                     {/* Status Badge - Pop Style */}
                     <div className="flex items-center">
                         {isTrial ? (
-                            <div className="flex items-center gap-2 px-4 py-1.5 bg-gray-100 border-[2px] border-gray-300 rounded-xl">
-                                <StarIcon className="w-3 h-3 text-gray-500 fill-current animate-pulse" />
-                                <span className="text-[10px] font-black text-gray-600 uppercase tracking-widest leading-none">Free Trial</span>
+                            <div className="flex items-center gap-2 px-4 py-1.5 bg-[#9B8FD4] border-[2px] border-black rounded-xl shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                                <StarIcon className="w-3 h-3 text-black animate-pulse" />
+                                <span className="text-[10px] font-black text-black uppercase tracking-widest leading-none">Free Trial</span>
                             </div>
                         ) : isPro ? (
                             <div className="flex items-center gap-2 px-4 py-1.5 bg-[#F5CC6D] border-[2px] border-black rounded-xl shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
@@ -39,8 +39,8 @@ export const GeneratorHeader: React.FC<GeneratorHeaderProps> = ({
                                 <span className="text-[10px] font-black text-black uppercase tracking-widest leading-none">Pro Plan</span>
                             </div>
                         ) : (
-                            <div className="flex items-center gap-2 px-4 py-1.5 bg-white border-[2px] border-gray-200 rounded-xl">
-                                <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">Free Plan</span>
+                            <div className="flex items-center gap-2 px-4 py-1.5 bg-white border-[2px] border-black rounded-xl">
+                                <span className="text-[10px] font-black text-black opacity-40 uppercase tracking-widest leading-none">Free Plan</span>
                             </div>
                         )}
                     </div>
@@ -53,7 +53,7 @@ export const GeneratorHeader: React.FC<GeneratorHeaderProps> = ({
                         className="flex items-center gap-3 pl-4 md:pl-6 pr-2 md:pr-4 py-2 transition-all active:scale-95 group"
                     >
                         <div className="w-8 h-8 md:w-9 md:h-9 rounded-xl bg-[#4DB39A] border-[2px] border-black flex items-center justify-center overflow-hidden transition-transform group-hover:scale-110 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                            <span className="text-xs md:text-sm font-black text-white">
+                            <span className="text-xs md:text-sm font-black text-black">
                                 {(storeProfile?.name?.[0] || 'U').toUpperCase()}
                             </span>
                         </div>
