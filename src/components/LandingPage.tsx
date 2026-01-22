@@ -85,7 +85,7 @@ open11:00-close 17:00
     ];
 
     return (
-        <div className="min-h-screen bg-[#F4EBD0] text-slate-900 font-sans selection:bg-[#F2C94C]">
+        <div className="min-h-screen bg-[#f9f5f2] text-slate-900 font-sans selection:bg-[#E5C58C]">
             <Header scrolled={scrolled} isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} loginWithGoogle={loginWithGoogle} />
             <HeroSection />
             <ProblemSection problems={problems} isMobile={isMobile} />
@@ -112,6 +112,7 @@ open11:00-close 17:00
                   background: #fff;
                   border: var(--border-bold);
                   box-shadow: var(--shadow-neo);
+                  border-radius: 1rem;
                   transition: all 0.2s ease;
                 }
                 .neo-brutalism-card:hover {
@@ -121,6 +122,7 @@ open11:00-close 17:00
                 .neo-brutalism-button {
                   border: var(--border-bold);
                   box-shadow: var(--shadow-neo-sm);
+                  border-radius: 0.75rem;
                   transition: all 0.1s ease;
                 }
                 .neo-brutalism-button:active {
@@ -129,7 +131,7 @@ open11:00-close 17:00
                 }
                 .gradient-text { 
                   -webkit-text-stroke: 1px #000;
-                  color: #E93E7E;
+                  color: #D4849A;
                   text-shadow: 3px 3px 0px #000;
                 }
                 @keyframes float { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-10px) rotate(1deg); } }

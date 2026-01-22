@@ -77,14 +77,12 @@ export default function HeroSection() {
     return (
         <div className="relative z-10 h-auto">
             <div
-                className="relative h-[110vh] md:h-screen w-full overflow-hidden flex flex-col bg-[#F4EBD0]"
+                className="relative h-[110vh] md:h-screen w-full overflow-hidden flex flex-col bg-[#fceee3]"
             >
-                {/* Remove excessive gradient background, keep it clean beige */}
-                <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#000_1px,transparent_1px)] [background-size:20px_20px]" />
 
                 {/* Mobile Text (Static at top) */}
                 <div className="md:hidden pt-24 px-4 text-center z-20 relative mb-12">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#F2C94C] border-[3px] border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] mb-4">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#F2C94C] border-[3px] border-black rounded-2xl shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] mb-4">
                         <span className="w-2 h-2 rounded-full bg-black animate-pulse" />
                         <span className="text-xs font-black text-black uppercase">限定モニター価格</span>
                     </div>
@@ -96,11 +94,11 @@ export default function HeroSection() {
                         丁寧すぎて恥ずかしいAIは卒業。MisePoはあなたの「書き癖」を学習し、店主の『分身』としてSNS運用を代行します。
                     </p>
                     <div className="flex flex-col gap-4 max-w-sm mx-auto mt-4 px-4">
-                        <button onClick={() => window.location.href = '/start'} className="neo-brutalism-button w-full px-6 py-4 bg-[#E93E7E] text-white font-black hover:bg-black transition-all flex items-center justify-center gap-2">
-                            <Icons.Sparkles size={18} className="text-[#F2C94C]" />
+                        <button onClick={() => window.location.href = '/start'} className="neo-brutalism-button w-full px-6 py-4 bg-[#88B0A5] text-white font-black hover:bg-black transition-all flex items-center justify-center gap-2">
+                            <Icons.Sparkles size={18} className="text-[#E5C58C]" />
                             無料で試してみる
                         </button>
-                        <button onClick={() => window.location.href = '#pricing'} className="neo-brutalism-button w-full px-6 py-4 bg-white text-black font-black hover:bg-[#F2C94C] transition-all">
+                        <button onClick={() => window.location.href = '#pricing'} className="neo-brutalism-button w-full px-6 py-4 bg-white text-black font-black hover:bg-[#E5C58C] transition-all">
                             料金プラン
                         </button>
                     </div>
@@ -108,7 +106,7 @@ export default function HeroSection() {
 
                 {/* Desktop Text (Absolute) */}
                 <div className="hidden md:block absolute top-1/2 -translate-y-1/2 left-8 lg:left-16 xl:left-24 z-20 max-w-xl">
-                    <div className="inline-flex items-center gap-3 px-4 py-2 bg-[#F2C94C] border-[3px] border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mb-8">
+                    <div className="inline-flex items-center gap-3 px-4 py-2 bg-[#F2C94C] border-[3px] border-black rounded-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mb-8">
                         <span className="flex h-3 w-3 relative">
                             <span className="animate-ping absolute inline-flex h-full w-full bg-black opacity-75"></span>
                             <span className="relative inline-flex rounded-full h-3 w-3 bg-black"></span>
@@ -123,11 +121,11 @@ export default function HeroSection() {
                         丁寧すぎて恥ずかしいAIは卒業。MisePoはあなたの「書き癖」を学習し、常連さんが読んでも違和感のない文章を30秒で作成。店主の『分身』が、運用を代行します。
                     </p>
                     <div className="flex gap-4">
-                        <button onClick={() => window.location.href = '/start'} className="neo-brutalism-button px-8 py-5 bg-[#E93E7E] text-white font-black hover:bg-black transition-all flex items-center gap-2">
-                            <Icons.Sparkles size={20} className="text-[#F2C94C]" />
+                        <button onClick={() => window.location.href = '/start'} className="neo-brutalism-button px-8 py-5 bg-[#88B0A5] text-white font-black hover:bg-black transition-all flex items-center gap-2">
+                            <Icons.Sparkles size={20} className="text-[#E5C58C]" />
                             無料で試してみる
                         </button>
-                        <button onClick={() => window.location.href = '#pricing'} className="neo-brutalism-button px-8 py-5 bg-white text-black font-black hover:bg-[#F2C94C] transition-all">
+                        <button onClick={() => window.location.href = '#pricing'} className="neo-brutalism-button px-8 py-5 bg-white text-black font-black hover:bg-[#E5C58C] transition-all">
                             料金プラン
                         </button>
                     </div>
@@ -147,7 +145,7 @@ export default function HeroSection() {
                         >
                             {/* Narrative Floating Label */}
                             <div className={`absolute -top-16 left-1/2 -translate-x-1/2 whitespace-nowrap z-50 transition-all duration-300 ${effectiveProgress > 100 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-                                <div className="bg-black text-white px-4 py-2 border-[3px] border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] font-black text-sm flex items-center gap-2">
+                                <div className="bg-black text-white px-4 py-2 border-[3px] border-white rounded-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] font-black text-sm flex items-center gap-2">
                                     {effectiveProgress < 3000 && (
                                         <>
                                             <span className="w-2 h-2 bg-black rounded-full animate-pulse" />
@@ -162,7 +160,7 @@ export default function HeroSection() {
                                     )}
                                     {effectiveProgress >= 5000 && (
                                         <>
-                                            <div className="bg-[#27AE60] border-[1px] border-white p-0.5"><Icons.Check size={10} className="text-white" strokeWidth={4} /></div>
+                                            <div className="bg-[#27AE60] border-[1px] border-white rounded-2xl p-0.5"><Icons.Check size={10} className="text-white" strokeWidth={4} /></div>
                                             3. 文章が完成！
                                         </>
                                     )}
@@ -173,19 +171,19 @@ export default function HeroSection() {
                                 </div>
                             </div>
 
-                            <div className="w-full h-full bg-white border-[6px] border-black shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] relative overflow-hidden">
+                            <div className="w-full h-full bg-white border-[6px] border-black rounded-2xl shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] relative overflow-hidden">
                                 <div className="absolute top-0 left-1/2 -translate-x-1/2 h-6 w-32 bg-black z-40" />
                                 <div className="w-full h-full bg-[#f8f8f8] relative flex flex-col pt-10">
                                     <div className="px-4 pb-4 border-b-[3px] border-black flex justify-between items-center bg-white">
                                         <div className="p-2"><Icons.Menu className="text-black" size={20} /></div>
                                         <span className="font-black text-black uppercase tracking-tight">MisePo</span>
-                                        <div className="w-8 h-8 bg-[#F2C94C] border-[3px] border-black flex items-center justify-center"><Icons.Sparkles size={16} fill="currentColor" /></div>
+                                        <div className="w-8 h-8 bg-[#F2C94C] border-[3px] border-black rounded-2xl flex items-center justify-center"><Icons.Sparkles size={16} fill="currentColor" /></div>
                                     </div>
                                     <div className="p-4 flex-1">
-                                        <div className="bg-white border-[3px] border-black p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mb-4 space-y-3">
+                                        <div className="bg-white border-[3px] border-black rounded-2xl p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mb-4 space-y-3">
                                             <div className="flex gap-2">
-                                                <span className="px-2 py-1 bg-[#E93E7E] text-white text-[10px] font-black border-[2px] border-black">Instagram</span>
-                                                <span className="px-2 py-1 bg-white text-black text-[10px] font-black border-[2px] border-black">Casual</span>
+                                                <span className="px-2 py-1 bg-[#E93E7E] text-white text-[10px] font-black border-[2px] border-black rounded-2xl">Instagram</span>
+                                                <span className="px-2 py-1 bg-white text-black text-[10px] font-black border-[2px] border-black rounded-2xl">Casual</span>
                                             </div>
                                             <div className={`space-y-2 transition-all duration-500 ease-in-out ${isGenerating ? 'animate-pulse' : ''}`} style={{ opacity: textOpacity }}>
                                                 <div className="text-sm text-black min-h-[60px] whitespace-pre-wrap font-bold leading-relaxed">
@@ -195,11 +193,11 @@ export default function HeroSection() {
                                             </div>
 
                                             <div className="relative pt-2">
-                                                <div className={`border-[3px] border-black py-4 font-black text-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all duration-300 ${isGenerating ? 'bg-[#F2C94C] translate-x-[2px] translate-y-[2px] shadow-none' : 'bg-[#E93E7E] text-white hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]'}`}>
+                                                <div className={`border-[3px] border-black rounded-2xl py-4 font-black text-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all duration-300 ${isGenerating ? 'bg-[#F2C94C] translate-x-[2px] translate-y-[2px] shadow-none' : 'bg-[#E93E7E] text-white hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]'}`}>
                                                     {isGenerating ? "生成中..." : isResultShown ? "投稿する" : "生成する"}
                                                 </div>
                                                 {effectiveProgress >= 1900 && effectiveProgress <= 2300 && (
-                                                    <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-14 h-14 bg-black/10 border-[2px] border-black animate-ping pointer-events-none" />
+                                                    <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-14 h-14 bg-black/10 border-[2px] border-black rounded-2xl animate-ping pointer-events-none" />
                                                 )}
                                             </div>
                                         </div>
@@ -223,14 +221,14 @@ export default function HeroSection() {
                                     <div className="absolute inset-0 z-50 pointer-events-none overflow-hidden">
                                         {/* Large Confetti stickers (Brutalism Style) */}
                                         <div className="absolute inset-0">
-                                            <div className="absolute top-[10%] left-[10%] w-8 h-8 bg-[#F2C94C] border-[2px] border-black rotate-12 animate-fall" />
-                                            <div className="absolute top-[20%] right-[10%] w-6 h-6 bg-[#E93E7E] border-[2px] border-black -rotate-12 animate-fall" />
-                                            <div className="absolute bottom-[20%] left-[15%] w-10 h-10 bg-[#08A092] border-[2px] border-black rotate-45 animate-fall" />
+                                            <div className="absolute top-[10%] left-[10%] w-8 h-8 bg-[#F2C94C] border-[2px] border-black rounded-2xl rotate-12 animate-fall" />
+                                            <div className="absolute top-[20%] right-[10%] w-6 h-6 bg-[#E93E7E] border-[2px] border-black rounded-2xl -rotate-12 animate-fall" />
+                                            <div className="absolute bottom-[20%] left-[15%] w-10 h-10 bg-[#08A092] border-[2px] border-black rounded-2xl rotate-45 animate-fall" />
                                         </div>
 
                                         {/* Success Toast (Bottom) - Only show after scroll finishes (>6800) */}
-                                        <div className={`absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-3 bg-black text-white px-5 py-4 border-[3px] border-white shadow-xl w-[90%] justify-center transition-all duration-500 transform ${effectiveProgress > 6800 ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-                                            <div className="w-6 h-6 bg-[#27AE60] border-[1px] border-white flex items-center justify-center shrink-0">
+                                        <div className={`absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-3 bg-black text-white px-5 py-4 border-[3px] border-white rounded-2xl shadow-xl w-[90%] justify-center transition-all duration-500 transform ${effectiveProgress > 6800 ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+                                            <div className="w-6 h-6 bg-[#27AE60] border-[1px] border-white rounded-2xl flex items-center justify-center shrink-0">
                                                 <Icons.Check size={14} strokeWidth={4} />
                                             </div>
                                             <p className="font-black text-sm uppercase">Success!</p>
@@ -253,10 +251,10 @@ export default function HeroSection() {
                                     <div className={`absolute inset-0 bg-[#f8f8f8] z-20 transition-opacity duration-500 flex flex-col ${isPosted ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
                                         <div className="p-4 space-y-4 flex-1">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 bg-white border-[2px] border-black animate-pulse" />
+                                                <div className="w-8 h-8 bg-white border-[2px] border-black rounded-2xl animate-pulse" />
                                                 <div className="w-24 h-3 bg-black/10 animate-pulse" />
                                             </div>
-                                            <div className="w-full aspect-square bg-black/5 border-[3px] border-black animate-pulse" />
+                                            <div className="w-full aspect-square bg-black/5 border-[3px] border-black rounded-2xl animate-pulse" />
                                         </div>
                                     </div>
 
@@ -264,8 +262,8 @@ export default function HeroSection() {
                                     <div className="flex flex-col bg-white transition-transform duration-[2850ms] ease-out" style={isPosted ? innerContentStyle : {}}>
                                         {/* Story/User Header */}
                                         <div className="px-3 py-2 flex items-center gap-2">
-                                            <div className="border-[2px] border-black p-[2px] bg-[#F2C94C]">
-                                                <div className="w-8 h-8 bg-white border-[1px] border-black flex items-center justify-center">
+                                            <div className="border-[2px] border-black rounded-2xl p-[2px] bg-[#F2C94C]">
+                                                <div className="w-8 h-8 bg-white border-[1px] border-black rounded-2xl flex items-center justify-center">
                                                     <Icons.Smartphone size={14} className="text-black" />
                                                 </div>
                                             </div>
@@ -308,7 +306,7 @@ export default function HeroSection() {
                                     <Icons.Search size={24} className="text-black" />
                                     <div className="w-8 h-8 bg-black flex items-center justify-center"><Icons.PlusSquare size={16} className="text-white" /></div>
                                     <Icons.Film size={24} className="text-black" />
-                                    <div className="w-7 h-7 bg-[#F2C94C] border-[2px] border-black" />
+                                    <div className="w-7 h-7 bg-[#F2C94C] border-[2px] border-black rounded-2xl" />
                                 </div>
                             </div>
                         </div>
@@ -319,13 +317,13 @@ export default function HeroSection() {
                                 ${isPosted ? 'translate-x-[30px] opacity-40 scale-90' : 'translate-x-[100px] opacity-90 rotate-12 delay-100'}
                             `}
                         >
-                            <div className="w-full h-full bg-white border-[6px] border-black shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] relative flex flex-col font-black overflow-hidden">
+                            <div className="w-full h-full bg-white border-[6px] border-black rounded-2xl shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] relative flex flex-col font-black overflow-hidden">
                                 {/* Maps Header */}
                                 <div className="p-3 bg-white border-b-[3px] border-black shadow-sm z-20">
-                                    <div className="bg-white border-[3px] border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] px-3 py-2 flex items-center gap-2 mb-3">
+                                    <div className="bg-white border-[3px] border-black rounded-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] px-3 py-2 flex items-center gap-2 mb-3">
                                         <Icons.ChevronDown size={14} className="text-black rotate-90" />
                                         <span className="text-[10px] text-black font-black uppercase">Restaurants near me</span>
-                                        <div className="ml-auto w-6 h-6 bg-[#845EF7] border-[2px] border-black text-white flex items-center justify-center text-[10px] font-black">M</div>
+                                        <div className="ml-auto w-6 h-6 bg-[#845EF7] border-[2px] border-black rounded-2xl text-white flex items-center justify-center text-[10px] font-black">M</div>
                                     </div>
                                     <div className="flex gap-4 overflow-x-hidden text-[10px] font-black text-black pb-2">
                                         <span className="opacity-40">OVERVIEW</span>
@@ -336,9 +334,9 @@ export default function HeroSection() {
 
                                 {/* Maps Content (Updates) */}
                                 <div className="flex-1 bg-[#f8f8f8] p-3 overflow-hidden">
-                                    <div className="bg-white border-[3px] border-black p-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mb-4">
+                                    <div className="bg-white border-[3px] border-black rounded-2xl p-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mb-4">
                                         <div className="flex items-center gap-2 mb-3">
-                                            <div className="w-8 h-8 bg-[#F2C94C] border-[2px] border-black flex items-center justify-center text-black"><Icons.Smartphone size={14} /></div>
+                                            <div className="w-8 h-8 bg-[#F2C94C] border-[2px] border-black rounded-2xl flex items-center justify-center text-black"><Icons.Smartphone size={14} /></div>
                                             <div>
                                                 <div className="text-[10px] font-black text-black">MisePo Cafe</div>
                                                 <div className="text-[8px] text-black/60 font-black uppercase">2 days ago</div>
@@ -348,14 +346,14 @@ export default function HeroSection() {
                                         <p className="text-[10px] text-black font-black leading-relaxed mb-3 line-clamp-2">
                                             【春限定】とろける幸せ、いちごタルト解禁🍓 サクサクのクッキ... <span className="text-[#E93E7E] underline decoration-2">More</span>
                                         </p>
-                                        <div className="w-full h-24 bg-white border-[2px] border-black mb-3 overflow-hidden relative">
+                                        <div className="w-full h-24 bg-white border-[2px] border-black rounded-2xl mb-3 overflow-hidden relative">
                                             <div className="absolute inset-0 flex items-center justify-center text-4xl grayscale grayscale-100 invert">🍓</div>
                                         </div>
                                         <div className="flex items-center gap-2">
-                                            <button className="flex-1 py-1.5 border-[2px] border-black bg-white font-black text-[9px] uppercase shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none">
+                                            <button className="flex-1 py-1.5 border-[2px] border-black rounded-2xl bg-white font-black text-[9px] uppercase shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none">
                                                 Call
                                             </button>
-                                            <button className="flex-1 py-1.5 border-[2px] border-black bg-[#F2C94C] font-black text-[9px] uppercase shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none">
+                                            <button className="flex-1 py-1.5 border-[2px] border-black rounded-2xl bg-[#F2C94C] font-black text-[9px] uppercase shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none">
                                                 Share
                                             </button>
                                         </div>

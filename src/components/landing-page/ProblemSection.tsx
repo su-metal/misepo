@@ -12,14 +12,14 @@ interface Problem {
 
 export const ProblemSection = ({ problems, isMobile }: { problems: Problem[]; isMobile: boolean }) => {
     return (
-        <section id="problem" className="py-20 md:py-32 bg-[#F4EBD0] relative overflow-hidden border-y-[6px] border-black">
+        <section id="problem" className="py-20 md:py-32 bg-[#f9f5f2] relative overflow-hidden border-y-[6px] border-black">
             {/* Background Decor (Brutalist style) */}
-            <div className="absolute top-10 right-10 w-32 h-32 border-[3px] border-black rotate-12 opacity-10 pointer-events-none" />
-            <div className="absolute bottom-10 left-10 w-24 h-24 border-[3px] border-black -rotate-12 opacity-10 pointer-events-none" />
+            <div className="absolute top-10 right-10 w-32 h-32 border-[3px] border-black rounded-2xl rotate-12 opacity-10 pointer-events-none" />
+            <div className="absolute bottom-10 left-10 w-24 h-24 border-[3px] border-black rounded-2xl -rotate-12 opacity-10 pointer-events-none" />
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div className="max-w-3xl mx-auto text-center mb-20">
-                    <span className="inline-block py-2 px-4 bg-[#F2C94C] border-[3px] border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-black font-black tracking-tight text-sm uppercase mb-8">
+                    <span className="inline-block py-2 px-4 bg-[#E5C58C] border-[3px] border-black rounded-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rounded-2xl text-black font-black tracking-tight text-sm uppercase mb-8">
                         Social Media Challenges
                     </span>
                     <h2 className="text-4xl md:text-7xl font-black text-black leading-[1.1] mb-8">
@@ -35,9 +35,9 @@ export const ProblemSection = ({ problems, isMobile }: { problems: Problem[]; is
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                     {problems.map((prob, index) => (
-                        <div key={index} className="group relative bg-white border-[4px] border-black p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-4px] hover:translate-y-[-4px] hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] transition-all duration-200">
+                        <div key={index} className="group relative bg-white border-[4px] border-black rounded-2xl p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-4px] hover:translate-y-[-4px] hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] transition-all duration-200">
                             <div className="flex flex-col items-center text-center gap-6">
-                                <div className={`w-16 h-16 border-[3px] border-black ${prob.bg} flex items-center justify-center text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group-hover:rotate-6 transition-transform duration-200 shrink-0`}>
+                                <div className={`w-16 h-16 border-[3px] border-black rounded-2xl ${prob.bg} flex items-center justify-center text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group-hover:rotate-6 transition-transform duration-200 shrink-0`}>
                                     {React.cloneElement(prob.icon as any, { size: 32 })}
                                 </div>
                                 <h3 className="text-xl md:text-2xl font-black text-black whitespace-pre-line leading-tight">{prob.title}</h3>

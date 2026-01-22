@@ -11,11 +11,11 @@ interface HeaderProps {
 
 export const Header = ({ scrolled, isMenuOpen, setIsMenuOpen, loginWithGoogle }: HeaderProps) => {
     return (
-        <header className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-[#F4EBD0] border-b-[3px] border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] py-2' : 'bg-transparent py-4'}`}>
+        <header className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-[#f9f5f2] border-b-[3px] border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] py-2' : 'bg-transparent py-4'}`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-14">
                     <div className="flex items-center gap-2 cursor-pointer group" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-                        <div className="bg-[#E93E7E] p-1.5 border-[3px] border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] group-hover:translate-y-[-2px] group-hover:translate-x-[-2px] group-hover:shadow-[5px_5px_0px_0px_rgba(0,0,0,1)] transition-all">
+                        <div className="bg-[#D4849A] p-1.5 border-[3px] border-black rounded-2xl shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] rounded-2xl group-hover:translate-y-[-2px] group-hover:translate-x-[-2px] group-hover:shadow-[5px_5px_0px_0px_rgba(0,0,0,1)] transition-all">
                             <Icons.Smartphone size={20} className="text-white" />
                         </div>
                         <span className="font-black text-2xl tracking-tighter text-black uppercase">MisePo</span>
@@ -29,8 +29,8 @@ export const Header = ({ scrolled, isMenuOpen, setIsMenuOpen, loginWithGoogle }:
                         ))}
                     </nav>
                     <div className="hidden md:flex items-center space-x-4">
-                        <button onClick={() => loginWithGoogle('login')} className="neo-brutalism-button bg-[#F2C94C] text-black px-5 py-2 text-sm font-black hover:bg-white transition-all">ログイン</button>
-                        <button onClick={() => window.location.href = '/start'} className="neo-brutalism-button bg-[#E93E7E] text-white px-6 py-2.5 text-sm font-black hover:bg-black transition-all">無料で始める</button>
+                        <button onClick={() => loginWithGoogle('login')} className="neo-brutalism-button bg-[#E5C58C] text-black px-5 py-2 text-sm font-black hover:bg-white transition-all">ログイン</button>
+                        <button onClick={() => window.location.href = '/start'} className="neo-brutalism-button bg-[#D4849A] text-white px-6 py-2.5 text-sm font-black hover:bg-black transition-all">無料で始める</button>
                     </div>
                     <div className="md:hidden flex items-center">
                         <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-slate-600 hover:text-slate-900 focus:outline-none p-2" aria-label="メニューを開く">
@@ -40,14 +40,14 @@ export const Header = ({ scrolled, isMenuOpen, setIsMenuOpen, loginWithGoogle }:
                 </div>
             </div>
             {isMenuOpen && (
-                <div className="md:hidden absolute top-full left-0 w-full bg-[#F4EBD0] border-b-[3px] border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] animate-fade-in">
+                <div className="md:hidden absolute top-full left-0 w-full bg-[#f9f5f2] border-b-[3px] border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] animate-fade-in">
                     <div className="px-4 py-6 space-y-4">
                         {['お悩み', '機能', 'デモ', '料金'].map((item, i) => (
-                            <a key={item} href={['#problem', '#features', '#demo', '#pricing'][i]} className="block px-4 py-3 text-lg font-black text-black border-[3px] border-black bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all" onClick={() => setIsMenuOpen(false)}>{item}</a>
+                            <a key={item} href={['#problem', '#features', '#demo', '#pricing'][i]} className="block px-4 py-3 text-lg font-black text-black border-[3px] border-black rounded-2xl bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all" onClick={() => setIsMenuOpen(false)}>{item}</a>
                         ))}
                         <div className="pt-4 flex flex-col gap-4">
-                            <button onClick={() => loginWithGoogle('login')} className="neo-brutalism-button w-full bg-[#F2C94C] text-black px-5 py-4 text-base font-black hover:bg-white transition-all">ログイン</button>
-                            <button onClick={() => window.location.href = '/start'} className="neo-brutalism-button w-full bg-[#E93E7E] text-white px-5 py-4 text-base font-black hover:bg-black transition-all">無料で始める</button>
+                            <button onClick={() => loginWithGoogle('login')} className="neo-brutalism-button w-full bg-[#E5C58C] text-black px-5 py-4 text-base font-black hover:bg-white transition-all">ログイン</button>
+                            <button onClick={() => window.location.href = '/start'} className="neo-brutalism-button w-full bg-[#D4849A] text-white px-5 py-4 text-base font-black hover:bg-black transition-all">無料で始める</button>
                         </div>
                     </div>
                 </div>
