@@ -57,7 +57,7 @@ export const BenefitSection = () => {
                                 <span className="text-3xl font-black text-black">倍</span>
                             </div>
                             <p className="text-black font-bold text-lg leading-relaxed">
-                                クチコミに丁寧に返信している店は、そうでない店より<span className="bg-[#4DB39A] text-white px-1 border-b-[2px] border-black">顧客の信頼度</span>が圧倒的に高まります。
+                                クチコミに丁寧に返信している店は、そうでない店より<span className="bg-[#4DB39A] text-black px-1 border-b-[2px] border-black">顧客の信頼度</span>が圧倒的に高まります。
                             </p>
                         </div>
 
@@ -65,7 +65,7 @@ export const BenefitSection = () => {
                         <div className="bg-white border-[4px] border-black rounded-2xl p-8 relative shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] group hover:translate-x-[-4px] hover:translate-y-[-4px] hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] transition-all">
                             <div className="flex items-center gap-4 mb-8">
                                 <div className="w-14 h-14 bg-[#9B8FD4] border-[3px] border-black rounded-2xl flex items-center justify-center shrink-0 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group-hover:scale-110 transition-transform">
-                                    <Icons.TrendingDown size={28} className="text-white" />
+                                    <Icons.TrendingDown size={28} className="text-black" />
                                 </div>
                                 <div>
                                     <div className="text-xs font-black text-black/40 uppercase tracking-widest">Loss</div>
@@ -76,7 +76,7 @@ export const BenefitSection = () => {
                                 <span className="text-5xl font-black tabular-nums">2人に1人</span>
                             </div>
                             <p className="text-black font-bold text-lg leading-relaxed">
-                                <span className="bg-[#9B8FD4] text-white px-1 border-b-[2px] border-black">最新情報が不明な店</span>への来店を断念した経験があります。
+                                <span className="bg-[#9B8FD4] text-black px-1 border-b-[2px] border-black">最新情報が不明な店</span>への来店を断念した経験があります。
                             </p>
                         </div>
                     </div>
