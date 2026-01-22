@@ -146,6 +146,7 @@ ${currentSample}
 2. **内容の魅力化**: 「今回のメモ」の内容を、上記キャラならどう語るかを思考。
 3. **エッセンスの出力**: 語尾の出現頻度、改行リズム、絵文字・記号の密度を**サンプル通りに**再現。
 4. **長さの目安**: ${config.length === Length.Short ? "短めで要点を絞る。" : config.length === Length.Medium ? "標準の厚み（3-5文、2-3改行）。" : "長めの厚み（5-8文、3-5改行）。"}
+5. **文末の統計**: 句点/絵文字/記号で終わる割合をサンプルと同等にする。サンプルにない文末絵文字・記号は使用禁止。
 
 【${config.platform}専用ルール】
 ${isInstagram ? `- 自慢の写真を際立たせる視覚的なリズムで作成。\n- 文末に関連ハッシュタグを4-6個追加。` : ""}
@@ -192,6 +193,13 @@ ${config.includeSymbols ? `【記号の活用型】\n${DECORATION_PALETTE}` : ""
 
   const ai = getServerAI();
   const systemInstruction = buildSystemInstruction();
+  const promptSize = {
+    systemChars: systemInstruction.length,
+    userChars: (config.inputText || "").length,
+    learningSamplesChars: (learningSamples || []).join("\n---\n").length,
+    postSamplesChars: currentSample ? currentSample.length : 0,
+  };
+  console.debug("[PROMPT] sizes:", promptSize);
 
   const attemptGeneration = async (userPrompt: string): Promise<string[]> => {
     const response = await ai.models.generateContent({
@@ -201,8 +209,8 @@ ${config.includeSymbols ? `【記号の活用型】\n${DECORATION_PALETTE}` : ""
         systemInstruction,
         responseMimeType: "application/json",
         responseSchema: contentSchema,
-        temperature: hasPersona ? 0.4 : 0.7,
-        topP: 0.95,
+        temperature: hasPersona ? 0.3 : 0.6,
+        topP: 0.9,
       },
     });
 
