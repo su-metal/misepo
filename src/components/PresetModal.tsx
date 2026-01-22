@@ -164,6 +164,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
   const [mobileView, setMobileView] = useState<'list' | 'edit'>('list');
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [expandingPlatform, setExpandingPlatform] = useState<Platform | null>(null);
+  const [editingSampleIndex, setEditingSampleIndex] = useState<number | null>(null);
+  const [modalText, setModalText] = useState('');
   const [isSanitizing, setIsSanitizing] = useState(false);
   const [isAnalyzingImage, setIsAnalyzingImage] = useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
@@ -315,6 +317,100 @@ const PresetModal: React.FC<PresetModalProps> = ({
   const listVisibilityClass = mobileView === 'list' ? 'flex' : 'hidden md:flex';
 
   const goToListView = () => setMobileView('list');
+
+  const getSamplesArray = (platform: Platform): string[] => {
+    const raw = post_samples[platform] || '';
+    return raw.split('\n---\n').filter(s => s.trim() !== '');
+  };
+
+  const updateSampleAtIndex = (platform: Platform, index: number | null, newText: string) => {
+    const samples = getSamplesArray(platform);
+    if (index === null) {
+      if (newText.trim()) samples.push(newText.trim());
+    } else {
+      if (newText.trim()) {
+        samples[index] = newText.trim();
+      } else {
+        samples.splice(index, 1);
+      }
+    }
+    setPostSamples(prev => ({ ...prev, [platform]: samples.join('\n---\n') }));
+  };
+
+  const deleteSampleAtIndex = (platform: Platform, index: number) => {
+    const samples = getSamplesArray(platform);
+    samples.splice(index, 1);
+    setPostSamples(prev => ({ ...prev, [platform]: samples.join('\n---\n') }));
+  };
+
+  const renderSampleList = (platform: Platform, colorClass: string, Icon: any) => {
+    const samples = getSamplesArray(platform);
+    return (
+      <div className="bg-white rounded-[32px] p-6 mb-2 shadow-sm border border-slate-100 transition-all">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-white shadow-sm ${colorClass}`}>
+              <Icon className="w-4 h-4" />
+            </div>
+            <span className={`text-[11px] font-black uppercase tracking-widest ${colorClass.replace('bg-', 'text-')}`}>{platform} Learning</span>
+            <span className="text-[10px] font-black text-slate-300 bg-slate-50 px-2 py-0.5 rounded-full">{samples.length} / 5</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setModalText('');
+              setEditingSampleIndex(null);
+              setExpandingPlatform(platform);
+            }}
+            disabled={samples.length >= 5}
+            className={`flex items-center gap-2 px-4 py-2 text-[10px] font-black rounded-xl transition-all group ${samples.length >= 5 ? 'bg-slate-50 text-slate-300' : 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100'}`}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" className="group-hover:rotate-90 transition-transform"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            <span>学習文を追加する</span>
+          </button>
+        </div>
+
+        {samples.length === 0 ? (
+          <div className="py-8 border-2 border-dashed border-slate-100 rounded-2xl flex flex-col items-center justify-center text-slate-300 gap-2">
+            <Icon className="w-8 h-8 opacity-20" />
+            <p className="text-[10px] font-bold">まだ学習データがありません</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-3">
+            {samples.map((text, idx) => (
+              <div
+                key={idx}
+                className="group relative flex items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:border-indigo-200 hover:bg-white transition-all cursor-pointer"
+                onClick={() => {
+                  setModalText(text);
+                  setEditingSampleIndex(idx);
+                  setExpandingPlatform(platform);
+                }}
+              >
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs text-slate-600 font-bold line-clamp-1 leading-relaxed">
+                    {text}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      deleteSampleAtIndex(platform, idx);
+                    }}
+                    className="p-1.5 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all"
+                  >
+                    <TrashIcon className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
 
   const modalBody = (
     <div className="flex h-full bg-white relative">
@@ -566,82 +662,21 @@ const PresetModal: React.FC<PresetModalProps> = ({
               </div>
 
               {/* Instagram Sample */}
-              <div className="bg-white rounded-[32px] p-6 mb-2 shadow-sm border border-slate-100 hover:border-pink-200 transition-colors">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-xl bg-pink-50 flex items-center justify-center text-pink-500 shadow-sm">
-                      <InstagramIcon className="w-4 h-4" />
-                    </div>
-                    <span className="text-[11px] font-black text-pink-500 uppercase tracking-widest">Instagram Learning</span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setExpandingPlatform(Platform.Instagram)}
-                    className="flex items-center gap-2 px-4 py-2 text-[10px] font-black text-pink-600 bg-pink-50 hover:bg-pink-100 rounded-xl transition-all group"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="group-hover:scale-110 transition-transform"><path d="M15 3h6v6" /><path d="M9 21H3v-6" /><path d="M21 3l-7 7" /><path d="M3 21l7-7" /></svg>
-                    <span>拡大表示で集中入力</span>
-                  </button>
-                </div>
-                <AutoResizingTextarea
-                  value={post_samples[Platform.Instagram] || ''}
-                  onChange={(val) => setPostSamples(prev => ({ ...prev, [Platform.Instagram]: val }))}
-                  placeholder={'例：\nこんにちは！今日のランチは... 🍝\n---\n新作のケーキが焼き上がりました！ 🍰\n---\n(このように「---」で区切る)'}
-                  className="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-100 focus:bg-white focus:border-pink-300 outline-none transition-all resize-none text-xs text-slate-800 font-bold leading-relaxed placeholder-slate-300 min-h-[100px]"
-                />
-              </div>
+              {renderSampleList(Platform.Instagram, 'bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-500', InstagramIcon)}
 
               {/* X Sample */}
-              <div className="bg-white rounded-[32px] p-6 mb-2 shadow-sm border border-slate-100 hover:border-slate-300 transition-colors">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-xl bg-slate-900 flex items-center justify-center text-white shadow-sm">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4l11.733 16h4.267l-11.733 -16z" /><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" /></svg>
-                    </div>
-                    <span className="text-[11px] font-black text-slate-700 uppercase tracking-widest">X (Twitter) Learning</span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setExpandingPlatform(Platform.X)}
-                    className="flex items-center gap-2 px-4 py-2 text-[10px] font-black text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-all group"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="group-hover:scale-110 transition-transform"><path d="M15 3h6v6" /><path d="M9 21H3v-6" /><path d="M21 3l-7 7" /><path d="M3 21l7-7" /></svg>
-                    <span>拡大表示で集中入力</span>
-                  </button>
-                </div>
-                <AutoResizingTextarea
-                  value={post_samples[Platform.X] || ''}
-                  onChange={(val) => setPostSamples(prev => ({ ...prev, [Platform.X]: val }))}
-                  placeholder="過去の気に入っている投稿を3件ほど貼り付けてください..."
-                  className="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-100 focus:bg-white focus:border-slate-400 outline-none transition-all resize-none text-xs text-slate-800 font-bold leading-relaxed placeholder-slate-300 min-h-[80px]"
-                />
-              </div>
+              {renderSampleList(Platform.X, 'bg-slate-900', (props: any) => (
+                <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M4 4l11.733 16h4.267l-11.733 -16z" /><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" />
+                </svg>
+              ))}
 
               {/* Google Maps Sample */}
-              <div className="bg-white rounded-[32px] p-6 shadow-sm border border-slate-100 hover:border-blue-200 transition-colors">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-sm">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" /></svg>
-                    </div>
-                    <span className="text-[11px] font-black text-blue-600 uppercase tracking-widest">Map Replies Learning</span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setExpandingPlatform(Platform.GoogleMaps)}
-                    className="flex items-center gap-2 px-4 py-2 text-[10px] font-black text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-xl transition-all group"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="group-hover:scale-110 transition-transform"><path d="M15 3h6v6" /><path d="M9 21H3v-6" /><path d="M21 3l-7 7" /><path d="M3 21l7-7" /></svg>
-                    <span>拡大表示で集中入力</span>
-                  </button>
-                </div>
-                <AutoResizingTextarea
-                  value={post_samples[Platform.GoogleMaps] || ''}
-                  onChange={(val) => setPostSamples(prev => ({ ...prev, [Platform.GoogleMaps]: val }))}
-                  placeholder="過去のオーナー返信を3件ほど貼り付けてください..."
-                  className="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-100 focus:bg-white focus:border-blue-300 outline-none transition-all resize-none text-xs text-slate-800 font-bold leading-relaxed placeholder-slate-300 min-h-[80px]"
-                />
-              </div>
+              {renderSampleList(Platform.GoogleMaps, 'bg-blue-600', (props: any) => (
+                <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" />
+                </svg>
+              ))}
             </div>
           </div>
         </div>
@@ -743,10 +778,9 @@ const PresetModal: React.FC<PresetModalProps> = ({
                     });
                     const data = await res.json();
                     if (data.ok && data.text) {
-                      setPostSamples(prev => {
-                        const existing = prev[expandingPlatform] || '';
-                        const separator = existing.trim() ? '\n---\n' : '';
-                        return { ...prev, [expandingPlatform]: existing + separator + data.text };
+                      setModalText(prev => {
+                        const separator = prev.trim() ? '\n---\n' : '';
+                        return prev + separator + data.text;
                       });
                     }
                   };
@@ -783,7 +817,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
             </button>
             <button
               onClick={async () => {
-                const currentText = post_samples[expandingPlatform!] || '';
+                const currentText = modalText;
                 if (!currentText.trim() || isSanitizing) return;
                 setIsSanitizing(true);
                 try {
@@ -794,7 +828,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                   });
                   const data = await res.json();
                   if (data.sanitized) {
-                    setPostSamples(prev => ({ ...prev, [expandingPlatform!]: data.sanitized }));
+                    setModalText(data.sanitized);
                   }
                 } catch (err) {
                   console.error('Sanitization failed:', err);
@@ -802,7 +836,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                   setIsSanitizing(false);
                 }
               }}
-              disabled={isSanitizing || !(post_samples[expandingPlatform!] || '').trim()}
+              disabled={isSanitizing || !modalText.trim()}
               className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-4 md:px-5 py-3 rounded-2xl font-black text-[10px] md:text-[11px] transition-all transform hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 ${expandingPlatform === Platform.Instagram ? 'bg-pink-50 text-pink-600 hover:bg-pink-100' :
                 expandingPlatform === Platform.X ? 'bg-slate-100 text-slate-700 hover:bg-slate-200' :
                   'bg-blue-50 text-blue-600 hover:bg-blue-100'
@@ -823,22 +857,26 @@ const PresetModal: React.FC<PresetModalProps> = ({
               )}
             </button>
             <button
-              onClick={() => setExpandingPlatform(null)}
-              className="flex-none p-3 bg-slate-100 hover:bg-slate-200 text-slate-400 hover:text-slate-600 rounded-2xl transition-all font-black text-sm px-5 md:px-6"
+              onClick={() => {
+                updateSampleAtIndex(expandingPlatform!, editingSampleIndex, modalText);
+                setExpandingPlatform(null);
+                setEditingSampleIndex(null);
+              }}
+              className="flex-none p-3 bg-[#001738] hover:bg-slate-900 text-white rounded-2xl transition-all font-black text-sm px-8 md:px-10"
             >
-              完了
+              保存して閉じる
             </button>
           </div>
         </div>
 
         <div className="flex-1 overflow-hidden flex flex-col bg-slate-50/30">
           <div className="flex-1 p-5 md:p-8 overflow-y-auto">
-            <textarea
+            <AutoResizingTextarea
               autoFocus
-              value={post_samples[expandingPlatform] || ''}
-              onChange={(e) => setPostSamples(prev => ({ ...prev, [expandingPlatform]: e.target.value }))}
+              value={modalText}
+              onChange={setModalText}
               className="w-full h-full min-h-[400px] bg-transparent outline-none text-base md:text-lg text-slate-800 font-bold leading-loose placeholder-slate-300 resize-none no-scrollbar"
-              placeholder={'ここに過去の投稿を貼り付けてください...\n複数の投稿を入れる場合は「---」で区切ってください。'}
+              placeholder={'ここに過去の投稿を貼り付けてください...'}
             />
           </div>
         </div>
