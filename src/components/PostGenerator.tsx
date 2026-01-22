@@ -173,6 +173,8 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
                 onOpenPresetModal={() => setIsPresetModalOpen(true)}
                 customPrompt={flow.customPrompt}
                 onCustomPromptChange={flow.setCustomPrompt}
+                language={flow.language}
+                onLanguageChange={flow.setLanguage}
                 onOpenGuide={onOpenGuide}
               />
             </div>

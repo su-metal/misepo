@@ -116,6 +116,9 @@ export const generateContent = async (
     const isGMap = config.platform === Platform.GoogleMaps;
 
     if (hasPersona) {
+    const languageRule = config.language && config.language !== 'Japanese' 
+      ? `\n【出力言語追加ルール】\n- 本文は必ず **${config.language}** で作成してください。\n- 言語が異なっても、サンプルの「店主のキャラクター（親しみやすさ、情熱、専門性など）」を ${config.language} の文脈で最大限に再現してください。`
+      : "";
       const learningContext = hasLearningSamples ? `
 【文体見本（コピペ禁止・リズムのみ学習）】
 ${learningSamples.join("\n---\n")}
@@ -153,6 +156,8 @@ ${isInstagram ? `- 自慢の写真を際立たせる視覚的なリズムで作�
 ${isX ? `- 140文字以内。ハッシュタグ1-2個。` : ""}
 ${isGMap ? `- Googleマップ返信。丁寧な言葉。絵文字禁止。\n- 謝罪内容が複数ある場合は項目をまとめ、一度で深く謝罪してください。何度も謝罪を繰り返すと誠実さが薄れるため、まとめることが重要です。\n- 「何卒ご容赦ください」「何卒ご了承いただけますよう」といった、定型文的・事務的な謝罪表現は誠実さを欠くため使用禁止です。\n- 返信文全体を1つの文字列として扱い、分割せずに配列の最初の要素（index 0）に格納してください。` : ""}
 
+${languageRule}
+
 ${config.includeSymbols ? `
 【特殊記号の活用テンプレート（表現の幅を広げる）】
 以下のパターンを、サンプルの雰囲気に合わせて自由に取り入れてください：
@@ -176,6 +181,7 @@ ${learningContext}
 
 【執筆ルール】
 - 希望の長さ [**${config.length}**] に従う。
+- 本文は必ず **${config.language || '日本語'}** で作成してください。
 - 解説や挨拶なし、本文のみ。
 - 長さの目安: ${config.length === Length.Short ? "短めで要点を絞る。" : config.length === Length.Medium ? "標準の厚み（3-5文、2-3改行）。" : "長めの厚み（5-8文、3-5改行）。"}
 - ${isInstagram ? '視覚的な読みやすさを重視（2-3文で改行）。ハッシュタグ4-6個。' : ''}
