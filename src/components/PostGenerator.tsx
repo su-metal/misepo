@@ -122,7 +122,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
 
       <div className="max-w-[1400px] mx-auto py-4 sm:py-8 relative z-10">
         {/* Header Module */}
-        <div className="mx-3 sm:mx-8 mb-6 transition-all duration-1000 animate-in fade-in slide-in-from-top-4">
+        <div className="mx-3 sm:mx-8 mb-10 transition-all duration-1000 animate-in fade-in slide-in-from-top-4">
           <GeneratorHeader
             onOpenHistory={onOpenHistory || (() => { })}
             storeProfile={storeProfile}
