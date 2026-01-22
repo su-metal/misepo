@@ -19,18 +19,13 @@ const getModelName = (isPro: boolean) => {
   return "gemini-2.5-flash";
 };
 
-// Comprehensive Symbol Palette
+// Concise & High-Quality Symbol Templates
 const DECORATION_PALETTE = `
-【Special Symbol Palette (Monochrome Text Symbols)】
-- Hearts/Stars: ❤︎ ❣︎ ❦ ❧ ღ ʚ♥ɞ ⸜❤︎⸝ ෆ ̖́- ಇ ✩ ✪ ✬ ✭ ✮ ✯ ✰ 𖤐˒˒ ꙳ ᛭ * ⸝⋆ ✦ ✧ ✡
-- Flowers/Plants: 𖤣 𖥧 𖥣 𖡡 ❀ ✿ ❉ ❊ ❋ ✻ ✼ ✽ ✾ ⁂ 𓍯 𖦊 ✲ 𖣔 𖡼 ꕤ ꕥ ❁ ✤ ꔛꕤ*｡ﾟ 𖠰 𖥍 𖣰 𖥸 𖦥 𖦞 𖢇 𖧡 ☘︎
-- Expressions/Faces: ☻︎ ☺︎ ☹︎ ◡̈ ⍤ ⍥ Ü ᵕ̈* ⍩ ᐖ ӫ ・ᴗ・ ⍨ ʘʘ ˙꒳​˙ °-° °ㅁ° ⚆ ˃́ꇴ˂ 𖦹‎
-- Animals: 𓃰 𓃱 𓃲 𓃟 𓃠 𓄅 𓃒 𓃗 𓃘 𓃙 𓃜 𓃥 𓃦 𓃵 𓅛 𓅸 𐂂 𓇼 𓆡 𓆛 ᗦ↞◃ 𓅓 𓄿 𓆑 𓅱 𓅿 𓅺 𓎤𓅮
-- Humans/Action: 𓀫 𓀠 𓀡 𓀤 𓁉 ꐕ 𐀪𐁑 𖠋𐀪 𖦔𖠋
-- Arrows: ⇝ ☜╮ ⥿ ⥱ ⇸ ⟲ ⥄ ⥳ ⇍ ↯︎ ⇰ ↬ ➴⡱ ↖︎ ↗︎ ↘︎ ↙︎
-- Frame Pairs (MUST USE AS PAIR): 𓊆 𓊇 ˚.꒰ ꒱.˚ 〖 〗 ☾ ☽ ˹ ˼ ⌜ ⌟ ❮ ❯ ˗ˏˋ ˎˊ˗ ❝ ❞ (e.g. ˗ˏˋ Title ˎˊ˗)
-- Lines/Dividers: ✄————— ｷ ﾘ ﾄ ﾘ —————✄ ✁┈┈┈┈┈┈┈┈┈┈ ✼••┈┈┈┈••✼••┈┈┈┈••✼ ｡.｡:+* ﾟ ゜ﾟ +:｡.｡:+ ﾟ ゜ﾟ +:｡.｡ ♔∴∵∴♔∴∵∴♔∴∵∴♔ ♩.•¨•.¸¸♩.•*¨*•.¸¸ 𓈒 𓏸 𓐍 𓂃 𓈒𓏸 𓂃◌𓈒𓐍 𓈒 ꔛ ০ ﻌﻌﻌ ꕀ 〰️ ꔚ ꕁ ╍ ⌇ ﹏ ￤ 　 𓂃
-- Life/Daily: ☀︎ ☼ ☁︎ ☂︎ ☃
+【Special Symbol Patterns (Use for premium feel)】
+- Title Hooks: ˗ˏˋ [Text] ˎˊ˗ , 〖 [Text] 〗, 𓊆 [Text] 𓊇
+- Dividers: ✼••┈┈┈┈••✼ , 𓂃 𓈒 𓏸 , ✄—————✄
+- Accents: ⸜❤︎⸝ , ✩ , ✦ , ꕤ , ☘︎ , ◡̈
+- List Bullets: ☕︎ , ☀︎ , ⚆ , ӫ
 `;
 
 const KEYWORDS = {
@@ -113,179 +108,98 @@ export const generateContent = async (
   const hasPersonaSamples = !!(currentSample && currentSample.trim());
   const hasLearningSamples = learningSamples && learningSamples.length > 0;
   const hasPersona = hasPersonaSamples || !!(config.customPrompt && config.customPrompt.trim()) || hasLearningSamples;
+  console.debug("[LEARNING] hasPersona:", hasPersona, "hasLearningSamples:", !!hasLearningSamples, "hasPersonaSamples:", hasPersonaSamples);
 
   const buildSystemInstruction = () => {
-    let personaInstructions = "";
+    const isInstagram = config.platform === Platform.Instagram;
+    const isX = config.platform === Platform.X;
+    const isGMap = config.platform === Platform.GoogleMaps;
 
     if (hasPersona) {
-      // --- Persona Mode (High Precision Mimicry) ---
-      let learningContext = "";
-      if (hasLearningSamples) {
-          learningContext = `
-【重要：スタイル学習用データ（厳守）】
-以下は「ユーザーが好む文体見本」です。ここからコピーしてよいのは「文体・口調・リズム・絵文字の頻度」**のみ**です。
-- **禁止**: この見本の中に書かれている「具体的な内容（メニュー名、日付、エピソードなど）」を、今回の生成に混入させることは**絶対禁止**です。
-- **指示**: あくまで「書き方」だけを真似て、内容は「今回のメモ」だけで構成してください。
+      const learningContext = hasLearningSamples ? `
+【文体見本（コピペ禁止・リズムのみ学習）】
 ${learningSamples.join("\n---\n")}
-`;
-      }
+` : "";
+      const personaSampleContext = hasPersonaSamples ? `
+【文体見本（最優先で模倣）】
+${currentSample}
+` : "";
 
-      personaInstructions = `
-あなたは、以下の【過去の投稿ログ】の主になりきる「AI代筆職人」です。
+      return `
+あなたは「店主の魂」を宿したAI代筆職人です。サンプルの「書き癖（エッセンス）」を継承し、今回のメモを魅力的に綴ってください。
 
-以下の3点を、サンプルの「見た目」から正確に盗んでください：
-1. **記号の【密度】**: ログには複数の投稿（---区切り）が含まれています。全ての合計ではなく、**「平均的な1投稿分の量」**を再現してください。
-2. **記号の【種類】**: サンプルにない汎用的な絵文字（🙌✨🥰等）は使用禁止です。サンプルにある特定の文字・記号（♡、♪、🍓等）のみを優先してください。
-3. **行の長さの完全同期（ポエム化の防止）**:
-   - サンプルの**「1行あたりの文字数」**を分析し、それに合わせてください。
-   - **ケースA（長い行）**: サンプルが「20文字前後で改行」している場合、あなたも同様に長く続けてください。
-     - **禁止**: 「読点（、）」の直後で毎回改行することは**厳禁**です。
-     - **禁止**: 「ひとつめは（改行）」「優しい甘さの（改行）」のように、短いフレーズで細かく切る（ポエム風にする）ことは**厳禁**です。
-   - **ケースB（短い行）**: サンプルが「5〜10文字で細かく改行」している場合のみ、あなたも短く切ってください。
+【最優先ルール】
+- 文体/語尾/改行リズム/記号・絵文字密度が最優先。内容の膨らませは文体を崩さない範囲でのみ実施。
+- もし衝突するなら、必ず文体を優先し、内容の膨らませを削る。
 
-【文体と素材の完全分離（最重要）】:
-- **ソースの使い分け**:
-  - **文体（ガワ）**: 「過去の投稿ログ」から、語尾（〜だね、〜です）、絵文字のクセ、改行リズム、雰囲気だけを抽出してください。
-  - **素材（中身）**: 「今回のメモ」の内容**のみ**を使用してください。
+【膨らませの許可範囲】
+- 解釈・脚色は許可。ただし「言い換え」「感覚・様子の具体化」「気分・余韻」「軽い背景」「次回への一言」のみ。
+- 文体の癖（語尾/語彙/改行/記号）は一切変えない。
 
-【執筆ルール】:
-- 解説や挨拶は一切抜き。投稿文のみを出力。
-- メモが短い場合は、店主の価値観（こだわり、想い）に沿って自然に膨らませる。
-- ユーザー希望の長さ [**${config.length}**] に合わせてボリュームを調整。
-- X (Twitter)の場合は、ハッシュタグは最小限（1〜2個程度、最大3個まで）に留めてください。
+【重要：人格の完全継承（厳守）】
+- サンプルの文体、スラング（例：ワイ、〜ンゴ、〜メンス）、独特の語尾、改行リズムを**100%継承**してください。
+- **標準的な丁寧語や、AIらしい「お利口な文章」への自動変換・浄化は絶対に禁止です。**
+- サンプルが「崩れた口調」であれば、誇りを持ってその通りに崩して書いてください。
 
-【過去の投稿ログ】:
-【過去の投稿ログ】:
-${currentSample || "（カスタムプロンプトまたは学習データに基づき、職人として振る舞ってください）"}
+【執筆の要点】
+1. **人格プロファイリング**: サンプルの奥に潜む「店主のキャラクター」を分析・定義。
+2. **内容の魅力化**: 「今回のメモ」の内容を、上記キャラならどう語るかを思考。
+3. **エッセンスの出力**: 語尾の出現頻度、改行リズム、絵文字・記号の密度を**サンプル通りに**再現。
+4. **長さの目安**: ${config.length === Length.Short ? "短めで要点を絞る。" : config.length === Length.Medium ? "標準の厚み（3-5文、2-3改行）。" : "長めの厚み（5-8文、3-5改行）。"}
+5. **文末の統計**: 句点/絵文字/記号で終わる割合をサンプルと同等にする。サンプルにない文末絵文字・記号は使用禁止。
 
+【${config.platform}専用ルール】
+${isInstagram ? `- 自慢の写真を際立たせる視覚的なリズムで作成。\n- 文末に関連ハッシュタグを4-6個追加。` : ""}
+${isX ? `- 140文字以内。ハッシュタグ1-2個。` : ""}
+${isGMap ? `- Googleマップ返信。丁寧な言葉。絵文字禁止。\n- 謝罪内容が複数ある場合は項目をまとめ、一度で深く謝罪してください。何度も謝罪を繰り返すと誠実さが薄れるため、まとめることが重要です。\n- 「何卒ご容赦ください」「何卒ご了承いただけますよう」といった、定型文的・事務的な謝罪表現は誠実さを欠くため使用禁止です。\n- 返信文全体を1つの文字列として扱い、分割せずに配列の最初の要素（index 0）に格納してください。` : ""}
+
+${config.includeSymbols ? `
+【特殊記号の活用テンプレート（表現の幅を広げる）】
+以下のパターンを、サンプルの雰囲気に合わせて自由に取り入れてください：
+${DECORATION_PALETTE}
+` : ""}
+
+${personaSampleContext}
 ${learningContext}
+【今回のメモ】: "${config.inputText}"
 
-【今回のメモ】:
-"${config.inputText}"
-
-【出力形式】:
-要素1つのJSON配列（["本文"]）で出力。
-
-【禁止事項】:
-- **「過去の投稿ログ」にある具体的なエピソード（「大変な道を突き進みます」等の固有フレーズ）のコピペ・流用は厳禁です。**
-- **「短いフレーズでの連続改行（ポエム化）」は、サンプルがそうでない限り厳禁です。**
-- **サンプルに反して「長文の塊」を出力することは禁止です。頻繁に改行してください。**
-- **感嘆符（！や！）と絵文字の併用禁止**: 文末で「！✨」のように重ねず、どちらか一方のみを使用してください。
-`;
-      
-      const combinedPersona = config.customPrompt 
-        ? personaInstructions + `\n【追加のカスタム指示】:\n${config.customPrompt}`
-        : personaInstructions;
-
-      if (config.platform === Platform.GoogleMaps) {
-        return combinedPersona + `\n【Googleマップ特記事項】: 口コミへの返信。丁寧すぎない言葉で。※絵文字・記号禁止。`;
-      }
-      return combinedPersona;
-    }
-
-    // --- Google Maps Reply Mode ---
-    // Detect if this is a reply: starRating exists OR explicit reply purpose
-    const isGMapReply = config.platform === Platform.GoogleMaps && (
-      config.starRating != null || 
-      config.gmapPurpose !== undefined // On Google Maps tab, we always default to reply-style instructions
-    );
-
-    if (isGMapReply) {
-      const basePersona = hasPersona ? personaInstructions : `
-あなたは${profile.name}（${profile.region}/${profile.industry}）のオーナーです。
-丁寧で温かみのあるプロの返信を作成してください。
-`;
-
-      let replyInstructions = `
-${basePersona}
-
-【Googleマップ返信ガイドライン（最優先）】:
-これは「口コミ」への返信です。上記ペルソナを維持しつつ、以下を厳守してください。
-
-1. **徹底した謙虚（自画自賛・事実化の禁止）**:
-   - 自身のことは「スタッフ・私共」と謙称。
-   - お客様の褒め言葉（味、丁寧な説明、技術等）を**語彙そのままに鸚鵡返しするのは禁止**。
-     - 🆖: 「丁寧な説明や専門知識にご信頼いただき…」（自画自賛的）
-     - 🆗: 「少しでもご不安の解消に繋がったのであれば幸いです」「私共の方針がお役に立てて安堵しました」
-   - 自分のサービスの質（丁寧、高い技術等）を店側が定義するのではなく、その結果として客様が**「どう安心したか」**に焦点を当ててください。
-2. **文脈の再構築（脱テンプレート）**:
-   - 言葉をそのまま返さず（14時→遅めのランチ等）、プロらしく言い換え。
-   - 事実の指摘（器が多い、狭い等）は不満でない限り謝罪せず「ご意見」として受諾。
-   - 人気・混雑の言及には「自慢」せず「皆様の支えへの感謝」や「窮屈さへの気遣い」に変換。
-3. **地域・状況への配慮**:
-   - 旅行家と明記がない限り地名挨拶（〇〇にお越しの際は～）は禁止（地元客想定）。
-   - **結び**: ${(config.starRating && config.starRating <= 3) 
-      ? '反省と改善の決意（またのご来店～は禁止）' 
-      : '再来店への純粋な感謝'}で締める。
-4. **学習データの適用**: 文体・リズムは学習データに従い、内容は個別返信に徹する。
-
-【今回のメモ（口コミ内容）】:
-"${config.inputText}"
-${config.starRating ? `(評価: ★${config.starRating})` : ''}
-
-【出力書式（最優先）】:
-- 文章全体を一続きの文字列として、JSON配列の1番目（index:0）にのみ格納してください。
-- 複数の要素を返却（文章の分割）することは**絶対に禁止**です。
-- OK形式: ["挨拶から結びまで全てを繋げた一文"]
-- NG形式: ["挨拶", "中身", "末尾"]
-- **絵文字・ハッシュタグは一切禁止**。3〜5行。
-- 解説や挨拶は一切不要。返信文のみを出力。
-`;
-      return replyInstructions;
-    }
-
-    // --- Standard Mode (Omakase / Plain AI / Promotion) ---
-    let standardInstructions = `
-あなたは、${profile.region}にある${profile.industry}「${profile.name}」のSNS運用を担う「プロのライター」です。
-ユーザーの「メモ」を元に、フォロワーや来店客を惹きつける魅力的で自然な文章を作成してください。
-
-【基本設定】:
-- 店名: ${profile.name}
-- 業種: ${profile.industry}
-- 地域: ${profile.region}
-- 店舗概要: ${profile.description || "なし"}
-
-【執筆ルール】:
-- 解説や挨拶は一切抜き。投稿文のみを出力。
-- 希望の長さ [**${config.length}**] に合わせて構成。
-- **視覚的な読みやすさ（重要）**: 2〜3文ごとに改行を入れ、内容の区切りには空行（1行あき）を設けてください。
-- Instagramの場合は、文末に4-6個の関連ハッシュタグを追加。
-- X (Twitter)の場合は、ハッシュタグは最小限（1〜2個程度、最大3個まで）に留めてください。
-
-【ビジュアル・構成イメージ】:
-リード文（キャッチーに）
-（空行）
-詳細やこだわり
-（空行）
-予約やアクセスの案内
-
-【スタイル・記号のルール】:
-- **感嘆符（！や！）と絵文字の併用禁止**: 文末は「！✨」とせず、「！」または「✨」のどちらか一方のみを使用してください。
-- ${config.includeEmojis !== false ? '絵文字を適度に使用し、明るい雰囲気に。' : '絵文字は使用しないでください。'}
-- ${config.includeSymbols ? `以下のパレットの記号を効果的に使用して、プレミアムな雰囲気を演出してください：\n${DECORATION_PALETTE}` : '特殊な記号（✧や✄等）は使用しないでください。'}
-
-【今回のメモ】:
-"${config.inputText}"
-
-【出力形式】:
+【禁止事項（厳守）】
+- **AIの思考プロセスの出力禁止**: 「〜しちゃいましたっ…じゃなくて、〜」といった独り言や自己修正は絶対に含めないでください。完成文のみを出力。
+- **語尾の最適化**: サンプル全体のすべての文末を分析し、各語尾の出現率（％）を再現してください。サンプルにない「っ」を文末に付け足さないでください。
 要素1つのJSON配列（["本文"]）で出力。
 `;
-
-    if (config.platform === Platform.GoogleMaps) {
-      standardInstructions += `
-\n【Googleマップ特記事項（重要）】:
-- 口コミへの返信です。丁寧で真摯な言葉遣いで。
-- **謙譲語の徹底**: お客様が「店員さん」「奥様」と書かれていても、返信では「スタッフ」「妻」と謙譲語に変換してください。
-- **地域への配慮**: お客様が旅行者であると明記していない限り、「〇〇にお越しの際は」等の遠方者向け挨拶は避け、「またのご来店をお待ちしております」等の汎用メッセージを使用してください。
-- ※絵文字・ハッシュタグは一切使用禁止。
-`;
     }
 
-    return standardInstructions;
+    // Standard Omakase Mode
+    return `
+あなたは「${profile.name}」のSNS運用を行うプロのライターです。メモを元に魅力的な${config.platform}投稿を作成してください。
+
+【執筆ルール】
+- 希望の長さ [**${config.length}**] に従う。
+- 解説や挨拶なし、本文のみ。
+- 長さの目安: ${config.length === Length.Short ? "短めで要点を絞る。" : config.length === Length.Medium ? "標準の厚み（3-5文、2-3改行）。" : "長めの厚み（5-8文、3-5改行）。"}
+- ${isInstagram ? '視覚的な読みやすさを重視（2-3文で改行）。ハッシュタグ4-6個。' : ''}
+${isX ? '140文字以内で要点を凝縮。ハッシュタグ1-2個。' : ''}
+${isGMap ? 'Googleマップ返信。丁寧な言葉。絵文字禁止。複数の不手際がある場合は項目をまとめ、一度で丁寧に謝罪してください。「何卒ご容赦ください」等の定型表現は避け、誠意の伝わる言葉を選んでください。必ず配列の最初の1要素のみ（["返信文全体"]）で出力してください。' : ''}
+${config.includeSymbols ? `【記号の活用型】\n${DECORATION_PALETTE}` : ""}
+
+【今回のメモ】: "${config.inputText}"
+
+【禁止事項（厳守）】
+- **AIの思考プロセスの出力禁止**: 「〜しちゃいましたっ…じゃなくて、〜」といった独り言や自己修正は絶対に含めないでください。完成文のみを出力。
+要素1つのJSON配列（["本文"]）で出力。
+`;
   };
 
   const ai = getServerAI();
   const systemInstruction = buildSystemInstruction();
+  const promptSize = {
+    systemChars: systemInstruction.length,
+    userChars: (config.inputText || "").length,
+    learningSamplesChars: (learningSamples || []).join("\n---\n").length,
+    postSamplesChars: currentSample ? currentSample.length : 0,
+  };
+  console.debug("[PROMPT] sizes:", promptSize);
 
   const attemptGeneration = async (userPrompt: string): Promise<string[]> => {
     const response = await ai.models.generateContent({
@@ -295,8 +209,8 @@ ${config.starRating ? `(評価: ★${config.starRating})` : ''}
         systemInstruction,
         responseMimeType: "application/json",
         responseSchema: contentSchema,
-        temperature: hasPersona ? 1.0 : 0.7, // Increase temperature for persona matching
-        topP: 0.95,
+        temperature: hasPersona ? 0.3 : 0.6,
+        topP: 0.9,
       },
     });
 
@@ -364,34 +278,24 @@ export const refineContent = async (
   const systemInstruction = `
 You are an AI editor refining a social media post for "${profile.name}".
 Original Platform: ${config.platform}
-Tone: ${config.tone}
 
 ${hasPersona ? `
-**CRITICAL: PERSONA PRESERVATION MODE (Must Follow)**
-The original text is written in a specific STRONG PERSONA (e.g., dialect, specific slang like "ンゴ/クレメンス", unique sentence endings).
-You must **PRESERVE THE ORIGINAL VOICE 100%**.
-- **DO NOT** normalize the text to standard/polite Japanese.
-- **DO NOT** remove slang, informal endings, or specific character quirks.
-- **DO NOT** change the rhythm or density of symbols unless explicitly asked.
-- **ONLY** make changes required by the user's specific instruction.
-
-**Reference Style (Sample)**:
-"${sampleText}"
+**CRITICAL: PERSONA PRESERVATION MODE**
+Maintain the original "Voice" (slang, sentence endings, rhythm) 100%. 
+ONLY apply the user's specific instruction.
+Reference Style: "${sampleText}"
 ` : `
-**Role**: You are a minimal interference editor. 
-- Maintain the original "Voice" and "Vibe" of the text exactly. 
-- If the original uses slang or casual language, KEEP IT.
-- If the original is formal, KEEP IT.
-- Do NOT rewrite the entire post; only modify the parts necessary to fulfill the instruction.
+**Role**: Minimal interference editor. 
+Maintain the original voice exactly. Only modify what is requested.
 `}
 
-**Formatting Rules:**
-1. ${config.platform === Platform.X && config.xConstraint140 ? "MUST be under 140 characters." : ""}
-2. If Instagram: Keep hashtags.
-3. ${config.platform === Platform.GoogleMaps ? "If Google Maps: Do NOT use emojis." : ""}
+**Formatting Rules for ${config.platform}:**
+${config.platform === Platform.X && config.xConstraint140 ? "- MUST be under 140 characters." : ""}
+${config.platform === Platform.Instagram ? "- Keep hashtags intact." : ""}
+${config.platform === Platform.GoogleMaps ? "- Do NOT use emojis or hashtags." : ""}
 
-**Style Constraint (CRITICAL):**
-- **Do NOT combine exclamation marks (! or ！) with emojis at the end of a sentence.**
+**Style Constraint:**
+- Do NOT combine exclamation marks (! or ！) with emojis at the end of a sentence.
 - Choose ONLY ONE: either an exclamation mark OR an emoji.
 `;
 

@@ -6,7 +6,6 @@ import { AutoResizingTextarea } from './AutoResizingTextarea';
 import { RefinePanel } from './RefinePanel';
 import { PostPreviewModal } from './PostPreviewModal';
 import { CopyIcon, CrownIcon, MagicWandIcon, RotateCcwIcon, ExternalLinkIcon, EyeIcon, SparklesIcon, StarIcon } from '../../Icons';
-
 interface PostResultTabsProps {
     results: GeneratedResult[];
     activeTab: number;
@@ -26,7 +25,9 @@ interface PostResultTabsProps {
     isRefining: boolean;
     includeFooter: boolean;
     onIncludeFooterChange: (val: boolean) => void;
-    presetId?: string; // Add presetId
+    presetId?: string;
+    favorites: Set<string>;
+    onToggleFavorite: (text: string, platform: Platform, presetId: string | null) => Promise<void>;
 }
 
 export const PostResultTabs: React.FC<PostResultTabsProps> = ({
@@ -49,6 +50,8 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
     includeFooter,
     onIncludeFooterChange,
     presetId,
+    favorites,
+    onToggleFavorite,
 }) => {
     const [previewState, setPreviewState] = React.useState<{ isOpen: boolean, platform: Platform, text: string } | null>(null);
 
@@ -231,7 +234,9 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                             <FavoriteButton
                                                                 platform={res.platform}
                                                                 text={text}
-                                                                presetId={presetId}
+                                                                presetId={presetId || null}
+                                                                isFavorited={favorites.has(text.trim())}
+                                                                onToggle={onToggleFavorite}
                                                             />
                                                         </div>
                                                         <div className="bg-black/5 px-4 py-1.5 rounded-xl border border-black/10">
@@ -330,42 +335,26 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
     );
 };
 
-const FavoriteButton = ({ platform, text, presetId }: { platform: Platform, text: string, presetId?: string }) => {
-    const [isFavorited, setIsFavorited] = React.useState(false);
+const FavoriteButton = ({
+    platform, text, presetId, isFavorited, onToggle
+}: {
+    platform: Platform, text: string, presetId: string | null, isFavorited: boolean, onToggle: (text: string, platform: Platform, presetId: string | null) => Promise<void>
+}) => {
     const [isLoading, setIsLoading] = React.useState(false);
 
     const handleToggle = async () => {
         if (isLoading) return;
 
-        if (!presetId) {
-            alert("プリセットが選択されていません");
+        if (presetId === undefined) {
+            alert("プリセットが取得できていないため保存できません");
             return;
         }
 
         setIsLoading(true);
-
-        const newState = !isFavorited;
-        // Optimistic update
-        setIsFavorited(newState);
-
         try {
-            const method = newState ? 'POST' : 'DELETE';
-            let url = '/api/me/learning';
-            if (!newState) {
-                const params = new URLSearchParams({ content: text }); // DELETE needs content to identify
-                url += `?${params.toString()}`;
-            }
-
-            const res = await fetch(url, {
-                method,
-                headers: { 'Content-Type': 'application/json' },
-                body: newState ? JSON.stringify({ content: text, platform, presetId }) : undefined
-            });
-
-            if (!res.ok) throw new Error('Failed');
+            await onToggle(text, platform, presetId);
         } catch (e) {
             console.error(e);
-            setIsFavorited(!newState); // Revert
         } finally {
             setIsLoading(false);
         }
@@ -379,6 +368,7 @@ const FavoriteButton = ({ platform, text, presetId }: { platform: Platform, text
                 : 'bg-black/5 text-black/40 border-black/5 hover:border-black/20 hover:text-black'
                 }`}
             title={isFavorited ? "お気に入り解除" : "お気に入り（学習データに追加）"}
+            disabled={isLoading}
         >
             <StarIcon
                 className={`w-4 h-4 transition-all duration-300 ${isFavorited ? 'fill-black text-black scale-110' : 'text-black/20 group-hover:text-black'}`}

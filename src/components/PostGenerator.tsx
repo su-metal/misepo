@@ -20,10 +20,12 @@ interface PostGeneratorProps {
   refreshPresets: () => Promise<void>;
   onGenerateSuccess: (post: GeneratedPost) => void;
   onTaskComplete: () => void;
+  favorites: Set<string>;
+  onToggleFavorite: (text: string, platform: Platform, presetId: string | null) => Promise<void>;
   restorePost?: GeneratedPost | null;
   onOpenGuide?: () => void;
   onOpenSettings: () => void;
-  onOpenHistory?: () => void; // Added onOpenHistory
+  onOpenHistory?: () => void;
   onLogout: () => void;
   plan: UserPlan;
   resetResultsTrigger?: number;
@@ -33,14 +35,14 @@ interface PostGeneratorProps {
 const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
   const {
     storeProfile, isLoggedIn, onOpenLogin, presets,
-    onGenerateSuccess, onTaskComplete, restorePost,
+    onGenerateSuccess, onTaskComplete, favorites, onToggleFavorite, restorePost,
     onOpenGuide, onOpenSettings, onOpenHistory, onLogout,
-    plan, resetResultsTrigger, shouldShowTour // Destructured onOpenHistory, onLogout, plan
+    plan, resetResultsTrigger, shouldShowTour
   } = props;
 
   const flow = useGeneratorFlow({
     storeProfile, isLoggedIn, onOpenLogin,
-    onGenerateSuccess, onTaskComplete, restorePost,
+    onGenerateSuccess, onTaskComplete, favorites, onToggleFavorite, restorePost,
     resetResultsTrigger
   });
 
@@ -120,7 +122,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
 
       <div className="max-w-[1400px] mx-auto py-4 sm:py-8 relative z-10">
         {/* Header Module */}
-        <div className="mx-3 sm:mx-8 mb-6 transition-all duration-1000 animate-in fade-in slide-in-from-top-4">
+        <div className="mx-3 sm:mx-8 mb-10 transition-all duration-1000 animate-in fade-in slide-in-from-top-4">
           <GeneratorHeader
             onOpenHistory={onOpenHistory || (() => { })}
             storeProfile={storeProfile}
@@ -128,22 +130,6 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
           />
         </div>
 
-        {/* Usage Guide Link - Between Header and Input */}
-        {onOpenGuide && (
-          <div className="flex justify-end mb-4 px-3 sm:px-8">
-            <button
-              onClick={onOpenGuide}
-              className="flex items-center gap-2 text-slate-400 hover:text-[#001738] transition-colors text-xs font-bold"
-            >
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="10" />
-                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-                <path d="M12 17h.01" />
-              </svg>
-              <span>使い方ガイド</span>
-            </button>
-          </div>
-        )}
 
         {/* 2-Column Layout */}
         <div className="px-1 sm:px-8 grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
@@ -187,6 +173,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
                 onOpenPresetModal={() => setIsPresetModalOpen(true)}
                 customPrompt={flow.customPrompt}
                 onCustomPromptChange={flow.setCustomPrompt}
+                onOpenGuide={onOpenGuide}
               />
             </div>
           </div>
@@ -200,8 +187,8 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
                 onTabChange={flow.setActiveTab}
                 onManualEdit={flow.handleManualEdit}
                 onToggleFooter={flow.handleToggleFooter}
-                onRefine={() => { }}
-                onRegenerateSingle={(p) => flow.performGeneration([p], true)}
+                onRefine={flow.performRefine}
+                onRegenerateSingle={(platform) => flow.performGeneration([platform], true)}
                 onShare={flow.handleShare}
                 getShareButtonLabel={getShareButtonLabel}
                 storeProfile={storeProfile}
@@ -213,7 +200,9 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
                 isRefining={flow.isRefining}
                 includeFooter={flow.includeFooter}
                 onIncludeFooterChange={flow.setIncludeFooter}
-                presetId={flow.activePresetId}
+                presetId={flow.activePresetId || undefined}
+                favorites={flow.favorites}
+                onToggleFavorite={flow.onToggleFavorite}
               />
             </div>
           </div>

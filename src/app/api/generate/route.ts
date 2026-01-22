@@ -109,6 +109,7 @@ export async function POST(req: Request) {
 
   // Extract presetId from body (it's passed as part of generation context)
   const presetId = body.presetId as string | undefined;
+  console.debug("[LEARNING] Request presetId:", presetId ?? "none");
 
   console.debug("Generating content for user", userId);
 
@@ -117,6 +118,23 @@ export async function POST(req: Request) {
     
     // Fetch learning sources (favorites) - Filter by presetId
     let learningSamples: string[] = [];
+    if (userId) {
+      const { data: presetRows, error: presetErr } = await supabase
+        .from("learning_sources")
+        .select("preset_id")
+        .eq("user_id", userId);
+
+      if (presetErr) {
+        console.warn("[LEARNING] Failed to fetch preset summary:", presetErr.message);
+      } else if (presetRows) {
+        const counts = presetRows.reduce<Record<string, number>>((acc, row: any) => {
+          const key = row.preset_id || "null";
+          acc[key] = (acc[key] || 0) + 1;
+          return acc;
+        }, {});
+        console.debug("[LEARNING] Preset sample counts:", counts);
+      }
+    }
     if (userId && presetId) {
       const { data: learningData } = await supabase
         .from('learning_sources')
@@ -129,7 +147,11 @@ export async function POST(req: Request) {
       if (learningData && learningData.length > 0) {
         learningSamples = learningData.map((item: any) => item.content);
         console.log(`[LEARNING] Fetched ${learningSamples.length} favorited samples for preset ${presetId}`);
+      } else {
+        console.warn(`[LEARNING] No samples found for preset ${presetId}`);
       }
+    } else {
+      console.warn("[LEARNING] Skipped fetch (missing userId or presetId)");
     }
 
     const result = await generateContent(profile, config, isPro, learningSamples);

@@ -92,7 +92,7 @@ export default function HeroSection() {
                             <span className="gradient-text">あなたの言葉。</span>
                         </h1>
                         <p className="text-base text-black font-bold leading-relaxed px-2 mb-6">
-                            丁寧すぎて恥ずかしいAIは卒業。MisePoはあなたの「書き癖」を学習し、店主の『分身』としてSNS運用を代行します。
+                            丁寧すぎて恥ずかしいAIは卒業。MisePoはあなたのお手本から「書き癖」を学習し、店主の『分身』としてSNS運用を代行します。
                         </p>
                         <div className="flex flex-col gap-4 max-w-sm mx-auto mt-4 px-4">
                             <button onClick={() => window.location.href = '/start'} className="neo-brutalism-button w-full px-6 py-4 bg-[#4DB39A] text-white font-black hover:bg-black transition-all flex items-center justify-center gap-2">
@@ -119,7 +119,7 @@ export default function HeroSection() {
                             <span className="gradient-text">あなたの言葉。</span>
                         </h1>
                         <p className="text-xl text-black font-bold leading-relaxed mb-10 max-w-lg">
-                            丁寧すぎて恥ずかしいAIは卒業。MisePoはあなたの「書き癖」を学習し、常連さんが読んでも違和感のない文章を30秒で作成。店主の『分身』が、運用を代行します。
+                            丁寧すぎて恥ずかしいAIは卒業。MisePoはあなたのお手本から「書き癖」を学習し、常連さんが読んでも違和感のない文章を30秒で作成。店主の『分身』が、運用を代行します。
                         </p>
                         <div className="flex gap-4">
                             <button onClick={() => window.location.href = '/start'} className="neo-brutalism-button px-8 py-5 bg-[#4DB39A] text-white font-black hover:bg-black transition-all flex items-center gap-2">
