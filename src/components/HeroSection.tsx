@@ -131,8 +131,8 @@ export default function HeroSection() {
                     </div>
 
                     {/* Phone Animation Container */}
-                    <div className="relative mt-12 md:mt-0 h-[400px] md:h-auto md:absolute md:inset-0 md:left-[55%] lg:left-[50%] flex items-start md:items-center justify-center pointer-events-none w-full md:w-auto">
-                        <div className="relative w-[300px] h-[600px] scale-[0.6] md:scale-[0.75] lg:scale-[0.85] xl:scale-100 origin-top md:origin-center mx-auto">
+                    <div className="relative mt-16 md:mt-0 h-[400px] md:h-auto md:absolute md:inset-0 md:left-[55%] lg:left-[50%] flex items-start md:items-center justify-center pointer-events-none w-full md:w-auto">
+                        <div className="relative w-[300px] h-[600px] scale-[0.8] md:scale-[0.75] lg:scale-[0.85] xl:scale-100 origin-top md:origin-center mx-auto">
 
                             {/* CENTER PHONE (MisePo) */}
                             <div
