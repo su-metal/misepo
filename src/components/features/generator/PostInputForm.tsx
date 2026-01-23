@@ -71,6 +71,7 @@ interface PostInputFormProps {
     language: string;
     onLanguageChange: (val: string) => void;
     onOpenGuide?: () => void;
+    hasResults?: boolean;
 }
 
 const PURPOSES = [
@@ -138,7 +139,8 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
     onCustomPromptChange,
     language,
     onLanguageChange,
-    onOpenGuide
+    onOpenGuide,
+    hasResults = false
 }) => {
     const textareaRef = React.useRef<HTMLTextAreaElement>(null);
     const [isPromptExpanded, setIsPromptExpanded] = React.useState(!!customPrompt);

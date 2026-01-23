@@ -254,14 +254,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
 
                                                     {/* Actions Grid */}
                                                     <div className="flex flex-col gap-4">
-                                                        <div className="grid grid-cols-2 gap-4">
-                                                            <button
-                                                                onClick={() => onRegenerateSingle(res.platform)}
-                                                                className="flex items-center justify-center gap-3 py-4 rounded-[20px] bg-white border-2 border-black/10 text-[11px] font-black text-black/40 hover:text-black hover:border-black transition-all uppercase tracking-[0.2em]"
-                                                            >
-                                                                <RotateCcwIcon className="w-5 h-5" />
-                                                                <span>再生成</span>
-                                                            </button>
+                                                        <div className="grid grid-cols-1 gap-4">
                                                             <button
                                                                 onClick={() => setPreviewState({ isOpen: true, platform: res.platform, text })}
                                                                 className="flex items-center justify-center gap-3 py-4 rounded-[20px] bg-black/5 text-[11px] font-black text-black/60 border-2 border-black/10 hover:border-black hover:text-black hover:bg-white transition-all uppercase tracking-[0.2em]"
