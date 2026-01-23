@@ -77,7 +77,7 @@ export default function HeroSection() {
     return (
         <div className="relative z-10 h-auto">
             <div
-                className="relative min-h-screen h-auto w-full overflow-hidden flex flex-col md:block bg-[#fceee3] pb-20 md:pb-0"
+                className="relative min-h-screen h-auto w-full overflow-hidden flex flex-col md:block bg-[#fceee3] pb-32 md:pb-0"
             >
 
                 <div className="max-w-7xl mx-auto w-full h-full relative px-4 flex flex-col md:block">
@@ -131,7 +131,7 @@ export default function HeroSection() {
                     </div>
 
                     {/* Phone Animation Container */}
-                    <div className="relative mt-16 md:mt-0 h-[400px] md:h-auto md:absolute md:inset-0 md:left-[55%] lg:left-[50%] flex items-start md:items-center justify-center pointer-events-none w-full md:w-auto">
+                    <div className="relative mt-12 md:mt-0 h-[450px] md:h-auto md:absolute md:inset-0 md:left-[55%] lg:left-[50%] flex items-start md:items-center justify-center pointer-events-none w-full md:w-auto">
                         <div className="relative w-[300px] h-[600px] scale-[0.8] md:scale-[0.75] lg:scale-[0.85] xl:scale-100 origin-top md:origin-center mx-auto">
 
                             {/* CENTER PHONE (MisePo) */}
