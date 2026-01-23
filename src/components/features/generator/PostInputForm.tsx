@@ -315,11 +315,11 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                     <span>設定・管理</span>
                                 </button>
                             </div>
-                            <div className="grid grid-cols-2 gap-3 md:gap-4 w-full flex-1 h-full auto-rows-fr">
-                                {/* Plain AI Option */}
+                            <div className="grid grid-cols-2 gap-3 md:gap-4 w-full">
+                                {/* Slot 1: Omakase */}
                                 <button
                                     onClick={() => onApplyPreset({ id: 'plain-ai' } as any)}
-                                    className={`group relative py-3 px-3 rounded-[20px] transition-all duration-300 flex flex-col items-center justify-center gap-2 border-2
+                                    className={`group relative h-[100px] sm:h-[120px] px-3 rounded-[24px] transition-all duration-300 flex flex-col items-center justify-center gap-2 border-2
                                                 ${!activePresetId
                                             ? 'bg-[#4DB39A] text-black border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -translate-y-[2px]'
                                             : 'bg-black/5 shadow-sm hover:bg-black/10 text-black/40 hover:text-black border-black/10 hover:border-black/20'}
@@ -331,31 +331,76 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                     <span className={`text-[12px] md:text-[14px] font-black truncate tracking-wide text-center w-full ${!activePresetId ? 'text-black' : 'text-black/40'}`}>おまかせ</span>
                                 </button>
 
-                                {presets.map((p, idx) => {
-                                    const isSelected = activePresetId === p.id;
-                                    // Cycle colors for profiles: Rose, Lavender, Gold
-                                    const colors = ['bg-[#E88BA3]', 'bg-[#9B8FD4]', 'bg-[#F5CC6D]'];
-                                    const bgColor = colors[idx % colors.length];
+                                {/* Slots 2-4: Custom Presets, Add Trigger, or Info */}
+                                {(() => {
+                                    const customPresets = presets.slice(0, 3);
+                                    const slots = [];
 
-                                    return (
-                                        <button
-                                            key={p.id}
-                                            onClick={() => onApplyPreset(p)}
-                                            className={`group relative py-3 px-3 rounded-[20px] transition-all duration-300 flex flex-col items-center justify-center gap-2 border-2
-                                                        ${isSelected
-                                                    ? `${bgColor} text-black border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -translate-y-[2px]`
-                                                    : 'bg-black/5 shadow-sm hover:bg-black/10 text-black/40 hover:text-black border-black/10 hover:border-black/20'}
-                                                    `}
-                                        >
-                                            <span className={`text-2xl transition-transform duration-300 group-hover:scale-110 ${isSelected ? 'opacity-100' : 'opacity-40 grayscale group-hover:grayscale-0'}`}>
-                                                {renderAvatar(p.avatar, "w-6 h-6")}
-                                            </span>
-                                            <span className={`text-[12px] md:text-[14px] font-black truncate tracking-wide text-center w-full ${isSelected ? 'text-black' : 'text-black/40'}`}>
-                                                {p.name}
-                                            </span>
-                                        </button>
-                                    );
-                                })}
+                                    // Add custom presets
+                                    customPresets.forEach((p, idx) => {
+                                        const isSelected = activePresetId === p.id;
+                                        const colors = ['bg-[#E88BA3]', 'bg-[#9B8FD4]', 'bg-[#F5CC6D]'];
+                                        const bgColor = colors[idx % colors.length];
+
+                                        slots.push(
+                                            <button
+                                                key={p.id}
+                                                onClick={() => onApplyPreset(p)}
+                                                className={`group relative h-[100px] sm:h-[120px] px-3 rounded-[24px] transition-all duration-300 flex flex-col items-center justify-center gap-2 border-2
+                                                            ${isSelected
+                                                        ? `${bgColor} text-black border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -translate-y-[2px]`
+                                                        : 'bg-black/5 shadow-sm hover:bg-black/10 text-black/40 hover:text-black border-black/10 hover:border-black/20'}
+                                                        `}
+                                            >
+                                                <span className={`text-2xl transition-transform duration-300 group-hover:scale-110 ${isSelected ? 'opacity-100' : 'opacity-40 grayscale group-hover:grayscale-0'}`}>
+                                                    {renderAvatar(p.avatar, "w-6 h-6")}
+                                                </span>
+                                                <span className={`text-[12px] md:text-[14px] font-black truncate tracking-wide text-center w-full ${isSelected ? 'text-black' : 'text-black/40'}`}>
+                                                    {p.name}
+                                                </span>
+                                            </button>
+                                        );
+                                    });
+
+                                    // Add 'Add New' trigger if there's room
+                                    if (slots.length < 3) {
+                                        slots.push(
+                                            <button
+                                                key="add-new"
+                                                onClick={onOpenPresetModal}
+                                                className="group relative h-[100px] sm:h-[120px] px-3 rounded-[24px] transition-all duration-300 flex flex-col items-center justify-center gap-2 border-2 border-dashed border-black/20 bg-black/[0.02] hover:bg-black/5 hover:border-black/40 text-black/20 hover:text-black/60 transition-all active:scale-95"
+                                            >
+                                                <div className="w-8 h-8 rounded-full bg-white border-2 border-current flex items-center justify-center">
+                                                    <span className="text-xl font-black">+</span>
+                                                </div>
+                                                <span className="text-[10px] sm:text-[12px] font-black tracking-widest uppercase">プロフィール登録</span>
+                                            </button>
+                                        );
+                                    }
+
+                                    // Fill remaining with info slots
+                                    let infoIndex = 0;
+                                    const infoMessages = [
+                                        "あなたの投稿スタイルを学習して自動で再現します",
+                                        "過去の投稿を登録して、独自の個性をAIに学習させましょう"
+                                    ];
+
+                                    while (slots.length < 3) {
+                                        slots.push(
+                                            <div
+                                                key={`info-${infoIndex}`}
+                                                className="h-[100px] sm:h-[120px] rounded-[24px] bg-black/[0.01] border-2 border-black/5 p-4 flex items-center justify-center text-center group"
+                                            >
+                                                <p className="text-[9px] sm:text-[10px] font-bold text-black/10 leading-relaxed tracking-tighter group-hover:text-black/20 transition-colors">
+                                                    {infoMessages[infoIndex] || "お気に入りのスタイルを登録してください"}
+                                                </p>
+                                            </div>
+                                        );
+                                        infoIndex++;
+                                    }
+
+                                    return slots;
+                                })()}
                             </div>
                         </div>
 
