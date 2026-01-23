@@ -5,7 +5,7 @@ import { CharCounter } from './CharCounter';
 import { AutoResizingTextarea } from './AutoResizingTextarea';
 import { RefinePanel } from './RefinePanel';
 import { PostPreviewModal } from './PostPreviewModal';
-import { CopyIcon, CrownIcon, MagicWandIcon, RotateCcwIcon, ExternalLinkIcon, EyeIcon, SparklesIcon, StarIcon } from '../../Icons';
+import { CopyIcon, CrownIcon, MagicWandIcon, RotateCcwIcon, ExternalLinkIcon, EyeIcon, SparklesIcon } from '../../Icons';
 interface PostResultTabsProps {
     results: GeneratedResult[];
     activeTab: number;
@@ -372,7 +372,7 @@ const FavoriteButton = ({
         <button
             onClick={handleToggle}
             className={`group flex items-center gap-2 px-3 py-2 rounded-xl transition-all border-2 shadow-sm ${isTrained
-                ? 'bg-[#F5CC6D] text-black border-black/10'
+                ? 'bg-indigo-50 text-indigo-600 border-indigo-200 shadow-indigo-100'
                 : 'bg-black/5 text-black/40 border-black/5 hover:border-black/20 hover:text-black'
                 }`}
             title={isTrained ? "学習を解除" : "AIに文体を学習させる"}

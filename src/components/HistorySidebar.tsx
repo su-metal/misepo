@@ -1,6 +1,6 @@
 import React from 'react';
 import { GeneratedPost, Platform, GeneratedResult, StoreProfile } from '../types';
-import { CloseIcon, XIcon, InstagramIcon, GoogleMapsIcon, LockIcon, TrashIcon, HistoryIcon, HelpIcon, LogOutIcon, ChevronDownIcon, StarIcon, PinIcon, MagicWandIcon } from './Icons';
+import { CloseIcon, XIcon, InstagramIcon, GoogleMapsIcon, LockIcon, TrashIcon, HistoryIcon, HelpIcon, LogOutIcon, ChevronDownIcon, PinIcon, MagicWandIcon } from './Icons';
 
 interface HistorySidebarProps {
   history: GeneratedPost[];
@@ -266,33 +266,28 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                         <PinIcon className="w-4 h-4" fill={item.isPinned ? "currentColor" : "none"} />
                       </button>
 
-                      {/* Favorite Button */}
+                      {/* Training Button */}
                       {firstResult && (
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            // Logic: If already favorited (any text), we assume user wants to UNFAVORITE the matched one(s).
-                            // Ideally we find WHICH one is favorited.
                             if (isFavorited) {
-                              // Find the text that is favorited
                               const allTexts = item.results.flatMap(r => r.data || []);
                               const favoritedText = allTexts.find(t => favorites.has(t?.trim()));
                               if (favoritedText) {
                                 onToggleFavorite(favoritedText.trim(), primaryPlatform, item.config.presetId || null);
                               }
                             } else {
-                              // If not favorited, favorite the primary/preview text
                               onToggleFavorite(firstResult.trim(), primaryPlatform, item.config.presetId || null);
                             }
                           }}
                           className={`absolute bottom-6 right-6 w-9 h-9 flex items-center justify-center rounded-full border transition-all shadow-sm z-20 ${isFavorited
-                            ? 'bg-white border-yellow-200 text-yellow-500 shadow-yellow-100'
-                            : 'bg-white border-slate-100 text-slate-300 hover:text-yellow-400 hover:border-yellow-200 opacity-0 group-hover:opacity-100 transform scale-90 group-hover:scale-100'
+                            ? 'bg-white border-indigo-200 text-indigo-500 shadow-indigo-100'
+                            : 'bg-white border-slate-100 text-slate-300 hover:text-indigo-400 hover:border-indigo-200 opacity-0 group-hover:opacity-100 transform scale-90 group-hover:scale-100'
                             }`}
                         >
-                          <StarIcon
+                          <MagicWandIcon
                             className="w-4 h-4"
-                            fill={isFavorited ? "currentColor" : "none"}
                           />
                         </button>
                       )}
