@@ -1,5 +1,5 @@
 import React from 'react';
-import { GeneratedPost, Platform, GeneratedResult, StoreProfile } from '../types';
+import { GeneratedPost, Platform, GeneratedResult, StoreProfile, TrainingItem, Preset } from '../types';
 import { CloseIcon, XIcon, InstagramIcon, GoogleMapsIcon, LockIcon, TrashIcon, HistoryIcon, HelpIcon, LogOutIcon, ChevronDownIcon, PinIcon, MagicWandIcon } from './Icons';
 
 interface HistorySidebarProps {
@@ -16,6 +16,8 @@ interface HistorySidebarProps {
   onLogout?: () => void;
   storeProfile?: StoreProfile | null;
   favorites: Set<string>;
+  trainingItems?: TrainingItem[];
+  presets?: Preset[];
   onToggleFavorite: (text: string, platform: Platform, presetId: string | null) => Promise<void>;
   onTogglePin: (id: string, isPinned: boolean) => Promise<void>;
 }
@@ -34,6 +36,8 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
   onLogout,
   storeProfile,
   favorites,
+  trainingItems = [],
+  presets = [],
   onToggleFavorite,
   onTogglePin
 }) => {
@@ -55,14 +59,17 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
     return "";
   };
 
-  // Helper to check if ANY text in the history item is favorited
-  const checkIfFavorited = React.useCallback((item: GeneratedPost) => {
-    if (!item.results) return false;
-    // Flatten all data arrays
+  const getTrainedItem = React.useCallback((item: GeneratedPost) => {
+    if (!item.results) return null;
     const allTexts = item.results.flatMap(r => r.data || []);
-    // Check if any text is in favorites (using trim for robustness)
-    return allTexts.some(text => text && favorites.has(text.trim()));
-  }, [favorites]);
+    const matchingText = allTexts.find(text => text && favorites.has(text.trim()));
+    if (!matchingText) return null;
+    return trainingItems.find(ti => ti.content.trim() === matchingText.trim());
+  }, [favorites, trainingItems]);
+
+  const checkIfFavorited = React.useCallback((item: GeneratedPost) => {
+    return !!getTrainedItem(item);
+  }, [getTrainedItem]);
 
   const displayHistory = React.useMemo(() => {
     let base = history;
@@ -239,9 +246,22 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                               {getPlatformIcon(p)}
                             </span>
                           ))}
-                          <span className="ml-auto text-[10px] font-black text-slate-300 uppercase tracking-widest bg-slate-50 px-2 py-1 rounded-full">
-                            {new Date(item.timestamp).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
-                          </span>
+                          <div className="ml-auto flex items-center gap-2">
+                            {isFavorited && (
+                              <div className="px-2 py-1 bg-indigo-50/50 border border-indigo-100 rounded-xl animate-in fade-in slide-in-from-right-2 duration-300">
+                                <span className="text-[9px] font-black text-indigo-600 uppercase tracking-tight whitespace-nowrap">
+                                  {(() => {
+                                    const ti = getTrainedItem(item);
+                                    const preset = presets.find(p => p.id === ti?.presetId);
+                                    return preset?.name || (ti?.presetId === 'omakase' ? 'おまかせ' : 'Trained');
+                                  })()}
+                                </span>
+                              </div>
+                            )}
+                            <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest bg-slate-50 px-2 py-1 rounded-full">
+                              {new Date(item.timestamp).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                            </span>
+                          </div>
                         </div>
                         <p className="text-xs text-slate-600 font-bold line-clamp-2 leading-relaxed opacity-80 group-hover:opacity-100 group-hover:text-slate-800 transition-colors">
                           {previewText}
@@ -268,28 +288,28 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
 
                       {/* Training Button */}
                       {firstResult && (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (isFavorited) {
-                              const allTexts = item.results.flatMap(r => r.data || []);
-                              const favoritedText = allTexts.find(t => favorites.has(t?.trim()));
-                              if (favoritedText) {
-                                onToggleFavorite(favoritedText.trim(), primaryPlatform, item.config.presetId || null);
+                        <div className="absolute bottom-6 right-6 flex flex-col items-end gap-2 group/training z-20">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (isFavorited) {
+                                const allTexts = item.results.flatMap(r => r.data || []);
+                                const favoritedText = allTexts.find(t => favorites.has(t?.trim()));
+                                if (favoritedText) {
+                                  onToggleFavorite(favoritedText.trim(), primaryPlatform, item.config.presetId || null);
+                                }
+                              } else {
+                                onToggleFavorite(firstResult.trim(), primaryPlatform, item.config.presetId || null);
                               }
-                            } else {
-                              onToggleFavorite(firstResult.trim(), primaryPlatform, item.config.presetId || null);
-                            }
-                          }}
-                          className={`absolute bottom-6 right-6 w-9 h-9 flex items-center justify-center rounded-full border transition-all shadow-sm z-20 ${isFavorited
-                            ? 'bg-white border-indigo-200 text-indigo-500 shadow-indigo-100'
-                            : 'bg-white border-slate-100 text-slate-300 hover:text-indigo-400 hover:border-indigo-200 opacity-0 group-hover:opacity-100 transform scale-90 group-hover:scale-100'
-                            }`}
-                        >
-                          <MagicWandIcon
-                            className="w-4 h-4"
-                          />
-                        </button>
+                            }}
+                            className={`w-9 h-9 flex items-center justify-center rounded-full border transition-all shadow-sm ${isFavorited
+                              ? 'bg-white border-indigo-200 text-indigo-500 shadow-indigo-100'
+                              : 'bg-white border-slate-100 text-slate-300 hover:text-indigo-400 hover:border-indigo-200 opacity-0 group-hover:opacity-100 transform scale-90 group-hover:scale-100'
+                              }`}
+                          >
+                            <MagicWandIcon className="w-4 h-4" />
+                          </button>
+                        </div>
                       )}
                     </div>
                   );
