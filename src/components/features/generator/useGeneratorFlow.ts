@@ -303,6 +303,7 @@ export function useGeneratorFlow(props: {
     if (isLoggedIn && !isRegeneration) {
       const historyConfig = {
         platforms: targetPlatforms,
+        purpose: postPurpose,
         postPurpose, tone, length, inputText,
         starRating: starRating ?? undefined,
         language, storeSupplement, customPrompt,
