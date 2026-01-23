@@ -102,10 +102,10 @@ const SortablePresetRow = ({
       ref={setNodeRef}
       style={style}
       className={`
-        group flex items-center gap-3 p-4 rounded-2xl transition-all duration-300 border-2
+        group flex items-center gap-3 p-4 rounded-xl transition-all duration-300 border-2 border-black
         ${isSelected
-          ? 'bg-indigo-50/80 border-indigo-200 shadow-lg shadow-indigo-100/50 scale-[1.02]'
-          : 'bg-white border-slate-100 hover:border-indigo-100 hover:bg-slate-50/50'
+          ? 'bg-[var(--teal)] shadow-[4px_4px_0_0_rgba(0,0,0,1)] scale-[1.02] z-10'
+          : 'bg-white hover:bg-[var(--bg-beige)] hover:shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:-translate-y-0.5'
         }
         ${isDragging ? 'opacity-50' : ''}
       `}
@@ -113,7 +113,7 @@ const SortablePresetRow = ({
       <div
         {...attributes}
         {...listeners}
-        className="cursor-grab active:cursor-grabbing p-1 text-slate-300 hover:text-slate-500 transition-colors touch-none"
+        className={`cursor-grab active:cursor-grabbing p-1 transition-colors touch-none ${isSelected ? 'text-black' : 'text-slate-300 hover:text-black'}`}
       >
         <MenuIcon className="w-5 h-5" />
       </div>
@@ -121,10 +121,9 @@ const SortablePresetRow = ({
         onClick={() => onSelect(preset.id)}
         className="flex-1 text-left min-w-0"
       >
-        <div className="font-black text-sm text-slate-800 truncate mb-0.5">{preset.name}</div>
-        <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest truncate">
+        <div className={`font-black text-sm truncate mb-0.5 ${isSelected ? 'text-black' : 'text-slate-800'}`}>{preset.name}</div>
+        <div className={`text-[10px] font-bold uppercase tracking-widest truncate ${isSelected ? 'text-black/70' : 'text-slate-400'}`}>
           Custom Style
-
         </div>
       </button>
       <button
@@ -133,10 +132,10 @@ const SortablePresetRow = ({
           onDelete(preset.id);
         }}
         disabled={deletingId === preset.id}
-        className="p-2.5 rounded-xl text-slate-300 hover:text-rose-500 hover:bg-rose-50 transition-all opacity-0 group-hover:opacity-100"
+        className={`p-2.5 rounded-lg transition-all opacity-0 group-hover:opacity-100 ${isSelected ? 'text-black hover:bg-black/10' : 'text-slate-300 hover:text-rose-500 hover:bg-rose-50'}`}
       >
         {deletingId === preset.id ? (
-          <div className="w-4 h-4 border-2 border-rose-500 border-t-transparent rounded-full animate-spin" />
+          <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
         ) : (
           <TrashIcon className="w-4 h-4" />
         )}
@@ -347,14 +346,14 @@ const PresetModal: React.FC<PresetModalProps> = ({
   const renderSampleList = (platform: Platform, colorClass: string, Icon: any) => {
     const samples = getSamplesForPlatform(platform);
     return (
-      <div className="bg-white rounded-[32px] p-6 mb-2 shadow-sm border border-slate-100 transition-all">
+      <div className="bg-white rounded-xl p-6 mb-4 shadow-[4px_4px_0_0_rgba(0,0,0,1)] border-2 border-black transition-all">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
-            <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-white shadow-sm ${colorClass}`}>
+            <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-white border-2 border-black shadow-[2px_2px_0_0_rgba(0,0,0,1)] ${colorClass}`}>
               <Icon className="w-4 h-4" />
             </div>
-            <span className={`text-[11px] font-black uppercase tracking-widest ${colorClass.replace('bg-', 'text-')}`}>{platform} Learning</span>
-            <span className="text-[10px] font-black text-slate-300 bg-slate-50 px-2 py-0.5 rounded-full">{samples.length} / 5</span>
+            <span className={`text-[11px] font-black uppercase tracking-widest text-black`}>{platform} Learning</span>
+            <span className="text-[10px] font-black text-black bg-[var(--bg-beige)] border-2 border-black px-2 py-0.5 rounded-full">{samples.length} / 5</span>
           </div>
           <button
             type="button"
@@ -364,7 +363,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
               setExpandingPlatform(platform);
             }}
             disabled={samples.length >= 5}
-            className={`flex items-center gap-2 px-4 py-2 text-[10px] font-black rounded-xl transition-all group ${samples.length >= 5 ? 'bg-slate-50 text-slate-400' : 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100'}`}
+            className={`flex items-center gap-2 px-4 py-2 text-[10px] font-black rounded-lg transition-all group border-2 border-black ${samples.length >= 5 ? 'bg-slate-100 text-slate-400' : 'bg-white text-black hover:bg-[var(--teal)] hover:shadow-[2px_2px_0_0_rgba(0,0,0,1)]'}`}
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" className="group-hover:rotate-90 transition-transform"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
             <span>学習文を追加する</span>
@@ -372,16 +371,16 @@ const PresetModal: React.FC<PresetModalProps> = ({
         </div>
 
         {samples.length === 0 ? (
-          <div className="py-8 border-2 border-dashed border-slate-100 rounded-2xl flex flex-col items-center justify-center text-slate-300 gap-2">
+          <div className="py-8 border-2 border-dashed border-black rounded-xl flex flex-col items-center justify-center text-slate-300 gap-2">
             <Icon className="w-8 h-8 opacity-20" />
-            <p className="text-[10px] font-bold">まだ学習データがありません</p>
+            <p className="text-[10px] font-bold text-slate-400">まだ学習データがありません</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-3">
             {samples.map((item, idx) => (
               <div
                 key={item.id}
-                className="group relative flex items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:border-indigo-200 hover:bg-white transition-all cursor-pointer"
+                className="group relative flex items-center gap-4 p-4 rounded-xl bg-white border-2 border-black hover:bg-[var(--bg-beige)] hover:shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all cursor-pointer"
                 onClick={() => {
                   setModalText(item.content);
                   setEditingSampleIndex(idx);
@@ -389,7 +388,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                 }}
               >
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs text-slate-600 font-bold line-clamp-1 leading-relaxed">
+                  <p className="text-xs text-black font-bold line-clamp-1 leading-relaxed">
                     {item.content}
                   </p>
                 </div>
@@ -398,10 +397,9 @@ const PresetModal: React.FC<PresetModalProps> = ({
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
-                      // We need to call onToggleTraining with the content to delete it (as per App.tsx logic)
                       onToggleTraining(item.content, item.platform, item.presetId);
                     }}
-                    className="p-1.5 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all"
+                    className="p-1.5 text-slate-400 hover:text-black hover:bg-rose-50 rounded-lg transition-all border-2 border-transparent hover:border-black"
                   >
                     <TrashIcon className="w-4 h-4" />
                   </button>
@@ -418,16 +416,16 @@ const PresetModal: React.FC<PresetModalProps> = ({
     <div className="flex h-full bg-white relative">
       {/* SIDEBAR: Profile List */}
       <div
-        className={`w-full md:w-[420px] shrink-0 border-r border-slate-100 flex flex-col bg-white overflow-hidden ${listVisibilityClass}`}
+        className={`w-full md:w-[420px] shrink-0 border-r-[3px] border-black flex flex-col bg-[var(--bg-beige)] overflow-hidden ${listVisibilityClass}`}
       >
-        <div className="p-8 border-b border-slate-50 flex items-center justify-between shrink-0">
+        <div className="p-8 border-b-[3px] border-black flex items-center justify-between shrink-0 bg-[var(--bg-beige)]">
           <div>
-            <h2 className="font-black text-xl text-slate-800 tracking-tight">AIプロファイル</h2>
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Management</p>
+            <h2 className="font-black text-xl text-black tracking-tight">AIプロファイル</h2>
+            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-1">Management</p>
           </div>
           <button
             onClick={handleStartNew}
-            className="p-3 bg-indigo-50 text-indigo-600 rounded-2xl hover:bg-indigo-600 hover:text-white transition-all active:scale-95 group"
+            className="p-3 bg-white text-black border-2 border-black rounded-xl hover:bg-[var(--gold)] hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all active:translate-x-0 active:translate-y-0 active:shadow-none group"
           >
             <MagicWandIcon className="w-6 h-6 group-hover:rotate-12 transition-transform" />
           </button>
@@ -507,16 +505,16 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
       {/* MAIN CONTENT: Premium Form */}
       <div
-        className={`flex-1 flex flex-col bg-slate-50/30 min-h-0 overflow-hidden h-full ${editVisibilityClass}`}
+        className={`flex-1 flex flex-col bg-white min-h-0 overflow-hidden h-full ${editVisibilityClass}`}
       >
-        <div className="p-6 md:p-10 border-b border-slate-100 flex items-center justify-between shrink-0 bg-white/60 backdrop-blur-md">
+        <div className="p-6 md:p-10 border-b-[3px] border-black flex items-center justify-between shrink-0 bg-white">
           <div className="flex items-center gap-5">
-            <div className="w-12 h-12 rounded-[20px] flex items-center justify-center bg-gradient-to-br from-indigo-500 to-violet-600 text-white shadow-lg shadow-indigo-200">
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-[var(--lavender)] border-2 border-black text-black shadow-[4px_4px_0_0_rgba(0,0,0,1)]">
               <MagicWandIcon className="w-6 h-6" />
             </div>
             <div>
-              <h2 className="font-black text-lg md:text-2xl text-slate-800 tracking-tighter">プロファイルの編集</h2>
-              <p className="text-[9px] md:text-[10px] font-black text-indigo-500 uppercase tracking-[0.3em] opacity-80">Profile Editor</p>
+              <h2 className="font-black text-lg md:text-2xl text-black tracking-tighter">プロファイルの編集</h2>
+              <p className="text-[9px] md:text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] opacity-80">Profile Editor</p>
             </div>
           </div>
           <div className="flex items-center gap-4">
@@ -524,7 +522,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
               <button
                 type="button"
                 onClick={goToListView}
-                className="md:hidden flex items-center gap-2 px-5 py-2.5 text-xs font-black text-slate-500 bg-white border border-slate-200 rounded-full hover:bg-slate-50 hover:text-indigo-600 transition-all active:scale-95"
+                className="md:hidden flex items-center gap-2 px-5 py-2.5 text-xs font-black text-black bg-white border-2 border-black rounded-full hover:bg-slate-50 transition-all active:scale-95 shadow-[2px_2px_0_0_rgba(0,0,0,1)]"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
                 戻る
@@ -532,7 +530,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
             )}
             <button
               onClick={onClose}
-              className="p-3 hover:bg-slate-100 rounded-2xl text-slate-400 hover:text-slate-600 transition-all active:scale-90"
+              className="p-3 hover:bg-rose-50 rounded-xl text-slate-400 hover:text-rose-500 border-2 border-transparent hover:border-black hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)] transition-all active:scale-90"
             >
               <CloseIcon className="w-7 h-7" />
             </button>
@@ -544,7 +542,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
             <div className="space-y-8">
               {/* Profile Name */}
               <div className="space-y-4">
-                <label className="block text-[10px] md:text-[11px] font-black text-indigo-500 uppercase tracking-[0.3em]">
+                <label className="block text-[10px] md:text-[11px] font-black text-black uppercase tracking-[0.3em]">
                   プロフィール名 (Account Name)
                 </label>
                 <div className="relative group max-w-md">
@@ -553,7 +551,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                     value={name}
                     onChange={(e) => handleNameChange(e.target.value)}
                     placeholder="例: 店長（公式）"
-                    className="w-full px-5 py-4 md:px-7 md:py-5 bg-white border border-slate-200 focus:border-indigo-300 focus:ring-4 focus:ring-indigo-50/50 outline-none rounded-2xl text-sm md:text-base text-slate-800 font-black placeholder-slate-300 transition-all shadow-sm"
+                    className="w-full px-5 py-4 md:px-7 md:py-5 bg-white border-2 border-black focus:bg-[var(--bg-beige)] outline-none rounded-xl text-sm md:text-base text-black font-black placeholder-slate-300 transition-all shadow-none focus:shadow-[4px_4px_0_0_rgba(0,0,0,1)]"
                   />
                   <div className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-indigo-500 transition-colors">
                     {renderAvatar(avatar, "w-6 h-6 md:w-8 md:h-8")}
@@ -567,11 +565,11 @@ const PresetModal: React.FC<PresetModalProps> = ({
               <div className="space-y-4">
                 <div
                   onClick={() => setIsIconSelectorOpen(!isIconSelectorOpen)}
-                  className="flex flex-col gap-4 p-5 bg-white border border-slate-200 rounded-[32px] shadow-sm cursor-pointer hover:border-indigo-200 transition-colors group"
+                  className="flex flex-col gap-4 p-5 bg-white border-2 border-black rounded-[24px] shadow-[4px_4px_0_0_rgba(0,0,0,1)] cursor-pointer hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all group"
                 >
                   <div className="flex items-center justify-between">
                     <div>
-                      <label className="block text-[10px] md:text-[11px] font-black text-indigo-500 uppercase tracking-[0.3em] mb-1">
+                      <label className="block text-[10px] md:text-[11px] font-black text-black uppercase tracking-[0.3em] mb-1">
                         アイコンの選択 (Select Icon)
                       </label>
                       <div className="text-sm font-bold text-slate-500">
@@ -580,17 +578,17 @@ const PresetModal: React.FC<PresetModalProps> = ({
                     </div>
                     <div className="flex items-center gap-3">
                       {/* Selected Icon Preview */}
-                      <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white shadow-lg shadow-indigo-200">
+                      <div className="w-12 h-12 rounded-xl bg-[var(--gold)] border-2 border-black flex items-center justify-center text-black shadow-sm">
                         {renderAvatar(avatar, "w-6 h-6")}
                       </div>
-                      <div className={`w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center transition-transform duration-300 ${isIconSelectorOpen ? 'rotate-180' : ''}`}>
-                        <ChevronDownIcon className="w-4 h-4 text-slate-400 group-hover:text-indigo-500" />
+                      <div className={`w-8 h-8 rounded-full bg-slate-100 border-2 border-black flex items-center justify-center transition-transform duration-300 ${isIconSelectorOpen ? 'rotate-180' : ''}`}>
+                        <ChevronDownIcon className="w-4 h-4 text-black" />
                       </div>
                     </div>
                   </div>
 
                   {/* Expandable Grid */}
-                  <div className={`grid grid-cols-5 md:flex md:flex-wrap gap-2 md:gap-3 transition-all duration-300 ease-in-out overflow-hidden ${isIconSelectorOpen ? 'max-h-[500px] opacity-100 pt-4 border-t border-slate-100' : 'max-h-0 opacity-0'}`}>
+                  <div className={`grid grid-cols-5 md:flex md:flex-wrap gap-2 md:gap-3 transition-all duration-300 ease-in-out overflow-hidden ${isIconSelectorOpen ? 'max-h-[500px] opacity-100 pt-4 border-t-2 border-slate-100' : 'max-h-0 opacity-0'}`}>
                     {AVATAR_OPTIONS.map((item) => {
                       const Icon = item.icon;
                       const isSelected = avatar === item.id;
@@ -605,17 +603,14 @@ const PresetModal: React.FC<PresetModalProps> = ({
                           }}
                           title={item.label}
                           className={`
-                            w-10 h-10 md:w-14 md:h-14 flex items-center justify-center rounded-xl md:rounded-2xl transition-all duration-300 relative shrink-0
+                            w-10 h-10 md:w-14 md:h-14 flex items-center justify-center rounded-lg md:rounded-xl transition-all duration-300 relative shrink-0 border-2
                             ${isSelected
-                              ? 'bg-gradient-to-br from-indigo-500 to-violet-600 shadow-lg md:shadow-xl shadow-indigo-200 scale-110 z-10 text-white'
-                              : 'bg-slate-50 text-slate-300 hover:bg-slate-100 hover:text-slate-500 border border-slate-100'
+                              ? 'bg-[var(--gold)] shadow-[2px_2px_0_0_rgba(0,0,0,1)] border-black text-black z-10 scale-110'
+                              : 'bg-white text-slate-300 hover:bg-slate-50 hover:text-slate-500 border-slate-200 hover:border-black'
                             }
                           `}
                         >
                           <Icon className="w-4 h-4 md:w-6 md:h-6" />
-                          {isSelected && (
-                            <div className="absolute -top-1 -right-1 w-2.5 h-2.5 md:w-3.5 md:h-3.5 bg-white rounded-full border-[3px] border-indigo-500 shadow-sm" />
-                          )}
                         </button>
                       );
                     })}
@@ -626,19 +621,19 @@ const PresetModal: React.FC<PresetModalProps> = ({
           </div>
 
           <div className="animate-in slide-in-from-bottom-4 duration-500 delay-100">
-            <label className="block text-[10px] md:text-[11px] font-black text-indigo-500 uppercase tracking-[0.3em] mb-3 md:mb-4">
+            <label className="block text-[10px] md:text-[11px] font-black text-black uppercase tracking-[0.3em] mb-3 md:mb-4">
               追加の指示プロンプト (Additional Instructions)
             </label>
-            <div className="relative p-1 rounded-[32px] bg-gradient-to-br from-indigo-50 via-white to-purple-50 border border-indigo-100 shadow-sm">
+            <div className="relative p-1 rounded-[32px]">
               <AutoResizingTextarea
                 value={customPrompt}
                 onChange={setCustomPrompt}
                 placeholder={'例：\n・「ご来店お待ちしております」は使わないでください\n・必ず「#〇〇」のタグをつけてください\n・語尾は「〜だワン！」にしてください'}
-                className="w-full px-6 py-6 md:px-8 md:py-8 bg-white/50 border-2 border-transparent focus:bg-white focus:border-indigo-100 outline-none rounded-[28px] text-sm md:text-base text-slate-800 font-bold leading-relaxed placeholder-slate-300 transition-all min-h-[120px] md:min-h-[160px]"
+                className="w-full px-6 py-6 md:px-8 md:py-8 bg-white border-2 border-black focus:bg-[var(--bg-beige)] focus:shadow-[4px_4px_0_0_rgba(0,0,0,1)] outline-none rounded-[24px] text-sm md:text-base text-black font-bold leading-relaxed placeholder-slate-300 transition-all min-h-[120px] md:min-h-[160px]"
               />
             </div>
-            <p className="text-[10px] md:text-[11px] text-slate-400 font-black mt-3 md:mt-4 leading-relaxed flex items-center gap-1.5 md:gap-2">
-              <span className="w-2 h-2 rounded-full bg-indigo-400"></span>
+            <p className="text-[10px] md:text-[11px] text-slate-500 font-black mt-3 md:mt-4 leading-relaxed flex items-center gap-1.5 md:gap-2">
+              <span className="w-2 h-2 rounded-full bg-[var(--teal)]"></span>
               文体は「過去の投稿学習」が優先されます。ここは特定のルールや制約を指定するのに便利です。
             </p>
           </div>
@@ -694,11 +689,11 @@ const PresetModal: React.FC<PresetModalProps> = ({
           </div>
         </div>
 
-        <div className="p-8 md:p-10 border-t border-slate-100 bg-white/60 flex flex-col md:flex-row items-stretch justify-between gap-6 shrink-0 backdrop-blur-md">
+        <div className="p-8 md:p-10 border-t-[3px] border-black bg-white flex flex-col md:flex-row items-stretch justify-between gap-6 shrink-0 z-10 relative">
           <div className="flex-1 flex flex-col gap-2 relative">
             {showSuccessToast && (
               <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 z-[50] animate-in slide-in-from-bottom-2 fade-in duration-500">
-                <div className="bg-white text-slate-800 px-5 py-2.5 rounded-xl shadow-[0_10px_30px_-5px_rgba(0,0,0,0.1)] flex items-center gap-2 border border-slate-100 whitespace-nowrap">
+                <div className="bg-white text-black px-5 py-2.5 rounded-xl shadow-[4px_4px_0_0_rgba(0,0,0,1)] flex items-center gap-2 border-2 border-black whitespace-nowrap">
                   <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
                   <span className="text-[11px] font-black uppercase tracking-widest">保存しました</span>
                 </div>
@@ -707,9 +702,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
             <button
               onClick={handleSave}
               disabled={isSaveDisabled}
-              className="w-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 disabled:opacity-50 disabled:cursor-not-allowed text-white px-8 py-4 md:py-6 rounded-[28px] font-black text-sm uppercase tracking-[0.3em] flex items-center justify-center gap-4 transition-all transform hover:-translate-y-1 active:translate-y-0 shadow-xl shadow-indigo-300/40 group relative overflow-hidden"
+              className="w-full bg-[var(--gold)] hover:bg-[var(--rose)] border-2 border-black disabled:opacity-50 disabled:cursor-not-allowed text-black px-8 py-4 md:py-6 rounded-xl font-black text-sm uppercase tracking-[0.3em] flex items-center justify-center gap-4 transition-all transform hover:translate-x-[-2px] hover:translate-y-[-2px] active:translate-x-0 active:translate-y-0 shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] group relative overflow-hidden"
             >
-              <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
               <SaveIcon className="w-5 h-5 group-hover:scale-110 transition-transform relative z-10" />
               <span className="relative z-10">{selectedPresetId ? '更新して保存' : '新規作成して保存'}</span>
             </button>
@@ -726,7 +720,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
     >
       <div className="hidden md:flex w-full h-full items-center justify-center p-6">
         <div
-          className="w-full max-w-6xl h-[90vh] rounded-[32px] overflow-hidden animate-in zoom-in-95 duration-500 scale-100 ring-1 ring-white/20"
+          className="w-full max-w-6xl h-[90vh] rounded-[24px] overflow-hidden animate-in zoom-in-95 duration-500 scale-100 border-[3px] border-black shadow-[8px_8px_0_0_rgba(0,0,0,1)]"
           onClick={(e) => e.stopPropagation()}
         >
           {modalBody}
@@ -748,11 +742,11 @@ const PresetModal: React.FC<PresetModalProps> = ({
   );
 
   const focusModeOverlay = expandingPlatform && createPortal(
-    <div className="fixed inset-0 z-[200] bg-slate-900/60 backdrop-blur-xl flex items-center justify-center p-4 md:p-10 animate-in fade-in duration-300">
-      <div className="w-full max-w-4xl h-full max-h-[800px] bg-white rounded-[40px] shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-500 ring-1 ring-white/50">
-        <div className="p-5 md:p-8 border-b border-slate-100 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shrink-0 bg-white/50 backdrop-blur-sm">
+    <div className="fixed inset-0 z-[200] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 md:p-10 animate-in fade-in duration-300">
+      <div className="w-full max-w-4xl h-full max-h-[800px] bg-white rounded-3xl border-[3px] border-black shadow-[8px_8px_0_0_rgba(0,0,0,1)] flex flex-col overflow-hidden animate-in zoom-in-95 duration-500">
+        <div className="p-5 md:p-8 border-b-[3px] border-black flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shrink-0 bg-[var(--bg-beige)]">
           <div className="flex items-center gap-3 md:gap-4">
-            <div className={`p-2.5 md:p-3 rounded-xl md:rounded-2xl shadow-sm ${expandingPlatform === Platform.Instagram ? 'bg-pink-50 text-pink-500' :
+            <div className={`p-2.5 md:p-3 rounded-xl border-2 border-black shadow-[2px_2px_0_0_rgba(0,0,0,1)] ${expandingPlatform === Platform.Instagram ? 'bg-pink-50 text-pink-500' :
               expandingPlatform === Platform.X ? 'bg-slate-900 text-white' :
                 'bg-blue-600 text-white'
               }`}>
@@ -810,9 +804,9 @@ const PresetModal: React.FC<PresetModalProps> = ({
               type="button"
               onClick={() => fileInputRef.current?.click()}
               disabled={isAnalyzingImage}
-              className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-4 md:px-5 py-3 rounded-2xl font-black text-[10px] md:text-[11px] transition-all transform hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 border-2 ${expandingPlatform === Platform.Instagram ? 'bg-white border-pink-100 text-pink-500 hover:bg-pink-50' :
-                expandingPlatform === Platform.X ? 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50' :
-                  'bg-white border-blue-100 text-blue-600 hover:bg-blue-50'
+              className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-4 md:px-5 py-3 rounded-xl font-black text-[10px] md:text-[11px] transition-all transform hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 border-2 border-black shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)] ${expandingPlatform === Platform.Instagram ? 'bg-white text-pink-500 hover:bg-pink-50' :
+                expandingPlatform === Platform.X ? 'bg-white text-slate-700 hover:bg-slate-50' :
+                  'bg-white text-blue-600 hover:bg-blue-50'
                 }`}
             >
               {isAnalyzingImage ? (
@@ -850,7 +844,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                 }
               }}
               disabled={isSanitizing || !modalText.trim()}
-              className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-4 md:px-5 py-3 rounded-2xl font-black text-[10px] md:text-[11px] transition-all transform hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 ${expandingPlatform === Platform.Instagram ? 'bg-pink-50 text-pink-600 hover:bg-pink-100' :
+              className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-4 md:px-5 py-3 rounded-xl font-black text-[10px] md:text-[11px] transition-all transform hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 border-2 border-black shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)] ${expandingPlatform === Platform.Instagram ? 'bg-pink-50 text-pink-600 hover:bg-pink-100' :
                 expandingPlatform === Platform.X ? 'bg-slate-100 text-slate-700 hover:bg-slate-200' :
                   'bg-blue-50 text-blue-600 hover:bg-blue-100'
                 }`}
@@ -873,14 +867,14 @@ const PresetModal: React.FC<PresetModalProps> = ({
               onClick={() => {
                 handleToggleTrainingInternal(modalText, expandingPlatform!);
               }}
-              className="flex-none p-3 bg-[#001738] hover:bg-slate-900 text-white rounded-2xl transition-all font-black text-sm px-8 md:px-10"
+              className="flex-none p-3 bg-[#001738] hover:bg-slate-900 text-white rounded-xl transition-all font-black text-sm px-8 md:px-10 border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] active:translate-x-0 active:translate-y-0"
             >
               更新して学習
             </button>
           </div>
         </div>
 
-        <div className="flex-1 overflow-hidden flex flex-col bg-slate-50/30">
+        <div className="flex-1 overflow-hidden flex flex-col bg-slate-50">
           <div className="flex-1 p-5 md:p-8 overflow-y-auto">
             <AutoResizingTextarea
               autoFocus
