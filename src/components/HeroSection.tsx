@@ -77,31 +77,29 @@ export default function HeroSection() {
     return (
         <div className="relative z-10 h-auto">
             <div
-                className="relative h-[110vh] md:h-screen w-full overflow-hidden flex flex-col bg-[#fceee3]"
+                className="relative min-h-screen h-auto w-full overflow-hidden flex flex-col md:block bg-[#fceee3] pb-20 md:pb-0"
             >
 
-                <div className="max-w-7xl mx-auto w-full h-full relative px-4">
+                <div className="max-w-7xl mx-auto w-full h-full relative px-4 flex flex-col md:block">
                     {/* Mobile Text (Static at top) */}
-                    <div className="md:hidden pt-24 px-4 text-center z-20 relative mb-12">
-                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#F2C94C] border-[3px] border-black rounded-2xl shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] mb-4">
+                    <div className="md:hidden pt-24 px-4 text-center z-20 relative mb-2 shrink-0">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#F2C94C] border-[3px] border-black rounded-2xl shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] mb-6">
                             <span className="w-2 h-2 rounded-full bg-black animate-pulse" />
                             <span className="text-xs font-black text-black uppercase">限定モニター価格</span>
                         </div>
-                        <h1 className="text-4xl font-black text-black tracking-tighter leading-[1.0] mb-4">
+                        <h1 className="text-4xl font-black text-black tracking-tighter leading-tight mb-6">
                             AIなのに、<br />
                             <span className="gradient-text">あなたの言葉。</span>
                         </h1>
-                        <p className="text-base text-black font-bold leading-relaxed px-2 mb-6">
+                        <p className="text-base text-black font-bold leading-relaxed px-2 mb-8">
                             丁寧すぎて恥ずかしいAIは卒業。MisePoはあなたのお手本から「書き癖」を学習し、店主の『分身』としてSNS運用を代行します。
                         </p>
-                        <div className="flex flex-col gap-4 max-w-sm mx-auto mt-4 px-4">
-                            <button onClick={() => window.location.href = '/start'} className="neo-brutalism-button w-full px-6 py-4 bg-[#4DB39A] text-white font-black hover:bg-black transition-all flex items-center justify-center gap-2">
-                                <Icons.Sparkles size={18} className="text-[#F5CC6D]" />
-                                無料で試してみる
+                        <div className="flex flex-col gap-4 max-w-sm mx-auto mt-2 px-4">
+                            <button onClick={() => window.location.href = '/start'} className="neo-brutalism-button w-full px-6 py-5 bg-[#4DB39A] text-white font-black hover:bg-black transition-all flex items-center justify-center gap-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none">
+                                <Icons.Sparkles size={20} className="text-[#F5CC6D]" />
+                                <span className="text-lg tracking-widest">無料で試してみる</span>
                             </button>
-                            <button onClick={() => window.location.href = '#pricing'} className="neo-brutalism-button w-full px-6 py-4 bg-white text-black font-black hover:bg-[#F5CC6D] transition-all">
-                                料金プラン
-                            </button>
+                            {/* Mobile Pricing Button Removed for Space */}
                         </div>
                     </div>
 
@@ -133,45 +131,17 @@ export default function HeroSection() {
                     </div>
 
                     {/* Phone Animation Container */}
-                    <div className="absolute inset-0 md:left-[55%] lg:left-[50%] flex items-start md:items-center justify-center pointer-events-none pt-[32rem] md:pt-0">
-                        <div className="relative w-[300px] h-[600px] scale-[0.55] md:scale-[0.75] lg:scale-[0.85] xl:scale-100 origin-top md:origin-center">
+                    <div className="relative mt-12 md:mt-0 h-[400px] md:h-auto md:absolute md:inset-0 md:left-[55%] lg:left-[50%] flex items-start md:items-center justify-center pointer-events-none w-full md:w-auto">
+                        <div className="relative w-[300px] h-[600px] scale-[0.6] md:scale-[0.75] lg:scale-[0.85] xl:scale-100 origin-top md:origin-center mx-auto">
 
                             {/* CENTER PHONE (MisePo) */}
                             <div
                                 className={`absolute inset-0 transition-all duration-1000 ease-in-out origin-center
                                 ${isPosted
-                                        ? 'scale-75 -translate-x-[40vw] md:-translate-x-[200px] -rotate-12 opacity-60 z-10 blur-[1px]'
+                                        ? 'scale-75 -translate-x-[10vw] md:-translate-x-[200px] -rotate-12 opacity-60 z-10 blur-[1px]'
                                         : 'scale-100 translate-x-0 rotate-0 opacity-100 z-30 blur-none'
                                     }`}
                             >
-                                {/* Narrative Floating Label */}
-                                <div className={`absolute -top-16 left-1/2 -translate-x-1/2 whitespace-nowrap z-50 transition-all duration-300 ${effectiveProgress > 100 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-                                    <div className="bg-black text-white px-4 py-2 border-[3px] border-white rounded-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] font-black text-sm flex items-center gap-2">
-                                        {effectiveProgress < 3000 && (
-                                            <>
-                                                <span className="w-2 h-2 bg-black rounded-full animate-pulse" />
-                                                1. メモを入力中...
-                                            </>
-                                        )}
-                                        {effectiveProgress >= 3000 && effectiveProgress < 5000 && (
-                                            <>
-                                                <Icons.Sparkles size={14} className="text-[#F2C94C] animate-spin" />
-                                                2. AIが文章を生成中...
-                                            </>
-                                        )}
-                                        {effectiveProgress >= 5000 && (
-                                            <>
-                                                <div className="bg-[#27AE60] border-[1px] border-white rounded-2xl p-0.5"><Icons.Check size={10} className="text-white" strokeWidth={4} /></div>
-                                                3. 文章が完成！
-                                            </>
-                                        )}
-                                    </div>
-                                    {/* Arrow */}
-                                    <div className="absolute top-full left-1/2 -translate-x-1/2 text-slate-900/90 -mt-1">
-                                        <svg width="12" height="6" viewBox="0 0 12 6" fill="currentColor"><path d="M6 6L0 0H12L6 6Z" /></svg>
-                                    </div>
-                                </div>
-
                                 <div className="w-full h-full bg-white border-[6px] border-black rounded-2xl shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] relative overflow-hidden">
                                     <div className="absolute top-0 left-1/2 -translate-x-1/2 h-6 w-32 bg-black z-40" />
                                     <div className="w-full h-full bg-[#f8f8f8] relative flex flex-col pt-10">
@@ -180,7 +150,31 @@ export default function HeroSection() {
                                             <span className="font-black text-black uppercase tracking-tight">MisePo</span>
                                             <div className="w-8 h-8 bg-[#F2C94C] border-[3px] border-black rounded-2xl flex items-center justify-center"><Icons.Sparkles size={16} fill="currentColor" /></div>
                                         </div>
-                                        <div className="p-4 flex-1">
+                                        <div className="p-4 flex-1 flex flex-col justify-center pb-20">
+                                            {/* In-Screen Narrative Tooltip */}
+                                            <div className={`transition-all duration-300 w-full flex justify-center mb-3 ${effectiveProgress > 100 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`}>
+                                                <div className="bg-black text-white px-3 py-1.5 border-[2px] border-white rounded-xl shadow-md font-black text-xs flex items-center gap-2 inline-block">
+                                                    {effectiveProgress < 3000 && (
+                                                        <>
+                                                            <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
+                                                            1. メモを入力中...
+                                                        </>
+                                                    )}
+                                                    {effectiveProgress >= 3000 && effectiveProgress < 5000 && (
+                                                        <>
+                                                            <Icons.Sparkles size={12} className="text-[#F2C94C] animate-spin" />
+                                                            2. AIが文章を生成中...
+                                                        </>
+                                                    )}
+                                                    {effectiveProgress >= 5000 && (
+                                                        <>
+                                                            <div className="bg-[#27AE60] border-[1px] border-white rounded-full p-0.5"><Icons.Check size={8} className="text-white" strokeWidth={4} /></div>
+                                                            3. 文章が完成！
+                                                        </>
+                                                    )}
+                                                </div>
+                                            </div>
+
                                             <div className="bg-white border-[3px] border-black rounded-2xl p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mb-4 space-y-3">
                                                 <div className="flex gap-2">
                                                     <span className="px-2 py-1 bg-[#E93E7E] text-white text-[10px] font-black border-[2px] border-black rounded-2xl">Instagram</span>

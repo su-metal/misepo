@@ -9,8 +9,8 @@ export const Feedback = () => {
     const pathname = usePathname();
     const [isOpen, setIsOpen] = useState(false);
 
-    // Only show on Landing Page (/) and App/Generator pages (/generate, etc.)
-    const showFeedback = pathname === '/' || pathname?.startsWith('/generate') || pathname?.startsWith('/preview');
+    // Only show on App/Generator pages (/generate)
+    const showFeedback = pathname?.startsWith('/generate');
 
     const [rating, setRating] = useState(0);
     const [hoverRating, setHoverRating] = useState(0);
