@@ -223,12 +223,22 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                 <div key={iIdx} className="py-10 px-8 lg:px-12 flex flex-col relative text-left bg-white transition-colors duration-500">
 
                                                     {/* Text Area Content Wrapper */}
-                                                    <div className={`mb-8 ${theme.wrapperClass || ''}`}>
+                                                    <div className={`mb-2 relative group/textarea ${theme.wrapperClass || ''}`}>
                                                         <AutoResizingTextarea
                                                             value={text}
                                                             onChange={(e) => onManualEdit(gIdx, iIdx, e.target.value)}
                                                             className={`w-full bg-transparent focus:outline-none resize-none placeholder:text-black/10 whitespace-pre-wrap ${theme.contentClasses || 'text-base text-black font-bold'}`}
                                                             trigger={activeTab}
+                                                        />
+                                                    </div>
+
+                                                    {/* Character Count (One level down, Right Aligned) */}
+                                                    <div className="flex justify-end mb-6 opacity-40">
+                                                        <CharCounter
+                                                            platform={res.platform}
+                                                            text={text}
+                                                            config={{ platform: res.platform } as any}
+                                                            minimal={true}
                                                         />
                                                     </div>
 
@@ -243,31 +253,24 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                                 onToggle={onToggleFavorite}
                                                             />
                                                         </div>
-                                                        <div className="bg-black/5 px-4 py-1.5 rounded-xl border border-black/10">
-                                                            <CharCounter
-                                                                platform={res.platform}
-                                                                text={text}
-                                                                config={{ platform: res.platform } as any}
-                                                            />
-                                                        </div>
                                                     </div>
 
-                                                    {/* Actions Grid */}
+                                                    {/* Actions Area */}
                                                     <div className="flex flex-col gap-4">
-                                                        <div className="grid grid-cols-1 gap-4">
+                                                        <div className="flex items-center gap-3">
+                                                            {/* Compact Preview Button (Icon Only) */}
                                                             <button
                                                                 onClick={() => setPreviewState({ isOpen: true, platform: res.platform, text })}
-                                                                className="flex items-center justify-center gap-3 py-4 rounded-[20px] bg-black/5 text-[11px] font-black text-black/60 border-2 border-black/10 hover:border-black hover:text-black hover:bg-white transition-all uppercase tracking-[0.2em]"
+                                                                className="w-13 h-13 flex-shrink-0 flex items-center justify-center rounded-[24px] bg-black/5 text-black/30 border-2 border-black/5 hover:border-black hover:text-black hover:bg-white transition-all"
+                                                                title="プレビュー"
                                                             >
                                                                 <EyeIcon className="w-5 h-5" />
-                                                                <span>プレビュー</span>
                                                             </button>
-                                                        </div>
 
-                                                        <div className="grid grid-cols-1 gap-4">
+                                                            {/* Main Refine Button */}
                                                             <button
                                                                 onClick={() => onRefineToggle(gIdx, iIdx)}
-                                                                className={`flex items-center justify-center gap-3 py-5 rounded-[24px] text-[12px] font-black transition-all uppercase tracking-[0.25em] border-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] ${refiningKey === `${gIdx}-${iIdx}` ? 'bg-[#9B8FD4] border-black text-black' : 'bg-white text-black/40 border-black/10 hover:border-black hover:text-black'}`}
+                                                                className={`flex-1 flex items-center justify-center gap-3 py-5 rounded-[24px] text-[12px] font-black transition-all uppercase tracking-[0.25em] border-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] ${refiningKey === `${gIdx}-${iIdx}` ? 'bg-[#9B8FD4] border-black text-black' : 'bg-white text-black/40 border-black/10 hover:border-black hover:text-black'}`}
                                                             >
                                                                 <MagicWandIcon className="w-5 h-5" />
                                                                 <span>AIで内容を微調整する</span>

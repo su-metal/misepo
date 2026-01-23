@@ -615,8 +615,8 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                             )}
 
                             <div className="flex items-center justify-between">
-                                <div className="text-[10px] font-black text-black/40 tracking-[0.3em] uppercase flex items-center gap-4">
-                                    <span className="bg-black/5 text-black/60 px-3 py-1 rounded-xl">{inputText.length} 文字</span>
+                                <div className="text-[9px] font-bold text-black/20 tracking-[0.1em] uppercase">
+                                    {inputText.length} chars
                                 </div>
 
                                 {/* Tools: Clear & Voice */}

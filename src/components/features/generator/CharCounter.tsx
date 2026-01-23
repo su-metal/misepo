@@ -1,11 +1,18 @@
 import React from 'react';
 import { Platform, GenerationConfig } from '../../../types';
 
-export function CharCounter({ platform, text, config }: { platform: Platform, text: string, config: GenerationConfig }) {
+export function CharCounter({ platform, text, config, minimal = false }: { platform: Platform, text: string, config: GenerationConfig, minimal?: boolean }) {
     const count = text.length;
     const isX = platform === Platform.X;
     const limit = isX ? 140 : null;
 
+    if (minimal) {
+        return (
+            <span className="text-[12px] font-black tracking-tighter opacity-70">
+                文字数: {count}{limit ? ` / ${limit}` : ''}
+            </span>
+        );
+    }
     if (!limit) return <span className="text-stone-400">{count}文字</span>;
 
     const isOver = count > limit;
