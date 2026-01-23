@@ -66,32 +66,41 @@ export async function GET() {
   
   const { data, error: historyErr } = await supabaseAdmin
     .from("ai_runs")
-    .select("id, run_type, created_at, ai_run_records(input, output)")
+    .select("id, run_type, created_at, is_pinned, ai_run_records(input, output)")
     .eq("app_id", APP_ID)
     .eq("user_id", user.id)
-    .order("created_at", { ascending: false });
-
-  console.log("[HISTORY FETCH] Result:", { 
-    count: data?.length ?? 0, 
-    error: historyErr?.message ?? null,
-  });
+    .order("created_at", { ascending: false })
+    .limit(100); // Fetch a safe buffer
 
   if (historyErr) {
     return NextResponse.json({ ok: false, error: historyErr.message });
   }
 
-  const history = (data ?? []).map((row: any) => {
-    const rec = Array.isArray(row.ai_run_records)
-      ? row.ai_run_records[0]
-      : row.ai_run_records;
+  // Enforce "Latest 20 unpinned + all pinned" in results
+  let unpinnedCount = 0;
+  const history = (data ?? [])
+    .filter((row: any) => {
+      const isPinned = Boolean(row.is_pinned);
+      if (isPinned) return true;
+      if (unpinnedCount < 20) {
+        unpinnedCount++;
+        return true;
+      }
+      return false;
+    })
+    .map((row: any) => {
+      const rec = Array.isArray(row.ai_run_records)
+        ? row.ai_run_records[0]
+        : row.ai_run_records;
 
-    return {
-      id: row.id,
-      created_at: row.created_at,
-      config: rec?.input ?? {},
-      result: rec?.output ?? [],
-    };
-  });
+      return {
+        id: row.id,
+        created_at: row.created_at,
+        is_pinned: row.is_pinned,
+        config: rec?.input ?? {},
+        result: rec?.output ?? [],
+      };
+    });
 
   return NextResponse.json({ ok: true, history });
 }
@@ -207,6 +216,29 @@ export async function POST(req: Request) {
 
   if (recordError) {
     return NextResponse.json({ ok: false, error: recordError.message }, { status: 500 });
+  }
+
+  // --- Pruning Logic:    // 3. Prune old unpinned history (beyond 20)
+  try {
+    // Legacy rows might have NULL is_pinned, so we treat them as false
+    const { data: unpinned } = await supabaseAdmin
+      .from("ai_runs")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("app_id", APP_ID)
+      .or("is_pinned.eq.false,is_pinned.is.null")
+      .order("created_at", { ascending: false });
+
+    if (unpinned && unpinned.length > 20) {
+      const idsToDelete = unpinned.slice(20).map(r => r.id);
+      await supabaseAdmin
+        .from("ai_runs")
+        .delete()
+        .in("id", idsToDelete);
+    }
+  } catch (pruneErr) {
+    console.error("[HISTORY PRUNE] Failed to prune history:", pruneErr);
+    // Non-blocking error
   }
 
   return NextResponse.json({ ok: true, run_id: runData.id });

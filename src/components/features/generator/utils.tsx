@@ -79,3 +79,4 @@ export function enforcePresetNameValue(value: string, maxWidth = 20): string {
     }
     return current;
 }
+

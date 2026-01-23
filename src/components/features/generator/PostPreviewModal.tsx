@@ -1,4 +1,5 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { Platform, StoreProfile } from '../../../types';
 import { getPlatformIcon } from './utils';
 import { CloseIcon, HeartIcon, MessageCircleIcon, SendIcon, BookmarkIcon, MoreHorizontalIcon, ShareIcon, RotateCcwIcon } from '../../Icons';
@@ -18,8 +19,11 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
     text,
     storeProfile
 }) => {
-    // Lock body scroll when modal is open
+    // State to handle client-side rendering for Portal
+    const [mounted, setMounted] = React.useState(false);
+
     React.useEffect(() => {
+        setMounted(true);
         if (isOpen) {
             document.body.style.overflow = 'hidden';
             document.body.setAttribute('data-preview-modal-open', 'true');
@@ -33,10 +37,10 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
         };
     }, [isOpen]);
 
-    if (!isOpen) return null;
+    if (!isOpen || !mounted) return null;
 
-    return (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6 overflow-hidden">
+    return createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6 overflow-hidden">
             <div
                 className="absolute inset-0 bg-[#f9f5f2]/80 backdrop-blur-md transition-opacity animate-in fade-in duration-300"
                 onClick={onClose}
@@ -202,6 +206,7 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
                     </button>
                 </div>
             </div>
-        </div>
+        </div>,
+        document.body
     );
 };

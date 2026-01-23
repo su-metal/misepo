@@ -28,6 +28,8 @@ interface PostResultTabsProps {
     presetId?: string;
     favorites: Set<string>;
     onToggleFavorite: (text: string, platform: Platform, presetId: string | null) => Promise<void>;
+    onAutoFormat: (gIdx: number, iIdx: number) => void;
+    isAutoFormatting: { [key: string]: boolean };
 }
 
 export const PostResultTabs: React.FC<PostResultTabsProps> = ({
@@ -52,6 +54,8 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
     presetId,
     favorites,
     onToggleFavorite,
+    onAutoFormat,
+    isAutoFormatting,
 }) => {
     const [previewState, setPreviewState] = React.useState<{ isOpen: boolean, platform: Platform, text: string } | null>(null);
 
@@ -193,7 +197,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                     )}
 
                     {/* Results Content Area */}
-                    <div className="flex-1 overflow-y-auto no-scrollbar">
+                    <div className="flex-1">
                         {results.length === 0 ? (
                             // Placeholder when no results
                             <div className="p-12 h-full flex flex-col items-center justify-center text-center space-y-8 animate-in fade-in duration-1000">
@@ -219,69 +223,73 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                 <div key={iIdx} className="py-10 px-8 lg:px-12 flex flex-col relative text-left bg-white transition-colors duration-500">
 
                                                     {/* Text Area Content Wrapper */}
-                                                    <div className={`mb-8 ${theme.wrapperClass || ''}`}>
+                                                    <div className={`mb-2 relative group/textarea ${theme.wrapperClass || ''}`}>
                                                         <AutoResizingTextarea
                                                             value={text}
                                                             onChange={(e) => onManualEdit(gIdx, iIdx, e.target.value)}
-                                                            className={`w-full bg-transparent focus:outline-none resize-none placeholder:text-black/10 whitespace-pre-wrap ${theme.contentClasses || 'text-base text-black font-bold'}`}
+                                                            className={`w-full bg-transparent focus:outline-none resize-none placeholder:text-black/10 whitespace-pre-wrap overflow-hidden ${theme.contentClasses || 'text-base text-black font-bold'}`}
                                                             trigger={activeTab}
                                                         />
                                                     </div>
 
-                                                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 mb-8 pt-8 border-t-[2px] border-black/5">
-                                                        <div className="flex-1 flex items-center gap-3">
-                                                            {theme.extra && theme.extra(gIdx, iIdx)}
-                                                            <FavoriteButton
-                                                                platform={res.platform}
-                                                                text={text}
-                                                                presetId={presetId || null}
-                                                                isFavorited={favorites.has(text.trim())}
-                                                                onToggle={onToggleFavorite}
-                                                            />
-                                                        </div>
-                                                        <div className="bg-black/5 px-4 py-1.5 rounded-xl border border-black/10">
-                                                            <CharCounter
-                                                                platform={res.platform}
-                                                                text={text}
-                                                                config={{ platform: res.platform } as any}
-                                                            />
-                                                        </div>
+                                                    {/* Character Count (One level down, Right Aligned) */}
+                                                    <div className="flex justify-end mb-6 opacity-40">
+                                                        <CharCounter
+                                                            platform={res.platform}
+                                                            text={text}
+                                                            config={{ platform: res.platform } as any}
+                                                            minimal={true}
+                                                        />
                                                     </div>
 
-                                                    {/* Actions Grid */}
-                                                    <div className="flex flex-col gap-6">
-                                                        <button
-                                                            onClick={() => setPreviewState({ isOpen: true, platform: res.platform, text })}
-                                                            className="flex items-center justify-center gap-3 py-5 rounded-[24px] bg-black/5 text-[11px] font-black text-black/60 border-2 border-black/10 hover:border-black hover:text-black hover:bg-white transition-all uppercase tracking-[0.2em]"
-                                                        >
-                                                            <EyeIcon className="w-5 h-5" />
-                                                            <span>ライブプレビュー</span>
-                                                        </button>
+                                                    {/* Unified Action Layout */}
+                                                    <div className="mt-auto pt-8 border-t-[2px] border-black/5">
+                                                        {/* Utility Row: Settings & Tools */}
+                                                        <div className="flex items-center justify-between mb-6 gap-3">
+                                                            {/* Left: Platform Specifics */}
+                                                            <div className="flex items-center gap-2">
+                                                                {theme.extra && theme.extra(gIdx, iIdx)}
+                                                            </div>
 
-                                                        <div className="grid grid-cols-2 gap-4">
-                                                            <button
-                                                                onClick={() => onRegenerateSingle(res.platform)}
-                                                                className="flex items-center justify-center gap-3 py-5 rounded-[24px] bg-white border-2 border-black/10 text-[11px] font-black text-black/40 hover:text-black hover:border-black transition-all uppercase tracking-[0.2em]"
-                                                            >
-                                                                <RotateCcwIcon className="w-5 h-5" />
-                                                                <span>再生成</span>
-                                                            </button>
-                                                            <button
-                                                                onClick={() => onRefineToggle(gIdx, iIdx)}
-                                                                className={`flex items-center justify-center gap-3 py-5 rounded-[24px] text-[11px] font-black transition-all uppercase tracking-[0.2em] border-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] ${refiningKey === `${gIdx}-${iIdx}` ? 'bg-[#9B8FD4] border-black text-black' : 'bg-white text-black/40 border-black/10 hover:border-black hover:text-black'}`}
-                                                            >
-                                                                <MagicWandIcon className="w-5 h-5" />
-                                                                <span>AI微調整</span>
-                                                            </button>
+                                                            {/* Right: Inspection & Favoriting */}
+                                                            <div className="flex items-center gap-2">
+                                                                <FavoriteButton
+                                                                    platform={res.platform}
+                                                                    text={text}
+                                                                    presetId={presetId || null}
+                                                                    isFavorited={favorites.has(text.trim())}
+                                                                    onToggle={onToggleFavorite}
+                                                                />
+                                                                {/* Refined Secondary Preview Button */}
+                                                                <button
+                                                                    onClick={() => setPreviewState({ isOpen: true, platform: res.platform, text })}
+                                                                    className="flex items-center justify-center w-11 h-11 rounded-xl bg-black/5 text-black/40 border-2 border-black/5 hover:border-black/20 hover:text-black transition-all"
+                                                                    title="プレビュー"
+                                                                >
+                                                                    <EyeIcon className="w-5 h-5" />
+                                                                </button>
+                                                            </div>
                                                         </div>
 
-                                                        <button
-                                                            onClick={() => onShare(res.platform, text)}
-                                                            className={`flex items-center justify-center gap-4 py-8 rounded-[32px] font-black text-lg transition-all uppercase tracking-[0.3em] group border-[3px] border-black ${theme.actionColor}`}
-                                                        >
-                                                            <span>{theme.actionLabel}</span>
-                                                            <ExternalLinkIcon className="w-6 h-6 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                                                        </button>
+                                                        {/* Primary Tier Actions */}
+                                                        <div className="flex flex-col gap-4">
+                                                            {/* Prominent Refine Button */}
+                                                            <button
+                                                                onClick={() => onRefineToggle(gIdx, iIdx)}
+                                                                className={`flex items-center justify-center gap-3 py-5 rounded-[24px] text-[12px] font-black transition-all uppercase tracking-[0.25em] border-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] ${refiningKey === `${gIdx}-${iIdx}` ? 'bg-[#9B8FD4] border-black text-black' : 'bg-white text-black/40 border-black/10 hover:border-black hover:text-black'}`}
+                                                            >
+                                                                <MagicWandIcon className="w-5 h-5" />
+                                                                <span>AIで内容を微調整する</span>
+                                                            </button>
+
+                                                            <button
+                                                                onClick={() => onShare(res.platform, text)}
+                                                                className={`flex items-center justify-center gap-4 py-6 md:py-8 rounded-[32px] font-black text-lg transition-all uppercase tracking-[0.3em] group border-[3px] border-black mt-2 ${theme.actionColor}`}
+                                                            >
+                                                                <span>{theme.actionLabel}</span>
+                                                                <ExternalLinkIcon className="w-6 h-6 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                                                            </button>
+                                                        </div>
                                                     </div>
 
                                                     {/* Refinement Overlay (per variant) */}

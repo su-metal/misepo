@@ -175,7 +175,18 @@ function App() {
   };
 
   const handleGenerateSuccess = (post: GeneratedPost) => {
-    setHistory(prev => [post, ...prev]);
+    setHistory(prev => {
+      const next = [post, ...prev];
+      // Local pruning: keep latest 20 unpinned + all pinned
+      const unpinned = next.filter(item => !item.isPinned);
+      if (unpinned.length > 20) {
+        // Re-construct history: keep all pinned + latest 20 unpinned
+        const pinned = next.filter(item => item.isPinned);
+        const keptUnpinned = unpinned.slice(0, 20);
+        return [...pinned, ...keptUnpinned].sort((a, b) => b.timestamp - a.timestamp);
+      }
+      return next;
+    });
     setActiveHistoryItem(null);
   };
 
@@ -183,6 +194,31 @@ function App() {
     setHistory(prev => prev.filter(h => h.id !== id));
     if (isLoggedIn) {
       await fetch(`/api/me/history/${id}`, { method: 'DELETE' });
+    }
+  };
+
+  const handleTogglePin = async (id: string, isPinned: boolean) => {
+    // Optimistic Update
+    setHistory(prev => prev.map(item =>
+      item.id === id ? { ...item, isPinned } : item
+    ));
+
+    if (isLoggedIn) {
+      try {
+        const res = await fetch(`/api/me/history/${id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ isPinned })
+        });
+        if (!res.ok) throw new Error('Failed to toggle pin');
+      } catch (err) {
+        console.error('Failed to toggle pin:', err);
+        // Revert on error
+        setHistory(prev => prev.map(item =>
+          item.id === id ? { ...item, isPinned: !isPinned } : item
+        ));
+        alert('ピン留めの更新に失敗しました。');
+      }
     }
   };
 
@@ -270,6 +306,7 @@ function App() {
         storeProfile={storeProfile}
         favorites={favorites}
         onToggleFavorite={handleToggleFavorite}
+        onTogglePin={handleTogglePin}
       />
 
       <div className="flex-1 flex flex-col min-w-0">

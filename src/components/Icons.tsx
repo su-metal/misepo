@@ -236,3 +236,10 @@ export const MicOffIcon = ({ className = "w-6 h-6" }: { className?: string }) =>
     <line x1="8" x2="16" y1="23" y2="23" />
   </svg>
 );
+
+export const PinIcon = ({ className = "w-4 h-4", fill = "none" }: { className?: string, fill?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <line x1="12" y1="17" x2="12" y2="22" />
+    <path d="M5 17h14v-2l-1.5-1.5V4.5A1.5 1.5 0 0 0 16 3H8a1.5 1.5 0 0 0-1.5 1.5V13.5L5 15v2Z" />
+  </svg>
+);

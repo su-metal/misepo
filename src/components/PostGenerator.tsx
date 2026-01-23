@@ -176,6 +176,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
                 language={flow.language}
                 onLanguageChange={flow.setLanguage}
                 onOpenGuide={onOpenGuide}
+                hasResults={flow.resultGroups.length > 0}
               />
             </div>
           </div>
@@ -205,6 +206,8 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
                 presetId={flow.activePresetId || undefined}
                 favorites={flow.favorites}
                 onToggleFavorite={flow.onToggleFavorite}
+                onAutoFormat={flow.handleAutoFormat}
+                isAutoFormatting={flow.isAutoFormatting}
               />
             </div>
           </div>
@@ -238,9 +241,15 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
               ) : (
                 <>
                   <div className="relative">
-                    <SparklesIcon className="w-6 h-6 md:w-8 md:h-8 group-hover:rotate-12 transition-transform text-primary" />
+                    <SparklesIcon className={`w-6 h-6 md:w-8 md:h-8 group-hover:rotate-12 transition-transform ${flow.resultGroups.length > 0 ? 'text-black' : 'text-primary'}`} />
                   </div>
-                  <span className="drop-shadow-none uppercase text-primary">Generate Post</span>
+                  <span className={`drop-shadow-none uppercase ${flow.resultGroups.length > 0 ? 'text-black' : 'text-primary'}`}>
+                    {flow.resultGroups.length === 0
+                      ? 'Generate Post'
+                      : (flow.resultGroups[0].config.inputText !== flow.inputText
+                        ? '内容を更新して生成'
+                        : '再生成する')}
+                  </span>
                 </>
               )}
             </div>
@@ -260,6 +269,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
           }}
           initialPresetId={undefined}
           isSaving={isSavingPreset}
+          onReorder={props.refreshPresets}
         />
       )}
 

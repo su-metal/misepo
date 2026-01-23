@@ -98,8 +98,10 @@ export interface GeneratedPost {
     xConstraint140?: boolean;
     instagramFooter?: string;
     presetId?: string; // Add presetId here too for history
+    isPinned?: boolean; // New: Whether this post is pinned
   };
   results: GeneratedResult[];
+  isPinned: boolean; // Root level for easy access
 }
 
 export interface Preset {
