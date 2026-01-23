@@ -87,10 +87,12 @@ function App() {
           postSamples: p.post_samples || {},
         }));
         setPresets(mappedPresets);
+        return mappedPresets as Preset[];
       }
     } catch (err) {
       console.error('Failed to fetch presets:', err);
     }
+    return [];
   }, []);
 
   const fetchHistory = useCallback(async () => {
@@ -100,11 +102,14 @@ function App() {
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       if (data.ok) {
-        setHistory((data.history || []).map(mapHistoryEntry));
+        const mappedHistory = (data.history || []).map(mapHistoryEntry);
+        setHistory(mappedHistory);
+        return mappedHistory;
       }
     } catch (err) {
       console.error('Failed to fetch history:', err);
     }
+    return [];
   }, [isLoggedIn]);
 
   const fetchTrainingItems = useCallback(async () => {
@@ -115,10 +120,12 @@ function App() {
       const data = await res.json();
       if (data.ok && Array.isArray(data.items)) {
         setTrainingItems(data.items);
+        return data.items as TrainingItem[];
       }
     } catch (err) {
       console.error('Failed to fetch training items:', err);
     }
+    return [];
   }, [isLoggedIn]);
 
   const favorites = React.useMemo(() => {
@@ -165,9 +172,52 @@ function App() {
 
     const init = async () => {
       console.log('[App] Fetching data for user:', user?.id || 'Guest');
-      await Promise.all([fetchProfile(), fetchHistory(), fetchPresets(), fetchTrainingItems()]);
+      const [_, __, presetsData, trainingData] = await Promise.all([
+        fetchProfile(),
+        fetchHistory(),
+        fetchPresets(),
+        fetchTrainingItems()
+      ]);
       setInitDone(true);
       console.log('[App] Initialization complete.');
+
+      // Automated Migration of legacy post_samples to learning_sources
+      if (isLoggedIn && Array.isArray(presetsData) && Array.isArray(trainingData)) {
+        let hasMigrated = false;
+        for (const preset of presetsData) {
+          const legacySamples = preset.post_samples || {};
+          for (const [platform, content] of Object.entries(legacySamples)) {
+            if (!content) continue;
+
+            const alreadyExists = trainingData.some(item =>
+              item.presetId === preset.id &&
+              item.platform === platform &&
+              item.content.trim() === (content as string).trim()
+            );
+
+            if (!alreadyExists) {
+              console.log(`[MIGRATION] Migrating legacy sample for ${preset.name} (${platform})`);
+              try {
+                const res = await fetch('/api/me/learning', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    content,
+                    platform,
+                    presetId: preset.id
+                  })
+                });
+                if (res.ok) hasMigrated = true;
+              } catch (migrateErr) {
+                console.warn('[MIGRATION] Failed to migrate sample:', migrateErr);
+              }
+            }
+          }
+        }
+        if (hasMigrated) {
+          await fetchTrainingItems(); // Refresh items to show in UI
+        }
+      }
     };
     init();
   }, [authLoading, user?.id, fetchProfile, fetchHistory, fetchPresets, fetchTrainingItems]);

@@ -17,7 +17,7 @@ interface PostGeneratorProps {
   isLoggedIn: boolean;
   onOpenLogin: () => void;
   presets: Preset[];
-  refreshPresets: () => Promise<void>;
+  refreshPresets: () => Promise<Preset[] | void>;
   onGenerateSuccess: (post: GeneratedPost) => void;
   onTaskComplete: () => void;
   trainingItems: TrainingItem[];

@@ -47,7 +47,7 @@ interface PresetModalProps {
   onClose: () => void;
   initialPresetId?: string;
   isSaving?: boolean;
-  onReorder?: () => Promise<void>;
+  onReorder?: () => Promise<Preset[] | void>;
   trainingItems: TrainingItem[];
   onToggleTraining: (text: string, platform: Platform, presetId: string | null) => Promise<void>;
 }
