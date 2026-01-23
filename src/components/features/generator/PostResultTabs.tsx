@@ -271,25 +271,13 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                             </button>
                                                         </div>
 
-                                                        <div className="grid grid-cols-2 gap-4">
-                                                            <button
-                                                                onClick={() => onAutoFormat(gIdx, iIdx)}
-                                                                disabled={isAutoFormatting[`${gIdx}-${iIdx}`]}
-                                                                className={`flex items-center justify-center gap-3 py-4 rounded-[20px] text-[11px] font-black transition-all uppercase tracking-[0.2em] border-2 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] ${isAutoFormatting[`${gIdx}-${iIdx}`] ? 'bg-slate-100 border-black/10 text-black/20' : 'bg-[#E88BA3] border-black text-black hover:bg-[#E88BA3]/90'}`}
-                                                            >
-                                                                {isAutoFormatting[`${gIdx}-${iIdx}`] ? (
-                                                                    <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin" />
-                                                                ) : (
-                                                                    <SparklesIcon className="w-5 h-5" />
-                                                                )}
-                                                                <span>整える</span>
-                                                            </button>
+                                                        <div className="grid grid-cols-1 gap-4">
                                                             <button
                                                                 onClick={() => onRefineToggle(gIdx, iIdx)}
-                                                                className={`flex items-center justify-center gap-3 py-4 rounded-[20px] text-[11px] font-black transition-all uppercase tracking-[0.2em] border-2 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] ${refiningKey === `${gIdx}-${iIdx}` ? 'bg-[#9B8FD4] border-black text-black' : 'bg-white text-black/40 border-black/10 hover:border-black hover:text-black'}`}
+                                                                className={`flex items-center justify-center gap-3 py-5 rounded-[24px] text-[12px] font-black transition-all uppercase tracking-[0.25em] border-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] ${refiningKey === `${gIdx}-${iIdx}` ? 'bg-[#9B8FD4] border-black text-black' : 'bg-white text-black/40 border-black/10 hover:border-black hover:text-black'}`}
                                                             >
                                                                 <MagicWandIcon className="w-5 h-5" />
-                                                                <span>AI調整</span>
+                                                                <span>AIで内容を微調整する</span>
                                                             </button>
                                                         </div>
 
