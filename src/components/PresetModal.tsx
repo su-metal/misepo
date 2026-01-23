@@ -47,6 +47,7 @@ interface PresetModalProps {
   onClose: () => void;
   initialPresetId?: string;
   isSaving?: boolean;
+  onReorder?: () => Promise<void>;
 }
 
 const AVATAR_OPTIONS = [
@@ -150,6 +151,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
   onClose,
   initialPresetId,
   isSaving: isExternalSaving,
+  onReorder,
 }) => {
   const [selectedPresetId, setSelectedPresetId] = useState<string | null>(initialPresetId || null);
   const [name, setName] = useState('');
@@ -163,6 +165,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
   const [orderError, setOrderError] = useState<string | null>(null);
   const [mobileView, setMobileView] = useState<'list' | 'edit'>('list');
   const [showSuccessToast, setShowSuccessToast] = useState(false);
+  const [showOrderSuccessToast, setShowOrderSuccessToast] = useState(false);
   const [expandingPlatform, setExpandingPlatform] = useState<Platform | null>(null);
   const [editingSampleIndex, setEditingSampleIndex] = useState<number | null>(null);
   const [modalText, setModalText] = useState('');
@@ -286,10 +289,13 @@ const PresetModal: React.FC<PresetModalProps> = ({
         body: JSON.stringify({ orderedIds: newOrder.map((p) => p.id) }),
       });
       if (!res.ok) throw new Error('Failed to save order');
+      if (onReorder) await onReorder();
+      setShowOrderSuccessToast(true);
+      setTimeout(() => setShowOrderSuccessToast(false), 2000);
     } catch (err) {
       console.error('Failed to reorder:', err);
       setOrderError('並び替えの保存に失敗しました');
-      setOrderedPresets(presets); // Revert
+      setOrderedPresets(presets); // Only revert on error
     } finally {
       setIsReordering(false);
     }
@@ -429,6 +435,17 @@ const PresetModal: React.FC<PresetModalProps> = ({
           >
             <MagicWandIcon className="w-6 h-6 group-hover:rotate-12 transition-transform" />
           </button>
+        </div>
+
+        <div className="px-8 pb-4 relative">
+          {showOrderSuccessToast && (
+            <div className="absolute inset-x-0 -top-2 px-8 z-50 animate-in slide-in-from-top-1 fade-in duration-300">
+              <div className="bg-green-500 text-white text-[10px] font-black uppercase tracking-[0.2em] py-1.5 rounded-full text-center shadow-lg shadow-green-100 flex items-center justify-center gap-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></div>
+                順序を保存しました
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="flex-1 overflow-hidden flex flex-col p-6 space-y-6">

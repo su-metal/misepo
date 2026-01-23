@@ -269,6 +269,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
           }}
           initialPresetId={undefined}
           isSaving={isSavingPreset}
+          onReorder={props.refreshPresets}
         />
       )}
 
