@@ -131,7 +131,7 @@ export default function HeroSection() {
                     </div>
 
                     {/* Phone Animation Container */}
-                    <div className="relative mt-12 md:mt-0 h-[450px] md:h-auto md:absolute md:inset-0 md:left-[55%] lg:left-[50%] flex items-start md:items-center justify-center pointer-events-none w-full md:w-auto">
+                    <div className="relative mt-20 md:mt-0 h-[450px] md:h-auto md:absolute md:inset-0 md:left-[55%] lg:left-[50%] flex items-start md:items-center justify-center pointer-events-none w-full md:w-auto">
                         <div className="relative w-[300px] h-[600px] scale-[0.8] md:scale-[0.75] lg:scale-[0.85] xl:scale-100 origin-top md:origin-center mx-auto">
 
                             {/* CENTER PHONE (MisePo) */}
@@ -203,13 +203,13 @@ export default function HeroSection() {
 
                             {/* LEFT PHONE (Instagram) */}
                             <div
-                                className={`absolute inset-0 w-[260px] h-[520px] top-20 left-[-100px] transition-all duration-1000 ease-in-out origin-center
+                                className={`absolute inset-0 transition-all duration-1000 ease-in-out origin-center
                                 ${isPosted
-                                        ? 'scale-[1.15] translate-x-[120px] -translate-y-16 rotate-0 z-40'
-                                        : '-translate-x-[100px] translate-y-0 -rotate-12 z-20 opacity-80'
+                                        ? 'scale-100 translate-x-0 translate-y-0 rotate-0 z-40'
+                                        : 'scale-90 -translate-x-[120px] translate-y-12 -rotate-12 z-20 opacity-80'
                                     }`}
                             >
-                                <div className="w-full h-full bg-white rounded-[2.5rem] border-4 border-slate-900 shadow-xl overflow-hidden relative flex flex-col">
+                                <div className="w-full h-full bg-white rounded-2xl border-[6px] border-black shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] overflow-hidden relative flex flex-col">
 
                                     {/* Success Overlay when posted (Non-blocking) */}
                                     {isPosted && (
