@@ -1,5 +1,13 @@
 import { Platform, StoreProfile, GeneratedPost, GeneratedResult, Length, Tone, PostPurpose, GoogleMapPurpose } from '../types';
 
+const isPostPurpose = (value: unknown): value is PostPurpose => {
+  return typeof value === 'string' && Object.values(PostPurpose).includes(value as PostPurpose);
+};
+
+const isGoogleMapPurpose = (value: unknown): value is GoogleMapPurpose => {
+  return typeof value === 'string' && Object.values(GoogleMapPurpose).includes(value as GoogleMapPurpose);
+};
+
 export function normalizeStoreProfile(profile: any): StoreProfile | null {
   if (!profile || typeof profile !== 'object') return null;
   return {
@@ -55,14 +63,21 @@ export function mapHistoryEntry(entry: any): GeneratedPost {
   const rawConfig = entry.config?.config || entry.config || {};
   // Results might be in entry.result (array of GeneratedResult) or entry.results
   const rawResults = entry.result || entry.results || [];
+  const rawPurpose = rawConfig.purpose ?? rawConfig.postPurpose;
+  const purpose = isPostPurpose(rawPurpose) || isGoogleMapPurpose(rawPurpose)
+    ? rawPurpose
+    : PostPurpose.Promotion;
+  const gmapPurpose = isGoogleMapPurpose(rawConfig.gmapPurpose)
+    ? rawConfig.gmapPurpose
+    : (isGoogleMapPurpose(rawPurpose) ? rawPurpose : GoogleMapPurpose.Auto);
   
   return {
     id: entry.id?.toString() || crypto.randomUUID(),
     timestamp: entry.created_at ? new Date(entry.created_at).getTime() : Date.now(),
     config: {
       platforms: Array.isArray(rawConfig.platforms) ? rawConfig.platforms.map(normalizePlatform) : [normalizePlatform(rawConfig.platform)],
-      postPurpose: rawConfig.postPurpose || rawConfig.purpose || PostPurpose.Promotion,
-      gmapPurpose: rawConfig.gmapPurpose || rawConfig.purpose || GoogleMapPurpose.Auto,
+      purpose,
+      gmapPurpose,
       tone: rawConfig.tone || Tone.Standard,
       length: rawConfig.length || Length.Medium,
       inputText: rawConfig.inputText || rawConfig.input_text || '',
@@ -74,7 +89,6 @@ export function mapHistoryEntry(entry: any): GeneratedPost {
       includeEmojis: rawConfig.includeEmojis,
       xConstraint140: rawConfig.xConstraint140,
       instagramFooter: rawConfig.instagramFooter,
-      isPinned: Boolean(entry.is_pinned || rawConfig.isPinned),
     },
     results: normalizeResults(rawResults, normalizePlatform(rawConfig.platform)),
     isPinned: Boolean(entry.is_pinned || rawConfig.isPinned),
