@@ -72,17 +72,36 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
   }, [getTrainedItem]);
 
   const displayHistory = React.useMemo(() => {
-    let base = history;
     if (showTrainedOnly) {
-      base = history.filter(item => checkIfFavorited(item));
+      // Show persistent TrainingItems mapped to GeneratedPost structure
+      return trainingItems.map(ti => ({
+        id: ti.id, // ID collision theoretical risk but low for display
+        timestamp: new Date(ti.createdAt).getTime(),
+        results: [{
+          platform: ti.platform,
+          data: [ti.content]
+        }],
+        config: {
+          inputText: ti.content, // Fallback for preview
+          platforms: [ti.platform],
+          platform: ti.platform,
+          purpose: 'auto', // Dummy
+          tone: 'standard', // Dummy
+          length: 'medium', // Dummy
+          presetId: ti.presetId
+        },
+        isPinned: false, // Training items don't have pinned state
+        isTrainingItem: true // Flag to distinguish
+      } as any)); // Type casting for compatibility
     }
-    // Sort: Pinned first, then by timestamp
-    return [...base].sort((a, b) => {
+
+    // Default: Show history log
+    return [...history].sort((a, b) => {
       if (a.isPinned && !b.isPinned) return -1;
       if (!a.isPinned && b.isPinned) return 1;
       return b.timestamp - a.timestamp;
     });
-  }, [history, showTrainedOnly, checkIfFavorited]);
+  }, [history, showTrainedOnly, trainingItems]);
 
   const getPlatformIcon = (p: Platform) => {
     switch (p) {
@@ -189,10 +208,10 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                 <HistoryIcon className="w-4 h-4 text-black" />
               </div>
               <div className="flex flex-col">
-                <span className="text-[10px] font-black text-black uppercase tracking-[0.3em]">History</span>
+                <span className="text-[10px] font-black text-black uppercase tracking-[0.3em]">{showTrainedOnly ? 'Collection' : 'History'}</span>
                 {isLoggedIn && (
                   <span className="text-[9px] font-bold text-slate-500 -mt-0.5">
-                    {history.filter(h => !h.isPinned).length} / 20 items
+                    {showTrainedOnly ? displayHistory.length : history.filter(h => !h.isPinned).length} items
                   </span>
                 )}
               </div>
@@ -206,7 +225,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
               className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border-2 transition-all font-black text-[10px] uppercase tracking-widest ${showTrainedOnly ? 'bg-[var(--teal)] border-black text-black shadow-[4px_4px_0_0_rgba(0,0,0,1)]' : 'bg-white border-black text-slate-500 hover:bg-[var(--teal)] hover:text-black shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)]'}`}
             >
               <MagicWandIcon className={`w-4 h-4 ${showTrainedOnly ? 'text-black' : 'text-slate-400'}`} />
-              <span>{showTrainedOnly ? '育成済みのみ表示中' : '育成済みで絞り込む'}</span>
+              <span>{showTrainedOnly ? '学習データ一覧' : '学習済みで絞り込む'}</span>
             </button>
           </div>
 
@@ -217,15 +236,18 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                   <div className="w-16 h-16 mb-4 rounded-full bg-white border-2 border-black flex items-center justify-center text-slate-300">
                     <HistoryIcon className="w-8 h-8" />
                   </div>
-                  <p className="text-xs text-slate-400 font-bold tracking-widest uppercase">履歴はありません</p>
+                  <p className="text-xs text-slate-400 font-bold tracking-widest uppercase">
+                    {showTrainedOnly ? '学習データはありません' : '履歴はありません'}
+                  </p>
                 </div>
               ) : (
                 displayHistory.map((item, idx) => {
                   const firstResult = pickFirstText(item);
                   const previewText = (firstResult && firstResult.trim()) || item.config.inputText || "...";
 
-                  const isFavorited = checkIfFavorited(item);
+                  const isFavorited = (item as any).isTrainingItem || checkIfFavorited(item);
                   const primaryPlatform = item.config.platforms[0] || Platform.Instagram;
+                  const isTraining = (item as any).isTrainingItem;
 
                   return (
                     <div
@@ -234,7 +256,16 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                       style={{ animationDelay: `${idx * 50}ms` }}
                     >
                       <button
-                        onClick={() => { onSelect(item); toggleOpen(); }}
+                        onClick={() => {
+                          if (isTraining) {
+                            // Restore from training item
+                            // We need to call onSelect with a structure that mimics a history item effectively
+                            onSelect(item);
+                          } else {
+                            onSelect(item);
+                          }
+                          toggleOpen();
+                        }}
                         className="w-full text-left p-5 rounded-xl bg-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] active:translate-x-[0px] active:translate-y-[0px] active:shadow-[2px_2px_0_0_rgba(0,0,0,1)] transition-all group-hover:bg-[var(--bg-beige)]"
                       >
                         <div className="flex items-center gap-2 mb-3">
@@ -248,9 +279,10 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                               <div className="px-2 py-1 bg-[var(--lavender)] border border-black rounded-md animate-in fade-in slide-in-from-right-2 duration-300">
                                 <span className="text-[9px] font-black text-black uppercase tracking-tight whitespace-nowrap">
                                   {(() => {
-                                    const ti = getTrainedItem(item);
-                                    const preset = presets.find(p => p.id === ti?.presetId);
-                                    return preset?.name || (ti?.presetId === 'omakase' ? 'おまかせ' : 'Trained');
+                                    // For training items, we can try to resolve the preset name from item.config.presetId if mapped above
+                                    const presetId = isTraining ? (item as any).config.presetId : getTrainedItem(item)?.presetId;
+                                    const preset = presets.find(p => p.id === presetId);
+                                    return preset?.name || (presetId === 'omakase' ? 'おまかせ' : 'Trained');
                                   })()}
                                 </span>
                               </div>
@@ -264,34 +296,51 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                           {previewText}
                         </p>
                       </button>
+
                       <button
-                        onClick={(e) => { e.stopPropagation(); onDelete(item.id); }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (isTraining) {
+                            // Un-learn: Remove from favorite/training
+                            // item.id here is the TrainingItem ID
+                            // onToggleFavorite expects (text, platform, presetId)
+                            // We mapped content to item.results[0].data[0]
+                            const text = item.results[0].data[0];
+                            const presetId = (item as any).config.presetId;
+                            onToggleFavorite(text, primaryPlatform, presetId);
+                          } else {
+                            onDelete(item.id);
+                          }
+                        }}
                         className="absolute -top-3 -right-3 w-8 h-8 flex items-center justify-center bg-white text-rose-500 border-2 border-black rounded-full md:opacity-0 md:group-hover:opacity-100 transform md:scale-75 md:group-hover:scale-100 transition-all hover:bg-rose-50 shadow-[2px_2px_0_0_rgba(0,0,0,1)] z-20 hover:scale-110"
+                        title={isTraining ? "学習データを削除" : "履歴を削除"}
                       >
                         <TrashIcon className="w-4 h-4" />
                       </button>
 
-                      {/* Pin Button */}
-                      <button
-                        onClick={(e) => { e.stopPropagation(); onTogglePin(item.id, !item.isPinned); }}
-                        className={`absolute -top-3 left-6 w-8 h-8 flex items-center justify-center rounded-full border-2 border-black transition-all shadow-[2px_2px_0_0_rgba(0,0,0,1)] z-20 hover:scale-110 ${item.isPinned
-                          ? 'bg-[var(--gold)] text-black'
-                          : 'bg-white text-slate-300 md:opacity-0 md:group-hover:opacity-100 transform md:scale-75 md:group-hover:scale-100 hover:text-black'
-                          }`}
-                        title={item.isPinned ? "ピン留めを解除" : "ピン留めして保護"}
-                      >
-                        <PinIcon className="w-4 h-4" fill={item.isPinned ? "currentColor" : "none"} />
-                      </button>
+                      {/* Pin Button - Only for normal history */}
+                      {!isTraining && (
+                        <button
+                          onClick={(e) => { e.stopPropagation(); onTogglePin(item.id, !item.isPinned); }}
+                          className={`absolute -top-3 left-6 w-8 h-8 flex items-center justify-center rounded-full border-2 border-black transition-all shadow-[2px_2px_0_0_rgba(0,0,0,1)] z-20 hover:scale-110 ${item.isPinned
+                            ? 'bg-[var(--gold)] text-black'
+                            : 'bg-white text-slate-300 md:opacity-0 md:group-hover:opacity-100 transform md:scale-75 md:group-hover:scale-100 hover:text-black'
+                            }`}
+                          title={item.isPinned ? "ピン留めを解除" : "ピン留めして保護"}
+                        >
+                          <PinIcon className="w-4 h-4" fill={item.isPinned ? "currentColor" : "none"} />
+                        </button>
+                      )}
 
-                      {/* Training Button */}
-                      {firstResult && (
+                      {/* Training Button - Show for history items if not favorited? Or just show indicator */}
+                      {/* If it's a Training View, we don't need a button to 'add' it, it's already there. 'Trash' removes it. */}
+                      {!isTraining && firstResult && (
                         <div className="absolute bottom-6 right-6 flex flex-col items-end gap-2 group/training z-20">
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
                               if (isFavorited) {
-                                const allTexts = item.results.flatMap(r => r.data || []);
-                                const favoritedText = allTexts.find(t => favorites.has(t?.trim()));
+                                const favoritedText = item.results.flatMap(r => r.data || []).find(t => favorites.has(t?.trim()));
                                 if (favoritedText) {
                                   onToggleFavorite(favoritedText.trim(), primaryPlatform, item.config.presetId || null);
                                 }
