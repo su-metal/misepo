@@ -7,6 +7,7 @@ import {
   GoogleMapPurpose,
   RiskTier,
   Length,
+  Tone,
 } from "../types";
 
 // Define the schema for structured output (Array of strings)
@@ -27,6 +28,13 @@ const DECORATION_PALETTE = `
 - Accents: ⸜❤︎⸝ , ✩ , ✦ , ꕤ , ☘︎ , ◡̈
 - List Bullets: ☕︎ , ☀︎ , ⚆ , ӫ
 `;
+
+const TONE_RULES = {
+  [Tone.Formal]: "きっちりとした「です・ます」調。信頼感のある丁寧で誠実な口調。専門性を感じさせつつも、他者への敬意を込めた表現を用いる。",
+  [Tone.Standard]: "標準的な「です・ます」調。適度に丁寧で、誰にでも伝わりやすくバランスの取れた口調。",
+  [Tone.Friendly]: "「です・ます」調をベースにしつつ、親しみやすさを重視。感嘆符（！）や明るい言葉選びを積極的に行い、活気のある口筋にする。",
+  [Tone.Casual]: "非常にフランクな口調。絵文字や流行の表現、あるいは「だ・である」を交えたSNSらしい親近感のある表現を用いる。"
+};
 
 const KEYWORDS = {
   legal: /(訴える|弁護士|消費者センター|警察|労基|監督署|違法|法的)/,
@@ -158,6 +166,7 @@ JSON配列（["本文"]）で完成文のみを出力。自己解説・思考プ
 - 言語[**${config.language || '日本語'}**]、長さ[**${config.length}**]を厳守。
 - インプットに含まれない情報は勝手に追加しない。
 - 特徴: ${isInstagram ? '視覚重視、ハッシュタグ4-6個。' : ''}${isX ? '140字以内、ハッシュタグ1-2個。' : ''}${isGMap ? '店舗返信。丁寧な言葉。絵文字不可。' : ''}
+- **トーン設定（口調）**: ${config.tone}（${TONE_RULES[config.tone] || TONE_RULES[Tone.Standard]}）
 ${config.includeEmojis ? "【絵文字の使用】\n積極的に絵文字（😊, ✨等）を使って親しみやすさを出すこと。" : "絵文字は最小限にすること。"}
 ${config.includeSymbols ? `【特殊記号の活用】\n以下の装飾記号を活用してプレミアム感を出すこと。\n${DECORATION_PALETTE}` : "特殊な装飾記号（タイトルフックや仕切り線）は使用しないこと。"}
 
