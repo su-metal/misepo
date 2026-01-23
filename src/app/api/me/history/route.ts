@@ -66,7 +66,7 @@ export async function GET() {
   
   const { data, error: historyErr } = await supabaseAdmin
     .from("ai_runs")
-    .select("id, run_type, created_at, ai_run_records(input, output)")
+    .select("id, run_type, created_at, is_pinned, ai_run_records(input, output)")
     .eq("app_id", APP_ID)
     .eq("user_id", user.id)
     .order("created_at", { ascending: false });
@@ -88,6 +88,7 @@ export async function GET() {
     return {
       id: row.id,
       created_at: row.created_at,
+      is_pinned: row.is_pinned,
       config: rec?.input ?? {},
       result: rec?.output ?? [],
     };
@@ -207,6 +208,28 @@ export async function POST(req: Request) {
 
   if (recordError) {
     return NextResponse.json({ ok: false, error: recordError.message }, { status: 500 });
+  }
+
+  // --- Pruning Logic: Keep latest 20 unpinned records ---
+  try {
+    const { data: unpinned } = await supabaseAdmin
+      .from("ai_runs")
+      .select("id")
+      .eq("app_id", APP_ID)
+      .eq("user_id", user.id)
+      .eq("is_pinned", false)
+      .order("created_at", { ascending: false });
+
+    if (unpinned && unpinned.length > 20) {
+      const idsToDelete = unpinned.slice(20).map(r => r.id);
+      await supabaseAdmin
+        .from("ai_runs")
+        .delete()
+        .in("id", idsToDelete);
+    }
+  } catch (pruneErr) {
+    console.error("[HISTORY PRUNE] Failed to prune history:", pruneErr);
+    // Non-blocking error
   }
 
   return NextResponse.json({ ok: true, run_id: runData.id });

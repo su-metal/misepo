@@ -1,6 +1,6 @@
 import React from 'react';
 import { GeneratedPost, Platform, GeneratedResult, StoreProfile } from '../types';
-import { CloseIcon, XIcon, InstagramIcon, GoogleMapsIcon, LockIcon, TrashIcon, HistoryIcon, HelpIcon, LogOutIcon, ChevronDownIcon, StarIcon } from './Icons';
+import { CloseIcon, XIcon, InstagramIcon, GoogleMapsIcon, LockIcon, TrashIcon, HistoryIcon, HelpIcon, LogOutIcon, ChevronDownIcon, StarIcon, PinIcon } from './Icons';
 
 interface HistorySidebarProps {
   history: GeneratedPost[];
@@ -17,6 +17,7 @@ interface HistorySidebarProps {
   storeProfile?: StoreProfile | null;
   favorites: Set<string>;
   onToggleFavorite: (text: string, platform: Platform, presetId: string | null) => Promise<void>;
+  onTogglePin: (id: string, isPinned: boolean) => Promise<void>;
 }
 
 const HistorySidebar: React.FC<HistorySidebarProps> = ({
@@ -33,7 +34,8 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
   onLogout,
   storeProfile,
   favorites,
-  onToggleFavorite
+  onToggleFavorite,
+  onTogglePin
 }) => {
   const [showFavoritesOnly, setShowFavoritesOnly] = React.useState(false);
 
@@ -63,8 +65,16 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
   }, [favorites]);
 
   const displayHistory = React.useMemo(() => {
-    if (!showFavoritesOnly) return history;
-    return history.filter(item => checkIfFavorited(item));
+    let base = history;
+    if (showFavoritesOnly) {
+      base = history.filter(item => checkIfFavorited(item));
+    }
+    // Sort: Pinned first, then by timestamp
+    return [...base].sort((a, b) => {
+      if (a.isPinned && !b.isPinned) return -1;
+      if (!a.isPinned && b.isPinned) return 1;
+      return b.timestamp - a.timestamp;
+    });
   }, [history, showFavoritesOnly, checkIfFavorited]);
 
   const getPlatformIcon = (p: Platform) => {
@@ -238,6 +248,18 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                         className="absolute -top-2 -right-2 w-8 h-8 flex items-center justify-center bg-white text-rose-500 border border-rose-100 rounded-full md:opacity-0 md:group-hover:opacity-100 transform md:scale-75 md:group-hover:scale-100 transition-all hover:bg-rose-50 hover:border-rose-200 shadow-md z-20"
                       >
                         <TrashIcon className="w-4 h-4" />
+                      </button>
+
+                      {/* Pin Button */}
+                      <button
+                        onClick={(e) => { e.stopPropagation(); onTogglePin(item.id, !item.isPinned); }}
+                        className={`absolute -top-2 left-6 w-8 h-8 flex items-center justify-center rounded-full border transition-all shadow-md z-20 ${item.isPinned
+                          ? 'bg-primary text-white border-primary'
+                          : 'bg-white text-slate-300 border-slate-100 md:opacity-0 md:group-hover:opacity-100 transform md:scale-75 md:group-hover:scale-100 hover:text-primary hover:border-primary/30'
+                          }`}
+                        title={item.isPinned ? "ピン留めを解除" : "ピン留めして保護"}
+                      >
+                        <PinIcon className="w-4 h-4" fill={item.isPinned ? "currentColor" : "none"} />
                       </button>
 
                       {/* Favorite Button */}
