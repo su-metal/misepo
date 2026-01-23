@@ -168,7 +168,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
             <div className={`space-y-8 animate-in fade-in duration-700 ${results.length === 0 ? 'hidden md:block' : ''}`}>
 
                 {/* Main Results Container - Tabs Integrated Inside */}
-                <div className="section-card text-primary rounded-[48px] flex flex-col min-h-[600px] group/main transition-all duration-500">
+                <div className="section-card text-primary rounded-[48px] flex flex-col min-h-[600px] overflow-hidden group/main transition-all duration-500">
 
                     {/* Integrated Tab Navigation Header */}
                     {results.length > 0 && (
