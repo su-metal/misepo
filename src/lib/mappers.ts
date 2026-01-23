@@ -74,9 +74,9 @@ export function mapHistoryEntry(entry: any): GeneratedPost {
       includeEmojis: rawConfig.includeEmojis,
       xConstraint140: rawConfig.xConstraint140,
       instagramFooter: rawConfig.instagramFooter,
-      isPinned: !!(entry.is_pinned || rawConfig.isPinned),
+      isPinned: Boolean(entry.is_pinned || rawConfig.isPinned),
     },
     results: normalizeResults(rawResults, normalizePlatform(rawConfig.platform)),
-    isPinned: !!(entry.is_pinned || rawConfig.isPinned),
+    isPinned: Boolean(entry.is_pinned || rawConfig.isPinned),
   };
 }

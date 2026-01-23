@@ -327,6 +327,7 @@ export function useGeneratorFlow(props: {
         timestamp: Date.now(),
         config: historyConfig,
         results: generatedResults,
+        isPinned: false,
       });
     }
     onTaskComplete();

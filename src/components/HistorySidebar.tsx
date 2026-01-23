@@ -181,7 +181,14 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
               <div className="p-2 bg-white rounded-lg shadow-sm border border-slate-100">
                 <HistoryIcon className="w-4 h-4 text-slate-400" />
               </div>
-              <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">History</span>
+              <div className="flex flex-col">
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">History</span>
+                {isLoggedIn && (
+                  <span className="text-[9px] font-bold text-slate-400 -mt-0.5">
+                    {history.filter(h => !h.isPinned).length} / 20 items
+                  </span>
+                )}
+              </div>
             </div>
 
             <button
@@ -309,7 +316,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
           </div>
           <p className="text-[9px] font-bold text-slate-400/80 text-center uppercase tracking-[0.2em] mt-2">© 2026 MisePo</p>
         </div>
-      </div>
+      </div >
     </>
   );
 };
