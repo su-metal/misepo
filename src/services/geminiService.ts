@@ -157,7 +157,8 @@ JSON配列（["本文"]）で完成文のみを出力。自己解説・思考プ
 - 言語[**${config.language || '日本語'}**]、長さ[**${config.length}**]を厳守。
 - インプットに含まれない情報は勝手に追加しない。
 - 特徴: ${isInstagram ? '視覚重視、ハッシュタグ4-6個。' : ''}${isX ? '140字以内、ハッシュタグ1-2個。' : ''}${isGMap ? '店舗返信。丁寧な言葉。絵文字不可。' : ''}
-${config.includeSymbols ? `【活用可能記号】\n${DECORATION_PALETTE}` : ""}
+${config.includeEmojis ? "【絵文字の使用】\n積極的に絵文字（😊, ✨等）を使って親しみやすさを出すこと。" : "絵文字は最小限にすること。"}
+${config.includeSymbols ? `【特殊記号の活用】\n以下の装飾記号を活用してプレミアム感を出すこと。\n${DECORATION_PALETTE}` : "特殊な装飾記号（タイトルフックや仕切り線）は使用しないこと。"}
 
 【今回のメモ】: "${config.inputText}"
 

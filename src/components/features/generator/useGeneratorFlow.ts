@@ -56,6 +56,7 @@ export function useGeneratorFlow(props: {
   const [refiningKey, setRefiningKey] = useState<string | null>(null);
   const [refineText, setRefineText] = useState("");
   const [isRefining, setIsRefining] = useState(false);
+  const [isAutoFormatting, setIsAutoFormatting] = useState<{ [key: string]: boolean }>({});
 
   const [activePresetId, setActivePresetId] = useState<string | null>(null);
 
@@ -367,8 +368,10 @@ export function useGeneratorFlow(props: {
     }
   };
 
-  const performRefine = async (gIdx: number, iIdx: number) => {
-    if (!refineText.trim()) return;
+  const performRefine = async (gIdx: number, iIdx: number, overrideInstruction?: string) => {
+    const instruction = overrideInstruction || refineText;
+    if (!instruction.trim()) return;
+    
     setLoading(true);
     setIsRefining(true);
     const group = resultGroups[gIdx];
@@ -380,7 +383,7 @@ export function useGeneratorFlow(props: {
           profile: storeProfile,
           config: group.config,
           currentContent: group.data[iIdx],
-          instruction: refineText,
+          instruction: instruction,
         }),
       });
       const data = await res.json();
@@ -400,6 +403,16 @@ export function useGeneratorFlow(props: {
     } finally {
       setLoading(false);
       setIsRefining(false);
+    }
+  };
+
+  const handleAutoFormat = async (gIdx: number, iIdx: number) => {
+    const key = `${gIdx}-${iIdx}`;
+    setIsAutoFormatting(prev => ({ ...prev, [key]: true }));
+    try {
+      await performRefine(gIdx, iIdx, "文体や内容は一切変えずに、スマホ画面で読みやすくなるように適宜記号や「改行」や「空白行（1行あけ）」をバランスよく使って整形してください。");
+    } finally {
+      setIsAutoFormatting(prev => ({ ...prev, [key]: false }));
     }
   };
 
@@ -529,6 +542,8 @@ export function useGeneratorFlow(props: {
     handleToggleFooter,
     handleRefineToggle,
     performRefine,
+    handleAutoFormat,
+    isAutoFormatting,
     handleShare,
     activePresetId,
     favorites,

@@ -28,6 +28,8 @@ interface PostResultTabsProps {
     presetId?: string;
     favorites: Set<string>;
     onToggleFavorite: (text: string, platform: Platform, presetId: string | null) => Promise<void>;
+    onAutoFormat: (gIdx: number, iIdx: number) => void;
+    isAutoFormatting: { [key: string]: boolean };
 }
 
 export const PostResultTabs: React.FC<PostResultTabsProps> = ({
@@ -52,6 +54,8 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
     presetId,
     favorites,
     onToggleFavorite,
+    onAutoFormat,
+    isAutoFormatting,
 }) => {
     const [previewState, setPreviewState] = React.useState<{ isOpen: boolean, platform: Platform, text: string } | null>(null);
 
@@ -249,35 +253,49 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                     </div>
 
                                                     {/* Actions Grid */}
-                                                    <div className="flex flex-col gap-6">
-                                                        <button
-                                                            onClick={() => setPreviewState({ isOpen: true, platform: res.platform, text })}
-                                                            className="flex items-center justify-center gap-3 py-5 rounded-[24px] bg-black/5 text-[11px] font-black text-black/60 border-2 border-black/10 hover:border-black hover:text-black hover:bg-white transition-all uppercase tracking-[0.2em]"
-                                                        >
-                                                            <EyeIcon className="w-5 h-5" />
-                                                            <span>ライブプレビュー</span>
-                                                        </button>
-
+                                                    <div className="flex flex-col gap-4">
                                                         <div className="grid grid-cols-2 gap-4">
                                                             <button
                                                                 onClick={() => onRegenerateSingle(res.platform)}
-                                                                className="flex items-center justify-center gap-3 py-5 rounded-[24px] bg-white border-2 border-black/10 text-[11px] font-black text-black/40 hover:text-black hover:border-black transition-all uppercase tracking-[0.2em]"
+                                                                className="flex items-center justify-center gap-3 py-4 rounded-[20px] bg-white border-2 border-black/10 text-[11px] font-black text-black/40 hover:text-black hover:border-black transition-all uppercase tracking-[0.2em]"
                                                             >
                                                                 <RotateCcwIcon className="w-5 h-5" />
                                                                 <span>再生成</span>
                                                             </button>
                                                             <button
+                                                                onClick={() => setPreviewState({ isOpen: true, platform: res.platform, text })}
+                                                                className="flex items-center justify-center gap-3 py-4 rounded-[20px] bg-black/5 text-[11px] font-black text-black/60 border-2 border-black/10 hover:border-black hover:text-black hover:bg-white transition-all uppercase tracking-[0.2em]"
+                                                            >
+                                                                <EyeIcon className="w-5 h-5" />
+                                                                <span>プレビュー</span>
+                                                            </button>
+                                                        </div>
+
+                                                        <div className="grid grid-cols-2 gap-4">
+                                                            <button
+                                                                onClick={() => onAutoFormat(gIdx, iIdx)}
+                                                                disabled={isAutoFormatting[`${gIdx}-${iIdx}`]}
+                                                                className={`flex items-center justify-center gap-3 py-4 rounded-[20px] text-[11px] font-black transition-all uppercase tracking-[0.2em] border-2 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] ${isAutoFormatting[`${gIdx}-${iIdx}`] ? 'bg-slate-100 border-black/10 text-black/20' : 'bg-[#E88BA3] border-black text-black hover:bg-[#E88BA3]/90'}`}
+                                                            >
+                                                                {isAutoFormatting[`${gIdx}-${iIdx}`] ? (
+                                                                    <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin" />
+                                                                ) : (
+                                                                    <SparklesIcon className="w-5 h-5" />
+                                                                )}
+                                                                <span>整える</span>
+                                                            </button>
+                                                            <button
                                                                 onClick={() => onRefineToggle(gIdx, iIdx)}
-                                                                className={`flex items-center justify-center gap-3 py-5 rounded-[24px] text-[11px] font-black transition-all uppercase tracking-[0.2em] border-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] ${refiningKey === `${gIdx}-${iIdx}` ? 'bg-[#9B8FD4] border-black text-black' : 'bg-white text-black/40 border-black/10 hover:border-black hover:text-black'}`}
+                                                                className={`flex items-center justify-center gap-3 py-4 rounded-[20px] text-[11px] font-black transition-all uppercase tracking-[0.2em] border-2 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] ${refiningKey === `${gIdx}-${iIdx}` ? 'bg-[#9B8FD4] border-black text-black' : 'bg-white text-black/40 border-black/10 hover:border-black hover:text-black'}`}
                                                             >
                                                                 <MagicWandIcon className="w-5 h-5" />
-                                                                <span>AI微調整</span>
+                                                                <span>AI調整</span>
                                                             </button>
                                                         </div>
 
                                                         <button
                                                             onClick={() => onShare(res.platform, text)}
-                                                            className={`flex items-center justify-center gap-4 py-8 rounded-[32px] font-black text-lg transition-all uppercase tracking-[0.3em] group border-[3px] border-black ${theme.actionColor}`}
+                                                            className={`flex items-center justify-center gap-4 py-6 md:py-8 rounded-[32px] font-black text-lg transition-all uppercase tracking-[0.3em] group border-[3px] border-black mt-2 ${theme.actionColor}`}
                                                         >
                                                             <span>{theme.actionLabel}</span>
                                                             <ExternalLinkIcon className="w-6 h-6 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />

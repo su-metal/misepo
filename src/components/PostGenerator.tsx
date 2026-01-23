@@ -205,6 +205,8 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
                 presetId={flow.activePresetId || undefined}
                 favorites={flow.favorites}
                 onToggleFavorite={flow.onToggleFavorite}
+                onAutoFormat={flow.handleAutoFormat}
+                isAutoFormatting={flow.isAutoFormatting}
               />
             </div>
           </div>
