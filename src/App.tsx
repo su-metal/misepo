@@ -293,7 +293,7 @@ function App() {
     }
   };
 
-  const handleToggleTraining = async (text: string, platform: Platform, presetId: string | null, replaceId?: string) => {
+  const handleToggleTraining = async (text: string, platform: Platform, presetId: string | null, replaceId?: string, source: 'generated' | 'manual' = 'manual') => {
     if (!isLoggedIn) return;
 
     const normalizedText = text.trim();
@@ -328,7 +328,8 @@ function App() {
           content: normalizedText,
           platform,
           presetId: effectivePresetId,
-          replaceId
+          replaceId,
+          source // Pass source to backend
         })
       });
 
@@ -357,7 +358,8 @@ function App() {
             content: normalizedText,
             platform,
             presetId: effectivePresetId,
-            createdAt: new Date().toISOString()
+            createdAt: new Date().toISOString(),
+            source
           }];
         });
         setReplacementModal(prev => ({ ...prev, isOpen: false }));
@@ -367,7 +369,8 @@ function App() {
           content: normalizedText,
           platform,
           presetId: effectivePresetId,
-          createdAt: new Date().toISOString()
+          createdAt: new Date().toISOString(),
+          source
         }]);
       }
     } catch (err) {

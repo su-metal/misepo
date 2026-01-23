@@ -19,7 +19,7 @@ export function useGeneratorFlow(props: {
   onGenerateSuccess: (post: GeneratedPost) => void;
   onTaskComplete: () => void;
   favorites: Set<string>;
-  onToggleFavorite: (text: string, platform: Platform, presetId: string | null) => Promise<void>;
+  onToggleFavorite: (text: string, platform: Platform, presetId: string | null, replaceId?: string, source?: 'generated' | 'manual') => Promise<void>;
   restorePost?: GeneratedPost | null;
   resetResultsTrigger?: number;
 }) {

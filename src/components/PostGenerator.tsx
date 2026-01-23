@@ -21,7 +21,7 @@ interface PostGeneratorProps {
   onGenerateSuccess: (post: GeneratedPost) => void;
   onTaskComplete: () => void;
   trainingItems: TrainingItem[];
-  onToggleFavorite: (text: string, platform: Platform, presetId: string | null) => Promise<void>;
+  onToggleFavorite: (text: string, platform: Platform, presetId: string | null, replaceId?: string, source?: 'generated' | 'manual') => Promise<void>;
   restorePost?: GeneratedPost | null;
   onOpenGuide?: () => void;
   onOpenSettings: () => void;
@@ -273,7 +273,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
           isSaving={isSavingPreset}
           onReorder={props.refreshPresets}
           trainingItems={trainingItems}
-          onToggleTraining={onToggleFavorite}
+          onToggleTraining={(text, platform, presetId, replaceId) => onToggleFavorite(text, platform, presetId, replaceId, 'manual')}
         />
       )}
 

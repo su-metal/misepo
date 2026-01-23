@@ -27,7 +27,7 @@ interface PostResultTabsProps {
     onIncludeFooterChange: (val: boolean) => void;
     presetId?: string;
     favorites: Set<string>;
-    onToggleFavorite: (text: string, platform: Platform, presetId: string | null) => Promise<void>;
+    onToggleFavorite: (text: string, platform: Platform, presetId: string | null, replaceId?: string, source?: 'generated' | 'manual') => Promise<void>;
     onAutoFormat: (gIdx: number, iIdx: number) => void;
     isAutoFormatting: { [key: string]: boolean };
 }
@@ -346,7 +346,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
 const FavoriteButton = ({
     platform, text, presetId, isTrained, onToggle
 }: {
-    platform: Platform, text: string, presetId: string | null, isTrained: boolean, onToggle: (text: string, platform: Platform, presetId: string | null) => Promise<void>
+    platform: Platform, text: string, presetId: string | null, isTrained: boolean, onToggle: (text: string, platform: Platform, presetId: string | null, replaceId?: string, source?: 'generated' | 'manual') => Promise<void>
 }) => {
     const [isLoading, setIsLoading] = React.useState(false);
 
@@ -360,7 +360,7 @@ const FavoriteButton = ({
 
         setIsLoading(true);
         try {
-            await onToggle(text, platform, presetId);
+            await onToggle(text, platform, presetId, undefined, 'generated');
         } catch (e) {
             console.error(e);
         } finally {

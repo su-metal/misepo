@@ -74,25 +74,30 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
   const displayHistory = React.useMemo(() => {
     if (showTrainedOnly) {
       // Show persistent TrainingItems mapped to GeneratedPost structure
-      return trainingItems.map(ti => ({
-        id: ti.id, // ID collision theoretical risk but low for display
-        timestamp: new Date(ti.createdAt).getTime(),
-        results: [{
-          platform: ti.platform,
-          data: [ti.content]
-        }],
-        config: {
-          inputText: ti.content, // Fallback for preview
-          platforms: [ti.platform],
-          platform: ti.platform,
-          purpose: 'auto', // Dummy
-          tone: 'standard', // Dummy
-          length: 'medium', // Dummy
-          presetId: ti.presetId
-        },
-        isPinned: false, // Training items don't have pinned state
-        isTrainingItem: true // Flag to distinguish
-      } as any)); // Type casting for compatibility
+      // Filter out manual entries (source === 'manual'). 
+      // Legacy items (source undefined) are shown to prevent data loss, 
+      // but purely manual items added from now on will be hidden.
+      return trainingItems
+        .filter(ti => ti.source !== 'manual')
+        .map(ti => ({
+          id: ti.id, // ID collision theoretical risk but low for display
+          timestamp: new Date(ti.createdAt).getTime(),
+          results: [{
+            platform: ti.platform,
+            data: [ti.content]
+          }],
+          config: {
+            inputText: ti.content, // Fallback for preview
+            platforms: [ti.platform],
+            platform: ti.platform,
+            purpose: 'auto', // Dummy
+            tone: 'standard', // Dummy
+            length: 'medium', // Dummy
+            presetId: ti.presetId
+          },
+          isPinned: false, // Training items don't have pinned state
+          isTrainingItem: true // Flag to distinguish
+        } as any)); // Type casting for compatibility
     }
 
     // Default: Show history log

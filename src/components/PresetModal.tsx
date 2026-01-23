@@ -49,7 +49,7 @@ interface PresetModalProps {
   isSaving?: boolean;
   onReorder?: () => Promise<Preset[] | void>;
   trainingItems: TrainingItem[];
-  onToggleTraining: (text: string, platform: Platform, presetId: string | null) => Promise<void>;
+  onToggleTraining: (text: string, platform: Platform, presetId: string | null, replaceId?: string) => Promise<void>;
 }
 
 const AVATAR_OPTIONS = [

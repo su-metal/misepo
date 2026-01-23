@@ -93,6 +93,7 @@ export interface TrainingItem {
   platform: Platform;
   presetId: string;
   createdAt: string;
+  source?: 'generated' | 'manual'; // New: Distinguish origin
 }
 
 export interface Preset {
