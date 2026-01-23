@@ -462,7 +462,8 @@ export function useGeneratorFlow(props: {
     if (restorePost) {
       setPlatforms(restorePost.config.platforms);
       setIsMultiGenMode(restorePost.config.platforms.length > 1);
-      setPostPurpose(restorePost.config.postPurpose);
+      // 'purpose' holds the active purpose value (Union type). Cast generic purpose to PostPurpose for state.
+      setPostPurpose(restorePost.config.purpose as PostPurpose);
       setGmapPurpose(restorePost.config.gmapPurpose);
       setTone(restorePost.config.tone);
       setLength(restorePost.config.length);
