@@ -242,48 +242,54 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                         />
                                                     </div>
 
-                                                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 mb-8 pt-8 border-t-[2px] border-black/5">
-                                                        <div className="flex-1 flex items-center gap-3">
-                                                            {theme.extra && theme.extra(gIdx, iIdx)}
-                                                            <FavoriteButton
-                                                                platform={res.platform}
-                                                                text={text}
-                                                                presetId={presetId || null}
-                                                                isFavorited={favorites.has(text.trim())}
-                                                                onToggle={onToggleFavorite}
-                                                            />
+                                                    {/* Unified Action Layout */}
+                                                    <div className="mt-auto pt-8 border-t-[2px] border-black/5">
+                                                        {/* Utility Row: Settings & Tools */}
+                                                        <div className="flex items-center justify-between mb-6 gap-3">
+                                                            {/* Left: Platform Specifics */}
+                                                            <div className="flex items-center gap-2">
+                                                                {theme.extra && theme.extra(gIdx, iIdx)}
+                                                            </div>
+
+                                                            {/* Right: Inspection & Favoriting */}
+                                                            <div className="flex items-center gap-2">
+                                                                <FavoriteButton
+                                                                    platform={res.platform}
+                                                                    text={text}
+                                                                    presetId={presetId || null}
+                                                                    isFavorited={favorites.has(text.trim())}
+                                                                    onToggle={onToggleFavorite}
+                                                                />
+                                                                {/* Refined Secondary Preview Button */}
+                                                                <button
+                                                                    onClick={() => setPreviewState({ isOpen: true, platform: res.platform, text })}
+                                                                    className="flex items-center justify-center w-11 h-11 rounded-xl bg-black/5 text-black/40 border-2 border-black/5 hover:border-black/20 hover:text-black transition-all"
+                                                                    title="プレビュー"
+                                                                >
+                                                                    <EyeIcon className="w-5 h-5" />
+                                                                </button>
+                                                            </div>
                                                         </div>
-                                                    </div>
 
-                                                    {/* Actions Area */}
-                                                    <div className="flex flex-col gap-4">
-                                                        <div className="flex items-center gap-3">
-                                                            {/* Compact Preview Button (Icon Only) */}
-                                                            <button
-                                                                onClick={() => setPreviewState({ isOpen: true, platform: res.platform, text })}
-                                                                className="w-13 h-13 flex-shrink-0 flex items-center justify-center rounded-[24px] bg-black/5 text-black/30 border-2 border-black/5 hover:border-black hover:text-black hover:bg-white transition-all"
-                                                                title="プレビュー"
-                                                            >
-                                                                <EyeIcon className="w-5 h-5" />
-                                                            </button>
-
-                                                            {/* Main Refine Button */}
+                                                        {/* Primary Tier Actions */}
+                                                        <div className="flex flex-col gap-4">
+                                                            {/* Prominent Refine Button */}
                                                             <button
                                                                 onClick={() => onRefineToggle(gIdx, iIdx)}
-                                                                className={`flex-1 flex items-center justify-center gap-3 py-5 rounded-[24px] text-[12px] font-black transition-all uppercase tracking-[0.25em] border-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] ${refiningKey === `${gIdx}-${iIdx}` ? 'bg-[#9B8FD4] border-black text-black' : 'bg-white text-black/40 border-black/10 hover:border-black hover:text-black'}`}
+                                                                className={`flex items-center justify-center gap-3 py-5 rounded-[24px] text-[12px] font-black transition-all uppercase tracking-[0.25em] border-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] ${refiningKey === `${gIdx}-${iIdx}` ? 'bg-[#9B8FD4] border-black text-black' : 'bg-white text-black/40 border-black/10 hover:border-black hover:text-black'}`}
                                                             >
                                                                 <MagicWandIcon className="w-5 h-5" />
                                                                 <span>AIで内容を微調整する</span>
                                                             </button>
-                                                        </div>
 
-                                                        <button
-                                                            onClick={() => onShare(res.platform, text)}
-                                                            className={`flex items-center justify-center gap-4 py-6 md:py-8 rounded-[32px] font-black text-lg transition-all uppercase tracking-[0.3em] group border-[3px] border-black mt-2 ${theme.actionColor}`}
-                                                        >
-                                                            <span>{theme.actionLabel}</span>
-                                                            <ExternalLinkIcon className="w-6 h-6 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                                                        </button>
+                                                            <button
+                                                                onClick={() => onShare(res.platform, text)}
+                                                                className={`flex items-center justify-center gap-4 py-6 md:py-8 rounded-[32px] font-black text-lg transition-all uppercase tracking-[0.3em] group border-[3px] border-black mt-2 ${theme.actionColor}`}
+                                                            >
+                                                                <span>{theme.actionLabel}</span>
+                                                                <ExternalLinkIcon className="w-6 h-6 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                                                            </button>
+                                                        </div>
                                                     </div>
 
                                                     {/* Refinement Overlay (per variant) */}
