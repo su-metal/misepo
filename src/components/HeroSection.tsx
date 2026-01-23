@@ -77,10 +77,10 @@ export default function HeroSection() {
     return (
         <div className="relative z-10 h-auto">
             <div
-                className="relative min-h-screen h-auto w-full overflow-hidden flex flex-col md:block bg-[#fceee3] pb-32 md:pb-0"
+                className="relative min-h-screen h-auto md:h-screen w-full overflow-hidden flex flex-col md:block bg-[#fceee3] pb-32 md:pb-0"
             >
 
-                <div className="max-w-7xl mx-auto w-full h-full relative px-4 flex flex-col md:block">
+                <div className="max-w-7xl mx-auto w-full h-full relative px-4 flex flex-col md:relative md:block">
                     {/* Mobile Text (Static at top) */}
                     <div className="md:hidden pt-24 px-4 text-center z-20 relative mb-2 shrink-0">
                         <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#F2C94C] border-[3px] border-black rounded-2xl shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] mb-6">
@@ -92,7 +92,7 @@ export default function HeroSection() {
                             <span className="gradient-text">あなたの言葉。</span>
                         </h1>
                         <p className="text-base text-black font-bold leading-relaxed px-2 mb-8">
-                            丁寧すぎて恥ずかしいAIは卒業。MisePoはあなたのお手本から「書き癖」を学習し、店主の『分身』としてSNS運用を代行します。
+                            丁寧だけどキレイなだけのAIは卒業。MisePoはあなたのお手本から「書き癖」を学習し、店主の『分身』としてSNS運用を代行します。
                         </p>
                         <div className="flex flex-col gap-4 max-w-sm mx-auto mt-2 px-4">
                             <button onClick={() => window.location.href = '/start'} className="neo-brutalism-button w-full px-6 py-5 bg-[#4DB39A] text-white font-black hover:bg-black transition-all flex items-center justify-center gap-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none">
@@ -110,14 +110,14 @@ export default function HeroSection() {
                                 <span className="animate-ping absolute inline-flex h-full w-full bg-black opacity-75"></span>
                                 <span className="relative inline-flex rounded-full h-3 w-3 bg-black"></span>
                             </span>
-                            <span className="text-sm font-black text-black">【限定100店舗】 先行モニター価格 月額1,480円</span>
+                            <span className="text-sm font-black text-black">【限定100店舗】 先行モニター価格 月額1,980円</span>
                         </div>
                         <h1 className="text-6xl lg:text-[5.5rem] font-black text-black tracking-tighter leading-[1.0] mb-8">
                             AIなのに、<br />
                             <span className="gradient-text">あなたの言葉。</span>
                         </h1>
                         <p className="text-xl text-black font-bold leading-relaxed mb-10 max-w-lg">
-                            丁寧すぎて恥ずかしいAIは卒業。MisePoはあなたのお手本から「書き癖」を学習し、常連さんが読んでも違和感のない文章を30秒で作成。店主の『分身』が、運用を代行します。
+                            丁寧だけどキレイなだけのAIは卒業。MisePoはあなたのお手本から「書き癖」を学習し、想いのこもった文章を30秒で作成。店主の『分身』が、運用を代行します。
                         </p>
                         <div className="flex gap-4">
                             <button onClick={() => window.location.href = '/start'} className="neo-brutalism-button px-8 py-5 bg-[#4DB39A] text-white font-black hover:bg-black transition-all flex items-center gap-2">
