@@ -257,7 +257,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                                     platform={res.platform}
                                                                     text={text}
                                                                     presetId={presetId || null}
-                                                                    isFavorited={favorites.has(text.trim())}
+                                                                    isTrained={favorites.has(text.trim())}
                                                                     onToggle={onToggleFavorite}
                                                                 />
                                                                 {/* Refined Secondary Preview Button */}
@@ -344,9 +344,9 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
 };
 
 const FavoriteButton = ({
-    platform, text, presetId, isFavorited, onToggle
+    platform, text, presetId, isTrained, onToggle
 }: {
-    platform: Platform, text: string, presetId: string | null, isFavorited: boolean, onToggle: (text: string, platform: Platform, presetId: string | null) => Promise<void>
+    platform: Platform, text: string, presetId: string | null, isTrained: boolean, onToggle: (text: string, platform: Platform, presetId: string | null) => Promise<void>
 }) => {
     const [isLoading, setIsLoading] = React.useState(false);
 
@@ -371,17 +371,17 @@ const FavoriteButton = ({
     return (
         <button
             onClick={handleToggle}
-            className={`group flex items-center gap-2 px-3 py-2 rounded-xl transition-all border-2 shadow-sm ${isFavorited
+            className={`group flex items-center gap-2 px-3 py-2 rounded-xl transition-all border-2 shadow-sm ${isTrained
                 ? 'bg-[#F5CC6D] text-black border-black/10'
                 : 'bg-black/5 text-black/40 border-black/5 hover:border-black/20 hover:text-black'
                 }`}
-            title={isFavorited ? "お気に入り解除" : "お気に入り（学習データに追加）"}
+            title={isTrained ? "学習を解除" : "AIに文体を学習させる"}
             disabled={isLoading}
         >
-            <StarIcon
-                className={`w-4 h-4 transition-all duration-300 ${isFavorited ? 'fill-black text-black scale-110' : 'text-black/20 group-hover:text-black'}`}
+            <MagicWandIcon
+                className={`w-4 h-4 transition-all duration-300 ${isTrained ? 'text-black scale-110' : 'text-black/20 group-hover:text-black'}`}
             />
-            {isFavorited && <span className="text-[10px] font-black animate-in fade-in slide-in-from-left-2 tracking-widest uppercase">保存済み</span>}
+            {isTrained && <span className="text-[10px] font-black animate-in fade-in slide-in-from-left-2 tracking-widest uppercase">学習済み</span>}
         </button>
     );
 };

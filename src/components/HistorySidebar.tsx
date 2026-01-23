@@ -1,6 +1,6 @@
 import React from 'react';
 import { GeneratedPost, Platform, GeneratedResult, StoreProfile } from '../types';
-import { CloseIcon, XIcon, InstagramIcon, GoogleMapsIcon, LockIcon, TrashIcon, HistoryIcon, HelpIcon, LogOutIcon, ChevronDownIcon, StarIcon, PinIcon } from './Icons';
+import { CloseIcon, XIcon, InstagramIcon, GoogleMapsIcon, LockIcon, TrashIcon, HistoryIcon, HelpIcon, LogOutIcon, ChevronDownIcon, StarIcon, PinIcon, MagicWandIcon } from './Icons';
 
 interface HistorySidebarProps {
   history: GeneratedPost[];
@@ -37,7 +37,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
   onToggleFavorite,
   onTogglePin
 }) => {
-  const [showFavoritesOnly, setShowFavoritesOnly] = React.useState(false);
+  const [showTrainedOnly, setShowTrainedOnly] = React.useState(false);
 
   // Helper to pick representative text
   const pickFirstText = (item: GeneratedPost): string => {
@@ -66,7 +66,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
 
   const displayHistory = React.useMemo(() => {
     let base = history;
-    if (showFavoritesOnly) {
+    if (showTrainedOnly) {
       base = history.filter(item => checkIfFavorited(item));
     }
     // Sort: Pinned first, then by timestamp
@@ -75,7 +75,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
       if (!a.isPinned && b.isPinned) return 1;
       return b.timestamp - a.timestamp;
     });
-  }, [history, showFavoritesOnly, checkIfFavorited]);
+  }, [history, showTrainedOnly, checkIfFavorited]);
 
   const getPlatformIcon = (p: Platform) => {
     switch (p) {
@@ -190,19 +190,16 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                 )}
               </div>
             </div>
+          </div>
 
+          {/* Navigation & Filter */}
+          <div className="flex items-center gap-3 px-2">
             <button
-              onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] font-bold border transition-all ${showFavoritesOnly
-                ? 'bg-yellow-50 border-yellow-200 text-yellow-600 shadow-sm'
-                : 'bg-white border-slate-200 text-slate-400 hover:text-slate-600'
-                }`}
+              onClick={() => setShowTrainedOnly(!showTrainedOnly)}
+              className={`flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl border transition-all font-black text-[10px] uppercase tracking-widest ${showTrainedOnly ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg shadow-indigo-100' : 'bg-white border-slate-100 text-slate-400 hover:border-indigo-100'}`}
             >
-              <StarIcon
-                className={`w-3 h-3 ${showFavoritesOnly ? 'text-yellow-500' : ''}`}
-                fill={showFavoritesOnly ? "currentColor" : "none"}
-              />
-              Favorites Only
+              <MagicWandIcon className={`w-4 h-4 ${showTrainedOnly ? 'text-white' : 'text-slate-300'}`} />
+              <span>{showTrainedOnly ? '育成済みのみ表示中' : '育成済みで絞り込む'}</span>
             </button>
           </div>
 

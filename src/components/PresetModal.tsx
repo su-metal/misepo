@@ -36,7 +36,7 @@ import {
   LeafIcon,
   GemIcon,
 } from './Icons';
-import { Platform, Preset } from '../types';
+import { Platform, Preset, TrainingItem } from '../types';
 import { AutoResizingTextarea } from './ResizableTextarea';
 
 interface PresetModalProps {
@@ -48,6 +48,8 @@ interface PresetModalProps {
   initialPresetId?: string;
   isSaving?: boolean;
   onReorder?: () => Promise<void>;
+  trainingItems: TrainingItem[];
+  onToggleTraining: (text: string, platform: Platform, presetId: string | null) => Promise<void>;
 }
 
 const AVATAR_OPTIONS = [
@@ -152,12 +154,13 @@ const PresetModal: React.FC<PresetModalProps> = ({
   initialPresetId,
   isSaving: isExternalSaving,
   onReorder,
+  trainingItems,
+  onToggleTraining,
 }) => {
   const [selectedPresetId, setSelectedPresetId] = useState<string | null>(initialPresetId || null);
   const [name, setName] = useState('');
   const [avatar, setAvatar] = useState('shop');
   const [customPrompt, setCustomPrompt] = useState('');
-  const [post_samples, setPostSamples] = useState<Record<string, string>>({});
   const [isInternalSaving, setIsInternalSaving] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [orderedPresets, setOrderedPresets] = useState<Preset[]>([]);
@@ -203,7 +206,6 @@ const PresetModal: React.FC<PresetModalProps> = ({
       setName(preset.name);
       setAvatar(preset.avatar || 'shop');
       setCustomPrompt(preset.custom_prompt || '');
-      setPostSamples(preset.post_samples || {});
       setMobileView('edit');
     }
   };
@@ -213,7 +215,6 @@ const PresetModal: React.FC<PresetModalProps> = ({
     setName('');
     setAvatar('shop');
     setCustomPrompt('');
-    setPostSamples({});
     setMobileView('edit');
   };
 
@@ -226,7 +227,6 @@ const PresetModal: React.FC<PresetModalProps> = ({
         name,
         avatar,
         custom_prompt: customPrompt,
-        post_samples: post_samples,
       });
       setShowSuccessToast(true);
       setTimeout(() => setShowSuccessToast(false), 3000);
@@ -324,33 +324,28 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
   const goToListView = () => setMobileView('list');
 
-  const getSamplesArray = (platform: Platform): string[] => {
-    const raw = post_samples[platform] || '';
-    return raw.split('\n---\n').filter(s => s.trim() !== '');
+  const getSamplesForPlatform = (platform: Platform): TrainingItem[] => {
+    return trainingItems.filter(item =>
+      item.platform === platform &&
+      item.presetId === (selectedPresetId || 'omakase')
+    );
   };
 
-  const updateSampleAtIndex = (platform: Platform, index: number | null, newText: string) => {
-    const samples = getSamplesArray(platform);
-    if (index === null) {
-      if (newText.trim()) samples.push(newText.trim());
-    } else {
-      if (newText.trim()) {
-        samples[index] = newText.trim();
-      } else {
-        samples.splice(index, 1);
-      }
+  const handleToggleTrainingInternal = async (text: string, platform: Platform) => {
+    const presetId = selectedPresetId || 'omakase';
+    const normalizedText = text.trim();
+    if (!normalizedText) return;
+
+    try {
+      await onToggleTraining(normalizedText, platform, presetId);
+      setExpandingPlatform(null);
+    } catch (err) {
+      console.error('Training failed:', err);
     }
-    setPostSamples(prev => ({ ...prev, [platform]: samples.join('\n---\n') }));
-  };
-
-  const deleteSampleAtIndex = (platform: Platform, index: number) => {
-    const samples = getSamplesArray(platform);
-    samples.splice(index, 1);
-    setPostSamples(prev => ({ ...prev, [platform]: samples.join('\n---\n') }));
   };
 
   const renderSampleList = (platform: Platform, colorClass: string, Icon: any) => {
-    const samples = getSamplesArray(platform);
+    const samples = getSamplesForPlatform(platform);
     return (
       <div className="bg-white rounded-[32px] p-6 mb-2 shadow-sm border border-slate-100 transition-all">
         <div className="flex items-center justify-between mb-4">
@@ -369,7 +364,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
               setExpandingPlatform(platform);
             }}
             disabled={samples.length >= 5}
-            className={`flex items-center gap-2 px-4 py-2 text-[10px] font-black rounded-xl transition-all group ${samples.length >= 5 ? 'bg-slate-50 text-slate-300' : 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100'}`}
+            className={`flex items-center gap-2 px-4 py-2 text-[10px] font-black rounded-xl transition-all group ${samples.length >= 5 ? 'bg-slate-50 text-slate-400' : 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100'}`}
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" className="group-hover:rotate-90 transition-transform"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
             <span>学習文を追加する</span>
@@ -383,19 +378,19 @@ const PresetModal: React.FC<PresetModalProps> = ({
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-3">
-            {samples.map((text, idx) => (
+            {samples.map((item, idx) => (
               <div
-                key={idx}
+                key={item.id}
                 className="group relative flex items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:border-indigo-200 hover:bg-white transition-all cursor-pointer"
                 onClick={() => {
-                  setModalText(text);
+                  setModalText(item.content);
                   setEditingSampleIndex(idx);
                   setExpandingPlatform(platform);
                 }}
               >
                 <div className="flex-1 min-w-0">
                   <p className="text-xs text-slate-600 font-bold line-clamp-1 leading-relaxed">
-                    {text}
+                    {item.content}
                   </p>
                 </div>
                 <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -403,7 +398,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
-                      deleteSampleAtIndex(platform, idx);
+                      // We need to call onToggleTraining with the content to delete it (as per App.tsx logic)
+                      onToggleTraining(item.content, item.platform, item.presetId);
                     }}
                     className="p-1.5 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all"
                   >
@@ -875,13 +871,11 @@ const PresetModal: React.FC<PresetModalProps> = ({
             </button>
             <button
               onClick={() => {
-                updateSampleAtIndex(expandingPlatform!, editingSampleIndex, modalText);
-                setExpandingPlatform(null);
-                setEditingSampleIndex(null);
+                handleToggleTrainingInternal(modalText, expandingPlatform!);
               }}
               className="flex-none p-3 bg-[#001738] hover:bg-slate-900 text-white rounded-2xl transition-all font-black text-sm px-8 md:px-10"
             >
-              保存して閉じる
+              更新して学習
             </button>
           </div>
         </div>

@@ -11,30 +11,62 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { content, platform, presetId } = body;
+    const { content, platform, presetId, replaceId } = body;
 
     if (!content || !platform || !presetId) {
       return NextResponse.json({ error: 'Missing content, platform, or presetId' }, { status: 400 });
     }
 
-    // Check if duplicate content already exists for this user AND preset
+    // Check for duplicate content for this user AND preset
     const { data: existing } = await supabase
       .from('learning_sources')
       .select('id')
       .eq('user_id', user.id)
       .eq('preset_id', presetId)
-      .eq('content', content)
+      .eq('content', content.trim())
       .single();
 
     if (existing) {
-      return NextResponse.json({ message: 'Already favorited', id: existing.id });
+      return NextResponse.json({ ok: true, message: 'Already exists', id: existing.id });
+    }
+
+    // Check count for this preset (Omakase vs Custom etc)
+    const { data: currentItems } = await supabase
+      .from('learning_sources')
+      .select('id, content, platform, preset_id, created_at')
+      .eq('user_id', user.id)
+      .eq('preset_id', presetId)
+      .order('created_at', { ascending: true });
+
+    if (!replaceId && (currentItems?.length || 0) >= 5) {
+      return NextResponse.json({ 
+        ok: false, 
+        error: 'LIMIT_REACHED', 
+        message: '学習データは1つのプロフィールにつき5件までです。',
+        currentItems: currentItems?.map(item => ({
+          id: item.id,
+          content: item.content,
+          platform: item.platform,
+          presetId: item.preset_id,
+          createdAt: item.created_at
+        }))
+      }, { status: 409 });
+    }
+
+    // Atomic replacement if replaceId provided
+    if (replaceId) {
+      await supabase
+        .from('learning_sources')
+        .delete()
+        .eq('user_id', user.id)
+        .eq('id', replaceId);
     }
 
     const { data, error } = await supabase
       .from('learning_sources')
       .insert({
         user_id: user.id,
-        content,
+        content: content.trim(),
         platform,
         preset_id: presetId
       })
@@ -43,10 +75,10 @@ export async function POST(req: NextRequest) {
 
     if (error) throw error;
 
-    return NextResponse.json({ id: data.id, message: 'Saved to favorites' });
+    return NextResponse.json({ ok: true, id: data.id, message: 'Saved to training data' });
   } catch (error: any) {
     console.error('Error in POST learning source:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    return NextResponse.json({ ok: false, error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
@@ -61,12 +93,20 @@ export async function GET(req: Request) {
   try {
     const { data } = await supabase
       .from('learning_sources')
-      .select('content')
+      .select('id, content, platform, preset_id, created_at')
       .eq('user_id', user.id);
+
+    const items = (data || []).map((d: any) => ({
+      id: d.id,
+      content: d.content,
+      platform: d.platform,
+      presetId: d.preset_id,
+      createdAt: d.created_at
+    }));
 
     return NextResponse.json({ 
       ok: true, 
-      favorites: data?.map((d: any) => d.content) || [] 
+      items
     });
   } catch (error) {
     console.error('Error fetching learning sources:', error);
@@ -83,45 +123,37 @@ export async function DELETE(req: NextRequest) {
   }
 
   try {
-    // Attempt to get content from Body first (for long posts), fallback to searchParams
     let content: string | null = null;
+    let id: string|null = null;
     
     try {
       const body = await req.json();
       content = body.content;
+      id = body.id;
     } catch {
       const { searchParams } = new URL(req.url);
       content = searchParams.get('content');
+      id = searchParams.get('id');
     }
 
-    if (!content) {
-       return NextResponse.json({ error: 'Missing content' }, { status: 400 });
+    if (!content && !id) {
+       return NextResponse.json({ error: 'Missing content or id' }, { status: 400 });
     }
 
-    const { error } = await supabase
+    const query = supabase
       .from('learning_sources')
       .delete()
-      .eq('user_id', user.id)
-      .eq('content', content);
+      .eq('user_id', user.id);
+    
+    if (id) query.eq('id', id);
+    else query.eq('content', content);
 
+    const { error } = await query;
     if (error) throw error;
 
-    return NextResponse.json({ message: 'Removed from favorites' });
+    return NextResponse.json({ ok: true, message: 'Removed' });
   } catch (error: any) {
     console.error('Error removing favorite:', error);
-    try {
-      const { searchParams } = new URL(req.url);
-      const content = searchParams.get('content');
-      if (content) {
-        const { error: fallbackError } = await supabase
-          .from('learning_sources')
-          .delete()
-          .eq('user_id', user.id)
-          .eq('content', content);
-        if (!fallbackError) return NextResponse.json({ message: 'Removed from favorites (fallback)' });
-      }
-    } catch {}
-
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
   }
 }

@@ -16,6 +16,8 @@ import AccountSettingsModal from './components/AccountSettingsModal';
 import GuestDemoModal from './components/GuestDemoModal';
 import GuideModal from './components/GuideModal';
 import { LockIcon, LogOutIcon } from './components/Icons';
+import TrainingReplacementModal from './components/features/generator/TrainingReplacementModal';
+import { Platform, TrainingItem } from './types';
 
 
 const UpgradeBanner = ({ plan, onUpgrade }: { plan: string, onUpgrade: () => void }) => (
@@ -42,13 +44,29 @@ function App() {
   const [presets, setPresets] = useState<Preset[]>([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activeHistoryItem, setActiveHistoryItem] = useState<GeneratedPost | null>(null);
-  const [favorites, setFavorites] = useState<Set<string>>(new Set());
+  const [showAccountSettings, setShowAccountSettings] = useState(false);
+  const [initDone, setInitDone] = useState(false);
+
+  // Training Replacement State
+  const [replacementModal, setReplacementModal] = useState<{
+    isOpen: boolean;
+    newContent: string;
+    platform: Platform;
+    presetId: string | null;
+    currentItems: TrainingItem[];
+  }>({
+    isOpen: false,
+    newContent: '',
+    platform: Platform.Instagram,
+    presetId: null,
+    currentItems: []
+  });
+
+  const [trainingItems, setTrainingItems] = useState<TrainingItem[]>([]);
 
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showGuide, setShowGuide] = useState(false);
   const [showGuestDemo, setShowGuestDemo] = useState(false);
-  const [showAccountSettings, setShowAccountSettings] = useState(false);
-  const [initDone, setInitDone] = useState(false);
 
   const isLoggedIn = !!user;
 
@@ -89,20 +107,23 @@ function App() {
     }
   }, [isLoggedIn]);
 
-  const fetchFavorites = useCallback(async () => {
+  const fetchTrainingItems = useCallback(async () => {
     if (!isLoggedIn) return;
     try {
       const res = await fetch(`/api/me/learning?t=${Date.now()}`, { cache: 'no-store' });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
-      if (data.ok && Array.isArray(data.favorites)) {
-        // Normalize: trim all loaded favorites
-        setFavorites(new Set(data.favorites.map((s: string) => s.trim())));
+      if (data.ok && Array.isArray(data.items)) {
+        setTrainingItems(data.items);
       }
     } catch (err) {
-      console.error('Failed to fetch favorites:', err);
+      console.error('Failed to fetch training items:', err);
     }
   }, [isLoggedIn]);
+
+  const favorites = React.useMemo(() => {
+    return new Set(trainingItems.map(item => item.content.trim()));
+  }, [trainingItems]);
 
   const fetchProfile = useCallback(async () => {
     if (!isLoggedIn) return;
@@ -140,16 +161,16 @@ function App() {
     setStoreProfile(null);
     setHistory([]);
     setPresets([]);
-    setFavorites(new Set());
+    setTrainingItems([]);
 
     const init = async () => {
       console.log('[App] Fetching data for user:', user?.id || 'Guest');
-      await Promise.all([fetchProfile(), fetchHistory(), fetchPresets(), fetchFavorites()]);
+      await Promise.all([fetchProfile(), fetchHistory(), fetchPresets(), fetchTrainingItems()]);
       setInitDone(true);
       console.log('[App] Initialization complete.');
     };
     init();
-  }, [authLoading, user?.id, fetchProfile, fetchHistory, fetchPresets, fetchFavorites]);
+  }, [authLoading, user?.id, fetchProfile, fetchHistory, fetchPresets, fetchTrainingItems]);
 
   // Strict Redirect for Paid-Only Model
   useEffect(() => {
@@ -222,55 +243,86 @@ function App() {
     }
   };
 
-  const handleToggleFavorite = async (text: string, platform: any, presetId: string | null) => {
+  const handleToggleTraining = async (text: string, platform: Platform, presetId: string | null, replaceId?: string) => {
     if (!isLoggedIn) return;
 
     const normalizedText = text.trim();
-    const isFavorited = favorites.has(normalizedText);
+    // Use trainingItems directly for precise checking
+    const existing = trainingItems.find(item => item.content.trim() === normalizedText);
+    const isTrained = !!existing;
 
-    // Optimistic Update
-    setFavorites(prev => {
-      const next = new Set(prev);
-      if (isFavorited) next.delete(normalizedText);
-      else next.add(normalizedText);
-      return next;
-    });
+    if (isTrained && !replaceId) {
+      // Delete
+      setTrainingItems(prev => prev.filter(item => item.id !== existing.id));
+      try {
+        await fetch('/api/me/learning', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: existing.id })
+        });
+      } catch (err) {
+        console.error('Delete training failed:', err);
+        setTrainingItems(prev => [...prev, existing]);
+      }
+      return;
+    }
+
+    // Add / Replace Logic
+    const effectivePresetId = presetId || presets[0]?.id || 'omakase';
 
     try {
-      const method = !isFavorited ? 'POST' : 'DELETE';
-      let url = '/api/me/learning';
-      if (isFavorited) {
-        const params = new URLSearchParams({ content: normalizedText });
-        url += `?${params.toString()}`;
-      }
-
-      // Handle legacy history items without presetId
-      // Default to the first preset if available, or a fallback string (though DB likely won't block it, API might require valid preset logic in future)
-      const effectivePresetId = presetId || presets[0]?.id || 'legacy_history_default';
-
-      const res = await fetch(url, {
-        method,
+      const res = await fetch('/api/me/learning', {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: !isFavorited ? JSON.stringify({ content: normalizedText, platform, presetId: effectivePresetId }) : undefined
+        body: JSON.stringify({
+          content: normalizedText,
+          platform,
+          presetId: effectivePresetId,
+          replaceId
+        })
       });
+
+      const data = await res.json();
 
       if (!res.ok) {
-        const errorData = await res.json().catch(() => ({ error: 'Unknown error' }));
-        throw new Error(errorData.error || errorData.message || 'Failed to toggle favorite');
+        if (data.error === 'LIMIT_REACHED') {
+          setReplacementModal({
+            isOpen: true,
+            newContent: normalizedText,
+            platform,
+            presetId: effectivePresetId,
+            currentItems: data.currentItems
+          });
+          return;
+        }
+        throw new Error(data.message || 'Failed to save training data');
       }
 
-      // Re-fetch to sync (optional, but safer)
-      // fetchFavorites(); 
+      // Success
+      if (replaceId) {
+        setTrainingItems(prev => {
+          const filtered = prev.filter(item => item.id !== replaceId);
+          return [...filtered, {
+            id: data.id,
+            content: normalizedText,
+            platform,
+            presetId: effectivePresetId,
+            createdAt: new Date().toISOString()
+          }];
+        });
+        setReplacementModal(prev => ({ ...prev, isOpen: false }));
+      } else {
+        setTrainingItems(prev => [...prev, {
+          id: data.id,
+          content: normalizedText,
+          platform,
+          presetId: effectivePresetId,
+          createdAt: new Date().toISOString()
+        }]);
+      }
     } catch (err) {
-      console.error('Toggle favorite failed:', err);
-      // Revert
-      setFavorites(prev => {
-        const next = new Set(prev);
-        if (isFavorited) next.add(normalizedText); // was true, failed to delete -> add back
-        else next.delete(normalizedText); // was false, failed to add -> delete
-        return next;
-      });
-      alert(`お気に入りの更新に失敗しました: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      console.error('Training toggle failed:', err);
+      alert(`更新に失敗しました: ${err instanceof Error ? err.message : 'Unknown error'}`);
     }
   };
 
@@ -305,7 +357,7 @@ function App() {
         onLogout={logout}
         storeProfile={storeProfile}
         favorites={favorites}
-        onToggleFavorite={handleToggleFavorite}
+        onToggleFavorite={handleToggleTraining}
         onTogglePin={handleTogglePin}
       />
 
@@ -321,8 +373,8 @@ function App() {
             refreshPresets={fetchPresets}
             onGenerateSuccess={handleGenerateSuccess}
             onTaskComplete={() => { /* no-op */ }}
-            favorites={favorites}
-            onToggleFavorite={handleToggleFavorite}
+            trainingItems={trainingItems}
+            onToggleFavorite={handleToggleTraining}
             restorePost={activeHistoryItem}
             onOpenGuide={() => setShowGuide(true)}
             onOpenSettings={() => setShowOnboarding(true)}
@@ -343,6 +395,16 @@ function App() {
           onLogout={logout}
         />
       )}
+
+      <TrainingReplacementModal
+        isOpen={replacementModal.isOpen}
+        onClose={() => setReplacementModal(prev => ({ ...prev, isOpen: false }))}
+        onReplace={(id) => handleToggleTraining(replacementModal.newContent, replacementModal.platform, replacementModal.presetId, id)}
+        currentItems={replacementModal.currentItems}
+        newContent={replacementModal.newContent}
+        platform={replacementModal.platform}
+        presetName={presets.find(p => p.id === replacementModal.presetId)?.name || 'おまかせ'}
+      />
     </div>
   );
 }
