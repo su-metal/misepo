@@ -168,7 +168,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
             <div className={`space-y-8 animate-in fade-in duration-700 ${results.length === 0 ? 'hidden md:block' : ''}`}>
 
                 {/* Main Results Container - Tabs Integrated Inside */}
-                <div className="section-card text-primary rounded-[48px] flex flex-col min-h-[600px] overflow-hidden group/main transition-all duration-500">
+                <div className="section-card text-primary rounded-[48px] flex flex-col min-h-[600px] group/main transition-all duration-500">
 
                     {/* Integrated Tab Navigation Header */}
                     {results.length > 0 && (
@@ -197,7 +197,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                     )}
 
                     {/* Results Content Area */}
-                    <div className="flex-1 overflow-y-auto no-scrollbar">
+                    <div className="flex-1">
                         {results.length === 0 ? (
                             // Placeholder when no results
                             <div className="p-12 h-full flex flex-col items-center justify-center text-center space-y-8 animate-in fade-in duration-1000">
@@ -227,7 +227,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                         <AutoResizingTextarea
                                                             value={text}
                                                             onChange={(e) => onManualEdit(gIdx, iIdx, e.target.value)}
-                                                            className={`w-full bg-transparent focus:outline-none resize-none placeholder:text-black/10 whitespace-pre-wrap ${theme.contentClasses || 'text-base text-black font-bold'}`}
+                                                            className={`w-full bg-transparent focus:outline-none resize-none placeholder:text-black/10 whitespace-pre-wrap overflow-hidden ${theme.contentClasses || 'text-base text-black font-bold'}`}
                                                             trigger={activeTab}
                                                         />
                                                     </div>
