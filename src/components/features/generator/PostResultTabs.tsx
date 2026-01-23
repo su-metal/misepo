@@ -5,7 +5,7 @@ import { CharCounter } from './CharCounter';
 import { AutoResizingTextarea } from './AutoResizingTextarea';
 import { RefinePanel } from './RefinePanel';
 import { PostPreviewModal } from './PostPreviewModal';
-import { CopyIcon, CrownIcon, MagicWandIcon, RotateCcwIcon, ExternalLinkIcon, EyeIcon, SparklesIcon, StarIcon } from '../../Icons';
+import { CopyIcon, CrownIcon, MagicWandIcon, RotateCcwIcon, ExternalLinkIcon, EyeIcon, SparklesIcon } from '../../Icons';
 interface PostResultTabsProps {
     results: GeneratedResult[];
     activeTab: number;
@@ -27,7 +27,7 @@ interface PostResultTabsProps {
     onIncludeFooterChange: (val: boolean) => void;
     presetId?: string;
     favorites: Set<string>;
-    onToggleFavorite: (text: string, platform: Platform, presetId: string | null) => Promise<void>;
+    onToggleFavorite: (text: string, platform: Platform, presetId: string | null, replaceId?: string, source?: 'generated' | 'manual') => Promise<void>;
     onAutoFormat: (gIdx: number, iIdx: number) => void;
     isAutoFormatting: { [key: string]: boolean };
 }
@@ -257,7 +257,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                                     platform={res.platform}
                                                                     text={text}
                                                                     presetId={presetId || null}
-                                                                    isFavorited={favorites.has(text.trim())}
+                                                                    isTrained={favorites.has(text.trim())}
                                                                     onToggle={onToggleFavorite}
                                                                 />
                                                                 {/* Refined Secondary Preview Button */}
@@ -344,9 +344,9 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
 };
 
 const FavoriteButton = ({
-    platform, text, presetId, isFavorited, onToggle
+    platform, text, presetId, isTrained, onToggle
 }: {
-    platform: Platform, text: string, presetId: string | null, isFavorited: boolean, onToggle: (text: string, platform: Platform, presetId: string | null) => Promise<void>
+    platform: Platform, text: string, presetId: string | null, isTrained: boolean, onToggle: (text: string, platform: Platform, presetId: string | null, replaceId?: string, source?: 'generated' | 'manual') => Promise<void>
 }) => {
     const [isLoading, setIsLoading] = React.useState(false);
 
@@ -360,7 +360,7 @@ const FavoriteButton = ({
 
         setIsLoading(true);
         try {
-            await onToggle(text, platform, presetId);
+            await onToggle(text, platform, presetId, undefined, 'generated');
         } catch (e) {
             console.error(e);
         } finally {
@@ -371,17 +371,17 @@ const FavoriteButton = ({
     return (
         <button
             onClick={handleToggle}
-            className={`group flex items-center gap-2 px-3 py-2 rounded-xl transition-all border-2 shadow-sm ${isFavorited
-                ? 'bg-[#F5CC6D] text-black border-black/10'
+            className={`group flex items-center gap-2 px-3 py-2 rounded-xl transition-all border-2 shadow-sm ${isTrained
+                ? 'bg-indigo-50 text-indigo-600 border-indigo-200 shadow-indigo-100'
                 : 'bg-black/5 text-black/40 border-black/5 hover:border-black/20 hover:text-black'
                 }`}
-            title={isFavorited ? "お気に入り解除" : "お気に入り（学習データに追加）"}
+            title={isTrained ? "学習を解除" : "AIに文体を学習させる"}
             disabled={isLoading}
         >
-            <StarIcon
-                className={`w-4 h-4 transition-all duration-300 ${isFavorited ? 'fill-black text-black scale-110' : 'text-black/20 group-hover:text-black'}`}
+            <MagicWandIcon
+                className={`w-4 h-4 transition-all duration-300 ${isTrained ? 'text-black scale-110' : 'text-black/20 group-hover:text-black'}`}
             />
-            {isFavorited && <span className="text-[10px] font-black animate-in fade-in slide-in-from-left-2 tracking-widest uppercase">保存済み</span>}
+            {isTrained && <span className="text-[10px] font-black animate-in fade-in slide-in-from-left-2 tracking-widest uppercase">学習済み</span>}
         </button>
     );
 };

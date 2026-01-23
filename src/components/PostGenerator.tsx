@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import {
-  StoreProfile, GeneratedPost, Preset, Platform, UserPlan
+  StoreProfile, GeneratedPost, Preset, Platform, UserPlan, TrainingItem
 } from '../types';
 import { StarIcon, SparklesIcon } from './Icons';
 import { useGeneratorFlow } from './features/generator/useGeneratorFlow';
@@ -17,11 +17,11 @@ interface PostGeneratorProps {
   isLoggedIn: boolean;
   onOpenLogin: () => void;
   presets: Preset[];
-  refreshPresets: () => Promise<void>;
+  refreshPresets: () => Promise<Preset[] | void>;
   onGenerateSuccess: (post: GeneratedPost) => void;
   onTaskComplete: () => void;
-  favorites: Set<string>;
-  onToggleFavorite: (text: string, platform: Platform, presetId: string | null) => Promise<void>;
+  trainingItems: TrainingItem[];
+  onToggleFavorite: (text: string, platform: Platform, presetId: string | null, replaceId?: string, source?: 'generated' | 'manual') => Promise<void>;
   restorePost?: GeneratedPost | null;
   onOpenGuide?: () => void;
   onOpenSettings: () => void;
@@ -35,10 +35,12 @@ interface PostGeneratorProps {
 const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
   const {
     storeProfile, isLoggedIn, onOpenLogin, presets,
-    onGenerateSuccess, onTaskComplete, favorites, onToggleFavorite, restorePost,
+    onGenerateSuccess, onTaskComplete, trainingItems, onToggleFavorite, restorePost,
     onOpenGuide, onOpenSettings, onOpenHistory, onLogout,
     plan, resetResultsTrigger, shouldShowTour
   } = props;
+
+  const favorites = React.useMemo(() => new Set(trainingItems.map(t => t.content.trim())), [trainingItems]);
 
   const flow = useGeneratorFlow({
     storeProfile, isLoggedIn, onOpenLogin,
@@ -270,6 +272,8 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
           initialPresetId={undefined}
           isSaving={isSavingPreset}
           onReorder={props.refreshPresets}
+          trainingItems={trainingItems}
+          onToggleTraining={(text, platform, presetId, replaceId) => onToggleFavorite(text, platform, presetId, replaceId, 'manual')}
         />
       )}
 

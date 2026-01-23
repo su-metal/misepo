@@ -82,26 +82,18 @@ export interface GeneratedResult {
 export interface GeneratedPost {
   id: string;
   timestamp: number;
-  config: {
-    platforms: Platform[];
-    postPurpose: PostPurpose;
-    gmapPurpose: GoogleMapPurpose;
-    tone: Tone;
-    length: Length;
-    inputText: string;
-    starRating?: number | null; // Added
-    language?: string;
-    storeSupplement?: string;
-    customPrompt?: string;
-    includeSymbols?: boolean;
-    includeEmojis?: boolean;
-    xConstraint140?: boolean;
-    instagramFooter?: string;
-    presetId?: string; // Add presetId here too for history
-    isPinned?: boolean; // New: Whether this post is pinned
-  };
+  config: Omit<GenerationConfig, 'platform'> & { platforms: Platform[] };
   results: GeneratedResult[];
-  isPinned: boolean; // Root level for easy access
+  isPinned: boolean; 
+}
+
+export interface TrainingItem {
+  id: string;
+  content: string;
+  platform: Platform;
+  presetId: string;
+  createdAt: string;
+  source?: 'generated' | 'manual'; // New: Distinguish origin
 }
 
 export interface Preset {
