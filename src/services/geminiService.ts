@@ -132,9 +132,17 @@ export const generateContent = async (
     - **Line Breaks**: **NEVER** insert line breaks in the middle of a grammatical phrase or word (e.g., don't split "ご来店いただき" across lines). Maintain natural reading flow. Avoid "auto-formatting for mobile" unless the <learning_samples> explicitly use that specific rhythm.
     - **Platform Rules**:
       - Platform: ${config.platform}
-      ${config.platform === Platform.Line ? `- Style: **Engaging Marketing Message**. 
-        - Use appropriate standard emojis to make it look professional yet friendly.
-        - Ensure clear headings and a strong call to action.` : ''}
+      ${config.platform === Platform.Line ? `- Style: **Friendly but Professional "Official LINE" Marketing**.
+        - **3-Balloon Structure**: Generate content in 3 distinct parts (balloons):
+          1. **Hook (Balloon 1)**: Max 100 chars. Focus on the first 20 chars for push notification impact. Include immediate benefit or urgency.
+          2. **Details (Balloon 2)**: 200-300 chars. Focus on specific item/event value. Use short sentences, line breaks, and clear bullet points.
+          3. **Action (Balloon 3)**: Strong Call to Action (CTA) like "▼今すぐ予約する" or "▼クーポンはこちら".
+        - **Tone**: Friendly like a "knowledgeable friend" but maintaining professional trust. Avoid stiff email-style greetings (Sincerely, Dear, etc.).
+        - **Positive Reframing**: NEVER use terms like "cancellation" (キャンセル/欠員) that imply a negative event. Instead, frame it as a positive opportunity: "A special slot has opened up" (空き枠が出ました), "Ready to welcome you" (ご案内可能になりました), or "Lucky opening" (ラッキーな空き).
+        - **Visual Hooks**:
+          - **Headers**: Surround high-impact text with emojis and slashes for maximum visibility, e.g., '＼ 🧴 [Product Name] 🧴 ／'.
+          - **CTA Guidance (LINE ONLY)**: Use multiple arrows like '↓ ↓ ↓' or pointing emojis **strictly on the very last line** of the message. You can either place them before the text OR use an "Arrow-Sandwich" pattern like '↓ ↓ ↓ ご予約はこちら ↓ ↓ ↓' for variety. Do NOT use these arrows for Instagram.
+        - **Layout**: Use clear visual separators like '---' between the three balloons.` : ''}
       - Length: ${config.length}
       - Language: ${config.language || 'Japanese'}
   </style_guidelines>
@@ -216,7 +224,7 @@ ${config.storeSupplement ? `<store_context>\n${config.storeSupplement}\n</store_
     ${isGMap ? 
       "The <user_input> is a customer review. Generate a polite and empathetic REPLY from the owner. Use the facts in <store_context> if provided to explain circumstances or provide background. Do not just summarize the facts; acknowledge them graciously." : 
       config.platform === Platform.Line ?
-      "Generate a friendly and direct personal MESSAGE for Official LINE based on the <user_input>. Encourage the reader to visit or take action." :
+      "Generate an Official LINE message with a 3-balloon structure: 1. Hook (for push notifications), 2. Details (friendly marketing body), 3. Action (CTA). Use friendly but professional tone. Mark each balloon clearly with '---'. **CRITICAL**: Use positive framing (e.g., 'ご案内可能なお時間ができました') instead of negative terms like 'cancellation' (キャンセル). **VISUAL**: Use emoji-sandwiched headers (e.g., ＼ 🧴 [Title] 🧴 ／). For LINE only, place directional arrows (↓ ↓ ↓) **strictly on the very last line**, optionally as an arrow-sandwich pattern (e.g., ↓ ↓ ↓ Text ↓ ↓ ↓). Encourage action." :
       "Generate an attractive post for based on the <user_input>."
     }
     Output a JSON object with:
