@@ -67,14 +67,14 @@ export const PWASection = () => {
                                     </div>
                                     <div className="absolute bottom-0 left-0 right-0 bg-white border-t-[4px] border-black shadow-[0_-8px_0_rgba(0,0,0,0.1)] animate-slide-up">
                                         <div className="flex justify-center py-3"><div className="w-10 h-1.5 bg-black rounded-full" /></div>
-                                        <p className="px-6 pb-2 text-[10px] font-black text-black uppercase tracking-[0.2em]">Share Options</p>
+                                        <p className="px-6 pb-2 text-[10px] font-black text-black uppercase tracking-[0.2em]">共有</p>
                                         <div className="px-4 pb-6 space-y-2">
                                             <div className="flex items-center gap-4 px-4 py-3 text-black font-bold border-b border-black/5">
-                                                <Icons.Send size={18} /><span className="text-sm uppercase tracking-tight">Message</span>
+                                                <Icons.Send size={18} /><span className="text-sm font-bold tracking-tight">メッセージ</span>
                                             </div>
                                             <div className="flex items-center gap-4 px-4 py-4 bg-[#F5CC6D] text-black font-black border-[3px] border-black rounded-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rounded-2xl relative overflow-hidden animate-pulse">
                                                 <Icons.PlusSquare size={20} />
-                                                <span className="text-sm uppercase italic">Add to Home Screen</span>
+                                                <span className="text-sm font-black">ホーム画面に追加</span>
                                                 <div className="absolute right-4 w-3 h-3 bg-[#E88BA3] border-[2px] border-black rounded-2xl animate-ping" />
                                             </div>
                                         </div>
@@ -93,8 +93,8 @@ export const PWASection = () => {
                                                 </div>
                                             </div>
                                             <div className="flex gap-3">
-                                                <button className="flex-1 py-2 text-[10px] font-black uppercase text-black/40 border-[2px] border-black rounded-2xl/10">Back</button>
-                                                <button className="flex-1 py-2 text-[10px] font-black uppercase text-white bg-black border-[2px] border-black rounded-2xl animate-pulse">Add</button>
+                                                <button className="flex-1 py-2 text-[10px] font-black text-black/40 border-[2px] border-black rounded-lg">キャンセル</button>
+                                                <button className="flex-1 py-2 text-[10px] font-black text-white bg-black border-[2px] border-black rounded-lg animate-pulse">追加</button>
                                             </div>
                                         </div>
                                     </div>
@@ -122,7 +122,7 @@ export const PWASection = () => {
                                         </div>
                                         <div className="absolute bottom-12 left-4 right-4 bg-white border-[3px] border-black rounded-2xl p-4 flex items-center gap-3 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] animate-slide-up">
                                             <Icons.CheckCircle size={20} className="text-[#4DB39A]" />
-                                            <span className="text-[10px] font-black uppercase text-black">Added to Home!</span>
+                                            <span className="text-[10px] font-black text-black">ホームに追加しました！</span>
                                         </div>
                                     </div>
                                 </div>
@@ -131,7 +131,7 @@ export const PWASection = () => {
                         <p className="text-center text-[10px] text-black font-black uppercase tracking-[0.3em] mt-8 bg-white border-[2px] border-black rounded-2xl py-2 inline-block px-4 mx-auto w-auto shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] ml-[50%] -translate-x-1/2">
                             <span className="inline-flex items-center gap-2">
                                 <span className="w-2.5 h-2.5 bg-[#4DB39A] border border-black animate-pulse" />
-                                System Animating
+                                デモ演出用アニメーション
                             </span>
                         </p>
                     </div>

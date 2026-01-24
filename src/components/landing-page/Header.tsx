@@ -19,6 +19,10 @@ export const Header = ({ scrolled, isMenuOpen, setIsMenuOpen, loginWithGoogle }:
                             <Icons.Smartphone size={20} className="text-black" />
                         </div>
                         <span className="font-black text-2xl tracking-tighter text-black uppercase">MisePo</span>
+                        <div className="h-4 w-[2px] bg-black/10 mx-1 hidden sm:block" />
+                        <span className="text-[10px] font-black text-black/50 tracking-tighter leading-none hidden sm:block whitespace-nowrap mt-1">
+                            お店のポストを<br className="lg:hidden" />丸っとおまかせ
+                        </span>
                     </div>
                     <nav className="hidden md:flex items-center space-x-8">
                         {['お悩み', '機能', 'デモ', '料金', 'FAQ'].map((item, i) => (
