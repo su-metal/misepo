@@ -82,7 +82,7 @@ export const PlatformSelector: React.FC<PlatformSelectorProps> = ({
                                 {getPlatformIcon(p)}
                             </div>
                             <span className={`text-[10px] font-black tracking-widest uppercase ${isSelected ? 'text-black' : 'text-black/40 group-hover:text-black'}`}>
-                                {p}
+                                {p === Platform.Line ? 'LINE' : p}
                             </span>
 
                             {isMultiGen && isSelected && (
