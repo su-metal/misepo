@@ -353,7 +353,7 @@ function App() {
           });
           return;
         }
-        throw new Error(data.message || 'Failed to save training data');
+        throw new Error(data.error || data.message || 'Failed to save training data');
       }
 
       // Success

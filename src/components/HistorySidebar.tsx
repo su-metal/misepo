@@ -18,7 +18,7 @@ interface HistorySidebarProps {
   favorites: Set<string>;
   trainingItems?: TrainingItem[];
   presets?: Preset[];
-  onToggleFavorite: (text: string, platform: Platform, presetId: string | null) => Promise<void>;
+  onToggleFavorite: (text: string, platform: Platform, presetId: string | null, replaceId?: string, source?: 'generated' | 'manual') => Promise<void>;
   onTogglePin: (id: string, isPinned: boolean) => Promise<void>;
 }
 
@@ -74,11 +74,9 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
   const displayHistory = React.useMemo(() => {
     if (showTrainedOnly) {
       // Show persistent TrainingItems mapped to GeneratedPost structure
-      // Filter out manual entries (source === 'manual'). 
-      // Legacy items (source undefined) are shown to prevent data loss, 
-      // but purely manual items added from now on will be hidden.
+      // Show only items registered via the 'Magic Wand' (generation results)
       return trainingItems
-        .filter(ti => ti.source !== 'manual')
+        .filter(ti => ti.source === 'generated')
         .map(ti => ({
           id: ti.id, // ID collision theoretical risk but low for display
           timestamp: new Date(ti.createdAt).getTime(),
@@ -347,10 +345,10 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                               if (isFavorited) {
                                 const favoritedText = item.results.flatMap(r => r.data || []).find(t => favorites.has(t?.trim()));
                                 if (favoritedText) {
-                                  onToggleFavorite(favoritedText.trim(), primaryPlatform, item.config.presetId || null);
+                                  onToggleFavorite(favoritedText.trim(), primaryPlatform, item.config.presetId || null, undefined, 'generated');
                                 }
                               } else {
-                                onToggleFavorite(firstResult.trim(), primaryPlatform, item.config.presetId || null);
+                                onToggleFavorite(firstResult.trim(), primaryPlatform, item.config.presetId || null, undefined, 'generated');
                               }
                             }}
                             className={`w-9 h-9 flex items-center justify-center rounded-full border-2 border-black transition-all shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:scale-110 ${isFavorited

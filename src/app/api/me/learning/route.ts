@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { content, platform, presetId, replaceId } = body;
+    const { content, platform, presetId, replaceId, source = 'manual' } = body;
 
     if (!content || !platform || !presetId) {
       return NextResponse.json({ error: 'Missing content, platform, or presetId' }, { status: 400 });
@@ -27,13 +27,14 @@ export async function POST(req: NextRequest) {
       .single();
 
     if (existing) {
+      // If found, we skip saving or update source? Usually already exists is fine.
       return NextResponse.json({ ok: true, message: 'Already exists', id: existing.id });
     }
 
     // Check count for this preset (Omakase vs Custom etc)
     const { data: currentItems } = await supabase
       .from('learning_sources')
-      .select('id, content, platform, preset_id, created_at')
+      .select('id, content, platform, preset_id, created_at, source')
       .eq('user_id', user.id)
       .eq('preset_id', presetId)
       .order('created_at', { ascending: true });
@@ -48,7 +49,8 @@ export async function POST(req: NextRequest) {
           content: item.content,
           platform: item.platform,
           presetId: item.preset_id,
-          createdAt: item.created_at
+          createdAt: item.created_at,
+          source: item.source
         }))
       }, { status: 409 });
     }
@@ -68,7 +70,8 @@ export async function POST(req: NextRequest) {
         user_id: user.id,
         content: content.trim(),
         platform,
-        preset_id: presetId
+        preset_id: presetId,
+        source
       })
       .select('id')
       .single();
