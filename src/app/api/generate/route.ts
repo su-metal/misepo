@@ -145,8 +145,9 @@ export async function POST(req: Request) {
         .select('content')
         .eq('user_id', userId)
         .eq('preset_id', presetId)
+        .eq('platform', config.platform)
         .order('created_at', { ascending: false })
-        .limit(5);
+        .limit(50);
 
       if (learningData && learningData.length > 0) {
         learningSamples = learningData.map((item: any) => item.content);
@@ -158,7 +159,7 @@ export async function POST(req: Request) {
       console.warn("[LEARNING] Skipped fetch (missing userId or presetId)");
     }
 
-    const result = await generateContent(profile, config, isPro, learningSamples);
+    const generatedData = await generateContent(profile, config, isPro, learningSamples);
 
     if (userId) {
       const runType =
@@ -192,7 +193,7 @@ export async function POST(req: Request) {
               app_id: APP_ID,
               user_id: userId,
               input: inputPayload,
-              output: result,
+              output: generatedData, // Save full object { analysis, posts }
             });
 
           if (!recordError) {
@@ -207,7 +208,8 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       ok: true,
-      result,
+      result: generatedData.posts, // Keep result as array for frontend compatibility
+      analysis: generatedData.analysis, // Return analysis as separate field
       run_id: savedRunId,
     });
   } catch (e: any) {

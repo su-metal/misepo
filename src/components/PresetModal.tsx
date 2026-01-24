@@ -335,9 +335,18 @@ const PresetModal: React.FC<PresetModalProps> = ({
     const normalizedText = text.trim();
     if (!normalizedText) return;
 
+    let replaceId: string | undefined = undefined;
+    if (editingSampleIndex !== null) {
+      const samples = getSamplesForPlatform(platform);
+      if (samples[editingSampleIndex]) {
+        replaceId = samples[editingSampleIndex].id;
+      }
+    }
+
     try {
-      await onToggleTraining(normalizedText, platform, presetId);
+      await onToggleTraining(normalizedText, platform, presetId, replaceId);
       setExpandingPlatform(null);
+      setEditingSampleIndex(null); // Reset editing index
     } catch (err) {
       console.error('Training failed:', err);
     }
@@ -353,7 +362,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
               <Icon className="w-4 h-4" />
             </div>
             <span className={`text-[11px] font-black uppercase tracking-widest text-black`}>{platform} Learning</span>
-            <span className="text-[10px] font-black text-black bg-[var(--bg-beige)] border-2 border-black px-2 py-0.5 rounded-full">{samples.length} / 5</span>
+            <span className="text-[10px] font-black text-black bg-[var(--bg-beige)] border-2 border-black px-2 py-0.5 rounded-full">{samples.length} / 50</span>
           </div>
           <button
             type="button"
@@ -362,8 +371,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
               setEditingSampleIndex(null);
               setExpandingPlatform(platform);
             }}
-            disabled={samples.length >= 5}
-            className={`flex items-center gap-2 px-4 py-2 text-[10px] font-black rounded-lg transition-all group border-2 border-black ${samples.length >= 5 ? 'bg-slate-100 text-slate-400' : 'bg-white text-black hover:bg-[var(--teal)] hover:shadow-[2px_2px_0_0_rgba(0,0,0,1)]'}`}
+            disabled={samples.length >= 50}
+            className={`flex items-center gap-2 px-4 py-2 text-[10px] font-black rounded-lg transition-all group border-2 border-black ${samples.length >= 50 ? 'bg-slate-100 text-slate-400' : 'bg-white text-black hover:bg-[var(--teal)] hover:shadow-[2px_2px_0_0_rgba(0,0,0,1)]'}`}
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" className="group-hover:rotate-90 transition-transform"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
             <span>学習文を追加する</span>
@@ -376,32 +385,32 @@ const PresetModal: React.FC<PresetModalProps> = ({
             <p className="text-[10px] font-bold text-slate-400">まだ学習データがありません</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-3">
+          <div className="flex overflow-x-auto gap-3 pb-2 snap-x pr-2">
             {samples.map((item, idx) => (
               <div
                 key={item.id}
-                className="group relative flex items-center gap-4 p-4 rounded-xl bg-white border-2 border-black hover:bg-[var(--bg-beige)] hover:shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all cursor-pointer"
+                className="group relative flex flex-col justify-between min-w-[200px] w-[200px] h-[140px] p-4 rounded-xl bg-white border-2 border-black hover:bg-[var(--bg-beige)] hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:translate-y-[-2px] transition-all cursor-pointer snap-start shrink-0"
                 onClick={() => {
                   setModalText(item.content);
                   setEditingSampleIndex(idx);
                   setExpandingPlatform(platform);
                 }}
               >
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs text-black font-bold line-clamp-1 leading-relaxed">
+                <div className="w-full">
+                  <p className="text-[11px] text-black font-bold line-clamp-4 leading-relaxed whitespace-pre-wrap">
                     {item.content}
                   </p>
                 </div>
-                <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="mt-2 flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
                   <button
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
                       onToggleTraining(item.content, item.platform, item.presetId);
                     }}
-                    className="p-1.5 text-slate-400 hover:text-black hover:bg-rose-50 rounded-lg transition-all border-2 border-transparent hover:border-black"
+                    className="p-1.5 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all border-2 border-transparent hover:border-black"
                   >
-                    <TrashIcon className="w-4 h-4" />
+                    <TrashIcon className="w-3.5 h-3.5" />
                   </button>
                 </div>
               </div>

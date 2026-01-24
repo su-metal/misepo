@@ -11,9 +11,17 @@ import {
 } from "../types";
 
 // Define the schema for structured output (Array of strings)
+// Define the schema for structured output (Object with analysis and posts)
 const contentSchema = {
-  type: Type.ARRAY,
-  items: { type: Type.STRING },
+  type: Type.OBJECT,
+  properties: {
+    analysis: { type: Type.STRING },
+    posts: {
+      type: Type.ARRAY,
+      items: { type: Type.STRING },
+    },
+  },
+  required: ["analysis", "posts"],
 };
 
 const getModelName = (isPro: boolean) => {
@@ -80,12 +88,17 @@ function getServerAI() {
   return new GoogleGenAI({ apiKey });
 }
 
+export interface GeneratedContentResult {
+  analysis: string;
+  posts: string[];
+}
+
 export const generateContent = async (
   profile: StoreProfile,
   config: GenerationConfig,
   isPro: boolean,
   learningSamples?: string[] 
-): Promise<string[]> => {
+): Promise<GeneratedContentResult> => {
   const modelName = getModelName(isPro);
   const charLimit = 140;
   const isXWith140Limit = config.platform === Platform.X && config.xConstraint140;
@@ -101,11 +114,11 @@ export const generateContent = async (
     const target = targetPlatform.toLowerCase();
     const keys = Object.keys(samples);
     const targetKey = keys.find(k => {
-      const lowerK = k.toLowerCase();
-      if (target.includes('x') || target.includes('twitter')) return lowerK.includes('x') || lowerK.includes('twitter');
-      if (target.includes('insta')) return lowerK.includes('insta');
-      if (target.includes('goog') || target.includes('map')) return lowerK.includes('goog') || lowerK.includes('map');
-      return lowerK === target;
+        const lowerK = k.toLowerCase();
+        if (target.includes('x') || target.includes('twitter')) return lowerK.includes('x') || lowerK.includes('twitter');
+        if (target.includes('insta')) return lowerK.includes('insta');
+        if (target.includes('goog') || target.includes('map')) return lowerK.includes('goog') || lowerK.includes('map');
+        return lowerK === target;
     });
     
     return targetKey ? samples[targetKey] : undefined;
@@ -121,72 +134,118 @@ export const generateContent = async (
     const isInstagram = config.platform === Platform.Instagram;
     const isX = config.platform === Platform.X;
     const isGMap = config.platform === Platform.GoogleMaps;
+    
+    const languageRule = config.language && config.language !== 'Japanese' 
+      ? `\n<language_rule>\nGenerate the content in **${config.language}**. Even if the language is different, reproduce the store owner's character (friendliness, passion, expertise, etc.) from the samples within the context of ${config.language}.\n</language_rule>`
+      : `\n<language_rule>\nPrimary Language: Japanese. \n*Exception*: If <learning_samples> contain phrases in other languages (e.g., English greetings), you MUST include them to maintain the persona's flavor.\n</language_rule>`;
+
+    // Many-shot learning samples formatting
+    const formattedLearningSamples = learningSamples 
+        ? learningSamples.map((s, i) => `<sample id="${i+1}">\n${s}\n</sample>`).join("\n") 
+        : "";
 
     if (hasPersona) {
-    const languageRule = config.language && config.language !== 'Japanese' 
-      ? `\n【出力言語追加ルール】\n- 本文は必ず **${config.language}** で作成してください。\n- 言語が異なっても、サンプルの「店主のキャラクター（親しみやすさ、情熱、専門性など）」を ${config.language} の文脈で最大限に再現してください。`
-      : "";
-      const learningContext = hasLearningSamples ? `
-【文体見本（コピペ禁止・リズムのみ学習）】
-${learningSamples.join("\n---\n")}
-` : "";
-      const personaSampleContext = hasPersonaSamples ? `
-【文体見本（最優先で模倣）】
-${currentSample}
-` : "";
+      return `
+<system_instruction>
+  <role>
+    You are the "Ghostwriter" for the store owner of "${profile.name}".
+    Your goal is to completely mimic the owner's writing style based on the provided samples.
+  </role>
 
-      return `あなたは「店主の代筆職人」です。
+  <style_guidelines>
+    - **Tone & Rhythm**: Completely mimic the sentence endings, line break rhythm, and use of whitespace from the <learning_samples> and <persona_sample>.
+    - **Platform Bias**: **IGNORE** standard "polite" norms for ${config.platform} if they conflict with the samples. The <learning_samples> are the absolute truth.
+    - **Emojis**: 
+      ${config.includeEmojis ? 
+        '- **ON**: Strictly follow the emoji usage patterns (frequency, type, placement) found in the samples.' : 
+        '- **OFF (Soft)**: Avoid emojis unless they are a core part of the <learning_samples> style (e.g. used in greetings). If the samples are heavily decorated, prioritized the sample style.'}
+    - **Platform Rules**:
+      - Platform: ${config.platform}
+      - Length: ${config.length}
+      - Language: ${config.language || 'Japanese'}
+  </style_guidelines>
 
-【執筆ルール（最優先）】
-- **表現の拡張（許可）**: 「今回のメモ」にある単語に対し、感情や質感を表す修飾語（「ふっくら」「自慢の」「こだわりの」）のみを補完する。
-- **事実の制限（絶対禁止）**: 原材料（求肥・抹茶・北海道産など）・製法・価格・期間は、メモに明記がない限り絶対に捏造してはならない。「和菓子だから求肥を使うだろう」といった推測も厳禁。
-- **文体と記憶の分離**: サンプル内の具体的なエピソード・メニュー名・固有名詞は「過去の記憶」のため使用禁止。ただし、サンプルの「書き方（文体・リズム・語尾）」は100%模倣する。
-- **完全継承**: 語順・改行リズム・絵文字の「種類」と「密度」を100%模倣する。サンプルに絵文字が少ない、あるいは無い場合は、絶対に追加してはならない。
-- **絵文字設定**: [${config.includeEmojis ? 'ON (サンプル内の絵文字を忠実に使用)' : 'OFF (絵文字を完全排除)'}]。設定がOFFの場合は、サンプルにあっても絵文字をすべて削除すること。
-- **指示遵守**: 言語[**${config.language || '日本語'}**]、長さ[**${config.length}**]、プラットフォーム[${config.platform}]ルールを厳守。
-${languageRule}
-${config.includeSymbols ? `【記号の活用】\n${DECORATION_PALETTE}` : ""}
+  <constraints>
+    - **No Fabrication**: Do NOT invent ingredients (e.g., "mochi", "matcha") or prices unless explicitly stated in the <user_input>.
+    - **Expansion (Show, Don't Tell)**: You MAY expand on sensory details (smell, texture, atmosphere) implied by the input, but do not add new factual elements.
+    - **Episode Separation**: Do NOT use specific episodes or proper nouns from the examples. Only steal the "Style".
+  </constraints>
 
-【情報の優先順位】
-1. **店名**: 必ず「${profile.name}」を使用。サンプル内の店名は無視。
-2. **内容**: 投稿の中身は「今回のメモ」に含まれる事実のみで構成する。それを修飾語で彩るのは良いが、新たな材料や要素（イチゴ、求肥、生クリーム等）を勝手に追加しないこと。
+  ${languageRule}
+  ${config.includeSymbols ? `<symbol_palette>\n${DECORATION_PALETTE}\n</symbol_palette>` : ""}
 
-【今回のメモ】: "${config.inputText}"
-${personaSampleContext}
-${learningContext}
+  <process_step>
+    1. **Analyze**: Read the <user_input> and infer the owner's emotion and the scene's background.
+    2. **Expand**: Add sensory details to make the post rich (Show, Don't Tell).
+    3. **Draft**: Write the post applying the <learning_samples> style.
+  </process_step>
+</system_instruction>
 
-JSON配列（["本文"]）で完成文のみを出力。自己解説・思考プロセスは一切不要。
+<context_data>
+  ${hasLearningSamples ? `<learning_samples>\n${formattedLearningSamples}\n</learning_samples>` : ""}
+  ${hasPersonaSamples ? `<persona_sample>\n(High Priority Style Reference)\n${currentSample}\n</persona_sample>` : ""}
+</context_data>
+
+<user_input>
+  "${config.inputText}"
+</user_input>
+
+  <task>
+    ${config.platform === Platform.GoogleMaps ? 
+      `The <user_input> is a customer review. Generate a REPLY from the owner adhering to the <style_guidelines> and <learning_samples>.` :
+      `Based on the <user_input>, generate a new post following the <style_guidelines> and <learning_samples>.`
+    }
+    Output a JSON object with:
+    - "analysis": A brief analysis of emotion and context.
+    - "posts": An array of one or more post variations (strings).
+  </task>
 `;
     }
 
-    // Standard Omakase Mode
-    return `あなたは「${profile.name}」のSNS担当。メモから魅力的な${config.platform}投稿を作成。
+    // Standard Omakase Mode (XML-ified for consistency)
+    return `
+<system_instruction>
+  <role>
+    You are the SNS manager for "${profile.name}". Create an attractive post for ${config.platform}.
+  </role>
 
-【ルール】
-- 言語[**${config.language || '日本語'}**]、長さ[**${config.length}**]を厳守。
-- インプットに含まれない情報は勝手に追加しない。
-- 特徴: ${isInstagram ? '視覚重視、ハッシュタグ4-6個。' : ''}${isX ? '140字以内、ハッシュタグ1-2個。' : ''}${isGMap ? '店舗返信。丁寧な言葉。絵文字不可。' : ''}
-- **トーン設定（口調）**: ${config.tone}（${TONE_RULES[config.tone] || TONE_RULES[Tone.Standard]}）
-${config.includeEmojis ? "【絵文字の使用】\n積極的に絵文字（😊, ✨等）を使って親しみやすさを出すこと。" : "絵文字は最小限にすること。"}
-${config.includeSymbols ? `【特殊記号の活用】\n以下の装飾記号を活用してプレミアム感を出すこと。\n${DECORATION_PALETTE}` : "特殊な装飾記号（タイトルフックや仕切り線）は使用しないこと。"}
+  <rules>
+    - Language: ${config.language || 'Japanese'}
+    - Length: ${config.length}
+    - Tone: ${config.tone} (${TONE_RULES[config.tone] || TONE_RULES[Tone.Standard]})
+    - Features: ${isInstagram ? 'Visual focus, 4-6 hashtags.' : ''}${isX ? 'Under 140 chars, 1-2 hashtags.' : ''}${isGMap ? 'Polite reply, no emojis.' : ''}
+    - Emojis: ${config.includeEmojis ? "Use emojis (😊, ✨) actively for friendliness." : "Minimize emojis."}
+  </rules>
 
-【今回のメモ】: "${config.inputText}"
+  ${config.includeSymbols ? `<symbol_palette>\n${DECORATION_PALETTE}\n</symbol_palette>` : ""}
 
-JSON配列（["本文"]）で完成文のみを出力。
+  <user_input>
+    "${config.inputText}"
+  </user_input>
+
+  <task>
+    Generate a post based on the input.
+    Output a JSON object with:
+    - "analysis": Brief context analysis.
+    - "posts": An array of generated post strings.
+  </task>
+</system_instruction>
 `;
   };
 
   const ai = getServerAI();
   const systemInstruction = buildSystemInstruction();
+  
+  // Calculate prompt size estimation (rough)
   const promptSize = {
     systemChars: systemInstruction.length,
     userChars: (config.inputText || "").length,
-    learningSamplesChars: (learningSamples || []).join("\n---\n").length,
+    learningSamplesChars: (learningSamples || []).join("\n").length,
     postSamplesChars: currentSample ? currentSample.length : 0,
   };
   console.debug("[PROMPT] sizes:", promptSize);
 
-  const attemptGeneration = async (userPrompt: string): Promise<string[]> => {
+  const attemptGeneration = async (userPrompt: string): Promise<GeneratedContentResult> => {
     const response = await ai.models.generateContent({
       model: modelName,
       contents: [{ role: "user", parts: [{ text: userPrompt }] }],
@@ -202,14 +261,22 @@ JSON配列（["本文"]）で完成文のみを出力。
     const jsonText = response.text;
     if (!jsonText) throw new Error("No response from AI");
 
-    const parsed = JSON.parse(jsonText);
-    if (!Array.isArray(parsed) || parsed.length === 0) {
-      throw new Error("AI returned empty or invalid result");
+    try {
+        const parsed = JSON.parse(jsonText);
+        // Validate schema roughly
+        if (typeof parsed !== 'object' || !Array.isArray(parsed.posts)) {
+            throw new Error("Invalid schema received");
+        }
+        return {
+            analysis: parsed.analysis || "",
+            posts: parsed.posts.map((s: any) => String(s))
+        };
+    } catch (e) {
+        throw new Error("Failed to parse AI response");
     }
-    return parsed.map((s) => String(s));
   };
 
-  let userPrompt = `Generate the post in ${config.language || 'Japanese'} based on input. Return ONLY a JSON array of strings.`;
+  let userPrompt = `Generate the post in ${config.language || 'Japanese'}.`;
 
   for (let attempt = 0; attempt < 2; attempt++) {
     try {
@@ -219,7 +286,7 @@ JSON配列（["本文"]）で完成文のみを出力。
         return result;
       }
 
-      const firstPost = result[0];
+      const firstPost = result.posts[0];
       const currentLength = firstPost.length;
 
       if (currentLength <= charLimit) {
@@ -231,7 +298,8 @@ JSON配列（["本文"]）で完成文のみを出力。
         `X post too long (${currentLength}/${charLimit}), retrying... (attempt ${attempt + 1}/2)`
       );
 
-      userPrompt = `Previous post was ${currentLength} chars. MUST be under ${charLimit}. Shorten it but keep the Persona: "${firstPost}"`;
+      // Recursive prompt for retry
+      userPrompt = `Previous post was ${currentLength} chars. MUST be under ${charLimit}. Shorten it but keep the Persona.`;
 
     } catch (parseError) {
       console.error("Generation attempt failed:", parseError);
