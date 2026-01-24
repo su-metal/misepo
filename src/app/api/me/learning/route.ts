@@ -38,11 +38,11 @@ export async function POST(req: NextRequest) {
       .eq('preset_id', presetId)
       .order('created_at', { ascending: true });
 
-    if (!replaceId && (currentItems?.length || 0) >= 5) {
+    if (!replaceId && (currentItems?.length || 0) >= 50) {
       return NextResponse.json({ 
         ok: false, 
         error: 'LIMIT_REACHED', 
-        message: '学習データは1つのプロフィールにつき5件までです。',
+        message: '学習データは1つのプロフィールにつき50件までです。',
         currentItems: currentItems?.map(item => ({
           id: item.id,
           content: item.content,

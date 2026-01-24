@@ -175,6 +175,8 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
                 onOpenPresetModal={() => setIsPresetModalOpen(true)}
                 customPrompt={flow.customPrompt}
                 onCustomPromptChange={flow.setCustomPrompt}
+                storeSupplement={flow.storeSupplement}
+                onStoreSupplementChange={flow.setStoreSupplement}
                 language={flow.language}
                 onLanguageChange={flow.setLanguage}
                 onOpenGuide={onOpenGuide}
@@ -269,7 +271,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
             flow.handleApplyPreset(p);
             setIsPresetModalOpen(false);
           }}
-          initialPresetId={undefined}
+          initialPresetId={flow.activePresetId || undefined}
           isSaving={isSavingPreset}
           onReorder={props.refreshPresets}
           trainingItems={trainingItems}
