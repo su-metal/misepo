@@ -5,7 +5,6 @@ import { CharCounter } from './CharCounter';
 import { AutoResizingTextarea } from './AutoResizingTextarea';
 import { RefinePanel } from './RefinePanel';
 import { PostPreviewModal } from './PostPreviewModal';
-import { LineEmojiPalette } from './LineEmojiPalette';
 import { CopyIcon, CrownIcon, MagicWandIcon, RotateCcwIcon, ExternalLinkIcon, EyeIcon, SparklesIcon, LineIcon } from '../../Icons';
 interface PostResultTabsProps {
     results: GeneratedResult[];
@@ -217,12 +216,6 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
 
                     {/* Results Content Area */}
                     <div className="flex-1">
-                        {/* LINE Emoji Palette Overlay - Only for LINE */}
-                        {results[activeTab]?.platform === Platform.Line && (
-                            <div className="px-8 pt-8 pb-4">
-                                <LineEmojiPalette onSelect={() => { }} />
-                            </div>
-                        )}
                         {results.length === 0 ? (
                             // Placeholder when no results
                             <div className="p-12 h-full flex flex-col items-center justify-center text-center space-y-8 animate-in fade-in duration-1000">
