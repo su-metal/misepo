@@ -1,6 +1,6 @@
 import React from 'react';
 import { GeneratedPost, Platform, GeneratedResult, StoreProfile, TrainingItem, Preset } from '../types';
-import { CloseIcon, XIcon, InstagramIcon, GoogleMapsIcon, LineIcon, LockIcon, TrashIcon, HistoryIcon, HelpIcon, LogOutIcon, ChevronDownIcon, PinIcon, MagicWandIcon } from './Icons';
+import { CloseIcon, XIcon, InstagramIcon, GoogleMapsIcon, LineIcon, LineCircleIcon, LockIcon, TrashIcon, HistoryIcon, HelpIcon, LogOutIcon, ChevronDownIcon, PinIcon, MagicWandIcon } from './Icons';
 
 interface HistorySidebarProps {
   history: GeneratedPost[];
@@ -111,7 +111,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
       case Platform.X: return <XIcon className="w-3 h-3 text-white" />;
       case Platform.Instagram: return <InstagramIcon className="w-3 h-3 text-white" />;
       case Platform.GoogleMaps: return <GoogleMapsIcon className="w-3 h-3 text-white" />;
-      case Platform.Line: return <LineIcon className="w-3 h-3 text-white" />;
+      case Platform.Line: return <LineCircleIcon className="w-3 h-3 text-white" />;
       default: return null;
     }
   };

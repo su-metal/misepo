@@ -60,10 +60,22 @@ export const PlatformSelector: React.FC<PlatformSelectorProps> = ({
                 </button>
             </div>
 
-            {/* Platform Grid - Changed to 4 columns or better layout if needed, but grid-cols-2 is fine for 4 items (2x2) */}
+            {/* Platform Grid */}
             <div className="grid grid-cols-2 gap-3">
                 {Object.values(Platform).map((p) => {
                     const isSelected = isMultiGen ? platforms.includes(p) : activePlatform === p;
+
+                    // Brand Colors for Selected State
+                    const getSelectedStyle = (p: Platform) => {
+                        switch (p) {
+                            case Platform.X: return 'bg-black text-white';
+                            case Platform.Instagram: return 'bg-[#E88BA3] text-black';
+                            case Platform.Line: return 'bg-[#06C755] text-white';
+                            case Platform.GoogleMaps: return 'bg-[#4DB39A] text-black';
+                            default: return 'bg-white text-black';
+                        }
+                    };
+
                     return (
                         <button
                             key={p}
@@ -77,12 +89,14 @@ export const PlatformSelector: React.FC<PlatformSelectorProps> = ({
                         >
                             <div className={`
                                 w-12 h-12 rounded-xl border-[2px] flex items-center justify-center transition-all duration-300
-                                ${isSelected ? 'bg-[#4DB39A] border-black text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]' : 'bg-gray-50 border-black/10 text-gray-400 group-hover:bg-white group-hover:text-black group-hover:border-black/30'}
+                                ${isSelected
+                                    ? `${getSelectedStyle(p)} border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]`
+                                    : 'bg-gray-50 border-black/10 text-gray-400 group-hover:bg-white group-hover:text-black group-hover:border-black/30 grayscale'}
                             `}>
                                 {getPlatformIcon(p)}
                             </div>
                             <span className={`text-[10px] font-black tracking-widest uppercase ${isSelected ? 'text-black' : 'text-black/40 group-hover:text-black'}`}>
-                                {p}
+                                {p === Platform.Line ? 'LINE' : p}
                             </span>
 
                             {isMultiGen && isSelected && (

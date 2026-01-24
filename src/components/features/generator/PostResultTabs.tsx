@@ -129,7 +129,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                             <LineIcon className="w-6 h-6" />
                         </div>
                     ),
-                    label: 'Official LINE',
+                    label: 'LINE',
                     actionColor: "bg-[#06C755] hover:bg-[#06C755]/90 active:scale-[0.98] text-white border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]",
                     actionLabel: "LINEで送る",
                     contentClasses: "text-[15px] text-black font-bold leading-relaxed tracking-tight",

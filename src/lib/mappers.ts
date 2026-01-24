@@ -22,6 +22,7 @@ export function normalizeStoreProfile(profile: any): StoreProfile | null {
 export function normalizePlatform(value: unknown): Platform {
   if (value === 'Instagram') return Platform.Instagram;
   if (value === 'X (Twitter)') return Platform.X;
+  if (value === 'Official LINE' || value === 'LINE') return Platform.Line;
   if (value === 'Google Maps') return Platform.GoogleMaps;
   return Platform.Instagram;
 }

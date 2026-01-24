@@ -1,6 +1,7 @@
 import React from 'react';
 import { PostPurpose, GoogleMapPurpose, Tone, Length, Platform, Preset, UserPlan } from '../../../types';
 import { AutoResizingTextarea } from './AutoResizingTextarea';
+import { getPlatformIcon } from './utils';
 import {
     MegaphoneIcon, BookOpenIcon, LightbulbIcon, ChatHeartIcon,
     AutoSparklesIcon, HandHeartIcon, ApologyIcon, InfoIcon, SparklesIcon,
@@ -242,56 +243,31 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                 </div>
                 <div className="flex flex-col lg:flex-row lg:items-center gap-4">
                     <div className="grid grid-cols-2 md:grid-cols-4 flex-1 p-2 gap-2 section-card rounded-2xl border-black">
-                        <button
-                            onClick={() => onSetActivePlatform(Platform.X)}
-                            className={`flex items-center justify-center gap-2 py-3 rounded-xl text-xs font-black transition-all relative
-                            ${platforms.includes(Platform.X)
-                                    ? 'bg-black text-white border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -translate-y-[2px]'
-                                    : 'text-black/40 hover:text-black hover:bg-black/5'
-                                }`}
-                        >
-                            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" />
-                            </svg>
-                            <span>X (Twitter)</span>
-                        </button>
-                        <button
-                            onClick={() => onSetActivePlatform(Platform.Instagram)}
-                            className={`flex items-center justify-center gap-2 py-3 rounded-xl text-[11px] sm:text-xs font-black transition-all relative
-                            ${platforms.includes(Platform.Instagram)
-                                    ? 'bg-[#E88BA3] text-black border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -translate-y-[2px]'
-                                    : 'text-black/40 hover:text-black hover:bg-black/5'
-                                }`}
-                        >
-                            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M12 2c2.717 0 3.056.01 4.122.06 1.065.05 1.79.217 2.428.465.66.254 1.216.598 1.772 1.153a4.908 4.908 0 0 1 1.153 1.772c.247.637.415 1.363.465 2.428.047 1.066.06 1.405.06 4.122 0 2.717-.01 3.056-.06 4.122-.05 1.065-.218 1.79-.465 2.428a4.883 4.883 0 0 1-1.153 1.772 4.915 4.915 0 0 1-1.772 1.153c-.637.247-1.363.415-2.428.465-1.066.047-1.405.06-4.122.06-2.717 0-3.056-.01-4.122-.06-1.065-.05-1.79-.218-2.428-.465a4.89 4.89 0 0 1-1.772-1.153 4.904 4.904 0 0 1-1.153-1.772c-.248-.637-.415-1.363-.465-2.428C2.013 15.056 2 14.717 2 12c0-2.717.01-3.056.06-4.122.05-1.066.217-1.79.465-2.428a4.88 4.88 0 0 1 1.153-1.772A4.897 4.897 0 0 1 5.45 2.525c.638-.248 1.362-.415 2.428-.465C8.944 2.013 9.283 2 12 2zm0 5a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm6.5-.25a1.25 1.25 0 1 0-2.5 0 1.25 1.25 0 0 0 2.5 0zM12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6z" />
-                            </svg>
-                            <span>Instagram</span>
-                        </button>
-                        <button
-                            onClick={() => onSetActivePlatform(Platform.GoogleMaps)}
-                            className={`flex items-center justify-center gap-1 py-3 rounded-xl text-[11px] sm:text-xs font-black transition-all relative
-                            ${platforms.includes(Platform.GoogleMaps)
-                                    ? 'bg-[#4DB39A] text-black border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -translate-y-[2px]'
-                                    : 'text-black/40 hover:text-black hover:bg-black/5'
-                                }`}
-                        >
-                            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-                            </svg>
-                            <span>Google Maps</span>
-                        </button>
-                        <button
-                            onClick={() => onSetActivePlatform(Platform.Line)}
-                            className={`flex items-center justify-center gap-2 py-3 rounded-xl text-[11px] sm:text-xs font-black transition-all relative
-                            ${platforms.includes(Platform.Line)
-                                    ? 'bg-[#06C755] text-white border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -translate-y-[2px]'
-                                    : 'text-black/40 hover:text-black hover:bg-black/5'
-                                }`}
-                        >
-                            <LineIcon className="w-4 h-4" />
-                            <span>LINE</span>
-                        </button>
+                        {[Platform.X, Platform.Instagram, Platform.Line, Platform.GoogleMaps].map((p) => {
+                            const isSelected = platforms.includes(p);
+                            const getStyle = (plt: Platform) => {
+                                switch (plt) {
+                                    case Platform.X: return isSelected ? 'bg-black text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]' : 'text-black/40 hover:text-black hover:bg-black/5';
+                                    case Platform.Instagram: return isSelected ? 'bg-[#E88BA3] text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]' : 'text-black/40 hover:text-black hover:bg-black/5';
+                                    case Platform.Line: return isSelected ? 'bg-[#06C755] text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]' : 'text-black/40 hover:text-black hover:bg-black/5';
+                                    case Platform.GoogleMaps: return isSelected ? 'bg-[#4DB39A] text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]' : 'text-black/40 hover:text-black hover:bg-black/5';
+                                    default: return '';
+                                }
+                            };
+
+                            return (
+                                <button
+                                    key={p}
+                                    onClick={() => onSetActivePlatform(p)}
+                                    className={`flex items-center justify-center gap-2 py-3 rounded-xl text-[11px] sm:text-xs font-black transition-all relative border-2 ${isSelected ? 'border-black -translate-y-[2px]' : 'border-transparent'} ${getStyle(p)}`}
+                                >
+                                    <div className={!isSelected ? 'grayscale opacity-60' : ''}>
+                                        {getPlatformIcon(p)}
+                                    </div>
+                                    <span>{p === Platform.Line ? 'LINE' : (p === Platform.GoogleMaps ? 'Google Maps' : (p === Platform.X ? 'X' : p))}</span>
+                                </button>
+                            );
+                        })}
                     </div>
 
                     <div className="flex items-center gap-3 px-5 py-2.5 section-card rounded-2xl border-black">
@@ -334,16 +310,16 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                 {/* Slot 1: Omakase */}
                                 <button
                                     onClick={() => onApplyPreset({ id: 'plain-ai' } as any)}
-                                    className={`group relative h-[100px] sm:h-[120px] px-3 rounded-[24px] transition-all duration-300 flex flex-col items-center justify-center gap-2 border-2
+                                    className={`group relative h-[70px] sm:h-[80px] px-3 rounded-[20px] transition-all duration-300 flex flex-col items-center justify-center gap-1 border-2
                                                 ${!activePresetId
                                             ? 'bg-[#4DB39A] text-black border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -translate-y-[2px]'
                                             : 'bg-black/5 shadow-sm hover:bg-black/10 text-black/40 hover:text-black border-black/10 hover:border-black/20'}
                                             `}
                                 >
-                                    <span className={`text-2xl transition-transform duration-300 group-hover:scale-110 ${!activePresetId ? 'opacity-100' : 'opacity-40 grayscale group-hover:grayscale-0'}`}>
-                                        <AutoSparklesIcon className="w-6 h-6" />
+                                    <span className={`text-xl transition-transform duration-300 group-hover:scale-110 ${!activePresetId ? 'opacity-100' : 'opacity-40 grayscale group-hover:grayscale-0'}`}>
+                                        <AutoSparklesIcon className="w-5 h-5" />
                                     </span>
-                                    <span className={`text-[12px] md:text-[14px] font-black truncate tracking-wide text-center w-full ${!activePresetId ? 'text-black' : 'text-black/40'}`}>おまかせ</span>
+                                    <span className={`text-[11px] md:text-[12px] font-black truncate tracking-wide text-center w-full ${!activePresetId ? 'text-black' : 'text-black/40'}`}>おまかせ</span>
                                 </button>
 
                                 {/* Slots 2-4: Custom Presets, Add Trigger, or Info */}
@@ -361,16 +337,16 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                             <button
                                                 key={p.id}
                                                 onClick={() => onApplyPreset(p)}
-                                                className={`group relative h-[100px] sm:h-[120px] px-3 rounded-[24px] transition-all duration-300 flex flex-col items-center justify-center gap-2 border-2
+                                                className={`group relative h-[70px] sm:h-[80px] px-3 rounded-[20px] transition-all duration-300 flex flex-col items-center justify-center gap-1 border-2
                                                             ${isSelected
                                                         ? `${bgColor} text-black border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -translate-y-[2px]`
                                                         : 'bg-black/5 shadow-sm hover:bg-black/10 text-black/40 hover:text-black border-black/10 hover:border-black/20'}
                                                         `}
                                             >
-                                                <span className={`text-2xl transition-transform duration-300 group-hover:scale-110 ${isSelected ? 'opacity-100' : 'opacity-40 grayscale group-hover:grayscale-0'}`}>
-                                                    {renderAvatar(p.avatar, "w-6 h-6")}
+                                                <span className={`text-xl transition-transform duration-300 group-hover:scale-110 ${isSelected ? 'opacity-100' : 'opacity-40 grayscale group-hover:grayscale-0'}`}>
+                                                    {renderAvatar(p.avatar, "w-5 h-5")}
                                                 </span>
-                                                <span className={`text-[12px] md:text-[14px] font-black truncate tracking-wide text-center w-full ${isSelected ? 'text-black' : 'text-black/40'}`}>
+                                                <span className={`text-[11px] md:text-[12px] font-black truncate tracking-wide text-center w-full ${isSelected ? 'text-black' : 'text-black/40'}`}>
                                                     {p.name}
                                                 </span>
                                             </button>
@@ -383,10 +359,10 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                             <button
                                                 key="add-new"
                                                 onClick={onOpenPresetModal}
-                                                className="group relative h-[100px] sm:h-[120px] px-3 rounded-[24px] transition-all duration-300 flex flex-col items-center justify-center gap-2 border-2 border-dashed border-black/20 bg-black/[0.02] hover:bg-black/5 hover:border-black/40 text-black/20 hover:text-black/60 transition-all active:scale-95"
+                                                className="group relative h-[70px] sm:h-[80px] px-3 rounded-[20px] transition-all duration-300 flex flex-col items-center justify-center gap-1 border-2 border-dashed border-black/20 bg-black/[0.02] hover:bg-black/5 hover:border-black/40 text-black/20 hover:text-black/60 transition-all active:scale-95"
                                             >
-                                                <div className="w-8 h-8 rounded-full bg-white border-2 border-current flex items-center justify-center">
-                                                    <span className="text-xl font-black">+</span>
+                                                <div className="w-6 h-6 rounded-full bg-white border-2 border-current flex items-center justify-center">
+                                                    <span className="text-sm font-black">+</span>
                                                 </div>
                                                 <span className="text-[10px] sm:text-[12px] font-black tracking-widest uppercase">プロフィール登録</span>
                                             </button>
@@ -404,7 +380,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                         slots.push(
                                             <div
                                                 key={`info-${infoIndex}`}
-                                                className="h-[100px] sm:h-[120px] rounded-[24px] bg-black/[0.01] border-2 border-black/5 p-4 flex items-center justify-center text-center group"
+                                                className="h-[70px] sm:h-[80px] rounded-[20px] bg-black/[0.01] border-2 border-black/5 p-3 flex items-center justify-center text-center group"
                                             >
                                                 <p className="text-[9px] sm:text-[10px] font-bold text-black/10 leading-relaxed tracking-tighter group-hover:text-black/20 transition-colors">
                                                     {infoMessages[infoIndex] || "お気に入りのスタイルを登録してください"}
@@ -416,6 +392,23 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
 
                                     return slots;
                                 })()}
+                            </div>
+                            <div className="mt-auto pt-4">
+                                <div className="bg-black/[0.02] rounded-2xl p-4 flex items-start gap-4 border border-black/5 relative overflow-hidden group">
+                                    <div className="absolute top-0 right-0 w-24 h-24 bg-black/[0.02] rounded-full -mr-12 -mt-12 transition-transform duration-500 group-hover:scale-110"></div>
+                                    <div className="w-10 h-10 shrink-0 rounded-xl bg-white border-2 border-black flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group-hover:translate-x-[-2px] group-hover:translate-y-[-2px] transition-all">
+                                        <MagicWandIcon className="w-5 h-5 text-black" />
+                                    </div>
+                                    <div className="flex flex-col gap-1.5 flex-1 z-10">
+                                        <h4 className="text-[11px] font-black text-black uppercase tracking-widest flex items-center gap-2">
+                                            <span>AIがあなたの「分身」に</span>
+                                            <div className="h-[2px] flex-1 bg-black/5"></div>
+                                        </h4>
+                                        <p className="text-[10px] font-bold text-black/50 leading-relaxed tracking-tight">
+                                            あなたの投稿スタイルを学習させ、<span className="text-black/80 font-black">世界に一人だけのペルソナ</span>を作成しましょう。AIがあなたに代わって、一貫した個性を高いクオリティで再現します。
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 

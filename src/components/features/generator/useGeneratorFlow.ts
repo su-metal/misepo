@@ -183,7 +183,7 @@ export function useGeneratorFlow(props: {
     const nextMode = !isMultiGenMode;
     setIsMultiGenMode(nextMode);
     if (nextMode) {
-      setPlatforms([Platform.Instagram, Platform.X, Platform.Line]);
+      setPlatforms([Platform.X, Platform.Instagram, Platform.Line]);
     } else {
       if (platforms.length > 1) setPlatforms([platforms[0]]);
     }
