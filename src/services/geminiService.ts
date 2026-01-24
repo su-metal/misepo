@@ -178,9 +178,12 @@ export const generateContent = async (
   ${config.includeSymbols ? `<symbol_palette>\n${DECORATION_PALETTE}\n</symbol_palette>` : ""}
 
   <process_step>
-    1. **Analyze**: Read the <user_input> and infer the owner's emotion and the scene's background.
-    2. **Expand**: Add sensory details to make the post rich (Show, Don't Tell).
-    3. **Draft**: Write the post applying the <learning_samples> style.
+    1. **Analyze**: Read the <user_input> (Review). Identify the customer's sentiment, specific liked items, and any concerns/observations (e.g., price, payment).
+    2. **Respond (Don't Echo)**: Do NOT simply repeat factual statements from the review (e.g., "The price is 240 yen"). Instead, **Acknowledge** them.
+       - *Bad*: "The price is 240 yen. We are cash only." (Robotic)
+       - *Good*: "We appreciate your feedback on the price. We aim for quality..." or "Thank you for noting our cash-only policy; we appreciate your understanding." (Empathetic)
+    3. **Expand**: Add sensory details or store background to make the reply warm.
+    4. **Draft**: Write the reply using the <learning_samples> style.
   </process_step>
 </system_instruction>
 
@@ -213,7 +216,7 @@ export const generateContent = async (
     return `
 <system_instruction>
   <role>
-    You are the SNS manager for "${profile.name}". Create an attractive post for ${config.platform}.
+    ${isGMap ? `You are the owner of "${profile.name}". Reply politely to customer reviews on Google Maps.` : `You are the SNS manager for "${profile.name}". Create an attractive post for ${config.platform}.`}
   </role>
 
   <rules>
@@ -232,7 +235,10 @@ export const generateContent = async (
   </user_input>
 
   <task>
-    Generate a post based on the input.
+    ${isGMap ? 
+      "The <user_input> is a customer review. Generate a polite and empathetic REPLY from the owner. Do not just summarize the facts; acknowledge them graciously." : 
+      "Generate an attractive post for based on the <user_input>."
+    }
     Output a JSON object with:
     - "analysis": Brief context analysis.
     - "posts": An array of generated post strings.
