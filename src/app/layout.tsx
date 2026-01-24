@@ -6,6 +6,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: "MisePo - 店舗向けAI投稿作成",
   description: "An AI-powered social media post generator specialized for physical businesses like restaurants and salons.",
+  robots: "noindex, nofollow",
 };
 
 import { Feedback } from '../components/Feedback';
