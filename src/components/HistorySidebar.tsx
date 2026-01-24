@@ -274,8 +274,8 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                         className="w-full text-left p-5 rounded-xl bg-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] active:translate-x-[0px] active:translate-y-[0px] active:shadow-[2px_2px_0_0_rgba(0,0,0,1)] transition-all group-hover:bg-[var(--bg-beige)]"
                       >
                         <div className="flex items-center gap-2 mb-3">
-                          {item.config.platforms.map((p) => (
-                            <span key={p} className={`flex items-center justify-center w-6 h-6 rounded-full ${getPlatformColor(p)} border-2 border-black text-white`}>
+                          {item.config.platforms.map((p, pIdx) => (
+                            <span key={`${p}-${pIdx}`} className={`flex items-center justify-center w-6 h-6 rounded-full ${getPlatformColor(p)} border-2 border-black text-white`}>
                               {getPlatformIcon(p)}
                             </span>
                           ))}

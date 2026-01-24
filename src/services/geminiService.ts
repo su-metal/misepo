@@ -147,11 +147,11 @@ export const generateContent = async (
     - **Line Breaks**: **NEVER** insert line breaks in the middle of a grammatical phrase or word (e.g., don't split "ご来店いただき" across lines). Maintain natural reading flow. Avoid "auto-formatting for mobile" unless the <learning_samples> explicitly use that specific rhythm.
     - **Platform Rules**:
       - Platform: ${config.platform}
-      ${config.platform === Platform.Line ? `- Style: **Ultra-Rich Marketing Message**. 
+      ${config.platform === Platform.Line ? `- Style: **High-Conversion Marketing Message**. 
         - Use "Line Special Visuals" palette. 
-        - Replace standard digits (1, 2, 5...) with symbolic numbers (❶, ❷, ❺...) for visual impact.
-        - Use heavy emphasis symbols (＼＼...／／) and arrows (↓↓↓). 
-        - High-density decoration on every few lines.` : ''}
+        - Use "Suggest Hooks": Occasionally wrap numbers or key emphasis in parentheses like (5) or (!!) or (祝) instead of symbolic numbers. 
+        - **Reason**: When pasted into LINE, these triggers the app's internal emoji suggestions for proprietary characters (pink numbers, etc.).
+        - Use high-impact Unicode (❶, ❺) as the default for solid visual density.` : ''}
       - Length: ${config.length}
       - Language: ${config.language || 'Japanese'}
   </style_guidelines>
