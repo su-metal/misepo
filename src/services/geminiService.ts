@@ -138,7 +138,11 @@ export const generateContent = async (
           2. **Details (Balloon 2)**: 200-300 chars. Focus on specific item/event value. Use short sentences, line breaks, and clear bullet points.
           3. **Action (Balloon 3)**: Strong Call to Action (CTA) like "▼今すぐ予約する" or "▼クーポンはこちら".
         - **Tone**: Friendly like a "knowledgeable friend" but maintaining professional trust. Avoid stiff email-style greetings (Sincerely, Dear, etc.).
-        - **Layout**: Use clear visual separators like "---" between the three balloons.` : ''}
+        - **Positive Reframing**: NEVER use terms like "cancellation" (キャンセル/欠員) that imply a negative event. Instead, frame it as a positive opportunity: "A special slot has opened up" (空き枠が出ました), "Ready to welcome you" (ご案内可能になりました), or "Lucky opening" (ラッキーな空き).
+        - **Visual Hooks**:
+          - **Headers**: Surround high-impact text with emojis and slashes for maximum visibility, e.g., '＼ 🧴 [Product Name] 🧴 ／'.
+          - **CTA Guidance (LINE ONLY)**: Use multiple arrows like '↓ ↓ ↓' or pointing emojis **strictly on the very last line** of the message. You can either place them before the text OR use an "Arrow-Sandwich" pattern like '↓ ↓ ↓ ご予約はこちら ↓ ↓ ↓' for variety. Do NOT use these arrows for Instagram.
+        - **Layout**: Use clear visual separators like '---' between the three balloons.` : ''}
       - Length: ${config.length}
       - Language: ${config.language || 'Japanese'}
   </style_guidelines>
@@ -220,7 +224,7 @@ ${config.storeSupplement ? `<store_context>\n${config.storeSupplement}\n</store_
     ${isGMap ? 
       "The <user_input> is a customer review. Generate a polite and empathetic REPLY from the owner. Use the facts in <store_context> if provided to explain circumstances or provide background. Do not just summarize the facts; acknowledge them graciously." : 
       config.platform === Platform.Line ?
-      "Generate an Official LINE message with a 3-balloon structure: 1. Hook (for push notifications), 2. Details (friendly marketing body), 3. Action (CTA). Use friendly but professional tone. Mark each balloon clearly with '---'. Encourage the reader to take action." :
+      "Generate an Official LINE message with a 3-balloon structure: 1. Hook (for push notifications), 2. Details (friendly marketing body), 3. Action (CTA). Use friendly but professional tone. Mark each balloon clearly with '---'. **CRITICAL**: Use positive framing (e.g., 'ご案内可能なお時間ができました') instead of negative terms like 'cancellation' (キャンセル). **VISUAL**: Use emoji-sandwiched headers (e.g., ＼ 🧴 [Title] 🧴 ／). For LINE only, place directional arrows (↓ ↓ ↓) **strictly on the very last line**, optionally as an arrow-sandwich pattern (e.g., ↓ ↓ ↓ Text ↓ ↓ ↓). Encourage action." :
       "Generate an attractive post for based on the <user_input>."
     }
     Output a JSON object with:
