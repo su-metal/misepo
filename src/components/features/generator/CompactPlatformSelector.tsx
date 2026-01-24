@@ -35,7 +35,7 @@ export const CompactPlatformSelector: React.FC<CompactPlatformSelectorProps> = (
                                     : 'text-stone-400 hover:text-stone-600'}
                             `}
                         >
-                            <div className={`text-lg ${isSelected ? 'text-white' : 'text-stone-400'}`}>
+                            <div className={`text-lg transition-all duration-300 ${isSelected ? 'text-white' : 'text-stone-400 grayscale opacity-60'}`}>
                                 {getPlatformIcon(p)}
                             </div>
                             <span className={`text-[11px] font-bold md:inline ${isSelected ? 'text-white' : 'text-stone-500'} ${p === Platform.GoogleMaps ? 'hidden sm:inline' : ''}`}>
