@@ -2,7 +2,8 @@
 export enum Platform {
   X = 'X (Twitter)',
   Instagram = 'Instagram',
-  GoogleMaps = 'Google Maps'
+  GoogleMaps = 'Google Maps',
+  Line = 'Official LINE'
 }
 
 export enum PostPurpose {

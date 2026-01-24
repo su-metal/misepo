@@ -35,6 +35,7 @@ import {
   BuildingIcon,
   LeafIcon,
   GemIcon,
+  LineIcon,
 } from './Icons';
 import { Platform, Preset, TrainingItem } from '../types';
 import { AutoResizingTextarea } from './ResizableTextarea';
@@ -696,6 +697,9 @@ const PresetModal: React.FC<PresetModalProps> = ({
                   <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" />
                 </svg>
               ))}
+
+              {/* LINE Sample */}
+              {renderSampleList(Platform.Line, 'bg-[#06C755]', LineIcon)}
             </div>
           </div>
         </div>
@@ -759,10 +763,12 @@ const PresetModal: React.FC<PresetModalProps> = ({
           <div className="flex items-center gap-3 md:gap-4">
             <div className={`p-2.5 md:p-3 rounded-xl border-2 border-black shadow-[2px_2px_0_0_rgba(0,0,0,1)] ${expandingPlatform === Platform.Instagram ? 'bg-pink-50 text-pink-500' :
               expandingPlatform === Platform.X ? 'bg-slate-900 text-white' :
-                'bg-blue-600 text-white'
+                expandingPlatform === Platform.Line ? 'bg-[#06C755] text-white' :
+                  'bg-blue-600 text-white'
               }`}>
               {expandingPlatform === Platform.Instagram && <InstagramIcon className="w-5 h-5 md:w-6 md:h-6" />}
               {expandingPlatform === Platform.X && <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="md:w-6 md:h-6"><path d="M4 4l11.733 16h4.267l-11.733 -16z" /><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" /></svg>}
+              {expandingPlatform === Platform.Line && <LineIcon className="w-5 h-5 md:w-6 md:h-6" />}
               {expandingPlatform === Platform.GoogleMaps && <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" className="md:w-6 md:h-6"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" /></svg>}
             </div>
             <div>
@@ -817,7 +823,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
               disabled={isAnalyzingImage}
               className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-4 md:px-5 py-3 rounded-xl font-black text-[10px] md:text-[11px] transition-all transform hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 border-2 border-black shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)] ${expandingPlatform === Platform.Instagram ? 'bg-white text-pink-500 hover:bg-pink-50' :
                 expandingPlatform === Platform.X ? 'bg-white text-slate-700 hover:bg-slate-50' :
-                  'bg-white text-blue-600 hover:bg-blue-50'
+                  expandingPlatform === Platform.Line ? 'bg-white text-[#06C755] hover:bg-green-50' :
+                    'bg-white text-blue-600 hover:bg-blue-50'
                 }`}
             >
               {isAnalyzingImage ? (
@@ -857,7 +864,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
               disabled={isSanitizing || !modalText.trim()}
               className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-4 md:px-5 py-3 rounded-xl font-black text-[10px] md:text-[11px] transition-all transform hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 border-2 border-black shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)] ${expandingPlatform === Platform.Instagram ? 'bg-pink-50 text-pink-600 hover:bg-pink-100' :
                 expandingPlatform === Platform.X ? 'bg-slate-100 text-slate-700 hover:bg-slate-200' :
-                  'bg-blue-50 text-blue-600 hover:bg-blue-100'
+                  expandingPlatform === Platform.Line ? 'bg-green-50 text-[#06C755] hover:bg-green-100' :
+                    'bg-blue-50 text-blue-600 hover:bg-blue-100'
                 }`}
             >
               {isSanitizing ? (

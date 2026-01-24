@@ -62,6 +62,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
       case Platform.X: return 'Xで投稿';
       case Platform.Instagram: return 'Instagramを開く';
       case Platform.GoogleMaps: return 'Googleマップを開く';
+      case Platform.Line: return 'LINEで送る';
       default: return 'シェアする';
     }
   };

@@ -20,6 +20,10 @@ export const GoogleMapsIcon = ({ className = "w-4 h-4" }: { className?: string }
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" /><circle cx="12" cy="10" r="3" /></svg>
 );
 
+export const LineIcon = ({ className = "w-4 h-4" }: { className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={className}><path d="M19.365 9.863c.052.582.027 1.22-.055 1.833-.186 1.341-.75 2.503-1.624 3.407-.866.898-1.956 1.48-3.149 1.688l-.203.029-.204.032c-.516.082-1.037.126-1.554.126h-.011c-.482 0-.964-.038-1.442-.116l-.208-.035-.206-.035c-1.157-.202-2.193-.761-3.04-1.616-.867-.872-1.451-2.022-1.655-3.32-.083-.604-.11-1.233-.06-1.815.044-.5.127-.98.247-1.432l.049-.187.054-.187c.224-.766.586-1.485 1.077-2.137.478-.636 1.066-1.196 1.745-1.666l.169-.117.172-.117c.504-.347 1.053-.611 1.632-.787l.19-.059.2-.061c.64-.194 1.314-.294 1.996-.294h.01c.628 0 1.25.084 1.848.249l.198.056.202.058c.606.177 1.18.455 1.706.828l.168.12.169.121c.677.48.1.1.2.2l.05.04c.05.04.1.08.15.12l.1.09c.4.37.76.78 1.07 1.24.31.46.57.96.76 1.49l.06.16c.02.05.04.11.06.17a8.21 8.21 0 0 1 .37 1.84zM8.01 7.42h-.809v3.085h.809V7.42zm2.083 0h-.808v1.6l1.191-1.6h.96l-1.127 1.516 1.2 1.569h-.954l-1.262-1.652v1.652h-.808V7.42h.808v1.6l1.191-1.6zm2.868 2.3h-.841V7.42h.841v2.3zm1.144-2.3h-.809v3.085h1.94v-.706h-1.131V7.42z" /></svg>
+);
+
 export const CloseIcon = ({ className = "w-4 h-4" }: { className?: string }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
 );

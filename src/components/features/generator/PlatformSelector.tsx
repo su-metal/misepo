@@ -60,7 +60,7 @@ export const PlatformSelector: React.FC<PlatformSelectorProps> = ({
                 </button>
             </div>
 
-            {/* Platform Grid */}
+            {/* Platform Grid - Changed to 4 columns or better layout if needed, but grid-cols-2 is fine for 4 items (2x2) */}
             <div className="grid grid-cols-2 gap-3">
                 {Object.values(Platform).map((p) => {
                     const isSelected = isMultiGen ? platforms.includes(p) : activePlatform === p;

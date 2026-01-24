@@ -3,7 +3,8 @@ import { Platform } from '../../../types';
 import {
     InstagramIcon,
     XIcon,
-    GoogleMapsIcon
+    GoogleMapsIcon,
+    LineIcon
 } from '../../Icons';
 
 // --- Footer Helper Functions ---
@@ -40,6 +41,7 @@ export function getPlatformIcon(p: Platform) {
         case Platform.Instagram: return React.createElement(InstagramIcon, { className: "w-4 h-4" });
         case Platform.X: return React.createElement(XIcon, { className: "w-4 h-4" });
         case Platform.GoogleMaps: return React.createElement(GoogleMapsIcon, { className: "w-4 h-4" });
+        case Platform.Line: return React.createElement(LineIcon, { className: "w-4 h-4" });
         default: return null;
     }
 }
