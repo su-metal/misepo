@@ -759,24 +759,37 @@ const PresetModal: React.FC<PresetModalProps> = ({
   const focusModeOverlay = expandingPlatform && createPortal(
     <div className="fixed inset-0 z-[200] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 md:p-10 animate-in fade-in duration-300">
       <div className="w-full max-w-4xl h-full max-h-[800px] bg-white rounded-3xl border-[3px] border-black shadow-[8px_8px_0_0_rgba(0,0,0,1)] flex flex-col overflow-hidden animate-in zoom-in-95 duration-500">
-        <div className="p-5 md:p-8 border-b-[3px] border-black flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shrink-0 bg-[var(--bg-beige)]">
-          <div className="flex items-center gap-3 md:gap-4">
-            <div className={`p-2.5 md:p-3 rounded-xl border-2 border-black shadow-[2px_2px_0_0_rgba(0,0,0,1)] ${expandingPlatform === Platform.Instagram ? 'bg-pink-50 text-pink-500' :
-              expandingPlatform === Platform.X ? 'bg-slate-900 text-white' :
-                expandingPlatform === Platform.Line ? 'bg-[#06C755] text-white' :
-                  'bg-blue-600 text-white'
-              }`}>
-              {expandingPlatform === Platform.Instagram && <InstagramIcon className="w-5 h-5 md:w-6 md:h-6" />}
-              {expandingPlatform === Platform.X && <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="md:w-6 md:h-6"><path d="M4 4l11.733 16h4.267l-11.733 -16z" /><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" /></svg>}
-              {expandingPlatform === Platform.Line && <LineIcon className="w-5 h-5 md:w-6 md:h-6" />}
-              {expandingPlatform === Platform.GoogleMaps && <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" className="md:w-6 md:h-6"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" /></svg>}
+        <div className="p-5 md:p-8 border-b-[3px] border-black flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shrink-0 bg-[var(--bg-beige)]">
+          <div className="flex items-center justify-between w-full md:w-auto">
+            <div className="flex items-center gap-3 md:gap-4">
+              <div className={`p-2.5 md:p-3 rounded-xl border-2 border-black shadow-[2px_2px_0_0_rgba(0,0,0,1)] ${expandingPlatform === Platform.Instagram ? 'bg-pink-50 text-pink-500' :
+                expandingPlatform === Platform.X ? 'bg-slate-900 text-white' :
+                  expandingPlatform === Platform.Line ? 'bg-[#06C755] text-white' :
+                    'bg-blue-600 text-white'
+                }`}>
+                {expandingPlatform === Platform.Instagram && <InstagramIcon className="w-5 h-5 md:w-6 md:h-6" />}
+                {expandingPlatform === Platform.X && <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="md:w-6 md:h-6"><path d="M4 4l11.733 16h4.267l-11.733 -16z" /><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" /></svg>}
+                {expandingPlatform === Platform.Line && <LineIcon className="w-5 h-5 md:w-6 md:h-6" />}
+                {expandingPlatform === Platform.GoogleMaps && <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" className="md:w-6 md:h-6"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" /></svg>}
+              </div>
+              <div>
+                <h3 className="font-black text-lg md:text-xl text-slate-800 tracking-tight">{expandingPlatform} の文体学習</h3>
+                <p className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest">Focus Mode Editor</p>
+              </div>
             </div>
-            <div>
-              <h3 className="font-black text-lg md:text-xl text-slate-800 tracking-tight">{expandingPlatform} の文体学習</h3>
-              <p className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest">Focus Mode Editor</p>
-            </div>
+            {/* Mobile Close Button */}
+            <button
+              onClick={() => {
+                setExpandingPlatform(null);
+                setEditingSampleId(null);
+              }}
+              className="md:hidden p-3 bg-white hover:bg-slate-100 text-slate-500 rounded-xl transition-all border-2 border-slate-200 shadow-[2px_2px_0_0_rgba(0,0,0,1)] active:translate-x-0 active:translate-y-0"
+              title="閉じる"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
           </div>
-          <div className="flex items-center gap-2 md:gap-3 w-full md:w-auto">
+          <div className="flex flex-wrap items-center gap-2 md:gap-3 w-full md:w-auto">
             <input
               type="file"
               ref={fileInputRef}
@@ -852,7 +865,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                     body: JSON.stringify({ text: currentText }),
                   });
                   const data = await res.json();
-                  if (data.sanitized) {
+                  if (data.ok && data.sanitized) {
                     setModalText(data.sanitized);
                   }
                 } catch (err) {
@@ -887,7 +900,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                 handleToggleTrainingInternal(modalText, expandingPlatform!);
               }}
               disabled={isTrainingLoading}
-              className={`flex-none p-3 bg-[#001738] hover:bg-slate-900 text-white rounded-xl transition-all font-black text-sm px-8 md:px-10 border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] active:translate-x-0 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2`}
+              className={`flex-1 md:flex-none p-3 bg-[#001738] hover:bg-slate-900 text-white rounded-xl transition-all font-black text-sm px-6 md:px-10 border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] active:translate-x-0 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2`}
             >
               {isTrainingLoading && <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>}
               {editingSampleId ? '更新して学習' : '学習を開始する'}
@@ -897,7 +910,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                 setExpandingPlatform(null);
                 setEditingSampleId(null);
               }}
-              className="flex-none p-3 bg-white hover:bg-slate-100 text-slate-500 rounded-xl transition-all border-2 border-slate-200"
+              className="hidden md:flex p-3 bg-white hover:bg-slate-100 text-slate-500 rounded-xl transition-all border-2 border-slate-200 shadow-[2px_2px_0_0_rgba(0,0,0,1)] active:translate-x-0 active:translate-y-0"
               title="閉じる"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
