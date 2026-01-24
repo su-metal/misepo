@@ -304,7 +304,9 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                                 onClick={() => {
                                                                     if (res.platform === Platform.Line) {
                                                                         const encodedText = encodeURIComponent(text);
-                                                                        window.location.href = `https://line.me/R/msg/text/?${encodedText}`;
+                                                                        // Fallback: Copy to clipboard just in case app doesn't pre-fill
+                                                                        navigator.clipboard.writeText(text);
+                                                                        window.location.href = `https://line.me/R/share?text=${encodedText}`;
                                                                     } else {
                                                                         onShare(res.platform, text);
                                                                     }
