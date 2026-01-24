@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { Platform, StoreProfile } from '../../../types';
 import { getPlatformIcon } from './utils';
 import { CloseIcon, HeartIcon, MessageCircleIcon, SendIcon, BookmarkIcon, MoreHorizontalIcon, ShareIcon, RotateCcwIcon } from '../../Icons';
+import { LinePreview } from './LinePreview';
 
 interface PostPreviewModalProps {
     isOpen: boolean;
@@ -191,6 +192,13 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        )}
+
+                        {/* LINE Preview */}
+                        {platform === Platform.Line && (
+                            <div className="w-full max-w-[450px]">
+                                <LinePreview text={text} storeProfile={storeProfile} />
                             </div>
                         )}
 

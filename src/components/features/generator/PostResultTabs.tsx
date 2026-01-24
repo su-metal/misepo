@@ -5,7 +5,8 @@ import { CharCounter } from './CharCounter';
 import { AutoResizingTextarea } from './AutoResizingTextarea';
 import { RefinePanel } from './RefinePanel';
 import { PostPreviewModal } from './PostPreviewModal';
-import { CopyIcon, CrownIcon, MagicWandIcon, RotateCcwIcon, ExternalLinkIcon, EyeIcon, SparklesIcon } from '../../Icons';
+import { LineEmojiPalette } from './LineEmojiPalette';
+import { CopyIcon, CrownIcon, MagicWandIcon, RotateCcwIcon, ExternalLinkIcon, EyeIcon, SparklesIcon, LineIcon } from '../../Icons';
 interface PostResultTabsProps {
     results: GeneratedResult[];
     activeTab: number;
@@ -122,6 +123,22 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                     brandBgColor: "bg-[#4DB39A]/5",
                     brandBorderColor: "border-[#4DB39A]/10",
                 };
+            case Platform.Line:
+                return {
+                    icon: (
+                        <div className="w-10 h-10 bg-[#06C755] rounded-2xl flex items-center justify-center text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] border-2 border-black">
+                            <LineIcon className="w-6 h-6" />
+                        </div>
+                    ),
+                    label: 'Official LINE',
+                    actionColor: "bg-[#06C755] hover:bg-[#06C755]/90 active:scale-[0.98] text-white border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]",
+                    actionLabel: "LINEで送る",
+                    contentClasses: "text-[15px] text-black font-bold leading-relaxed tracking-tight",
+                    wrapperClass: "max-w-[400px]",
+                    brandTextColor: "text-[#06C755]",
+                    brandBgColor: "bg-[#06C755]/5",
+                    brandBorderColor: "border-[#06C755]/10",
+                };
             default:
                 return {
                     icon: null,
@@ -158,6 +175,8 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                         <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
                     </svg>
                 );
+            case Platform.Line:
+                return <LineIcon className={`${iconClass} text-[#06C755]`} />;
             default:
                 return null;
         }
@@ -198,6 +217,12 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
 
                     {/* Results Content Area */}
                     <div className="flex-1">
+                        {/* LINE Emoji Palette Overlay - Only for LINE */}
+                        {results[activeTab]?.platform === Platform.Line && (
+                            <div className="px-8 pt-8 pb-4">
+                                <LineEmojiPalette onSelect={() => { }} />
+                            </div>
+                        )}
                         {results.length === 0 ? (
                             // Placeholder when no results
                             <div className="p-12 h-full flex flex-col items-center justify-center text-center space-y-8 animate-in fade-in duration-1000">
