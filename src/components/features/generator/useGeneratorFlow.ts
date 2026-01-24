@@ -137,8 +137,8 @@ export function useGeneratorFlow(props: {
         setIncludeEmojis(false);
         setIncludeSymbols(false);
       } else {
-        // If it's X or Instagram and we're in multi-gen, keep both
-        setPlatforms([Platform.X, Platform.Instagram]);
+        // If it's X, Instagram, or LINE and we're in multi-gen, keep current multi platforms
+        setPlatforms(platforms);
       }
     } else {
       setPlatforms([p]);
@@ -183,7 +183,7 @@ export function useGeneratorFlow(props: {
     const nextMode = !isMultiGenMode;
     setIsMultiGenMode(nextMode);
     if (nextMode) {
-      setPlatforms([Platform.Instagram, Platform.X]);
+      setPlatforms([Platform.Instagram, Platform.X, Platform.Line]);
     } else {
       if (platforms.length > 1) setPlatforms([platforms[0]]);
     }
@@ -423,6 +423,7 @@ export function useGeneratorFlow(props: {
     let message = "コピーしました！アプリを開きます";
     if (platform === Platform.Instagram) message = "コピー完了！貼り付けて投稿してください";
     else if (platform === Platform.GoogleMaps) message = "コピー完了！貼り付けて返信してください";
+    else if (platform === Platform.Line) message = "コピー完了！LINEを開いて貼り付けましょう";
 
     try {
       await navigator.clipboard.writeText(text);

@@ -28,15 +28,21 @@ const getModelName = (isPro: boolean) => {
   return "gemini-2.5-flash";
 };
 
-// Concise & High-Quality Symbol Templates
 const DECORATION_PALETTE = `
 【Special Symbol Patterns (Use for premium feel)】
 - Title Hooks: ˗ˏˋ [Text] ˎˊ˗ , 〖 [Text] 〗, 𓊆 [Text] 𓊇
 - Dividers: ✼••┈┈┈┈••✼ , 𓂃 𓈒 𓏸 , ✄—————✄
 - Accents: ⸜❤︎⸝ , ✩ , ✦ , ꕤ , ☘︎ , ◡̈
 - List Bullets: ☕︎ , ☀︎ , ⚆ , ӫ
-`;
 
+【LINE Special Visuals (Exclusive for Official LINE)】
+- Symbolic Numbers: ❶❷❸❹❺❻❼❽❾❿, ①②③④⑤⑥⑦⑧⑨⑩
+- Powerful Emphasis: ＼＼ [Text] ／／ , 𓊆 [Text] 𓊇 , 〖 [Text] 〗
+- Directing Eyes: ↓↓↓↓↓ , ━━━━━━━━ , ⇣⇣⇣
+- Emotion Accents: ⸜❤︎⸝ , ✩ , ✦ , ꕤ , ☘︎ , ◡̈
+- Sparkles: ✨💫🎆❇️
+- High Energy Punctuation: ‼️❕❓⁉️⚠️
+`;
 const TONE_RULES = {
   [Tone.Formal]: "きっちりとした「です・ます」調。信頼感のある丁寧で誠実な口調。専門性を感じさせつつも、他者への敬意を込めた表現を用いる。",
   [Tone.Standard]: "標準的な「です・ます」調。適度に丁寧で、誰にでも伝わりやすくバランスの取れた口調。",
@@ -141,6 +147,11 @@ export const generateContent = async (
     - **Line Breaks**: **NEVER** insert line breaks in the middle of a grammatical phrase or word (e.g., don't split "ご来店いただき" across lines). Maintain natural reading flow. Avoid "auto-formatting for mobile" unless the <learning_samples> explicitly use that specific rhythm.
     - **Platform Rules**:
       - Platform: ${config.platform}
+      ${config.platform === Platform.Line ? `- Style: **Ultra-Rich Marketing Message**. 
+        - Use "Line Special Visuals" palette. 
+        - Replace standard digits (1, 2, 5...) with symbolic numbers (❶, ❷, ❺...) for visual impact.
+        - Use heavy emphasis symbols (＼＼...／／) and arrows (↓↓↓). 
+        - High-density decoration on every few lines.` : ''}
       - Length: ${config.length}
       - Language: ${config.language || 'Japanese'}
   </style_guidelines>
@@ -179,6 +190,8 @@ ${config.storeSupplement ? `<store_context>\n${config.storeSupplement}\n</store_
   <task>
     ${config.platform === Platform.GoogleMaps ? 
       `The <user_input> is a customer review. Generate a REPLY from the owner adhering to the <style_guidelines> and <learning_samples>.` :
+      config.platform === Platform.Line ?
+      `Based on the <user_input>, generate a personal MESSAGE for Official LINE. Focus on directly addressing the customer and encouraging action.` :
       `Based on the <user_input>, generate a new post following the <style_guidelines> and <learning_samples>.`
     }
     Output a JSON object with:
@@ -203,8 +216,8 @@ ${config.storeSupplement ? `<store_context>\n${config.storeSupplement}\n</store_
     - Language: ${config.language || 'Japanese'}
     - Length: ${config.length}
     - Tone: ${config.tone} (${TONE_RULES[config.tone] || TONE_RULES[Tone.Standard]})
-    - Features: ${isInstagram ? 'Visual focus, 4-6 hashtags.' : ''}${isX ? 'Under 140 chars, 1-2 hashtags.' : ''}${isGMap ? 'Polite reply, NO emojis, NO hashtags.' : ''}
-    - Emojis: ${isGMap ? 'Do NOT use emojis at all.' : (config.includeEmojis ? "Use emojis (😊, ✨) actively for friendliness." : "Minimize emojis.")}
+    - Features: ${isInstagram ? 'Visual focus, 4-6 hashtags.' : ''}${isX ? 'Under 140 chars, 1-2 hashtags.' : ''}${isGMap ? 'Polite reply, NO emojis, NO hashtags.' : ''}${config.platform === Platform.Line ? 'Professional Marketing Style. NO hashes. USE Symbol Numbers (❶❺...) and Visual Dividers (━━━). HIGH density decoration.' : ''}
+    - Emojis: ${isGMap ? 'Do NOT use emojis at all.' : (config.includeEmojis ? "Use expressive, large, or character-like emojis (🐻, ✨, 💪) for high impact." : "Minimize emojis.")}
   </rules>
 
   ${config.customPrompt ? `<custom_instructions>\n${config.customPrompt}\n</custom_instructions>` : ""}
@@ -221,6 +234,8 @@ ${config.storeSupplement ? `<store_context>\n${config.storeSupplement}\n</store_
   <task>
     ${isGMap ? 
       "The <user_input> is a customer review. Generate a polite and empathetic REPLY from the owner. Use the facts in <store_context> if provided to explain circumstances or provide background. Do not just summarize the facts; acknowledge them graciously." : 
+      config.platform === Platform.Line ?
+      "Generate a friendly and direct personal MESSAGE for Official LINE based on the <user_input>. Encourage the reader to visit or take action." :
       "Generate an attractive post for based on the <user_input>."
     }
     Output a JSON object with:
