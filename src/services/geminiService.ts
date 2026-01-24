@@ -276,7 +276,41 @@ ${config.storeSupplement ? `<store_context>\n${config.storeSupplement}\n</store_
       },
     });
 
-    const jsonText = response.text;
+    const result = await response;
+    const usage = result.usageMetadata;
+    
+    if (usage) {
+        const pt = usage.promptTokenCount || 0;
+        const ct = usage.candidatesTokenCount || 0;
+        const total = usage.totalTokenCount || 0;
+        const cached = (usage as any).cachedContentTokenCount || 0; // Check for cache
+
+        // Gemini 2.5 Flash Official Pricing (per 1,000,000 tokens)
+        const RATE_INPUT = 0.30;    // USD per 1M tokens
+        const RATE_OUTPUT = 2.50;   // USD per 1M tokens
+        const RATE_CACHED = 0.15;   // USD per 1M tokens
+        const EX_RATE_JPY = 150;    // JPY/USD
+
+        const thinking = (usage as any).thinkingTokenCount || 0; // Explicitly get thinking tokens if available
+        
+        // Input: Total Prompt (including gaps/system) minus cached
+        const promptTotal = total - ct; // ct includes thinking in some SDKs, but here we treat it carefully
+        const standardInput = promptTotal - cached;
+        
+        // Output: Generated content + Thinking tokens
+        // Note: In newer API, candidatesTokenCount might already include thinking, 
+        // but if total - prompt > candidates, the difference is often the 'thought' gap.
+        const outputTotal = ct > thinking ? ct : (ct + thinking); 
+
+        const costUSD = (standardInput * RATE_INPUT / 1000000) + 
+                        (cached * RATE_CACHED / 1000000) + 
+                        (outputTotal * RATE_OUTPUT / 1000000);
+        const costJPY = costUSD * EX_RATE_JPY;
+
+        console.log(`[API_COST] Model: ${modelName} | In: ${promptTotal} (Cached: ${cached}) | Out: ${outputTotal} (Thinking: ${thinking}) | Est: ¥${costJPY.toFixed(4)}`);
+    }
+
+    const jsonText = result.text;
     if (!jsonText) throw new Error("No response from AI");
 
     try {
