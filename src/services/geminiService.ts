@@ -135,9 +135,7 @@ export const generateContent = async (
     const isX = config.platform === Platform.X;
     const isGMap = config.platform === Platform.GoogleMaps;
     
-    const languageRule = config.language && config.language !== 'Japanese' 
-      ? `\n<language_rule>\nGenerate the content in **${config.language}**. Even if the language is different, reproduce the store owner's character (friendliness, passion, expertise, etc.) from the samples within the context of ${config.language}.\n</language_rule>`
-      : `\n<language_rule>\nPrimary Language: Japanese. \n*Exception*: If <learning_samples> contain phrases in other languages (e.g., English greetings), you MUST include them to maintain the persona's flavor.\n</language_rule>`;
+
 
     // Many-shot learning samples formatting
     const formattedLearningSamples = learningSamples 
@@ -145,6 +143,10 @@ export const generateContent = async (
         : "";
 
     if (hasPersona) {
+        const languageRule = config.language && config.language !== 'Japanese' 
+          ? `\n<language_rule>\nGenerate the content in **${config.language}**. Even if the language is different, reproduce the store owner's character (friendliness, passion, expertise, etc.) from the samples within the context of ${config.language}.\n</language_rule>`
+          : `\n<language_rule>\nPrimary Language: Japanese. \n*Exception*: If <learning_samples> contain phrases in other languages (e.g., English greetings), you MUST include them to maintain the persona's flavor.\n</language_rule>`;
+
       return `
 <system_instruction>
   <role>
@@ -154,11 +156,12 @@ export const generateContent = async (
 
   <style_guidelines>
     - **Tone & Rhythm**: Completely mimic the sentence endings, line break rhythm, and use of whitespace from the <learning_samples> and <persona_sample>.
-    - **Platform Bias**: **IGNORE** standard "polite" norms for ${config.platform} if they conflict with the samples. The <learning_samples> are the absolute truth.
-    - **Emojis**: 
-      ${config.includeEmojis ? 
-        '- **ON**: Strictly follow the emoji usage patterns (frequency, type, placement) found in the samples.' : 
-        '- **OFF (Soft)**: Avoid emojis unless they are a core part of the <learning_samples> style (e.g. used in greetings). If the samples are heavily decorated, prioritized the sample style.'}
+    - **Platform Bias**: **IGNORE** all standard "polite" norms and "platform-specific" formatting rules for ${config.platform}. The <learning_samples> are the absolute truth for the owner's voice.
+    - **Emojis & Symbols**: 
+      ${config.platform === Platform.GoogleMaps ? 
+        '- **Usage**: Ignore any default restrictions. Strictly reproduce the emoji frequency and decorative symbol patterns found in the <learning_samples> and <persona_sample>.' : 
+        `- **Emojis**: ${config.includeEmojis ? 'Strictly follow patterns from samples.' : 'Avoid unless core to sample style.'}
+    - **Symbols**: ${config.includeSymbols ? 'Use decorative symbols from palette if they match sample style.' : 'Minimize symbols.'}`}
     - **Platform Rules**:
       - Platform: ${config.platform}
       - Length: ${config.length}
@@ -203,6 +206,10 @@ export const generateContent = async (
     }
 
     // Standard Omakase Mode (XML-ified for consistency)
+    const languageRule = config.language && config.language !== 'Japanese' 
+      ? `\n<language_rule>\nGenerate the content in **${config.language}**.\n</language_rule>`
+      : "";
+
     return `
 <system_instruction>
   <role>
@@ -213,10 +220,11 @@ export const generateContent = async (
     - Language: ${config.language || 'Japanese'}
     - Length: ${config.length}
     - Tone: ${config.tone} (${TONE_RULES[config.tone] || TONE_RULES[Tone.Standard]})
-    - Features: ${isInstagram ? 'Visual focus, 4-6 hashtags.' : ''}${isX ? 'Under 140 chars, 1-2 hashtags.' : ''}${isGMap ? 'Polite reply, no emojis.' : ''}
-    - Emojis: ${config.includeEmojis ? "Use emojis (😊, ✨) actively for friendliness." : "Minimize emojis."}
+    - Features: ${isInstagram ? 'Visual focus, 4-6 hashtags.' : ''}${isX ? 'Under 140 chars, 1-2 hashtags.' : ''}${isGMap ? 'Polite reply, NO emojis, NO hashtags.' : ''}
+    - Emojis: ${isGMap ? 'Do NOT use emojis at all.' : (config.includeEmojis ? "Use emojis (😊, ✨) actively for friendliness." : "Minimize emojis.")}
   </rules>
 
+  ${languageRule}
   ${config.includeSymbols ? `<symbol_palette>\n${DECORATION_PALETTE}\n</symbol_palette>` : ""}
 
   <user_input>
@@ -341,7 +349,7 @@ Maintain the original voice exactly. Only modify what is requested.
 **Formatting Rules for ${config.platform}:**
 ${config.platform === Platform.X && config.xConstraint140 ? "- MUST be under 140 characters." : ""}
 ${config.platform === Platform.Instagram ? "- Keep hashtags intact." : ""}
-${config.platform === Platform.GoogleMaps ? "- Do NOT use emojis or hashtags." : ""}
+
 
 **Style Constraint:**
 - Do NOT combine exclamation marks (! or ！) with emojis at the end of a sentence.
