@@ -241,10 +241,10 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                     )}
                 </div>
                 <div className="flex flex-col lg:flex-row lg:items-center gap-4">
-                    <div className="flex items-stretch flex-1 px-4 py-2 gap-1 section-card rounded-2xl border-black">
+                    <div className="grid grid-cols-2 md:grid-cols-4 flex-1 p-2 gap-2 section-card rounded-2xl border-black">
                         <button
                             onClick={() => onSetActivePlatform(Platform.X)}
-                            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-xs sm:text-sm font-black transition-all relative
+                            className={`flex items-center justify-center gap-2 py-3 rounded-xl text-xs font-black transition-all relative
                             ${platforms.includes(Platform.X)
                                     ? 'bg-black text-white border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -translate-y-[2px]'
                                     : 'text-black/40 hover:text-black hover:bg-black/5'
@@ -257,7 +257,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                         </button>
                         <button
                             onClick={() => onSetActivePlatform(Platform.Instagram)}
-                            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-xs sm:text-sm font-black transition-all relative
+                            className={`flex items-center justify-center gap-2 py-3 rounded-xl text-[11px] sm:text-xs font-black transition-all relative
                             ${platforms.includes(Platform.Instagram)
                                     ? 'bg-[#E88BA3] text-black border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -translate-y-[2px]'
                                     : 'text-black/40 hover:text-black hover:bg-black/5'
@@ -270,7 +270,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                         </button>
                         <button
                             onClick={() => onSetActivePlatform(Platform.GoogleMaps)}
-                            className={`flex-1 flex items-center justify-center gap-1 py-3 rounded-xl text-xs sm:text-sm font-black transition-all relative
+                            className={`flex items-center justify-center gap-1 py-3 rounded-xl text-[11px] sm:text-xs font-black transition-all relative
                             ${platforms.includes(Platform.GoogleMaps)
                                     ? 'bg-[#4DB39A] text-black border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -translate-y-[2px]'
                                     : 'text-black/40 hover:text-black hover:bg-black/5'
@@ -283,7 +283,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                         </button>
                         <button
                             onClick={() => onSetActivePlatform(Platform.Line)}
-                            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-xs sm:text-sm font-black transition-all relative
+                            className={`flex items-center justify-center gap-2 py-3 rounded-xl text-[11px] sm:text-xs font-black transition-all relative
                             ${platforms.includes(Platform.Line)
                                     ? 'bg-[#06C755] text-white border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -translate-y-[2px]'
                                     : 'text-black/40 hover:text-black hover:bg-black/5'
