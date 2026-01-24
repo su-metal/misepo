@@ -196,6 +196,8 @@ export const generateContent = async (
   "${config.inputText}"
 </user_input>
 
+${config.storeSupplement ? `<store_context>\n${config.storeSupplement}\n</store_context>` : ""}
+
   <task>
     ${config.platform === Platform.GoogleMaps ? 
       `The <user_input> is a customer review. Generate a REPLY from the owner adhering to the <style_guidelines> and <learning_samples>.` :
@@ -234,9 +236,11 @@ export const generateContent = async (
     "${config.inputText}"
   </user_input>
 
+  ${config.storeSupplement ? `<store_context>\n${config.storeSupplement}\n</store_context>` : ""}
+
   <task>
     ${isGMap ? 
-      "The <user_input> is a customer review. Generate a polite and empathetic REPLY from the owner. Do not just summarize the facts; acknowledge them graciously." : 
+      "The <user_input> is a customer review. Generate a polite and empathetic REPLY from the owner. Use the facts in <store_context> if provided to explain circumstances or provide background. Do not just summarize the facts; acknowledge them graciously." : 
       "Generate an attractive post for based on the <user_input>."
     }
     Output a JSON object with:

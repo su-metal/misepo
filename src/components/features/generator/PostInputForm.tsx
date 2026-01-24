@@ -68,6 +68,8 @@ interface PostInputFormProps {
     onOpenPresetModal: () => void;
     customPrompt: string;
     onCustomPromptChange: (val: string) => void;
+    storeSupplement: string;
+    onStoreSupplementChange: (val: string) => void;
     language: string;
     onLanguageChange: (val: string) => void;
     onOpenGuide?: () => void;
@@ -137,6 +139,8 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
     onOpenPresetModal,
     customPrompt,
     onCustomPromptChange,
+    storeSupplement,
+    onStoreSupplementChange,
     language,
     onLanguageChange,
     onOpenGuide,
@@ -618,10 +622,29 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                         e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
                                     }, 100);
                                 }}
-                                placeholder="投稿したい内容や伝えたいことを自由に入力してください..."
+                                placeholder={isGoogleMaps ? "お客様の口コミ内容を貼り付けてください..." : "投稿したい内容や伝えたいことを自由に入力してください..."}
                                 className="w-full h-full bg-transparent text-black text-lg font-bold leading-relaxed placeholder:text-black/10 focus:outline-none resize-none"
                             />
                         </div>
+
+                        {/* Store Supplement (Google Maps Only) */}
+                        {isGoogleMaps && (
+                            <div className="mt-6 p-6 bg-[#F5CC6D]/10 border-2 border-[#F5CC6D] rounded-[32px] animate-in slide-in-from-top-2 duration-300">
+                                <div className="flex items-center gap-2 mb-3">
+                                    <InfoIcon className="w-4 h-4 text-[#C4A052]" />
+                                    <h4 className="text-[11px] font-black text-[#C4A052] uppercase tracking-widest">店主からの補足情報 / 当日の事情</h4>
+                                </div>
+                                <AutoResizingTextarea
+                                    value={storeSupplement}
+                                    onChange={(e) => onStoreSupplementChange(e.target.value)}
+                                    placeholder="例：この日は急な欠勤で人手が足りず、お待たせしてしまった。実はあの大福は、毎朝3時から仕込んでいる特別な豆を使っている...など"
+                                    className="w-full bg-transparent text-black text-sm font-bold leading-relaxed placeholder:text-[#C4A052]/30 focus:outline-none resize-none min-h-[60px]"
+                                />
+                                <p className="mt-2 text-[10px] font-bold text-[#C4A052]/60 leading-tight">
+                                    ※店主しか知り得ない「事実」や「背景」を書くと、AIがより誠実で具体的な返信を作成できます。
+                                </p>
+                            </div>
+                        )}
 
                         {/* Canvas Footer */}
                         <div className="mt-10 pt-8 border-t-2 border-black/5 relative z-10">
