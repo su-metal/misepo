@@ -103,40 +103,16 @@ export const generateContent = async (
   const charLimit = 140;
   const isXWith140Limit = config.platform === Platform.X && config.xConstraint140;
   
-  // Helper to safely get platform samples even if key names vary (e.g., 'X' vs 'X (Twitter)')
-  const getPlatformSample = (samples: Record<string, string | undefined> | undefined, targetPlatform: Platform): string | undefined => {
-    if (!samples) return undefined;
-    
-    // 1. Direct match
-    if (samples[targetPlatform]) return samples[targetPlatform];
-    
-    // 2. Fuzzy match for target platform
-    const target = targetPlatform.toLowerCase();
-    const keys = Object.keys(samples);
-    const targetKey = keys.find(k => {
-        const lowerK = k.toLowerCase();
-        if (target.includes('x') || target.includes('twitter')) return lowerK.includes('x') || lowerK.includes('twitter');
-        if (target.includes('insta')) return lowerK.includes('insta');
-        if (target.includes('goog') || target.includes('map')) return lowerK.includes('goog') || lowerK.includes('map');
-        return lowerK === target;
-    });
-    
-    return targetKey ? samples[targetKey] : undefined;
-  };
-
-  const currentSample = getPlatformSample(config.post_samples as any, config.platform);
-  const hasPersonaSamples = !!(currentSample && currentSample.trim());
+  // No longer using legacy config.post_samples (reset to ensure consistency with UI list)
   const hasLearningSamples = learningSamples && learningSamples.length > 0;
-  const hasPersona = hasPersonaSamples || !!(config.customPrompt && config.customPrompt.trim()) || hasLearningSamples;
-  console.debug("[LEARNING] hasPersona:", hasPersona, "hasLearningSamples:", !!hasLearningSamples, "hasPersonaSamples:", hasPersonaSamples);
+  const hasPersona = !!(config.customPrompt && config.customPrompt.trim()) || hasLearningSamples;
+  console.debug("[LEARNING] hasPersona:", hasPersona, "hasLearningSamples:", !!hasLearningSamples);
 
   const buildSystemInstruction = () => {
     const isInstagram = config.platform === Platform.Instagram;
     const isX = config.platform === Platform.X;
     const isGMap = config.platform === Platform.GoogleMaps;
     
-
-
     // Many-shot learning samples formatting
     const formattedLearningSamples = learningSamples 
         ? learningSamples.map((s, i) => `<sample id="${i+1}">\n${s}\n</sample>`).join("\n") 
@@ -155,18 +131,21 @@ export const generateContent = async (
   </role>
 
   <style_guidelines>
-    - **Tone & Rhythm**: Completely mimic the sentence endings, line break rhythm, and use of whitespace from the <learning_samples> and <persona_sample>.
+    - **Tone & Rhythm**: Completely mimic the sentence endings, line break rhythm, and use of whitespace from the <learning_samples>.
     - **Platform Bias**: **IGNORE** all standard "polite" norms and "platform-specific" formatting rules for ${config.platform}. The <learning_samples> are the absolute truth for the owner's voice.
     - **Emojis & Symbols**: 
       ${config.platform === Platform.GoogleMaps ? 
-        '- **Usage**: Ignore any default restrictions. Strictly reproduce the emoji frequency and decorative symbol patterns found in the <learning_samples> and <persona_sample>.' : 
+        '- **Usage**: Ignore any default restrictions. Strictly reproduce the emoji frequency and decorative symbol patterns found in the <learning_samples>.' : 
         `- **Emojis**: ${config.includeEmojis ? 'Strictly follow patterns from samples.' : 'Avoid unless core to sample style.'}
     - **Symbols**: ${config.includeSymbols ? 'Use decorative symbols from palette if they match sample style.' : 'Minimize symbols.'}`}
+    - **Line Breaks**: **NEVER** insert line breaks in the middle of a grammatical phrase or word (e.g., don't split "ご来店いただき" across lines). Maintain natural reading flow. Avoid "auto-formatting for mobile" unless the <learning_samples> explicitly use that specific rhythm.
     - **Platform Rules**:
       - Platform: ${config.platform}
       - Length: ${config.length}
       - Language: ${config.language || 'Japanese'}
   </style_guidelines>
+
+  ${config.customPrompt ? `<custom_instructions>\n${config.customPrompt}\n</custom_instructions>` : ""}
 
   <constraints>
     - **No Fabrication**: Do NOT invent ingredients (e.g., "mochi", "matcha") or prices unless explicitly stated in the <user_input>.
@@ -189,7 +168,6 @@ export const generateContent = async (
 
 <context_data>
   ${hasLearningSamples ? `<learning_samples>\n${formattedLearningSamples}\n</learning_samples>` : ""}
-  ${hasPersonaSamples ? `<persona_sample>\n(High Priority Style Reference)\n${currentSample}\n</persona_sample>` : ""}
 </context_data>
 
 <user_input>
@@ -229,6 +207,8 @@ ${config.storeSupplement ? `<store_context>\n${config.storeSupplement}\n</store_
     - Emojis: ${isGMap ? 'Do NOT use emojis at all.' : (config.includeEmojis ? "Use emojis (😊, ✨) actively for friendliness." : "Minimize emojis.")}
   </rules>
 
+  ${config.customPrompt ? `<custom_instructions>\n${config.customPrompt}\n</custom_instructions>` : ""}
+
   ${languageRule}
   ${config.includeSymbols ? `<symbol_palette>\n${DECORATION_PALETTE}\n</symbol_palette>` : ""}
 
@@ -259,7 +239,6 @@ ${config.storeSupplement ? `<store_context>\n${config.storeSupplement}\n</store_
     systemChars: systemInstruction.length,
     userChars: (config.inputText || "").length,
     learningSamplesChars: (learningSamples || []).join("\n").length,
-    postSamplesChars: currentSample ? currentSample.length : 0,
   };
   console.debug("[PROMPT] sizes:", promptSize);
 
@@ -273,7 +252,9 @@ ${config.storeSupplement ? `<store_context>\n${config.storeSupplement}\n</store_
         responseSchema: contentSchema,
         temperature: hasPersona ? 0.3 : 0.6,
         topP: 0.9,
-      },
+        // @ts-ignore - Enable limited thinking process to balance quality and cost (~0.2 JPY extra)
+        thinkingBudget: 512, 
+      } as any,
     });
 
     const result = await response;

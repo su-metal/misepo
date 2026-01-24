@@ -118,7 +118,8 @@ export function useGeneratorFlow(props: {
     } else {
       // Apply preset (even if it's the same one - keep it applied)
       setCustomPrompt(preset.custom_prompt ?? '');
-      setCurrentPostSamples(preset.post_samples || {});
+      // Legacy post_samples are ignored to ensure only the 'Learning Data List' is used.
+      setCurrentPostSamples({}); 
       setActivePresetId(preset.id);
     }
   };
