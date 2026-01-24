@@ -119,8 +119,15 @@ function App() {
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       if (data.ok && Array.isArray(data.items)) {
-        setTrainingItems(data.items);
-        return data.items as TrainingItem[];
+        // Unique-ify by ID just in case backend or race conditions returned duplicates
+        const uniqueItems = data.items.reduce((acc: TrainingItem[], current: TrainingItem) => {
+          if (!acc.find(item => item.id === current.id)) {
+            acc.push(current);
+          }
+          return acc;
+        }, []);
+        setTrainingItems(uniqueItems);
+        return uniqueItems;
       }
     } catch (err) {
       console.error('Failed to fetch training items:', err);
@@ -346,32 +353,32 @@ function App() {
           });
           return;
         }
-        throw new Error(data.message || 'Failed to save training data');
+        throw new Error(data.error || data.message || 'Failed to save training data');
       }
 
       // Success
+      const newItem = {
+        id: data.id,
+        content: normalizedText,
+        platform,
+        presetId: effectivePresetId,
+        createdAt: new Date().toISOString(),
+        source
+      };
+
       if (replaceId) {
         setTrainingItems(prev => {
-          const filtered = prev.filter(item => item.id !== replaceId);
-          return [...filtered, {
-            id: data.id,
-            content: normalizedText,
-            platform,
-            presetId: effectivePresetId,
-            createdAt: new Date().toISOString(),
-            source
-          }];
+          // Remove both the old replaceId AND any accidental duplicate of the new data.id
+          const filtered = prev.filter(item => item.id !== replaceId && item.id !== data.id);
+          return [...filtered, newItem];
         });
         setReplacementModal(prev => ({ ...prev, isOpen: false }));
       } else {
-        setTrainingItems(prev => [...prev, {
-          id: data.id,
-          content: normalizedText,
-          platform,
-          presetId: effectivePresetId,
-          createdAt: new Date().toISOString(),
-          source
-        }]);
+        setTrainingItems(prev => {
+          // Prevent adding the same ID twice (can happen if backend returns "Already exists")
+          if (prev.some(item => item.id === data.id)) return prev;
+          return [...prev, newItem];
+        });
       }
     } catch (err) {
       console.error('Training toggle failed:', err);

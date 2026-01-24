@@ -49,7 +49,7 @@ interface PresetModalProps {
   isSaving?: boolean;
   onReorder?: () => Promise<Preset[] | void>;
   trainingItems: TrainingItem[];
-  onToggleTraining: (text: string, platform: Platform, presetId: string | null, replaceId?: string) => Promise<void>;
+  onToggleTraining: (text: string, platform: Platform, presetId: string | null, replaceId?: string, source?: 'generated' | 'manual') => Promise<void>;
 }
 
 const AVATAR_OPTIONS = [
@@ -169,7 +169,9 @@ const PresetModal: React.FC<PresetModalProps> = ({
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [showOrderSuccessToast, setShowOrderSuccessToast] = useState(false);
   const [expandingPlatform, setExpandingPlatform] = useState<Platform | null>(null);
-  const [editingSampleIndex, setEditingSampleIndex] = useState<number | null>(null);
+  const [editingSampleId, setEditingSampleId] = useState<string | null>(null);
+  const [isTrainingLoading, setIsTrainingLoading] = useState(false);
+  const [trainingError, setTrainingError] = useState<string | null>(null);
   const [modalText, setModalText] = useState('');
   const [isSanitizing, setIsSanitizing] = useState(false);
   const [isAnalyzingImage, setIsAnalyzingImage] = useState(false);
@@ -335,20 +337,20 @@ const PresetModal: React.FC<PresetModalProps> = ({
     const normalizedText = text.trim();
     if (!normalizedText) return;
 
-    let replaceId: string | undefined = undefined;
-    if (editingSampleIndex !== null) {
-      const samples = getSamplesForPlatform(platform);
-      if (samples[editingSampleIndex]) {
-        replaceId = samples[editingSampleIndex].id;
-      }
-    }
+    const replaceId = editingSampleId || undefined;
 
+    setIsTrainingLoading(true);
+    setTrainingError(null);
     try {
-      await onToggleTraining(normalizedText, platform, presetId, replaceId);
+      await onToggleTraining(normalizedText, platform, presetId, replaceId, 'manual');
       setExpandingPlatform(null);
-      setEditingSampleIndex(null); // Reset editing index
-    } catch (err) {
-      console.error('Training failed:', err);
+      setEditingSampleId(null); // Reset editing state
+    } catch (err: any) {
+      const msg = err.message || '保存に失敗しました';
+      setTrainingError(msg);
+      alert(`[ERROR] ${msg}`);
+    } finally {
+      setIsTrainingLoading(false);
     }
   };
 
@@ -368,7 +370,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
             type="button"
             onClick={() => {
               setModalText('');
-              setEditingSampleIndex(null);
+              setEditingSampleId(null);
               setExpandingPlatform(platform);
             }}
             disabled={samples.length >= 50}
@@ -392,7 +394,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                 className="group relative flex flex-col justify-between min-w-[200px] w-[200px] h-[140px] p-4 rounded-xl bg-white border-2 border-black hover:bg-[var(--bg-beige)] hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:translate-y-[-2px] transition-all cursor-pointer snap-start shrink-0"
                 onClick={() => {
                   setModalText(item.content);
-                  setEditingSampleIndex(idx);
+                  setEditingSampleId(item.id);
                   setExpandingPlatform(platform);
                 }}
               >
@@ -406,7 +408,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
-                      onToggleTraining(item.content, item.platform, item.presetId);
+                      onToggleTraining(item.content, item.platform, item.presetId, undefined, 'manual');
                     }}
                     className="p-1.5 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all border-2 border-transparent hover:border-black"
                   >
@@ -876,14 +878,16 @@ const PresetModal: React.FC<PresetModalProps> = ({
               onClick={() => {
                 handleToggleTrainingInternal(modalText, expandingPlatform!);
               }}
-              className="flex-none p-3 bg-[#001738] hover:bg-slate-900 text-white rounded-xl transition-all font-black text-sm px-8 md:px-10 border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] active:translate-x-0 active:translate-y-0"
+              disabled={isTrainingLoading}
+              className={`flex-none p-3 bg-[#001738] hover:bg-slate-900 text-white rounded-xl transition-all font-black text-sm px-8 md:px-10 border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] active:translate-x-0 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2`}
             >
-              更新して学習
+              {isTrainingLoading && <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>}
+              {editingSampleId ? '更新して学習' : '学習を開始する'}
             </button>
             <button
               onClick={() => {
                 setExpandingPlatform(null);
-                setEditingSampleIndex(null);
+                setEditingSampleId(null);
               }}
               className="flex-none p-3 bg-white hover:bg-slate-100 text-slate-500 rounded-xl transition-all border-2 border-slate-200"
               title="閉じる"

@@ -275,7 +275,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
           isSaving={isSavingPreset}
           onReorder={props.refreshPresets}
           trainingItems={trainingItems}
-          onToggleTraining={(text, platform, presetId, replaceId) => onToggleFavorite(text, platform, presetId, replaceId, 'manual')}
+          onToggleTraining={(text, platform, presetId, replaceId, source) => onToggleFavorite(text, platform, presetId, replaceId, source || 'manual')}
         />
       )}
 
