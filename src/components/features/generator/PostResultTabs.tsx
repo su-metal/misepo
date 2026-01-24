@@ -301,7 +301,14 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                             </button>
 
                                                             <button
-                                                                onClick={() => onShare(res.platform, text)}
+                                                                onClick={() => {
+                                                                    if (res.platform === Platform.Line) {
+                                                                        const encodedText = encodeURIComponent(text);
+                                                                        window.location.href = `https://line.me/R/msg/text/?${encodedText}`;
+                                                                    } else {
+                                                                        onShare(res.platform, text);
+                                                                    }
+                                                                }}
                                                                 className={`flex items-center justify-center gap-4 py-6 md:py-8 rounded-[32px] font-black text-lg transition-all uppercase tracking-[0.3em] group border-[3px] border-black mt-2 ${theme.actionColor}`}
                                                             >
                                                                 <span>{theme.actionLabel}</span>
