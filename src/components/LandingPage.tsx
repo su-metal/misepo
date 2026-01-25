@@ -21,11 +21,76 @@ export default function LandingPage() {
   const { loginWithGoogle } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [demoInput] = useState("ドーナツ新作３種登場。ハニーディップ、トリプルチョコ、パイ生地ドーナツ。一律２８０円。売り切れ次第終了。");
+  const demoScenarios = [
+    {
+      id: "instagram",
+      label: "Instagram投稿",
+      modeBadge: "Instagram Mode",
+      input: "ドーナツ新作３種登場。ハニーディップ、トリプルチョコ、パイ生地ドーナツ。一律２８０円。売り切れ次第終了。",
+      result: `˗ˏˋ ✨新作ドーナツ登場✨ ˎˊ˗
+
+misepocafeに、とっておきのドーナツが3種類仲間入りしました🍩
+
+今回仲間入りしたのは、
+・ハニーディップ
+・トリプルチョコ
+・パイ生地ドーナツ
+
+どれも一つ280円です！
+
+自家焙煎のこだわりのコーヒーと一緒に、ぜひお楽しみくださいね☕️
+数量限定ですので、売り切れ次第終了となります。お早めにどうぞ😊
+
+MisePoCafe coffee&eat
+☎︎03-1234-5678
+
+open11:00-close 17:00
+（sat）open11:00-close21:00
+（sun）open11:00-close18:00
+
+〒150-0000 東京都渋谷区神南1-0-0 ミセポビル2F
+
+#misepocafe #渋谷カフェ #表参道カフェ #東京グルメ #新作ドーナツ #ドーナツ #カフェ巡り`
+    },
+    {
+      id: "google_maps",
+      label: "クチコミ返信",
+      modeBadge: "Google Maps Mode",
+      input: "「初めて来ましたが、ドーナツがふわふわで最高でした！コーヒーも深みがあって好みです。また来ます！」というクチコミへの返信",
+      result: `ご来店いただき、誠にありがとうございます！✨
+
+ドーナツとコーヒー、どちらも喜んでいただけて本当に嬉しいです🍩☕️
+当店のドーナツは毎日お店で一つひとつ手作りしており、その「ふわふわ感」には特にこだわっています！
+
+次回お越しの際は、ぜひ別の種類のドーナツも試してみてくださいね😊
+またお会いできるのを楽しみにしております🌿`
+    },
+    {
+      id: "casual",
+      label: "お知らせ (ラフ)",
+      modeBadge: "Announcement Mode",
+      input: "「明日は機材メンテナンスのため15時閉店です。ごめんね！」を親しみやすい感じで。",
+      result: `【お知らせとお詫び】
+いつもありがとうございます🌿
+
+明日なのですが、お店の機材メンテナンスのため【15時】で少し早めに閉めさせていただきます...！🙏
+
+夕方に来ようと思ってくださっていた方、ごめんなさい！😭
+明後日からは通常通り元気にオープンしますので、またゆっくり遊びに来てくださいね✨
+
+よろしくお願いします！🍩`
+    }
+  ];
+
+  const [activeScenarioIdx, setActiveScenarioIdx] = useState(0);
   const [isDemoGenerating, setIsDemoGenerating] = useState(false);
   const [demoResult, setDemoResult] = useState("");
   const [isMobile, setIsMobile] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+
+  useEffect(() => {
+    setDemoResult(""); // Reset result when scenario changes
+  }, [activeScenarioIdx]);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -66,7 +131,9 @@ open11:00-close 17:00
 〒150-0000 東京都渋谷区神南1-0-0 ミセポビル2F
 
 #misepocafe #渋谷カフェ #表参道カフェ #東京グルメ #新作ドーナツ #ドーナツ #カフェ巡り`;
-    setDemoResult(mockResponse);
+    setDemoResult("");
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    setDemoResult(demoScenarios[activeScenarioIdx].result);
     setIsDemoGenerating(false);
   };
 
@@ -88,9 +155,16 @@ open11:00-close 17:00
     <div className="min-h-screen bg-[#f9f5f2] text-slate-900 font-sans selection:bg-[#F5CC6D]">
       <Header scrolled={scrolled} isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} loginWithGoogle={loginWithGoogle} />
       <HeroSection />
-      <UnifiedFlowSection />
       <ProblemSection problems={problems} isMobile={isMobile} />
-      <DemoSection demoInput={demoInput} isDemoGenerating={isDemoGenerating} demoResult={demoResult} handleDemoGenerate={handleDemoGenerate} />
+      <UnifiedFlowSection />
+      <DemoSection
+        demoScenarios={demoScenarios}
+        activeScenarioIdx={activeScenarioIdx}
+        setActiveScenarioIdx={setActiveScenarioIdx}
+        isDemoGenerating={isDemoGenerating}
+        demoResult={demoResult}
+        handleDemoGenerate={handleDemoGenerate}
+      />
       <BenefitSection />
       <FeaturesSection isMobile={isMobile} />
       <PWASection />
