@@ -120,22 +120,22 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
 
                         {/* X (Twitter) Preview */}
                         {platform === Platform.X && (
-                            <div className="w-full bg-white border-2 border-black rounded-[32px] shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-8 max-w-[475px]">
-                                <div className="flex gap-4">
-                                    <div className="w-12 h-12 rounded-2xl bg-black flex items-center justify-center text-[14px] font-black text-white flex-shrink-0 border-2 border-black">
+                            <div className="w-full bg-white border-2 border-black rounded-[32px] shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] px-4 py-5 max-w-[475px]">
+                                <div className="flex gap-3">
+                                    <div className="w-9 h-9 rounded-full bg-black flex items-center justify-center text-[12px] font-black text-white flex-shrink-0 border-2 border-black">
                                         {(storeProfile.name?.[0] || 'U').toUpperCase()}
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <div className="flex items-center justify-between mb-2">
+                                        <div className="flex items-center justify-between mb-1">
                                             <div className="flex items-center gap-1.5 truncate">
-                                                <span className="text-[14px] font-black text-black truncate">{storeProfile.name || 'Name'}</span>
-                                                <span className="text-[12px] font-bold text-black/30 truncate">@{storeProfile.name ? 'store_id' : 'id'}</span>
-                                                <span className="text-[12px] text-black/20">· 2h</span>
+                                                <span className="text-[15px] font-black text-black truncate">{storeProfile.name || 'Name'}</span>
+                                                <span className="text-[13px] font-bold text-black/30 truncate">@{storeProfile.name ? 'store_id' : 'id'}</span>
+                                                <span className="text-[13px] text-black/20">· 2h</span>
                                             </div>
                                             <MoreHorizontalIcon className="w-5 h-5 text-black/20" />
                                         </div>
 
-                                        <div className="text-[16px] text-black font-medium whitespace-pre-wrap leading-relaxed">
+                                        <div className="text-[15px] text-black font-medium whitespace-pre-wrap leading-tight mb-4">
                                             {text}
                                         </div>
 
@@ -212,6 +212,9 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
                     >
                         CLOSE PREVIEW
                     </button>
+                    <p className="mt-4 text-[10px] font-bold text-black/40 text-center leading-relaxed">
+                        ※表示はシミュレーションであり、実際の改行位置やレイアウトは<br />端末の設定や環境により異なる場合があります。
+                    </p>
                 </div>
             </div>
         </div>,
