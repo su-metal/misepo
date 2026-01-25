@@ -47,8 +47,8 @@ export const DemoSection = ({
                             key={scenario.id}
                             onClick={() => setActiveScenarioIdx(idx)}
                             className={`px-6 py-3 border-[3px] rounded-2xl font-black text-sm uppercase transition-all ${activeScenarioIdx === idx
-                                    ? 'bg-[#F5CC6D] text-black border-black shadow-[6px_6px_0px_0px_rgba(255,255,255,0.5)] -translate-y-1'
-                                    : 'bg-black text-white border-white/20 hover:border-white/50'
+                                ? 'bg-[#F5CC6D] text-black border-black shadow-[6px_6px_0px_0px_rgba(255,255,255,0.5)] -translate-y-1'
+                                : 'bg-black text-white border-white/20 hover:border-white/50'
                                 }`}
                         >
                             {scenario.label}
@@ -90,7 +90,7 @@ export const DemoSection = ({
                                 <h3 className="font-black text-black text-sm uppercase tracking-wider">MisePo Features</h3>
                             </div>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6">
-                                {["Instagram / X 同時作成", "Googleマップ クチコミ返信", "AIお手本学習 (分身機能)", "多言語翻訳 (英/中/韓)"].map((item, i) => (
+                                {["Instagram / X 同時作成", "公式LINE 配信作成", "Googleマップ クチコミ返信", "AIお手本学習 (分身機能)"].map((item, i) => (
                                     <div key={i} className="flex items-center gap-2 text-xs font-black uppercase tracking-tighter">
                                         <Icons.CheckCircle size={14} className="text-[#4DB39A] shrink-0" />
                                         <span>{item}</span>
@@ -128,6 +128,27 @@ export const DemoSection = ({
                                                 <div className="text-[10px] font-black text-black/40 uppercase mb-2">オーナーからの返信</div>
                                                 <div className={`text-xs text-black leading-relaxed whitespace-pre-wrap font-bold ${demoResult ? 'opacity-100' : 'opacity-30 italic'}`}>
                                                     {isDemoGenerating ? "AIによる返信を生成中..." : demoResult || "ここにAIの返信が表示されます..."}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ) : activeScenario.id === "line" ? (
+                                    /* LINE Mockup */
+                                    <div className="flex flex-col h-full bg-[#7494C0]">
+                                        <div className="p-3 border-b-[2px] border-black bg-white flex items-center gap-3">
+                                            <div className="w-8 h-8 bg-[#06C755] border-[2px] border-black rounded-full flex items-center justify-center text-white">
+                                                <Icons.MessageCircle size={14} fill="currentColor" />
+                                            </div>
+                                            <span className="font-black text-xs">Official LINE</span>
+                                        </div>
+                                        <div className="flex-1 overflow-y-auto p-4 no-scrollbar flex flex-col gap-4">
+                                            <div className="text-[9px] text-white/50 font-black uppercase text-center my-2">Today</div>
+                                            <div className="flex gap-2">
+                                                <div className="w-8 h-8 bg-[#06C755] border-[2px] border-black rounded-2xl flex-shrink-0" />
+                                                <div className="bg-[#FFFFFF] border-[2px] border-black p-3 rounded-2xl rounded-tl-none shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] max-w-[85%] relative">
+                                                    <div className={`text-xs text-black leading-relaxed whitespace-pre-wrap font-bold ${demoResult ? 'opacity-100' : 'opacity-30 italic'}`}>
+                                                        {isDemoGenerating ? "メッセージを作成中..." : demoResult || "ここにLINEメッセージが表示されます..."}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>

@@ -206,7 +206,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                     >
                                         {getTabIcon(res.platform, isSelected)}
                                         <span className={`text-[11px] font-black tracking-[0.2em] uppercase transition-colors ${isSelected ? 'text-black' : 'text-black/30'}`}>
-                                            {res.platform === Platform.X ? 'X (Twitter)' : res.platform}
+                                            {theme.label}
                                         </span>
                                     </div>
                                 );
@@ -242,12 +242,16 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
 
                                                     {/* Text Area Content Wrapper */}
                                                     <div className={`mb-2 relative group/textarea ${theme.wrapperClass || ''}`}>
-                                                        <AutoResizingTextarea
-                                                            value={text}
-                                                            onChange={(e) => onManualEdit(gIdx, iIdx, e.target.value)}
-                                                            className={`w-full bg-transparent focus:outline-none resize-none placeholder:text-black/10 whitespace-pre-wrap overflow-hidden ${theme.contentClasses || 'text-base text-black font-bold'}`}
-                                                            trigger={activeTab}
-                                                        />
+                                                        {text ? (
+                                                            <AutoResizingTextarea
+                                                                value={text}
+                                                                onChange={(e) => onManualEdit(gIdx, iIdx, e.target.value)}
+                                                                className={`w-full bg-transparent focus:outline-none resize-none placeholder:text-black/10 whitespace-pre-wrap overflow-hidden ${theme.contentClasses || 'text-base text-black font-bold'}`}
+                                                                trigger={activeTab}
+                                                            />
+                                                        ) : (
+                                                            <div className="py-4 text-black/20 italic">コンテンツがありません</div>
+                                                        )}
                                                     </div>
 
                                                     {/* Character Count (One level down, Right Aligned) */}

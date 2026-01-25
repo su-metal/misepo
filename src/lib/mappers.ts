@@ -30,43 +30,44 @@ export function normalizePlatform(value: unknown): Platform {
 export function normalizeResults(raw: any, fallbackPlatform: Platform): GeneratedResult[] {
   if (!raw) return [];
   
+  const results: { platform: Platform; data: string[] }[] = [];
+  const groups: Map<Platform, string[]> = new Map();
+
+  const addResult = (platformValue: any, dataItems: any[]) => {
+    const platform = normalizePlatform(platformValue);
+    const strings = dataItems.map(String).filter(s => s.trim().length > 0);
+    if (strings.length === 0) return;
+    
+    const existing = groups.get(platform) || [];
+    groups.set(platform, [...existing, ...strings]);
+  };
+
   // Handle string (single result stored as string)
   if (typeof raw === 'string') {
-    return [{
-      platform: fallbackPlatform,
-      data: [raw],
-    }];
+    addResult(fallbackPlatform, [raw]);
   }
-  
   // Handle array
-  if (Array.isArray(raw)) {
-    return raw.map((r: any) => {
-      // If item is a string, wrap it
+  else if (Array.isArray(raw)) {
+    raw.forEach((r: any) => {
       if (typeof r === 'string') {
-        return {
-          platform: fallbackPlatform,
-          data: [r],
-        };
+        addResult(fallbackPlatform, [r]);
+      } else if (r && typeof r === 'object') {
+        addResult(r.platform || fallbackPlatform, Array.isArray(r.data) ? r.data : (r.data ? [r.data] : []));
       }
-      // If item is an object with platform/data structure
-      return {
-        platform: normalizePlatform(r.platform || fallbackPlatform),
-        data: Array.isArray(r.data) ? r.data : (r.data ? [String(r.data)] : []),
-      };
     });
   }
-
   // Handle structured object (from Gemini service result: { analysis, posts })
-  if (raw && typeof raw === 'object') {
+  else if (raw && typeof raw === 'object') {
     if (Array.isArray(raw.posts)) {
-      return [{
-        platform: fallbackPlatform,
-        data: raw.posts.map(String),
-      }];
+      addResult(fallbackPlatform, raw.posts);
     }
   }
+
+  groups.forEach((data, platform) => {
+    results.push({ platform, data });
+  });
   
-  return [];
+  return results;
 }
 
 export function mapHistoryEntry(entry: any): GeneratedPost {
