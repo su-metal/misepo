@@ -299,6 +299,7 @@ export function useGeneratorFlow(props: {
     });
 
     setResultGroups(newGroups);
+    if (!isRegeneration) setActiveTab(0);
     setLoading(false);
 
     if (isLoggedIn && !isRegeneration) {
@@ -480,6 +481,7 @@ export function useGeneratorFlow(props: {
         config: { ...restorePost.config, platform: r.platform } as any
       }));
       setResultGroups(reconstructed);
+      setActiveTab(0);
     }
   }, [restorePost]);
 

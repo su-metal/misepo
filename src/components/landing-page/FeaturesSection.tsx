@@ -13,7 +13,7 @@ export const FeaturesSection = ({ isMobile }: { isMobile: boolean }) => {
                         <span className="underline decoration-[8px] decoration-[#F5CC6D]">このアプリひとつだけ。</span>
                     </h2>
                     <p className="text-black text-xl font-bold opacity-80">
-                        店舗集客に必要な<br className="md:hidden" />3大プラットフォームを完全網羅。<br />
+                        店舗集客に必要な<br className="md:hidden" />4大プラットフォームを完全網羅。<br />
                         それぞれの媒体特性に合わせて、<br className="md:hidden" />AIが最適な「振る舞い」をします。
                     </p>
                 </div>
@@ -25,17 +25,18 @@ export const FeaturesSection = ({ isMobile }: { isMobile: boolean }) => {
                                 <div className="w-16 h-16 bg-[#9B8FD4] border-[3px] border-black rounded-2xl flex items-center justify-center text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group-hover:rotate-6 transition-transform shrink-0 md:mb-8">
                                     <Icons.Maximize2 size={isMobile ? 28 : 32} />
                                 </div>
-                                <h3 className="text-2xl md:text-4xl font-black text-black leading-tight uppercase italic">3大プラットフォーム<br className="md:hidden" />一括管理</h3>
+                                <h3 className="text-2xl md:text-4xl font-black text-black leading-tight uppercase italic">4大プラットフォーム<br className="md:hidden" />一括管理</h3>
                             </div>
                             <p className="text-black text-lg font-bold opacity-80 mb-8 max-w-md mt-6 md:mt-0">
-                                Instagram、X (Twitter)、Googleビジネスプロフィールの投稿・返信を1つのアプリで完結。
+                                Instagram、X (Twitter)、公式LINE、Googleマップの投稿・返信を1つのアプリで完結。
                                 <br />
                                 媒体ごとのアプリを行き来する手間をゼロにします。
                             </p>
                             <div className="mt-auto w-full flex gap-6 items-center justify-start flex-wrap">
                                 {[
                                     { icon: <Icons.Instagram size={24} />, bg: "bg-[#E88BA3]", text: "text-black" },
-                                    { icon: <Icons.Twitter size={24} />, bg: "bg-[#4DB39A]", text: "text-black" },
+                                    { icon: <Icons.Twitter size={24} />, bg: "bg-[#000000]", text: "text-white" },
+                                    { icon: <Icons.MessageCircle size={24} />, bg: "bg-[#06C755]", text: "text-white" },
                                     { icon: <Icons.MapPin size={24} />, bg: "bg-[#F5CC6D]", text: "text-black" },
                                 ].map((item, i) => (
                                     <div key={i} className={`w-14 h-14 ${item.bg} ${item.text} border-[3px] border-black rounded-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rounded-2xl flex items-center justify-center group-hover:-translate-y-1 transition-transform`} style={{ transitionDelay: `${i * 100}ms` }}>

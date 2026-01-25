@@ -88,6 +88,14 @@ export const UnifiedFlowSection = () => {
             desc: "ハッシュタグ連携起動",
         },
         {
+            id: "line",
+            icon: <Icons.MessageCircle size={24} />,
+            color: "bg-[#06C755]",
+            text: "white",
+            label: "公式LINE",
+            desc: "リッチ配信形式で作成",
+        },
+        {
             id: "gmap",
             icon: <Icons.MapPin size={24} />,
             color: "bg-[#4DB39A]",

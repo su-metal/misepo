@@ -64,7 +64,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
             case Platform.X:
                 return {
                     icon: <div className="w-10 h-10 bg-black rounded-xl flex items-center justify-center text-white text-xl font-black shadow-[4px_4px_0px_0px_#9B8FD4] border-2 border-white/20">𝕏</div>,
-                    label: 'X (Twitter)',
+                    label: 'X',
                     actionColor: "bg-black text-white hover:bg-black/80 active:scale-[0.98] shadow-[6px_6px_0px_0px_#9B8FD4] border-white/20",
                     actionLabel: "Xで投稿する",
                     contentClasses: "text-[16px] text-black font-bold leading-relaxed tracking-tight",
@@ -198,15 +198,15 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                     <div
                                         key={res.platform}
                                         onClick={() => onTabChange(idx)}
-                                        className={`flex-1 py-4 flex items-center justify-center gap-3 cursor-pointer transition-all duration-300 border-r-[2px] last:border-r-0 border-black
+                                        className={`flex-1 py-4 flex items-center justify-center gap-1.5 md:gap-3 cursor-pointer transition-all duration-300 border-r-[2px] last:border-r-0 border-black px-2
                                             ${isSelected
                                                 ? `bg-black/5`
                                                 : 'bg-white hover:bg-black/5'
                                             }`}
                                     >
                                         {getTabIcon(res.platform, isSelected)}
-                                        <span className={`text-[11px] font-black tracking-[0.2em] uppercase transition-colors ${isSelected ? 'text-black' : 'text-black/30'}`}>
-                                            {res.platform === Platform.X ? 'X (Twitter)' : res.platform}
+                                        <span className={`text-[10px] md:text-[11px] font-black tracking-[0.1em] md:tracking-[0.2em] uppercase transition-colors truncate ${isSelected ? 'text-black' : 'text-black/30'}`}>
+                                            {theme.label}
                                         </span>
                                     </div>
                                 );
@@ -242,12 +242,16 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
 
                                                     {/* Text Area Content Wrapper */}
                                                     <div className={`mb-2 relative group/textarea ${theme.wrapperClass || ''}`}>
-                                                        <AutoResizingTextarea
-                                                            value={text}
-                                                            onChange={(e) => onManualEdit(gIdx, iIdx, e.target.value)}
-                                                            className={`w-full bg-transparent focus:outline-none resize-none placeholder:text-black/10 whitespace-pre-wrap overflow-hidden ${theme.contentClasses || 'text-base text-black font-bold'}`}
-                                                            trigger={activeTab}
-                                                        />
+                                                        {text ? (
+                                                            <AutoResizingTextarea
+                                                                value={text}
+                                                                onChange={(e) => onManualEdit(gIdx, iIdx, e.target.value)}
+                                                                className={`w-full bg-transparent focus:outline-none resize-none placeholder:text-black/10 whitespace-pre-wrap overflow-hidden ${theme.contentClasses || 'text-base text-black font-bold'}`}
+                                                                trigger={activeTab}
+                                                            />
+                                                        ) : (
+                                                            <div className="py-4 text-black/20 italic">コンテンツがありません</div>
+                                                        )}
                                                     </div>
 
                                                     {/* Character Count (One level down, Right Aligned) */}

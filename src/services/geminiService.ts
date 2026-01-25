@@ -184,7 +184,7 @@ export const generateContent = async (
     }
     Output a JSON object with:
     - "analysis": A brief analysis of emotion and context.
-    - "posts": An array of one or more post variations (strings). **CRITICAL**: For LINE, each variation MUST be a single integrated message. Do NOT use '---' or other markers to separate parts.
+    - "posts": An array of one or more post variations (strings). **CRITICAL**: Each string must be a COMPLETE message. Do NOT split a single message (header, body, footer) into separate array items.
   </task>
 `;
     }
@@ -228,7 +228,7 @@ export const generateContent = async (
     }
     Output a JSON object with:
     - "analysis": Brief context analysis.
-    - "posts": An array of generated post strings. **CRITICAL**: For LINE, each string MUST be a single integrated message. Do NOT use '---' as a separator.
+    - "posts": An array of generated post strings. **CRITICAL**: Each string in the array must be a COMPLETE, standalone message. Do NOT split a single message (e.g., separating title from body) into multiple array elements. If you produce variations, each variation must be the full message.
   </task>
 </system_instruction>
 `;
@@ -369,7 +369,7 @@ export const generateContent = async (
         }
         return {
             analysis: parsed.analysis || "",
-            posts: parsed.posts.map((s: any) => String(s))
+            posts: parsed.posts.map((s: any) => String(s).replace(/\n{3,}/g, '\n\n').trim())
         };
     } catch (e) {
         throw new Error("Failed to parse AI response");
@@ -496,7 +496,7 @@ Output ONLY the refined text.
            const ct = usage.candidatesTokenCount || 0;
            console.log(`[API_COST_REFINE] Model: ${modelName} | In: ${pt} | Out: ${ct}`);
         }
-        return refinedText;
+        return refinedText.replace(/\n{3,}/g, '\n\n').trim();
       }
       
       console.warn(`[REFINE] Empty response on attempt ${attempt + 1}`);
@@ -561,7 +561,7 @@ Extract the "main post body" or "owner reply text" from the provided screenshot 
     },
   });
 
-  return response.text || "";
+  return (response.text || "").replace(/\n{3,}/g, '\n\n').trim();
 };
 
 export const sanitizePostSamples = async (

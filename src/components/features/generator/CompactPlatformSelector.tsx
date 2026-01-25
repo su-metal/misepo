@@ -39,7 +39,7 @@ export const CompactPlatformSelector: React.FC<CompactPlatformSelectorProps> = (
                                 {getPlatformIcon(p)}
                             </div>
                             <span className={`text-[11px] font-bold md:inline ${isSelected ? 'text-white' : 'text-stone-500'} ${p === Platform.GoogleMaps ? 'hidden sm:inline' : ''}`}>
-                                {p === Platform.X ? 'X (Twitter)' : p === Platform.Instagram ? 'Instagram' : p === Platform.Line ? 'LINE' : 'Google Maps'}
+                                {p === Platform.X ? 'X' : p === Platform.Instagram ? 'Instagram' : p === Platform.Line ? 'LINE' : 'Google Maps'}
                             </span>
                         </button>
                     );
