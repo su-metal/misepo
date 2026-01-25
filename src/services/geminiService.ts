@@ -147,6 +147,8 @@ export const generateContent = async (
           - **Headers**: Use high-impact headers. Choose between '＼ 🎨 [Title] 🎨 ／' or '＼ [Title] ／' depending on the content. **CRITICAL**: The [Title] must be extremely concise (max 10-12 full-width chars) to ensure the header stays on **A SINGLE LINE** on a mobile screen. Never let the header wrap.
           - **CTA Guidance (LINE ONLY)**: Use directional arrows like '↓ ↓ ↓' or pointing emojis **strictly on the very last line** of the message. You can use an 'Arrow-Sandwich' pattern (e.g., '↓ ↓ ↓ [Text] ↓ ↓ ↓'). **CRITICAL**: The entire line (including arrows) MUST be within 15 full-width characters. If the text is long, symmetrically reduce arrows (e.g., '↓ ↓ [Text] ↓ ↓') or shorten the text to prevent wrapping.
         - **Layout**: Use clear visual separators like '---' between the three balloons.` : ''}
+    - **Readability & Vertical Flow**: Avoid long, dense blocks of text. Use line breaks (newlines) frequently—ideally after every sentence, emoji, or when shifting topics. Ensure a rhythmic, vertical flow that is easy to scan on a vertical mobile screen.
+      - Length: ${config.length}
       - Language: ${config.language || 'Japanese'}
   </style_guidelines>
 
@@ -211,6 +213,7 @@ export const generateContent = async (
     - Tone: ${config.tone} (${TONE_RULES[config.tone] || TONE_RULES[Tone.Standard]})
     - Features: ${isInstagram ? 'Visual focus, 4-6 hashtags.' : ''}${isX ? 'Under 140 chars, 1-2 hashtags.' : ''}${isGMap ? 'Polite reply, NO emojis, NO hashtags.' : ''}${config.platform === Platform.Line ? 'Direct marketing style. NO hashtags. Focus on clear messaging.' : ''}
     - Emojis: ${isGMap ? 'Do NOT use emojis at all.' : (config.includeEmojis ? "Use expressive, large, or character-like emojis (🐻, ✨, 💪) for high impact." : "Minimize emojis.")}
+    - **Layout**: Prioritize a clean vertical flow with frequent line breaks (newlines) after sentences or emojis to ensure readability on mobile. **AVOID dense blocks of text**.
   </rules>
 
   ${config.customPrompt ? `<custom_instructions>\n${config.customPrompt}\n</custom_instructions>` : ""}
@@ -227,7 +230,7 @@ export const generateContent = async (
     ${isGMap ? 
       "The <user_input> is a customer review. Generate a polite and empathetic REPLY from the owner. Use the facts in <store_context> if provided to explain circumstances or provide background. Do not just summarize the facts; acknowledge them graciously." : 
       config.platform === Platform.Line ?
-      "Generate an Official LINE message with a 3-balloon structure: 1. Hook (for push notifications), 2. Details (friendly marketing body), 3. Action (CTA). Use friendly but professional tone. Mark each balloon clearly with '---'. **CRITICAL**: Use positive framing (e.g., 'ご案内可能なお時間ができました') instead of negative terms like 'cancellation' (キャンセル). **VISUAL**: Use emoji-sandwiched headers (e.g., ＼ 🧴 [Title] 🧴 ／). For LINE only, place directional arrows (↓ ↓ ↓) **strictly on the very last line**, optionally as an arrow-sandwich pattern (e.g., ↓ ↓ ↓ Text ↓ ↓ ↓). Encourage action." :
+      "Generate an Official LINE message with a 3-balloon structure: 1. Hook (for push notifications), 2. Details (friendly marketing body), 3. Action (CTA). Use friendly but professional tone. Mark each balloon clearly with '---'. **CRITICAL**: Use positive framing (e.g., 'ご案内可能なお時間ができました') instead of negative terms like 'cancellation' (キャンセル). **VISUAL**: Use emoji-sandwiched headers (e.g., ＼ 🧴 [Title] 🧴 ／). For LINE only, place directional arrows (↓ ↓ ↓) **strictly on the very last line**, optionally as an arrow-sandwich pattern (e.g., ↓ ↓ ↓ Text ↓ ↓ ↓). **LAYOUT**: Prioritize a clean vertical flow with frequent line breaks (newlines) after sentences to ensure readability on mobile. Avoid dense blocks. Encourage action." :
       "Generate an attractive post for based on the <user_input>."
     }
     Output a JSON object with:
