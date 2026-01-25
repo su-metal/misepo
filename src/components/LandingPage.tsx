@@ -8,7 +8,7 @@ import { Header } from './landing-page/Header';
 import { ProblemSection } from './landing-page/ProblemSection';
 import { BenefitSection } from './landing-page/BenefitSection';
 import { FeaturesSection } from './landing-page/FeaturesSection';
-import { WorkflowSection } from './landing-page/WorkflowSection';
+import { UnifiedFlowSection } from './landing-page/UnifiedFlowSection';
 import { DemoSection } from './landing-page/DemoSection';
 import { PWASection } from './landing-page/PWASection';
 import { TestimonialsSection } from './landing-page/TestimonialsSection';
@@ -91,7 +91,7 @@ open11:00-close 17:00
       <ProblemSection problems={problems} isMobile={isMobile} />
       <BenefitSection />
       <FeaturesSection isMobile={isMobile} />
-      <WorkflowSection />
+      <UnifiedFlowSection />
       <DemoSection demoInput={demoInput} isDemoGenerating={isDemoGenerating} demoResult={demoResult} handleDemoGenerate={handleDemoGenerate} />
       <PWASection />
       <TestimonialsSection />
