@@ -9,6 +9,7 @@ import {
   Length,
   Tone,
 } from "../types";
+import crypto from 'crypto';
 
 // Define the schema for structured output (Array of strings)
 // Define the schema for structured output (Object with analysis and posts)
@@ -123,6 +124,9 @@ export const generateContent = async (
 
   <style_guidelines>
     - **Tone & Rhythm**: Completely mimic the sentence endings, line break rhythm, and use of whitespace from the <learning_samples>.
+    - **Volume Control**: Strictly follow the requested **Length: ${config.length}**. 
+      - If 'Long', expand upon the context (atmosphere, store owner's feelings, expert tips) whilst maintaining the style of the samples.
+      - If 'Short', condense to the core message but keep the signature style (emojis, endings).
     - **Platform Bias**: **IGNORE** all standard "polite" norms and "platform-specific" formatting rules for ${config.platform}. The <learning_samples> are the absolute truth for the owner's voice.
     - **Emojis & Symbols**: 
       ${config.platform === Platform.GoogleMaps ? 
@@ -143,7 +147,6 @@ export const generateContent = async (
           - **Headers**: Use high-impact headers. Choose between '＼ 🎨 [Title] 🎨 ／' or '＼ [Title] ／' depending on the content. **CRITICAL**: The [Title] must be extremely concise (max 10-12 full-width chars) to ensure the header stays on **A SINGLE LINE** on a mobile screen. Never let the header wrap.
           - **CTA Guidance (LINE ONLY)**: Use directional arrows like '↓ ↓ ↓' or pointing emojis **strictly on the very last line** of the message. You can use an 'Arrow-Sandwich' pattern (e.g., '↓ ↓ ↓ [Text] ↓ ↓ ↓'). **CRITICAL**: The entire line (including arrows) MUST be within 15 full-width characters. If the text is long, symmetrically reduce arrows (e.g., '↓ ↓ [Text] ↓ ↓') or shorten the text to prevent wrapping.
         - **Layout**: Use clear visual separators like '---' between the three balloons.` : ''}
-      - Length: ${config.length}
       - Language: ${config.language || 'Japanese'}
   </style_guidelines>
 
@@ -171,11 +174,11 @@ export const generateContent = async (
   ${hasLearningSamples ? `<learning_samples>\n${formattedLearningSamples}\n</learning_samples>` : ""}
 </context_data>
 
-<user_input>
-  "${config.inputText}"
-</user_input>
+  <user_input>
+    "${config.inputText}"
+  </user_input>
 
-${config.storeSupplement ? `<store_context>\n${config.storeSupplement}\n</store_context>` : ""}
+  ${config.storeSupplement ? `<store_context>\n${config.storeSupplement}\n</store_context>` : ""}
 
   <task>
     ${config.platform === Platform.GoogleMaps ? 
@@ -246,19 +249,93 @@ ${config.storeSupplement ? `<store_context>\n${config.storeSupplement}\n</store_
   };
   console.debug("[PROMPT] sizes:", promptSize);
 
+  // In-memory cache store (resets on server restart)
+  const cacheStore = new Map<string, { name: string; expiresAt: number }>();
+
   const attemptGeneration = async (userPrompt: string): Promise<GeneratedContentResult> => {
-    const response = await ai.models.generateContent({
-      model: modelName,
-      contents: [{ role: "user", parts: [{ text: userPrompt }] }],
-      config: {
-        systemInstruction,
+    let cachedContentName: string | undefined;
+    
+    // Check if we should try caching (Google Gen AI requires >32k tokens for caching)
+    // We estimate roughly. If system instruction implies high usage, we verify with countTokens.
+    const estimatedChars = systemInstruction.length + (learningSamples || []).join("").length;
+    
+    // Threshold: a bit below 32k usually to be safe, but chars != tokens. 
+    // Japanese text can be 1 char ~ 1+ tokens. 
+    // Let's explicitly check token count if it seems heavy (> 20,000 chars)
+    if (estimatedChars > 20000) {
+      try {
+        const { totalTokens } = await ai.models.countTokens({
+          model: modelName,
+          contents: [{ role: "user", parts: [{ text: userPrompt }] }], // Rough usage
+          config: { systemInstruction }, 
+        });
+
+        if (totalTokens && totalTokens > 32768) {
+          // Compute hash for the static part (System Instruction)
+          const cacheKey = crypto.createHash('md5').update(systemInstruction).digest('hex');
+          
+          const cached = cacheStore.get(cacheKey);
+          const now = Date.now();
+
+          if (cached && cached.expiresAt > now) {
+            cachedContentName = cached.name;
+            console.log(`[CACHE] Hit! Using cached content: ${cachedContentName}`);
+          } else {
+            console.log(`[CACHE] Miss or Expired. Creating new cache context... (${totalTokens} tokens)`);
+            // Create new cache
+            // Note: Availability of caching checks depends on SDK version. Assuming standard interface.
+            const cacheManager = (ai as any).caches; 
+            if (cacheManager) {
+               const ttlSeconds = 60 * 5; // 5 minutes TTL for now to be safe/thrifty
+               const cache = await cacheManager.create({
+                 model: modelName,
+                 contents: [], // System instruction is often handled separately in cache config
+                 config: { 
+                   systemInstruction: { parts: [{ text: systemInstruction }] }
+                 },
+                 ttlSeconds,
+               });
+               
+               if (cache && cache.name) {
+                 cachedContentName = cache.name;
+                 cacheStore.set(cacheKey, { name: cache.name, expiresAt: now + (ttlSeconds * 1000) });
+                 console.log(`[CACHE] Created: ${cache.name}`);
+               }
+            }
+          }
+        }
+      } catch (e) {
+        console.warn("[CACHE] Failed to handle caching logic:", e);
+      }
+    }
+
+    const requestConfig: any = {
         responseMimeType: "application/json",
         responseSchema: contentSchema,
         temperature: hasPersona ? 0.3 : 0.6,
         topP: 0.9,
-        // @ts-ignore - Enable thinking process for higher quality reasoning
-        thinkingBudget: 512, 
-      } as any,
+    };
+
+    // If cache exists, we DON'T pass systemInstruction again (it's in the cache)
+    if (cachedContentName) {
+        requestConfig.cachedContent = cachedContentName;
+    } else {
+        requestConfig.systemInstruction = systemInstruction;
+    }
+
+    // Dynamic Thinking Budget based on requested length to optimize output cost
+    const budgetMap = { [Length.Short]: 768, [Length.Medium]: 1280, [Length.Long]: 1792 };
+    const budget = budgetMap[config.length] || 1024;
+
+    // @ts-ignore - Quality restore: Dynamic thinking budget based on length
+    requestConfig.thinking_config = { include_thoughts: true, thinking_budget: budget }; 
+    // @ts-ignore - Also try the camelCase version
+    requestConfig.thinkingConfig = { includeThoughts: true, thinkingBudget: budget };
+
+    const response = await ai.models.generateContent({
+      model: modelName,
+      contents: [{ role: "user", parts: [{ text: userPrompt }] }],
+      config: requestConfig,
     });
 
     const result = await response;
@@ -293,6 +370,7 @@ ${config.storeSupplement ? `<store_context>\n${config.storeSupplement}\n</store_
         const costJPY = costUSD * EX_RATE_JPY;
 
         console.log(`[API_COST] Model: ${modelName} | In: ${promptTotal} (Cached: ${cached}) | Out: ${outputTotal} (Thinking: ${thinking}) | Est: ¥${costJPY.toFixed(4)}`);
+
     }
 
     const jsonText = result.text;
