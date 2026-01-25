@@ -4,6 +4,7 @@ import { Platform, StoreProfile } from '../../../types';
 import { getPlatformIcon } from './utils';
 import { CloseIcon, HeartIcon, MessageCircleIcon, SendIcon, BookmarkIcon, MoreHorizontalIcon, ShareIcon, RotateCcwIcon } from '../../Icons';
 import { LinePreview } from './LinePreview';
+import { AutoResizingTextarea } from './AutoResizingTextarea';
 
 interface PostPreviewModalProps {
     isOpen: boolean;
@@ -11,6 +12,7 @@ interface PostPreviewModalProps {
     platform: Platform;
     text: string;
     storeProfile: StoreProfile;
+    onChange?: (text: string) => void;
 }
 
 export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
@@ -18,7 +20,8 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
     onClose,
     platform,
     text,
-    storeProfile
+    storeProfile,
+    onChange
 }) => {
     // State to handle client-side rendering for Portal
     const [mounted, setMounted] = React.useState(false);
@@ -53,7 +56,7 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
                         <div className="text-black">
                             {getPlatformIcon(platform)}
                         </div>
-                        <span>Live Preview</span>
+                        <span>Live Preview (Editable)</span>
                     </h3>
                     <button
                         onClick={onClose}
@@ -69,7 +72,7 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
 
                         {/* Instagram Preview */}
                         {platform === Platform.Instagram && (
-                            <div className="w-full bg-white border-2 border-black rounded-[24px] shadow-[6px_6px_0px_0px_#E88BA3] max-w-[370px] overflow-hidden">
+                            <div className="w-full bg-white border-2 border-black rounded-[24px] shadow-[6px_6px_0px_0px_#E88BA3] max-w-[370px] overflow-hidden text-left">
                                 {/* Header */}
                                 <div className="flex items-center justify-between p-4 border-b-2 border-black/5">
                                     <div className="flex items-center gap-3">
@@ -109,18 +112,22 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
 
                                     <div className="text-xs font-black text-black mb-4">1,234 likes</div>
 
-                                    <div className="text-[14px] text-black font-medium whitespace-pre-wrap leading-relaxed">
+                                    <div className="text-[14px] text-black font-medium leading-relaxed">
                                         <span className="font-black mr-2">{storeProfile.name || 'your_account'}</span>
-                                        {text}
+                                        <AutoResizingTextarea
+                                            value={text}
+                                            onChange={(e) => onChange?.(e.target.value)}
+                                            className="w-full bg-transparent focus:outline-none resize-none p-0 inline-block font-medium min-h-[1.5em]"
+                                        />
                                     </div>
-                                    <div className="text-[10px] font-black text-black/20 mt-6 uppercase tracking-widest">2 hours ago</div>
+                                    <div className="text-[10px] font-black text-black/20 mt-6 uppercase tracking-widest text-left">2 hours ago</div>
                                 </div>
                             </div>
                         )}
 
                         {/* X (Twitter) Preview */}
                         {platform === Platform.X && (
-                            <div className="w-full bg-white border-2 border-black rounded-[32px] shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] px-4 py-5 max-w-[475px]">
+                            <div className="w-full bg-white border-2 border-black rounded-[32px] shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] px-4 py-5 max-w-[475px] text-left">
                                 <div className="flex gap-3">
                                     <div className="w-9 h-9 rounded-full bg-black flex items-center justify-center text-[12px] font-black text-white flex-shrink-0 border-2 border-black">
                                         {(storeProfile.name?.[0] || 'U').toUpperCase()}
@@ -135,24 +142,28 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
                                             <MoreHorizontalIcon className="w-5 h-5 text-black/20" />
                                         </div>
 
-                                        <div className="text-[15px] text-black font-medium whitespace-pre-wrap leading-tight mb-4">
-                                            {text}
+                                        <div className="text-[15px] text-black font-medium leading-tight mb-4">
+                                            <AutoResizingTextarea
+                                                value={text}
+                                                onChange={(e) => onChange?.(e.target.value)}
+                                                className="w-full bg-transparent focus:outline-none resize-none p-0 inline-block font-medium min-h-[1.2em]"
+                                            />
                                         </div>
 
                                         <div className="mt-6 flex items-center justify-between text-black/40">
-                                            <div className="flex items-center gap-2 group">
+                                            <div className="flex items-center gap-2 group text-left">
                                                 <MessageCircleIcon className="w-5 h-5 group-hover:text-black transition-colors" />
                                                 <span className="text-[12px] font-black">2</span>
                                             </div>
-                                            <div className="flex items-center gap-2 group">
+                                            <div className="flex items-center gap-2 group text-left">
                                                 <RotateCcwIcon className="w-5 h-5 group-hover:text-black transition-colors" />
                                                 <span className="text-[12px] font-black">5</span>
                                             </div>
-                                            <div className="flex items-center gap-2 group">
+                                            <div className="flex items-center gap-2 group text-left">
                                                 <HeartIcon className="w-5 h-5 group-hover:text-black transition-colors" />
                                                 <span className="text-[12px] font-black">12</span>
                                             </div>
-                                            <div className="flex items-center gap-2 group">
+                                            <div className="flex items-center gap-2 group text-left">
                                                 <ShareIcon className="w-5 h-5 group-hover:text-black transition-colors" />
                                             </div>
                                         </div>
@@ -163,13 +174,13 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
 
                         {/* Google Maps Preview */}
                         {platform === Platform.GoogleMaps && (
-                            <div className="w-full bg-white p-8 max-w-[500px] border-2 border-black rounded-[32px] shadow-[6px_6px_0px_0px_#4DB39A]">
+                            <div className="w-full bg-white p-8 max-w-[500px] border-2 border-black rounded-[32px] shadow-[6px_6px_0px_0px_#4DB39A] text-left">
                                 <div className="flex gap-4">
                                     {/* Left Border Line (Thread indicator) */}
                                     <div className="w-1 bg-black/5 shrink-0 rounded-full" />
 
                                     <div className="flex-1">
-                                        <div className="flex items-center gap-4 mb-6">
+                                        <div className="flex items-center gap-4 mb-6 text-left">
                                             {/* Google blue user icon */}
                                             <div className="w-12 h-12 rounded-[16px] bg-[#4DB39A] border-2 border-black flex items-center justify-center shrink-0 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
                                                 <svg className="w-7 h-7 text-black" viewBox="0 0 24 24" fill="currentColor">
@@ -177,7 +188,7 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
                                                 </svg>
                                             </div>
 
-                                            <div>
+                                            <div className="text-left">
                                                 <div className="text-[15px] font-black text-black leading-tight">
                                                     {storeProfile.name || 'Your Store Name'}（オーナー）
                                                 </div>
@@ -187,8 +198,12 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
                                             </div>
                                         </div>
 
-                                        <div className="text-[15px] text-black font-medium whitespace-pre-wrap leading-relaxed">
-                                            {text}
+                                        <div className="text-[15px] text-black font-medium leading-relaxed">
+                                            <AutoResizingTextarea
+                                                value={text}
+                                                onChange={(e) => onChange?.(e.target.value)}
+                                                className="w-full bg-transparent focus:outline-none resize-none p-0 inline-block font-medium min-h-[1.5em]"
+                                            />
                                         </div>
                                     </div>
                                 </div>
@@ -198,7 +213,7 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
                         {/* LINE Preview */}
                         {platform === Platform.Line && (
                             <div className="w-full max-w-[450px]">
-                                <LinePreview text={text} storeProfile={storeProfile} />
+                                <LinePreview text={text} storeProfile={storeProfile} onChange={onChange} />
                             </div>
                         )}
 
@@ -210,7 +225,7 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
                         onClick={onClose}
                         className="w-full py-5 bg-white text-black border-[3px] border-black rounded-[24px] font-black text-[13px] uppercase tracking-[0.3em] hover:bg-[#F5CC6D] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-x-[2px] hover:-translate-y-[2px] transition-all active:scale-95 shadow-sm"
                     >
-                        CLOSE PREVIEW
+                        COMPLETE EDITING
                     </button>
                     <p className="mt-4 text-[10px] font-bold text-black/40 text-center leading-relaxed">
                         ※表示はシミュレーションであり、実際の改行位置やレイアウトは<br />端末の設定や環境により異なる場合があります。
@@ -221,3 +236,4 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
         document.body
     );
 };
+
