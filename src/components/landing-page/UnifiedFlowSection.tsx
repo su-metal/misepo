@@ -102,13 +102,13 @@ export const UnifiedFlowSection = () => {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Section Header */}
                 <div className="text-center max-w-3xl mx-auto mb-20 md:mb-32">
-                    <span className="bg-[#9B8FD4] text-black font-black tracking-widest text-[10px] uppercase mb-6 px-4 py-2 border-[3px] border-black rounded-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] inline-block animate-in fade-in slide-in-from-bottom-2 duration-500">The Power of Flow</span>
+                    <span className="bg-[#9B8FD4] text-black font-black tracking-widest text-[10px] uppercase mb-6 px-4 py-2 border-[3px] border-black rounded-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] inline-block animate-in fade-in slide-in-from-bottom-2 duration-500">3 Easy Steps</span>
                     <h2 className="text-4xl md:text-7xl font-black text-black mb-8 tracking-tight leading-tight italic animate-in fade-in slide-in-from-bottom-4 duration-700">
                         「作成」から「投稿」まで、<br />
                         <span className="underline decoration-[8px] md:decoration-[12px] decoration-[#4DB39A]">流れるように。</span>
                     </h2>
                     <p className="text-black text-lg md:text-xl font-bold opacity-80 leading-relaxed max-w-2xl mx-auto">
-                        MisePoは単なる文章生成ツールではありません。<br className="hidden md:block" />
+                        <span className="bg-[#F5CC6D] px-1 border-b-[2px] border-black">使い方はこれだけ。</span><br className="hidden md:block" />
                         アイデアがフォロワーに届くまでの全ての工程を、圧倒的に短縮します。
                     </p>
                 </div>

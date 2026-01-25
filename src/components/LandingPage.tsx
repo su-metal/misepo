@@ -88,11 +88,11 @@ open11:00-close 17:00
     <div className="min-h-screen bg-[#f9f5f2] text-slate-900 font-sans selection:bg-[#F5CC6D]">
       <Header scrolled={scrolled} isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} loginWithGoogle={loginWithGoogle} />
       <HeroSection />
+      <UnifiedFlowSection />
       <ProblemSection problems={problems} isMobile={isMobile} />
+      <DemoSection demoInput={demoInput} isDemoGenerating={isDemoGenerating} demoResult={demoResult} handleDemoGenerate={handleDemoGenerate} />
       <BenefitSection />
       <FeaturesSection isMobile={isMobile} />
-      <UnifiedFlowSection />
-      <DemoSection demoInput={demoInput} isDemoGenerating={isDemoGenerating} demoResult={demoResult} handleDemoGenerate={handleDemoGenerate} />
       <PWASection />
       <TestimonialsSection />
       <PricingSection />
