@@ -55,6 +55,16 @@ export function normalizeResults(raw: any, fallbackPlatform: Platform): Generate
       };
     });
   }
+
+  // Handle structured object (from Gemini service result: { analysis, posts })
+  if (raw && typeof raw === 'object') {
+    if (Array.isArray(raw.posts)) {
+      return [{
+        platform: fallbackPlatform,
+        data: raw.posts.map(String),
+      }];
+    }
+  }
   
   return [];
 }
