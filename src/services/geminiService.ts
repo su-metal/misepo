@@ -274,14 +274,11 @@ export const generateContent = async (
         requestConfig.systemInstruction = systemInstruction;
     }
 
-    // Dynamic Thinking Budget based on requested length to optimize output cost
-    const budgetMap = { [Length.Short]: 1024, [Length.Medium]: 1536, [Length.Long]: 2048 };
-    const budget = budgetMap[config.length] || 1536;
+    // Fixed Thinking Budget to 512 tokens to reduce API costs
+    const budget = 512;
 
     // @ts-ignore - Enable internal reasoning for higher quality drafting (Gemini 2.5 Flash feature)
     requestConfig.thinkingConfig = { includeThoughts: true, thinkingBudget: budget }; 
-    // @ts-ignore - Backward compatibility for some environments
-    requestConfig.thinking_config = { include_thoughts: true, thinking_budget: budget }; 
 
     // Safety Settings to prevent accidental blocking of creative marketing content
     requestConfig.safetySettings = [
@@ -308,6 +305,9 @@ export const generateContent = async (
     const usage = result.usageMetadata;
     
     if (usage) {
+        // Raw usage data requested by user
+        console.log('[API_USAGE_RAW]', JSON.stringify(usage, null, 2));
+
         const pt = usage.promptTokenCount || 0;
         const ct = usage.candidatesTokenCount || 0;
         const total = usage.totalTokenCount || 0;
@@ -319,21 +319,23 @@ export const generateContent = async (
         const RATE_CACHED = 0.15;   // USD per 1M tokens
         const EX_RATE_JPY = 150;    // JPY/USD
 
-        const thinking = (usage as any).thinkingTokenCount || 0; // Explicitly get thinking tokens if available
+        const thinking = (usage as any).thoughtsTokenCount || 0; 
         
-        // Input: Total Prompt (including gaps/system) minus cached
-        const promptTotal = total - ct; 
-        const standardInput = promptTotal - cached;
+        // Input: Total - Candidates - Thinking (if included in total)
+        // Gemini API `totalTokenCount` = `promptTokenCount` + `candidatesTokenCount` (Thinking is usually separate or part of candidates depending on API version)
+        // But in raw JSON: Total (1458) = Prompt (489) + Candidates (216) + Thinking (753).
+        // Use promptTokenCount directly for safety.
+        const standardInput = (usage.promptTokenCount || 0) - cached;
         
-        // Output: Generated content + Thinking tokens
-        const outputTotal = ct > thinking ? ct : (ct + thinking); 
+        // Output: Candidates + Thinking
+        const outputTotal = (usage.candidatesTokenCount || 0) + thinking;
 
         const costUSD = (standardInput * RATE_INPUT / 1000000) + 
                         (cached * RATE_CACHED / 1000000) + 
                         (outputTotal * RATE_OUTPUT / 1000000);
         const costJPY = costUSD * EX_RATE_JPY;
 
-        console.log(`[API_COST] Model: ${modelName} | In: ${promptTotal} (Cached: ${cached}) | Out: ${outputTotal} | Est: ¥${costJPY.toFixed(4)}`);
+        console.log(`[API_COST] Model: ${modelName} | In: ${standardInput} (Cached: ${cached}) | Out: ${outputTotal} | Est: ¥${costJPY.toFixed(4)}`);
 
     }
 
@@ -471,9 +473,8 @@ Output ONLY the refined text.
         ],
       };
 
-    // Dynamic Thinking Budget based on requested length to optimize output cost
-    const budgetMap = { [Length.Short]: 1024, [Length.Medium]: 1536, [Length.Long]: 2048 };
-    const budget = budgetMap[config.length] || 1536;
+    // Fixed Thinking Budget to 512 tokens to reduce API costs
+    const budget = 512;
 
     // @ts-ignore - Enable internal reasoning for higher quality drafting (Gemini 2.5 Flash feature)
     requestConfig.thinkingConfig = { includeThoughts: true, thinkingBudget: budget }; 
@@ -490,6 +491,7 @@ Output ONLY the refined text.
       if (refinedText && refinedText.trim()) {
         const usage = result.usageMetadata;
         if (usage) {
+           console.log('[API_USAGE_RAW_REFINE]', JSON.stringify(usage, null, 2));
            const pt = usage.promptTokenCount || 0;
            const ct = usage.candidatesTokenCount || 0;
            console.log(`[API_COST_REFINE] Model: ${modelName} | In: ${pt} | Out: ${ct}`);
