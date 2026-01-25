@@ -258,54 +258,7 @@ export const generateContent = async (
     // Threshold: a bit below 32k usually to be safe, but chars != tokens. 
     // Japanese text can be 1 char ~ 1+ tokens. 
     // Let's explicitly check token count if it seems heavy (> 20,000 chars)
-    /* 
-    // Temporarily disabled Context Caching to isolate empty output issue
-    if (estimatedChars > 20000) {
-      try {
-        const { totalTokens } = await ai.models.countTokens({
-          model: modelName,
-          contents: [{ role: "user", parts: [{ text: userPrompt }] }], // Rough usage
-          config: { systemInstruction }, 
-        });
-
-        if (totalTokens && totalTokens > 32768) {
-          // Compute hash for the static part (System Instruction)
-          const cacheKey = crypto.createHash('md5').update(systemInstruction).digest('hex');
-          
-          const cached = cacheStore.get(cacheKey);
-          const now = Date.now();
-
-          if (cached && cached.expiresAt > now) {
-            cachedContentName = cached.name;
-            console.log(`[CACHE] Hit! Using cached content: ${cachedContentName}`);
-          } else {
-            console.log(`[CACHE] Miss or Expired. Creating new cache context... (${totalTokens} tokens)`);
-            // Create new cache
-            const cacheManager = (ai as any).caches; 
-            if (cacheManager) {
-               const ttlSeconds = 60 * 5; // 5 minutes TTL for now to be safe/thrifty
-               const cache = await cacheManager.create({
-                 model: modelName,
-                 contents: [], 
-                 config: { 
-                   systemInstruction: { parts: [{ text: systemInstruction }] }
-                 },
-                 ttlSeconds,
-               });
-               
-               if (cache && cache.name) {
-                 cachedContentName = cache.name;
-                 cacheStore.set(cacheKey, { name: cache.name, expiresAt: now + (ttlSeconds * 1000) });
-                 console.log(`[CACHE] Created: ${cache.name}`);
-               }
-            }
-          }
-        }
-      } catch (e) {
-        console.warn("[CACHE] Failed to handle caching logic:", e);
-      }
-    }
-    */
+    // Context Caching temporarily disabled for v1beta stability
 
     const requestConfig: any = {
         responseMimeType: "application/json",
@@ -352,15 +305,6 @@ export const generateContent = async (
     }
 
     const result = await response;
-
-    // Detailed deep log for debugging empty output
-    console.log(`[GEMINI DEBUG] FinishReason: ${result.candidates?.[0]?.finishReason}`);
-    if (result.candidates?.[0]?.content?.parts) {
-      console.log(`[GEMINI DEBUG] Parts Count: ${result.candidates[0].content.parts.length}`);
-      result.candidates[0].content.parts.forEach((p, i) => {
-        console.log(`[GEMINI DEBUG] Part ${i}: ${Object.keys(p).join(', ')}`);
-      });
-    }
     const usage = result.usageMetadata;
     
     if (usage) {
