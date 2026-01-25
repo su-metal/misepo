@@ -1,5 +1,7 @@
 import "server-only";
 import { GoogleGenAI, Type } from "@google/genai";
+import fs from 'fs';
+import path from 'path';
 import {
   GenerationConfig,
   Platform,
@@ -26,7 +28,7 @@ const contentSchema = {
 };
 
 const getModelName = (isPro: boolean) => {
-  return "gemini-2.5-flash";
+  return "models/gemini-2.5-flash";
 };
 
 const TONE_RULES = {
@@ -77,7 +79,7 @@ const scoreRisk = (starRating: number, text: string): RiskAnalysisResult => {
 function getServerAI() {
   const apiKey = process.env.GEMINI_API_KEY; // ← サーバ専用。NEXT_PUBLICは使わない
   if (!apiKey) throw new Error("Missing API_KEY in server env (.env.local)");
-  return new GoogleGenAI({ apiKey });
+  return new GoogleGenAI({ apiKey, apiVersion: 'v1beta' });
 }
 
 export interface GeneratedContentResult {
@@ -127,7 +129,7 @@ export const generateContent = async (
     - **Volume Control**: Strictly follow the requested **Length: ${config.length}**. 
       - If 'Long', expand upon the context (atmosphere, store owner's feelings, expert tips) whilst maintaining the style of the samples.
       - If 'Short', condense to the core message but keep the signature style (emojis, endings).
-    - **Platform Bias**: **IGNORE** all standard "polite" norms and "platform-specific" formatting rules for ${config.platform}. The <learning_samples> are the absolute truth for the owner's voice.
+    - **Platform Bias**: **IGNORE** all standard "polite" norms for ${config.platform}. The <learning_samples> are the absolute truth for the owner's voice. **NOTE**: Mandatory structural rules (like LINE's 3-balloon and '---' format) still apply; reproduction of the owner's style should happen *within* each segment.
     - **Emojis & Symbols**: 
       ${config.platform === Platform.GoogleMaps ? 
         '- **Usage**: Ignore any default restrictions. Strictly reproduce the emoji frequency and decorative symbol patterns found in the <learning_samples>.' : 
@@ -137,16 +139,7 @@ export const generateContent = async (
     - **Platform Rules**:
       - Platform: ${config.platform}
       ${config.platform === Platform.Line ? `- Style: **Friendly but Professional "Official LINE" Marketing**.
-        - **3-Balloon Structure**: Generate content in 3 distinct parts (balloons):
-          1. **Hook (Balloon 1)**: Max 100 chars. Focus on the first 20 chars for push notification impact. Include immediate benefit or urgency.
-          2. **Details (Balloon 2)**: 200-300 chars. Focus on specific item/event value. Use short sentences, line breaks, and clear bullet points.
-          3. **Action (Balloon 3)**: Strong Call to Action (CTA) like "▼今すぐ予約する" or "▼クーポンはこちら".
-        - **Tone**: Friendly like a "knowledgeable friend" but maintaining professional trust. Avoid stiff email-style greetings (Sincerely, Dear, etc.).
-        - **Positive Reframing**: NEVER use terms like "cancellation" (キャンセル/欠員) that imply a negative event. Instead, frame it as a positive opportunity: "A special slot has opened up" (空き枠が出ました), "Ready to welcome you" (ご案内可能になりました), or "Lucky opening" (ラッキーな空き).
-        - **Visual Hooks**:
-          - **Headers**: Use high-impact headers. Choose between '＼ 🎨 [Title] 🎨 ／' or '＼ [Title] ／' depending on the content. **CRITICAL**: The [Title] must be extremely concise (max 10-12 full-width chars) to ensure the header stays on **A SINGLE LINE** on a mobile screen. Never let the header wrap.
-          - **CTA Guidance (LINE ONLY)**: Use directional arrows like '↓ ↓ ↓' or pointing emojis **strictly on the very last line** of the message. You can use an 'Arrow-Sandwich' pattern (e.g., '↓ ↓ ↓ [Text] ↓ ↓ ↓'). **CRITICAL**: The entire line (including arrows) MUST be within 15 full-width characters. If the text is long, symmetrically reduce arrows (e.g., '↓ ↓ [Text] ↓ ↓') or shorten the text to prevent wrapping.
-        - **Layout**: Use clear visual separators like '---' between the three balloons.` : ''}
+        - **Layout**: Generate content as a single cohesive message with a logical flow: 1. Hook (immediate impact), 2. Details (value/offer), and 3. Action (CTA). Use natural line breaks to keep it clean.` : ''}
     - **Readability & Vertical Flow**: Avoid long, dense blocks of text. Use line breaks (newlines) frequently—ideally after every sentence, emoji, or when shifting topics. Ensure a rhythmic, vertical flow that is easy to scan on a vertical mobile screen.
       - Length: ${config.length}
       - Language: ${config.language || 'Japanese'}
@@ -186,12 +179,12 @@ export const generateContent = async (
     ${config.platform === Platform.GoogleMaps ? 
       `The <user_input> is a customer review. Generate a REPLY from the owner adhering to the <style_guidelines> and <learning_samples>.` :
       config.platform === Platform.Line ?
-      `Based on the <user_input>, generate a personal MESSAGE for Official LINE. Focus on directly addressing the customer and encouraging action.` :
+      `Generate an Official LINE message with a logical flow: 1. Hook, 2. Details, 3. Action. Adhere to the <style_guidelines> and mimic the writing style of the <learning_samples>.` :
       `Based on the <user_input>, generate a new post following the <style_guidelines> and <learning_samples>.`
     }
     Output a JSON object with:
     - "analysis": A brief analysis of emotion and context.
-    - "posts": An array of one or more post variations (strings).
+    - "posts": An array of one or more post variations (strings). **CRITICAL**: For LINE, each variation MUST be a single integrated message. Do NOT use '---' or other markers to separate parts.
   </task>
 `;
     }
@@ -230,12 +223,12 @@ export const generateContent = async (
     ${isGMap ? 
       "The <user_input> is a customer review. Generate a polite and empathetic REPLY from the owner. Use the facts in <store_context> if provided to explain circumstances or provide background. Do not just summarize the facts; acknowledge them graciously." : 
       config.platform === Platform.Line ?
-      "Generate an Official LINE message with a 3-balloon structure: 1. Hook (for push notifications), 2. Details (friendly marketing body), 3. Action (CTA). Use friendly but professional tone. Mark each balloon clearly with '---'. **CRITICAL**: Use positive framing (e.g., 'ご案内可能なお時間ができました') instead of negative terms like 'cancellation' (キャンセル). **VISUAL**: Use emoji-sandwiched headers (e.g., ＼ 🧴 [Title] 🧴 ／). For LINE only, place directional arrows (↓ ↓ ↓) **strictly on the very last line**, optionally as an arrow-sandwich pattern (e.g., ↓ ↓ ↓ Text ↓ ↓ ↓). **LAYOUT**: Prioritize a clean vertical flow with frequent line breaks (newlines) after sentences to ensure readability on mobile. Avoid dense blocks. Encourage action." :
+      "Generate an Official LINE message with a clear flow: 1. Hook (for push notifications), 2. Details (friendly marketing body), 3. Action (CTA). Use friendly but professional tone. Do NOT use '---' or numbering. **CRITICAL**: Use positive framing (e.g., 'ご案内可能なお時間ができました') instead of negative terms like 'cancellation' (キャンセル). **VISUAL**: Use emoji-sandwiched headers (e.g., ＼ 🧴 [Title] 🧴 ／). For LINE only, place directional arrows (↓ ↓ ↓) **strictly on the very last line**, optionally as an arrow-sandwich pattern (e.g., ↓ ↓ ↓ Text ↓ ↓ ↓). **LAYOUT**: Prioritize a clean vertical flow with frequent line breaks (newlines) after sentences to ensure readability on mobile. Avoid dense blocks. Encourage action." :
       "Generate an attractive post for based on the <user_input>."
     }
     Output a JSON object with:
     - "analysis": Brief context analysis.
-    - "posts": An array of generated post strings.
+    - "posts": An array of generated post strings. **CRITICAL**: For LINE, each string MUST be a single integrated message. Do NOT use '---' as a separator.
   </task>
 </system_instruction>
 `;
@@ -265,52 +258,7 @@ export const generateContent = async (
     // Threshold: a bit below 32k usually to be safe, but chars != tokens. 
     // Japanese text can be 1 char ~ 1+ tokens. 
     // Let's explicitly check token count if it seems heavy (> 20,000 chars)
-    if (estimatedChars > 20000) {
-      try {
-        const { totalTokens } = await ai.models.countTokens({
-          model: modelName,
-          contents: [{ role: "user", parts: [{ text: userPrompt }] }], // Rough usage
-          config: { systemInstruction }, 
-        });
-
-        if (totalTokens && totalTokens > 32768) {
-          // Compute hash for the static part (System Instruction)
-          const cacheKey = crypto.createHash('md5').update(systemInstruction).digest('hex');
-          
-          const cached = cacheStore.get(cacheKey);
-          const now = Date.now();
-
-          if (cached && cached.expiresAt > now) {
-            cachedContentName = cached.name;
-            console.log(`[CACHE] Hit! Using cached content: ${cachedContentName}`);
-          } else {
-            console.log(`[CACHE] Miss or Expired. Creating new cache context... (${totalTokens} tokens)`);
-            // Create new cache
-            // Note: Availability of caching checks depends on SDK version. Assuming standard interface.
-            const cacheManager = (ai as any).caches; 
-            if (cacheManager) {
-               const ttlSeconds = 60 * 5; // 5 minutes TTL for now to be safe/thrifty
-               const cache = await cacheManager.create({
-                 model: modelName,
-                 contents: [], // System instruction is often handled separately in cache config
-                 config: { 
-                   systemInstruction: { parts: [{ text: systemInstruction }] }
-                 },
-                 ttlSeconds,
-               });
-               
-               if (cache && cache.name) {
-                 cachedContentName = cache.name;
-                 cacheStore.set(cacheKey, { name: cache.name, expiresAt: now + (ttlSeconds * 1000) });
-                 console.log(`[CACHE] Created: ${cache.name}`);
-               }
-            }
-          }
-        }
-      } catch (e) {
-        console.warn("[CACHE] Failed to handle caching logic:", e);
-      }
-    }
+    // Context Caching temporarily disabled for v1beta stability
 
     const requestConfig: any = {
         responseMimeType: "application/json",
@@ -327,19 +275,34 @@ export const generateContent = async (
     }
 
     // Dynamic Thinking Budget based on requested length to optimize output cost
-    const budgetMap = { [Length.Short]: 768, [Length.Medium]: 1280, [Length.Long]: 1792 };
-    const budget = budgetMap[config.length] || 1024;
+    const budgetMap = { [Length.Short]: 1024, [Length.Medium]: 1536, [Length.Long]: 2048 };
+    const budget = budgetMap[config.length] || 1536;
 
-    // @ts-ignore - Quality restore: Dynamic thinking budget based on length
+    // @ts-ignore - Enable internal reasoning for higher quality drafting (Gemini 2.5 Flash feature)
+    requestConfig.thinkingConfig = { includeThoughts: true, thinkingBudget: budget }; 
+    // @ts-ignore - Backward compatibility for some environments
     requestConfig.thinking_config = { include_thoughts: true, thinking_budget: budget }; 
-    // @ts-ignore - Also try the camelCase version
-    requestConfig.thinkingConfig = { includeThoughts: true, thinkingBudget: budget };
 
-    const response = await ai.models.generateContent({
-      model: modelName,
-      contents: [{ role: "user", parts: [{ text: userPrompt }] }],
-      config: requestConfig,
-    });
+    // Safety Settings to prevent accidental blocking of creative marketing content
+    requestConfig.safetySettings = [
+        { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_NONE' },
+        { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_NONE' },
+        { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
+        { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE' },
+    ];
+
+    let response;
+    try {
+        response = await ai.models.generateContent({
+          model: modelName,
+          contents: [{ role: "user", parts: [{ text: userPrompt }] }],
+          config: requestConfig,
+        });
+    } catch (e: any) {
+        console.error("[GEMINI SDK ERROR]", e.message, e.stack);
+        // Throw a clean error that is caught by route.ts
+        throw new Error(`Gemini SDK Error: ${e.message} (Model: ${modelName})`);
+    }
 
     const result = await response;
     const usage = result.usageMetadata;
@@ -359,12 +322,10 @@ export const generateContent = async (
         const thinking = (usage as any).thinkingTokenCount || 0; // Explicitly get thinking tokens if available
         
         // Input: Total Prompt (including gaps/system) minus cached
-        const promptTotal = total - ct; // ct includes thinking in some SDKs, but here we treat it carefully
+        const promptTotal = total - ct; 
         const standardInput = promptTotal - cached;
         
         // Output: Generated content + Thinking tokens
-        // Note: In newer API, candidatesTokenCount might already include thinking, 
-        // but if total - prompt > candidates, the difference is often the 'thought' gap.
         const outputTotal = ct > thinking ? ct : (ct + thinking); 
 
         const costUSD = (standardInput * RATE_INPUT / 1000000) + 
@@ -372,11 +333,30 @@ export const generateContent = async (
                         (outputTotal * RATE_OUTPUT / 1000000);
         const costJPY = costUSD * EX_RATE_JPY;
 
-        console.log(`[API_COST] Model: ${modelName} | In: ${promptTotal} (Cached: ${cached}) | Out: ${outputTotal} (Thinking: ${thinking}) | Est: ¥${costJPY.toFixed(4)}`);
+        console.log(`[API_COST] Model: ${modelName} | In: ${promptTotal} (Cached: ${cached}) | Out: ${outputTotal} | Est: ¥${costJPY.toFixed(4)}`);
 
     }
 
-    const jsonText = result.text;
+    let jsonText = "";
+    try {
+        // Validation check before accessing .text
+        if (result.candidates && result.candidates[0] && result.candidates[0].content) {
+            jsonText = result.text || "";
+        } else {
+            throw new Error("No candidates or content found in response");
+        }
+    } catch (e: any) {
+        const errorDetail = {
+            message: e.message,
+            candidates: result.candidates,
+            promptFeedback: result.promptFeedback,
+            usage: usage
+        };
+        // Log to console for dev visibility
+        console.error("[GEMINI CONTENT ERROR]", errorDetail);
+        throw new Error(`AI response error: ${e.message} (Check server logs for raw details)`);
+    }
+
     if (!jsonText) throw new Error("No response from AI");
 
     try {
@@ -483,7 +463,20 @@ Output ONLY the refined text.
         systemInstruction,
         responseMimeType: "text/plain",
         temperature: hasPersona ? 0.3 : 0.7,
+        safetySettings: [
+          { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_NONE' },
+          { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_NONE' },
+          { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
+          { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE' },
+        ],
       };
+
+    // Dynamic Thinking Budget based on requested length to optimize output cost
+    const budgetMap = { [Length.Short]: 1024, [Length.Medium]: 1536, [Length.Long]: 2048 };
+    const budget = budgetMap[config.length] || 1536;
+
+    // @ts-ignore - Enable internal reasoning for higher quality drafting (Gemini 2.5 Flash feature)
+    requestConfig.thinkingConfig = { includeThoughts: true, thinkingBudget: budget }; 
 
       const response = await ai.models.generateContent({
         model: modelName,

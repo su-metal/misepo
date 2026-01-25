@@ -215,7 +215,7 @@ export async function POST(req: Request) {
   } catch (e: any) {
     console.error("Generation error:", e);
     return NextResponse.json(
-      { ok: false, error: "Internal Server Error" },
+      { ok: false, error: e.message || "Internal Server Error" },
       { status: 500 }
     );
   }
