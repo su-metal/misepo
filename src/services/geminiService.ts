@@ -140,8 +140,8 @@ export const generateContent = async (
         - **Tone**: Friendly like a "knowledgeable friend" but maintaining professional trust. Avoid stiff email-style greetings (Sincerely, Dear, etc.).
         - **Positive Reframing**: NEVER use terms like "cancellation" (キャンセル/欠員) that imply a negative event. Instead, frame it as a positive opportunity: "A special slot has opened up" (空き枠が出ました), "Ready to welcome you" (ご案内可能になりました), or "Lucky opening" (ラッキーな空き).
         - **Visual Hooks**:
-          - **Headers**: Surround high-impact text with emojis and slashes for maximum visibility, e.g., '＼ 🧴 [Product Name] 🧴 ／'.
-          - **CTA Guidance (LINE ONLY)**: Use multiple arrows like '↓ ↓ ↓' or pointing emojis **strictly on the very last line** of the message. You can either place them before the text OR use an "Arrow-Sandwich" pattern like '↓ ↓ ↓ ご予約はこちら ↓ ↓ ↓' for variety. Do NOT use these arrows for Instagram.
+          - **Headers**: Use high-impact headers. Choose between '＼ 🎨 [Title] 🎨 ／' or '＼ [Title] ／' depending on the content. **CRITICAL**: The [Title] must be extremely concise (max 10-12 full-width chars) to ensure the header stays on **A SINGLE LINE** on a mobile screen. Never let the header wrap.
+          - **CTA Guidance (LINE ONLY)**: Use directional arrows like '↓ ↓ ↓' or pointing emojis **strictly on the very last line** of the message. You can use an 'Arrow-Sandwich' pattern (e.g., '↓ ↓ ↓ [Text] ↓ ↓ ↓'). **CRITICAL**: The entire line (including arrows) MUST be within 15 full-width characters. If the text is long, symmetrically reduce arrows (e.g., '↓ ↓ [Text] ↓ ↓') or shorten the text to prevent wrapping.
         - **Layout**: Use clear visual separators like '---' between the three balloons.` : ''}
       - Length: ${config.length}
       - Language: ${config.language || 'Japanese'}

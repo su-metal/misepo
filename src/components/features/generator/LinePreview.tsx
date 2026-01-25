@@ -39,7 +39,7 @@ export const LinePreview: React.FC<LinePreviewProps> = ({ text, storeProfile }) 
                             {/* Triangle hook */}
                             <div className="absolute top-0 -left-[7px] w-0 h-0 border-t-[8px] border-t-[#8EE071] border-l-[8px] border-l-transparent" />
 
-                            <p className="text-[13px] sm:text-[14px] leading-relaxed font-medium whitespace-pre-wrap break-words">
+                            <p className="text-[15px] leading-relaxed font-medium whitespace-pre-wrap break-words w-[15em] max-w-full">
                                 {text}
                             </p>
                         </div>
