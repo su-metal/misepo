@@ -434,6 +434,7 @@ export const refineContent = async (
   instruction: string
 ): Promise<string> => {
   const modelName = getModelName(true);
+  const ai = getServerAI();
 
   // Check if there's a persona active (custom prompt or samples)
   const hasPersona = !!(config.customPrompt || (config.post_samples && Object.keys(config.post_samples).length > 0));
@@ -473,20 +474,43 @@ Refinement Instruction (Apply this change ONLY, keep everything else the same):
 Output ONLY the refined text.
 `;
 
-  const ai = getServerAI();
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const requestConfig: any = {
+        systemInstruction,
+        responseMimeType: "text/plain",
+        temperature: hasPersona ? 0.3 : 0.7,
+      };
 
-  const response = await ai.models.generateContent({
-    model: modelName,
-    contents: [{ role: "user", parts: [{ text: userPrompt }] }],
-    config: {
-      systemInstruction,
-      responseMimeType: "text/plain",
-      temperature: hasPersona ? 0.3 : 0.7, // Low temp for persona to prevent drift, moderate for others
-    },
-  });
+      const response = await ai.models.generateContent({
+        model: modelName,
+        contents: [{ role: "user", parts: [{ text: userPrompt }] }],
+        config: requestConfig,
+      });
 
-  return response.text || currentContent;
+      const result = await response;
+      const refinedText = result.text;
+
+      if (refinedText && refinedText.trim()) {
+        const usage = result.usageMetadata;
+        if (usage) {
+           const pt = usage.promptTokenCount || 0;
+           const ct = usage.candidatesTokenCount || 0;
+           console.log(`[API_COST_REFINE] Model: ${modelName} | In: ${pt} | Out: ${ct}`);
+        }
+        return refinedText;
+      }
+      
+      console.warn(`[REFINE] Empty response on attempt ${attempt + 1}`);
+    } catch (e: any) {
+      console.error(`[REFINE] Attempt ${attempt + 1} failed:`, e);
+      if (attempt === 1) throw e;
+    }
+  }
+
+  return currentContent;
 };
+
 
 export const analyzeRisk = async (
   starRating: number,

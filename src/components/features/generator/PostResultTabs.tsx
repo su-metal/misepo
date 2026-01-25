@@ -57,7 +57,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
     onAutoFormat,
     isAutoFormatting,
 }) => {
-    const [previewState, setPreviewState] = React.useState<{ isOpen: boolean, platform: Platform, text: string } | null>(null);
+    const [previewState, setPreviewState] = React.useState<{ isOpen: boolean, platform: Platform, text: string, gIdx: number, iIdx: number } | null>(null);
 
     const getPlatformTheme = (platform: Platform) => {
         switch (platform) {
@@ -280,7 +280,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                                 />
                                                                 {/* Refined Secondary Preview Button */}
                                                                 <button
-                                                                    onClick={() => setPreviewState({ isOpen: true, platform: res.platform, text })}
+                                                                    onClick={() => setPreviewState({ isOpen: true, platform: res.platform, text, gIdx, iIdx })}
                                                                     className="flex items-center justify-center w-11 h-11 rounded-xl bg-black/5 text-black/40 border-2 border-black/5 hover:border-black/20 hover:text-black transition-all"
                                                                     title="プレビュー"
                                                                 >
@@ -364,6 +364,13 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                     platform={previewState.platform}
                     text={previewState.text}
                     storeProfile={storeProfile}
+                    onChange={(newText) => {
+                        // Update the local preview state so the modal stays in sync
+                        setPreviewState(prev => prev ? { ...prev, text: newText } : null);
+
+                        // Use the stored indices for reliable updates
+                        onManualEdit(previewState.gIdx, previewState.iIdx, newText);
+                    }}
                 />
             )}
         </>
