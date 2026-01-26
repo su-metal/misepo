@@ -1116,7 +1116,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
                           if (isCommonSelected) {
                             setSelectedPlatforms([Platform.Instagram]); // Default back to one
                           } else {
-                            setSelectedPlatforms(Object.values(Platform)); // Select ALL
+                            // Select only SNS platforms (X, Instagram, Line) + General
+                            setSelectedPlatforms([Platform.General, Platform.X, Platform.Instagram, Platform.Line]);
                           }
                         } else {
                           if (isSelected) {
@@ -1156,7 +1157,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
               <div className="flex flex-wrap items-center gap-2">
                 {[Platform.GoogleMaps].map((p) => {
                   const isCommonSelected = selectedPlatforms.includes(Platform.General);
-                  const isSelected = isCommonSelected || selectedPlatforms.includes(p);
+                  const isSelected = selectedPlatforms.includes(p);
                   return (
                     <button
                       key={p}
@@ -1164,7 +1165,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                       onClick={() => {
                         if (isSelected) {
                           if (selectedPlatforms.length > 1) {
-                            setSelectedPlatforms(selectedPlatforms.filter(item => item !== p && item !== Platform.General));
+                            setSelectedPlatforms(selectedPlatforms.filter(item => item !== p));
                           }
                         } else {
                           setSelectedPlatforms([...selectedPlatforms, p]);
@@ -1174,7 +1175,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                         px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border-2
                         ${isSelected
                           ? 'bg-blue-600 text-white border-blue-600 shadow-[2px_2px_0_0_rgba(29,78,216,0.2)] -translate-y-0.5'
-                          : (isCommonSelected ? 'bg-blue-600/20 text-blue-600 border-blue-600/30' : 'bg-white text-slate-400 border-slate-100 hover:border-blue-600 hover:text-blue-600')
+                          : 'bg-white text-slate-400 border-slate-100 hover:border-blue-600 hover:text-blue-600'
                         }
                       `}
                     >
