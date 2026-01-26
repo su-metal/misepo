@@ -248,7 +248,7 @@ export const generateContent = async (
   // In-memory cache store (resets on server restart)
   const cacheStore = new Map<string, { name: string; expiresAt: number }>();
 
-  const attemptGeneration = async (userPrompt: string): Promise<GeneratedContentResult> => {
+  const attemptGeneration = async (userPrompt: string, attempt: number): Promise<GeneratedContentResult> => {
     let cachedContentName: string | undefined;
     
     // Check if we should try caching (Google Gen AI requires >32k tokens for caching)
@@ -274,8 +274,10 @@ export const generateContent = async (
         requestConfig.systemInstruction = systemInstruction;
     }
 
-    // Fixed Thinking Budget to 512 tokens to reduce API costs
-    const budget = 512;
+    // Dynamic Thinking Budget: 0 for X retries to reduce cost/time, 512 otherwise
+    const isXRetry = attempt > 0 && config.platform === Platform.X;
+    const budget = isXRetry ? 0 : 512;
+    console.debug(`[GEMINI] Attempt: ${attempt}, Platform: ${config.platform}, ThinkingBudget: ${budget}`);
 
     // @ts-ignore - Enable internal reasoning for higher quality drafting (Gemini 2.5 Flash feature)
     requestConfig.thinkingConfig = { includeThoughts: true, thinkingBudget: budget }; 
@@ -380,7 +382,7 @@ export const generateContent = async (
 
   for (let attempt = 0; attempt < 2; attempt++) {
     try {
-      const result = await attemptGeneration(userPrompt);
+      const result = await attemptGeneration(userPrompt, attempt);
 
       if (!isXWith140Limit) {
         return result;
