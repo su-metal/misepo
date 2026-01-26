@@ -19,7 +19,7 @@ export function insertInstagramFooter(text: string, footer: string): string {
 
     if (match) {
         const body = text.slice(0, match.index).trimEnd();
-        const hashtags = match[0].trimStart();
+        const hashtags = match[0].trim();
         return `${body}\n\n${cleanFooter}\n\n${hashtags}`;
     }
 

@@ -279,7 +279,7 @@ export function useGeneratorFlow(props: {
         const data = await res.json();
         if (!res.ok || !data.ok) throw new Error(data.error ?? "Generate failed");
 
-        const content = (data.result as string[]).map(t => t.replace(/\\n/g, '\n').replace(/\\n/g, '\n'));
+        const content = (data.result as string[]).map(t => t.replace(/\\n/g, '\n').replace(/\\n/g, '\n').trim());
         
         let finalContent = content;
         if (p === Platform.Instagram && includeFooter && storeProfile.instagramFooter) {
@@ -346,7 +346,7 @@ export function useGeneratorFlow(props: {
     setResultGroups(prev => {
       const next = [...prev];
       const nextData = [...next[gIdx].data];
-      nextData[iIdx] = text.replace(/\\n/g, '\n');
+      nextData[iIdx] = text.replace(/\\n/g, '\n').trim();
       next[gIdx] = { ...next[gIdx], data: nextData };
       return next;
     });
@@ -401,7 +401,7 @@ export function useGeneratorFlow(props: {
       setResultGroups(prev => {
         const next = [...prev];
         const nextData = [...next[gIdx].data];
-        nextData[iIdx] = data.result.replace(/\\n/g, '\n').replace(/\\n/g, '\n');
+        nextData[iIdx] = data.result.replace(/\\n/g, '\n').replace(/\\n/g, '\n').trim();
         next[gIdx] = { ...next[gIdx], data: nextData };
         return next;
       });
