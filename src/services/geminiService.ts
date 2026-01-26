@@ -182,8 +182,9 @@ export const generateContent = async (
         }
         return `
       - **Target Character Counts (Standard)**:
-        - **Short**: **Ultra-Compact** (Target: ~150 chars). 
-          - **Constraint**: Total max 180 characters.
+      - **Target Character Counts (Standard)**:
+        - **Short**: **Concise but Sufficient** (Range: 150 - 200 chars).
+          - **Constraint**: Minimum 150 characters. Max 220 characters.
           - **Layout**: Use moderate line breaks for readability. 1 empty line between distinct points.
           - **Content**: Omit standard closings (e.g. "Waiting for you"). Limit to Max 3 hashtags.
         - **Medium**: Standard (200 - 300 characters).
@@ -216,10 +217,10 @@ export const generateContent = async (
   ${config.customPrompt}
   
   <style_reminder>
-    IMPORTANT: Even while adopting the persona or content above, you MUST strict adherence to the **Emojis** and **Special Characters** rules defined in <rules>.
-    - Emojis are: **${config.includeEmojis ? 'ALLOWED' : 'PROHIBITED'}**
-    - Special Characters (Symbol Decorations) are: **${config.includeSymbols ? 'REQUIRED (Use ✧, ꕤ, etc.)' : 'PROHIBITED'}**
-    ${!config.includeEmojis && config.includeSymbols ? 'Since Emojis are OFF, you MUST use Special Characters for visual appeal.' : ''}
+    IMPORTANT: You must strict adherence to the **Emojis** and **Special Characters** rules defined in <style_guidelines>.
+    - Emojis: **${config.includeEmojis ? 'active ON' : 'OFF'}** (Priority: High)
+    - Special Characters: **${config.includeSymbols ? 'active ON' : 'OFF'}**
+    ${config.includeEmojis ? 'You MUST use emojis if they are enabled, even if the custom instructions are serious.' : ''}
   </style_reminder>
   </custom_instructions>` : ""}
 
@@ -307,7 +308,11 @@ export const generateContent = async (
 
   <rules>
     - Language: ${config.language || 'Japanese'}
-    - Length: ${config.length}
+    - Length: ${
+      config.length === 'short' ? 'Short (approx 150-200 chars). concise.' :
+      config.length === 'long' ? 'Long (approx 400-500 chars). detailed.' :
+      'Medium (approx 300 chars). Balance details and readability. Max 400 chars.'
+    }
     - Tone: ${config.tone} (${TONE_RULES[config.tone] || TONE_RULES[Tone.Standard]})
     - Features: ${isInstagram ? 'Visual focus.' : ''}${isX ? 'Under 140 chars.' : ''}${isGMap ? 'Polite reply, NO emojis, NO hashtags.' : ''}${isLine ? 'Direct marketing style. NO hashtags. Focus on clear messaging.' : ''}
     - Emojis: ${isGMap ? 'Do NOT use emojis at all.' : (config.includeEmojis ? "Actively use expressive emojis (🐻, ✨, 💪, 🎉) to make the text lively." : "DO NOT use any emojis (emoticons, icons, pictograms) under any circumstances. Keep it plain text only regarding emojis.")}
