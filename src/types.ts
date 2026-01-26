@@ -72,7 +72,7 @@ export interface GenerationConfig {
   xConstraint140?: boolean; // X (Twitter) only
   instagramFooter?: string; // New: Footer text to append
   post_samples?: { [key in Platform]?: string }; // Passed from active preset
-  persona_yaml?: string | null; // New: Structured persona rules
+  persona_yaml?: string | null; // Can be a monolithic YAML string (Legacy) OR a serialized JSON string `{ [key in Platform]: string }`
   presetId?: string; // ID of the preset used for this generation
 }
 

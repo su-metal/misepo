@@ -243,12 +243,34 @@ const PresetModal: React.FC<PresetModalProps> = ({
         }
       }
 
+      // Reconstruct post_samples from trainingItems to ensure DB sync
+      const currentPresetId = selectedPresetId || 'omakase';
+      const relatedItems = trainingItems.filter(item => item.presetId === currentPresetId);
+
+      const newPostSamples: { [key in Platform]?: string } = {};
+
+      relatedItems.forEach(item => {
+        // Parse platform string which might be comma-separated or simple string
+        const platforms = item.platform.split(',').map(p => p.trim()) as Platform[];
+        platforms.forEach(p => {
+          // Append content to existing platform sample or start new
+          if (newPostSamples[p]) {
+            newPostSamples[p] += `\n\n---\n\n${item.content}`;
+          } else {
+            newPostSamples[p] = item.content;
+          }
+        });
+      });
+
+      console.log("[SAVE] Aggregated post_samples:", newPostSamples);
+
       await onSave({
         id: selectedPresetId || undefined,
         name,
         avatar,
         custom_prompt: customPrompt,
         persona_yaml: finalYaml,
+        post_samples: newPostSamples, // Explicitly save the aggregated samples
       });
       setHasUnanalyzedChanges(false);
       setShowSuccessToast(true);
@@ -751,83 +773,124 @@ const PresetModal: React.FC<PresetModalProps> = ({
                       <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-0.5">Automated Optimization</p>
                     </div>
                   </div>
-                  {personaYaml ? (
-                    <div className="flex items-center gap-2 px-3 py-1.5 bg-green-50 border border-green-200 rounded-lg self-start md:self-auto">
-                      <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
-                      <span className="text-[10px] font-black text-green-700 uppercase tracking-wider">最適化済み</span>
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg self-start md:self-auto">
-                      <div className="w-1.5 h-1.5 rounded-full bg-slate-300"></div>
-                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">未学習</span>
-                    </div>
-                  )}
-                </div>
-                <p className="text-[11px] md:text-xs text-slate-500 font-bold leading-relaxed max-w-2xl">
-                  学習文に基づき、あなたの「書き方の癖」をAIがDNAとして抽出・最適化します。
-                  <span className="text-indigo-600 font-black ml-1.5">※ 保存時に自動で最適化が行われます。</span>
-                </p>
-              </div>
+                  {/* Header: Intelligence Status */}
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center justify-between">
+                      {/* Status Badge */}
+                      <div className="flex flex-wrap gap-2">
+                        {(() => {
+                          let optimizedPlatforms: string[] = [];
+                          try {
+                            if (personaYaml) {
+                              const parsed = JSON.parse(personaYaml);
+                              if (typeof parsed === 'object' && parsed !== null) {
+                                optimizedPlatforms = Object.keys(parsed).filter(k => parsed[k] && parsed[k].trim().length > 0);
+                              } else {
+                                // Not a map, maybe just a string?
+                                optimizedPlatforms = ['General'];
+                              }
+                            }
+                          } catch (e) {
+                            // Legacy format is just a string, so it counts as "General" or global
+                            if (personaYaml) optimizedPlatforms = ['General'];
+                          }
 
-              {/* Console Body: Hints Grid */}
-              <div className="px-6 md:px-8 py-6 bg-slate-50/30 border-b-2 border-slate-100">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="flex gap-4">
-                    <div className="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center shrink-0">
-                      <MagicWandIcon className="w-4 h-4 text-indigo-400" />
-                    </div>
-                    <div className="space-y-1">
-                      <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">効果的な学習</h5>
-                      <p className="text-[11px] text-slate-500 leading-snug font-bold">
-                        過去の投稿を3〜5件貼り付けるのがベストです。<br />文体や絵文字はAIが自動学習します。
-                      </p>
+                          if (optimizedPlatforms.length === 0) {
+                            return (
+                              <div className="inline-flex items-center gap-2 bg-slate-100 text-slate-500 px-3 py-1.5 rounded-lg border border-slate-200">
+                                <span className="w-2 h-2 rounded-full bg-slate-400"></span>
+                                <span className="text-[10px] font-black uppercase tracking-widest">Not Optimized</span>
+                              </div>
+                            );
+                          }
+
+                          return optimizedPlatforms.map(plat => (
+                            <div key={plat} className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-600 px-3 py-1.5 rounded-lg border border-emerald-100 shadow-sm animate-in zoom-in duration-300">
+                              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                              <span className="text-[10px] font-black uppercase tracking-widest">
+                                {plat === 'General' ? 'Optimized' : plat}
+                              </span>
+                            </div>
+                          ));
+                        })()}
+                      </div>
+
+                      {/* Action Button */}
+                      <div className="flex items-center gap-3">
+                        {hasUnanalyzedChanges && (
+                          <span className="text-[10px] font-bold text-amber-600 animate-pulse">
+                            Unsaved Changes
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
-                  <div className="flex gap-4">
-                    <div className="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center shrink-0">
-                      <SparklesIcon className="w-4 h-4 text-rose-400" />
+                  <p className="text-[11px] md:text-xs text-slate-500 font-bold leading-relaxed max-w-2xl">
+                    学習文に基づき、あなたの「書き方の癖」をAIがDNAとして抽出・最適化します。
+                    <span className="text-indigo-600 font-black ml-1.5">※ 保存時に自動で最適化が行われます。</span>
+                  </p>
+                </div>
+
+                {/* Console Body: Hints Grid */}
+                <div className="px-6 md:px-8 py-6 bg-slate-50/30 border-b-2 border-slate-100">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="flex gap-4">
+                      <div className="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center shrink-0">
+                        <MagicWandIcon className="w-4 h-4 text-indigo-400" />
+                      </div>
+                      <div className="space-y-1">
+                        <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">効果的な学習</h5>
+                        <p className="text-[11px] text-slate-500 leading-snug font-bold">
+                          過去の投稿を3〜5件貼り付けるのがベストです。<br />文体や絵文字はAIが自動学習します。
+                        </p>
+                      </div>
                     </div>
-                    <div className="space-y-1">
-                      <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">プライバシー</h5>
-                      <p className="text-[11px] text-slate-500 leading-snug font-bold">
-                        「AI伏せ字」で実在の名前などを安全な形に書き換えて学習用データを作成できます。
-                      </p>
+                    <div className="flex gap-4">
+                      <div className="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center shrink-0">
+                        <SparklesIcon className="w-4 h-4 text-rose-400" />
+                      </div>
+                      <div className="space-y-1">
+                        <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">プライバシー</h5>
+                        <p className="text-[11px] text-slate-500 leading-snug font-bold">
+                          「AI伏せ字」で実在の名前などを安全な形に書き換えて学習用データを作成できます。
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Console Content: Unified Samples List */}
-              <div className="bg-white">
-                {renderUnifiedSamples()}
+                {/* Console Content: Unified Samples List */}
+                <div className="bg-white">
+                  {renderUnifiedSamples()}
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="p-8 md:p-10 border-t-[3px] border-black bg-white flex flex-col md:flex-row items-stretch justify-between gap-6 shrink-0 z-10 relative">
-            <div className="flex-1 flex flex-col gap-2 relative">
-              {showSuccessToast && (
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 z-[50] animate-in slide-in-from-bottom-2 fade-in duration-500">
-                  <div className="bg-white text-black px-5 py-2.5 rounded-xl shadow-[4px_4px_0_0_rgba(0,0,0,1)] flex items-center gap-2 border-2 border-black whitespace-nowrap">
-                    <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
-                    <span className="text-[11px] font-black uppercase tracking-widest">保存しました</span>
+            <div className="p-8 md:p-10 border-t-[3px] border-black bg-white flex flex-col md:flex-row items-stretch justify-between gap-6 shrink-0 z-10 relative">
+              <div className="flex-1 flex flex-col gap-2 relative">
+                {showSuccessToast && (
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 z-[50] animate-in slide-in-from-bottom-2 fade-in duration-500">
+                    <div className="bg-white text-black px-5 py-2.5 rounded-xl shadow-[4px_4px_0_0_rgba(0,0,0,1)] flex items-center gap-2 border-2 border-black whitespace-nowrap">
+                      <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
+                      <span className="text-[11px] font-black uppercase tracking-widest">保存しました</span>
+                    </div>
                   </div>
-                </div>
-              )}
-              <button
-                onClick={handleSave}
-                disabled={isSaveDisabled}
-                className="w-full bg-[var(--gold)] hover:bg-[var(--rose)] border-2 border-black disabled:opacity-50 disabled:cursor-not-allowed text-black px-8 py-4 md:py-6 rounded-xl font-black text-sm uppercase tracking-[0.3em] flex items-center justify-center gap-4 transition-all transform hover:translate-x-[-2px] hover:translate-y-[-2px] active:translate-x-0 active:translate-y-0 shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] group relative overflow-hidden"
-              >
-                {(isInternalSaving || isAnalyzingPersona) ? (
-                  <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin"></div>
-                ) : (
-                  <SaveIcon className="w-5 h-5 group-hover:scale-110 transition-transform relative z-10" />
                 )}
-                <span className="relative z-10">
-                  {isAnalyzingPersona ? '解析＆保存中...' : (selectedPresetId ? '更新して保存' : '新規作成して保存')}
-                </span>
-              </button>
+                <button
+                  onClick={handleSave}
+                  disabled={isSaveDisabled}
+                  className="w-full bg-[var(--gold)] hover:bg-[var(--rose)] border-2 border-black disabled:opacity-50 disabled:cursor-not-allowed text-black px-8 py-4 md:py-6 rounded-xl font-black text-sm uppercase tracking-[0.3em] flex items-center justify-center gap-4 transition-all transform hover:translate-x-[-2px] hover:translate-y-[-2px] active:translate-x-0 active:translate-y-0 shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] group relative overflow-hidden"
+                >
+                  {(isInternalSaving || isAnalyzingPersona) ? (
+                    <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin"></div>
+                  ) : (
+                    <SaveIcon className="w-5 h-5 group-hover:scale-110 transition-transform relative z-10" />
+                  )}
+                  <span className="relative z-10">
+                    {isAnalyzingPersona ? '解析＆保存中...' : (selectedPresetId ? '更新して保存' : '新規作成して保存')}
+                  </span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -1031,35 +1094,97 @@ const PresetModal: React.FC<PresetModalProps> = ({
           </div>
         </div>
 
-        {/* Platform Selection Pills */}
-        <div className="px-5 md:px-8 py-4 bg-white border-b-2 border-slate-100 flex flex-wrap items-center gap-2">
-          {Object.values(Platform).map((p) => {
-            const isSelected = selectedPlatforms.includes(p);
-            return (
-              <button
-                key={p}
-                type="button"
-                onClick={() => {
-                  if (isSelected) {
-                    if (selectedPlatforms.length > 1) {
-                      setSelectedPlatforms(selectedPlatforms.filter(item => item !== p));
-                    }
-                  } else {
-                    setSelectedPlatforms([...selectedPlatforms, p]);
-                  }
-                }}
-                className={`
-                  px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border-2
-                  ${isSelected
-                    ? 'bg-black text-white border-black shadow-[2px_2px_0_0_rgba(0,0,0,1)] -translate-y-0.5'
-                    : 'bg-white text-slate-400 border-slate-100 hover:border-black hover:text-black'
-                  }
-                `}
-              >
-                {p === Platform.General ? '共通スタイル' : p.split(' ')[0]}
-              </button>
-            );
-          })}
+        {/* Platform Selection Groups */}
+        <div className="px-5 md:px-8 py-5 bg-white border-b-2 border-slate-200 flex flex-col gap-6">
+          <div className="space-y-4">
+            {/* SNS Group */}
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">SNS 投稿スタイル (発信向け)</span>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                {[Platform.General, Platform.Instagram, Platform.X, Platform.Line].map((p) => {
+                  const isCommonSelected = selectedPlatforms.includes(Platform.General);
+                  const isSelected = p === Platform.General ? isCommonSelected : (isCommonSelected || selectedPlatforms.includes(p));
+
+                  return (
+                    <button
+                      key={p}
+                      type="button"
+                      onClick={() => {
+                        if (p === Platform.General) {
+                          if (isCommonSelected) {
+                            setSelectedPlatforms([Platform.Instagram]); // Default back to one
+                          } else {
+                            setSelectedPlatforms(Object.values(Platform)); // Select ALL
+                          }
+                        } else {
+                          if (isSelected) {
+                            if (selectedPlatforms.length > 1) {
+                              // If common was active, unselecting one must turn off common
+                              setSelectedPlatforms(selectedPlatforms.filter(item => item !== p && item !== Platform.General));
+                            }
+                          } else {
+                            setSelectedPlatforms([...selectedPlatforms, p]);
+                          }
+                        }
+                      }}
+                      className={`
+                        px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border-2
+                        ${isSelected
+                          ? 'bg-black text-white border-black shadow-[2px_2px_0_0_rgba(0,0,0,1)] -translate-y-0.5'
+                          : 'bg-white text-slate-400 border-slate-100 hover:border-black hover:text-black'
+                        }
+                      `}
+                    >
+                      {p === Platform.General ? '共通スタイル' : p.split(' ')[0]}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Google Maps Group */}
+            <div className="pt-2 border-t border-slate-50">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-[10px] font-black text-blue-400 uppercase tracking-widest pl-1">返信スタイル (対話向け)</span>
+                <span className="text-[9px] font-bold text-blue-500 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100 flex items-center gap-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="8" /></svg>
+                  単独での学習を強く推奨
+                </span>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                {[Platform.GoogleMaps].map((p) => {
+                  const isCommonSelected = selectedPlatforms.includes(Platform.General);
+                  const isSelected = isCommonSelected || selectedPlatforms.includes(p);
+                  return (
+                    <button
+                      key={p}
+                      type="button"
+                      onClick={() => {
+                        if (isSelected) {
+                          if (selectedPlatforms.length > 1) {
+                            setSelectedPlatforms(selectedPlatforms.filter(item => item !== p && item !== Platform.General));
+                          }
+                        } else {
+                          setSelectedPlatforms([...selectedPlatforms, p]);
+                        }
+                      }}
+                      className={`
+                        px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border-2
+                        ${isSelected
+                          ? 'bg-blue-600 text-white border-blue-600 shadow-[2px_2px_0_0_rgba(29,78,216,0.2)] -translate-y-0.5'
+                          : (isCommonSelected ? 'bg-blue-600/20 text-blue-600 border-blue-600/30' : 'bg-white text-slate-400 border-slate-100 hover:border-blue-600 hover:text-blue-600')
+                        }
+                      `}
+                    >
+                      {p.split(' ')[0]}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="flex-1 overflow-hidden flex flex-col bg-slate-50">

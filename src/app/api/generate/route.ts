@@ -145,9 +145,9 @@ export async function POST(req: Request) {
         .select('content')
         .eq('user_id', userId)
         .eq('preset_id', presetId)
-        .eq('platform', config.platform)
+        .in('platform', [config.platform, 'General']) // Fetch both specific and general samples
         .order('created_at', { ascending: false })
-        .limit(50);
+        .limit(10);
 
       if (learningData && learningData.length > 0) {
         learningSamples = learningData.map((item: any) => item.content);
