@@ -99,17 +99,45 @@ export const generateContent = async (
   
   // No longer using legacy config.post_samples (reset to ensure consistency with UI list)
   const hasLearningSamples = learningSamples && learningSamples.length > 0;
-  const hasPersona = !!(config.customPrompt && config.customPrompt.trim()) || hasLearningSamples;
-  console.debug("[LEARNING] hasPersona:", hasPersona, "hasLearningSamples:", !!hasLearningSamples);
+  // If we have persona_yaml, the primary persona is active even without raw samples
+  const hasPersona = !!(config.customPrompt && config.customPrompt.trim()) || hasLearningSamples || !!config.persona_yaml;
+  console.debug("[LEARNING] hasPersona:", hasPersona, "hasLearningSamples:", !!hasLearningSamples, "hasYaml:", !!config.persona_yaml);
 
   const buildSystemInstruction = () => {
     const isInstagram = config.platform === Platform.Instagram;
     const isX = config.platform === Platform.X;
     const isGMap = config.platform === Platform.GoogleMaps;
+    const isLine = config.platform === Platform.Line;
+
+    // Platform-Specific Persona Logic: Parse the JSON container if present
+    let activePersonaYaml = "";
+    if (config.persona_yaml) {
+        try {
+        // Try parsing as JSON (New Format)
+        const personaMap = JSON.parse(config.persona_yaml);
+        if (typeof personaMap === 'object' && personaMap !== null) {
+            // Pick specific platform OR General OR fallback to first available
+            activePersonaYaml = personaMap[config.platform] || personaMap['General'] || Object.values(personaMap)[0] || "";
+            console.log(`[LEARNING] Selected YAML for platform: ${config.platform}`);
+        } else {
+            // Fallback for unexpected JSON structure
+            activePersonaYaml = config.persona_yaml;
+        }
+        } catch (e) {
+        // Legacy Format (Plain String)
+        activePersonaYaml = config.persona_yaml;
+        console.log("[LEARNING] Using legacy monolithic YAML (String format)");
+        }
+    }
     
     // Many-shot learning samples formatting
+    // Many-shot learning samples formatting
+    // Limit to latest 5 or 3000 chars to avoid token explosion
     const formattedLearningSamples = learningSamples 
-        ? learningSamples.map((s, i) => `<sample id="${i+1}">\n${s}\n</sample>`).join("\n") 
+        ? learningSamples
+            .slice(0, 5) // Hard cap at 5 recent posts per generation
+            .map((s, i) => `<sample id="${i+1}">\n${s.length > 500 ? s.slice(0, 500) + '...' : s}\n</sample>`)
+            .join("\n") 
         : "";
 
     if (hasPersona) {
@@ -121,24 +149,49 @@ export const generateContent = async (
 <system_instruction>
   <role>
     You are the "Ghostwriter" for the store owner of "${profile.name}".
+    ${profile.description ? `<store_dna>
+    SOURCE_MATERIAL:
+    ${profile.description}
+    
+    STRICT_RULES:
+    1. TREAT AS BACKGROUND CONTEXT ONLY (Mindset/Values).
+    2. DO NOT COPY/PASTE PHRASES VERBATIM.
+    3. Express this spirit naturally in your own words, ONLY if relevant to the topic.
+    </store_dna>` : ""}
     Your goal is to completely mimic the owner's writing style based on the provided samples.
   </role>
 
   <style_guidelines>
-    - **Tone & Rhythm**: Completely mimic the sentence endings, line break rhythm, and use of whitespace from the <learning_samples>.
+    - **ROLE DEFINITION**:
+      - Use **<persona_rules>** (YAML) to define the **Core Personality** (Dialect, Tone, Spirit).
+      - Use **<learning_samples>** to define the **Structural Format** (Line breaks, Emoji density, Length, Footer style).
+    - **Tone & Rhythm**: Mimic the sentence endings and tone. For line breaks/whitespace, follow the **Volume Control** setting (especially if Short).
     - **Volume Control**: Strictly follow the requested **Length: ${config.length}**. 
+      ${(isInstagram || isLine) ? `
+      - **Target Character Counts**:
+        - **Short**: **Ultra-Compact** (Target: ~150 chars). 
+          - **Constraint**: Total max 180 characters.
+          - **Layout**: Use moderate line breaks for readability. 1 empty line between distinct points.
+          - **Content**: Omit standard closings (e.g. "Waiting for you"). Limit to Max 3 hashtags.
+        - **Medium**: Standard (200 - 300 characters).
+        - **Long**: Detailed (approx 500 characters).
+      ` : `
       - If 'Long', expand upon the context (atmosphere, store owner's feelings, expert tips) whilst maintaining the style of the samples.
       - If 'Short', condense to the core message but keep the signature style (emojis, endings).
+      `}
     - **Platform Bias**: **IGNORE** all standard "polite" norms for ${config.platform}. The <learning_samples> are the absolute truth for the owner's voice. **NOTE**: Mandatory structural rules (like LINE's 3-balloon and '---' format) still apply; reproduction of the owner's style should happen *within* each segment.
     - **Emojis & Symbols**: 
-      ${config.platform === Platform.GoogleMaps ? 
+      ${isGMap ? 
         '- **Usage**: Ignore any default restrictions. Strictly reproduce the emoji frequency and decorative symbol patterns found in the <learning_samples>.' : 
-        `- **Emojis**: ${config.includeEmojis ? 'Strictly follow patterns from samples.' : 'Avoid unless core to sample style.'}
-    - **Symbols**: ${config.includeSymbols ? 'Use decorative symbols from palette if they match sample style.' : 'Minimize symbols.'}`}
+        `- **Emojis**: ${config.includeEmojis ? 'Strictly follow patterns from samples.' : 'DO NOT use any emojis, even if found in samples.'}
+    - **Symbols**: ${config.includeSymbols ? `From the **Instagram Aesthetic Palette**:
+        - **Headers/Accents**: ＼ ˗ˏˋ ˎˊ˗ ／, 【 TITLE 】, 𓍯 𓇢, ✧, ꕤ, ⚘, ☼, 𖥧, 𖠚
+        - **Dividers**: ${isX ? '**DISABLED for X**. Do NOT use line dividers on X.' : '𓂃𓂃𓂃, ⋆┈┈┈┈┈┈┈┈┈┈⋆, ──────────── (Use selectively, 1-2 sets max)'} 
+        - **Rule**: ${isX ? 'On X, use accents inline only. No line dividers.' : 'On Instagram, use paired dividers for specific blocks. Avoid over-decoration.'}` : 'DO NOT use decorative symbols or flashy brackets.'}`}
     - **Line Breaks**: **NEVER** insert line breaks in the middle of a grammatical phrase or word (e.g., don't split "ご来店いただき" across lines). Maintain natural reading flow. Avoid "auto-formatting for mobile" unless the <learning_samples> explicitly use that specific rhythm.
     - **Platform Rules**:
       - Platform: ${config.platform}
-      ${config.platform === Platform.Line ? `- Style: **Friendly but Professional "Official LINE" Marketing**.
+      ${isLine ? `- Style: **Friendly but Professional "LINE" Marketing**.
         - **Layout**: Generate content as a single cohesive message with a logical flow: 1. Hook (immediate impact), 2. Details (value/offer), and 3. Action (CTA). Use natural line breaks to keep it clean.` : ''}
     - **Readability & Vertical Flow**: Avoid long, dense blocks of text. Use line breaks (newlines) frequently—ideally after every sentence, emoji, or when shifting topics. Ensure a rhythmic, vertical flow that is easy to scan on a vertical mobile screen.
       - Length: ${config.length}
@@ -166,7 +219,22 @@ export const generateContent = async (
 </system_instruction>
 
 <context_data>
-  ${hasLearningSamples ? `<learning_samples>\n${formattedLearningSamples}\n</learning_samples>` : ""}
+  ${(hasLearningSamples) ? (() => { 
+    if (activePersonaYaml) {
+        // Hybrid Mode: Inject top 3 samples for better stability (Layout/Rhythm)
+        // Limits: Max 3 items, Max 500 chars each. Total ~1500 chars (~500-800 tokens).
+        console.log("[LEARNING] Hybrid Mode: Injecting 3 samples for stability");
+        const visualSamples = learningSamples
+            .slice(0, 3)
+            .map((s, i) => `<sample id="${i+1}">\n${s.length > 500 ? s.slice(0, 500) + '...' : s}\n</sample>`)
+            .join("\n");
+        return `<learning_samples>\n<!-- Visual Reference for Layout/Structure -->\n${visualSamples}\n</learning_samples>`;
+    } else {
+        // Fallback Mode: Full samples (max 5)
+        console.log("[LEARNING] Injected raw learning samples (No YAML available)");
+        return `<learning_samples>\n${formattedLearningSamples}\n</learning_samples>`;
+    }
+  })() : ""}
 </context_data>
 
   <user_input>
@@ -176,16 +244,30 @@ export const generateContent = async (
   ${config.storeSupplement ? `<store_context>\n${config.storeSupplement}\n</store_context>` : ""}
 
   <task>
-    ${config.platform === Platform.GoogleMaps ? 
-      `The <user_input> is a customer review. Generate a REPLY from the owner adhering to the <style_guidelines> and <learning_samples>.` :
+    ${isGMap ? 
+      "The <user_input> is a customer review. Generate a polite and empathetic REPLY from the owner. Use the facts in <store_context> if provided to explain circumstances or provide background. Do not just summarize the facts; acknowledge them graciously." : 
       config.platform === Platform.Line ?
-      `Generate an Official LINE message with a logical flow: 1. Hook, 2. Details, 3. Action. Adhere to the <style_guidelines> and mimic the writing style of the <learning_samples>.` :
-      `Based on the <user_input>, generate a new post following the <style_guidelines> and <learning_samples>.`
+      "Generate a LINE message with a clear flow: 1. Hook (for push notifications), 2. Details (friendly marketing body), 3. Action (CTA). Use friendly but professional tone. Do NOT use '---' or numbering. **CRITICAL**: Use positive framing (e.g., 'ご案内可能なお時間ができました') instead of negative terms like 'cancellation' (キャンセル). **VISUAL**: Use emoji-sandwiched headers (e.g., ＼ 🧴 [Title] 🧴 ／). For LINE only, place directional arrows (↓ ↓ ↓) **strictly on the very last line**, optionally as an arrow-sandwich pattern (e.g., ↓ ↓ ↓ Text ↓ ↓ ↓). **LAYOUT**: Prioritize a clean vertical flow with frequent line breaks (newlines) after sentences to ensure readability on mobile. Avoid dense blocks. Encourage action." :
+      "Generate an attractive post for based on the <user_input>."
     }
     Output a JSON object with:
-    - "analysis": A brief analysis of emotion and context.
-    - "posts": An array of one or more post variations (strings). **CRITICAL**: Each string must be a COMPLETE message. Do NOT split a single message (header, body, footer) into separate array items.
+    - "analysis": Brief context analysis.
+    - "posts": An array of generated post strings. 
+    **CRITICAL RULES FOR "posts" ARRAY:**
+    1. **ONE MESSAGE = ONE STRING**. Do not split a single post (e.g. Title + Body + Footer) into multiple strings.
+    2. Even if the post has line breaks or multiple paragraphs, it must be contained within a SINGLE string element.
+    3. If multiple variations are requested, return [ "Variation 1 full text", "Variation 2 full text" ].
+    4. **NEVER** return [ "Title", "Body", "Footer" ]. This is wrong.
+    5. **NEVER** split the post based on empty lines.
   </task>
+
+  ${activePersonaYaml ? `
+  <persona_rules>
+    The following rules represent the owner's "Style DNA" specifically for ${config.platform}.
+    Strictly follow the **core_voice** defined here:
+    ${activePersonaYaml}
+  </persona_rules>
+  ` : ""}
 `;
     }
 
@@ -204,9 +286,13 @@ export const generateContent = async (
     - Language: ${config.language || 'Japanese'}
     - Length: ${config.length}
     - Tone: ${config.tone} (${TONE_RULES[config.tone] || TONE_RULES[Tone.Standard]})
-    - Features: ${isInstagram ? 'Visual focus, 4-6 hashtags.' : ''}${isX ? 'Under 140 chars, 1-2 hashtags.' : ''}${isGMap ? 'Polite reply, NO emojis, NO hashtags.' : ''}${config.platform === Platform.Line ? 'Direct marketing style. NO hashtags. Focus on clear messaging.' : ''}
-    - Emojis: ${isGMap ? 'Do NOT use emojis at all.' : (config.includeEmojis ? "Use expressive, large, or character-like emojis (🐻, ✨, 💪) for high impact." : "Minimize emojis.")}
-    - **Layout**: Prioritize a clean vertical flow with frequent line breaks (newlines) after sentences or emojis to ensure readability on mobile. **AVOID dense blocks of text**.
+    - Features: ${isInstagram ? 'Visual focus.' : ''}${isX ? 'Under 140 chars.' : ''}${isGMap ? 'Polite reply, NO emojis, NO hashtags.' : ''}${isLine ? 'Direct marketing style. NO hashtags. Focus on clear messaging.' : ''}
+    - Emojis: ${isGMap ? 'Do NOT use emojis at all.' : (config.includeEmojis ? "Actively use expressive emojis (🐻, ✨, 💪, 🎉) to make the text lively." : "DO NOT use any emojis. Keep it plain text only.")}
+    - Special Characters: ${config.includeSymbols ? `From the **Instagram Aesthetic Palette**:
+        - **Headers/Accents**: ＼ ˗ˏˋ ˎˊ˗ ／, 【 TITLE 】, 𓍯 𓇢, ✧, ꕤ, ⚘, ☼, 𖥧, 𖠚
+        - **Dividers**: ${isX ? '**DISABLED for X**. Do NOT use line dividers on X.' : '𓂃𓂃𓂃, ⋆┈┈┈┈┈┈┈┈┈┈⋆, ──────────── (Use selectively, 1-2 sets max)'}
+        - **Rule**: ${isX ? 'On X, use symbols/accents inline only. No line dividers.' : 'Selective use of paired dividers for blocks. Avoid excessive lines.'}` : "Do NOT use decorative symbols or flashy brackets. Use standard punctuation only."}
+    - **Layout**: ${config.length === 'short' ? "Concise but readable. Use moderate line breaks." : "Prioritize a clean vertical flow with frequent line breaks (newlines) after sentences to ensure readability on mobile. Avoid dense blocks."}
   </rules>
 
   ${config.customPrompt ? `<custom_instructions>\n${config.customPrompt}\n</custom_instructions>` : ""}
@@ -223,13 +309,27 @@ export const generateContent = async (
     ${isGMap ? 
       "The <user_input> is a customer review. Generate a polite and empathetic REPLY from the owner. Use the facts in <store_context> if provided to explain circumstances or provide background. Do not just summarize the facts; acknowledge them graciously." : 
       config.platform === Platform.Line ?
-      "Generate an Official LINE message with a clear flow: 1. Hook (for push notifications), 2. Details (friendly marketing body), 3. Action (CTA). Use friendly but professional tone. Do NOT use '---' or numbering. **CRITICAL**: Use positive framing (e.g., 'ご案内可能なお時間ができました') instead of negative terms like 'cancellation' (キャンセル). **VISUAL**: Use emoji-sandwiched headers (e.g., ＼ 🧴 [Title] 🧴 ／). For LINE only, place directional arrows (↓ ↓ ↓) **strictly on the very last line**, optionally as an arrow-sandwich pattern (e.g., ↓ ↓ ↓ Text ↓ ↓ ↓). **LAYOUT**: Prioritize a clean vertical flow with frequent line breaks (newlines) after sentences to ensure readability on mobile. Avoid dense blocks. Encourage action." :
+      "Generate a LINE message with a clear flow: 1. Hook (for push notifications), 2. Details (friendly marketing body), 3. Action (CTA). Use friendly but professional tone. Do NOT use '---' or numbering. **CRITICAL**: Use positive framing (e.g., 'ご案内可能なお時間ができました') instead of negative terms like 'cancellation' (キャンセル). **VISUAL**: Use emoji-sandwiched headers (e.g., ＼ 🧴 [Title] 🧴 ／). For LINE only, place directional arrows (↓ ↓ ↓) **strictly on the very last line**, optionally as an arrow-sandwich pattern (e.g., ↓ ↓ ↓ Text ↓ ↓ ↓). **LAYOUT**: Prioritize a clean vertical flow with frequent line breaks (newlines) after sentences to ensure readability on mobile. Avoid dense blocks. Encourage action." :
       "Generate an attractive post for based on the <user_input>."
     }
     Output a JSON object with:
     - "analysis": Brief context analysis.
-    - "posts": An array of generated post strings. **CRITICAL**: Each string in the array must be a COMPLETE, standalone message. Do NOT split a single message (e.g., separating title from body) into multiple array elements. If you produce variations, each variation must be the full message.
+    - "posts": An array of generated post strings. 
+    **CRITICAL RULES FOR "posts" ARRAY:**
+    1. **ONE MESSAGE = ONE STRING**. Do not split a single post (e.g. Title + Body + Footer) into multiple strings.
+    2. Even if the post has line breaks or multiple paragraphs, it must be contained within a SINGLE string element.
+    3. If multiple variations are requested, return [ "Variation 1 full text", "Variation 2 full text" ].
+    4. **NEVER** return [ "Title", "Body", "Footer" ]. This is wrong.
+    5. **NEVER** split the post based on empty lines.
   </task>
+
+  ${activePersonaYaml ? `
+  <persona_rules>
+    The following rules represent the owner's "Style DNA" specifically for ${config.platform}.
+    Strictly follow the **core_voice** defined here:
+    ${activePersonaYaml}
+  </persona_rules>
+  ` : ""}
 </system_instruction>
 `;
   };
@@ -241,14 +341,14 @@ export const generateContent = async (
   const promptSize = {
     systemChars: systemInstruction.length,
     userChars: (config.inputText || "").length,
-    learningSamplesChars: (learningSamples || []).join("\n").length,
+    promptTotalChars: systemInstruction.length + (config.inputText || "").length,
   };
   console.debug("[PROMPT] sizes:", promptSize);
 
   // In-memory cache store (resets on server restart)
   const cacheStore = new Map<string, { name: string; expiresAt: number }>();
 
-  const attemptGeneration = async (userPrompt: string): Promise<GeneratedContentResult> => {
+  const attemptGeneration = async (userPrompt: string, attempt: number): Promise<GeneratedContentResult> => {
     let cachedContentName: string | undefined;
     
     // Check if we should try caching (Google Gen AI requires >32k tokens for caching)
@@ -274,10 +374,12 @@ export const generateContent = async (
         requestConfig.systemInstruction = systemInstruction;
     }
 
-    // Fixed Thinking Budget to 512 tokens to reduce API costs
-    const budget = 512;
+    // Dynamic Thinking Budget: 0 for X retries to reduce cost/time, 512 otherwise
+    const isXRetry = attempt > 0 && config.platform === Platform.X;
+    const budget = isXRetry ? 0 : 256;
+    console.debug(`[GEMINI] Attempt: ${attempt}, Platform: ${config.platform}, ThinkingBudget: ${budget}`);
 
-    // @ts-ignore - Enable internal reasoning for higher quality drafting (Gemini 2.5 Flash feature)
+    // @ts-ignore - Enable internal reasoning
     requestConfig.thinkingConfig = { includeThoughts: true, thinkingBudget: budget }; 
 
     // Safety Settings to prevent accidental blocking of creative marketing content
@@ -378,9 +480,9 @@ export const generateContent = async (
 
   let userPrompt = `Generate the post in ${config.language || 'Japanese'}.`;
 
-  for (let attempt = 0; attempt < 2; attempt++) {
+  for (let attempt = 0; attempt < 3; attempt++) {
     try {
-      const result = await attemptGeneration(userPrompt);
+      const result = await attemptGeneration(userPrompt, attempt);
 
       if (!isXWith140Limit) {
         return result;
@@ -389,27 +491,38 @@ export const generateContent = async (
       const firstPost = result.posts[0];
       const currentLength = firstPost.length;
 
+      // Allow slight buffer
       if (currentLength <= charLimit) {
         console.debug(`X post validated: ${currentLength}/${charLimit} chars`);
         return result;
       }
 
       console.warn(
-        `X post too long (${currentLength}/${charLimit}), retrying... (attempt ${attempt + 1}/2)`
+        `X post too long (${currentLength}/${charLimit}), retrying... (attempt ${attempt + 1}/3)`
       );
 
       // Recursive prompt for retry
-      userPrompt = `Previous post was ${currentLength} chars. MUST be under ${charLimit}. Shorten it but keep the Persona.`;
+      userPrompt = `The following post was ${currentLength} chars (Too Long):
+"${firstPost}"
+
+Refine the text to be strictly under ${charLimit} chars.
+Current Length: ${currentLength}
+Target: **Under ${charLimit} chars**
+
+Action: 
+1. Remove 1-2 adjectives or filler words.
+2. Remove 1 hashtag if necessary.
+3. Keep the core message and tone.`;
 
     } catch (parseError) {
       console.error("Generation attempt failed:", parseError);
-      if (attempt === 1) {
-        throw new Error("AI response was not valid after 2 attempts");
+      if (attempt === 2) {
+        throw new Error("AI response was not valid after 3 attempts");
       }
     }
   }
 
-  throw new Error(`Failed to generate X post under ${charLimit} chars after 2 attempts`);
+  throw new Error(`Failed to generate X post under ${charLimit} chars after 3 attempts`);
 };
 
 export const refineContent = async (
@@ -473,8 +586,8 @@ Output ONLY the refined text.
         ],
       };
 
-    // Fixed Thinking Budget to 512 tokens to reduce API costs
-    const budget = 512;
+    // Fixed Thinking Budget to 256 tokens to reduce API costs
+    const budget = 256;
 
     // @ts-ignore - Enable internal reasoning for higher quality drafting (Gemini 2.5 Flash feature)
     requestConfig.thinkingConfig = { includeThoughts: true, thinkingBudget: budget }; 
@@ -606,4 +719,75 @@ Example Output:
   });
 
   return response.text || text;
+};
+
+export const analyzePersona = async (
+  samples: { content: string, platform: string }[],
+  isPro: boolean
+): Promise<string> => {
+  const modelName = getModelName(isPro);
+  const ai = getServerAI();
+
+  // Group samples by platform for the prompt
+  const platforms = [...new Set(samples.map(s => s.platform))];
+  const samplesByPlatform = samples.reduce((acc, s) => {
+    acc[s.platform] = (acc[s.platform] || '') + `<sample>\n${s.content}\n</sample>\n`;
+    return acc;
+  }, {} as Record<string, string>);
+
+  const systemInstruction = `
+You are an expert linguistic analyst.
+Your task is to analyze social media posts and extract the "Style DNA" (Persona Rules) for EACH platform independently.
+
+**Input Data:**
+Samples are grouped by platform (e.g., X, Instagram, Line).
+
+**CRITICAL INSTRUCTION: INDEPENDENT ANALYSIS & SPECIFICITY**
+- **DO NOT MERGE** personas across platforms.
+- **NO GENERIC ADVICE**: Do not just say "be concise" for X. You MUST extract the actual *linguistic habits* (e.g., "End sentences with 〜です/〜ます", "Use ❗ instead of 。").
+- **MANDATORY**: For EVERY platform, you must extract a specific list of endings (sentence endings) found in the samples.
+- If "X" samples use courteous language ("〜いたします"), the YAML MUST reflect that, even if X is typically casual. **Trust the samples over platform stereotypes.**
+
+**Output Goal:**
+Create a separate YAML definition for each platform found in the input.
+
+**Format (JSON):**
+Return a SINGLE JSON object where:
+- Key: Platform Name (e.g., "X", "Instagram", "GoogleMaps", "General")
+- Value: A valid YAML string containing 'core_voice' and 'endings'.
+
+Example Output:
+\`\`\`json
+{
+  "X": "core_voice:\\n  tone: 'Polite and calm'\\n  endings: ['~です', '~ます', '~いたします']\\n  structure: ' concise but polite'",
+  "GoogleMaps": "core_voice:\\n  tone: 'Energetic Izakaya Boss'\\n  endings: ['~っす!', '~だら?']"
+}
+\`\`\`
+`;
+
+  const userPrompt = `Analyze these samples and generate the JSON map of YAML rules:\n\n${
+    Object.entries(samplesByPlatform).map(([plat, content]) => 
+      `--- PLATFORM: ${plat} ---\n${content}`
+    ).join("\n")
+  }`;
+
+  const response = await ai.models.generateContent({
+    model: modelName,
+    contents: [{ role: "user", parts: [{ text: userPrompt }] }],
+    config: {
+      systemInstruction,
+      responseMimeType: "application/json", // Force JSON output
+      temperature: 0.2,
+    },
+  });
+
+  const text = response.text || "{}";
+  // Verify it's valid JSON, otherwise return empty object
+  try {
+    JSON.parse(text);
+    return text; // Return the raw JSON string to be saved in persona_yaml column
+  } catch (e) {
+    console.error("[ANALYZE] Failed to parse JSON response:", text);
+    return "{}";
+  }
 };

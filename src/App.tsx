@@ -309,7 +309,47 @@ function App() {
     const isTrained = !!existing;
 
     if (isTrained && !replaceId) {
-      // Delete
+      // Smart Delete Logic
+      const currentPlatforms = existing.platform.split(',').map(p => p.trim());
+
+      // If the item is associated with multiple platforms, and we are deleting just one of them
+      if (currentPlatforms.length > 1 && currentPlatforms.includes(platform)) {
+        const newPlatforms = currentPlatforms.filter(p => p !== platform).join(', ');
+
+        // Treat this as an UPDATE (Replace) with the removed platform
+        // We call the API with the SAME ID as replaceId to update it in place
+        try {
+          const res = await fetch('/api/me/learning', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              content: normalizedText,
+              platform: newPlatforms, // Updated platform list
+              presetId: existing.presetId,
+              replaceId: existing.id, // Update existing
+              source: existing.source || source
+            })
+          });
+
+          if (!res.ok) throw new Error('Failed to update training data (smart delete)');
+
+          const data = await res.json();
+
+          setTrainingItems(prev => prev.map(item =>
+            item.id === existing.id
+              ? { ...item, platform: newPlatforms } // Optimistic / Result update
+              : item
+          ));
+          return;
+
+        } catch (err) {
+          console.error('Smart delete failed:', err);
+          alert('更新に失敗しました');
+          return;
+        }
+      }
+
+      // Default: Delete the item entirely (Single platform or full match)
       setTrainingItems(prev => prev.filter(item => item.id !== existing.id));
       try {
         await fetch('/api/me/learning', {

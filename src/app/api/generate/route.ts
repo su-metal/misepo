@@ -145,9 +145,9 @@ export async function POST(req: Request) {
         .select('content')
         .eq('user_id', userId)
         .eq('preset_id', presetId)
-        .eq('platform', config.platform)
+        .in('platform', [config.platform, 'General']) // Fetch both specific and general samples
         .order('created_at', { ascending: false })
-        .limit(50);
+        .limit(10);
 
       if (learningData && learningData.length > 0) {
         learningSamples = learningData.map((item: any) => item.content);
@@ -157,6 +157,21 @@ export async function POST(req: Request) {
       }
     } else {
       console.warn("[LEARNING] Skipped fetch (missing userId or presetId)");
+    }
+
+    // Fetch persona_yaml if presetId is provided
+    if (userId && presetId) {
+      const { data: presetData, error: presetFetchErr } = await supabase
+        .from("user_presets")
+        .select("persona_yaml")
+        .eq("id", presetId)
+        .eq("user_id", userId)
+        .single();
+      
+      if (!presetFetchErr && presetData?.persona_yaml) {
+        console.log(`[LEARNING] Applied persona_yaml from preset ${presetId}`);
+        config.persona_yaml = presetData.persona_yaml;
+      }
     }
 
     const generatedData = await generateContent(profile, config, isPro, learningSamples);

@@ -110,7 +110,6 @@ export function useGeneratorFlow(props: {
       setPostPurpose(PostPurpose.Auto);
       setGmapPurpose(GoogleMapPurpose.Auto);
       setTone(Tone.Standard);
-      setLength(Length.Medium);
       setIncludeEmojis(true);
       setIncludeSymbols(false);
       setXConstraint140(true);

@@ -176,6 +176,10 @@ const PresetModal: React.FC<PresetModalProps> = ({
   const [modalText, setModalText] = useState('');
   const [isSanitizing, setIsSanitizing] = useState(false);
   const [isAnalyzingImage, setIsAnalyzingImage] = useState(false);
+  const [isAnalyzingPersona, setIsAnalyzingPersona] = useState(false);
+  const [personaYaml, setPersonaYaml] = useState<string | null>(null);
+  const [hasUnanalyzedChanges, setHasUnanalyzedChanges] = useState(false);
+  const [selectedPlatforms, setSelectedPlatforms] = useState<Platform[]>([Platform.General]);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const [isIconSelectorOpen, setIsIconSelectorOpen] = useState(false);
@@ -208,6 +212,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
       setName(preset.name);
       setAvatar(preset.avatar || 'shop');
       setCustomPrompt(preset.custom_prompt || '');
+      setPersonaYaml(preset.persona_yaml || null);
+      setHasUnanalyzedChanges(false);
       setMobileView('edit');
     }
   };
@@ -217,6 +223,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
     setName('');
     setAvatar('shop');
     setCustomPrompt('');
+    setPersonaYaml(null);
+    setHasUnanalyzedChanges(false);
     setMobileView('edit');
   };
 
@@ -224,16 +232,52 @@ const PresetModal: React.FC<PresetModalProps> = ({
     if (!name.trim()) return;
     setIsInternalSaving(true);
     try {
+      let finalYaml = personaYaml;
+
+      // Auto-analyze if there are unanalyzed changes
+      if (hasUnanalyzedChanges) {
+        console.log("[SAVE] Detected unanalyzed changes. Auto-running persona analysis...");
+        const yaml = await performPersonaAnalysis();
+        if (yaml) {
+          finalYaml = yaml;
+        }
+      }
+
+      // Reconstruct post_samples from trainingItems to ensure DB sync
+      const currentPresetId = selectedPresetId || 'omakase';
+      const relatedItems = trainingItems.filter(item => item.presetId === currentPresetId);
+
+      const newPostSamples: { [key in Platform]?: string } = {};
+
+      relatedItems.forEach(item => {
+        // Parse platform string which might be comma-separated or simple string
+        const platforms = item.platform.split(',').map(p => p.trim()) as Platform[];
+        platforms.forEach(p => {
+          // Append content to existing platform sample or start new
+          if (newPostSamples[p]) {
+            newPostSamples[p] += `\n\n---\n\n${item.content}`;
+          } else {
+            newPostSamples[p] = item.content;
+          }
+        });
+      });
+
+      console.log("[SAVE] Aggregated post_samples:", newPostSamples);
+
       await onSave({
         id: selectedPresetId || undefined,
         name,
         avatar,
         custom_prompt: customPrompt,
+        persona_yaml: finalYaml,
+        post_samples: newPostSamples, // Explicitly save the aggregated samples
       });
+      setHasUnanalyzedChanges(false);
       setShowSuccessToast(true);
       setTimeout(() => setShowSuccessToast(false), 3000);
     } catch (err) {
       console.error('Failed to save preset:', err);
+      alert('保存中にエラーが発生しました。');
     } finally {
       setIsInternalSaving(false);
     }
@@ -303,6 +347,39 @@ const PresetModal: React.FC<PresetModalProps> = ({
     }
   };
 
+  const performPersonaAnalysis = async (): Promise<string | null> => {
+    const presetSamples = trainingItems
+      .filter(item => item.presetId === (selectedPresetId || 'omakase'))
+      .map(item => ({
+        content: item.content,
+        platform: item.platform
+      }));
+
+    if (presetSamples.length === 0) return null;
+
+    setIsAnalyzingPersona(true);
+    try {
+      const res = await fetch('/api/ai/analyze-persona', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ samples: presetSamples }),
+      });
+      const data = await res.json();
+      if (data.yaml) {
+        setPersonaYaml(data.yaml);
+        setHasUnanalyzedChanges(false);
+        return data.yaml;
+      } else {
+        throw new Error(data.error || 'Failed to analyze persona');
+      }
+    } catch (err) {
+      console.error('Failed to analyze persona:', err);
+      return null;
+    } finally {
+      setIsAnalyzingPersona(false);
+    }
+  };
+
   const renderAvatar = (id: string, className = "w-6 h-6") => {
     const opt = AVATAR_OPTIONS.find(o => o.id === id) || AVATAR_OPTIONS[0];
     const Icon = opt.icon;
@@ -333,17 +410,19 @@ const PresetModal: React.FC<PresetModalProps> = ({
     );
   };
 
-  const handleToggleTrainingInternal = async (text: string, platform: Platform) => {
+  const handleToggleTrainingInternal = async (text: string, platforms: Platform[]) => {
     const presetId = selectedPresetId || 'omakase';
     const normalizedText = text.trim();
-    if (!normalizedText) return;
+    if (!normalizedText || platforms.length === 0) return;
 
     const replaceId = editingSampleId || undefined;
+    const platformString = platforms.join(', ') as any; // Join for DB storage
 
     setIsTrainingLoading(true);
     setTrainingError(null);
     try {
-      await onToggleTraining(normalizedText, platform, presetId, replaceId, 'manual');
+      await onToggleTraining(normalizedText, platformString, presetId, replaceId, 'manual');
+      setHasUnanalyzedChanges(true);
       setExpandingPlatform(null);
       setEditingSampleId(null); // Reset editing state
     } catch (err: any) {
@@ -355,69 +434,196 @@ const PresetModal: React.FC<PresetModalProps> = ({
     }
   };
 
-  const renderSampleList = (platform: Platform, colorClass: string, Icon: any) => {
-    const samples = getSamplesForPlatform(platform);
+  const renderUnifiedSamples = () => {
+    const samples = trainingItems.filter(item =>
+      item.presetId === (selectedPresetId || 'omakase')
+    );
+
+    // Group samples by platform
+    const groupedSamples = useMemo(() => {
+      const groups: Record<string, TrainingItem[]> = {};
+      samples.forEach(item => {
+        // Normalize platform key
+        const keys = item.platform.split(',').map(p => p.trim());
+        keys.forEach(k => {
+          // Map to main platforms or 'Other'
+          let key = k;
+          if (k.includes('Instagram')) key = Platform.Instagram;
+          else if (k.includes('X') || k.includes('Twitter')) key = Platform.X;
+          else if (k.includes('LINE') || k.includes('Line')) key = Platform.Line;
+          else if (k.includes('Google') || k.includes('Map')) key = Platform.GoogleMaps;
+          else if (k === 'General') key = Platform.General;
+
+          if (!groups[key]) groups[key] = [];
+          // Avoid duplicates if multiple keys point to same platform group (rare)
+          if (!groups[key].find(i => i.id === item.id)) {
+            groups[key].push(item);
+          }
+        });
+      });
+      return groups;
+    }, [samples]);
+
+    const platformOrder = [Platform.Instagram, Platform.X, Platform.Line, Platform.GoogleMaps, Platform.General];
+
+    // State for expanded sections (default to all open or just some)
+    const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
+      [Platform.Instagram]: true,
+      [Platform.X]: true,
+      [Platform.Line]: true,
+      [Platform.GoogleMaps]: true,
+      [Platform.General]: true,
+    });
+
+    const toggleSection = (platform: string) => {
+      setExpandedSections(prev => ({
+        ...prev,
+        [platform]: !prev[platform]
+      }));
+    };
+
+    const getPlatformIcon = (platform: string) => {
+      switch (platform) {
+        case Platform.Instagram: return <InstagramIcon className="w-5 h-5" />;
+        case Platform.X: return <span className="font-bold text-lg leading-none">𝕏</span>;
+        case Platform.Line: return <LineIcon className="w-5 h-5" />;
+        case Platform.GoogleMaps: return <div className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center text-white text-[10px] font-bold">G</div>;
+        default: return <SparklesIcon className="w-5 h-5" />;
+      }
+    };
+
+    const getPlatformLabel = (platform: string) => {
+      switch (platform) {
+        case Platform.Instagram: return 'Instagram';
+        case Platform.X: return 'X (Twitter)';
+        case Platform.Line: return 'LINE Official';
+        case Platform.GoogleMaps: return 'Google Maps';
+        default: return 'General / Other';
+      }
+    };
+
     return (
-      <div className="bg-white rounded-xl p-6 mb-4 shadow-[4px_4px_0_0_rgba(0,0,0,1)] border-2 border-black transition-all">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-white border-2 border-black shadow-[2px_2px_0_0_rgba(0,0,0,1)] ${colorClass}`}>
-              <Icon className="w-4 h-4" />
+      <div className="py-8 md:py-12">
+        <div className="px-6 md:px-10 flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+          <div className="flex items-center gap-5">
+            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] bg-indigo-600`}>
+              <MagicWandIcon className="w-7 h-7" />
             </div>
-            <span className={`text-[11px] font-black uppercase tracking-widest text-black`}>{platform} Learning</span>
-            <span className="text-[10px] font-black text-black bg-[var(--bg-beige)] border-2 border-black px-2 py-0.5 rounded-full">{samples.length} / 50</span>
+            <div>
+              <h4 className="text-sm md:text-lg font-black text-black tracking-tight leading-none mb-1.5">学習データ・ベース</h4>
+              <div className="flex items-center gap-2.5">
+                <span className="text-[10px] md:text-[11px] font-black text-slate-400 uppercase tracking-widest leading-none">
+                  {samples.length} / 50 Samples
+                </span>
+                <span className="px-2 py-0.5 bg-indigo-50 text-indigo-600 text-[9px] font-black rounded-md border border-indigo-100 uppercase tracking-wider">Stored</span>
+              </div>
+            </div>
           </div>
           <button
             type="button"
             onClick={() => {
               setModalText('');
               setEditingSampleId(null);
-              setExpandingPlatform(platform);
+              setExpandingPlatform(Platform.General);
             }}
             disabled={samples.length >= 50}
-            className={`flex items-center gap-2 px-4 py-2 text-[10px] font-black rounded-lg transition-all group border-2 border-black ${samples.length >= 50 ? 'bg-slate-100 text-slate-400' : 'bg-white text-black hover:bg-[var(--teal)] hover:shadow-[2px_2px_0_0_rgba(0,0,0,1)]'}`}
+            className={`flex items-center gap-2 px-6 py-3 text-[11px] font-black rounded-xl transition-all group border-2 border-black ${samples.length >= 50 ? 'bg-slate-100 text-slate-400' : 'bg-white text-black hover:bg-[var(--teal)] hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)]'}`}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" className="group-hover:rotate-90 transition-transform"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            <span>学習文を追加する</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" className="group-hover:rotate-90 transition-transform"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            <span>新しい学習文を追加</span>
           </button>
         </div>
 
         {samples.length === 0 ? (
-          <div className="py-8 border-2 border-dashed border-black rounded-xl flex flex-col items-center justify-center text-slate-300 gap-2">
-            <Icon className="w-8 h-8 opacity-20" />
-            <p className="text-[10px] font-bold text-slate-400">まだ学習データがありません</p>
+          <div className="py-12 border-2 border-dashed border-slate-200 rounded-2xl flex flex-col items-center justify-center text-slate-300 gap-3 mx-6 md:mx-10">
+            <div className="w-16 h-16 rounded-full bg-slate-50 flex items-center justify-center">
+              <SparklesIcon className="w-8 h-8 opacity-20" />
+            </div>
+            <div className="text-center">
+              <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest">No data collected yet</p>
+              <p className="text-[10px] font-bold text-slate-300 mt-1">過去に書いた文章を学習させましょう</p>
+            </div>
           </div>
         ) : (
-          <div className="flex overflow-x-auto gap-3 pb-2 snap-x pr-2">
-            {samples.map((item, idx) => (
-              <div
-                key={item.id}
-                className="group relative flex flex-col justify-between min-w-[200px] w-[200px] h-[140px] p-4 rounded-xl bg-white border-2 border-black hover:bg-[var(--bg-beige)] hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:translate-y-[-2px] transition-all cursor-pointer snap-start shrink-0"
-                onClick={() => {
-                  setModalText(item.content);
-                  setEditingSampleId(item.id);
-                  setExpandingPlatform(platform);
-                }}
-              >
-                <div className="w-full">
-                  <p className="text-[11px] text-black font-bold line-clamp-4 leading-relaxed whitespace-pre-wrap">
-                    {item.content}
-                  </p>
-                </div>
-                <div className="mt-2 flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="px-6 md:px-10 space-y-8">
+            {platformOrder.map(platform => {
+              const platformItems = groupedSamples[platform] || [];
+              if (platformItems.length === 0) return null;
+
+              const isExpanded = expandedSections[platform];
+
+              return (
+                <div key={platform} className="animate-in fade-in slide-in-from-bottom-2 duration-500">
                   <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onToggleTraining(item.content, item.platform, item.presetId, undefined, 'manual');
-                    }}
-                    className="p-1.5 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all border-2 border-transparent hover:border-black"
+                    onClick={() => toggleSection(platform)}
+                    className="flex items-center gap-3 mb-4 group w-full text-left"
                   >
-                    <TrashIcon className="w-3.5 h-3.5" />
+                    <div className={`p-2 rounded-lg border-2 border-black transition-all ${isExpanded ? 'bg-black text-white' : 'bg-white text-black group-hover:bg-slate-50'}`}>
+                      {getPlatformIcon(platform)}
+                    </div>
+                    <div className="flex-1">
+                      <h5 className="font-black text-sm md:text-base text-black flex items-center gap-3">
+                        {getPlatformLabel(platform)}
+                        <span className="px-2 py-0.5 bg-slate-100 text-slate-500 text-[9px] rounded-full border border-slate-200">
+                          {platformItems.length}
+                        </span>
+                      </h5>
+                    </div>
+                    <div className={`transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}>
+                      <ChevronDownIcon className="w-5 h-5 text-slate-400" />
+                    </div>
                   </button>
+
+                  <div className={`
+                    flex overflow-x-auto pb-6 gap-3 px-1 
+                    md:gap-4
+                    transition-all duration-300 origin-top 
+                    ${isExpanded ? 'opacity-100 scale-100' : 'hidden opacity-0 scale-95'}
+                  `}>
+                    {platformItems.slice(0, 5).map((item) => (
+                      <div
+                        key={item.id}
+                        className={`
+                          group relative flex flex-col justify-between p-2.5 md:p-4 rounded-xl bg-white border-2 border-black 
+                          hover:bg-[var(--bg-beige)] hover:shadow-[3px_3px_0_0_rgba(0,0,0,1)] hover:-translate-y-0.5 
+                          transition-all cursor-pointer 
+                          min-h-[90px] w-[140px] shrink-0
+                          sm:min-h-[120px] sm:w-[240px]
+                        `}
+                        onClick={() => {
+                          setModalText(item.content);
+                          setEditingSampleId(item.id);
+                          setExpandingPlatform(item.platform);
+                          const platforms = item.platform.split(', ').map(p => p.trim()) as Platform[];
+                          setSelectedPlatforms(platforms);
+                        }}
+                      >
+                        <div>
+                          <p className="text-[9px] md:text-[10px] text-black font-bold line-clamp-3 md:line-clamp-4 leading-relaxed whitespace-pre-wrap break-all">
+                            {item.content}
+                          </p>
+                        </div>
+                        <div className="mt-2 md:mt-3 flex items-end justify-between">
+                          <span className="text-[8px] md:text-[9px] font-black text-slate-300 uppercase tracking-wider scale-90 origin-bottom-left">{item.source === 'generated' ? 'AI' : 'Manual'}</span>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              // Pass the *current section's* platform (e.g. "Instagram") instead of item.platform ("Instagram, X")
+                              // This enables the "Smart Delete" logic in App.tsx to remove just this tag.
+                              onToggleTraining(item.content, platform as Platform, item.presetId, undefined, 'manual');
+                            }}
+                            className="p-1 md:p-1.5 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all opacity-100 md:opacity-0 group-hover:opacity-100"
+                          >
+                            <TrashIcon className="w-3.5 h-3.5 md:w-4 md:h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
@@ -552,80 +758,81 @@ const PresetModal: React.FC<PresetModalProps> = ({
         <div className="flex-1 overflow-y-auto p-6 md:p-12 space-y-10">
           <div className="animate-in slide-in-from-bottom-4 duration-500">
             <div className="space-y-8">
-              {/* Profile Name */}
+              {/* Profile Settings (Name & Icon) - Unified Block */}
               <div className="space-y-4">
-                <label className="block text-[10px] md:text-[11px] font-black text-black uppercase tracking-[0.3em]">
-                  プロフィール名 (Account Name)
+                <label className="block text-[10px] md:text-[11px] font-black text-black uppercase tracking-[0.3em] mb-3 md:mb-4">
+                  基本設定 (Basic Proflie)
                 </label>
-                <div className="relative group max-w-md">
-                  <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => handleNameChange(e.target.value)}
-                    placeholder="例: 店長（公式）"
-                    className="w-full px-5 py-4 md:px-7 md:py-5 bg-white border-2 border-black focus:bg-[var(--bg-beige)] outline-none rounded-xl text-sm md:text-base text-black font-black placeholder-slate-300 transition-all shadow-none focus:shadow-[4px_4px_0_0_rgba(0,0,0,1)]"
-                  />
-                  <div className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-indigo-500 transition-colors">
-                    {renderAvatar(avatar, "w-6 h-6 md:w-8 md:h-8")}
-                  </div>
 
+                <div className="flex flex-col bg-white border-2 border-black rounded-[24px] shadow-[4px_4px_0_0_rgba(0,0,0,1)] overflow-hidden">
 
-                </div>
-              </div>
-
-              {/* Icon Selection - Accordion Style */}
-              <div className="space-y-4">
-                <div
-                  onClick={() => setIsIconSelectorOpen(!isIconSelectorOpen)}
-                  className="flex flex-col gap-4 p-5 bg-white border-2 border-black rounded-[24px] shadow-[4px_4px_0_0_rgba(0,0,0,1)] cursor-pointer hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all group"
-                >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <label className="block text-[10px] md:text-[11px] font-black text-black uppercase tracking-[0.3em] mb-1">
-                        アイコンの選択 (Select Icon)
-                      </label>
-                      <div className="text-sm font-bold text-slate-500">
-                        {AVATAR_OPTIONS.find(o => o.id === avatar)?.label}
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      {/* Selected Icon Preview */}
-                      <div className="w-12 h-12 rounded-xl bg-[var(--gold)] border-2 border-black flex items-center justify-center text-black shadow-sm">
-                        {renderAvatar(avatar, "w-6 h-6")}
-                      </div>
-                      <div className={`w-8 h-8 rounded-full bg-slate-100 border-2 border-black flex items-center justify-center transition-transform duration-300 ${isIconSelectorOpen ? 'rotate-180' : ''}`}>
-                        <ChevronDownIcon className="w-4 h-4 text-black" />
-                      </div>
+                  {/* Part 1: Profile Name */}
+                  <div className="p-6 md:p-8 border-b-2 border-slate-100">
+                    <label className="block text-[10px] md:text-[11px] font-black text-black uppercase tracking-[0.3em] mb-3">
+                      プロフィール名 (Account Name)
+                    </label>
+                    <div className="relative group">
+                      <input
+                        type="text"
+                        value={name}
+                        onChange={(e) => handleNameChange(e.target.value)}
+                        placeholder="例: 店長（公式）"
+                        className="w-full px-5 py-4 md:px-7 md:py-5 bg-slate-50 border-2 border-slate-200 focus:border-black focus:bg-white outline-none rounded-xl text-sm md:text-base text-black font-black placeholder-slate-300 transition-all"
+                      />
                     </div>
                   </div>
 
-                  {/* Expandable Grid */}
-                  <div className={`grid grid-cols-5 md:flex md:flex-wrap gap-2 md:gap-3 transition-all duration-300 ease-in-out overflow-hidden ${isIconSelectorOpen ? 'max-h-[500px] opacity-100 pt-4 border-t-2 border-slate-100' : 'max-h-0 opacity-0'}`}>
-                    {AVATAR_OPTIONS.map((item) => {
-                      const Icon = item.icon;
-                      const isSelected = avatar === item.id;
-                      return (
-                        <button
-                          key={item.id}
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setAvatar(item.id);
-                            // setIsIconSelectorOpen(false); // Optional: close on select
-                          }}
-                          title={item.label}
-                          className={`
-                            w-10 h-10 md:w-14 md:h-14 flex items-center justify-center rounded-lg md:rounded-xl transition-all duration-300 relative shrink-0 border-2
-                            ${isSelected
-                              ? 'bg-[var(--gold)] shadow-[2px_2px_0_0_rgba(0,0,0,1)] border-black text-black z-10 scale-110'
-                              : 'bg-white text-slate-300 hover:bg-slate-50 hover:text-slate-500 border-slate-200 hover:border-black'
-                            }
-                          `}
-                        >
-                          <Icon className="w-4 h-4 md:w-6 md:h-6" />
-                        </button>
-                      );
-                    })}
+                  {/* Part 2: Icon Selection */}
+                  <div className={`p-6 md:p-8 transition-colors duration-300 ${isIconSelectorOpen ? 'bg-[var(--bg-beige)]/30' : 'bg-white'}`}>
+                    <div
+                      onClick={() => setIsIconSelectorOpen(!isIconSelectorOpen)}
+                      className="flex items-center justify-between cursor-pointer group select-none"
+                    >
+                      <div>
+                        <label className="block text-[10px] md:text-[11px] font-black text-black uppercase tracking-[0.3em] mb-1 group-hover:text-indigo-600 transition-colors">
+                          アイコンの選択 (Select Icon)
+                        </label>
+                        <div className="text-sm font-bold text-slate-500">
+                          {AVATAR_OPTIONS.find(o => o.id === avatar)?.label}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-[var(--gold)] border-2 border-black flex items-center justify-center text-black shadow-sm group-hover:scale-110 transition-transform">
+                          {renderAvatar(avatar, "w-5 h-5 md:w-6 md:h-6")}
+                        </div>
+                        <div className={`w-8 h-8 rounded-full bg-slate-100 border-2 border-black flex items-center justify-center transition-transform duration-300 ${isIconSelectorOpen ? 'rotate-180 bg-black border-black' : 'group-hover:bg-slate-200'}`}>
+                          <ChevronDownIcon className={`w-4 h-4 transition-colors ${isIconSelectorOpen ? 'text-white' : 'text-black'}`} />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Expandable Icon Grid */}
+                    <div className={`grid grid-cols-5 md:flex md:flex-wrap gap-2 md:gap-3 transition-all duration-300 ease-in-out overflow-hidden ${isIconSelectorOpen ? 'max-h-[500px] opacity-100 pt-6 mt-2' : 'max-h-0 opacity-0'}`}>
+                      {AVATAR_OPTIONS.map((item) => {
+                        const Icon = item.icon;
+                        const isSelected = avatar === item.id;
+                        return (
+                          <button
+                            key={item.id}
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setAvatar(item.id);
+                            }}
+                            title={item.label}
+                            className={`
+                              w-10 h-10 md:w-14 md:h-14 flex items-center justify-center rounded-xl transition-all duration-300 relative shrink-0 border-2
+                              ${isSelected
+                                ? 'bg-[var(--gold)] shadow-[3px_3px_0_0_rgba(0,0,0,1)] border-black text-black z-10 scale-105'
+                                : 'bg-white text-slate-300 hover:bg-white hover:text-slate-500 border-slate-200 hover:border-black hover:shadow-sm'
+                              }
+                            `}
+                          >
+                            <Icon className="w-4 h-4 md:w-6 md:h-6" />
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -639,7 +846,10 @@ const PresetModal: React.FC<PresetModalProps> = ({
             <div className="relative p-1 rounded-[32px]">
               <AutoResizingTextarea
                 value={customPrompt}
-                onChange={setCustomPrompt}
+                onChange={(val) => {
+                  setCustomPrompt(val);
+                  setHasUnanalyzedChanges(true);
+                }}
                 placeholder={'例：\n・「ご来店お待ちしております」は使わないでください\n・必ず「#〇〇」のタグをつけてください\n・語尾は「〜だワン！」にしてください'}
                 className="w-full px-6 py-6 md:px-8 md:py-8 bg-white border-2 border-black focus:bg-[var(--bg-beige)] focus:shadow-[4px_4px_0_0_rgba(0,0,0,1)] outline-none rounded-[24px] text-sm md:text-base text-black font-bold leading-relaxed placeholder-slate-300 transition-all min-h-[120px] md:min-h-[160px]"
               />
@@ -654,74 +864,89 @@ const PresetModal: React.FC<PresetModalProps> = ({
             <label className="block text-[10px] md:text-[11px] font-black text-slate-800 uppercase tracking-[0.3em] mb-3 md:mb-5">
               AIプロフィールの育成 (文体学習)
             </label>
-            <div className="bg-slate-100/50 rounded-[40px] p-1.5 md:p-2 border border-slate-200/50">
-              {/* Learning Hints relocated from Focus Mode */}
-              <div className="p-5 md:p-6 flex flex-col md:flex-row gap-4 md:gap-6 shrink-0 bg-white/40 rounded-[32px] mb-2 border border-slate-100">
-                <div className="flex-1 flex gap-3 md:gap-4">
-                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-indigo-50 flex items-center justify-center shrink-0">
-                    <MagicWandIcon className="w-4 h-4 md:w-5 md:h-5 text-indigo-500" />
+            <div className="bg-white border-2 border-black rounded-[32px] overflow-hidden shadow-[4px_4px_0_0_rgba(0,0,0,1)]">
+              {/* Console Header: Status and Description */}
+              <div className="p-6 md:p-8 border-b-2 border-slate-100 bg-[var(--bg-beige)]/30">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center border border-indigo-100">
+                      <MagicWandIcon className="w-5 h-5 text-indigo-500" />
+                    </div>
+                    <div>
+                      <h4 className="text-sm md:text-base font-black text-black leading-tight">スタイル・インテリジェンス</h4>
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-0.5">Automated Optimization</p>
+                    </div>
                   </div>
-                  <div className="space-y-0.5 md:space-y-1">
-                    <h4 className="text-[10px] md:text-[11px] font-black text-indigo-900 uppercase tracking-wider">学習のヒント</h4>
-                    <p className="text-[11px] md:text-xs text-slate-500 leading-relaxed font-bold">
-                      過去の投稿を3〜5件貼り付けるのがベストです。<span className="hidden md:inline"><br />文体や絵文字はAIが自動で学習します。</span>
-                    </p>
+                  {/* Header: Intelligence Status - REMOVED per user request */}
+                  {/* <div className="flex flex-col gap-2"> ... </div> */}
+                  <p className="text-[11px] md:text-xs text-slate-500 font-bold leading-relaxed max-w-2xl">
+                    学習文に基づき、あなたの「書き方の癖」をAIがDNAとして抽出・最適化します。
+                    <span className="text-indigo-600 font-black ml-1.5">※ 保存時に自動で最適化が行われます。</span>
+                  </p>
+                </div>
+
+                {/* Console Body: Hints Grid */}
+                <div className="px-6 md:px-8 py-5 bg-slate-50/30 border-b-2 border-slate-100">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+                    <div className="flex gap-4 items-start">
+                      <div className="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center shrink-0 shadow-sm mt-0.5">
+                        <MagicWandIcon className="w-4 h-4 text-indigo-400" />
+                      </div>
+                      <div className="space-y-1">
+                        <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">効果的な学習</h5>
+                        <p className="text-[11px] text-slate-500 leading-relaxed font-bold">
+                          各SNSごとに<span className="text-indigo-600">最大5件</span>まで登録できます。
+                          過去の投稿を登録すると、文体や絵文字の癖を自動で学習します。
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex gap-4 items-start">
+                      <div className="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center shrink-0 shadow-sm mt-0.5">
+                        <SparklesIcon className="w-4 h-4 text-rose-400" />
+                      </div>
+                      <div className="space-y-1">
+                        <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">プライバシー</h5>
+                        <p className="text-[11px] text-slate-500 leading-relaxed font-bold">
+                          「AI伏せ字」を使えば、固有名詞などを安全に隠して学習データを作成できます。
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div className="flex-1 flex gap-3 md:gap-4">
-                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-rose-50 flex items-center justify-center shrink-0">
-                    <SparklesIcon className="w-4 h-4 md:w-5 md:h-5 text-rose-500" />
-                  </div>
-                  <div className="space-y-0.5 md:space-y-1">
-                    <h4 className="text-[10px] md:text-[11px] font-black text-rose-900 uppercase tracking-wider">個人情報を守る</h4>
-                    <p className="text-[11px] md:text-xs text-slate-500 leading-relaxed font-bold">
-                      「AI伏せ字」で名前などを自動で書き換えます。<span className="hidden md:inline"><br />安全な学習データが作れます。</span>
-                    </p>
-                  </div>
+
+                {/* Console Content: Unified Samples List */}
+                <div className="bg-white">
+                  {renderUnifiedSamples()}
                 </div>
               </div>
-
-              {/* Instagram Sample */}
-              {renderSampleList(Platform.Instagram, 'bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-500', InstagramIcon)}
-
-              {/* X Sample */}
-              {renderSampleList(Platform.X, 'bg-slate-900', (props: any) => (
-                <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M4 4l11.733 16h4.267l-11.733 -16z" /><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" />
-                </svg>
-              ))}
-
-              {/* Google Maps Sample */}
-              {renderSampleList(Platform.GoogleMaps, 'bg-blue-600', (props: any) => (
-                <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" />
-                </svg>
-              ))}
-
-              {/* LINE Sample */}
-              {renderSampleList(Platform.Line, 'bg-[#06C755]', LineIcon)}
             </div>
-          </div>
-        </div>
 
-        <div className="p-8 md:p-10 border-t-[3px] border-black bg-white flex flex-col md:flex-row items-stretch justify-between gap-6 shrink-0 z-10 relative">
-          <div className="flex-1 flex flex-col gap-2 relative">
-            {showSuccessToast && (
-              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 z-[50] animate-in slide-in-from-bottom-2 fade-in duration-500">
-                <div className="bg-white text-black px-5 py-2.5 rounded-xl shadow-[4px_4px_0_0_rgba(0,0,0,1)] flex items-center gap-2 border-2 border-black whitespace-nowrap">
-                  <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
-                  <span className="text-[11px] font-black uppercase tracking-widest">保存しました</span>
-                </div>
+            <div className="p-8 md:p-10 border-t-[3px] border-black bg-white flex flex-col md:flex-row items-stretch justify-between gap-6 shrink-0 z-10 relative">
+              <div className="flex-1 flex flex-col gap-2 relative">
+                {showSuccessToast && (
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 z-[50] animate-in slide-in-from-bottom-2 fade-in duration-500">
+                    <div className="bg-white text-black px-5 py-2.5 rounded-xl shadow-[4px_4px_0_0_rgba(0,0,0,1)] flex items-center gap-2 border-2 border-black whitespace-nowrap">
+                      <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
+                      <span className="text-[11px] font-black uppercase tracking-widest">保存しました</span>
+                    </div>
+                  </div>
+                )}
+                <button
+                  onClick={handleSave}
+                  disabled={isSaveDisabled}
+                  className="w-full bg-[var(--gold)] hover:bg-[var(--rose)] border-2 border-black disabled:opacity-50 disabled:cursor-not-allowed text-black px-8 py-4 md:py-6 rounded-xl font-black text-sm uppercase tracking-[0.3em] flex items-center justify-center gap-4 transition-all transform hover:translate-x-[-2px] hover:translate-y-[-2px] active:translate-x-0 active:translate-y-0 shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] group relative overflow-hidden"
+                >
+                  {(isInternalSaving || isAnalyzingPersona) ? (
+                    <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin"></div>
+                  ) : (
+                    <SaveIcon className="w-5 h-5 group-hover:scale-110 transition-transform relative z-10" />
+                  )}
+                  <span className="relative z-10">
+                    {isAnalyzingPersona ? '解析＆保存中...' : (selectedPresetId ? '更新して保存' : '新規作成して保存')}
+                  </span>
+                </button>
               </div>
-            )}
-            <button
-              onClick={handleSave}
-              disabled={isSaveDisabled}
-              className="w-full bg-[var(--gold)] hover:bg-[var(--rose)] border-2 border-black disabled:opacity-50 disabled:cursor-not-allowed text-black px-8 py-4 md:py-6 rounded-xl font-black text-sm uppercase tracking-[0.3em] flex items-center justify-center gap-4 transition-all transform hover:translate-x-[-2px] hover:translate-y-[-2px] active:translate-x-0 active:translate-y-0 shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] group relative overflow-hidden"
-            >
-              <SaveIcon className="w-5 h-5 group-hover:scale-110 transition-transform relative z-10" />
-              <span className="relative z-10">{selectedPresetId ? '更新して保存' : '新規作成して保存'}</span>
-            </button>
+            </div>
           </div>
         </div>
       </div>
@@ -765,15 +990,19 @@ const PresetModal: React.FC<PresetModalProps> = ({
               <div className={`p-2.5 md:p-3 rounded-xl border-2 border-black shadow-[2px_2px_0_0_rgba(0,0,0,1)] ${expandingPlatform === Platform.Instagram ? 'bg-pink-50 text-pink-500' :
                 expandingPlatform === Platform.X ? 'bg-slate-900 text-white' :
                   expandingPlatform === Platform.Line ? 'bg-[#06C755] text-white' :
-                    'bg-blue-600 text-white'
+                    expandingPlatform === Platform.GoogleMaps ? 'bg-blue-600 text-white' :
+                      'bg-indigo-500 text-white'
                 }`}>
                 {expandingPlatform === Platform.Instagram && <InstagramIcon className="w-5 h-5 md:w-6 md:h-6" />}
                 {expandingPlatform === Platform.X && <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="md:w-6 md:h-6"><path d="M4 4l11.733 16h4.267l-11.733 -16z" /><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" /></svg>}
                 {expandingPlatform === Platform.Line && <LineIcon className="w-5 h-5 md:w-6 md:h-6" />}
                 {expandingPlatform === Platform.GoogleMaps && <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" className="md:w-6 md:h-6"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" /></svg>}
+                {expandingPlatform === Platform.General && <MagicWandIcon className="w-5 h-5 md:w-6 md:h-6" />}
               </div>
               <div>
-                <h3 className="font-black text-lg md:text-xl text-slate-800 tracking-tight">{expandingPlatform} の文体学習</h3>
+                <h3 className="font-black text-lg md:text-xl text-slate-800 tracking-tight">
+                  {expandingPlatform === Platform.General ? '文章スタイルの学習' : `${expandingPlatform} の文体学習`}
+                </h3>
                 <p className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest">Focus Mode Editor</p>
               </div>
             </div>
@@ -782,6 +1011,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
               onClick={() => {
                 setExpandingPlatform(null);
                 setEditingSampleId(null);
+                setSelectedPlatforms([Platform.General]);
               }}
               className="md:hidden p-3 bg-white hover:bg-slate-100 text-slate-500 rounded-xl transition-all border-2 border-slate-200 shadow-[2px_2px_0_0_rgba(0,0,0,1)] active:translate-x-0 active:translate-y-0"
               title="閉じる"
@@ -897,24 +1127,118 @@ const PresetModal: React.FC<PresetModalProps> = ({
             </button>
             <button
               onClick={() => {
-                handleToggleTrainingInternal(modalText, expandingPlatform!);
+                handleToggleTrainingInternal(modalText, selectedPlatforms);
               }}
-              disabled={isTrainingLoading}
+              disabled={isTrainingLoading || selectedPlatforms.length === 0}
               className={`flex-1 md:flex-none p-3 bg-[#001738] hover:bg-slate-900 text-white rounded-xl transition-all font-black text-sm px-6 md:px-10 border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] active:translate-x-0 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2`}
             >
               {isTrainingLoading && <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>}
-              {editingSampleId ? '更新して学習' : '学習を開始する'}
+              {editingSampleId ? '内容を更新' : `${selectedPlatforms.length === 1 && selectedPlatforms[0] === Platform.General ? '共通' : '選択媒体'}として学習`}
             </button>
             <button
               onClick={() => {
                 setExpandingPlatform(null);
                 setEditingSampleId(null);
+                setSelectedPlatforms([Platform.General]);
               }}
               className="hidden md:flex p-3 bg-white hover:bg-slate-100 text-slate-500 rounded-xl transition-all border-2 border-slate-200 shadow-[2px_2px_0_0_rgba(0,0,0,1)] active:translate-x-0 active:translate-y-0"
               title="閉じる"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
+          </div>
+        </div>
+
+        {/* Platform Selection Groups */}
+        {/* Platform Selection Groups - Compacted */}
+        <div className="px-5 md:px-6 py-2 bg-white border-b-2 border-slate-200 flex flex-col gap-2 shrink-0">
+          <div className="space-y-2">
+            {/* SNS Group */}
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest pl-1">SNS 投稿スタイル (発信向け)</span>
+              </div>
+              <div className="flex flex-wrap items-center gap-1.5">
+                {[Platform.General, Platform.Instagram, Platform.X, Platform.Line].map((p) => {
+                  const isCommonSelected = selectedPlatforms.includes(Platform.General);
+                  const isSelected = p === Platform.General ? isCommonSelected : (isCommonSelected || selectedPlatforms.includes(p));
+
+                  return (
+                    <button
+                      key={p}
+                      type="button"
+                      onClick={() => {
+                        if (p === Platform.General) {
+                          if (isCommonSelected) {
+                            setSelectedPlatforms([Platform.Instagram]); // Default back to one
+                          } else {
+                            // Select only SNS platforms (X, Instagram, Line) + General
+                            setSelectedPlatforms([Platform.General, Platform.X, Platform.Instagram, Platform.Line]);
+                          }
+                        } else {
+                          if (isSelected) {
+                            if (selectedPlatforms.length > 1) {
+                              // If common was active, unselecting one must turn off common
+                              setSelectedPlatforms(selectedPlatforms.filter(item => item !== p && item !== Platform.General));
+                            }
+                          } else {
+                            setSelectedPlatforms([...selectedPlatforms, p]);
+                          }
+                        }
+                      }}
+                      className={`
+                        px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all border-2
+                        ${isSelected
+                          ? 'bg-black text-white border-black shadow-[1px_1px_0_0_rgba(0,0,0,1)] -translate-y-0.5'
+                          : 'bg-white text-slate-400 border-slate-100 hover:border-black hover:text-black'
+                        }
+                      `}
+                    >
+                      {p === Platform.General ? '共通スタイル' : p.split(' ')[0]}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Google Maps Group */}
+            <div className="pt-2 border-t border-slate-50 flex items-center justify-between">
+              <div className="flex flex-wrap items-center gap-1.5">
+                <span className="text-[9px] font-black text-blue-400 uppercase tracking-widest pl-1 mr-2">返信スタイル (対話向け)</span>
+                {[Platform.GoogleMaps].map((p) => {
+                  const isCommonSelected = selectedPlatforms.includes(Platform.General);
+                  const isSelected = selectedPlatforms.includes(p);
+                  return (
+                    <button
+                      key={p}
+                      type="button"
+                      onClick={() => {
+                        if (isSelected) {
+                          if (selectedPlatforms.length > 1) {
+                            setSelectedPlatforms(selectedPlatforms.filter(item => item !== p));
+                          }
+                        } else {
+                          setSelectedPlatforms([...selectedPlatforms, p]);
+                        }
+                      }}
+                      className={`
+                        px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all border-2
+                        ${isSelected
+                          ? 'bg-blue-600 text-white border-blue-600 shadow-[1px_1px_0_0_rgba(29,78,216,0.2)] -translate-y-0.5'
+                          : 'bg-white text-slate-400 border-slate-100 hover:border-blue-600 hover:text-blue-600'
+                        }
+                      `}
+                    >
+                      {p.split(' ')[0]}
+                    </button>
+                  );
+                })}
+              </div>
+              <span className="text-[9px] font-bold text-blue-500 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100 flex items-center gap-1 shrink-0 ml-auto">
+                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="8" /></svg>
+                単独学習推奨
+              </span>
+            </div>
           </div>
         </div>
 

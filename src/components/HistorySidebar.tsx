@@ -1,6 +1,7 @@
 import React from 'react';
 import { GeneratedPost, Platform, GeneratedResult, StoreProfile, TrainingItem, Preset } from '../types';
-import { CloseIcon, XIcon, InstagramIcon, GoogleMapsIcon, LineIcon, LineCircleIcon, LockIcon, TrashIcon, HistoryIcon, HelpIcon, LogOutIcon, ChevronDownIcon, PinIcon, MagicWandIcon } from './Icons';
+import { CloseIcon, XIcon, InstagramIcon, GoogleMapsIcon, LineIcon, LineCircleIcon, LockIcon, TrashIcon, HistoryIcon, HelpIcon, LogOutIcon, ChevronDownIcon, PinIcon, MagicWandIcon, MessageCircleIcon } from './Icons';
+import { Feedback } from './Feedback';
 
 interface HistorySidebarProps {
   history: GeneratedPost[];
@@ -183,6 +184,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                   <HelpIcon className="w-5 h-5 text-black group-hover:scale-110 transition-transform" />
                   <span className="text-[10px] font-black text-black tracking-widest uppercase">Docs</span>
                 </button>
+                <Feedback mode="sidebar" />
               </div>
 
               <button

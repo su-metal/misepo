@@ -139,7 +139,7 @@ export const DemoSection = ({
                                             <div className="w-8 h-8 bg-[#06C755] border-[2px] border-black rounded-full flex items-center justify-center text-white">
                                                 <Icons.MessageCircle size={14} fill="currentColor" />
                                             </div>
-                                            <span className="font-black text-xs">Official LINE</span>
+                                            <span className="font-black text-xs">LINE</span>
                                         </div>
                                         <div className="flex-1 overflow-y-auto p-4 no-scrollbar flex flex-col gap-4">
                                             <div className="text-[9px] text-white/50 font-black uppercase text-center my-2">Today</div>
