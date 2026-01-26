@@ -83,14 +83,14 @@ export const PlatformSelector: React.FC<PlatformSelectorProps> = ({
                             className={`
                                 relative flex flex-col items-center justify-center gap-3 p-5 rounded-2xl border-[3px] transition-all duration-300 group
                                 ${isSelected
-                                    ? 'bg-white border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]'
-                                    : 'bg-white border-gray-200 hover:border-gray-300 shadow-[2px_2px_0px_0px_rgba(0,0,0,0.1)]'}
+                                    ? `bg-white border-black ${p === Platform.X ? 'shadow-[6px_6px_0px_0px_#9B8FD4]' : 'shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]'} hover:translate-x-[-2px] hover:translate-y-[-2px] ${p === Platform.X ? 'hover:shadow-[8px_8px_0px_0px_#9B8FD4]' : 'hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]'}`
+                                    : 'bg-white border-gray-200 hover:border-gray-300 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]'}
                             `}
                         >
                             <div className={`
                                 w-12 h-12 rounded-xl border-[2px] flex items-center justify-center transition-all duration-300
                                 ${isSelected
-                                    ? `${getSelectedStyle(p)} border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]`
+                                    ? `${getSelectedStyle(p)} border-black ${p === Platform.X ? 'shadow-[2px_2px_0px_0px_#9B8FD4]' : 'shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]'}`
                                     : 'bg-gray-50 border-black/10 text-gray-400 group-hover:bg-white group-hover:text-black group-hover:border-black/30 grayscale'}
                             `}>
                                 {getPlatformIcon(p)}
