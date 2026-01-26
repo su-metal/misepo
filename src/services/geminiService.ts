@@ -755,8 +755,23 @@ export const analyzePersona = async (
   const ai = getServerAI();
 
   // Group samples by platform for the prompt
-  const platforms = [...new Set(samples.map(s => s.platform))];
-  const samplesByPlatform = samples.reduce((acc, s) => {
+  // Normalize multi-platform strings (e.g. "Instagram, X") into individual samples
+  const normalizedSamples: { content: string, platform: string }[] = [];
+  
+  samples.forEach(s => {
+    const platforms = s.platform.split(',').map(p => p.trim());
+    platforms.forEach(p => {
+        // Map common variations to Enum values if needed, otherwise keep as is
+        // The AI needs 'X (Twitter)' to match the enum exactly for client-side lookups
+        let cleanPlatform = p;
+        if (p === 'X' || p === 'Twitter') cleanPlatform = 'X (Twitter)';
+        else if (p === 'Line') cleanPlatform = 'LINE';
+        
+        normalizedSamples.push({ content: s.content, platform: cleanPlatform });
+    });
+  });
+
+  const samplesByPlatform = normalizedSamples.reduce((acc, s) => {
     acc[s.platform] = (acc[s.platform] || '') + `<sample>\n${s.content}\n</sample>\n`;
     return acc;
   }, {} as Record<string, string>);
@@ -766,27 +781,26 @@ You are an expert linguistic analyst.
 Your task is to analyze social media posts and extract the "Style DNA" (Persona Rules) for EACH platform independently.
 
 **Input Data:**
-Samples are grouped by platform (e.g., X, Instagram, Line).
+Samples are grouped by platform.
 
 **CRITICAL INSTRUCTION: INDEPENDENT ANALYSIS & SPECIFICITY**
 - **DO NOT MERGE** personas across platforms.
-- **NO GENERIC ADVICE**: Do not just say "be concise" for X. You MUST extract the actual *linguistic habits* (e.g., "End sentences with 〜です/〜ます", "Use ❗ instead of 。").
-- **MANDATORY**: For EVERY platform, you must extract a specific list of endings (sentence endings) found in the samples.
-- If "X" samples use courteous language ("〜いたします"), the YAML MUST reflect that, even if X is typically casual. **Trust the samples over platform stereotypes.**
+- **NO GENERIC ADVICE**: Extract actual *linguistic habits* (e.g., "End sentences with 〜です/〜ます").
+- **Trust the samples over platform stereotypes.** If "LINE" samples are polite, the analysis MUST be polite. Do NOT hallucinate "slang" or "casualness" if it's not in the samples.
 
 **Output Goal:**
 Create a separate YAML definition for each platform found in the input.
 
 **Format (JSON):**
-Return a SINGLE JSON object where:
-- Key: Platform Name (e.g., "X", "Instagram", "GoogleMaps", "General")
-- Value: A valid YAML string containing 'core_voice' and 'endings'.
+Return a SINGLE JSON object.
+Keys MUST match the input platform names EXACTLY (e.g., "X (Twitter)", "Instagram", "LINE", "Google Maps").
+Value: A valid YAML string containing 'core_voice' and 'endings'.
 
 Example Output:
 \`\`\`json
 {
-  "X": "core_voice:\\n  tone: 'Polite and calm'\\n  endings: ['~です', '~ます', '~いたします']\\n  structure: ' concise but polite'",
-  "GoogleMaps": "core_voice:\\n  tone: 'Energetic Izakaya Boss'\\n  endings: ['~っす!', '~だら?']"
+  "X (Twitter)": "core_voice:\\n  tone: 'Polite'\\n  endings: ['~です']",
+  "Google Maps": "core_voice:\\n  tone: 'Energetic'\\n  endings: ['~っす!']"
 }
 \`\`\`
 `;
@@ -802,16 +816,16 @@ Example Output:
     contents: [{ role: "user", parts: [{ text: userPrompt }] }],
     config: {
       systemInstruction,
-      responseMimeType: "application/json", // Force JSON output
-      temperature: 0.2,
+      responseMimeType: "application/json",
+      temperature: 0.1, // Reduced temperature to prevent stereotype hallucination
     },
   });
 
   const text = response.text || "{}";
-  // Verify it's valid JSON, otherwise return empty object
+  // Verify it's valid JSON
   try {
-    JSON.parse(text);
-    return text; // Return the raw JSON string to be saved in persona_yaml column
+    const json = JSON.parse(text);
+    return JSON.stringify(json); // Return clean JSON string
   } catch (e) {
     console.error("[ANALYZE] Failed to parse JSON response:", text);
     return "{}";

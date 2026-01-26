@@ -18,17 +18,19 @@ export async function POST(req: NextRequest) {
     }
 
     // Check for duplicate content for this user AND preset
-    const { data: existing } = await supabase
-      .from('learning_sources')
-      .select('id')
-      .eq('user_id', user.id)
-      .eq('preset_id', presetId)
-      .eq('content', content.trim())
-      .single();
+    // Skip this check if we are doing a replacement (update), as we want to allow updating the platform of an existing text.
+    if (!replaceId) {
+      const { data: existing } = await supabase
+        .from('learning_sources')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('preset_id', presetId)
+        .eq('content', content.trim())
+        .single();
 
-    if (existing) {
-      // If found, we skip saving or update source? Usually already exists is fine.
-      return NextResponse.json({ ok: true, message: 'Already exists', id: existing.id });
+      if (existing) {
+        return NextResponse.json({ ok: true, message: 'Already exists', id: existing.id });
+      }
     }
 
     // Check count for this preset (Omakase vs Custom etc)

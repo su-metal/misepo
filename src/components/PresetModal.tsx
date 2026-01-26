@@ -611,7 +611,13 @@ const PresetModal: React.FC<PresetModalProps> = ({
                               e.stopPropagation();
                               // Pass the *current section's* platform (e.g. "Instagram") instead of item.platform ("Instagram, X")
                               // This enables the "Smart Delete" logic in App.tsx to remove just this tag.
-                              onToggleTraining(item.content, platform as Platform, item.presetId, undefined, 'manual');
+                              const targetPlatform = platform as Platform;
+                              onToggleTraining(item.content, targetPlatform, item.presetId, undefined, 'manual')
+                                .then(() => {
+                                  setHasUnanalyzedChanges(true);
+                                  // Re-expand the current section to show updated state (optional but nice)
+                                  if (!expandedSections[targetPlatform]) toggleSection(targetPlatform);
+                                });
                             }}
                             className="p-1 md:p-1.5 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all opacity-100 md:opacity-0 group-hover:opacity-100"
                           >

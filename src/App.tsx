@@ -337,7 +337,7 @@ function App() {
 
           setTrainingItems(prev => prev.map(item =>
             item.id === existing.id
-              ? { ...item, platform: newPlatforms as any } // Optimistic / Result update (Type cast to avoid strict Enum check for comma-separated string)
+              ? { ...item, id: data.id, platform: newPlatforms as any } // Update with NEW ID and new platforms
               : item
           ));
           return;
