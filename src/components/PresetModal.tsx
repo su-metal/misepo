@@ -418,15 +418,20 @@ const PresetModal: React.FC<PresetModalProps> = ({
     );
 
     return (
-      <div className="bg-white rounded-2xl p-6 md:p-8 mb-6 shadow-[4px_4px_0_0_rgba(0,0,0,1)] border-2 border-black">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white border-2 border-black shadow-[2px_2px_0_0_rgba(0,0,0,1)] bg-indigo-500`}>
-              <MagicWandIcon className="w-5 h-5" />
+      <div className="py-8 md:py-12">
+        <div className="px-6 md:px-10 flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+          <div className="flex items-center gap-5">
+            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] bg-indigo-600`}>
+              <MagicWandIcon className="w-7 h-7" />
             </div>
             <div>
-              <span className={`text-[12px] font-black uppercase tracking-widest text-black block`}>Learning Sources</span>
-              <span className="text-[10px] font-black text-slate-400">{samples.length} / 50 samples stored</span>
+              <h4 className="text-sm md:text-lg font-black text-black tracking-tight leading-none mb-1.5">学習データ・ベース</h4>
+              <div className="flex items-center gap-2.5">
+                <span className="text-[10px] md:text-[11px] font-black text-slate-400 uppercase tracking-widest leading-none">
+                  {samples.length} / 50 Samples
+                </span>
+                <span className="px-2 py-0.5 bg-indigo-50 text-indigo-600 text-[9px] font-black rounded-md border border-indigo-100 uppercase tracking-wider">Stored</span>
+              </div>
             </div>
           </div>
           <button
@@ -455,11 +460,11 @@ const PresetModal: React.FC<PresetModalProps> = ({
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-6 md:px-10">
             {samples.map((item) => (
               <div
                 key={item.id}
-                className="group relative flex flex-col justify-between p-5 rounded-2xl bg-white border-2 border-black hover:bg-[var(--bg-beige)] hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:-translate-y-0.5 transition-all cursor-pointer"
+                className="group relative flex flex-col justify-between p-6 rounded-3xl bg-white border-2 border-black hover:bg-[var(--bg-beige)] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] hover:-translate-y-0.5 transition-all cursor-pointer"
                 onClick={() => {
                   setModalText(item.content);
                   setEditingSampleId(item.id);
@@ -471,7 +476,9 @@ const PresetModal: React.FC<PresetModalProps> = ({
                 <div>
                   <div className="flex items-center gap-2 mb-3">
                     <span className="px-2 py-0.5 rounded-lg border border-black bg-slate-100 text-[9px] font-black text-slate-500 uppercase tracking-wider">
-                      {item.platform === Platform.General ? 'Source' : item.platform.split(' ')[0]}
+                      {item.platform === Platform.General ? 'Source' :
+                        (item.platform === Platform.Line || (item.platform as string) === 'Official LINE') ? 'LINE' :
+                          item.platform.split(' ')[0]}
                     </span>
                   </div>
                   <p className="text-[12px] text-black font-bold line-clamp-5 leading-relaxed whitespace-pre-wrap">
@@ -731,84 +738,97 @@ const PresetModal: React.FC<PresetModalProps> = ({
             <label className="block text-[10px] md:text-[11px] font-black text-slate-800 uppercase tracking-[0.3em] mb-3 md:mb-5">
               AIプロフィールの育成 (文体学習)
             </label>
-            <div className="bg-slate-100/50 rounded-[40px] p-1.5 md:p-2 border border-slate-200/50">
-              {/* Learning Hints relocated from Focus Mode */}
-              <div className="p-5 md:p-6 flex flex-col md:flex-row gap-4 md:gap-6 shrink-0 bg-white/40 rounded-[32px] mb-6 border border-slate-100">
-                <div className="flex-1 flex gap-3 md:gap-4">
-                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-indigo-50 flex items-center justify-center shrink-0">
-                    <MagicWandIcon className="w-4 h-4 md:w-5 md:h-5 text-indigo-500" />
+            <div className="bg-white border-2 border-black rounded-[32px] overflow-hidden shadow-[4px_4px_0_0_rgba(0,0,0,1)]">
+              {/* Console Header: Status and Description */}
+              <div className="p-6 md:p-8 border-b-2 border-slate-100 bg-[var(--bg-beige)]/30">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center border border-indigo-100">
+                      <MagicWandIcon className="w-5 h-5 text-indigo-500" />
+                    </div>
+                    <div>
+                      <h4 className="text-sm md:text-base font-black text-black leading-tight">スタイル・インテリジェンス</h4>
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-0.5">Automated Optimization</p>
+                    </div>
                   </div>
-                  <div className="space-y-0.5 md:space-y-1">
-                    <h4 className="text-[10px] md:text-[11px] font-black text-indigo-900 uppercase tracking-wider">学習のヒント</h4>
-                    <p className="text-[11px] md:text-xs text-slate-500 leading-relaxed font-bold">
-                      過去の投稿を3〜5件貼り付けるのがベストです。<span className="hidden md:inline"><br />文体や絵文字はAIが自動で学習します。</span>
-                    </p>
-                  </div>
+                  {personaYaml ? (
+                    <div className="flex items-center gap-2 px-3 py-1.5 bg-green-50 border border-green-200 rounded-lg self-start md:self-auto">
+                      <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
+                      <span className="text-[10px] font-black text-green-700 uppercase tracking-wider">最適化済み</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg self-start md:self-auto">
+                      <div className="w-1.5 h-1.5 rounded-full bg-slate-300"></div>
+                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">未学習</span>
+                    </div>
+                  )}
                 </div>
-                <div className="flex-1 flex gap-3 md:gap-4">
-                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-rose-50 flex items-center justify-center shrink-0">
-                    <SparklesIcon className="w-4 h-4 md:w-5 md:h-5 text-rose-500" />
+                <p className="text-[11px] md:text-xs text-slate-500 font-bold leading-relaxed max-w-2xl">
+                  学習文に基づき、あなたの「書き方の癖」をAIがDNAとして抽出・最適化します。
+                  <span className="text-indigo-600 font-black ml-1.5">※ 保存時に自動で最適化が行われます。</span>
+                </p>
+              </div>
+
+              {/* Console Body: Hints Grid */}
+              <div className="px-6 md:px-8 py-6 bg-slate-50/30 border-b-2 border-slate-100">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="flex gap-4">
+                    <div className="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center shrink-0">
+                      <MagicWandIcon className="w-4 h-4 text-indigo-400" />
+                    </div>
+                    <div className="space-y-1">
+                      <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">効果的な学習</h5>
+                      <p className="text-[11px] text-slate-500 leading-snug font-bold">
+                        過去の投稿を3〜5件貼り付けるのがベストです。<br />文体や絵文字はAIが自動学習します。
+                      </p>
+                    </div>
                   </div>
-                  <div className="space-y-0.5 md:space-y-1">
-                    <h4 className="text-[10px] md:text-[11px] font-black text-rose-900 uppercase tracking-wider">個人情報を守る</h4>
-                    <p className="text-[11px] md:text-xs text-slate-500 leading-relaxed font-bold">
-                      「AI伏せ字」で名前などを自動で書き換えます。<span className="hidden md:inline"><br />安全な学習データが作れます。</span>
-                    </p>
+                  <div className="flex gap-4">
+                    <div className="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center shrink-0">
+                      <SparklesIcon className="w-4 h-4 text-rose-400" />
+                    </div>
+                    <div className="space-y-1">
+                      <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">プライバシー</h5>
+                      <p className="text-[11px] text-slate-500 leading-snug font-bold">
+                        「AI伏せ字」で実在の名前などを安全な形に書き換えて学習用データを作成できます。
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* Persona Analysis Button */}
-            <div className="px-5 mb-8">
-              <div className="flex flex-col md:flex-row items-center gap-6 p-6 rounded-3xl bg-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] group hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] hover:-translate-y-0.5 transition-all">
-                <div className="w-full space-y-2">
-                  <div className="flex items-center justify-center md:justify-start gap-2">
-                    <MagicWandIcon className="w-4 h-4 text-indigo-500" />
-                    <h4 className="text-sm font-black text-black">スタイル・インテリジェンス</h4>
-                    {personaYaml && (
-                      <span className="px-2 py-0.5 bg-green-100 text-green-700 text-[10px] font-black rounded-lg border border-green-200">
-                        最適化済み
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-[11px] text-slate-500 font-bold leading-relaxed">
-                    学習文に基づき、あなたの「書き方の癖」をAIがDNA（YAML）として抽出・最適化します。
-                    <span className="text-indigo-600 block mt-1">※ 保存時に自動で最適化が行われるため、操作は不要です。</span>
-                  </p>
-                </div>
+              {/* Console Content: Unified Samples List */}
+              <div className="bg-white">
+                {renderUnifiedSamples()}
               </div>
-
-              {/* Unified Samples List */}
-              {renderUnifiedSamples()}
             </div>
           </div>
-        </div>
 
-        <div className="p-8 md:p-10 border-t-[3px] border-black bg-white flex flex-col md:flex-row items-stretch justify-between gap-6 shrink-0 z-10 relative">
-          <div className="flex-1 flex flex-col gap-2 relative">
-            {showSuccessToast && (
-              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 z-[50] animate-in slide-in-from-bottom-2 fade-in duration-500">
-                <div className="bg-white text-black px-5 py-2.5 rounded-xl shadow-[4px_4px_0_0_rgba(0,0,0,1)] flex items-center gap-2 border-2 border-black whitespace-nowrap">
-                  <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
-                  <span className="text-[11px] font-black uppercase tracking-widest">保存しました</span>
+          <div className="p-8 md:p-10 border-t-[3px] border-black bg-white flex flex-col md:flex-row items-stretch justify-between gap-6 shrink-0 z-10 relative">
+            <div className="flex-1 flex flex-col gap-2 relative">
+              {showSuccessToast && (
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 z-[50] animate-in slide-in-from-bottom-2 fade-in duration-500">
+                  <div className="bg-white text-black px-5 py-2.5 rounded-xl shadow-[4px_4px_0_0_rgba(0,0,0,1)] flex items-center gap-2 border-2 border-black whitespace-nowrap">
+                    <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
+                    <span className="text-[11px] font-black uppercase tracking-widest">保存しました</span>
+                  </div>
                 </div>
-              </div>
-            )}
-            <button
-              onClick={handleSave}
-              disabled={isSaveDisabled}
-              className="w-full bg-[var(--gold)] hover:bg-[var(--rose)] border-2 border-black disabled:opacity-50 disabled:cursor-not-allowed text-black px-8 py-4 md:py-6 rounded-xl font-black text-sm uppercase tracking-[0.3em] flex items-center justify-center gap-4 transition-all transform hover:translate-x-[-2px] hover:translate-y-[-2px] active:translate-x-0 active:translate-y-0 shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] group relative overflow-hidden"
-            >
-              {(isInternalSaving || isAnalyzingPersona) ? (
-                <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin"></div>
-              ) : (
-                <SaveIcon className="w-5 h-5 group-hover:scale-110 transition-transform relative z-10" />
               )}
-              <span className="relative z-10">
-                {isAnalyzingPersona ? '解析＆保存中...' : (selectedPresetId ? '更新して保存' : '新規作成して保存')}
-              </span>
-            </button>
+              <button
+                onClick={handleSave}
+                disabled={isSaveDisabled}
+                className="w-full bg-[var(--gold)] hover:bg-[var(--rose)] border-2 border-black disabled:opacity-50 disabled:cursor-not-allowed text-black px-8 py-4 md:py-6 rounded-xl font-black text-sm uppercase tracking-[0.3em] flex items-center justify-center gap-4 transition-all transform hover:translate-x-[-2px] hover:translate-y-[-2px] active:translate-x-0 active:translate-y-0 shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] group relative overflow-hidden"
+              >
+                {(isInternalSaving || isAnalyzingPersona) ? (
+                  <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin"></div>
+                ) : (
+                  <SaveIcon className="w-5 h-5 group-hover:scale-110 transition-transform relative z-10" />
+                )}
+                <span className="relative z-10">
+                  {isAnalyzingPersona ? '解析＆保存中...' : (selectedPresetId ? '更新して保存' : '新規作成して保存')}
+                </span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -850,10 +870,10 @@ const PresetModal: React.FC<PresetModalProps> = ({
           <div className="flex items-center justify-between w-full md:w-auto">
             <div className="flex items-center gap-3 md:gap-4">
               <div className={`p-2.5 md:p-3 rounded-xl border-2 border-black shadow-[2px_2px_0_0_rgba(0,0,0,1)] ${expandingPlatform === Platform.Instagram ? 'bg-pink-50 text-pink-500' :
-                  expandingPlatform === Platform.X ? 'bg-slate-900 text-white' :
-                    expandingPlatform === Platform.Line ? 'bg-[#06C755] text-white' :
-                      expandingPlatform === Platform.GoogleMaps ? 'bg-blue-600 text-white' :
-                        'bg-indigo-500 text-white'
+                expandingPlatform === Platform.X ? 'bg-slate-900 text-white' :
+                  expandingPlatform === Platform.Line ? 'bg-[#06C755] text-white' :
+                    expandingPlatform === Platform.GoogleMaps ? 'bg-blue-600 text-white' :
+                      'bg-indigo-500 text-white'
                 }`}>
                 {expandingPlatform === Platform.Instagram && <InstagramIcon className="w-5 h-5 md:w-6 md:h-6" />}
                 {expandingPlatform === Platform.X && <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="md:w-6 md:h-6"><path d="M4 4l11.733 16h4.267l-11.733 -16z" /><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" /></svg>}
@@ -927,9 +947,9 @@ const PresetModal: React.FC<PresetModalProps> = ({
               onClick={() => fileInputRef.current?.click()}
               disabled={isAnalyzingImage}
               className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-4 md:px-5 py-3 rounded-xl font-black text-[10px] md:text-[11px] transition-all transform hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 border-2 border-black shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)] ${expandingPlatform === Platform.Instagram ? 'bg-white text-pink-500 hover:bg-pink-50' :
-                  expandingPlatform === Platform.X ? 'bg-white text-slate-700 hover:bg-slate-50' :
-                    expandingPlatform === Platform.Line ? 'bg-white text-[#06C755] hover:bg-green-50' :
-                      'bg-white text-blue-600 hover:bg-blue-50'
+                expandingPlatform === Platform.X ? 'bg-white text-slate-700 hover:bg-slate-50' :
+                  expandingPlatform === Platform.Line ? 'bg-white text-[#06C755] hover:bg-green-50' :
+                    'bg-white text-blue-600 hover:bg-blue-50'
                 }`}
             >
               {isAnalyzingImage ? (
@@ -968,9 +988,9 @@ const PresetModal: React.FC<PresetModalProps> = ({
               }}
               disabled={isSanitizing || !modalText.trim()}
               className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-4 md:px-5 py-3 rounded-xl font-black text-[10px] md:text-[11px] transition-all transform hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 border-2 border-black shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)] ${expandingPlatform === Platform.Instagram ? 'bg-pink-50 text-pink-600 hover:bg-pink-100' :
-                  expandingPlatform === Platform.X ? 'bg-slate-100 text-slate-700 hover:bg-slate-200' :
-                    expandingPlatform === Platform.Line ? 'bg-green-50 text-[#06C755] hover:bg-green-100' :
-                      'bg-blue-50 text-blue-600 hover:bg-blue-100'
+                expandingPlatform === Platform.X ? 'bg-slate-100 text-slate-700 hover:bg-slate-200' :
+                  expandingPlatform === Platform.Line ? 'bg-green-50 text-[#06C755] hover:bg-green-100' :
+                    'bg-blue-50 text-blue-600 hover:bg-blue-100'
                 }`}
             >
               {isSanitizing ? (
