@@ -594,7 +594,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                           setModalText(item.content);
                           setEditingSampleId(item.id);
                           setExpandingPlatform(item.platform);
-                          const platforms = item.platform.split(', ').map(p => p.trim()) as Platform[];
+                          const platforms = item.platform.split(',').map(p => p.trim()) as Platform[];
                           setSelectedPlatforms(platforms);
                         }}
                       >
