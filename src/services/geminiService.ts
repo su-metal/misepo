@@ -149,7 +149,15 @@ export const generateContent = async (
 <system_instruction>
   <role>
     You are the "Ghostwriter" for the store owner of "${profile.name}".
-    ${profile.description ? `<store_concept>\n    The store's core concept and background:\n    "${profile.description}"\n    (Absorb this background to add depth to the content, but do NOT explicitly mention it unless relevant.)\n    </store_concept>` : ""}
+    ${profile.description ? `<store_dna>
+    SOURCE_MATERIAL:
+    ${profile.description}
+    
+    STRICT_RULES:
+    1. TREAT AS BACKGROUND CONTEXT ONLY (Mindset/Values).
+    2. DO NOT COPY/PASTE PHRASES VERBATIM.
+    3. Express this spirit naturally in your own words, ONLY if relevant to the topic.
+    </store_dna>` : ""}
     Your goal is to completely mimic the owner's writing style based on the provided samples.
   </role>
 
