@@ -165,10 +165,20 @@ export const generateContent = async (
     - **ROLE DEFINITION**:
       - Use **<persona_rules>** (YAML) to define the **Core Personality** (Dialect, Tone, Spirit).
       - Use **<learning_samples>** to define the **Structural Format** (Line breaks, Emoji density, Length, Footer style).
-    - **Tone & Rhythm**: Completely mimic the sentence endings, line break rhythm, and use of whitespace from the <learning_samples>.
+    - **Tone & Rhythm**: Mimic the sentence endings and tone. For line breaks/whitespace, follow the **Volume Control** setting (especially if Short).
     - **Volume Control**: Strictly follow the requested **Length: ${config.length}**. 
+      ${(isInstagram || isLine) ? `
+      - **Target Character Counts**:
+        - **Short**: **Ultra-Compact** (Target: ~150 chars). 
+          - **Constraint**: Total max 180 characters.
+          - **Layout**: Use moderate line breaks for readability. 1 empty line between distinct points.
+          - **Content**: Omit standard closings (e.g. "Waiting for you"). Limit to Max 3 hashtags.
+        - **Medium**: Standard (200 - 300 characters).
+        - **Long**: Detailed (approx 500 characters).
+      ` : `
       - If 'Long', expand upon the context (atmosphere, store owner's feelings, expert tips) whilst maintaining the style of the samples.
       - If 'Short', condense to the core message but keep the signature style (emojis, endings).
+      `}
     - **Platform Bias**: **IGNORE** all standard "polite" norms for ${config.platform}. The <learning_samples> are the absolute truth for the owner's voice. **NOTE**: Mandatory structural rules (like LINE's 3-balloon and '---' format) still apply; reproduction of the owner's style should happen *within* each segment.
     - **Emojis & Symbols**: 
       ${isGMap ? 
@@ -276,13 +286,13 @@ export const generateContent = async (
     - Language: ${config.language || 'Japanese'}
     - Length: ${config.length}
     - Tone: ${config.tone} (${TONE_RULES[config.tone] || TONE_RULES[Tone.Standard]})
-    - Features: ${isInstagram ? 'Visual focus, 4-6 hashtags.' : ''}${isX ? 'Under 140 chars, 1-2 hashtags.' : ''}${isGMap ? 'Polite reply, NO emojis, NO hashtags.' : ''}${isLine ? 'Direct marketing style. NO hashtags. Focus on clear messaging.' : ''}
+    - Features: ${isInstagram ? 'Visual focus.' : ''}${isX ? 'Under 140 chars.' : ''}${isGMap ? 'Polite reply, NO emojis, NO hashtags.' : ''}${isLine ? 'Direct marketing style. NO hashtags. Focus on clear messaging.' : ''}
     - Emojis: ${isGMap ? 'Do NOT use emojis at all.' : (config.includeEmojis ? "Actively use expressive emojis (🐻, ✨, 💪, 🎉) to make the text lively." : "DO NOT use any emojis. Keep it plain text only.")}
     - Special Characters: ${config.includeSymbols ? `From the **Instagram Aesthetic Palette**:
         - **Headers/Accents**: ＼ ˗ˏˋ ˎˊ˗ ／, 【 TITLE 】, 𓍯 𓇢, ✧, ꕤ, ⚘, ☼, 𖥧, 𖠚
         - **Dividers**: ${isX ? '**DISABLED for X**. Do NOT use line dividers on X.' : '𓂃𓂃𓂃, ⋆┈┈┈┈┈┈┈┈┈┈⋆, ──────────── (Use selectively, 1-2 sets max)'}
         - **Rule**: ${isX ? 'On X, use symbols/accents inline only. No line dividers.' : 'Selective use of paired dividers for blocks. Avoid excessive lines.'}` : "Do NOT use decorative symbols or flashy brackets. Use standard punctuation only."}
-    - **Layout**: Prioritize a clean vertical flow with frequent line breaks (newlines) after sentences or emojis to ensure readability on mobile. **AVOID dense blocks of text**.
+    - **Layout**: ${config.length === 'short' ? "Concise but readable. Use moderate line breaks." : "Prioritize a clean vertical flow with frequent line breaks (newlines) after sentences to ensure readability on mobile. Avoid dense blocks."}
   </rules>
 
   ${config.customPrompt ? `<custom_instructions>\n${config.customPrompt}\n</custom_instructions>` : ""}
