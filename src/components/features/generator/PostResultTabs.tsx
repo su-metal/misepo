@@ -261,6 +261,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                             text={text}
                                                             config={{ platform: res.platform } as any}
                                                             minimal={true}
+                                                            footerText={storeProfile.instagramFooter}
                                                         />
                                                     </div>
 

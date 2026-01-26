@@ -1,8 +1,13 @@
-import React from 'react';
+import { removeInstagramFooter } from './utils';
 import { Platform, GenerationConfig } from '../../../types';
 
-export function CharCounter({ platform, text, config, minimal = false }: { platform: Platform, text: string, config: GenerationConfig, minimal?: boolean }) {
-    const count = text.length;
+export function CharCounter({ platform, text, config, minimal = false, footerText }: { platform: Platform, text: string, config: GenerationConfig, minimal?: boolean, footerText?: string }) {
+    // Calculate effective count by removing footer if present
+    const cleanText = (platform === Platform.Instagram && footerText)
+        ? removeInstagramFooter(text, footerText)
+        : text;
+
+    const count = cleanText.length;
     const isX = platform === Platform.X;
     const limit = isX ? 140 : null;
 
