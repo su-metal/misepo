@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { CloseIcon, SendIcon, StarIcon, MessageCircleIcon } from './Icons';
 
-export const Feedback = () => {
+export const Feedback = ({ mode = 'floating' }: { mode?: 'floating' | 'sidebar' }) => {
     const pathname = usePathname();
     const [isOpen, setIsOpen] = useState(false);
 
@@ -80,13 +80,24 @@ export const Feedback = () => {
     return (
         <>
             {/* Floating Button */}
-            <button
-                onClick={() => setIsOpen(true)}
-                className="fixed bottom-4 right-4 sm:bottom-8 sm:right-8 z-[100] flex items-center gap-2 px-3 py-3 sm:px-6 sm:py-4 bg-[#E88BA3] text-black rounded-2xl border-[3px] border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] active:scale-95 transition-all group"
-            >
-                <MessageCircleIcon className="w-6 h-6 sm:w-5 sm:h-5 group-hover:rotate-12 transition-transform" />
-                <span className="font-black text-sm tracking-tight hidden sm:inline-block">フィードバック</span>
-            </button>
+            {/* Trigger Button */}
+            {mode === 'sidebar' ? (
+                <button
+                    onClick={() => setIsOpen(true)}
+                    className="flex flex-col items-center gap-2 p-4 rounded-xl bg-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:bg-[#E88BA3] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] active:translate-x-[0px] active:translate-y-[0px] active:shadow-[2px_2px_0_0_rgba(0,0,0,1)] transition-all group w-full h-full"
+                >
+                    <MessageCircleIcon className="w-5 h-5 text-black group-hover:scale-110 transition-transform" />
+                    <span className="text-[10px] font-black text-black tracking-widest uppercase">フィードバック</span>
+                </button>
+            ) : (
+                <button
+                    onClick={() => setIsOpen(true)}
+                    className="hidden md:flex fixed bottom-8 right-8 z-[100] items-center gap-2 px-3 py-3 sm:px-6 sm:py-4 bg-[#E88BA3] text-black rounded-2xl border-[3px] border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] active:scale-95 transition-all group"
+                >
+                    <MessageCircleIcon className="w-6 h-6 sm:w-5 sm:h-5 group-hover:rotate-12 transition-transform" />
+                    <span className="font-black text-sm tracking-tight hidden sm:inline-block">フィードバック</span>
+                </button>
+            )}
 
             {/* Modal Overlay */}
             {isOpen && (
