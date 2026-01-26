@@ -238,7 +238,13 @@ export const generateContent = async (
     }
     Output a JSON object with:
     - "analysis": Brief context analysis.
-    - "posts": An array of generated post strings. **CRITICAL**: Each string in the array must be a COMPLETE, standalone message. Do NOT split a single message (e.g., separating title from body) into multiple array elements. If you produce variations, each variation must be the full message.
+    - "posts": An array of generated post strings. 
+    **CRITICAL RULES FOR "posts" ARRAY:**
+    1. **ONE MESSAGE = ONE STRING**. Do not split a single post (e.g. Title + Body + Footer) into multiple strings.
+    2. Even if the post has line breaks or multiple paragraphs, it must be contained within a SINGLE string element.
+    3. If multiple variations are requested, return [ "Variation 1 full text", "Variation 2 full text" ].
+    4. **NEVER** return [ "Title", "Body", "Footer" ]. This is wrong.
+    5. **NEVER** split the post based on empty lines.
   </task>
 
   ${config.persona_yaml ? `
