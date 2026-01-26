@@ -1150,14 +1150,15 @@ const PresetModal: React.FC<PresetModalProps> = ({
         </div>
 
         {/* Platform Selection Groups */}
-        <div className="px-5 md:px-8 py-5 bg-white border-b-2 border-slate-200 flex flex-col gap-6">
-          <div className="space-y-4">
+        {/* Platform Selection Groups - Compacted */}
+        <div className="px-5 md:px-6 py-2 bg-white border-b-2 border-slate-200 flex flex-col gap-2 shrink-0">
+          <div className="space-y-2">
             {/* SNS Group */}
             <div>
-              <div className="flex items-center gap-2 mb-3">
-                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">SNS 投稿スタイル (発信向け)</span>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest pl-1">SNS 投稿スタイル (発信向け)</span>
               </div>
-              <div className="flex flex-wrap items-center gap-2">
+              <div className="flex flex-wrap items-center gap-1.5">
                 {[Platform.General, Platform.Instagram, Platform.X, Platform.Line].map((p) => {
                   const isCommonSelected = selectedPlatforms.includes(Platform.General);
                   const isSelected = p === Platform.General ? isCommonSelected : (isCommonSelected || selectedPlatforms.includes(p));
@@ -1186,9 +1187,9 @@ const PresetModal: React.FC<PresetModalProps> = ({
                         }
                       }}
                       className={`
-                        px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border-2
+                        px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all border-2
                         ${isSelected
-                          ? 'bg-black text-white border-black shadow-[2px_2px_0_0_rgba(0,0,0,1)] -translate-y-0.5'
+                          ? 'bg-black text-white border-black shadow-[1px_1px_0_0_rgba(0,0,0,1)] -translate-y-0.5'
                           : 'bg-white text-slate-400 border-slate-100 hover:border-black hover:text-black'
                         }
                       `}
@@ -1201,15 +1202,9 @@ const PresetModal: React.FC<PresetModalProps> = ({
             </div>
 
             {/* Google Maps Group */}
-            <div className="pt-2 border-t border-slate-50">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-[10px] font-black text-blue-400 uppercase tracking-widest pl-1">返信スタイル (対話向け)</span>
-                <span className="text-[9px] font-bold text-blue-500 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100 flex items-center gap-1">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="8" /></svg>
-                  単独での学習を強く推奨
-                </span>
-              </div>
-              <div className="flex flex-wrap items-center gap-2">
+            <div className="pt-2 border-t border-slate-50 flex items-center justify-between">
+              <div className="flex flex-wrap items-center gap-1.5">
+                <span className="text-[9px] font-black text-blue-400 uppercase tracking-widest pl-1 mr-2">返信スタイル (対話向け)</span>
                 {[Platform.GoogleMaps].map((p) => {
                   const isCommonSelected = selectedPlatforms.includes(Platform.General);
                   const isSelected = selectedPlatforms.includes(p);
@@ -1227,9 +1222,9 @@ const PresetModal: React.FC<PresetModalProps> = ({
                         }
                       }}
                       className={`
-                        px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border-2
+                        px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all border-2
                         ${isSelected
-                          ? 'bg-blue-600 text-white border-blue-600 shadow-[2px_2px_0_0_rgba(29,78,216,0.2)] -translate-y-0.5'
+                          ? 'bg-blue-600 text-white border-blue-600 shadow-[1px_1px_0_0_rgba(29,78,216,0.2)] -translate-y-0.5'
                           : 'bg-white text-slate-400 border-slate-100 hover:border-blue-600 hover:text-blue-600'
                         }
                       `}
@@ -1239,6 +1234,10 @@ const PresetModal: React.FC<PresetModalProps> = ({
                   );
                 })}
               </div>
+              <span className="text-[9px] font-bold text-blue-500 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100 flex items-center gap-1 shrink-0 ml-auto">
+                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="8" /></svg>
+                単独学習推奨
+              </span>
             </div>
           </div>
         </div>
