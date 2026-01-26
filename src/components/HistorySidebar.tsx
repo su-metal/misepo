@@ -44,6 +44,17 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
 }) => {
   const [showTrainedOnly, setShowTrainedOnly] = React.useState(false);
 
+  React.useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
+
   // Helper to pick representative text
   const pickFirstText = (item: GeneratedPost): string => {
     if (Array.isArray(item.results) && item.results.length > 0) {
@@ -141,9 +152,9 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
         className={`fixed top-0 left-0 h-full bg-[var(--bg-beige)] border-r-[3px] border-black shadow-[8px_0_0_0_rgba(0,0,0,0.1)] w-[85vw] sm:w-[400px] md:w-[480px] transform transition-all duration-500 cubic-bezier(0.2, 0.8, 0.2, 1) z-[9999] flex flex-col overflow-hidden ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}
       >
         {/* Header: User Profile & Close */}
-        <div className="p-6 md:p-8 border-b-[3px] border-black relative z-10 bg-[var(--bg-beige)]">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="font-black text-black text-3xl tracking-tighter">MENU</h2>
+        <div className="p-4 md:p-6 border-b-[3px] border-black relative z-10 bg-[var(--bg-beige)]">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="font-black text-black text-2xl tracking-tighter">MENU</h2>
             <button
               onClick={toggleOpen}
               className="w-10 h-10 flex items-center justify-center rounded-xl bg-white border-2 border-black text-black hover:bg-[var(--rose)] transition-all active:translate-y-1 active:shadow-none shadow-[4px_4px_0_0_rgba(0,0,0,1)]"
@@ -157,43 +168,47 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
             <div className="space-y-4">
               <button
                 onClick={() => { onOpenSettings?.(); toggleOpen(); }}
-                className="flex items-center gap-4 p-4 rounded-xl bg-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] w-full hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] active:translate-x-[0px] active:translate-y-[0px] active:shadow-[2px_2px_0_0_rgba(0,0,0,1)] transition-all text-left group"
+                className="flex items-center gap-3 p-3 rounded-xl bg-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] w-full hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] active:translate-x-[0px] active:translate-y-[0px] active:shadow-[2px_2px_0_0_rgba(0,0,0,1)] transition-all text-left group"
               >
-                <div className="w-12 h-12 rounded-lg bg-[var(--lavender)] border-2 border-black flex items-center justify-center text-black font-black text-xl">
+                <div className="w-10 h-10 rounded-lg bg-[var(--lavender)] border-2 border-black flex items-center justify-center text-black font-black text-lg shrink-0">
                   {(storeProfile?.name?.[0] || 'S').toUpperCase()}
                 </div>
-                <div>
-                  <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-0.5">Store Profile</p>
-                  <p className="text-sm font-black text-black tracking-tight">{storeProfile?.name || 'User'}</p>
+                <div className="min-w-0">
+                  <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-0">Store Profile</p>
+                  <p className="text-sm font-black text-black tracking-tight truncate">{storeProfile?.name || 'User'}</p>
                 </div>
               </button>
 
               {/* Quick Navigation Pack */}
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-3 gap-2">
                 <button
                   onClick={() => { onOpenAccount?.(); toggleOpen(); }}
-                  className="flex flex-col items-center gap-2 p-4 rounded-xl bg-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:bg-[var(--bg-beige)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] active:translate-x-[0px] active:translate-y-[0px] active:shadow-[2px_2px_0_0_rgba(0,0,0,1)] transition-all group"
+                  className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:bg-[var(--bg-beige)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] active:translate-x-[0px] active:translate-y-[0px] active:shadow-[2px_2px_0_0_rgba(0,0,0,1)] transition-all group"
+                  title="アカウント設定"
                 >
-                  <ChevronDownIcon className="w-5 h-5 text-black group-hover:scale-110 transition-transform" />
-                  <span className="text-[10px] font-black text-black tracking-widest uppercase">アカウント設定</span>
+                  <ChevronDownIcon className="w-4 h-4 text-black group-hover:scale-110 transition-transform" />
+                  <span className="text-[8px] font-black text-black tracking-widest uppercase">Account</span>
                 </button>
                 <button
                   onClick={() => { onOpenGuide?.(); toggleOpen(); }}
-                  className="flex flex-col items-center gap-2 p-4 rounded-xl bg-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:bg-[var(--bg-beige)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] active:translate-x-[0px] active:translate-y-[0px] active:shadow-[2px_2px_0_0_rgba(0,0,0,1)] transition-all group"
+                  className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:bg-[var(--bg-beige)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] active:translate-x-[0px] active:translate-y-[0px] active:shadow-[2px_2px_0_0_rgba(0,0,0,1)] transition-all group"
+                  title="Docs"
                 >
-                  <HelpIcon className="w-5 h-5 text-black group-hover:scale-110 transition-transform" />
-                  <span className="text-[10px] font-black text-black tracking-widest uppercase">Docs</span>
+                  <HelpIcon className="w-4 h-4 text-black group-hover:scale-110 transition-transform" />
+                  <span className="text-[8px] font-black text-black tracking-widest uppercase">Docs</span>
                 </button>
                 <Feedback mode="sidebar" />
               </div>
 
-              <button
-                onClick={() => { onLogout?.(); toggleOpen(); }}
-                className="w-full flex items-center justify-center gap-2 py-4 rounded-xl text-slate-500 hover:text-black hover:bg-white border-2 border-transparent hover:border-black transition-all text-[10px] font-black tracking-widest uppercase hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)]"
-              >
-                <LogOutIcon className="w-4 h-4" />
-                Sign Out
-              </button>
+              <div className="flex justify-center">
+                <button
+                  onClick={() => { onLogout?.(); toggleOpen(); }}
+                  className="flex items-center gap-2 px-6 py-2 rounded-xl text-slate-400 hover:text-black hover:bg-white border-2 border-transparent hover:border-black transition-all text-[9px] font-black tracking-widest uppercase hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)]"
+                >
+                  <LogOutIcon className="w-3 h-3" />
+                  Sign Out
+                </button>
+              </div>
 
             </div>
           ) : (
