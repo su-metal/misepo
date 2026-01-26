@@ -439,6 +439,69 @@ const PresetModal: React.FC<PresetModalProps> = ({
       item.presetId === (selectedPresetId || 'omakase')
     );
 
+    // Group samples by platform
+    const groupedSamples = useMemo(() => {
+      const groups: Record<string, TrainingItem[]> = {};
+      samples.forEach(item => {
+        // Normalize platform key
+        const keys = item.platform.split(',').map(p => p.trim());
+        keys.forEach(k => {
+          // Map to main platforms or 'Other'
+          let key = k;
+          if (k.includes('Instagram')) key = Platform.Instagram;
+          else if (k.includes('X') || k.includes('Twitter')) key = Platform.X;
+          else if (k.includes('LINE') || k.includes('Line')) key = Platform.Line;
+          else if (k.includes('Google') || k.includes('Map')) key = Platform.GoogleMaps;
+          else if (k === 'General') key = Platform.General;
+
+          if (!groups[key]) groups[key] = [];
+          // Avoid duplicates if multiple keys point to same platform group (rare)
+          if (!groups[key].find(i => i.id === item.id)) {
+            groups[key].push(item);
+          }
+        });
+      });
+      return groups;
+    }, [samples]);
+
+    const platformOrder = [Platform.Instagram, Platform.X, Platform.Line, Platform.GoogleMaps, Platform.General];
+
+    // State for expanded sections (default to all open or just some)
+    const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
+      [Platform.Instagram]: true,
+      [Platform.X]: true,
+      [Platform.Line]: true,
+      [Platform.GoogleMaps]: true,
+      [Platform.General]: true,
+    });
+
+    const toggleSection = (platform: string) => {
+      setExpandedSections(prev => ({
+        ...prev,
+        [platform]: !prev[platform]
+      }));
+    };
+
+    const getPlatformIcon = (platform: string) => {
+      switch (platform) {
+        case Platform.Instagram: return <InstagramIcon className="w-5 h-5" />;
+        case Platform.X: return <span className="font-bold text-lg leading-none">𝕏</span>;
+        case Platform.Line: return <LineIcon className="w-5 h-5" />;
+        case Platform.GoogleMaps: return <div className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center text-white text-[10px] font-bold">G</div>;
+        default: return <SparklesIcon className="w-5 h-5" />;
+      }
+    };
+
+    const getPlatformLabel = (platform: string) => {
+      switch (platform) {
+        case Platform.Instagram: return 'Instagram';
+        case Platform.X: return 'X (Twitter)';
+        case Platform.Line: return 'LINE Official';
+        case Platform.GoogleMaps: return 'Google Maps';
+        default: return 'General / Other';
+      }
+    };
+
     return (
       <div className="py-8 md:py-12">
         <div className="px-6 md:px-10 flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
@@ -472,7 +535,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
         </div>
 
         {samples.length === 0 ? (
-          <div className="py-12 border-2 border-dashed border-slate-200 rounded-2xl flex flex-col items-center justify-center text-slate-300 gap-3">
+          <div className="py-12 border-2 border-dashed border-slate-200 rounded-2xl flex flex-col items-center justify-center text-slate-300 gap-3 mx-6 md:mx-10">
             <div className="w-16 h-16 rounded-full bg-slate-50 flex items-center justify-center">
               <SparklesIcon className="w-8 h-8 opacity-20" />
             </div>
@@ -482,45 +545,85 @@ const PresetModal: React.FC<PresetModalProps> = ({
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-6 md:px-10">
-            {samples.map((item) => (
-              <div
-                key={item.id}
-                className="group relative flex flex-col justify-between p-6 rounded-3xl bg-white border-2 border-black hover:bg-[var(--bg-beige)] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] hover:-translate-y-0.5 transition-all cursor-pointer"
-                onClick={() => {
-                  setModalText(item.content);
-                  setEditingSampleId(item.id);
-                  setExpandingPlatform(item.platform);
-                  const platforms = item.platform.split(', ').map(p => p.trim()) as Platform[];
-                  setSelectedPlatforms(platforms);
-                }}
-              >
-                <div>
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="px-2 py-0.5 rounded-lg border border-black bg-slate-100 text-[9px] font-black text-slate-500 uppercase tracking-wider">
-                      {item.platform === Platform.General ? 'Source' :
-                        (item.platform === Platform.Line || (item.platform as string) === 'Official LINE') ? 'LINE' :
-                          item.platform.split(' ')[0]}
-                    </span>
-                  </div>
-                  <p className="text-[12px] text-black font-bold line-clamp-5 leading-relaxed whitespace-pre-wrap">
-                    {item.content}
-                  </p>
-                </div>
-                <div className="mt-4 flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="px-6 md:px-10 space-y-8">
+            {platformOrder.map(platform => {
+              const platformItems = groupedSamples[platform] || [];
+              if (platformItems.length === 0) return null;
+
+              const isExpanded = expandedSections[platform];
+
+              return (
+                <div key={platform} className="animate-in fade-in slide-in-from-bottom-2 duration-500">
                   <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onToggleTraining(item.content, item.platform, item.presetId, undefined, 'manual');
-                    }}
-                    className="p-2 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-xl transition-all border-2 border-transparent hover:border-black"
+                    onClick={() => toggleSection(platform)}
+                    className="flex items-center gap-3 mb-4 group w-full text-left"
                   >
-                    <TrashIcon className="w-4 h-4" />
+                    <div className={`p-2 rounded-lg border-2 border-black transition-all ${isExpanded ? 'bg-black text-white' : 'bg-white text-black group-hover:bg-slate-50'}`}>
+                      {getPlatformIcon(platform)}
+                    </div>
+                    <div className="flex-1">
+                      <h5 className="font-black text-sm md:text-base text-black flex items-center gap-3">
+                        {getPlatformLabel(platform)}
+                        <span className="px-2 py-0.5 bg-slate-100 text-slate-500 text-[9px] rounded-full border border-slate-200">
+                          {platformItems.length}
+                        </span>
+                      </h5>
+                    </div>
+                    <div className={`transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}>
+                      <ChevronDownIcon className="w-5 h-5 text-slate-400" />
+                    </div>
                   </button>
+
+                  <div className={`
+                    flex overflow-x-auto pb-6 gap-3 px-1 
+                    md:gap-4
+                    transition-all duration-300 origin-top 
+                    ${isExpanded ? 'opacity-100 scale-100' : 'hidden opacity-0 scale-95'}
+                  `}>
+                    {platformItems.slice(0, 6).map((item) => (
+                      <div
+                        key={item.id}
+                        className={`
+                          group relative flex flex-col justify-between p-3 md:p-5 rounded-2xl bg-white border-2 border-black 
+                          hover:bg-[var(--bg-beige)] hover:shadow-[3px_3px_0_0_rgba(0,0,0,1)] hover:-translate-y-0.5 
+                          transition-all cursor-pointer 
+                          min-h-[120px] w-[150px] shrink-0
+                          sm:min-h-[160px] sm:w-[280px]
+                        `}
+                        onClick={() => {
+                          setModalText(item.content);
+                          setEditingSampleId(item.id);
+                          setExpandingPlatform(item.platform);
+                          const platforms = item.platform.split(', ').map(p => p.trim()) as Platform[];
+                          setSelectedPlatforms(platforms);
+                        }}
+                      >
+                        <div>
+                          <p className="text-[10px] md:text-[11px] text-black font-bold line-clamp-4 md:line-clamp-5 leading-relaxed whitespace-pre-wrap break-all">
+                            {item.content}
+                          </p>
+                        </div>
+                        <div className="mt-2 md:mt-3 flex items-end justify-between">
+                          <span className="text-[8px] md:text-[9px] font-black text-slate-300 uppercase tracking-wider scale-90 origin-bottom-left">{item.source === 'generated' ? 'AI' : 'Manual'}</span>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              // Pass the *current section's* platform (e.g. "Instagram") instead of item.platform ("Instagram, X")
+                              // This enables the "Smart Delete" logic in App.tsx to remove just this tag.
+                              onToggleTraining(item.content, platform as Platform, item.presetId, undefined, 'manual');
+                            }}
+                            className="p-1 md:p-1.5 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all opacity-100 md:opacity-0 group-hover:opacity-100"
+                          >
+                            <TrashIcon className="w-3.5 h-3.5 md:w-4 md:h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
