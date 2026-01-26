@@ -165,11 +165,11 @@ export const generateContent = async (
       ${isGMap ? 
         '- **Usage**: Ignore any default restrictions. Strictly reproduce the emoji frequency and decorative symbol patterns found in the <learning_samples>.' : 
         `- **Emojis**: ${config.includeEmojis ? 'Strictly follow patterns from samples.' : 'DO NOT use any emojis, even if found in samples.'}
-    - **Symbols**: ${config.includeSymbols ? `Actively use the **Instagram Aesthetic Palette** for professional variety:
+    - **Symbols**: ${config.includeSymbols ? `Selectively use for emphasis from the **Instagram Aesthetic Palette** (1-2 sets max):
         - **Headers**: ＼ ˗ˏˋ ˎˊ˗ ／, 【 TITLE 】, 𓍯 𓇢, ✦ PICKUP ✦, ⟡ MENU ⟡, ˗ˏˋ 🧸 ˎˊ˗
         - **Dividers**: 𓂃𓂃𓂃, ⋆┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈⋆, ┈┈┈┈┈┈┈┈┈┈, ────────────, ˗ˏˋ ━━━━━━━━━━━━ ˎˊ˗
         - **Accents**: ・, ✴︎, ◆, ꕤ, ⚘, ✎, ✧, ⌇, ☼, 𖥧, 𖠚
-        - **Paired Decoration**: **CRITICAL**: You may use different divider styles for separate segments, but for any single content block, the **top and bottom dividers must be identical** (e.g., if you wrap a title with 𓂃, use the same for both sides). Do NOT mix styles for the same block.` : "DO NOT use decorative symbols or flashy brackets."}`}
+        - **Paired Decoration**: **CRITICAL**: Use dividers selectively for major sections only. When wrapping a block, top/bottom must match. **Avoid over-decoration**; prioritize headers over multiple body dividers. Keep 1-2 divider sets max per post for a clean, professional look.` : "DO NOT use decorative symbols or flashy brackets."}` }
     - **Line Breaks**: **NEVER** insert line breaks in the middle of a grammatical phrase or word (e.g., don't split "ご来店いただき" across lines). Maintain natural reading flow. Avoid "auto-formatting for mobile" unless the <learning_samples> explicitly use that specific rhythm.
     - **Platform Rules**:
       - Platform: ${config.platform}
@@ -270,11 +270,11 @@ export const generateContent = async (
     - Tone: ${config.tone} (${TONE_RULES[config.tone] || TONE_RULES[Tone.Standard]})
     - Features: ${isInstagram ? 'Visual focus, 4-6 hashtags.' : ''}${isX ? 'Under 140 chars, 1-2 hashtags.' : ''}${isGMap ? 'Polite reply, NO emojis, NO hashtags.' : ''}${isLine ? 'Direct marketing style. NO hashtags. Focus on clear messaging.' : ''}
     - Emojis: ${isGMap ? 'Do NOT use emojis at all.' : (config.includeEmojis ? "Actively use expressive emojis (🐻, ✨, 💪, 🎉) to make the text lively." : "DO NOT use any emojis. Keep it plain text only.")}
-    - Special Characters: ${config.includeSymbols ? `Actively use the **Instagram Aesthetic Palette** for professional variety:
+    - Special Characters: ${config.includeSymbols ? `Use the **Instagram Aesthetic Palette** with restraint (1-2 sets max):
         - **Headers**: ＼ ˗ˏˋ ˎˊ˗ ／, 【 TITLE 】, 𓍯 𓇢, ✦ PICKUP ✦, ⟡ MENU ⟡, ˗ˏˋ 🧸 ˎˊ˗
         - **Dividers**: 𓂃𓂃𓂃, ⋆┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈⋆, ┈┈┈┈┈┈┈┈┈┈, ────────────, ˗ˏˋ ━━━━━━━━━━━━ ˎˊ˗
         - **Accents**: ・, ✴︎, ◆, ꕤ, ⚘, ✎, ✧, ⌇, ☼, 𖥧, 𖠚
-        - **Paired Decoration**: **CRITICAL**: You may use different divider styles for separate segments, but for any single content block, the **top and bottom dividers must match exactly** (e.g., if you wrap a title with 𓂃, use the same for both). Do NOT mix styles for the same block.` : "Do NOT use decorative symbols or flashy brackets. Use standard punctuation only."}
+        - **Paired Decoration**: **Important**: Use dividers selectively for major sections (1-2 sets max). Ensure matching top/bottom for wrapped blocks. **Avoid excessive lines** to maintain readability.` : "Do NOT use decorative symbols or flashy brackets. Use standard punctuation only."}
     - **Layout**: Prioritize a clean vertical flow with frequent line breaks (newlines) after sentences or emojis to ensure readability on mobile. **AVOID dense blocks of text**.
   </rules>
 
