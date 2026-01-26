@@ -164,8 +164,8 @@ export const generateContent = async (
     - **Emojis & Symbols**: 
       ${isGMap ? 
         '- **Usage**: Ignore any default restrictions. Strictly reproduce the emoji frequency and decorative symbol patterns found in the <learning_samples>.' : 
-        `- **Emojis**: ${config.includeEmojis ? 'Strictly follow patterns from samples.' : 'Avoid unless core to sample style.'}
-    - **Symbols**: ${config.includeSymbols ? 'Use decorative symbols from palette if they match sample style.' : 'Minimize symbols.'}`}
+        `- **Emojis**: ${config.includeEmojis ? 'Strictly follow patterns from samples.' : 'DO NOT use any emojis, even if found in samples.'}
+    - **Symbols**: ${config.includeSymbols ? 'Use decorative symbols from palette if they match sample style.' : 'DO NOT use decorative symbols or flashy brackets.'}`}
     - **Line Breaks**: **NEVER** insert line breaks in the middle of a grammatical phrase or word (e.g., don't split "ご来店いただき" across lines). Maintain natural reading flow. Avoid "auto-formatting for mobile" unless the <learning_samples> explicitly use that specific rhythm.
     - **Platform Rules**:
       - Platform: ${config.platform}
@@ -265,7 +265,8 @@ export const generateContent = async (
     - Length: ${config.length}
     - Tone: ${config.tone} (${TONE_RULES[config.tone] || TONE_RULES[Tone.Standard]})
     - Features: ${isInstagram ? 'Visual focus, 4-6 hashtags.' : ''}${isX ? 'Under 140 chars, 1-2 hashtags.' : ''}${isGMap ? 'Polite reply, NO emojis, NO hashtags.' : ''}${isLine ? 'Direct marketing style. NO hashtags. Focus on clear messaging.' : ''}
-    - Emojis: ${isGMap ? 'Do NOT use emojis at all.' : (config.includeEmojis ? "Use expressive, large, or character-like emojis (🐻, ✨, 💪) for high impact." : "Minimize emojis.")}
+    - Emojis: ${isGMap ? 'Do NOT use emojis at all.' : (config.includeEmojis ? "Actively use expressive emojis (🐻, ✨, 💪, 🎉) to make the text lively." : "DO NOT use any emojis. Keep it plain text only.")}
+    - Special Characters: ${config.includeSymbols ? "Actively use decorative symbols and brackets to emphasize titles (e.g., ＼ SNS投稿 ／, 【 限定 】, ・, ━━━━) for high visual impact." : "Do NOT use decorative symbols or flashy brackets. Use standard punctuation only."}
     - **Layout**: Prioritize a clean vertical flow with frequent line breaks (newlines) after sentences or emojis to ensure readability on mobile. **AVOID dense blocks of text**.
   </rules>
 
