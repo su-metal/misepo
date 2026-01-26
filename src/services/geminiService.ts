@@ -167,15 +167,29 @@ export const generateContent = async (
       - Use **<learning_samples>** to define the **Structural Format** (Line breaks, Emoji density, Length, Footer style).
     - **Tone & Rhythm**: Mimic the sentence endings and tone. For line breaks/whitespace, follow the **Volume Control** setting (especially if Short).
     - **Volume Control**: Strictly follow the requested **Length: ${config.length}**. 
-      ${(isInstagram || isLine) ? `
-      - **Target Character Counts**:
+      ${(isInstagram || isLine) ? (() => {
+        const isInstructionHeavy = !!(config.customPrompt && config.customPrompt.trim());
+        if (isInstructionHeavy) {
+          return `
+      - **Target Character Counts (Instruction-Aware Relaxation)**:
+        - **Short**: Concise (Target: ~250 chars). 
+          - **Constraint**: Total max 300 characters.
+          - **Priority**: Fulfillment of <custom_instructions> takes priority over extreme brevity.
+        - **Medium**: Standard (Target: ~500 chars).
+          - **Constraint**: Total max 600 characters.
+        - **Long**: Detailed (Target: ~1000 chars).
+      `;
+        }
+        return `
+      - **Target Character Counts (Standard)**:
         - **Short**: **Ultra-Compact** (Target: ~150 chars). 
           - **Constraint**: Total max 180 characters.
           - **Layout**: Use moderate line breaks for readability. 1 empty line between distinct points.
           - **Content**: Omit standard closings (e.g. "Waiting for you"). Limit to Max 3 hashtags.
         - **Medium**: Standard (200 - 300 characters).
         - **Long**: Detailed (approx 500 characters).
-      ` : `
+      `;
+      })() : `
       - If 'Long', expand upon the context (atmosphere, store owner's feelings, expert tips) whilst maintaining the style of the samples.
       - If 'Short', condense to the core message but keep the signature style (emojis, endings).
       `}
@@ -183,11 +197,11 @@ export const generateContent = async (
     - **Emojis & Symbols**: 
       ${isGMap ? 
         '- **Usage**: Ignore any default restrictions. Strictly reproduce the emoji frequency and decorative symbol patterns found in the <learning_samples>.' : 
-        `- **Emojis**: ${config.includeEmojis ? 'Strictly follow patterns from samples.' : 'DO NOT use any emojis, even if found in samples.'}
-    - **Symbols**: ${config.includeSymbols ? `From the **Instagram Aesthetic Palette**:
-        - **Headers/Accents**: ＼ ˗ˏˋ ˎˊ˗ ／, 【 TITLE 】, 𓍯 𓇢, ✧, ꕤ, ⚘, ☼, 𖥧, 𖠚
-        - **Dividers**: ${isX ? '**DISABLED for X**. Do NOT use line dividers on X.' : '𓂃𓂃𓂃, ⋆┈┈┈┈┈┈┈┈┈┈⋆, ──────────── (Use selectively, 1-2 sets max)'} 
-        - **Rule**: ${isX ? 'On X, use accents inline only. No line dividers.' : 'On Instagram, use paired dividers for specific blocks. Avoid over-decoration.'}` : 'DO NOT use decorative symbols or flashy brackets.'}`}
+        `- **Emojis**: ${hasPersona ? 'Strictly follow patterns from samples.' : (config.includeEmojis ? 'Actively use expressive emojis (🐻, ✨, 💪, 🎉) to make the text lively.' : 'DO NOT use any emojis.')}
+    - **Symbols**: ${hasPersona && !config.includeSymbols ? 'Strictly follow patterns from samples.' : (config.includeSymbols ? `From the **Aesthetic Palette**:
+        - **Headers/Accents**: ＼ ✧ TITLE ✧ ／, 𓍯 𓇢 TITLE 𓇢 𓍯, 【 TITLE 】, ✧, ꕤ, ⚘, ☼, 𖥧, 𖠚
+        - **Dividers**: ${isX ? '**DISABLED for X**. Do NOT use line dividers on X.' : '𓂃𓂃𓂃, ⋆┈┈┈┈┈┈┈┈┈┈⋆, ──────────── (Use 1-2 sets to separate sections)'} 
+        - **Rule**: ${isX ? 'On X, use symbols/accents for headers (sandwiches) and sentence endings. No line dividers.' : 'Actively use "sandwich" patterns for headers (e.g. ＼ ✧ Title ✧ ／). Use symbols (𓍯, ✧) for bullet points. Add 1-2 symbols (✧, ꕤ) at the end of impactful sentences.'}` : 'DO NOT use decorative symbols or flashy brackets.')}`}
     - **Line Breaks**: **NEVER** insert line breaks in the middle of a grammatical phrase or word (e.g., don't split "ご来店いただき" across lines). Maintain natural reading flow. Avoid "auto-formatting for mobile" unless the <learning_samples> explicitly use that specific rhythm.
     - **Platform Rules**:
       - Platform: ${config.platform}
@@ -198,7 +212,16 @@ export const generateContent = async (
       - Language: ${config.language || 'Japanese'}
   </style_guidelines>
 
-  ${config.customPrompt ? `<custom_instructions>\n${config.customPrompt}\n</custom_instructions>` : ""}
+  ${config.customPrompt ? `<custom_instructions>
+  ${config.customPrompt}
+  
+  <style_reminder>
+    IMPORTANT: Even while adopting the persona or content above, you MUST strict adherence to the **Emojis** and **Special Characters** rules defined in <rules>.
+    - Emojis are: **${config.includeEmojis ? 'ALLOWED' : 'PROHIBITED'}**
+    - Special Characters (Symbol Decorations) are: **${config.includeSymbols ? 'REQUIRED (Use ✧, ꕤ, etc.)' : 'PROHIBITED'}**
+    ${!config.includeEmojis && config.includeSymbols ? 'Since Emojis are OFF, you MUST use Special Characters for visual appeal.' : ''}
+  </style_reminder>
+  </custom_instructions>` : ""}
 
   <constraints>
     - **No Fabrication**: Do NOT invent ingredients (e.g., "mochi", "matcha") or prices unless explicitly stated in the <user_input>.
@@ -287,12 +310,13 @@ export const generateContent = async (
     - Length: ${config.length}
     - Tone: ${config.tone} (${TONE_RULES[config.tone] || TONE_RULES[Tone.Standard]})
     - Features: ${isInstagram ? 'Visual focus.' : ''}${isX ? 'Under 140 chars.' : ''}${isGMap ? 'Polite reply, NO emojis, NO hashtags.' : ''}${isLine ? 'Direct marketing style. NO hashtags. Focus on clear messaging.' : ''}
-    - Emojis: ${isGMap ? 'Do NOT use emojis at all.' : (config.includeEmojis ? "Actively use expressive emojis (🐻, ✨, 💪, 🎉) to make the text lively." : "DO NOT use any emojis. Keep it plain text only.")}
-    - Special Characters: ${config.includeSymbols ? `From the **Instagram Aesthetic Palette**:
-        - **Headers/Accents**: ＼ ˗ˏˋ ˎˊ˗ ／, 【 TITLE 】, 𓍯 𓇢, ✧, ꕤ, ⚘, ☼, 𖥧, 𖠚
-        - **Dividers**: ${isX ? '**DISABLED for X**. Do NOT use line dividers on X.' : '𓂃𓂃𓂃, ⋆┈┈┈┈┈┈┈┈┈┈⋆, ──────────── (Use selectively, 1-2 sets max)'}
-        - **Rule**: ${isX ? 'On X, use symbols/accents inline only. No line dividers.' : 'Selective use of paired dividers for blocks. Avoid excessive lines.'}` : "Do NOT use decorative symbols or flashy brackets. Use standard punctuation only."}
-    - **Layout**: ${config.length === 'short' ? "Concise but readable. Use moderate line breaks." : "Prioritize a clean vertical flow with frequent line breaks (newlines) after sentences to ensure readability on mobile. Avoid dense blocks."}
+    - Emojis: ${isGMap ? 'Do NOT use emojis at all.' : (config.includeEmojis ? "Actively use expressive emojis (🐻, ✨, 💪, 🎉) to make the text lively." : "DO NOT use any emojis (emoticons, icons, pictograms) under any circumstances. Keep it plain text only regarding emojis.")}
+    - Special Characters: ${config.includeSymbols ? `From the **Aesthetic Palette**:
+        - **Headers/Accents**: ＼ ✧ TITLE ✧ ／, 𓍯 𓇢 TITLE 𓇢 𓍯, 【 TITLE 】, ✧, ꕤ, ⚘, ☼, 𖥧, 𖠚
+        - **Dividers**: ${isX ? '**DISABLED for X**. Do NOT use line dividers on X.' : '𓂃𓂃𓂃, ⋆┈┈┈┈┈┈┈┈┈┈⋆, ──────────── (Use to separate Body and CTA)'}
+        - **Rule**: ${isX ? 'On X, use symbols/accents for headers (sandwiches), bullet points, and sentence endings. No line dividers.' : 'Actively use "sandwich" patterns (e.g. ＼ ✧ Title ✧ ／). Use symbols (𓍯, ✧) as bullet points for lists. Append symbols (✧, ꕤ) to the end of key sentences.'}
+        - **Note**: Use these symbols frequently for visual appeal ${!config.includeEmojis ? 'INSTEAD of emojis' : 'in addition to emojis'}.` : "Do NOT use decorative symbols or flashy brackets. Use standard punctuation only."}
+    - **Layout**: ${config.length === 'short' ? "Concise. Group related sentences." : "Natural Reading Flow. Group semantically related sentences into small blocks (2-3 lines). Insert empty lines ONLY between distinct topics or after a strong hook. Avoid robotic 'one sentence per line' formatting."}
   </rules>
 
   ${config.customPrompt ? `<custom_instructions>\n${config.customPrompt}\n</custom_instructions>` : ""}
@@ -308,8 +332,17 @@ export const generateContent = async (
   <task>
     ${isGMap ? 
       "The <user_input> is a customer review. Generate a polite and empathetic REPLY from the owner. Use the facts in <store_context> if provided to explain circumstances or provide background. Do not just summarize the facts; acknowledge them graciously." : 
-      config.platform === Platform.Line ?
-      "Generate a LINE message with a clear flow: 1. Hook (for push notifications), 2. Details (friendly marketing body), 3. Action (CTA). Use friendly but professional tone. Do NOT use '---' or numbering. **CRITICAL**: Use positive framing (e.g., 'ご案内可能なお時間ができました') instead of negative terms like 'cancellation' (キャンセル). **VISUAL**: Use emoji-sandwiched headers (e.g., ＼ 🧴 [Title] 🧴 ／). For LINE only, place directional arrows (↓ ↓ ↓) **strictly on the very last line**, optionally as an arrow-sandwich pattern (e.g., ↓ ↓ ↓ Text ↓ ↓ ↓). **LAYOUT**: Prioritize a clean vertical flow with frequent line breaks (newlines) after sentences to ensure readability on mobile. Avoid dense blocks. Encourage action." :
+      isLine ?
+      `Generate a LINE message with a clear flow: 1. Hook, 2. Details, 3. Action. 
+       **VISUAL**: Use a header for the hook. 
+       - ${config.includeSymbols && config.includeEmojis ? 'Header Style: ＼ 🧴 [Title] 🧴 ／ (Use symbols and relevant emojis)' : 
+           config.includeSymbols ? 'Header Style: ＼ ✧ [Title] ✧ ／ (Use stylish symbols only, NO emojis)' : 
+           config.includeEmojis ? 'Header Style: 🧴 [Title] 🧴 (Use relevant emojis)' : 
+           'Header Style: 【 Title 】 (Plain text)'}
+       **STRICT EMOJI RULE**: ${config.includeEmojis ? 'Use emojis naturally.' : 'DO NOT use any emojis, even in headers.'}
+       ${config.includeSymbols ? 'Use aesthetic symbols from the palette for accents.' : ''}
+       For LINE only, place directional arrows (↓ ↓ ↓) on the very last line.
+       **LAYOUT**: Clean vertical flow with frequent line breaks.` :
       "Generate an attractive post for based on the <user_input>."
     }
     Output a JSON object with:

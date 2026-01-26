@@ -250,7 +250,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
                   </div>
                   <span className={`drop-shadow-none uppercase ${flow.resultGroups.length > 0 ? 'text-black' : 'text-primary'}`}>
                     {flow.resultGroups.length === 0
-                      ? 'Generate Post'
+                      ? '投稿を生成'
                       : (flow.resultGroups[0].config.inputText !== flow.inputText
                         ? '内容を更新して生成'
                         : '再生成する')}

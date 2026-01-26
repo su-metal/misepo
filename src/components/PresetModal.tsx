@@ -504,7 +504,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
     return (
       <div className="py-8 md:py-12">
-        <div className="px-6 md:px-10 flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
           <div className="flex items-center gap-5">
             <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] bg-indigo-600`}>
               <MagicWandIcon className="w-7 h-7" />
@@ -545,7 +545,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
             </div>
           </div>
         ) : (
-          <div className="px-6 md:px-10 space-y-8">
+          <div className="space-y-8">
             {platformOrder.map(platform => {
               const platformItems = groupedSamples[platform] || [];
               if (platformItems.length === 0) return null;
@@ -886,7 +886,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                 </div>
 
                 {/* Console Body: Hints Grid */}
-                <div className="px-6 md:px-8 py-5 bg-slate-50/30 border-b-2 border-slate-100">
+                <div className=" py-5 bg-slate-50/30 border-b-2 border-slate-100">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
                     <div className="flex gap-4 items-start">
                       <div className="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center shrink-0 shadow-sm mt-0.5">
@@ -896,7 +896,6 @@ const PresetModal: React.FC<PresetModalProps> = ({
                         <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">効果的な学習</h5>
                         <p className="text-[11px] text-slate-500 leading-relaxed font-bold">
                           各SNSごとに<span className="text-indigo-600">最大5件</span>まで登録できます。
-                          過去の投稿を登録すると、文体や絵文字の癖を自動で学習します。
                         </p>
                       </div>
                     </div>

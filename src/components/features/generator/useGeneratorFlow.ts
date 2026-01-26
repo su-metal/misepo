@@ -120,6 +120,12 @@ export function useGeneratorFlow(props: {
       // Legacy post_samples are ignored to ensure only the 'Learning Data List' is used.
       setCurrentPostSamples({}); 
       setActivePresetId(preset.id);
+
+      // Reset stylistic settings to "neutral/plain" state when a preset is applied.
+      // This prevents "locked" state from leaking previous styles (e.g. Emoji OFF from Formal tone).
+      setTone(Tone.Standard);
+      setIncludeEmojis(true);
+      setIncludeSymbols(false);
     }
   };
 
