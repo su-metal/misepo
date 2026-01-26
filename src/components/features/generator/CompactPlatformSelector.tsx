@@ -31,7 +31,7 @@ export const CompactPlatformSelector: React.FC<CompactPlatformSelectorProps> = (
                             className={`
                                 flex-1 flex items-center justify-center gap-2 px-3 py-3 rounded-xl transition-all duration-300
                                 ${isSelected
-                                    ? 'bg-black text-white shadow-lg'
+                                    ? (p === Platform.X ? 'bg-black text-white shadow-[3px_3px_0px_0px_#9B8FD4] -translate-y-[1px]' : 'bg-black text-white shadow-lg')
                                     : 'text-stone-400 hover:text-stone-600'}
                             `}
                         >

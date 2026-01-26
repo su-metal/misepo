@@ -987,7 +987,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
         <div className="p-5 md:p-8 border-b-[3px] border-black flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shrink-0 bg-[var(--bg-beige)]">
           <div className="flex items-center justify-between w-full md:w-auto">
             <div className="flex items-center gap-3 md:gap-4">
-              <div className={`p-2.5 md:p-3 rounded-xl border-2 border-black shadow-[2px_2px_0_0_rgba(0,0,0,1)] ${expandingPlatform === Platform.Instagram ? 'bg-pink-50 text-pink-500' :
+              <div className={`p-2.5 md:p-3 rounded-xl border-2 border-black ${expandingPlatform === Platform.X ? 'shadow-[2px_2px_0_0_#9B8FD4]' : 'shadow-[2px_2px_0_0_rgba(0,0,0,1)]'} ${expandingPlatform === Platform.Instagram ? 'bg-pink-50 text-pink-500' :
                 expandingPlatform === Platform.X ? 'bg-slate-900 text-white' :
                   expandingPlatform === Platform.Line ? 'bg-[#06C755] text-white' :
                     expandingPlatform === Platform.GoogleMaps ? 'bg-blue-600 text-white' :
@@ -1189,7 +1189,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                       className={`
                         px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all border-2
                         ${isSelected
-                          ? 'bg-black text-white border-black shadow-[1px_1px_0_0_rgba(0,0,0,1)] -translate-y-0.5'
+                          ? `bg-black text-white border-black ${p === Platform.X ? 'shadow-[1px_1px_0_0_#9B8FD4]' : 'shadow-[1px_1px_0_0_rgba(0,0,0,1)]'} -translate-y-0.5`
                           : 'bg-white text-slate-400 border-slate-100 hover:border-black hover:text-black'
                         }
                       `}

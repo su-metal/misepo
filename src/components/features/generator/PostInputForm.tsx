@@ -247,7 +247,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                             const isSelected = platforms.includes(p);
                             const getStyle = (plt: Platform) => {
                                 switch (plt) {
-                                    case Platform.X: return isSelected ? 'bg-black text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]' : 'text-black/40 hover:text-black hover:bg-black/5';
+                                    case Platform.X: return isSelected ? 'bg-black text-white shadow-[4px_4px_0px_0px_#9B8FD4]' : 'text-black/40 hover:text-black hover:bg-black/5';
                                     case Platform.Instagram: return isSelected ? 'bg-[#E88BA3] text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]' : 'text-black/40 hover:text-black hover:bg-black/5';
                                     case Platform.Line: return isSelected ? 'bg-[#06C755] text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]' : 'text-black/40 hover:text-black hover:bg-black/5';
                                     case Platform.GoogleMaps: return isSelected ? 'bg-[#4DB39A] text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]' : 'text-black/40 hover:text-black hover:bg-black/5';

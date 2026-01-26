@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { usePathname } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { CloseIcon, SendIcon, StarIcon, MessageCircleIcon } from './Icons';
@@ -8,6 +9,11 @@ import { CloseIcon, SendIcon, StarIcon, MessageCircleIcon } from './Icons';
 export const Feedback = ({ mode = 'floating' }: { mode?: 'floating' | 'sidebar' }) => {
     const pathname = usePathname();
     const [isOpen, setIsOpen] = useState(false);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     // Only show on App/Generator pages (/generate)
     const showFeedback = pathname?.startsWith('/generate');
@@ -84,10 +90,11 @@ export const Feedback = ({ mode = 'floating' }: { mode?: 'floating' | 'sidebar' 
             {mode === 'sidebar' ? (
                 <button
                     onClick={() => setIsOpen(true)}
-                    className="flex flex-col items-center gap-2 p-4 rounded-xl bg-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:bg-[#E88BA3] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] active:translate-x-[0px] active:translate-y-[0px] active:shadow-[2px_2px_0_0_rgba(0,0,0,1)] transition-all group w-full h-full"
+                    className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:bg-[#E88BA3] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] active:translate-x-[0px] active:translate-y-[0px] active:shadow-[2px_2px_0_0_rgba(0,0,0,1)] transition-all group w-full h-full"
+                    title="フィードバック"
                 >
-                    <MessageCircleIcon className="w-5 h-5 text-black group-hover:scale-110 transition-transform" />
-                    <span className="text-[10px] font-black text-black tracking-widest uppercase">フィードバック</span>
+                    <MessageCircleIcon className="w-4 h-4 text-black group-hover:scale-110 transition-transform" />
+                    <span className="text-[8px] font-black text-black tracking-widest uppercase">Feedback</span>
                 </button>
             ) : (
                 <button
@@ -100,36 +107,28 @@ export const Feedback = ({ mode = 'floating' }: { mode?: 'floating' | 'sidebar' 
             )}
 
             {/* Modal Overlay */}
-            {isOpen && (
+            {(isOpen && mounted) && createPortal(
                 <div
-                    className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-300"
+                    className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-300"
                     onClick={() => setIsOpen(false)}
                 >
                     <div
-                        className="bg-[#f9f5f2] border-[6px] border-black rounded-[32px] shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] w-full max-w-lg overflow-hidden flex flex-col relative animate-in zoom-in-95 duration-300"
+                        className="bg-[var(--bg-beige)] w-full max-w-lg rounded-[32px] border-[3px] border-black shadow-[8px_8px_0_0_rgba(0,0,0,1)] overflow-hidden flex flex-col relative animate-in zoom-in-95 duration-300"
                         onClick={e => e.stopPropagation()}
                     >
                         {/* Header */}
-                        <div className="p-6 md:p-8 border-b-[4px] border-black flex items-center justify-between">
-                            <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 rounded-xl bg-black border-[3px] border-black flex items-center justify-center text-[#E88BA3]">
-                                    <HeartIconContainer />
-                                </div>
-                                <div className="text-left">
-                                    <h2 className="text-xl md:text-2xl font-black text-black tracking-tight italic uppercase">フィードバックを送る</h2>
-                                    <p className="text-[10px] font-black text-black/40 uppercase tracking-widest mt-1">We value your voice</p>
-                                </div>
-                            </div>
+                        <div className="px-8 py-5 border-b-[3px] border-black flex items-center justify-between bg-white">
+                            <h2 className="text-xl font-black text-black tracking-tight uppercase">Send Feedback</h2>
                             <button
                                 onClick={() => setIsOpen(false)}
-                                className="w-12 h-12 flex items-center justify-center hover:bg-black/5 rounded-full text-black transition-colors"
+                                className="w-10 h-10 flex items-center justify-center rounded-xl bg-white border-2 border-black text-black hover:bg-slate-100 transition-all shadow-[2px_2px_0_0_rgba(0,0,0,1)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none"
                             >
-                                <CloseIcon className="w-8 h-8" />
+                                <CloseIcon className="w-5 h-5" />
                             </button>
                         </div>
 
                         {/* Content */}
-                        <div className="p-8 md:p-10">
+                        <div className="p-6 md:p-8 bg-[var(--bg-beige)]">
                             {isSuccess ? (
                                 <div className="py-12 text-center animate-in zoom-in duration-500">
                                     <div className="w-24 h-24 bg-[#4DB39A] border-[4px] border-white text-black rounded-full flex items-center justify-center mx-auto mb-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,0.1)]">
@@ -203,7 +202,7 @@ export const Feedback = ({ mode = 'floating' }: { mode?: 'floating' | 'sidebar' 
                         </div>
                     </div>
                 </div>
-            )}
+                , document.body)}
 
             <style jsx>{`
         .animate-in { 
