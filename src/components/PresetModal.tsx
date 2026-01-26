@@ -580,7 +580,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                     transition-all duration-300 origin-top 
                     ${isExpanded ? 'opacity-100 scale-100' : 'hidden opacity-0 scale-95'}
                   `}>
-                    {platformItems.slice(0, 6).map((item) => (
+                    {platformItems.slice(0, 5).map((item) => (
                       <div
                         key={item.id}
                         className={`
@@ -876,58 +876,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
                       <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-0.5">Automated Optimization</p>
                     </div>
                   </div>
-                  {/* Header: Intelligence Status */}
-                  <div className="flex flex-col gap-2">
-                    <div className="flex items-center justify-between">
-                      {/* Status Badge */}
-                      <div className="flex flex-wrap gap-2">
-                        {(() => {
-                          let optimizedPlatforms: string[] = [];
-                          try {
-                            if (personaYaml) {
-                              const parsed = JSON.parse(personaYaml);
-                              if (typeof parsed === 'object' && parsed !== null) {
-                                optimizedPlatforms = Object.keys(parsed).filter(k => parsed[k] && parsed[k].trim().length > 0);
-                              } else {
-                                // Not a map, maybe just a string?
-                                optimizedPlatforms = ['General'];
-                              }
-                            }
-                          } catch (e) {
-                            // Legacy format is just a string, so it counts as "General" or global
-                            if (personaYaml) optimizedPlatforms = ['General'];
-                          }
-
-                          if (optimizedPlatforms.length === 0) {
-                            return (
-                              <div className="inline-flex items-center gap-2 bg-slate-100 text-slate-500 px-3 py-1.5 rounded-lg border border-slate-200">
-                                <span className="w-2 h-2 rounded-full bg-slate-400"></span>
-                                <span className="text-[10px] font-black uppercase tracking-widest">Not Optimized</span>
-                              </div>
-                            );
-                          }
-
-                          return optimizedPlatforms.map(plat => (
-                            <div key={plat} className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-600 px-3 py-1.5 rounded-lg border border-emerald-100 shadow-sm animate-in zoom-in duration-300">
-                              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                              <span className="text-[10px] font-black uppercase tracking-widest">
-                                {plat === 'General' ? 'Optimized' : plat}
-                              </span>
-                            </div>
-                          ));
-                        })()}
-                      </div>
-
-                      {/* Action Button */}
-                      <div className="flex items-center gap-3">
-                        {hasUnanalyzedChanges && (
-                          <span className="text-[10px] font-bold text-amber-600 animate-pulse">
-                            Unsaved Changes
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
+                  {/* Header: Intelligence Status - REMOVED per user request */}
+                  {/* <div className="flex flex-col gap-2"> ... </div> */}
                   <p className="text-[11px] md:text-xs text-slate-500 font-bold leading-relaxed max-w-2xl">
                     学習文に基づき、あなたの「書き方の癖」をAIがDNAとして抽出・最適化します。
                     <span className="text-indigo-600 font-black ml-1.5">※ 保存時に自動で最適化が行われます。</span>
@@ -935,27 +885,28 @@ const PresetModal: React.FC<PresetModalProps> = ({
                 </div>
 
                 {/* Console Body: Hints Grid */}
-                <div className="px-6 md:px-8 py-6 bg-slate-50/30 border-b-2 border-slate-100">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="flex gap-4">
-                      <div className="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center shrink-0">
+                <div className="px-6 md:px-8 py-5 bg-slate-50/30 border-b-2 border-slate-100">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+                    <div className="flex gap-4 items-start">
+                      <div className="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center shrink-0 shadow-sm mt-0.5">
                         <MagicWandIcon className="w-4 h-4 text-indigo-400" />
                       </div>
                       <div className="space-y-1">
                         <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">効果的な学習</h5>
-                        <p className="text-[11px] text-slate-500 leading-snug font-bold">
-                          過去の投稿を3〜5件貼り付けるのがベストです。<br />文体や絵文字はAIが自動学習します。
+                        <p className="text-[11px] text-slate-500 leading-relaxed font-bold">
+                          各SNSごとに<span className="text-indigo-600">最大5件</span>まで登録できます。
+                          過去の投稿を登録すると、文体や絵文字の癖を自動で学習します。
                         </p>
                       </div>
                     </div>
-                    <div className="flex gap-4">
-                      <div className="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center shrink-0">
+                    <div className="flex gap-4 items-start">
+                      <div className="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center shrink-0 shadow-sm mt-0.5">
                         <SparklesIcon className="w-4 h-4 text-rose-400" />
                       </div>
                       <div className="space-y-1">
                         <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">プライバシー</h5>
-                        <p className="text-[11px] text-slate-500 leading-snug font-bold">
-                          「AI伏せ字」で実在の名前などを安全な形に書き換えて学習用データを作成できます。
+                        <p className="text-[11px] text-slate-500 leading-relaxed font-bold">
+                          「AI伏せ字」を使えば、固有名詞などを安全に隠して学習データを作成できます。
                         </p>
                       </div>
                     </div>
