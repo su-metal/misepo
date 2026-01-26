@@ -584,11 +584,11 @@ const PresetModal: React.FC<PresetModalProps> = ({
                       <div
                         key={item.id}
                         className={`
-                          group relative flex flex-col justify-between p-3 md:p-5 rounded-2xl bg-white border-2 border-black 
+                          group relative flex flex-col justify-between p-2.5 md:p-4 rounded-xl bg-white border-2 border-black 
                           hover:bg-[var(--bg-beige)] hover:shadow-[3px_3px_0_0_rgba(0,0,0,1)] hover:-translate-y-0.5 
                           transition-all cursor-pointer 
-                          min-h-[120px] w-[150px] shrink-0
-                          sm:min-h-[160px] sm:w-[280px]
+                          min-h-[90px] w-[140px] shrink-0
+                          sm:min-h-[120px] sm:w-[240px]
                         `}
                         onClick={() => {
                           setModalText(item.content);
@@ -599,7 +599,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                         }}
                       >
                         <div>
-                          <p className="text-[10px] md:text-[11px] text-black font-bold line-clamp-4 md:line-clamp-5 leading-relaxed whitespace-pre-wrap break-all">
+                          <p className="text-[9px] md:text-[10px] text-black font-bold line-clamp-3 md:line-clamp-4 leading-relaxed whitespace-pre-wrap break-all">
                             {item.content}
                           </p>
                         </div>
@@ -758,80 +758,81 @@ const PresetModal: React.FC<PresetModalProps> = ({
         <div className="flex-1 overflow-y-auto p-6 md:p-12 space-y-10">
           <div className="animate-in slide-in-from-bottom-4 duration-500">
             <div className="space-y-8">
-              {/* Profile Name */}
+              {/* Profile Settings (Name & Icon) - Unified Block */}
               <div className="space-y-4">
-                <label className="block text-[10px] md:text-[11px] font-black text-black uppercase tracking-[0.3em]">
-                  プロフィール名 (Account Name)
+                <label className="block text-[10px] md:text-[11px] font-black text-black uppercase tracking-[0.3em] mb-3 md:mb-4">
+                  基本設定 (Basic Proflie)
                 </label>
-                <div className="relative group max-w-md">
-                  <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => handleNameChange(e.target.value)}
-                    placeholder="例: 店長（公式）"
-                    className="w-full px-5 py-4 md:px-7 md:py-5 bg-white border-2 border-black focus:bg-[var(--bg-beige)] outline-none rounded-xl text-sm md:text-base text-black font-black placeholder-slate-300 transition-all shadow-none focus:shadow-[4px_4px_0_0_rgba(0,0,0,1)]"
-                  />
-                  <div className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-indigo-500 transition-colors">
-                    {renderAvatar(avatar, "w-6 h-6 md:w-8 md:h-8")}
-                  </div>
 
+                <div className="flex flex-col bg-white border-2 border-black rounded-[24px] shadow-[4px_4px_0_0_rgba(0,0,0,1)] overflow-hidden">
 
-                </div>
-              </div>
-
-              {/* Icon Selection - Accordion Style */}
-              <div className="space-y-4">
-                <div
-                  onClick={() => setIsIconSelectorOpen(!isIconSelectorOpen)}
-                  className="flex flex-col gap-4 p-5 bg-white border-2 border-black rounded-[24px] shadow-[4px_4px_0_0_rgba(0,0,0,1)] cursor-pointer hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all group"
-                >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <label className="block text-[10px] md:text-[11px] font-black text-black uppercase tracking-[0.3em] mb-1">
-                        アイコンの選択 (Select Icon)
-                      </label>
-                      <div className="text-sm font-bold text-slate-500">
-                        {AVATAR_OPTIONS.find(o => o.id === avatar)?.label}
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      {/* Selected Icon Preview */}
-                      <div className="w-12 h-12 rounded-xl bg-[var(--gold)] border-2 border-black flex items-center justify-center text-black shadow-sm">
-                        {renderAvatar(avatar, "w-6 h-6")}
-                      </div>
-                      <div className={`w-8 h-8 rounded-full bg-slate-100 border-2 border-black flex items-center justify-center transition-transform duration-300 ${isIconSelectorOpen ? 'rotate-180' : ''}`}>
-                        <ChevronDownIcon className="w-4 h-4 text-black" />
-                      </div>
+                  {/* Part 1: Profile Name */}
+                  <div className="p-6 md:p-8 border-b-2 border-slate-100">
+                    <label className="block text-[10px] md:text-[11px] font-black text-black uppercase tracking-[0.3em] mb-3">
+                      プロフィール名 (Account Name)
+                    </label>
+                    <div className="relative group">
+                      <input
+                        type="text"
+                        value={name}
+                        onChange={(e) => handleNameChange(e.target.value)}
+                        placeholder="例: 店長（公式）"
+                        className="w-full px-5 py-4 md:px-7 md:py-5 bg-slate-50 border-2 border-slate-200 focus:border-black focus:bg-white outline-none rounded-xl text-sm md:text-base text-black font-black placeholder-slate-300 transition-all"
+                      />
                     </div>
                   </div>
 
-                  {/* Expandable Grid */}
-                  <div className={`grid grid-cols-5 md:flex md:flex-wrap gap-2 md:gap-3 transition-all duration-300 ease-in-out overflow-hidden ${isIconSelectorOpen ? 'max-h-[500px] opacity-100 pt-4 border-t-2 border-slate-100' : 'max-h-0 opacity-0'}`}>
-                    {AVATAR_OPTIONS.map((item) => {
-                      const Icon = item.icon;
-                      const isSelected = avatar === item.id;
-                      return (
-                        <button
-                          key={item.id}
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setAvatar(item.id);
-                            // setIsIconSelectorOpen(false); // Optional: close on select
-                          }}
-                          title={item.label}
-                          className={`
-                            w-10 h-10 md:w-14 md:h-14 flex items-center justify-center rounded-lg md:rounded-xl transition-all duration-300 relative shrink-0 border-2
-                            ${isSelected
-                              ? 'bg-[var(--gold)] shadow-[2px_2px_0_0_rgba(0,0,0,1)] border-black text-black z-10 scale-110'
-                              : 'bg-white text-slate-300 hover:bg-slate-50 hover:text-slate-500 border-slate-200 hover:border-black'
-                            }
-                          `}
-                        >
-                          <Icon className="w-4 h-4 md:w-6 md:h-6" />
-                        </button>
-                      );
-                    })}
+                  {/* Part 2: Icon Selection */}
+                  <div className={`p-6 md:p-8 transition-colors duration-300 ${isIconSelectorOpen ? 'bg-[var(--bg-beige)]/30' : 'bg-white'}`}>
+                    <div
+                      onClick={() => setIsIconSelectorOpen(!isIconSelectorOpen)}
+                      className="flex items-center justify-between cursor-pointer group select-none"
+                    >
+                      <div>
+                        <label className="block text-[10px] md:text-[11px] font-black text-black uppercase tracking-[0.3em] mb-1 group-hover:text-indigo-600 transition-colors">
+                          アイコンの選択 (Select Icon)
+                        </label>
+                        <div className="text-sm font-bold text-slate-500">
+                          {AVATAR_OPTIONS.find(o => o.id === avatar)?.label}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-[var(--gold)] border-2 border-black flex items-center justify-center text-black shadow-sm group-hover:scale-110 transition-transform">
+                          {renderAvatar(avatar, "w-5 h-5 md:w-6 md:h-6")}
+                        </div>
+                        <div className={`w-8 h-8 rounded-full bg-slate-100 border-2 border-black flex items-center justify-center transition-transform duration-300 ${isIconSelectorOpen ? 'rotate-180 bg-black border-black' : 'group-hover:bg-slate-200'}`}>
+                          <ChevronDownIcon className={`w-4 h-4 transition-colors ${isIconSelectorOpen ? 'text-white' : 'text-black'}`} />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Expandable Icon Grid */}
+                    <div className={`grid grid-cols-5 md:flex md:flex-wrap gap-2 md:gap-3 transition-all duration-300 ease-in-out overflow-hidden ${isIconSelectorOpen ? 'max-h-[500px] opacity-100 pt-6 mt-2' : 'max-h-0 opacity-0'}`}>
+                      {AVATAR_OPTIONS.map((item) => {
+                        const Icon = item.icon;
+                        const isSelected = avatar === item.id;
+                        return (
+                          <button
+                            key={item.id}
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setAvatar(item.id);
+                            }}
+                            title={item.label}
+                            className={`
+                              w-10 h-10 md:w-14 md:h-14 flex items-center justify-center rounded-xl transition-all duration-300 relative shrink-0 border-2
+                              ${isSelected
+                                ? 'bg-[var(--gold)] shadow-[3px_3px_0_0_rgba(0,0,0,1)] border-black text-black z-10 scale-105'
+                                : 'bg-white text-slate-300 hover:bg-white hover:text-slate-500 border-slate-200 hover:border-black hover:shadow-sm'
+                              }
+                            `}
+                          >
+                            <Icon className="w-4 h-4 md:w-6 md:h-6" />
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
               </div>
