@@ -348,14 +348,6 @@ export const generateContent = async (
     4. **NEVER** return [ "Title", "Body", "Footer" ]. This is wrong.
     5. **NEVER** split the post based on empty lines.
   </task>
-
-  ${activePersonaYaml ? `
-  <persona_rules>
-    The following rules represent the owner's "Style DNA" specifically for ${config.platform}.
-    Strictly follow the **core_voice** defined here:
-    ${activePersonaYaml}
-  </persona_rules>
-  ` : ""}
 </system_instruction>
 `;
   };
@@ -747,26 +739,22 @@ Example Output:
   return response.text || text;
 };
 
-export const analyzePersona = async (
+export const generateStyleInstruction = async (
   samples: { content: string, platform: string }[],
-  isPro: boolean
+  isPro: boolean = true
 ): Promise<string> => {
   const modelName = getModelName(isPro);
   const ai = getServerAI();
 
   // Group samples by platform for the prompt
-  // Normalize multi-platform strings (e.g. "Instagram, X") into individual samples
   const normalizedSamples: { content: string, platform: string }[] = [];
   
   samples.forEach(s => {
     const platforms = s.platform.split(',').map(p => p.trim());
     platforms.forEach(p => {
-        // Map common variations to Enum values if needed, otherwise keep as is
-        // The AI needs 'X (Twitter)' to match the enum exactly for client-side lookups
         let cleanPlatform = p;
         if (p === 'X' || p === 'Twitter') cleanPlatform = 'X (Twitter)';
         else if (p === 'Line') cleanPlatform = 'LINE';
-        
         normalizedSamples.push({ content: s.content, platform: cleanPlatform });
     });
   });
@@ -778,34 +766,31 @@ export const analyzePersona = async (
 
   const systemInstruction = `
 You are an expert linguistic analyst.
-Your task is to analyze social media posts and extract the "Style DNA" (Persona Rules) for EACH platform independently.
+Your task is to analyze social media posts and write a "Style Instruction Guide" in Japanese.
 
-**Input Data:**
-Samples are grouped by platform.
+**Goal:**
+Create a clear, actionable list of rules that a writer can follow to mimic this style from the samples.
+Focus on:
+- **Tone & Voice**: (e.g. Friendly, Professional, Energetic, Kansai Dialect, etc.)
+- **Sentence Endings**: (e.g. 〜です/〜ます, 〜だ/〜である, 〜っす, etc.)
+- **Formatting**: (e.g. Use of emojis, line breaks, specific symbols like ＼ ✧ ／)
+- **Prohibitions**: (e.g. No emojis, No exclamation marks)
 
-**CRITICAL INSTRUCTION: INDEPENDENT ANALYSIS & SPECIFICITY**
-- **DO NOT MERGE** personas across platforms.
-- **NO GENERIC ADVICE**: Extract actual *linguistic habits* (e.g., "End sentences with 〜です/〜ます").
-- **Trust the samples over platform stereotypes.** If "LINE" samples are polite, the analysis MUST be polite. Do NOT hallucinate "slang" or "casualness" if it's not in the samples.
-
-**Output Goal:**
-Create a separate YAML definition for each platform found in the input.
-
-**Format (JSON):**
-Return a SINGLE JSON object.
-Keys MUST match the input platform names EXACTLY (e.g., "X (Twitter)", "Instagram", "LINE", "Google Maps").
-Value: A valid YAML string containing 'core_voice' and 'endings'.
+**Output Rules:**
+- Output MUST be **Natural Japanese**.
+- Start with a clear header like 【文体指示書】.
+- Use bullet points for readability.
+- If multiple platforms are provided in the input, you may separate sections (e.g. 【X(Twitter)用】, 【Instagram用】), or create a unified style if they are similar.
+- **Do NOT output YAML or JSON.** Just plain text instructions.
 
 Example Output:
-\`\`\`json
-{
-  "X (Twitter)": "core_voice:\\n  tone: 'Polite'\\n  endings: ['~です']",
-  "Google Maps": "core_voice:\\n  tone: 'Energetic'\\n  endings: ['~っす!']"
-}
-\`\`\`
+【文体指示書】
+・基本の語尾は「〜ですね」「〜しましょう」などの丁寧語を使用してください。
+・絵文字（✨や🌱）を文末に1つだけ付け、親しみやすさを出してください。
+・専門用語は使わず、初心者にもわかる言葉で説明してください。
 `;
 
-  const userPrompt = `Analyze these samples and generate the JSON map of YAML rules:\n\n${
+  const userPrompt = `Analyze these samples and write the Style Instruction Guide:\n\n${
     Object.entries(samplesByPlatform).map(([plat, content]) => 
       `--- PLATFORM: ${plat} ---\n${content}`
     ).join("\n")
@@ -816,18 +801,14 @@ Example Output:
     contents: [{ role: "user", parts: [{ text: userPrompt }] }],
     config: {
       systemInstruction,
-      responseMimeType: "application/json",
-      temperature: 0.1, // Reduced temperature to prevent stereotype hallucination
+      responseMimeType: "text/plain",
+      temperature: 0.2,
     },
   });
 
-  const text = response.text || "{}";
-  // Verify it's valid JSON
-  try {
-    const json = JSON.parse(text);
-    return JSON.stringify(json); // Return clean JSON string
-  } catch (e) {
-    console.error("[ANALYZE] Failed to parse JSON response:", text);
-    return "{}";
-  }
+  return (response.text || "").trim();
 };
+
+// Deprecated alias for backward compatibility updates
+export const analyzePersona = generateStyleInstruction;
+

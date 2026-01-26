@@ -232,14 +232,16 @@ const PresetModal: React.FC<PresetModalProps> = ({
     if (!name.trim()) return;
     setIsInternalSaving(true);
     try {
-      let finalYaml = personaYaml;
+      let finalCustomPrompt = customPrompt;
 
       // Auto-analyze if there are unanalyzed changes
       if (hasUnanalyzedChanges) {
         console.log("[SAVE] Detected unanalyzed changes. Auto-running persona analysis...");
-        const yaml = await performPersonaAnalysis();
-        if (yaml) {
-          finalYaml = yaml;
+        const instruction = await performPersonaAnalysis();
+        if (instruction) {
+          finalCustomPrompt = instruction;
+          // Note: state update is async, so we use local variable for immediate save
+          setCustomPrompt(instruction);
         }
       }
 
@@ -268,8 +270,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
         id: selectedPresetId || undefined,
         name,
         avatar,
-        custom_prompt: customPrompt,
-        persona_yaml: finalYaml,
+        custom_prompt: finalCustomPrompt,
+        persona_yaml: null, // Deprecated: Always clear legacy YAML on save
         post_samples: newPostSamples, // Explicitly save the aggregated samples
       });
       setHasUnanalyzedChanges(false);
@@ -365,10 +367,11 @@ const PresetModal: React.FC<PresetModalProps> = ({
         body: JSON.stringify({ samples: presetSamples }),
       });
       const data = await res.json();
-      if (data.yaml) {
-        setPersonaYaml(data.yaml);
+      if (data.instruction) {
+        setCustomPrompt(data.instruction);
+        setPersonaYaml(null); // Clear legacy YAML
         setHasUnanalyzedChanges(false);
-        return data.yaml;
+        return data.instruction;
       } else {
         throw new Error(data.error || 'Failed to analyze persona');
       }
