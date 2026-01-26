@@ -68,7 +68,7 @@ open11:00-close 17:00
     {
       id: "line",
       label: "公式LINE配信",
-      modeBadge: "Official LINE Mode",
+      modeBadge: "LINE Mode",
       input: "「冬の期間限定ホットチョコドーナツが明日からスタート！LINE友だち限定で50円引きクーポンも。」を魅力的に。",
       result: `【明日スタート】冬のご褒美、解禁🍩✨
 

@@ -159,6 +159,21 @@ export async function POST(req: Request) {
       console.warn("[LEARNING] Skipped fetch (missing userId or presetId)");
     }
 
+    // Fetch persona_yaml if presetId is provided
+    if (userId && presetId) {
+      const { data: presetData, error: presetFetchErr } = await supabase
+        .from("user_presets")
+        .select("persona_yaml")
+        .eq("id", presetId)
+        .eq("user_id", userId)
+        .single();
+      
+      if (!presetFetchErr && presetData?.persona_yaml) {
+        console.log(`[LEARNING] Applied persona_yaml from preset ${presetId}`);
+        config.persona_yaml = presetData.persona_yaml;
+      }
+    }
+
     const generatedData = await generateContent(profile, config, isPro, learningSamples);
 
     if (userId) {

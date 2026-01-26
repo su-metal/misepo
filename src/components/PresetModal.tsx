@@ -176,6 +176,10 @@ const PresetModal: React.FC<PresetModalProps> = ({
   const [modalText, setModalText] = useState('');
   const [isSanitizing, setIsSanitizing] = useState(false);
   const [isAnalyzingImage, setIsAnalyzingImage] = useState(false);
+  const [isAnalyzingPersona, setIsAnalyzingPersona] = useState(false);
+  const [personaYaml, setPersonaYaml] = useState<string | null>(null);
+  const [hasUnanalyzedChanges, setHasUnanalyzedChanges] = useState(false);
+  const [selectedPlatforms, setSelectedPlatforms] = useState<Platform[]>([Platform.General]);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const [isIconSelectorOpen, setIsIconSelectorOpen] = useState(false);
@@ -208,6 +212,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
       setName(preset.name);
       setAvatar(preset.avatar || 'shop');
       setCustomPrompt(preset.custom_prompt || '');
+      setPersonaYaml(preset.persona_yaml || null);
+      setHasUnanalyzedChanges(false);
       setMobileView('edit');
     }
   };
@@ -217,6 +223,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
     setName('');
     setAvatar('shop');
     setCustomPrompt('');
+    setPersonaYaml(null);
+    setHasUnanalyzedChanges(false);
     setMobileView('edit');
   };
 
@@ -224,16 +232,30 @@ const PresetModal: React.FC<PresetModalProps> = ({
     if (!name.trim()) return;
     setIsInternalSaving(true);
     try {
+      let finalYaml = personaYaml;
+
+      // Auto-analyze if there are unanalyzed changes
+      if (hasUnanalyzedChanges) {
+        console.log("[SAVE] Detected unanalyzed changes. Auto-running persona analysis...");
+        const yaml = await performPersonaAnalysis();
+        if (yaml) {
+          finalYaml = yaml;
+        }
+      }
+
       await onSave({
         id: selectedPresetId || undefined,
         name,
         avatar,
         custom_prompt: customPrompt,
+        persona_yaml: finalYaml,
       });
+      setHasUnanalyzedChanges(false);
       setShowSuccessToast(true);
       setTimeout(() => setShowSuccessToast(false), 3000);
     } catch (err) {
       console.error('Failed to save preset:', err);
+      alert('保存中にエラーが発生しました。');
     } finally {
       setIsInternalSaving(false);
     }
@@ -303,6 +325,39 @@ const PresetModal: React.FC<PresetModalProps> = ({
     }
   };
 
+  const performPersonaAnalysis = async (): Promise<string | null> => {
+    const presetSamples = trainingItems
+      .filter(item => item.presetId === (selectedPresetId || 'omakase'))
+      .map(item => ({
+        content: item.content,
+        platform: item.platform
+      }));
+
+    if (presetSamples.length === 0) return null;
+
+    setIsAnalyzingPersona(true);
+    try {
+      const res = await fetch('/api/ai/analyze-persona', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ samples: presetSamples }),
+      });
+      const data = await res.json();
+      if (data.yaml) {
+        setPersonaYaml(data.yaml);
+        setHasUnanalyzedChanges(false);
+        return data.yaml;
+      } else {
+        throw new Error(data.error || 'Failed to analyze persona');
+      }
+    } catch (err) {
+      console.error('Failed to analyze persona:', err);
+      return null;
+    } finally {
+      setIsAnalyzingPersona(false);
+    }
+  };
+
   const renderAvatar = (id: string, className = "w-6 h-6") => {
     const opt = AVATAR_OPTIONS.find(o => o.id === id) || AVATAR_OPTIONS[0];
     const Icon = opt.icon;
@@ -333,17 +388,19 @@ const PresetModal: React.FC<PresetModalProps> = ({
     );
   };
 
-  const handleToggleTrainingInternal = async (text: string, platform: Platform) => {
+  const handleToggleTrainingInternal = async (text: string, platforms: Platform[]) => {
     const presetId = selectedPresetId || 'omakase';
     const normalizedText = text.trim();
-    if (!normalizedText) return;
+    if (!normalizedText || platforms.length === 0) return;
 
     const replaceId = editingSampleId || undefined;
+    const platformString = platforms.join(', ') as any; // Join for DB storage
 
     setIsTrainingLoading(true);
     setTrainingError(null);
     try {
-      await onToggleTraining(normalizedText, platform, presetId, replaceId, 'manual');
+      await onToggleTraining(normalizedText, platformString, presetId, replaceId, 'manual');
+      setHasUnanalyzedChanges(true);
       setExpandingPlatform(null);
       setEditingSampleId(null); // Reset editing state
     } catch (err: any) {
@@ -355,65 +412,82 @@ const PresetModal: React.FC<PresetModalProps> = ({
     }
   };
 
-  const renderSampleList = (platform: Platform, colorClass: string, Icon: any) => {
-    const samples = getSamplesForPlatform(platform);
+  const renderUnifiedSamples = () => {
+    const samples = trainingItems.filter(item =>
+      item.presetId === (selectedPresetId || 'omakase')
+    );
+
     return (
-      <div className="bg-white rounded-xl p-6 mb-4 shadow-[4px_4px_0_0_rgba(0,0,0,1)] border-2 border-black transition-all">
-        <div className="flex items-center justify-between mb-4">
+      <div className="bg-white rounded-2xl p-6 md:p-8 mb-6 shadow-[4px_4px_0_0_rgba(0,0,0,1)] border-2 border-black">
+        <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-white border-2 border-black shadow-[2px_2px_0_0_rgba(0,0,0,1)] ${colorClass}`}>
-              <Icon className="w-4 h-4" />
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white border-2 border-black shadow-[2px_2px_0_0_rgba(0,0,0,1)] bg-indigo-500`}>
+              <MagicWandIcon className="w-5 h-5" />
             </div>
-            <span className={`text-[11px] font-black uppercase tracking-widest text-black`}>{platform} Learning</span>
-            <span className="text-[10px] font-black text-black bg-[var(--bg-beige)] border-2 border-black px-2 py-0.5 rounded-full">{samples.length} / 50</span>
+            <div>
+              <span className={`text-[12px] font-black uppercase tracking-widest text-black block`}>Learning Sources</span>
+              <span className="text-[10px] font-black text-slate-400">{samples.length} / 50 samples stored</span>
+            </div>
           </div>
           <button
             type="button"
             onClick={() => {
               setModalText('');
               setEditingSampleId(null);
-              setExpandingPlatform(platform);
+              setExpandingPlatform(Platform.General);
             }}
             disabled={samples.length >= 50}
-            className={`flex items-center gap-2 px-4 py-2 text-[10px] font-black rounded-lg transition-all group border-2 border-black ${samples.length >= 50 ? 'bg-slate-100 text-slate-400' : 'bg-white text-black hover:bg-[var(--teal)] hover:shadow-[2px_2px_0_0_rgba(0,0,0,1)]'}`}
+            className={`flex items-center gap-2 px-6 py-3 text-[11px] font-black rounded-xl transition-all group border-2 border-black ${samples.length >= 50 ? 'bg-slate-100 text-slate-400' : 'bg-white text-black hover:bg-[var(--teal)] hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)]'}`}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" className="group-hover:rotate-90 transition-transform"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            <span>学習文を追加する</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" className="group-hover:rotate-90 transition-transform"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            <span>新しい学習文を追加</span>
           </button>
         </div>
 
         {samples.length === 0 ? (
-          <div className="py-8 border-2 border-dashed border-black rounded-xl flex flex-col items-center justify-center text-slate-300 gap-2">
-            <Icon className="w-8 h-8 opacity-20" />
-            <p className="text-[10px] font-bold text-slate-400">まだ学習データがありません</p>
+          <div className="py-12 border-2 border-dashed border-slate-200 rounded-2xl flex flex-col items-center justify-center text-slate-300 gap-3">
+            <div className="w-16 h-16 rounded-full bg-slate-50 flex items-center justify-center">
+              <SparklesIcon className="w-8 h-8 opacity-20" />
+            </div>
+            <div className="text-center">
+              <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest">No data collected yet</p>
+              <p className="text-[10px] font-bold text-slate-300 mt-1">過去に書いた文章を学習させましょう</p>
+            </div>
           </div>
         ) : (
-          <div className="flex overflow-x-auto gap-3 pb-2 snap-x pr-2">
-            {samples.map((item, idx) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {samples.map((item) => (
               <div
                 key={item.id}
-                className="group relative flex flex-col justify-between min-w-[200px] w-[200px] h-[140px] p-4 rounded-xl bg-white border-2 border-black hover:bg-[var(--bg-beige)] hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:translate-y-[-2px] transition-all cursor-pointer snap-start shrink-0"
+                className="group relative flex flex-col justify-between p-5 rounded-2xl bg-white border-2 border-black hover:bg-[var(--bg-beige)] hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:-translate-y-0.5 transition-all cursor-pointer"
                 onClick={() => {
                   setModalText(item.content);
                   setEditingSampleId(item.id);
-                  setExpandingPlatform(platform);
+                  setExpandingPlatform(item.platform);
+                  const platforms = item.platform.split(', ').map(p => p.trim()) as Platform[];
+                  setSelectedPlatforms(platforms);
                 }}
               >
-                <div className="w-full">
-                  <p className="text-[11px] text-black font-bold line-clamp-4 leading-relaxed whitespace-pre-wrap">
+                <div>
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="px-2 py-0.5 rounded-lg border border-black bg-slate-100 text-[9px] font-black text-slate-500 uppercase tracking-wider">
+                      {item.platform === Platform.General ? 'Source' : item.platform.split(' ')[0]}
+                    </span>
+                  </div>
+                  <p className="text-[12px] text-black font-bold line-clamp-5 leading-relaxed whitespace-pre-wrap">
                     {item.content}
                   </p>
                 </div>
-                <div className="mt-2 flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="mt-4 flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
                   <button
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
                       onToggleTraining(item.content, item.platform, item.presetId, undefined, 'manual');
                     }}
-                    className="p-1.5 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all border-2 border-transparent hover:border-black"
+                    className="p-2 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-xl transition-all border-2 border-transparent hover:border-black"
                   >
-                    <TrashIcon className="w-3.5 h-3.5" />
+                    <TrashIcon className="w-4 h-4" />
                   </button>
                 </div>
               </div>
@@ -639,7 +713,10 @@ const PresetModal: React.FC<PresetModalProps> = ({
             <div className="relative p-1 rounded-[32px]">
               <AutoResizingTextarea
                 value={customPrompt}
-                onChange={setCustomPrompt}
+                onChange={(val) => {
+                  setCustomPrompt(val);
+                  setHasUnanalyzedChanges(true);
+                }}
                 placeholder={'例：\n・「ご来店お待ちしております」は使わないでください\n・必ず「#〇〇」のタグをつけてください\n・語尾は「〜だワン！」にしてください'}
                 className="w-full px-6 py-6 md:px-8 md:py-8 bg-white border-2 border-black focus:bg-[var(--bg-beige)] focus:shadow-[4px_4px_0_0_rgba(0,0,0,1)] outline-none rounded-[24px] text-sm md:text-base text-black font-bold leading-relaxed placeholder-slate-300 transition-all min-h-[120px] md:min-h-[160px]"
               />
@@ -656,7 +733,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
             </label>
             <div className="bg-slate-100/50 rounded-[40px] p-1.5 md:p-2 border border-slate-200/50">
               {/* Learning Hints relocated from Focus Mode */}
-              <div className="p-5 md:p-6 flex flex-col md:flex-row gap-4 md:gap-6 shrink-0 bg-white/40 rounded-[32px] mb-2 border border-slate-100">
+              <div className="p-5 md:p-6 flex flex-col md:flex-row gap-4 md:gap-6 shrink-0 bg-white/40 rounded-[32px] mb-6 border border-slate-100">
                 <div className="flex-1 flex gap-3 md:gap-4">
                   <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-indigo-50 flex items-center justify-center shrink-0">
                     <MagicWandIcon className="w-4 h-4 md:w-5 md:h-5 text-indigo-500" />
@@ -680,26 +757,30 @@ const PresetModal: React.FC<PresetModalProps> = ({
                   </div>
                 </div>
               </div>
+            </div>
 
-              {/* Instagram Sample */}
-              {renderSampleList(Platform.Instagram, 'bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-500', InstagramIcon)}
+            {/* Persona Analysis Button */}
+            <div className="px-5 mb-8">
+              <div className="flex flex-col md:flex-row items-center gap-6 p-6 rounded-3xl bg-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] group hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] hover:-translate-y-0.5 transition-all">
+                <div className="w-full space-y-2">
+                  <div className="flex items-center justify-center md:justify-start gap-2">
+                    <MagicWandIcon className="w-4 h-4 text-indigo-500" />
+                    <h4 className="text-sm font-black text-black">スタイル・インテリジェンス</h4>
+                    {personaYaml && (
+                      <span className="px-2 py-0.5 bg-green-100 text-green-700 text-[10px] font-black rounded-lg border border-green-200">
+                        最適化済み
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[11px] text-slate-500 font-bold leading-relaxed">
+                    学習文に基づき、あなたの「書き方の癖」をAIがDNA（YAML）として抽出・最適化します。
+                    <span className="text-indigo-600 block mt-1">※ 保存時に自動で最適化が行われるため、操作は不要です。</span>
+                  </p>
+                </div>
+              </div>
 
-              {/* X Sample */}
-              {renderSampleList(Platform.X, 'bg-slate-900', (props: any) => (
-                <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M4 4l11.733 16h4.267l-11.733 -16z" /><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" />
-                </svg>
-              ))}
-
-              {/* Google Maps Sample */}
-              {renderSampleList(Platform.GoogleMaps, 'bg-blue-600', (props: any) => (
-                <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" />
-                </svg>
-              ))}
-
-              {/* LINE Sample */}
-              {renderSampleList(Platform.Line, 'bg-[#06C755]', LineIcon)}
+              {/* Unified Samples List */}
+              {renderUnifiedSamples()}
             </div>
           </div>
         </div>
@@ -719,8 +800,14 @@ const PresetModal: React.FC<PresetModalProps> = ({
               disabled={isSaveDisabled}
               className="w-full bg-[var(--gold)] hover:bg-[var(--rose)] border-2 border-black disabled:opacity-50 disabled:cursor-not-allowed text-black px-8 py-4 md:py-6 rounded-xl font-black text-sm uppercase tracking-[0.3em] flex items-center justify-center gap-4 transition-all transform hover:translate-x-[-2px] hover:translate-y-[-2px] active:translate-x-0 active:translate-y-0 shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] group relative overflow-hidden"
             >
-              <SaveIcon className="w-5 h-5 group-hover:scale-110 transition-transform relative z-10" />
-              <span className="relative z-10">{selectedPresetId ? '更新して保存' : '新規作成して保存'}</span>
+              {(isInternalSaving || isAnalyzingPersona) ? (
+                <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin"></div>
+              ) : (
+                <SaveIcon className="w-5 h-5 group-hover:scale-110 transition-transform relative z-10" />
+              )}
+              <span className="relative z-10">
+                {isAnalyzingPersona ? '解析＆保存中...' : (selectedPresetId ? '更新して保存' : '新規作成して保存')}
+              </span>
             </button>
           </div>
         </div>
@@ -763,17 +850,21 @@ const PresetModal: React.FC<PresetModalProps> = ({
           <div className="flex items-center justify-between w-full md:w-auto">
             <div className="flex items-center gap-3 md:gap-4">
               <div className={`p-2.5 md:p-3 rounded-xl border-2 border-black shadow-[2px_2px_0_0_rgba(0,0,0,1)] ${expandingPlatform === Platform.Instagram ? 'bg-pink-50 text-pink-500' :
-                expandingPlatform === Platform.X ? 'bg-slate-900 text-white' :
-                  expandingPlatform === Platform.Line ? 'bg-[#06C755] text-white' :
-                    'bg-blue-600 text-white'
+                  expandingPlatform === Platform.X ? 'bg-slate-900 text-white' :
+                    expandingPlatform === Platform.Line ? 'bg-[#06C755] text-white' :
+                      expandingPlatform === Platform.GoogleMaps ? 'bg-blue-600 text-white' :
+                        'bg-indigo-500 text-white'
                 }`}>
                 {expandingPlatform === Platform.Instagram && <InstagramIcon className="w-5 h-5 md:w-6 md:h-6" />}
                 {expandingPlatform === Platform.X && <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="md:w-6 md:h-6"><path d="M4 4l11.733 16h4.267l-11.733 -16z" /><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" /></svg>}
                 {expandingPlatform === Platform.Line && <LineIcon className="w-5 h-5 md:w-6 md:h-6" />}
                 {expandingPlatform === Platform.GoogleMaps && <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" className="md:w-6 md:h-6"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" /></svg>}
+                {expandingPlatform === Platform.General && <MagicWandIcon className="w-5 h-5 md:w-6 md:h-6" />}
               </div>
               <div>
-                <h3 className="font-black text-lg md:text-xl text-slate-800 tracking-tight">{expandingPlatform} の文体学習</h3>
+                <h3 className="font-black text-lg md:text-xl text-slate-800 tracking-tight">
+                  {expandingPlatform === Platform.General ? '文章スタイルの学習' : `${expandingPlatform} の文体学習`}
+                </h3>
                 <p className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest">Focus Mode Editor</p>
               </div>
             </div>
@@ -782,6 +873,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
               onClick={() => {
                 setExpandingPlatform(null);
                 setEditingSampleId(null);
+                setSelectedPlatforms([Platform.General]);
               }}
               className="md:hidden p-3 bg-white hover:bg-slate-100 text-slate-500 rounded-xl transition-all border-2 border-slate-200 shadow-[2px_2px_0_0_rgba(0,0,0,1)] active:translate-x-0 active:translate-y-0"
               title="閉じる"
@@ -835,9 +927,9 @@ const PresetModal: React.FC<PresetModalProps> = ({
               onClick={() => fileInputRef.current?.click()}
               disabled={isAnalyzingImage}
               className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-4 md:px-5 py-3 rounded-xl font-black text-[10px] md:text-[11px] transition-all transform hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 border-2 border-black shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)] ${expandingPlatform === Platform.Instagram ? 'bg-white text-pink-500 hover:bg-pink-50' :
-                expandingPlatform === Platform.X ? 'bg-white text-slate-700 hover:bg-slate-50' :
-                  expandingPlatform === Platform.Line ? 'bg-white text-[#06C755] hover:bg-green-50' :
-                    'bg-white text-blue-600 hover:bg-blue-50'
+                  expandingPlatform === Platform.X ? 'bg-white text-slate-700 hover:bg-slate-50' :
+                    expandingPlatform === Platform.Line ? 'bg-white text-[#06C755] hover:bg-green-50' :
+                      'bg-white text-blue-600 hover:bg-blue-50'
                 }`}
             >
               {isAnalyzingImage ? (
@@ -876,9 +968,9 @@ const PresetModal: React.FC<PresetModalProps> = ({
               }}
               disabled={isSanitizing || !modalText.trim()}
               className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-4 md:px-5 py-3 rounded-xl font-black text-[10px] md:text-[11px] transition-all transform hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 border-2 border-black shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)] ${expandingPlatform === Platform.Instagram ? 'bg-pink-50 text-pink-600 hover:bg-pink-100' :
-                expandingPlatform === Platform.X ? 'bg-slate-100 text-slate-700 hover:bg-slate-200' :
-                  expandingPlatform === Platform.Line ? 'bg-green-50 text-[#06C755] hover:bg-green-100' :
-                    'bg-blue-50 text-blue-600 hover:bg-blue-100'
+                  expandingPlatform === Platform.X ? 'bg-slate-100 text-slate-700 hover:bg-slate-200' :
+                    expandingPlatform === Platform.Line ? 'bg-green-50 text-[#06C755] hover:bg-green-100' :
+                      'bg-blue-50 text-blue-600 hover:bg-blue-100'
                 }`}
             >
               {isSanitizing ? (
@@ -897,18 +989,19 @@ const PresetModal: React.FC<PresetModalProps> = ({
             </button>
             <button
               onClick={() => {
-                handleToggleTrainingInternal(modalText, expandingPlatform!);
+                handleToggleTrainingInternal(modalText, selectedPlatforms);
               }}
-              disabled={isTrainingLoading}
+              disabled={isTrainingLoading || selectedPlatforms.length === 0}
               className={`flex-1 md:flex-none p-3 bg-[#001738] hover:bg-slate-900 text-white rounded-xl transition-all font-black text-sm px-6 md:px-10 border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] active:translate-x-0 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2`}
             >
               {isTrainingLoading && <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>}
-              {editingSampleId ? '更新して学習' : '学習を開始する'}
+              {editingSampleId ? '内容を更新' : `${selectedPlatforms.length === 1 && selectedPlatforms[0] === Platform.General ? '共通' : '選択媒体'}として学習`}
             </button>
             <button
               onClick={() => {
                 setExpandingPlatform(null);
                 setEditingSampleId(null);
+                setSelectedPlatforms([Platform.General]);
               }}
               className="hidden md:flex p-3 bg-white hover:bg-slate-100 text-slate-500 rounded-xl transition-all border-2 border-slate-200 shadow-[2px_2px_0_0_rgba(0,0,0,1)] active:translate-x-0 active:translate-y-0"
               title="閉じる"
@@ -916,6 +1009,37 @@ const PresetModal: React.FC<PresetModalProps> = ({
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
           </div>
+        </div>
+
+        {/* Platform Selection Pills */}
+        <div className="px-5 md:px-8 py-4 bg-white border-b-2 border-slate-100 flex flex-wrap items-center gap-2">
+          {Object.values(Platform).map((p) => {
+            const isSelected = selectedPlatforms.includes(p);
+            return (
+              <button
+                key={p}
+                type="button"
+                onClick={() => {
+                  if (isSelected) {
+                    if (selectedPlatforms.length > 1) {
+                      setSelectedPlatforms(selectedPlatforms.filter(item => item !== p));
+                    }
+                  } else {
+                    setSelectedPlatforms([...selectedPlatforms, p]);
+                  }
+                }}
+                className={`
+                  px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border-2
+                  ${isSelected
+                    ? 'bg-black text-white border-black shadow-[2px_2px_0_0_rgba(0,0,0,1)] -translate-y-0.5'
+                    : 'bg-white text-slate-400 border-slate-100 hover:border-black hover:text-black'
+                  }
+                `}
+              >
+                {p === Platform.General ? '共通スタイル' : p.split(' ')[0]}
+              </button>
+            );
+          })}
         </div>
 
         <div className="flex-1 overflow-hidden flex flex-col bg-slate-50">

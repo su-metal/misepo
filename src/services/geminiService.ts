@@ -99,8 +99,9 @@ export const generateContent = async (
   
   // No longer using legacy config.post_samples (reset to ensure consistency with UI list)
   const hasLearningSamples = learningSamples && learningSamples.length > 0;
-  const hasPersona = !!(config.customPrompt && config.customPrompt.trim()) || hasLearningSamples;
-  console.debug("[LEARNING] hasPersona:", hasPersona, "hasLearningSamples:", !!hasLearningSamples);
+  // If we have persona_yaml, the primary persona is active even without raw samples
+  const hasPersona = !!(config.customPrompt && config.customPrompt.trim()) || hasLearningSamples || !!config.persona_yaml;
+  console.debug("[LEARNING] hasPersona:", hasPersona, "hasLearningSamples:", !!hasLearningSamples, "hasYaml:", !!config.persona_yaml);
 
   const buildSystemInstruction = () => {
     const isInstagram = config.platform === Platform.Instagram;
@@ -138,7 +139,7 @@ export const generateContent = async (
     - **Line Breaks**: **NEVER** insert line breaks in the middle of a grammatical phrase or word (e.g., don't split "ご来店いただき" across lines). Maintain natural reading flow. Avoid "auto-formatting for mobile" unless the <learning_samples> explicitly use that specific rhythm.
     - **Platform Rules**:
       - Platform: ${config.platform}
-      ${config.platform === Platform.Line ? `- Style: **Friendly but Professional "Official LINE" Marketing**.
+      ${config.platform === Platform.Line ? `- Style: **Friendly but Professional "LINE" Marketing**.
         - **Layout**: Generate content as a single cohesive message with a logical flow: 1. Hook (immediate impact), 2. Details (value/offer), and 3. Action (CTA). Use natural line breaks to keep it clean.` : ''}
     - **Readability & Vertical Flow**: Avoid long, dense blocks of text. Use line breaks (newlines) frequently—ideally after every sentence, emoji, or when shifting topics. Ensure a rhythmic, vertical flow that is easy to scan on a vertical mobile screen.
       - Length: ${config.length}
@@ -166,7 +167,18 @@ export const generateContent = async (
 </system_instruction>
 
 <context_data>
-  ${hasLearningSamples ? `<learning_samples>\n${formattedLearningSamples}\n</learning_samples>` : ""}
+  ${(hasLearningSamples && !config.persona_yaml) ? (() => { 
+    console.log("[LEARNING] Using raw learning samples (No YAML found)");
+    return `<learning_samples>\n${formattedLearningSamples}\n</learning_samples>`;
+  })() : ""}
+  ${(hasLearningSamples && config.persona_yaml) ? (() => {
+    console.log("[LEARNING] Skipping raw samples and using Persona YAML rules for token efficiency");
+    return `<!-- Raw samples skipped to save tokens, using <persona_rules> instead -->`;
+  })() : ""}
+  ${(!hasLearningSamples && config.persona_yaml) ? (() => {
+    console.log("[LEARNING] Using Persona YAML rules");
+    return "";
+  })() : ""}
 </context_data>
 
   <user_input>
@@ -175,17 +187,15 @@ export const generateContent = async (
 
   ${config.storeSupplement ? `<store_context>\n${config.storeSupplement}\n</store_context>` : ""}
 
-  <task>
-    ${config.platform === Platform.GoogleMaps ? 
-      `The <user_input> is a customer review. Generate a REPLY from the owner adhering to the <style_guidelines> and <learning_samples>.` :
-      config.platform === Platform.Line ?
-      `Generate an Official LINE message with a logical flow: 1. Hook, 2. Details, 3. Action. Adhere to the <style_guidelines> and mimic the writing style of the <learning_samples>.` :
-      `Based on the <user_input>, generate a new post following the <style_guidelines> and <learning_samples>.`
-    }
-    Output a JSON object with:
-    - "analysis": A brief analysis of emotion and context.
-    - "posts": An array of one or more post variations (strings). **CRITICAL**: Each string must be a COMPLETE message. Do NOT split a single message (header, body, footer) into separate array items.
   </task>
+
+  ${config.persona_yaml ? `
+  <persona_rules>
+    The following rules represent the owner's "Style DNA".
+    Strictly follow the **core_voice** and apply the relevant **platform_nuances** for ${config.platform}:
+    ${config.persona_yaml}
+  </persona_rules>
+  ` : ""}
 `;
     }
 
@@ -223,13 +233,20 @@ export const generateContent = async (
     ${isGMap ? 
       "The <user_input> is a customer review. Generate a polite and empathetic REPLY from the owner. Use the facts in <store_context> if provided to explain circumstances or provide background. Do not just summarize the facts; acknowledge them graciously." : 
       config.platform === Platform.Line ?
-      "Generate an Official LINE message with a clear flow: 1. Hook (for push notifications), 2. Details (friendly marketing body), 3. Action (CTA). Use friendly but professional tone. Do NOT use '---' or numbering. **CRITICAL**: Use positive framing (e.g., 'ご案内可能なお時間ができました') instead of negative terms like 'cancellation' (キャンセル). **VISUAL**: Use emoji-sandwiched headers (e.g., ＼ 🧴 [Title] 🧴 ／). For LINE only, place directional arrows (↓ ↓ ↓) **strictly on the very last line**, optionally as an arrow-sandwich pattern (e.g., ↓ ↓ ↓ Text ↓ ↓ ↓). **LAYOUT**: Prioritize a clean vertical flow with frequent line breaks (newlines) after sentences to ensure readability on mobile. Avoid dense blocks. Encourage action." :
+      "Generate a LINE message with a clear flow: 1. Hook (for push notifications), 2. Details (friendly marketing body), 3. Action (CTA). Use friendly but professional tone. Do NOT use '---' or numbering. **CRITICAL**: Use positive framing (e.g., 'ご案内可能なお時間ができました') instead of negative terms like 'cancellation' (キャンセル). **VISUAL**: Use emoji-sandwiched headers (e.g., ＼ 🧴 [Title] 🧴 ／). For LINE only, place directional arrows (↓ ↓ ↓) **strictly on the very last line**, optionally as an arrow-sandwich pattern (e.g., ↓ ↓ ↓ Text ↓ ↓ ↓). **LAYOUT**: Prioritize a clean vertical flow with frequent line breaks (newlines) after sentences to ensure readability on mobile. Avoid dense blocks. Encourage action." :
       "Generate an attractive post for based on the <user_input>."
     }
     Output a JSON object with:
     - "analysis": Brief context analysis.
     - "posts": An array of generated post strings. **CRITICAL**: Each string in the array must be a COMPLETE, standalone message. Do NOT split a single message (e.g., separating title from body) into multiple array elements. If you produce variations, each variation must be the full message.
   </task>
+
+  ${config.persona_yaml ? `
+  <persona_rules>
+    Follow the owner's "Style DNA" (core_voice) and the specific nuances for ${config.platform}:
+    ${config.persona_yaml}
+  </persona_rules>
+  ` : ""}
 </system_instruction>
 `;
   };
@@ -608,4 +625,56 @@ Example Output:
   });
 
   return response.text || text;
+};
+
+export const analyzePersona = async (
+  samples: { content: string, platform: string }[],
+  isPro: boolean
+): Promise<string> => {
+  const modelName = getModelName(isPro);
+  const ai = getServerAI();
+
+  const systemInstruction = `
+You are an expert linguistic analyst.
+Analyze the provided social media posts (grouped by platform: X, Instagram, Line, Google Maps, General) to extract the "Style DNA" of the owner.
+
+**Analysis Goals:**
+1. **Core Voice (Common)**: Identify character traits, dialects (e.g., Kansai-ben), and sentence endings that are consistent across all platforms.
+2. **Platform Nuances**: Identify if the owner changes behavior per platform (e.g., "shorter on X", "uses more emojis on Instagram").
+
+**Output Format (YAML only):**
+\`\`\`yaml
+core_voice:
+  tone: "Character description"
+  endings: ["~やで", "~わ"]
+  common_traits: ["trait1"]
+
+platform_nuances:
+  X: "Short, punchy, handles 140 char limit by..."
+  Instagram: "Visual focus, emoji-rich, uses hashtags like..."
+  Line: "Warm, long-form, direct marketing style..."
+  GoogleMaps: "Polite but maintains the core dialect..."
+\`\`\`
+
+**Rules:**
+1. Output ONLY the YAML block.
+2. If samples from only one platform are provided, focus on that platform but still identify the "Core Voice" components.
+3. Keep the "Core Voice" distinct from platform-specific technical constraints.
+`;
+
+  const userPrompt = `Analyze these samples:\n\n${samples.map((s, i) => `<sample platform="${s.platform}">\n${s.content}\n</sample>`).join("\n")}`;
+
+  const response = await ai.models.generateContent({
+    model: modelName,
+    contents: [{ role: "user", parts: [{ text: userPrompt }] }],
+    config: {
+      systemInstruction,
+      temperature: 0.2, // Low temperature for consistent analysis
+    },
+  });
+
+  const text = response.text || "";
+  // Extract YAML block if AI accidentally included markdown code fences
+  const yamlMatch = text.match(/```yaml?([\s\S]*?)```/);
+  return (yamlMatch ? yamlMatch[1] : text).trim();
 };

@@ -13,6 +13,7 @@ interface Preset {
   avatar?: string | null;
   custom_prompt?: string;
   post_samples?: { [key: string]: string } | null;
+  persona_yaml?: string | null;
   sort_order?: number;
 }
 
@@ -31,7 +32,7 @@ export async function GET() {
 
   const { data, error: fetchErr } = await supabase
     .from("user_presets")
-    .select("id,name,avatar,custom_prompt,post_samples,sort_order,created_at,updated_at")
+    .select("id,name,avatar,custom_prompt,post_samples,persona_yaml,sort_order,created_at,updated_at")
     .eq("app_id", APP_ID)
     .eq("user_id", user.id)
     .order("sort_order", { ascending: true })
@@ -95,7 +96,7 @@ export async function POST(req: Request) {
   const { data, error: insertErr } = await supabase
     .from("user_presets")
     .insert(insertPayload)
-    .select("id,name,avatar,custom_prompt,post_samples,sort_order,created_at,updated_at")
+    .select("id,name,avatar,custom_prompt,post_samples,persona_yaml,sort_order,created_at,updated_at")
     .single();
 
   if (insertErr) {

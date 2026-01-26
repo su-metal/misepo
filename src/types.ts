@@ -2,8 +2,9 @@
 export enum Platform {
   X = 'X (Twitter)',
   Instagram = 'Instagram',
-  Line = 'Official LINE',
-  GoogleMaps = 'Google Maps'
+  Line = 'LINE',
+  GoogleMaps = 'Google Maps',
+  General = 'General'
 }
 
 export enum PostPurpose {
@@ -71,6 +72,7 @@ export interface GenerationConfig {
   xConstraint140?: boolean; // X (Twitter) only
   instagramFooter?: string; // New: Footer text to append
   post_samples?: { [key in Platform]?: string }; // Passed from active preset
+  persona_yaml?: string | null; // New: Structured persona rules
   presetId?: string; // ID of the preset used for this generation
 }
 
@@ -103,6 +105,7 @@ export interface Preset {
   avatar: string | null;
   custom_prompt: string | null;
   post_samples?: { [key in Platform]?: string }; // New: Few-shot learning samples per platform
+  persona_yaml?: string | null; // New: Analyzed persona rules in YAML format
   sort_order: number;
   googlePlaceId?: string;
 }
