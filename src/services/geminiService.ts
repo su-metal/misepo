@@ -302,7 +302,7 @@ export const generateContent = async (
     const budget = isXRetry ? 0 : 512;
     console.debug(`[GEMINI] Attempt: ${attempt}, Platform: ${config.platform}, ThinkingBudget: ${budget}`);
 
-    // @ts-ignore - Enable internal reasoning for higher quality drafting (Gemini 2.5 Flash feature)
+    // @ts-ignore - Enable internal reasoning
     requestConfig.thinkingConfig = { includeThoughts: true, thinkingBudget: budget }; 
 
     // Safety Settings to prevent accidental blocking of creative marketing content
@@ -424,7 +424,13 @@ export const generateContent = async (
       );
 
       // Recursive prompt for retry
-      userPrompt = `Previous post was ${currentLength} chars. MUST be under ${charLimit}. Shorten it but keep the Persona.`;
+      userPrompt = `The following post was ${currentLength} chars (Too Long):
+"${firstPost}"
+
+Refine the text above to be strictly under ${charLimit} chars.
+Target: **130-140 chars** (As close to 140 as possible).
+Action: Do NOT summarize. Do NOT rewrite the whole thing. Just **trim the minimum necessary parts** (e.g. remove 1 sentence or shorten one phrase) to fit the limit.
+Keep the volume HIGH.`;
 
     } catch (parseError) {
       console.error("Generation attempt failed:", parseError);
