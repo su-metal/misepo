@@ -109,6 +109,17 @@ export const generateContent = async (
     const isGMap = config.platform === Platform.GoogleMaps;
     const isLine = config.platform === Platform.Line;
 
+    const isInstructionHeavy = !!(config.customPrompt && config.customPrompt.trim());
+    const shouldBoost = (hasPersona || isInstructionHeavy) && !isX;
+    
+    // Define targets: [Base Target], [Boosted (+30%)]
+    const targets = {
+      short: shouldBoost ? { target: '260-300', min: 250, max: 350 } : (isX ? { target: '150-200', min: 140, max: 200 } : { target: '200-250', min: 180, max: 300 }),
+      medium: shouldBoost ? { target: '400-500', min: 380, max: 600 } : (isX ? { target: '250-300', min: 200, max: 350 } : { target: '300-400', min: 280, max: 450 }),
+      long: shouldBoost ? { target: '650-850', min: 600, max: 1100 } : (isX ? { target: '500-600', min: 450, max: 700 } : { target: '500-650', min: 450, max: 750 })
+    };
+    const t = targets[config.length as keyof typeof targets] || targets.medium;
+
     // Platform-Specific Persona Logic: Parse the JSON container if present
     let activePersonaYaml = "";
     if (config.persona_yaml) {
@@ -164,36 +175,16 @@ export const generateContent = async (
   <style_guidelines>
     - **ROLE DEFINITION**:
       - Use **<persona_rules>** (YAML) to define the **Core Personality** (Dialect, Tone, Spirit).
-      - Use **<learning_samples>** to define the **Structural Format** (Line breaks, Emoji density, Length, Footer style).
+      - Use **<learning_samples>** to define the **Structural Format** (Line breaks, Emoji density, Footer style).
+      - **CRITICAL LENGTH RULE**: **Length** is determined by **Volume Control** below, NOT by the samples. If the samples are long but the user asks for 'Short', you MUST write a short post in the *style* of the samples.
     - **Tone & Rhythm**: Mimic the sentence endings and tone. For line breaks/whitespace, follow the **Volume Control** setting (especially if Short).
     - **Volume Control**: Strictly follow the requested **Length: ${config.length}**. 
-      ${(isInstagram || isLine) ? (() => {
-        const isInstructionHeavy = !!(config.customPrompt && config.customPrompt.trim());
-        if (isInstructionHeavy) {
-          return `
-      - **Target Character Counts (Instruction-Aware Relaxation)**:
-        - **Short**: Concise (Target: ~250 chars). 
-          - **Constraint**: Total max 300 characters.
-          - **Priority**: Fulfillment of <custom_instructions> takes priority over extreme brevity.
-        - **Medium**: Standard (Target: ~500 chars).
-          - **Constraint**: Total max 600 characters.
-        - **Long**: Detailed (Target: ~1000 chars).
-      `;
-        }
-        return `
-      - **Target Character Counts (Standard)**:
-      - **Target Character Counts (Standard)**:
-        - **Short**: **Concise but Sufficient** (Range: 150 - 200 chars).
-          - **Constraint**: Minimum 150 characters. Max 220 characters.
+      - **Target Character Counts**:
+        - **Short**: **Concise but Sufficient** (Range: ${targets.short.target} chars).
+          - **Constraint**: Minimum ${targets.short.min} characters. Max ${targets.short.max} characters.
           - **Layout**: Use moderate line breaks for readability. 1 empty line between distinct points.
-          - **Content**: Omit standard closings (e.g. "Waiting for you"). Limit to Max 3 hashtags.
-        - **Medium**: Standard (200 - 300 characters).
-        - **Long**: Detailed (approx 500 characters).
-      `;
-      })() : `
-      - If 'Long', expand upon the context (atmosphere, store owner's feelings, expert tips) whilst maintaining the style of the samples.
-      - If 'Short', condense to the core message but keep the signature style (emojis, endings).
-      `}
+        - **Medium**: Standard (Target: ${targets.medium.target} chars. Max ${targets.medium.max}).
+        - **Long**: Detailed (Target: ${targets.long.target} chars. Max ${targets.long.max}).
     - **Platform Bias**: **IGNORE** all standard "polite" norms for ${config.platform}. The <learning_samples> are the absolute truth for the owner's voice. **NOTE**: Mandatory structural rules (like LINE's 3-balloon and '---' format) still apply; reproduction of the owner's style should happen *within* each segment.
     - **Emojis & Symbols**: 
       ${isGMap ? 
@@ -268,12 +259,17 @@ export const generateContent = async (
   ${config.storeSupplement ? `<store_context>\n${config.storeSupplement}\n</store_context>` : ""}
 
   <task>
-    ${isGMap ? 
-      "The <user_input> is a customer review. Generate a polite and empathetic REPLY from the owner. Use the facts in <store_context> if provided to explain circumstances or provide background. Do not just summarize the facts; acknowledge them graciously." : 
-      config.platform === Platform.Line ?
-      "Generate a LINE message with a clear flow: 1. Hook (for push notifications), 2. Details (friendly marketing body), 3. Action (CTA). Use friendly but professional tone. Do NOT use '---' or numbering. **CRITICAL**: Use positive framing (e.g., 'ご案内可能なお時間ができました') instead of negative terms like 'cancellation' (キャンセル). **VISUAL**: Use emoji-sandwiched headers (e.g., ＼ 🧴 [Title] 🧴 ／). For LINE only, place directional arrows (↓ ↓ ↓) **strictly on the very last line**, optionally as an arrow-sandwich pattern (e.g., ↓ ↓ ↓ Text ↓ ↓ ↓). **LAYOUT**: Prioritize a clean vertical flow with frequent line breaks (newlines) after sentences to ensure readability on mobile. Avoid dense blocks. Encourage action." :
-      "Generate an attractive post for based on the <user_input>."
-    }
+    ${(() => {
+        const lengthStr = t.target;
+        const minVal = t.min;
+        const lengthWarning = `**CRITICAL**: The body text MUST be **${lengthStr} chars**. DO NOT be too short ${shouldBoost ? 'even if the samples are concise' : ''}. Minimum length: ${minVal} characters.`;
+
+        if (isGMap) return `The <user_input> is a customer review. Generate a polite and empathetic REPLY from the owner. ${lengthWarning} Use the facts in <store_context> if provided.`;
+        
+        if (config.platform === Platform.Line) return `Generate a LINE message with a clear flow: 1. Hook, 2. Details, 3. Action. ${lengthWarning} Use friendly but professional tone. DO NOT use '---' or numbering. **VISUAL**: Use emoji-sandwiched headers. **LAYOUT**: Prioritize a clean vertical flow with frequent line breaks.`;
+
+        return `Generate an attractive post based on the <user_input>. ${lengthWarning}`;
+    })()}
     Output a JSON object with:
     - "analysis": Brief context analysis.
     - "posts": An array of generated post strings. 
@@ -308,11 +304,7 @@ export const generateContent = async (
 
   <rules>
     - Language: ${config.language || 'Japanese'}
-    - Length: ${
-      config.length === 'short' ? 'Short (approx 150-200 chars). concise.' :
-      config.length === 'long' ? 'Long (approx 400-500 chars). detailed.' :
-      'Medium (approx 300 chars). Balance details and readability. Max 400 chars.'
-    }
+    - Length: ${config.length} (Target: ${t.target} chars. Min: ${t.min} chars)
     - Tone: ${config.tone} (${TONE_RULES[config.tone] || TONE_RULES[Tone.Standard]})
     - Features: ${isInstagram ? 'Visual focus.' : ''}${isX ? 'Under 140 chars.' : ''}${isGMap ? 'Polite reply, NO emojis, NO hashtags.' : ''}${isLine ? 'Direct marketing style. NO hashtags. Focus on clear messaging.' : ''}
     - Emojis: ${isGMap ? 'Do NOT use emojis at all.' : (config.includeEmojis ? "Actively use expressive emojis (🐻, ✨, 💪, 🎉) to make the text lively." : "DO NOT use any emojis (emoticons, icons, pictograms) under any circumstances. Keep it plain text only regarding emojis.")}
@@ -335,21 +327,17 @@ export const generateContent = async (
   ${config.storeSupplement ? `<store_context>\n${config.storeSupplement}\n</store_context>` : ""}
 
   <task>
-    ${isGMap ? 
-      "The <user_input> is a customer review. Generate a polite and empathetic REPLY from the owner. Use the facts in <store_context> if provided to explain circumstances or provide background. Do not just summarize the facts; acknowledge them graciously." : 
-      isLine ?
-      `Generate a LINE message with a clear flow: 1. Hook, 2. Details, 3. Action. 
-       **VISUAL**: Use a header for the hook. 
-       - ${config.includeSymbols && config.includeEmojis ? 'Header Style: ＼ 🧴 [Title] 🧴 ／ (Use symbols and relevant emojis)' : 
-           config.includeSymbols ? 'Header Style: ＼ ✧ [Title] ✧ ／ (Use stylish symbols only, NO emojis)' : 
-           config.includeEmojis ? 'Header Style: 🧴 [Title] 🧴 (Use relevant emojis)' : 
-           'Header Style: 【 Title 】 (Plain text)'}
-       **STRICT EMOJI RULE**: ${config.includeEmojis ? 'Use emojis naturally.' : 'DO NOT use any emojis, even in headers.'}
-       ${config.includeSymbols ? 'Use aesthetic symbols from the palette for accents.' : ''}
-       For LINE only, place directional arrows (↓ ↓ ↓) on the very last line.
-       **LAYOUT**: Clean vertical flow with frequent line breaks.` :
-      "Generate an attractive post for based on the <user_input>."
-    }
+    ${(() => {
+        const lengthStr = t.target;
+        const minVal = t.min;
+        const lengthWarning = `**CRITICAL**: The body text MUST be **${lengthStr} chars**. DO NOT be too short. Minimum length: ${minVal} characters.`;
+
+        if (isGMap) return `The <user_input> is a customer review. Generate a polite and empathetic REPLY from the owner. ${lengthWarning} Use the facts in <store_context> if provided.`;
+        
+        if (isLine) return `Generate a LINE message with a clear flow: 1. Hook, 2. Details, 3. Action. ${lengthWarning} **VISUAL**: Use a header for the hook. **STRICT EMOJI RULE**: ${config.includeEmojis ? 'Use emojis naturally.' : 'DO NOT use any emojis.'} **LAYOUT**: Clean vertical flow.`;
+
+        return `Generate an attractive post based on the <user_input>. ${lengthWarning}`;
+    })()}
     Output a JSON object with:
     - "analysis": Brief context analysis.
     - "posts": An array of generated post strings. 
@@ -412,7 +400,7 @@ export const generateContent = async (
         requestConfig.systemInstruction = systemInstruction;
     }
 
-    // Dynamic Thinking Budget: 0 for X retries to reduce cost/time, 512 otherwise
+    // Dynamic Thinking Budget: 0 for X retries, 256 for initial attempts
     const isXRetry = attempt > 0 && config.platform === Platform.X;
     const budget = isXRetry ? 0 : 256;
     console.debug(`[GEMINI] Attempt: ${attempt}, Platform: ${config.platform}, ThinkingBudget: ${budget}`);
