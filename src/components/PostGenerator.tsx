@@ -75,7 +75,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
     });
   };
 
-  const handleSavePreset = async (preset: Partial<Preset>) => {
+  const handleSavePreset = async (preset: Partial<Preset>): Promise<Preset | null> => {
     setIsSavingPreset(true);
     try {
       const url = preset.id ? `/api/me/presets/${preset.id}` : '/api/me/presets';
@@ -89,20 +89,27 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
 
       if (!res.ok) throw new Error('Failed to save preset');
 
+      const savedPreset = await res.json();
       await props.refreshPresets();
 
       // If the saved preset is the currently active one, update the flow state immediately
-      // This ensures that changes (like deleting samples) are reflected without needing to re-select
       if (preset.id && preset.id === flow.activePresetId) {
         const currentActiveInfo = presets.find(p => p.id === preset.id);
         if (currentActiveInfo) {
           const updated = { ...currentActiveInfo, ...preset } as Preset;
           flow.handleApplyPreset(updated);
         }
+      } else if (!preset.id) {
+        // If it was a new preset, switch to it? 
+        // Usually we stay on the modal or let the modal handle it.
+        // But for flow state, we might want to know.
       }
+
+      return savedPreset;
     } catch (error) {
       console.error('Failed to save preset:', error);
       alert('プロファイルの保存に失敗しました。');
+      return null;
     } finally {
       setIsSavingPreset(false);
     }

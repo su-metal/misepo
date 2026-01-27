@@ -42,6 +42,7 @@ export function useGeneratorFlow(props: {
   const [language, setLanguage] = useState('Japanese');
   const [storeSupplement, setStoreSupplement] = useState('');
   const [customPrompt, setCustomPrompt] = useState('');
+  const [loadedPresetPrompts, setLoadedPresetPrompts] = useState<{ [key: string]: string }>({});
   const [includeSymbols, setIncludeSymbols] = useState<boolean>(false);
   const [includeEmojis, setIncludeEmojis] = useState<boolean>(true);
   
@@ -106,6 +107,7 @@ export function useGeneratorFlow(props: {
     if (preset.id === 'plain-ai') {
       // Full reset to default state
       setCustomPrompt('');
+      setLoadedPresetPrompts({});
       setCurrentPostSamples({});
       setPostPurpose(PostPurpose.Auto);
       setGmapPurpose(GoogleMapPurpose.Auto);
@@ -116,7 +118,39 @@ export function useGeneratorFlow(props: {
       setActivePresetId(null);
     } else {
       // Apply preset (even if it's the same one - keep it applied)
-      setCustomPrompt(preset.custom_prompt ?? '');
+      let initialPrompts: { [key: string]: string } = {};
+      try {
+          if (preset.custom_prompt?.trim().startsWith('{')) {
+              const parsed = JSON.parse(preset.custom_prompt);
+              
+              // Migration: If 'General' exists, copy to all platforms
+              if (parsed['General']) {
+                [Platform.X, Platform.Instagram, Platform.Line, Platform.GoogleMaps].forEach(p => {
+                  if (!parsed[p]) parsed[p] = parsed['General'];
+                });
+                delete parsed['General'];
+              }
+              initialPrompts = parsed;
+          } else {
+              // Legacy string: Apply to all
+              const legacyVal = preset.custom_prompt || '';
+              [Platform.X, Platform.Instagram, Platform.Line, Platform.GoogleMaps].forEach(p => {
+                initialPrompts[p] = legacyVal;
+              });
+          }
+      } catch (e) {
+          const legacyVal = preset.custom_prompt || '';
+          [Platform.X, Platform.Instagram, Platform.Line, Platform.GoogleMaps].forEach(p => {
+            initialPrompts[p] = legacyVal;
+          });
+      }
+      setLoadedPresetPrompts(initialPrompts);
+
+      // We intentionaly DO NOT set customPrompt here anymore.
+      // This keeps the UI textarea empty for the user to add "one-off" instructions.
+      // The preset prompts are merged internally during performGeneration.
+      setCustomPrompt('');
+
       // Legacy post_samples are ignored to ensure only the 'Learning Data List' is used.
       setCurrentPostSamples({}); 
       setActivePresetId(preset.id);
@@ -141,6 +175,8 @@ export function useGeneratorFlow(props: {
         setIsMultiGenMode(false);
         setIncludeEmojis(false);
         setIncludeSymbols(false);
+        // Switch prompt to GMap specific
+        setCustomPrompt(loadedPresetPrompts[Platform.GoogleMaps] || '');
       } else {
         // If it's X, Instagram, or LINE and we're in multi-gen, keep current multi platforms
         setPlatforms(platforms);
@@ -151,6 +187,9 @@ export function useGeneratorFlow(props: {
         setIncludeEmojis(false);
         setIncludeSymbols(false);
       }
+      
+      // Update customPrompt for single platform selection mode
+      setCustomPrompt(loadedPresetPrompts[p] || '');
     }
   };
 
@@ -160,12 +199,14 @@ export function useGeneratorFlow(props: {
       setIsMultiGenMode(false);
       setIncludeEmojis(false);
       setIncludeSymbols(false);
+      setCustomPrompt(loadedPresetPrompts[Platform.GoogleMaps] || '');
       return;
     }
 
     if (platforms.includes(Platform.GoogleMaps)) {
       setPlatforms([p]);
       setIsMultiGenMode(false);
+      setCustomPrompt(loadedPresetPrompts[p] || '');
       return;
     }
 
@@ -174,13 +215,18 @@ export function useGeneratorFlow(props: {
         if (platforms.length > 1) {
           const nextPlatforms = platforms.filter(x => x !== p);
           setPlatforms(nextPlatforms);
-          if (nextPlatforms.length === 1) setIsMultiGenMode(false);
+          if (nextPlatforms.length === 1) {
+             setIsMultiGenMode(false);
+             // Switched to single mode, update prompt
+             setCustomPrompt(loadedPresetPrompts[nextPlatforms[0]] || '');
+          }
         }
       } else {
         setPlatforms(prev => [...prev, p]);
       }
     } else {
       setPlatforms([p]);
+      setCustomPrompt(loadedPresetPrompts[p] || '');
     }
   };
 
@@ -189,8 +235,15 @@ export function useGeneratorFlow(props: {
     setIsMultiGenMode(nextMode);
     if (nextMode) {
       setPlatforms([Platform.X, Platform.Instagram, Platform.Line]);
+      // Multi-gen ON: Switch to first of the three
+      setCustomPrompt(loadedPresetPrompts[Platform.X] || '');
     } else {
-      if (platforms.length > 1) setPlatforms([platforms[0]]);
+      if (platforms.length > 1) {
+          const first = platforms[0];
+          setPlatforms([first]);
+          // Multi-gen OFF: Switch to First Platform prompt
+          setCustomPrompt(loadedPresetPrompts[first] || '');
+      }
     }
   };
 
@@ -239,6 +292,21 @@ export function useGeneratorFlow(props: {
 
     const resultsPromises = targetPlatforms.map(async (p) => {
       const purpose = p === Platform.GoogleMaps ? gmapPurpose : postPurpose;
+      
+      // Resolve Platform-Specific Prompt
+      // Merge System Prompt (from preset) and User Prompt (from UI textarea)
+      let systemPrompt = loadedPresetPrompts[p] || '';
+      let userPrompt = customPrompt.trim();
+      
+      let effectivePrompt = '';
+      if (systemPrompt && userPrompt) {
+          effectivePrompt = `${systemPrompt}\n\n---\n\n【今回の追加指示】\n${userPrompt}`;
+      } else if (systemPrompt) {
+          effectivePrompt = systemPrompt;
+      } else {
+          effectivePrompt = userPrompt;
+      }
+
       const config: GenerationConfig = {
         platform: p,
         purpose,
@@ -248,7 +316,7 @@ export function useGeneratorFlow(props: {
         starRating: p === Platform.GoogleMaps ? starRating : undefined,
         language,
         storeSupplement,
-        customPrompt,
+        customPrompt: effectivePrompt,
         xConstraint140,
         includeSymbols,
         includeEmojis,

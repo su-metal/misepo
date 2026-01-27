@@ -10,9 +10,9 @@ export async function POST(req: NextRequest) {
     }
 
     // Default to true (Pro model) for persona analysis to get better results
-    const yaml = await analyzePersona(samples as { content: string, platform: string }[], true);
+    const instruction = await analyzePersona(samples as { content: string, platform: string }[], true);
 
-    return NextResponse.json({ yaml });
+    return NextResponse.json({ instruction });
   } catch (error) {
     console.error("Persona analysis API error:", error);
     return NextResponse.json(
