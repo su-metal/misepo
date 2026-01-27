@@ -759,6 +759,12 @@ export const generateStyleInstruction = async (
   const modelName = getModelName(isPro);
   const ai = getServerAI();
 
+  // If no samples provided, return empty object immediately
+  if (!samples || samples.length === 0) {
+    console.log("[Gemini] No samples provided for style analysis. Returning empty.");
+    return {};
+  }
+
   // Group samples by platform for the prompt
   const normalizedSamples: { content: string, platform: string }[] = [];
   
