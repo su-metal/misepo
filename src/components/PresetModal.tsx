@@ -176,6 +176,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
   const [isTrainingLoading, setIsTrainingLoading] = useState(false);
   const [trainingError, setTrainingError] = useState<string | null>(null);
   const [modalText, setModalText] = useState('');
+  const [isPromptExpanded, setIsPromptExpanded] = useState(false);
   const [isSanitizing, setIsSanitizing] = useState(false);
   const [isAnalyzingImage, setIsAnalyzingImage] = useState(false);
   const [isAnalyzingPersona, setIsAnalyzingPersona] = useState(false);
@@ -569,13 +570,13 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
     const platformOrder = [Platform.Instagram, Platform.X, Platform.Line, Platform.GoogleMaps, Platform.General];
 
-    // State for expanded sections (default to all open or just some)
+    // State for expanded sections (default to all collapsed)
     const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
-      [Platform.Instagram]: true,
-      [Platform.X]: true,
-      [Platform.Line]: true,
-      [Platform.GoogleMaps]: true,
-      [Platform.General]: true,
+      [Platform.Instagram]: false,
+      [Platform.X]: false,
+      [Platform.Line]: false,
+      [Platform.GoogleMaps]: false,
+      [Platform.General]: false,
     });
 
     const toggleSection = (platform: string) => {
@@ -606,7 +607,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
     };
 
     return (
-      <div className="py-8 md:py-12">
+      <div className="py-8 md:py-12 px-6 md:px-10">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
           <div className="flex items-center gap-5">
             <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] bg-indigo-600`}>
@@ -648,7 +649,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
             </div>
           </div>
         ) : (
-          <div className="space-y-8">
+          <div className="space-y-12">
             {platformOrder.map(platform => {
               const platformItems = groupedSamples[platform] || [];
               if (platformItems.length === 0) return null;
@@ -949,7 +950,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
           </div>
 
           <div className="animate-in slide-in-from-bottom-4 duration-500 delay-100">
-            <div className="flex items-center justify-between mb-3 md:mb-4">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
               <label className="block text-[10px] md:text-[11px] font-black text-black uppercase tracking-[0.3em]">
                 追加の指示プロンプト (Additional Instructions)
               </label>
@@ -1032,16 +1033,42 @@ const PresetModal: React.FC<PresetModalProps> = ({
               ))}
             </div>
 
-            <div className="relative p-1 rounded-[32px]">
-              <AutoResizingTextarea
-                value={customPrompts[activePromptTab] || ''}
-                onChange={(val) => {
-                  setCustomPrompts(prev => ({ ...prev, [activePromptTab]: val }));
-                  setHasUnanalyzedChanges(true);
-                }}
-                placeholder={`${activePromptTab}専用のルールを入力（例：ハッシュタグをつけて）`}
-                className="w-full px-5 py-4 md:px-6 md:py-5 bg-white border-2 border-black focus:bg-[var(--bg-beige)] focus:shadow-[4px_4px_0_0_rgba(0,0,0,1)] outline-none rounded-[24px] text-sm md:text-base text-black font-bold leading-relaxed placeholder-slate-300 transition-all min-h-[80px] md:min-h-[100px]"
-              />
+            <div className="relative p-1 rounded-[32px] group">
+              <div
+                className={`
+                  relative transition-all duration-300 overflow-hidden
+                  ${!isPromptExpanded ? 'max-h-[80px] md:max-h-none' : 'max-h-[1000px]'}
+                `}
+                onClick={() => !isPromptExpanded && setIsPromptExpanded(true)}
+              >
+                <AutoResizingTextarea
+                  value={customPrompts[activePromptTab] || ''}
+                  onChange={(val) => {
+                    setCustomPrompts(prev => ({ ...prev, [activePromptTab]: val }));
+                    setHasUnanalyzedChanges(true);
+                  }}
+                  placeholder={`${activePromptTab}専用のルールを入力（例：ハッシュタグをつけて）`}
+                  className={`w-full px-5 py-4 md:px-6 md:py-5 bg-white border-2 border-black focus:bg-[var(--bg-beige)] focus:shadow-[4px_4px_0_0_rgba(0,0,0,1)] outline-none rounded-[24px] text-sm md:text-base text-black font-bold leading-relaxed placeholder-slate-300 transition-all min-h-[80px] md:min-h-[100px] ${!isPromptExpanded ? 'cursor-pointer md:cursor-text' : ''}`}
+                />
+
+                {/* Truncation Overlay */}
+                {!isPromptExpanded && (
+                  <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-white to-transparent pointer-events-none md:hidden flex items-end justify-center pb-2">
+                    <div className="text-[10px] font-black text-slate-400 animate-bounce">
+                      タップで展開
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {isPromptExpanded && (
+                <button
+                  onClick={() => setIsPromptExpanded(false)}
+                  className="md:hidden mt-2 ml-auto block text-[10px] font-black text-slate-400 hover:text-black"
+                >
+                  閉じる
+                </button>
+              )}
             </div>
             <p className="text-[10px] md:text-[11px] text-slate-500 font-black mt-3 md:mt-4 leading-relaxed flex items-center gap-1.5 md:gap-2">
               <span className="w-2 h-2 rounded-full bg-[var(--teal)]"></span>
@@ -1056,7 +1083,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
             <div className="bg-white border-2 border-black rounded-[32px] overflow-hidden shadow-[4px_4px_0_0_rgba(0,0,0,1)]">
               {/* Console Header: Status and Description */}
               <div className="p-6 md:p-8 border-b-2 border-slate-100 bg-[var(--bg-beige)]/30">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center border border-indigo-100">
                       <MagicWandIcon className="w-5 h-5 text-indigo-500" />
@@ -1066,46 +1093,33 @@ const PresetModal: React.FC<PresetModalProps> = ({
                       <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-0.5">Automated Optimization</p>
                     </div>
                   </div>
-                  {/* Header: Intelligence Status - REMOVED per user request */}
-                  {/* <div className="flex flex-col gap-2"> ... </div> */}
-                  <p className="text-[11px] md:text-xs text-slate-500 font-bold leading-relaxed max-w-2xl">
-                    学習文に基づき、あなたの「書き方の癖」をAIがDNAとして抽出・最適化します。
-                    <span className="text-indigo-600 font-black ml-1.5">※ 学習文を追加したら、上の「AI解析を実行」からプロンプトを更新できます。</span>
+                  <p className="text-[11px] md:text-sm text-slate-500 font-bold leading-relaxed max-w-[280px] md:max-w-xl">
+                    学習文から「書き方の癖」を抽出・最適化します。
+                    <span className="text-indigo-600 font-black block md:inline mt-1 md:mt-0 md:ml-2">※学習文追加後に上の解析を実行してください。</span>
                   </p>
                 </div>
 
-                {/* Console Body: Hints Grid */}
-                <div className=" py-5 bg-slate-50/30 border-b-2 border-slate-100">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
-                    <div className="flex gap-4 items-start">
-                      <div className="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center shrink-0 shadow-sm mt-0.5">
-                        <MagicWandIcon className="w-4 h-4 text-indigo-400" />
-                      </div>
-                      <div className="space-y-1">
-                        <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">効果的な学習</h5>
-                        <p className="text-[11px] text-slate-500 leading-relaxed font-bold">
-                          各SNSごとに<span className="text-indigo-600">最大5件</span>まで登録できます。
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex gap-4 items-start">
-                      <div className="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center shrink-0 shadow-sm mt-0.5">
-                        <SparklesIcon className="w-4 h-4 text-rose-400" />
-                      </div>
-                      <div className="space-y-1">
-                        <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">プライバシー</h5>
-                        <p className="text-[11px] text-slate-500 leading-relaxed font-bold">
-                          「AI伏せ字」を使えば、固有名詞などを安全に隠して学習データを作成できます。
-                        </p>
-                      </div>
-                    </div>
+                {/* Desktop Hints Row (Subtle) */}
+                <div className="hidden md:flex items-center gap-8 mt-4 pt-4 border-t border-slate-100/50">
+                  <div className="flex items-center gap-2">
+                    <MagicWandIcon className="w-3 h-3 text-indigo-400" />
+                    <span className="text-[10px] text-slate-400 font-bold">各SNS 5件まで登録可</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <SparklesIcon className="w-3 h-3 text-rose-400" />
+                    <span className="text-[10px] text-slate-400 font-bold">AI伏せ字で個人情報を保護</span>
                   </div>
                 </div>
 
-                {/* Console Content: Unified Samples List */}
-                <div className="bg-white">
-                  {renderUnifiedSamples()}
-                </div>
+                {/* Mobile-only condensed notice */}
+                <p className="md:hidden text-[10px] text-slate-400 font-bold mt-2">
+                  追加した学習文はプラットフォームごとに編集できます。
+                </p>
+              </div>
+
+              {/* Console Content: Unified Samples List */}
+              <div className="bg-white">
+                {renderUnifiedSamples()}
               </div>
             </div>
 
