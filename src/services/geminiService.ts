@@ -38,6 +38,20 @@ const TONE_RULES = {
   [Tone.Casual]: "非常にフランクな口調。絵文字や流行の表現、あるいは「だ・である」を交えたSNSらしい親近感のある表現を用いる。"
 };
 
+const INDUSTRY_PROMPTS: Record<string, string> = {
+  '飲食店': '役割：飲食店のオーナー。重視点：料理のシズル感（味、香り、温度）、季節の食材へのこだわり、来店への感謝。温かみのある表現を心がける。',
+  'カフェ': '役割：カフェのオーナー/スタッフ。重視点：癒やしの空間、コーヒーやスイーツの香り、ゆったりとした時間の流れ。おしゃれで落ち着いたトーン。',
+  '居酒屋': '役割：居酒屋の大将/スタッフ。重視点：活気ある雰囲気、お酒と料理の相性、宴会の楽しさ。元気で親しみやすいトーン。',
+  '美容室': '役割：美容師/スタイリスト。重視点：お客様の変身（Before/After）、髪の悩みへの共感、トレンド感、リラックス。専門性を出しつつ親身な姿勢。',
+  'ネイル・まつげ': '役割：ネイリスト/アイリスト。重視点：細部の美しさ、デザインの可愛さ、施術中の会話、モチベーションアップ。キラキラした表現やトレンド用語。',
+  'エステ・サロン': '役割：エステティシャン/セラピスト。重視点：心身の癒やし、自分へのご褒美、美への追求。包容力のある優しいトーン。',
+  '旅館・ホテル': '役割：宿泊施設の支配人/女将。重視点：非日常的な体験、旅の思い出、季節の移ろい、心温まるおもてなし。格式と親しみのバランス。',
+  '整体・接骨院': '役割：整体師/柔道整復師。重視点：健康へのアドバイス、痛みの改善、身体のメンテナンス。信頼感と安心感を与える落ち着いたトーン。',
+  'ジム': '役割：トレーナー/インストラクター。重視点：フィットネスの楽しさ、目標達成の喜び、健康的なライフスタイル。ポジティブでモチベーションを上げる表現。',
+  '小売': '役割：ショップスタッフ。重視点：商品の魅力（使い方、メリット）、入荷のワクワク感、ギフト提案。購買意欲をそそる具体的な描写。',
+  'その他': '役割：店舗/サービスのオーナー。重視点：お客様との繋がり、サービスの独自性、誠実な対応。'
+};
+
 const KEYWORDS = {
   legal: /(訴える|弁護士|消費者センター|警察|労基|監督署|違法|法的)/,
   safetyHygiene: /(食中毒|異物|虫|カビ|腹痛|下痢|吐き気|アレルギー|火傷|怪我|危険|衛生|不衛生|汚い)/,
@@ -145,34 +159,46 @@ export const generateContent = async (
     // Many-shot learning samples formatting
     // Limit to latest 5 or 3000 chars to avoid token explosion
     // Aggressive filtering for learning samples to prevent prompt injection loops
-    const formattedLearningSamples = learningSamples 
-        ? learningSamples
-            .filter(s => {
-                const content = s.trim();
-                if (!content) return false;
-                // Reject leaked system prompts
-                if (content.includes('【文体指示書】') || content.includes('System Instruction')) return false;
-                if (content.includes('"analysis":') && content.includes('"posts":')) return false;
-                // Reject extremely short or garbage inputs
-                if (content.length < 5) return false;
-                // Reject massive repetitive spam (simple heuristic: unique chars ratio)
-                // if (new Set(content).size < 5 && content.length > 20) return false; 
-                return true;
-            })
-            .slice(0, 5) // Hard cap at 5 recent posts per generation
-            .map((s, i) => `<sample id="${i+1}">\n${s.length > 500 ? s.slice(0, 500) + '...' : s}\n</sample>`)
-            .join("\n") 
-        : "";
+    const validSamples = learningSamples
+        ? learningSamples.filter(s => {
+            const content = s.trim();
+            if (!content) return false;
+            if (content.includes('【文体指示書】') || content.includes('System Instruction')) return false;
+            if (content.includes('"analysis":') && content.includes('"posts":')) return false;
+            if (content.length < 5) return false;
+            return true;
+        })
+        : [];
+
+    // Emoji detection logic
+    // If samples exist but contain NO emojis, force disable emojis
+    if (validSamples.length > 0) {
+        const emojiRegex = /\p{Emoji_Presentation}|\p{Extended_Pictographic}/u;
+        const hasEmoji = validSamples.some(s => emojiRegex.test(s));
+        if (!hasEmoji && config.includeEmojis) {
+            console.log("[LEARNING] No emojis found in samples. Force disabling emojis.");
+            config.includeEmojis = false;
+        }
+    }
+
+    const formattedLearningSamples = validSamples
+        .slice(0, 5) // Hard cap at 5 recent posts per generation
+        .map((s, i) => `<sample id="${i + 1}">\n${s.length > 500 ? s.slice(0, 500) + '...' : s}\n</sample>`)
+        .join("\n");
+
 
     if (hasPersona) {
-        const languageRule = config.language && config.language !== 'Japanese' 
-          ? `\n<language_rule>\nGenerate the content in **${config.language}**. Even if the language is different, reproduce the store owner's character (friendliness, passion, expertise, etc.) from the samples within the context of ${config.language}.\n</language_rule>`
-          : `\n<language_rule>\nPrimary Language: Japanese. \n*Exception*: If <learning_samples> contain phrases in other languages (e.g., English greetings), you MUST include them to maintain the persona's flavor.\n</language_rule>`;
+        const languageRule = config.language && config.language !== 'Japanese'
+            ? `\n<language_rule>\nGenerate the content in **${config.language}**. Even if the language is different, reproduce the store owner's character (friendliness, passion, expertise, etc.) from the samples within the context of ${config.language}.\n</language_rule>`
+            : `\n<language_rule>\nPrimary Language: Japanese. \n*Exception*: If <learning_samples> contain phrases in other languages (e.g., English greetings), you MUST include them to maintain the persona's flavor.\n</language_rule>`;
 
-      return `
+        const industryRole = INDUSTRY_PROMPTS[profile.industry] || INDUSTRY_PROMPTS['その他'];
+
+        return `
 <system_instruction>
   <role>
     You are the "Ghostwriter" for the store owner of "${profile.name}".
+    ${industryRole}
     ${profile.description ? `<store_dna>
     SOURCE_MATERIAL:
     ${profile.description}
