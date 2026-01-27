@@ -66,7 +66,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                 return {
                     icon: <div className={`w-10 h-10 bg-black rounded-xl flex items-center justify-center text-white text-xl font-black ${IS_HOSPITALITY_MODE ? 'shadow-lg' : 'shadow-[4px_4px_0px_0px_#9B8FD4]'} border-2 border-white/20`}>𝕏</div>,
                     label: 'X',
-                    actionColor: IS_HOSPITALITY_MODE ? "bg-[#2C3E50] text-white hover:bg-[#1a252f] shadow-lg rounded-2xl" : "bg-black text-white hover:bg-black/80 active:scale-[0.98] shadow-[6px_6px_0px_0px_#9B8FD4] border-white/20",
+                    actionColor: IS_HOSPITALITY_MODE ? "bg-gradient-to-br from-indigo-950 to-slate-900 text-white shadow-xl shadow-indigo-900/40 rounded-2xl" : "bg-black text-white hover:bg-black/80 active:scale-[0.98] shadow-[6px_6px_0px_0px_#9B8FD4] border-white/20",
                     actionLabel: "Xで投稿する",
                     contentClasses: "text-[16px] text-black font-bold leading-relaxed tracking-tight",
                     wrapperClass: "max-w-[375px]",
@@ -89,7 +89,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                             key="inst-toggle"
                             onClick={() => onIncludeFooterChange(!includeFooter)}
                             className={`flex items-center gap-3 px-4 py-2 rounded-xl transition-all text-[11px] font-black border-2 ${includeFooter
-                                ? (IS_HOSPITALITY_MODE ? 'bg-indigo-600 text-white border-transparent shadow-md' : 'bg-[#9B8FD4] text-black border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]')
+                                ? (IS_HOSPITALITY_MODE ? 'bg-indigo-950 text-white border-transparent shadow-md' : 'bg-[#9B8FD4] text-black border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]')
                                 : 'bg-black/5 text-black/40 border-black/10'
                                 }`}
                         >
@@ -97,7 +97,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                             <span className="tracking-widest uppercase">施設情報を表示</span>
                         </button>
                     ),
-                    actionColor: IS_HOSPITALITY_MODE ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-lg rounded-2xl" : "bg-[#E88BA3] hover:bg-[#E88BA3]/90 active:scale-[0.98] text-black border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]",
+                    actionColor: IS_HOSPITALITY_MODE ? "bg-gradient-to-br from-indigo-950 to-slate-900 text-white shadow-xl shadow-indigo-900/40 rounded-2xl" : "bg-[#E88BA3] hover:bg-[#E88BA3]/90 active:scale-[0.98] text-black border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]",
                     actionLabel: "Instagramを起動",
                     contentClasses: "text-[15px] text-black font-bold leading-relaxed tracking-tight",
                     wrapperClass: "max-w-[340px]",
@@ -108,14 +108,14 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
             case Platform.GoogleMaps:
                 return {
                     icon: (
-                        <div className={`w-10 h-10 ${IS_HOSPITALITY_MODE ? 'bg-[#2C3E50] text-white shadow-lg border-white/20' : 'bg-[#4DB39A] text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]'} rounded-2xl flex items-center justify-center border-2 border-black`}>
+                        <div className={`w-10 h-10 ${IS_HOSPITALITY_MODE ? 'bg-[#1A252F] text-white shadow-lg border-white/10' : 'bg-[#4DB39A] text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]'} rounded-2xl flex items-center justify-center border-2 border-black`}>
                             <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
                             </svg>
                         </div>
                     ),
                     label: 'Google Maps',
-                    actionColor: IS_HOSPITALITY_MODE ? "bg-[#2C3E50] text-white hover:bg-[#1a252f] shadow-lg rounded-2xl" : `${IS_HOSPITALITY_MODE ? 'bg-[#2C3E50] text-white hover:bg-[#2C3E50]/90' : 'bg-[#4DB39A] text-black hover:bg-[#4DB39A]/90'} active:scale-[0.98] border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]`,
+                    actionColor: IS_HOSPITALITY_MODE ? "bg-gradient-to-br from-indigo-950 to-slate-900 text-white shadow-xl shadow-indigo-900/40 rounded-2xl" : `${IS_HOSPITALITY_MODE ? 'bg-[#2C3E50] text-white hover:bg-[#2C3E50]/90' : 'bg-[#4DB39A] text-black hover:bg-[#4DB39A]/90'} active:scale-[0.98] border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]`,
                     actionLabel: "Googleマップで返信する",
                     contentClasses: "text-[15px] text-black font-bold leading-relaxed tracking-tight",
                     wrapperClass: "max-w-[325px]",
@@ -220,13 +220,13 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                         {results.length === 0 ? (
                             // Placeholder when no results
                             <div className="p-12 h-full flex flex-col items-center justify-center text-center space-y-8 animate-in fade-in duration-1000">
-                                <h2 className="text-3xl font-black text-black uppercase tracking-[0.25em] text-center">プレビュー (ライブプレビュー)</h2>
+                                <h2 className={`text-3xl tracking-[0.25em] text-center ${IS_HOSPITALITY_MODE ? 'font-serif-hospitality font-bold text-[#1A252F]' : 'font-black text-black uppercase'}`}>プレビュー</h2>
 
                                 <div className="space-y-6 max-w-sm">
                                     <div className={`w-24 h-24 rounded-[32px] ${IS_HOSPITALITY_MODE ? 'bg-slate-50 border-slate-100 shadow-inner' : 'bg-black/5 border-[3px] border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]'} flex items-center justify-center text-black/10 mx-auto`}>
                                         <SparklesIcon className="w-12 h-12" />
                                     </div>
-                                    <h3 className="text-xl font-black text-black uppercase tracking-widest">入力待ち</h3>
+                                    <h3 className={`text-xl tracking-widest ${IS_HOSPITALITY_MODE ? 'font-serif-hospitality font-bold text-[#1A252F]' : 'font-black text-black uppercase'}`}>入力待ち</h3>
                                     <p className="text-black/40 text-sm font-bold leading-relaxed">
                                         左側のフォームに内容やアイデアを入力して、<br />プロフェッショナルな投稿を瞬時に生成しましょう。
                                     </p>
@@ -300,7 +300,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                             {/* Prominent Refine Button */}
                                                             <button
                                                                 onClick={() => onRefineToggle(gIdx, iIdx)}
-                                                                className={`flex items-center justify-center gap-3 py-5 rounded-[24px] text-[12px] font-black transition-all uppercase tracking-[0.25em] border-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] ${refiningKey === `${gIdx}-${iIdx}` ? 'bg-[#9B8FD4] border-black text-black' : 'bg-white text-black/40 border-black/10 hover:border-black hover:text-black'}`}
+                                                                className={`flex items-center justify-center gap-3 py-5 rounded-[24px] text-[12px] font-black transition-all uppercase tracking-[0.25em] ${IS_HOSPITALITY_MODE ? (refiningKey === `${gIdx}-${iIdx}` ? 'bg-gradient-to-br from-indigo-950 to-slate-900 text-white shadow-xl shadow-indigo-900/40' : 'bg-white text-slate-400 border border-slate-100 shadow-sm hover:border-slate-300 hover:text-slate-600') : (refiningKey === `${gIdx}-${iIdx}` ? 'bg-[#9B8FD4] border-black text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]' : 'bg-white text-black/40 border-black/10 hover:border-black hover:text-black border-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]')}`}
                                                             >
                                                                 <MagicWandIcon className="w-5 h-5" />
                                                                 <span>AIで内容を微調整する</span>
@@ -317,7 +317,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                                         onShare(res.platform, text);
                                                                     }
                                                                 }}
-                                                                className={`flex items-center justify-center gap-4 py-6 md:py-8 rounded-[32px] font-black text-lg transition-all uppercase tracking-[0.3em] group border-[3px] border-black mt-2 ${theme.actionColor}`}
+                                                                className={`flex items-center justify-center gap-4 py-6 md:py-8 rounded-[32px] font-black text-lg transition-all uppercase tracking-[0.3em] group mt-2 ${theme.actionColor} ${!IS_HOSPITALITY_MODE ? 'border-[3px] border-black' : ''}`}
                                                             >
                                                                 <span>{theme.actionLabel}</span>
                                                                 <ExternalLinkIcon className="w-6 h-6 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />

@@ -49,7 +49,7 @@ export const TOKENS = {
     : "bg-white border-[3px] border-black rounded-2xl focus:shadow-[6px_6px_0_0_rgba(0,0,0,1)] transition-all",
 
   buttonPrimary: IS_HOSPITALITY_MODE
-    ? "bg-gradient-to-br from-[#1A252F] to-[#2C3E50] text-white shadow-xl shadow-slate-200 hover:shadow-indigo-100 hover:-translate-y-0.5 active:scale-95 transition-all rounded-2xl"
+    ? "bg-gradient-to-br from-indigo-950 to-slate-900 text-white shadow-xl shadow-indigo-900/40 hover:shadow-indigo-900/60 hover:-translate-y-0.5 active:scale-95 transition-all rounded-2xl"
     : "bg-[#4DB39A] text-black border-[3px] border-black shadow-[6px_6px_0_0_rgba(0,0,0,1)] active:scale-95 transition-all rounded-2xl",
 
   buttonSecondary: IS_HOSPITALITY_MODE

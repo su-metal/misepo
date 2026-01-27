@@ -225,8 +225,8 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
             <div className="flex flex-col gap-2 px-3 sm:px-0 pb-4">
                 <div className="flex items-center justify-between px-2">
                     <div className="flex items-center gap-2">
-                        <span className="w-6 h-6 rounded-full bg-black text-white flex items-center justify-center text-[11px] font-black">1</span>
-                        <h3 className="text-xs font-black text-black/60 uppercase tracking-widest">投稿先を選ぶ</h3>
+                        <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-black ${IS_HOSPITALITY_MODE ? 'bg-[#1A252F] text-white shadow-sm' : 'bg-black text-white'}`}>1</span>
+                        <h3 className={`text-xs font-black uppercase tracking-widest ${IS_HOSPITALITY_MODE ? 'text-[#1A252F] font-serif-hospitality text-sm' : 'text-black/60'}`}>投稿先を選ぶ</h3>
                     </div>
                     {onOpenGuide && (
                         <button
@@ -247,20 +247,18 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                         {[Platform.X, Platform.Instagram, Platform.Line, Platform.GoogleMaps].map((p) => {
                             const isSelected = platforms.includes(p);
                             const getStyle = (plt: Platform) => {
-                                switch (plt) {
-                                    case Platform.X: return isSelected ? 'bg-black text-white shadow-[4px_4px_0px_0px_#9B8FD4]' : 'text-black/40 hover:text-black hover:bg-black/5';
-                                    case Platform.Instagram: return isSelected ? 'bg-[#E88BA3] text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]' : 'text-black/40 hover:text-black hover:bg-black/5';
-                                    case Platform.Line: return isSelected ? 'bg-[#06C755] text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]' : 'text-black/40 hover:text-black hover:bg-black/5';
-                                    case Platform.GoogleMaps: return isSelected ? (IS_HOSPITALITY_MODE ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg' : 'bg-[#4DB39A] text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]') : 'text-black/40 hover:text-black hover:bg-black/5';
-                                    default: return '';
-                                }
+                                if (!isSelected) return 'text-black/40 hover:text-black hover:bg-black/5';
+
+                                return (IS_HOSPITALITY_MODE
+                                    ? 'bg-gradient-to-br from-indigo-950 to-slate-900 text-white shadow-lg shadow-indigo-900/40'
+                                    : 'bg-[#4DB39A] text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]');
                             };
 
                             return (
                                 <button
                                     key={p}
                                     onClick={() => onSetActivePlatform(p)}
-                                    className={`flex items-center justify-center gap-2 py-3 rounded-xl text-[11px] sm:text-xs font-black transition-all relative border-2 ${isSelected ? 'border-black -translate-y-[2px]' : 'border-transparent'} ${getStyle(p)}`}
+                                    className={`flex items-center justify-center gap-2 py-3 rounded-xl text-[11px] sm:text-xs font-black transition-all relative border-2 ${isSelected ? (IS_HOSPITALITY_MODE ? 'border-transparent -translate-y-[1px]' : 'border-black -translate-y-[2px]') : 'border-transparent'} ${getStyle(p)}`}
                                 >
                                     <div className={!isSelected ? 'grayscale opacity-60' : ''}>
                                         {getPlatformIcon(p)}
@@ -296,12 +294,12 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                         <div className={`p-5 rounded-[32px] flex flex-col gap-4 flex-1 ${TOKENS.card}`}>
                             <div className="flex items-center justify-between px-2">
                                 <div className="flex items-center gap-2">
-                                    <span className="w-5 h-5 rounded-full bg-black text-white flex items-center justify-center text-[10px] font-black">2</span>
-                                    <h3 className="text-xs font-black text-black uppercase tracking-widest">投稿者プロフィール</h3>
+                                    <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black ${IS_HOSPITALITY_MODE ? 'bg-[#1A252F] text-white shadow-sm' : 'bg-black text-white'}`}>2</span>
+                                    <h3 className={`text-xs font-black uppercase tracking-widest ${IS_HOSPITALITY_MODE ? 'text-[#1A252F] font-serif-hospitality text-sm' : 'text-black/60'}`}>投稿者プロフィール</h3>
                                 </div>
                                 <button
                                     onClick={onOpenPresetModal}
-                                    className="px-3 py-1.5 rounded-xl bg-black/5 text-black text-[10px] font-black uppercase tracking-widest hover:bg-black hover:text-white transition-all active:scale-95 flex items-center gap-1.5 border border-black/10 shadow-sm"
+                                    className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all active:scale-95 flex items-center gap-1.5 border shadow-sm ${IS_HOSPITALITY_MODE ? 'bg-white border-slate-200 text-[#1A252F] hover:bg-slate-50' : 'bg-black/5 text-black hover:bg-black hover:text-white border-black/10'}`}
                                 >
                                     <MagicWandIcon className="w-3.5 h-3.5" />
                                     <span>設定・管理</span>
@@ -313,14 +311,14 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                     onClick={() => onApplyPreset({ id: 'plain-ai' } as any)}
                                     className={`group relative h-[70px] sm:h-[80px] px-3 rounded-[20px] transition-all duration-300 flex flex-col items-center justify-center gap-1 border-2
                                                 ${!activePresetId
-                                            ? (IS_HOSPITALITY_MODE ? 'bg-slate-100/50 border-slate-200 text-slate-800' : `${IS_HOSPITALITY_MODE ? 'bg-[#2C3E50] text-white' : 'bg-[#4DB39A] text-black'} border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -translate-y-[2px]`)
+                                            ? (IS_HOSPITALITY_MODE ? 'bg-gradient-to-br from-indigo-950 to-slate-900 text-white border-transparent shadow-lg shadow-indigo-900/20 -translate-y-[1px]' : 'bg-[#4DB39A] text-black border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -translate-y-[2px]')
                                             : 'bg-black/5 shadow-sm hover:bg-black/10 text-black/40 hover:text-black border-black/10 hover:border-black/20'}
                                             `}
                                 >
                                     <span className={`text-xl transition-transform duration-300 group-hover:scale-110 ${!activePresetId ? 'opacity-100' : 'opacity-40 grayscale group-hover:grayscale-0'}`}>
                                         <AutoSparklesIcon className="w-5 h-5" />
                                     </span>
-                                    <span className={`text-[11px] md:text-[12px] font-black truncate tracking-wide text-center w-full ${!activePresetId ? 'text-black' : 'text-black/40'}`}>おまかせ</span>
+                                    <span className={`text-[11px] md:text-[12px] font-black truncate tracking-wide text-center w-full ${!activePresetId ? (IS_HOSPITALITY_MODE ? 'text-white' : 'text-black') : 'text-black/40'}`}>おまかせ</span>
                                 </button>
 
                                 {/* Slots 2-4: Custom Presets, Add Trigger, or Info */}
@@ -340,14 +338,14 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                                 onClick={() => onApplyPreset(p)}
                                                 className={`group relative h-[70px] sm:h-[80px] px-3 rounded-[20px] transition-all duration-300 flex flex-col items-center justify-center gap-1 border-2
                                                             ${isSelected
-                                                        ? `${bgColor} text-black border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -translate-y-[2px]`
+                                                        ? (IS_HOSPITALITY_MODE ? 'bg-gradient-to-br from-indigo-950 to-slate-900 text-white border-transparent shadow-lg shadow-indigo-900/20 -translate-y-[1px]' : `${bgColor} text-black border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -translate-y-[2px]`)
                                                         : 'bg-black/5 shadow-sm hover:bg-black/10 text-black/40 hover:text-black border-black/10 hover:border-black/20'}
                                                         `}
                                             >
                                                 <span className={`text-xl transition-transform duration-300 group-hover:scale-110 ${isSelected ? 'opacity-100' : 'opacity-40 grayscale group-hover:grayscale-0'}`}>
                                                     {renderAvatar(p.avatar, "w-5 h-5")}
                                                 </span>
-                                                <span className={`text-[11px] md:text-[12px] font-black truncate tracking-wide text-center w-full ${isSelected ? 'text-black' : 'text-black/40'}`}>
+                                                <span className={`text-[11px] md:text-[12px] font-black truncate tracking-wide text-center w-full ${isSelected ? (IS_HOSPITALITY_MODE ? 'text-white' : 'text-black') : 'text-black/40'}`}>
                                                     {p.name}
                                                 </span>
                                             </button>
@@ -417,8 +415,8 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                         <div className={`p-5 rounded-[32px] flex flex-col gap-5 flex-1 ${TOKENS.card}`}>
                             <div className="flex items-center justify-between px-2">
                                 <div className="flex items-center gap-2">
-                                    <span className="w-5 h-5 rounded-full bg-black text-white flex items-center justify-center text-[10px] font-black">3</span>
-                                    <h3 className="text-xs font-black text-black uppercase tracking-widest">スタイル設定</h3>
+                                    <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black ${IS_HOSPITALITY_MODE ? 'bg-[#1A252F] text-white shadow-sm' : 'bg-black text-white'}`}>3</span>
+                                    <h3 className={`text-xs font-black uppercase tracking-widest ${IS_HOSPITALITY_MODE ? 'text-[#1A252F] font-serif-hospitality text-sm' : 'text-black/60'}`}>スタイル設定</h3>
                                 </div>
                             </div>
                             {/* Tone Selection */}
@@ -431,7 +429,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                             onClick={() => onToneChange(t.id)}
                                             disabled={!!activePresetId}
                                             className={`flex-1 py-1.5 px-1 rounded-[12px] text-[12px] font-black transition-all flex items-center justify-center gap-1.5 relative border-2 ${tone === t.id
-                                                ? (IS_HOSPITALITY_MODE ? 'bg-indigo-600 text-white border-transparent shadow-md' : `${IS_HOSPITALITY_MODE ? 'bg-[#D4AF37]' : 'bg-[#F5CC6D]'} text-black border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] -translate-y-[1px]`)
+                                                ? (IS_HOSPITALITY_MODE ? 'bg-gradient-to-br from-indigo-950 to-slate-900 text-white border-transparent shadow-md shadow-indigo-900/10 -translate-y-[1px]' : `bg-[#F5CC6D] text-black border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] -translate-y-[1px]`)
                                                 : 'text-black/40 hover:text-black hover:bg-white border-transparent'
                                                 }`}
                                         >
@@ -451,7 +449,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                                 key={l.id}
                                                 onClick={() => onLengthChange(l.id)}
                                                 className={`flex-1 py-1.5 px-1 rounded-[12px] text-[12px] font-black transition-all flex items-center justify-center gap-1.5 relative border-2 ${length === l.id
-                                                    ? 'bg-[#9B8FD4] text-black border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] -translate-y-[1px]'
+                                                    ? (IS_HOSPITALITY_MODE ? 'bg-gradient-to-br from-indigo-950 to-slate-900 text-white border-transparent shadow-md shadow-indigo-900/10 -translate-y-[1px]' : 'bg-[#9B8FD4] text-black border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] -translate-y-[1px]')
                                                     : 'text-black/40 hover:text-black hover:bg-white border-transparent'
                                                     }`}
                                             >
@@ -469,7 +467,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                     <button
                                         onClick={() => onXConstraint140Change(!xConstraint140)}
                                         className={`w-full p-2 rounded-[16px] border-[2px] transition-all flex items-center justify-between group shadow-sm
-                                            ${xConstraint140 ? 'bg-black border-black text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]' : 'bg-white border-black/10 text-black/40 hover:border-black/30'}`}
+                                                    ${xConstraint140 ? (IS_HOSPITALITY_MODE ? 'bg-gradient-to-br from-indigo-950 to-slate-900 border-transparent text-white shadow-lg shadow-indigo-900/20' : 'bg-black border-black text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]') : 'bg-white border-black/10 text-black/40 hover:border-black/30'}`}
                                     >
                                         <span className="text-[10px] font-black ml-2 uppercase tracking-widest">140文字制限（X）</span>
                                         <div className={`w-4 h-4 rounded-full transition-all flex items-center justify-center mr-1 ${xConstraint140 ? 'bg-[#E88BA3]' : 'bg-black/10'}`}>
@@ -522,7 +520,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                             key={lang.id}
                                             onClick={() => onLanguageChange(lang.id)}
                                             className={`flex-1 py-1 px-1 rounded-[12px] text-[10px] font-black transition-all flex flex-col items-center justify-center leading-none border-2 ${language === lang.id
-                                                ? (IS_HOSPITALITY_MODE ? 'bg-indigo-600 text-white border-transparent' : `${IS_HOSPITALITY_MODE ? 'bg-[#2C3E50] text-white' : 'bg-[#4DB39A] text-black'} border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] -translate-y-[1px]`)
+                                                ? (IS_HOSPITALITY_MODE ? 'bg-gradient-to-br from-indigo-950 to-slate-900 text-white border-transparent shadow-md shadow-indigo-900/10 -translate-y-[0.5px]' : `bg-black text-white border-black shadow-[2px_2px_0_0_rgba(0,0,0,1)] -translate-y-[1px]`)
                                                 : 'text-black/40 hover:text-black hover:bg-white border-transparent'
                                                 }`}
                                             title={lang.full}
@@ -551,7 +549,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                         </button>
                                     )}
                                 </div>
-                                <div className="section-card rounded-[32px] p-8 border-black flex items-center justify-center">
+                                <div className={`rounded-[32px] p-8 flex items-center justify-center ${TOKENS.card}`}>
                                     <div className="flex flex-row gap-4">
                                         {[1, 2, 3, 4, 5].map((r) => (
                                             <button
@@ -580,7 +578,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                                     disabled={starRating !== null}
                                                     className={`px-3 py-2.5 rounded-[16px] text-[11px] font-black transition-all flex items-center justify-center gap-1.5 border
                                                             ${isSelected
-                                                            ? (IS_HOSPITALITY_MODE ? 'bg-indigo-600 text-white border-transparent shadow-md' : 'active-pop')
+                                                            ? (IS_HOSPITALITY_MODE ? 'bg-gradient-to-br from-indigo-950 to-slate-900 text-white border-transparent shadow-md shadow-indigo-900/10 -translate-y-[1px]' : 'active-pop')
                                                             : 'text-black/40 border-black/10 hover:text-black hover:bg-black/5'}`}
                                                 >
                                                     <span className={`flex items-center justify-center ${isSelected ? 'opacity-100' : 'opacity-40'}`}>{p.icon}</span>
@@ -593,7 +591,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                     {/* Lock Overlay */}
                                     {starRating !== null && (
                                         <div className="absolute inset-0 flex items-center justify-center z-20 animate-in fade-in zoom-in-95 duration-300">
-                                            <div className={`bg-black text-white px-5 py-2.5 rounded-xl shadow-[4px_4px_0px_0px_${IS_HOSPITALITY_MODE ? '#D4AF37' : '#F5CC6D'}] flex items-center gap-2.5 transform scale-100 border-2 border-white`}>
+                                            <div className={`${IS_HOSPITALITY_MODE ? 'bg-[#1A252F] shadow-xl shadow-indigo-900/30 border border-white/10' : 'bg-black shadow-[4px_4px_0px_0px_#F5CC6D] border-2 border-white'} text-white px-5 py-2.5 rounded-xl flex items-center gap-2.5 transform scale-100`}>
                                                 <AutoSparklesIcon className={`w-4 h-4 ${IS_HOSPITALITY_MODE ? 'text-[#D4AF37]' : 'text-[#F5CC6D]'}`} />
                                                 <span className="text-[11px] font-black tracking-widest whitespace-nowrap">自動判定モード固定</span>
                                             </div>
@@ -608,8 +606,8 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                 {/* Right Column: Input Canvas */}
                 <div className="flex-1 flex flex-col gap-4 order-2 min-w-0">
                     <div className="flex items-center gap-2 px-4 translate-y-2 relative z-20">
-                        <span className="w-6 h-6 rounded-full bg-black text-white flex items-center justify-center text-[11px] font-black">4</span>
-                        <h3 className="text-xs font-black text-black/60 uppercase tracking-widest">本文を入力する</h3>
+                        <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-black ${IS_HOSPITALITY_MODE ? 'bg-[#1A252F] text-white shadow-sm' : 'bg-black text-white'}`}>4</span>
+                        <h3 className={`text-xs font-black uppercase tracking-widest ${IS_HOSPITALITY_MODE ? 'text-[#1A252F] font-serif-hospitality text-sm' : 'text-black/60'}`}>本文を入力する</h3>
                     </div>
                     <div className={`rounded-[48px] lg:rounded-[64px] p-8 lg:p-14 flex flex-col group transition-all relative isolate min-h-[200px] sm:min-h-[300px] lg:min-h-[400px] ${TOKENS.card}`}>
 
@@ -634,7 +632,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
 
                         {/* Store Supplement (Google Maps Only) */}
                         {isGoogleMaps && (
-                            <div className={`mt-6 p-6 ${IS_HOSPITALITY_MODE ? 'bg-amber-50/50 border-amber-100 shadow-sm shadow-amber-900/5' : (IS_HOSPITALITY_MODE ? 'bg-[#D4AF37]/5 border-[#D4AF37]' : 'bg-[#F5CC6D]/10 border-[#F5CC6D]')} border-2 rounded-[32px] animate-in slide-in-from-top-2 duration-300`}>
+                            <div className={`mt-6 p-6 ${IS_HOSPITALITY_MODE ? 'bg-slate-50 border-slate-100 shadow-sm' : 'bg-[#F5CC6D]/10 border-[#F5CC6D]'} border-2 rounded-[32px] animate-in slide-in-from-top-2 duration-300`}>
                                 <div className="flex items-center gap-2 mb-3">
                                     <InfoIcon className={`w-4 h-4 ${IS_HOSPITALITY_MODE ? 'text-amber-600' : (IS_HOSPITALITY_MODE ? 'text-[#D4AF37]' : 'text-[#C4A052]')}`} />
                                     <h4 className={`text-[11px] font-black ${IS_HOSPITALITY_MODE ? 'text-amber-700' : (IS_HOSPITALITY_MODE ? 'text-[#D4AF37]' : 'text-[#C4A052]')} uppercase tracking-widest`}>{UI.ownerLabel}からの補足情報 / 当日の事情</h4>
@@ -665,7 +663,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                     <span className="text-[11px] font-black uppercase tracking-wider">AIへの追加指示（任意）</span>
                                 </button>
                             ) : (
-                                <div className={`flex items-center gap-3 ${IS_HOSPITALITY_MODE ? 'bg-slate-50 border-slate-200 shadow-inner' : (IS_HOSPITALITY_MODE ? 'bg-[#2C3E50]/5 border-[#2C3E50]' : 'bg-[#4DB39A]/10 border-[#4DB39A]')} border-[3px] rounded-2xl pl-5 pr-2 py-2 mb-4 animate-in zoom-in-95 duration-200`}>
+                                <div className={`flex items-center gap-3 ${IS_HOSPITALITY_MODE ? 'bg-slate-50 border-slate-200' : 'bg-[#4DB39A]/10 border-black'} border-[3px] rounded-2xl pl-5 pr-2 py-2 mb-4 animate-in zoom-in-95 duration-200 shadow-sm`}>
                                     <AutoSparklesIcon className="w-4 h-4 text-black shrink-0" />
                                     <input
                                         type="text"
@@ -708,7 +706,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                     <button
                                         onClick={toggleVoiceInput}
                                         className={`p-2 rounded-xl transition-all flex items-center gap-2 relative ${isListening
-                                            ? (IS_HOSPITALITY_MODE ? 'bg-indigo-600 text-white shadow-lg pr-4' : `${IS_HOSPITALITY_MODE ? 'bg-[#2C3E50] text-white' : 'bg-[#4DB39A] text-black'} shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] border-[2px] border-black pr-4`)
+                                            ? (IS_HOSPITALITY_MODE ? 'bg-gradient-to-br from-indigo-950 to-slate-900 text-white shadow-lg shadow-indigo-900/40 pr-4' : `${IS_HOSPITALITY_MODE ? 'bg-[#2C3E50] text-white' : 'bg-[#4DB39A] text-black'} shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] border-[2px] border-black pr-4`)
                                             : 'text-black/40 hover:text-black hover:bg-black/5'
                                             }`}
                                         title={isListening ? '音声入力を停止' : '音声入力'}

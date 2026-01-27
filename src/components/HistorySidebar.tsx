@@ -158,7 +158,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
             <h2 className="font-black text-black text-2xl tracking-tighter">MENU</h2>
             <button
               onClick={toggleOpen}
-              className={`w-10 h-10 flex items-center justify-center rounded-xl transition-all ${IS_HOSPITALITY_MODE ? 'bg-white border border-slate-200 text-slate-400 hover:text-black hover:border-slate-400' : 'bg-white border-2 border-black text-black hover:bg-[var(--rose)] active:translate-y-1 active:shadow-none shadow-[4px_4px_0_0_rgba(0,0,0,1)]'}`}
+              className={`w-10 h-10 flex items-center justify-center rounded-xl transition-all active:scale-95 group ${IS_HOSPITALITY_MODE ? 'bg-white border border-slate-200 text-slate-400 hover:text-[#1A252F] hover:border-slate-300 shadow-sm' : 'bg-white border-2 border-black text-black hover:bg-[var(--rose)] active:translate-y-1 active:shadow-none shadow-[4px_4px_0_0_rgba(0,0,0,1)]'}`}
               aria-label="Close menu"
             >
               <CloseIcon className="w-5 h-5" />
@@ -169,7 +169,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
             <div className="space-y-4">
               <button
                 onClick={() => { onOpenSettings?.(); toggleOpen(); }}
-                className={`flex items-center gap-3 p-3 rounded-xl transition-all text-left group ${IS_HOSPITALITY_MODE ? 'bg-white border border-slate-100 shadow-lg shadow-slate-200/50 hover:border-indigo-500' : 'bg-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] w-full hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] active:translate-x-[0px] active:translate-y-[0px] active:shadow-[2px_2px_0_0_rgba(0,0,0,1)]'}`}
+                className={`flex items-center gap-3 p-3 rounded-xl transition-all text-left group ${IS_HOSPITALITY_MODE ? 'bg-white border border-slate-100 shadow-lg shadow-slate-200/50 hover:border-[#1A252F]' : 'bg-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] w-full hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] active:translate-x-[0px] active:translate-y-[0px] active:shadow-[2px_2px_0_0_rgba(0,0,0,1)]'}`}
               >
                 <div className={`w-10 h-10 rounded-lg flex items-center justify-center font-black text-lg shrink-0 ${IS_HOSPITALITY_MODE ? 'bg-indigo-50 text-indigo-600' : 'bg-[var(--lavender)] border-2 border-black text-black'}`}>
                   {(storeProfile?.name?.[0] || 'S').toUpperCase()}
@@ -184,7 +184,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
               <div className="grid grid-cols-3 gap-2">
                 <button
                   onClick={() => { onOpenAccount?.(); toggleOpen(); }}
-                  className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:bg-[var(--bg-beige)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] active:translate-x-[0px] active:translate-y-[0px] active:shadow-[2px_2px_0_0_rgba(0,0,0,1)] transition-all group"
+                  className={`flex flex-col items-center gap-1.5 p-3 rounded-xl transition-all group ${IS_HOSPITALITY_MODE ? 'bg-white border border-slate-100 shadow-sm hover:shadow-md' : 'bg-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:bg-[var(--bg-beige)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] active:translate-x-[0px] active:translate-y-[0px] active:shadow-[2px_2px_0_0_rgba(0,0,0,1)]'}`}
                   title="アカウント設定"
                 >
                   <ChevronDownIcon className="w-4 h-4 text-black group-hover:scale-110 transition-transform" />
@@ -192,7 +192,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                 </button>
                 <button
                   onClick={() => { onOpenGuide?.(); toggleOpen(); }}
-                  className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:bg-[var(--bg-beige)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] active:translate-x-[0px] active:translate-y-[0px] active:shadow-[2px_2px_0_0_rgba(0,0,0,1)] transition-all group"
+                  className={`flex flex-col items-center gap-1.5 p-3 rounded-xl transition-all group ${IS_HOSPITALITY_MODE ? 'bg-white border border-slate-100 shadow-sm hover:shadow-md' : 'bg-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:bg-[var(--bg-beige)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] active:translate-x-[0px] active:translate-y-[0px] active:shadow-[2px_2px_0_0_rgba(0,0,0,1)]'}`}
                   title="Docs"
                 >
                   <HelpIcon className="w-4 h-4 text-black group-hover:scale-110 transition-transform" />
@@ -245,10 +245,10 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
           <div className="flex items-center gap-3">
             <button
               onClick={() => setShowTrainedOnly(!showTrainedOnly)}
-              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border-2 transition-all font-black text-[10px] uppercase tracking-widest
+              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl transition-all font-black text-[10px] uppercase tracking-widest
                 ${showTrainedOnly
-                  ? (IS_HOSPITALITY_MODE ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg' : 'bg-[var(--teal)] border-black text-black shadow-[4px_4px_0_0_rgba(0,0,0,1)]')
-                  : (IS_HOSPITALITY_MODE ? 'bg-white border-slate-200 text-slate-500 hover:border-slate-400' : 'bg-white border-black text-slate-500 hover:bg-[var(--teal)] hover:text-black shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)]')
+                  ? (IS_HOSPITALITY_MODE ? 'bg-[#1A252F] text-white shadow-xl' : 'bg-[var(--teal)] border-2 border-black text-black shadow-[4px_4px_0_0_rgba(0,0,0,1)]')
+                  : (IS_HOSPITALITY_MODE ? 'bg-white border border-slate-100 text-slate-500 hover:border-slate-400' : 'bg-white border-2 border-black text-slate-500 hover:bg-[var(--teal)] hover:text-black shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)]')
                 }`}
             >
               <MagicWandIcon className={`w-4 h-4 ${showTrainedOnly ? 'text-black' : 'text-slate-400'}`} />
@@ -291,7 +291,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                           }
                           toggleOpen();
                         }}
-                        className={`w-full text-left p-5 rounded-xl border-2 transition-all group-hover:bg-[var(--bg-beige)] ${IS_HOSPITALITY_MODE ? 'bg-white border-slate-100 shadow-sm hover:border-[#D4AF37] hover:shadow-lg' : 'bg-white border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] active:translate-x-[0px] active:translate-y-[0px] active:shadow-[2px_2px_0_0_rgba(0,0,0,1)]'}`}
+                        className={`w-full text-left p-5 rounded-xl transition-all group-hover:bg-[var(--bg-beige)] ${IS_HOSPITALITY_MODE ? 'bg-white border border-slate-100 shadow-sm hover:border-[#D4AF37] hover:shadow-lg' : 'bg-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] active:translate-x-[0px] active:translate-y-[0px] active:shadow-[2px_2px_0_0_rgba(0,0,0,1)]'}`}
                       >
                         <div className="flex items-center gap-2 mb-3">
                           {item.config.platforms.map((p, pIdx) => (
@@ -337,7 +337,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                             onDelete(item.id);
                           }
                         }}
-                        className="absolute -top-3 -right-3 w-8 h-8 flex items-center justify-center bg-white text-rose-500 border-2 border-black rounded-full md:opacity-0 md:group-hover:opacity-100 transform md:scale-75 md:group-hover:scale-100 transition-all hover:bg-rose-50 shadow-[2px_2px_0_0_rgba(0,0,0,1)] z-20 hover:scale-110"
+                        className={`absolute -top-3 -right-3 w-8 h-8 flex items-center justify-center rounded-full transition-all z-20 hover:scale-110 ${IS_HOSPITALITY_MODE ? 'bg-white border border-slate-100 text-rose-500 shadow-xl' : 'bg-white text-rose-500 border-2 border-black shadow-[2px_2px_0_0_rgba(0,0,0,1)] opacity-0 group-hover:opacity-100'}`}
                         title={isTraining ? "学習データを削除" : "履歴を削除"}
                       >
                         <TrashIcon className="w-4 h-4" />
@@ -347,9 +347,9 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                       {!isTraining && (
                         <button
                           onClick={(e) => { e.stopPropagation(); onTogglePin(item.id, !item.isPinned); }}
-                          className={`absolute -top-3 left-6 w-8 h-8 flex items-center justify-center rounded-full border-2 border-black transition-all shadow-[2px_2px_0_0_rgba(0,0,0,1)] z-20 hover:scale-110 ${item.isPinned
-                            ? 'bg-[var(--gold)] text-black'
-                            : 'bg-white text-slate-300 md:opacity-0 md:group-hover:opacity-100 transform md:scale-75 md:group-hover:scale-100 hover:text-black'
+                          className={`absolute -top-3 left-6 w-8 h-8 flex items-center justify-center rounded-full transition-all z-20 hover:scale-110 ${item.isPinned
+                            ? (IS_HOSPITALITY_MODE ? 'bg-[#D4AF37] text-white shadow-lg border-none' : 'bg-[var(--gold)] text-black border-2 border-black shadow-[2px_2px_0_0_rgba(0,0,0,1)]')
+                            : (IS_HOSPITALITY_MODE ? 'bg-white border border-slate-100 text-slate-300 hover:text-[#D4AF37] shadow-lg' : 'bg-white text-slate-300 border-2 border-black shadow-[2px_2px_0_0_rgba(0,0,0,1)] opacity-0 group-hover:opacity-100')
                             }`}
                           title={item.isPinned ? "ピン留めを解除" : "ピン留めして保護"}
                         >
@@ -373,9 +373,9 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                                 onToggleFavorite(firstResult.trim(), primaryPlatform, item.config.presetId || null, undefined, 'generated');
                               }
                             }}
-                            className={`w-9 h-9 flex items-center justify-center rounded-full border-2 border-black transition-all shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:scale-110 ${isFavorited
-                              ? 'bg-[var(--teal)] text-black'
-                              : 'bg-white text-slate-300 hover:bg-[var(--teal)] hover:text-black opacity-0 group-hover:opacity-100 transform scale-90 group-hover:scale-100'
+                            className={`w-9 h-9 flex items-center justify-center rounded-full transition-all shadow-lg hover:scale-110 ${isFavorited
+                              ? (IS_HOSPITALITY_MODE ? 'bg-[#1A252F] text-white' : 'bg-[var(--teal)] text-black border-2 border-black shadow-[2px_2px_0_0_rgba(0,0,0,1)]')
+                              : (IS_HOSPITALITY_MODE ? 'bg-white border border-slate-100 text-slate-300 hover:text-[#1A252F]' : 'bg-white text-slate-300 border-2 border-black shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:bg-[var(--teal)] hover:text-black opacity-0 group-hover:opacity-100')
                               }`}
                           >
                             <MagicWandIcon className="w-4 h-4" />

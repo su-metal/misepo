@@ -242,7 +242,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
             className={`w-full max-w-xl py-6 md:py-8 rounded-[32px] font-black text-lg md:text-2xl tracking-[0.2em] flex items-center justify-center gap-3 md:gap-5 group transition-all duration-500
                 ${flow.loading || !flow.inputText.trim()
                 ? 'bg-slate-200 text-slate-400 border border-slate-300 cursor-not-allowed'
-                : (IS_HOSPITALITY_MODE ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-2xl shadow-indigo-200 hover:shadow-indigo-300 hover:-translate-y-1 scale-100 hover:scale-[1.02]' : 'bg-[#4DB39A] text-black border-2 border-black shadow-[6px_6px_0_0_rgba(0,0,0,1)] active:scale-95')
+                : (IS_HOSPITALITY_MODE ? 'bg-gradient-to-br from-indigo-950 to-slate-900 text-white shadow-2xl shadow-indigo-900/40 hover:shadow-indigo-900/60 hover:-translate-y-1 scale-100 hover:scale-[1.02]' : 'bg-[#4DB39A] text-black border-2 border-black shadow-[6px_6px_0_0_rgba(0,0,0,1)] active:scale-95')
               }`}
           >
             <div className="flex items-center justify-center gap-3 md:gap-5 relative z-10">

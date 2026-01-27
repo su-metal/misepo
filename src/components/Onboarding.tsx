@@ -100,13 +100,13 @@ const Onboarding: React.FC<OnboardingProps> = ({
                 <div className="w-2 h-2 rounded-full bg-black shadow-sm animate-pulse"></div>
                 <span className="text-[9px] md:text-[10px] font-black tracking-[0.3em] text-black uppercase">{IS_HOSPITALITY_MODE ? '宿泊施設専用アシスタント' : '店舗専用アシスタント'}</span>
               </div>
-              <h1 className="text-2xl md:text-4xl font-black tracking-tighter leading-none italic text-black">
+              <h1 className={`text-2xl md:text-4xl tracking-tighter leading-none italic ${IS_HOSPITALITY_MODE ? 'font-serif-hospitality text-[#1A252F]' : 'font-black text-black'}`}>
                 {UI.name}
               </h1>
             </div>
 
             <div className="space-y-4 md:space-y-6 mb-6 md:mb-12 flex-1">
-              <h2 className="text-lg md:text-3xl font-black leading-tight text-black animate-in slide-in-from-left-4 duration-700 delay-100">
+              <h2 className={`text-lg md:text-3xl leading-tight animate-in slide-in-from-left-4 duration-700 delay-100 ${IS_HOSPITALITY_MODE ? 'font-serif-hospitality font-bold text-[#1A252F]' : 'font-black text-black'}`}>
                 {isEditMode ? (IS_HOSPITALITY_MODE ? '施設設定の最適化' : '店舗設定の最適化') : 'AIが提案する、\n次世代の集客。'}
               </h2>
               <p className="text-slate-600 text-sm font-bold leading-relaxed animate-in slide-in-from-left-4 duration-700 delay-200">
@@ -116,7 +116,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
               </p>
 
               {/* Status Pill */}
-              <div className={`inline-flex items-center gap-2 bg-black border-2 border-black rounded-full px-5 py-2.5 animate-in zoom-in-95 duration-700 delay-300 shadow-[4px_4px_0_0_rgba(0,0,0,0.2)]`}>
+              <div className={`inline-flex items-center gap-2 rounded-full px-5 py-2.5 animate-in zoom-in-95 duration-700 delay-300 ${IS_HOSPITALITY_MODE ? 'bg-[#1A252F] shadow-lg shadow-slate-200' : 'bg-black border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,0.2)]'}`}>
                 <span className={`w-1.5 h-1.5 rounded-full ${IS_HOSPITALITY_MODE ? 'bg-[#D4AF37]' : 'bg-[var(--teal)]'} animate-ping`}></span>
                 <span className="text-[10px] font-black uppercase tracking-widest text-white">AI解析エンジンの準備完了</span>
               </div>
@@ -128,8 +128,8 @@ const Onboarding: React.FC<OnboardingProps> = ({
                 { title: '個性学習エンジン', desc: '業種やコンセプトを深く理解し、常に「らしい」表現を維持。', icon: 'M13 2L3 14h9l-1 8 10-12h-9l1-8z' },
                 { title: 'マルチプラットフォーム', desc: '投稿先ごとの特性を考慮し、一貫性のある発信を自動化。', icon: 'M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z' }
               ].map((feat, i) => (
-                <div key={i} className="flex items-start gap-4 p-5 rounded-xl bg-white text-black border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] transition-all cursor-default group/feat">
-                  <div className="w-10 h-10 rounded-lg bg-[var(--lavender)] border-2 border-black flex items-center justify-center text-black shrink-0 group-hover/feat:scale-110 transition-all duration-300 shadow-sm">
+                <div key={i} className={`flex items-start gap-4 p-5 rounded-2xl transition-all cursor-default group/feat ${IS_HOSPITALITY_MODE ? 'bg-white border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-0.5' : 'bg-white text-black border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)]'}`}>
+                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 group-hover/feat:scale-110 transition-all duration-300 ${IS_HOSPITALITY_MODE ? 'bg-slate-50 text-[#1A252F]' : 'bg-[var(--lavender)] border-2 border-black text-black shadow-sm'}`}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d={feat.icon} /></svg>
                   </div>
                   <div>
@@ -159,8 +159,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
                     type="button"
                     onClick={() => setIndustry(ind)}
                     className={`px-6 py-3 rounded-full text-[11px] font-black transition-all duration-200 border-2
-                      ${industry === ind
-                        ? (IS_HOSPITALITY_MODE ? 'bg-[#2C3E50] border-[#2C3E50] text-white shadow-lg' : 'bg-black border-black text-white shadow-[4px_4px_0_0_rgba(0,0,0,1)]')
+                        ? (IS_HOSPITALITY_MODE ? 'bg-gradient-to-br from-indigo-950 to-slate-900 border-transparent text-white shadow-lg' : 'bg-black border-black text-white shadow-[4px_4px_0_0_rgba(0,0,0,1)]')
                         : (IS_HOSPITALITY_MODE ? 'bg-white border-slate-200 text-slate-500 hover:border-slate-400' : 'bg-white border-black text-slate-500 hover:bg-[var(--teal)] hover:text-black hover:shadow-[2px_2px_0_0_rgba(0,0,0,1)]')
                       }`}
                   >
@@ -298,7 +297,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
               <button
                 type="submit"
                 disabled={name.trim().length < 2}
-                className={`flex-[2] relative group overflow-hidden font-black py-5 rounded-xl transition-all duration-300 flex items-center justify-center gap-4 disabled:opacity-50 disabled:pointer-events-none ${IS_HOSPITALITY_MODE ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-xl shadow-indigo-100 hover:shadow-indigo-200 hover:-translate-y-0.5' : 'bg-[var(--gold)] text-black border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] active:translate-x-[0px] active:translate-y-[0px] active:shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:bg-[var(--rose)]'}`}
+                className={`flex-[2] relative group overflow-hidden font-black py-5 rounded-xl transition-all duration-300 flex items-center justify-center gap-4 disabled:opacity-50 disabled:pointer-events-none ${IS_HOSPITALITY_MODE ? 'bg-gradient-to-br from-indigo-950 to-slate-900 text-white shadow-xl shadow-indigo-900/40 hover:shadow-indigo-900/60 hover:-translate-y-0.5' : 'bg-[var(--gold)] text-black border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] active:translate-x-[0px] active:translate-y-[0px] active:shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:bg-[var(--rose)]'}`}
               >
                 <span className="relative z-10 text-xs tracking-[0.2em]">{isEditMode ? '設定を保存する' : '設定を完了してはじめる'}</span>
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="relative z-10 group-hover:translate-x-1 transition-transform"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
@@ -311,7 +310,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
         {onCancel && (
           <button
             onClick={onCancel}
-            className="absolute top-4 right-4 md:top-8 md:right-8 flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-xl bg-white text-black hover:bg-[var(--rose)] border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] transition-all group/close active:shadow-[2px_2px_0_0_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] z-50"
+            className={`absolute top-4 right-4 md:top-8 md:right-8 flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-xl transition-all group/close active:translate-x-[2px] active:translate-y-[2px] z-50 ${IS_HOSPITALITY_MODE ? 'bg-white border border-slate-100 shadow-2xl shadow-slate-200/50 text-[#1A252F] hover:bg-slate-50' : 'bg-white text-black hover:bg-[var(--rose)] border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] active:shadow-[2px_2px_0_0_rgba(0,0,0,1)]'}`}
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
           </button>

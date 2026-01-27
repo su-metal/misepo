@@ -27,24 +27,6 @@ export const GeneratorHeader: React.FC<GeneratorHeaderProps> = ({
                 <div className="flex items-center gap-4">
                     <span className={`text-2xl tracking-tighter drop-shadow-none ${IS_HOSPITALITY_MODE ? 'font-serif-hospitality font-bold' : 'font-black text-black'}`}>{UI.name}</span>
 
-                    {/* Status Badge - Pop Style */}
-                    <div className="flex items-center">
-                        {isTrial ? (
-                            <div className={`flex items-center gap-2 px-4 py-1.5 ${IS_HOSPITALITY_MODE ? 'bg-indigo-50 text-indigo-600 border border-indigo-100' : 'bg-[#9B8FD4] text-black border-[2px] border-black shadow-[2px_2px_0_0_rgba(0,0,0,1)]'} rounded-xl`}>
-                                <StarIcon className={`w-3 h-3 ${IS_HOSPITALITY_MODE ? 'text-indigo-400' : 'text-black'} animate-pulse`} />
-                                <span className="text-[10px] font-black uppercase tracking-widest leading-none">Free Trial</span>
-                            </div>
-                        ) : isPro ? (
-                            <div className={`flex items-center gap-2 px-4 py-1.5 ${IS_HOSPITALITY_MODE ? 'bg-amber-50 text-amber-700 border border-amber-100' : 'bg-[#F5CC6D] text-black border-[2px] border-black shadow-[2px_2px_0_0_rgba(0,0,0,1)]'} rounded-xl`}>
-                                <div className={`w-1.5 h-1.5 rounded-full ${IS_HOSPITALITY_MODE ? 'bg-amber-400' : 'bg-black'} animate-pulse`}></div>
-                                <span className="text-[10px] font-black uppercase tracking-widest leading-none">Pro Plan</span>
-                            </div>
-                        ) : (
-                            <div className={`flex items-center gap-2 px-4 py-1.5 bg-white border ${IS_HOSPITALITY_MODE ? 'border-slate-100' : 'border-black'} rounded-xl`}>
-                                <span className="text-[10px] font-black text-black opacity-40 uppercase tracking-widest leading-none">Free Plan</span>
-                            </div>
-                        )}
-                    </div>
                 </div>
 
                 {/* Right: Consolidated Menu */}
