@@ -1034,13 +1034,24 @@ const PresetModal: React.FC<PresetModalProps> = ({
             </div>
 
             <div className="relative p-1 rounded-[32px] group">
+              {/* Mobile View: Toggle Button to Open Modal */}
               <div
-                className={`
-                  relative transition-all duration-300 overflow-hidden
-                  ${!isPromptExpanded ? 'max-h-[80px] md:max-h-none' : 'max-h-[1000px]'}
-                `}
-                onClick={() => !isPromptExpanded && setIsPromptExpanded(true)}
+                className="md:hidden w-full px-5 py-5 bg-slate-50 border-2 border-black rounded-[24px] cursor-pointer hover:bg-slate-100 transition-all flex items-center justify-between group"
+                onClick={() => setIsPromptExpanded(true)}
               >
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm text-black font-bold truncate opacity-60">
+                    {customPrompts[activePromptTab] || `${activePromptTab}専用のルールを入力...`}
+                  </p>
+                </div>
+                <div className="flex items-center gap-1.5 ml-4 shrink-0">
+                  <span className="text-[10px] font-black text-indigo-600 uppercase tracking-widest">編集する</span>
+                  <SparklesIcon className="w-3.5 h-3.5 text-indigo-500 group-hover:rotate-12 transition-transform" />
+                </div>
+              </div>
+
+              {/* Desktop View: Inline Textarea */}
+              <div className="hidden md:block">
                 <AutoResizingTextarea
                   value={customPrompts[activePromptTab] || ''}
                   onChange={(val) => {
@@ -1048,27 +1059,9 @@ const PresetModal: React.FC<PresetModalProps> = ({
                     setHasUnanalyzedChanges(true);
                   }}
                   placeholder={`${activePromptTab}専用のルールを入力（例：ハッシュタグをつけて）`}
-                  className={`w-full px-5 py-4 md:px-6 md:py-5 bg-white border-2 border-black focus:bg-[var(--bg-beige)] focus:shadow-[4px_4px_0_0_rgba(0,0,0,1)] outline-none rounded-[24px] text-sm md:text-base text-black font-bold leading-relaxed placeholder-slate-300 transition-all min-h-[80px] md:min-h-[100px] ${!isPromptExpanded ? 'cursor-pointer md:cursor-text' : ''}`}
+                  className="w-full px-5 py-4 md:px-6 md:py-5 bg-white border-2 border-black focus:bg-[var(--bg-beige)] focus:shadow-[4px_4px_0_0_rgba(0,0,0,1)] outline-none rounded-[24px] text-sm md:text-base text-black font-bold leading-relaxed placeholder-slate-300 transition-all min-h-[80px] md:min-h-[100px]"
                 />
-
-                {/* Truncation Overlay */}
-                {!isPromptExpanded && (
-                  <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-white to-transparent pointer-events-none md:hidden flex items-end justify-center pb-2">
-                    <div className="text-[10px] font-black text-slate-400 animate-bounce">
-                      タップで展開
-                    </div>
-                  </div>
-                )}
               </div>
-
-              {isPromptExpanded && (
-                <button
-                  onClick={() => setIsPromptExpanded(false)}
-                  className="md:hidden mt-2 ml-auto block text-[10px] font-black text-slate-400 hover:text-black"
-                >
-                  閉じる
-                </button>
-              )}
             </div>
             <p className="text-[10px] md:text-[11px] text-slate-500 font-black mt-3 md:mt-4 leading-relaxed flex items-center gap-1.5 md:gap-2">
               <span className="w-2 h-2 rounded-full bg-[var(--teal)]"></span>
@@ -1460,10 +1453,63 @@ const PresetModal: React.FC<PresetModalProps> = ({
     document.body
   );
 
+  const promptEditOverlay = isPromptExpanded && createPortal(
+    <div className="fixed inset-0 z-[250] bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 md:p-10 animate-in fade-in duration-300">
+      <div
+        className="w-full max-w-4xl max-h-[90vh] md:max-h-[85vh] bg-white rounded-[32px] border-[3px] border-black shadow-[8px_8px_0_0_rgba(0,0,0,1)] flex flex-col overflow-hidden animate-in zoom-in-95 duration-500"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="p-6 md:p-8 border-b-[3px] border-black bg-[var(--bg-beige)] flex items-center justify-between shrink-0">
+          <div className="flex items-center gap-4">
+            <div className="p-2.5 bg-black text-white rounded-xl">
+              <MagicWandIcon className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="font-black text-lg md:text-xl text-black leading-tight">
+                {activePromptTab === Platform.Line ? 'LINE' : (activePromptTab === Platform.GoogleMaps ? 'Google Maps' : (activePromptTab === Platform.X ? 'X' : activePromptTab))} の追加ルール
+              </h3>
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-0.5">Prompt Editor</p>
+            </div>
+          </div>
+          <button
+            onClick={() => setIsPromptExpanded(false)}
+            className="p-3 hover:bg-rose-50 rounded-xl text-slate-400 hover:text-rose-500 border-2 border-transparent hover:border-black transition-all"
+          >
+            <CloseIcon className="w-6 h-6" />
+          </button>
+        </div>
+
+        <div className="flex-1 p-6 md:p-10 bg-slate-50 overflow-y-auto min-h-[200px] md:min-h-[300px]">
+          <AutoResizingTextarea
+            autoFocus
+            value={customPrompts[activePromptTab] || ''}
+            onChange={(val) => {
+              setCustomPrompts(prev => ({ ...prev, [activePromptTab]: val }));
+              setHasUnanalyzedChanges(true);
+            }}
+            placeholder={`${activePromptTab}専用のルールを入力（例：ハッシュタグをつけて）`}
+            className="w-full h-full min-h-[250px] md:min-h-[350px] bg-transparent outline-none text-base md:text-lg text-black font-bold leading-relaxed placeholder-slate-300 transition-all no-scrollbar"
+          />
+        </div>
+
+        <div className="p-6 md:p-8 border-t-[3px] border-black bg-white flex justify-end shrink-0">
+          <button
+            onClick={() => setIsPromptExpanded(false)}
+            className="w-full md:w-auto px-10 py-4 bg-black text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:shadow-none translate-x-[-2px] translate-y-[-2px] hover:translate-x-0 hover:translate-y-0 transition-all active:scale-95"
+          >
+            設定を完了する
+          </button>
+        </div>
+      </div>
+    </div>,
+    document.body
+  );
+
   return (
     <>
       {mainPortal}
       {focusModeOverlay}
+      {promptEditOverlay}
     </>
   );
 };
