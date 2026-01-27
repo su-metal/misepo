@@ -3,32 +3,29 @@
 @tailwind utilities;
 
 :root {
-  /* Glassmorphism Brand Colors (Restored Deep Indigo) */
-  --primary: #2c2c2c;     /* Deep Indigo - Unified AI Brand Color */
-  --primary-dark: #3b4cca;
-  --accent: #130c0a;      /* Unified Accent */
-  --accent-secondary: #aa9cff; /* Soft Purple - Gradient/Accent */
+  /* Refined Neo Brutalism Saturated Palette */
+  --teal: #4DB39A;
+  --gold: #F5CC6D;
+  --rose: #E88BA3;
+  --lavender: #9B8FD4;
+  --bg-beige: #f9f5f2;
+
+  --primary: #000000;     /* Pure Black for Text and Borders */
+  --accent: var(--teal);
+  --accent-secondary: var(--lavender);
   
   /* Text Colors */
-  --text-main: #1e293b;
-  --text-muted: #64748b;
+  --text-main: #000000;
+  --text-muted: #475569;
 
-  /* Glass Effects */
-  --glass-bg: rgba(255, 255, 255, 0.45);
-  --glass-border: rgba(255, 255, 255, 0.6);
-  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+  /* Layout Utilities */
+  --card-bg: #ffffff;
+  --border-thick: 3px solid #000000;
 }
 
 body {
   font-family: 'Outfit', 'Inter', 'Noto Sans JP', sans-serif;
-  /* Aurora Mist: Luminous, low-saturation multi-directional gradient */
-  background: 
-    radial-gradient(at 0% 0%, #e0e7ff 0%, transparent 40%),  /* Soft Indigo */
-    radial-gradient(at 100% 0%, #f0fdf4 0%, transparent 40%), /* Mint Mist */
-    radial-gradient(at 100% 100%, #faf5ff 0%, transparent 40%), /* Lavender Mist */
-    radial-gradient(at 0% 100%, #eff6ff 0%, transparent 40%), /* Sky Mist */
-    #f8fafc; /* Base Silk */
-  background-attachment: fixed;
+  background-color: var(--bg-beige);
   color: var(--text-main);
   min-height: 100vh;
 }
@@ -36,16 +33,59 @@ body {
 /* Glass Utility Classes */
 .glass-panel {
   background: var(--glass-bg);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.9); /* Sharp bright inner edge */
-  box-shadow: 
-    0 12px 48px -12px rgba(0, 0, 0, 0.15),      /* Deeper anchor shadow */
-    0 0 0 1px rgba(0, 0, 0, 0.08);             /* Distinct dark outer hairline */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+
+/* Pop Section Card - Neo Brutalism Style */
+.section-card {
+  background: #ffffff;
+  border: 3px solid #000000;
+  border-radius: 1.5rem; /* 24px */
+  box-shadow: 6px 6px 0px 0px rgba(0, 0, 0, 1);
+  transition: all 0.2s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.section-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 8px 8px 0px 0px rgba(0, 0, 0, 1);
+}
+
+/* Pop Button Style - Neo Brutalism */
+.btn-pop {
+  background-color: var(--gold);
+  color: #000000;
+  border: var(--border-thick);
+  border-radius: 1rem;
+  box-shadow: 6px 6px 0px 0px rgba(0, 0, 0, 1);
+  font-weight: 900;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-pop:hover:not(:disabled) {
+  transform: translate(-3px, -3px);
+  box-shadow: 9px 9px 0px 0px rgba(0, 0, 0, 1);
+  background-color: var(--rose);
+}
+
+.btn-pop:active:not(:disabled) {
+  transform: translate(3px, 3px);
+  box-shadow: 3px 3px 0px 0px rgba(0, 0, 0, 1);
+}
+
+.btn-pop:disabled {
+  background-color: #e2e8f0;
+  color: #94a3b8;
+  border-color: #94a3b8;
+  box-shadow: none;
+  cursor: not-allowed;
+
 }
 
 .glass-panel-dark {
-    background: rgba(15, 23, 42, 0.6);
+    background: rgba(26, 27, 30, 0.8);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -53,35 +93,41 @@ body {
 }
 
 .glass-button {
-    background: rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.5);
     backdrop-filter: blur(4px);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    border: 1px solid rgba(26, 27, 30, 0.05);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
     transition: all 0.3s ease;
 }
 .glass-button:hover {
-    background: rgba(255, 255, 255, 0.4);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    background: rgba(255, 255, 255, 0.8);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
-/* High-fidelity Neumorphic "3D Block" (Raised with thickness) */
-.active-floating {
-    background-color: var(--primary) !important;
-    transform: translateY(-1.5px) !important; /* Stable lift */
-    box-shadow: 
-        1px 2.5px 0 0 #888888,                     /* Neutral Gray Side Wall */
-        8px 10px 20px -4px rgba(0, 0, 0, 0.25),    /* Stable floor shadow */
-        -4px -4px 12px 0 rgba(255, 255, 255, 0.1),  /* Top-left light source */
-        inset 0 1px 1px 0 rgba(255, 255, 255, 0.2) !important; /* Top edge highlight */
-    filter: none !important;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 1.64, 1);
+/* 3D Pop Floating Effect - Neo Brutalism */
+.active-pop {
+    background-color: var(--teal) !important;
+    color: #000000 !important;
+    border: var(--border-thick) !important;
+    box-shadow: 4px 4px 0 0 rgba(0, 0, 0, 1) !important;
+    transform: translate(-2px, -2px) !important;
+    border-radius: 1rem !important;
 }
+
+.active-floating { /* Legacy mapping to active-pop for easy migration */
+    background-color: #4DB39A !important; /* Saturated Teal */
+    color: #000000 !important;
+    border: 3px solid #000000 !important;
+    box-shadow: 4px 4px 0 0 rgba(0, 0, 0, 1) !important;
+    transform: translate(-2px, -2px) !important;
+    filter: none !important;
+    border-radius: 0.75rem !important; /* 12px */
+}
+
 .active-floating:active {
-    transform: translateY(1px) !important;    /* "Click" down */
-    box-shadow: 
-        0 1px 0 0 #888888,
-        4px 4px 10px -2px rgba(0, 0, 0, 0.2) !important;
+    transform: translate(2px, 2px) !important;
+    box-shadow: 1px 1px 0 0 rgba(0, 0, 0, 1) !important;
 }
 
 /* Color Utilities using CSS Variables */
@@ -93,14 +139,15 @@ body {
 .text-accent { color: var(--accent) !important; }
 .border-accent { border-color: var(--accent) !important; }
 
-/* Platform Brand Colors */
-.bg-brand-green { background-color: #34A853 !important; }
-.text-brand-green { color: #34A853 !important; }
-.border-brand-green { border-color: #34A853 !important; }
 
-.bg-brand-instagram { background-color: #E1306C !important; }
-.text-brand-instagram { color: #E1306C !important; }
-.border-brand-instagram { border-color: #E1306C !important; }
+/* Platform Brand Colors mapping to new palette */
+.bg-brand-green { background-color: var(--teal) !important; }
+.text-brand-green { color: var(--teal) !important; }
+.border-brand-green { border-color: var(--teal) !important; }
+
+.bg-brand-instagram { background-color: var(--rose) !important; }
+.text-brand-instagram { color: var(--rose) !important; }
+.border-brand-instagram { border-color: var(--rose) !important; }
 
 /* Custom Scrollbar */
 .scrollbar-hide::-webkit-scrollbar {

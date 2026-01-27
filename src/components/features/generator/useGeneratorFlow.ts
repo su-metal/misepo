@@ -18,12 +18,14 @@ export function useGeneratorFlow(props: {
   onOpenLogin: () => void;
   onGenerateSuccess: (post: GeneratedPost) => void;
   onTaskComplete: () => void;
+  favorites: Set<string>;
+  onToggleFavorite: (text: string, platform: Platform, presetId: string | null, replaceId?: string, source?: 'generated' | 'manual') => Promise<void>;
   restorePost?: GeneratedPost | null;
   resetResultsTrigger?: number;
 }) {
   const { 
     storeProfile, isLoggedIn, onOpenLogin, onGenerateSuccess, 
-    onTaskComplete, restorePost, resetResultsTrigger 
+    onTaskComplete, favorites, onToggleFavorite, restorePost, resetResultsTrigger 
   } = props;
 
   // --- State ---
@@ -40,6 +42,7 @@ export function useGeneratorFlow(props: {
   const [language, setLanguage] = useState('Japanese');
   const [storeSupplement, setStoreSupplement] = useState('');
   const [customPrompt, setCustomPrompt] = useState('');
+  const [loadedPresetPrompts, setLoadedPresetPrompts] = useState<{ [key: string]: string }>({});
   const [includeSymbols, setIncludeSymbols] = useState<boolean>(false);
   const [includeEmojis, setIncludeEmojis] = useState<boolean>(true);
   
@@ -54,6 +57,7 @@ export function useGeneratorFlow(props: {
   const [refiningKey, setRefiningKey] = useState<string | null>(null);
   const [refineText, setRefineText] = useState("");
   const [isRefining, setIsRefining] = useState(false);
+  const [isAutoFormatting, setIsAutoFormatting] = useState<{ [key: string]: boolean }>({});
 
   const [activePresetId, setActivePresetId] = useState<string | null>(null);
 
@@ -103,20 +107,59 @@ export function useGeneratorFlow(props: {
     if (preset.id === 'plain-ai') {
       // Full reset to default state
       setCustomPrompt('');
+      setLoadedPresetPrompts({});
       setCurrentPostSamples({});
       setPostPurpose(PostPurpose.Auto);
       setGmapPurpose(GoogleMapPurpose.Auto);
       setTone(Tone.Standard);
-      setLength(Length.Medium);
       setIncludeEmojis(true);
       setIncludeSymbols(false);
       setXConstraint140(true);
       setActivePresetId(null);
     } else {
       // Apply preset (even if it's the same one - keep it applied)
-      setCustomPrompt(preset.custom_prompt ?? '');
-      setCurrentPostSamples(preset.post_samples || {});
+      let initialPrompts: { [key: string]: string } = {};
+      try {
+          if (preset.custom_prompt?.trim().startsWith('{')) {
+              const parsed = JSON.parse(preset.custom_prompt);
+              
+              // Migration: If 'General' exists, copy to all platforms
+              if (parsed['General']) {
+                [Platform.X, Platform.Instagram, Platform.Line, Platform.GoogleMaps].forEach(p => {
+                  if (!parsed[p]) parsed[p] = parsed['General'];
+                });
+                delete parsed['General'];
+              }
+              initialPrompts = parsed;
+          } else {
+              // Legacy string: Apply to all
+              const legacyVal = preset.custom_prompt || '';
+              [Platform.X, Platform.Instagram, Platform.Line, Platform.GoogleMaps].forEach(p => {
+                initialPrompts[p] = legacyVal;
+              });
+          }
+      } catch (e) {
+          const legacyVal = preset.custom_prompt || '';
+          [Platform.X, Platform.Instagram, Platform.Line, Platform.GoogleMaps].forEach(p => {
+            initialPrompts[p] = legacyVal;
+          });
+      }
+      setLoadedPresetPrompts(initialPrompts);
+
+      // We intentionaly DO NOT set customPrompt here anymore.
+      // This keeps the UI textarea empty for the user to add "one-off" instructions.
+      // The preset prompts are merged internally during performGeneration.
+      setCustomPrompt('');
+
+      // Legacy post_samples are ignored to ensure only the 'Learning Data List' is used.
+      setCurrentPostSamples({}); 
       setActivePresetId(preset.id);
+
+      // Reset stylistic settings to "neutral/plain" state when a preset is applied.
+      // This prevents "locked" state from leaking previous styles (e.g. Emoji OFF from Formal tone).
+      setTone(Tone.Standard);
+      setIncludeEmojis(true);
+      setIncludeSymbols(false);
     }
   };
 
@@ -132,9 +175,11 @@ export function useGeneratorFlow(props: {
         setIsMultiGenMode(false);
         setIncludeEmojis(false);
         setIncludeSymbols(false);
+        // Switch prompt to GMap specific
+        setCustomPrompt(loadedPresetPrompts[Platform.GoogleMaps] || '');
       } else {
-        // If it's X or Instagram and we're in multi-gen, keep both
-        setPlatforms([Platform.X, Platform.Instagram]);
+        // If it's X, Instagram, or LINE and we're in multi-gen, keep current multi platforms
+        setPlatforms(platforms);
       }
     } else {
       setPlatforms([p]);
@@ -142,6 +187,9 @@ export function useGeneratorFlow(props: {
         setIncludeEmojis(false);
         setIncludeSymbols(false);
       }
+      
+      // Update customPrompt for single platform selection mode
+      setCustomPrompt(loadedPresetPrompts[p] || '');
     }
   };
 
@@ -151,12 +199,14 @@ export function useGeneratorFlow(props: {
       setIsMultiGenMode(false);
       setIncludeEmojis(false);
       setIncludeSymbols(false);
+      setCustomPrompt(loadedPresetPrompts[Platform.GoogleMaps] || '');
       return;
     }
 
     if (platforms.includes(Platform.GoogleMaps)) {
       setPlatforms([p]);
       setIsMultiGenMode(false);
+      setCustomPrompt(loadedPresetPrompts[p] || '');
       return;
     }
 
@@ -165,13 +215,18 @@ export function useGeneratorFlow(props: {
         if (platforms.length > 1) {
           const nextPlatforms = platforms.filter(x => x !== p);
           setPlatforms(nextPlatforms);
-          if (nextPlatforms.length === 1) setIsMultiGenMode(false);
+          if (nextPlatforms.length === 1) {
+             setIsMultiGenMode(false);
+             // Switched to single mode, update prompt
+             setCustomPrompt(loadedPresetPrompts[nextPlatforms[0]] || '');
+          }
         }
       } else {
         setPlatforms(prev => [...prev, p]);
       }
     } else {
       setPlatforms([p]);
+      setCustomPrompt(loadedPresetPrompts[p] || '');
     }
   };
 
@@ -179,9 +234,16 @@ export function useGeneratorFlow(props: {
     const nextMode = !isMultiGenMode;
     setIsMultiGenMode(nextMode);
     if (nextMode) {
-      setPlatforms([Platform.Instagram, Platform.X]);
+      setPlatforms([Platform.X, Platform.Instagram, Platform.Line]);
+      // Multi-gen ON: Switch to first of the three
+      setCustomPrompt(loadedPresetPrompts[Platform.X] || '');
     } else {
-      if (platforms.length > 1) setPlatforms([platforms[0]]);
+      if (platforms.length > 1) {
+          const first = platforms[0];
+          setPlatforms([first]);
+          // Multi-gen OFF: Switch to First Platform prompt
+          setCustomPrompt(loadedPresetPrompts[first] || '');
+      }
     }
   };
 
@@ -228,8 +290,23 @@ export function useGeneratorFlow(props: {
     const newGroups: ResultGroup[] = [];
     let latestRunId: string | null = null;
 
-    for (const p of targetPlatforms) {
+    const resultsPromises = targetPlatforms.map(async (p) => {
       const purpose = p === Platform.GoogleMaps ? gmapPurpose : postPurpose;
+      
+      // Resolve Platform-Specific Prompt
+      // Merge System Prompt (from preset) and User Prompt (from UI textarea)
+      let systemPrompt = loadedPresetPrompts[p] || '';
+      let userPrompt = customPrompt.trim();
+      
+      let effectivePrompt = '';
+      if (systemPrompt && userPrompt) {
+          effectivePrompt = `${systemPrompt}\n\n---\n\n【今回の追加指示】\n${userPrompt}`;
+      } else if (systemPrompt) {
+          effectivePrompt = systemPrompt;
+      } else {
+          effectivePrompt = userPrompt;
+      }
+
       const config: GenerationConfig = {
         platform: p,
         purpose,
@@ -239,56 +316,76 @@ export function useGeneratorFlow(props: {
         starRating: p === Platform.GoogleMaps ? starRating : undefined,
         language,
         storeSupplement,
-        customPrompt,
+        customPrompt: effectivePrompt,
         xConstraint140,
         includeSymbols,
         includeEmojis,
         instagramFooter: (p === Platform.Instagram && includeFooter) ? storeProfile.instagramFooter : undefined,
-        post_samples: currentPostSamples
+        post_samples: currentPostSamples,
+        presetId: activePresetId || undefined,
+        gmapPurpose: (p === Platform.GoogleMaps) ? gmapPurpose : undefined
       };
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 60000); // 60s timeout
 
       try {
         const res = await fetch("/api/generate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
+          signal: controller.signal,
           body: JSON.stringify({
             profile: storeProfile,
             config,
             save_history: targetPlatforms.length === 1,
             run_type: "generation",
+            presetId: activePresetId
           }),
         });
 
+        clearTimeout(timeoutId);
         const data = await res.json();
         if (!res.ok || !data.ok) throw new Error(data.error ?? "Generate failed");
 
-        const content = data.result as string[];
-        latestRunId = data.run_id?.toString() || null;
-
+        const content = (data.result as string[]).map(t => t.replace(/\\n/g, '\n').replace(/\\n/g, '\n').trim());
+        
         let finalContent = content;
         if (p === Platform.Instagram && includeFooter && storeProfile.instagramFooter) {
           finalContent = content.map(text => insertInstagramFooter(text, storeProfile.instagramFooter!));
         }
 
-        const group = { platform: p, data: finalContent, config };
-        newGroups.push(group);
-        generatedResults.push({ platform: p, data: finalContent });
+        return { platform: p, data: finalContent, config, run_id: data.run_id?.toString() || null };
       } catch (e) {
         console.error(`Error generating for ${p}`, e);
+        return null;
       }
-    }
+    });
+
+    const settledResults = await Promise.all(resultsPromises);
+    
+    settledResults.forEach(res => {
+      if (res) {
+        newGroups.push({ platform: res.platform, data: res.data, config: res.config });
+        generatedResults.push({ platform: res.platform, data: res.data });
+        if (res.run_id) latestRunId = res.run_id;
+      }
+    });
 
     setResultGroups(newGroups);
+    if (!isRegeneration) setActiveTab(0);
     setLoading(false);
 
     if (isLoggedIn && !isRegeneration) {
       const historyConfig = {
         platforms: targetPlatforms,
-        postPurpose, gmapPurpose, tone, length, inputText,
+        purpose: postPurpose,
+        postPurpose, tone, length, inputText,
         starRating: starRating ?? undefined,
         language, storeSupplement, customPrompt,
         xConstraint140, includeSymbols, includeEmojis,
         instagramFooter: (targetPlatforms.includes(Platform.Instagram) && includeFooter) ? storeProfile.instagramFooter : undefined,
+        presetId: activePresetId || undefined,
+        gmapPurpose: targetPlatforms.includes(Platform.GoogleMaps) ? gmapPurpose : undefined
       };
 
       if (targetPlatforms.length > 1) {
@@ -306,6 +403,7 @@ export function useGeneratorFlow(props: {
         timestamp: Date.now(),
         config: historyConfig,
         results: generatedResults,
+        isPinned: false,
       });
     }
     onTaskComplete();
@@ -316,7 +414,7 @@ export function useGeneratorFlow(props: {
     setResultGroups(prev => {
       const next = [...prev];
       const nextData = [...next[gIdx].data];
-      nextData[iIdx] = text;
+      nextData[iIdx] = text.replace(/\\n/g, '\n').trim();
       next[gIdx] = { ...next[gIdx], data: nextData };
       return next;
     });
@@ -347,8 +445,11 @@ export function useGeneratorFlow(props: {
     }
   };
 
-  const performRefine = async (gIdx: number, iIdx: number) => {
-    if (!refineText.trim()) return;
+  const performRefine = async (gIdx: number, iIdx: number, overrideInstruction?: string) => {
+    const instruction = overrideInstruction || refineText;
+    if (!instruction.trim()) return;
+    
+    setLoading(true);
     setIsRefining(true);
     const group = resultGroups[gIdx];
     try {
@@ -359,7 +460,7 @@ export function useGeneratorFlow(props: {
           profile: storeProfile,
           config: group.config,
           currentContent: group.data[iIdx],
-          instruction: refineText,
+          instruction: instruction,
         }),
       });
       const data = await res.json();
@@ -368,7 +469,7 @@ export function useGeneratorFlow(props: {
       setResultGroups(prev => {
         const next = [...prev];
         const nextData = [...next[gIdx].data];
-        nextData[iIdx] = data.result;
+        nextData[iIdx] = data.result.replace(/\\n/g, '\n').replace(/\\n/g, '\n').trim();
         next[gIdx] = { ...next[gIdx], data: nextData };
         return next;
       });
@@ -377,7 +478,18 @@ export function useGeneratorFlow(props: {
     } catch (e) {
       alert("再生成に失敗しました");
     } finally {
+      setLoading(false);
       setIsRefining(false);
+    }
+  };
+
+  const handleAutoFormat = async (gIdx: number, iIdx: number) => {
+    const key = `${gIdx}-${iIdx}`;
+    setIsAutoFormatting(prev => ({ ...prev, [key]: true }));
+    try {
+      await performRefine(gIdx, iIdx, "文体や内容は一切変えずに、スマホ画面で読みやすくなるように適宜記号や「改行」や「空白行（1行あけ）」をバランスよく使って整形してください。");
+    } finally {
+      setIsAutoFormatting(prev => ({ ...prev, [key]: false }));
     }
   };
 
@@ -385,6 +497,7 @@ export function useGeneratorFlow(props: {
     let message = "コピーしました！アプリを開きます";
     if (platform === Platform.Instagram) message = "コピー完了！貼り付けて投稿してください";
     else if (platform === Platform.GoogleMaps) message = "コピー完了！貼り付けて返信してください";
+    else if (platform === Platform.Line) message = "コピー完了！LINEを開いて貼り付けましょう";
 
     try {
       await navigator.clipboard.writeText(text);
@@ -425,7 +538,8 @@ export function useGeneratorFlow(props: {
     if (restorePost) {
       setPlatforms(restorePost.config.platforms);
       setIsMultiGenMode(restorePost.config.platforms.length > 1);
-      setPostPurpose(restorePost.config.postPurpose);
+      // 'purpose' holds the active purpose value (Union type). Cast generic purpose to PostPurpose for state.
+      setPostPurpose(restorePost.config.purpose as PostPurpose);
       setGmapPurpose(restorePost.config.gmapPurpose);
       setTone(restorePost.config.tone);
       setLength(restorePost.config.length);
@@ -440,6 +554,7 @@ export function useGeneratorFlow(props: {
         config: { ...restorePost.config, platform: r.platform } as any
       }));
       setResultGroups(reconstructed);
+      setActiveTab(0);
     }
   }, [restorePost]);
 
@@ -507,7 +622,11 @@ export function useGeneratorFlow(props: {
     handleToggleFooter,
     handleRefineToggle,
     performRefine,
+    handleAutoFormat,
+    isAutoFormatting,
     handleShare,
-    activePresetId
+    activePresetId,
+    favorites,
+    onToggleFavorite
   };
 }

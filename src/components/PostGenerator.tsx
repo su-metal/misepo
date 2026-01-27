@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import {
-  StoreProfile, GeneratedPost, Preset, Platform, UserPlan
+  StoreProfile, GeneratedPost, Preset, Platform, UserPlan, TrainingItem
 } from '../types';
 import { StarIcon, SparklesIcon } from './Icons';
 import { useGeneratorFlow } from './features/generator/useGeneratorFlow';
@@ -17,13 +17,15 @@ interface PostGeneratorProps {
   isLoggedIn: boolean;
   onOpenLogin: () => void;
   presets: Preset[];
-  refreshPresets: () => Promise<void>;
+  refreshPresets: () => Promise<Preset[] | void>;
   onGenerateSuccess: (post: GeneratedPost) => void;
   onTaskComplete: () => void;
+  trainingItems: TrainingItem[];
+  onToggleFavorite: (text: string, platform: Platform, presetId: string | null, replaceId?: string, source?: 'generated' | 'manual') => Promise<void>;
   restorePost?: GeneratedPost | null;
   onOpenGuide?: () => void;
   onOpenSettings: () => void;
-  onOpenHistory?: () => void; // Added onOpenHistory
+  onOpenHistory?: () => void;
   onLogout: () => void;
   plan: UserPlan;
   resetResultsTrigger?: number;
@@ -33,14 +35,16 @@ interface PostGeneratorProps {
 const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
   const {
     storeProfile, isLoggedIn, onOpenLogin, presets,
-    onGenerateSuccess, onTaskComplete, restorePost,
+    onGenerateSuccess, onTaskComplete, trainingItems, onToggleFavorite, restorePost,
     onOpenGuide, onOpenSettings, onOpenHistory, onLogout,
-    plan, resetResultsTrigger, shouldShowTour // Destructured onOpenHistory, onLogout, plan
+    plan, resetResultsTrigger, shouldShowTour
   } = props;
+
+  const favorites = React.useMemo(() => new Set(trainingItems.map(t => t.content.trim())), [trainingItems]);
 
   const flow = useGeneratorFlow({
     storeProfile, isLoggedIn, onOpenLogin,
-    onGenerateSuccess, onTaskComplete, restorePost,
+    onGenerateSuccess, onTaskComplete, favorites, onToggleFavorite, restorePost,
     resetResultsTrigger
   });
 
@@ -58,6 +62,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
       case Platform.X: return 'Xで投稿';
       case Platform.Instagram: return 'Instagramを開く';
       case Platform.GoogleMaps: return 'Googleマップを開く';
+      case Platform.Line: return 'LINEで送る';
       default: return 'シェアする';
     }
   };
@@ -70,7 +75,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
     });
   };
 
-  const handleSavePreset = async (preset: Partial<Preset>) => {
+  const handleSavePreset = async (preset: Partial<Preset>): Promise<Preset | null> => {
     setIsSavingPreset(true);
     try {
       const url = preset.id ? `/api/me/presets/${preset.id}` : '/api/me/presets';
@@ -84,10 +89,27 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
 
       if (!res.ok) throw new Error('Failed to save preset');
 
+      const savedPreset = await res.json();
       await props.refreshPresets();
+
+      // If the saved preset is the currently active one, update the flow state immediately
+      if (preset.id && preset.id === flow.activePresetId) {
+        const currentActiveInfo = presets.find(p => p.id === preset.id);
+        if (currentActiveInfo) {
+          const updated = { ...currentActiveInfo, ...preset } as Preset;
+          flow.handleApplyPreset(updated);
+        }
+      } else if (!preset.id) {
+        // If it was a new preset, switch to it? 
+        // Usually we stay on the modal or let the modal handle it.
+        // But for flow state, we might want to know.
+      }
+
+      return savedPreset;
     } catch (error) {
       console.error('Failed to save preset:', error);
       alert('プロファイルの保存に失敗しました。');
+      return null;
     } finally {
       setIsSavingPreset(false);
     }
@@ -106,11 +128,11 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
   };
 
   return (
-    <div className="min-h-screen text-slate-100 overflow-x-hidden">
+    <div className="min-h-screen overflow-x-hidden">
 
       <div className="max-w-[1400px] mx-auto py-4 sm:py-8 relative z-10">
-        {/* Header Module - Floating Glass */}
-        <div className="mb-6 px-3 sm:px-8 animate-in fade-in slide-in-from-top-4 duration-1000">
+        {/* Header Module */}
+        <div className="mx-3 sm:mx-8 mb-10 transition-all duration-1000 animate-in fade-in slide-in-from-top-4">
           <GeneratorHeader
             onOpenHistory={onOpenHistory || (() => { })}
             storeProfile={storeProfile}
@@ -118,29 +140,13 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
           />
         </div>
 
-        {/* Usage Guide Link - Between Header and Input */}
-        {onOpenGuide && (
-          <div className="flex justify-end mb-4 px-3 sm:px-8">
-            <button
-              onClick={onOpenGuide}
-              className="flex items-center gap-2 text-slate-400 hover:text-[#001738] transition-colors text-xs font-bold"
-            >
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="10" />
-                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-                <path d="M12 17h.01" />
-              </svg>
-              <span>使い方ガイド</span>
-            </button>
-          </div>
-        )}
 
         {/* 2-Column Layout */}
         <div className="px-1 sm:px-8 grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
 
           {/* Left Column: Input Form (8 Cols) */}
           <div className="lg:col-span-8">
-            <div ref={inputRef} className="pb-40 lg:pb-0">
+            <div ref={inputRef} className="pb-0 lg:pb-0">
               <PostInputForm
                 platforms={flow.platforms}
                 activePlatform={flow.platforms[0] || Platform.Instagram}
@@ -177,21 +183,27 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
                 onOpenPresetModal={() => setIsPresetModalOpen(true)}
                 customPrompt={flow.customPrompt}
                 onCustomPromptChange={flow.setCustomPrompt}
+                storeSupplement={flow.storeSupplement}
+                onStoreSupplementChange={flow.setStoreSupplement}
+                language={flow.language}
+                onLanguageChange={flow.setLanguage}
+                onOpenGuide={onOpenGuide}
+                hasResults={flow.resultGroups.length > 0}
               />
             </div>
           </div>
 
           {/* Right Column: Results (4 Cols) */}
           <div className="lg:col-span-4">
-            <div ref={resultsRef} className="pb-32 md:pb-20 px-2">
+            <div ref={resultsRef} className="pb-8 md:pb-20 px-2">
               <PostResultTabs
                 results={flow.resultGroups}
                 activeTab={flow.activeTab}
                 onTabChange={flow.setActiveTab}
                 onManualEdit={flow.handleManualEdit}
                 onToggleFooter={flow.handleToggleFooter}
-                onRefine={() => { }}
-                onRegenerateSingle={(p) => flow.performGeneration([p], true)}
+                onRefine={flow.performRefine}
+                onRegenerateSingle={(platform) => flow.performGeneration([platform], true)}
                 onShare={flow.handleShare}
                 getShareButtonLabel={getShareButtonLabel}
                 storeProfile={storeProfile}
@@ -203,45 +215,53 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
                 isRefining={flow.isRefining}
                 includeFooter={flow.includeFooter}
                 onIncludeFooterChange={flow.setIncludeFooter}
+                presetId={flow.activePresetId || undefined}
+                favorites={flow.favorites}
+                onToggleFavorite={flow.onToggleFavorite}
+                onAutoFormat={flow.handleAutoFormat}
+                isAutoFormatting={flow.isAutoFormatting}
               />
             </div>
           </div>
         </div>
 
-        {/* Footnote - Now placed at the very bottom of the generator to avoid appearing between modules on mobile */}
-        <p className="text-center text-[10px] font-black text-slate-400 uppercase tracking-widest mt-12 pb-8 sm:pb-0 animate-in fade-in duration-1000">
+        {/* Footnote */}
+        <p className="text-center text-[10px] font-black text-black opacity-30 uppercase tracking-widest mt-12 pb-8 sm:pb-0 animate-in fade-in duration-1000">
           AI-Powered High Performance Content Generation
         </p>
       </div>
 
-      {/* Sticky Generation Footer: Combined Mobile & PC for ease of access */}
+      {/* Sticky Generation Footer */}
       <div className="fixed bottom-0 left-0 right-0 z-[90]">
-        {/* Gradient Fade Overlay - Provides visual separation from content */}
-        <div className="absolute inset-x-0 bottom-0 h-24 md:h-32 bg-gradient-to-t from-white via-white/90 to-transparent pointer-events-none" />
-
+        <div className="absolute inset-x-0 bottom-0 h-24 md:h-32 bg-gradient-to-t from-[#f9f5f2] via-[#f9f5f2]/90 to-transparent pointer-events-none" />
         <div className="relative px-4 py-3 pb-8 md:pb-12 safe-area-bottom flex items-center justify-center">
           <button
             onClick={handleGenerate}
             disabled={flow.loading || !flow.inputText.trim()}
-            className={`w-full max-w-xl py-6 md:py-8 rounded-full font-black text-lg md:text-2xl tracking-[0.2em] transition-all flex items-center justify-center gap-3 md:gap-5 active:scale-[0.98] shadow-2xl group
+            className={`w-full max-w-xl py-6 md:py-8 rounded-[32px] font-black text-lg md:text-2xl tracking-[0.2em] flex items-center justify-center gap-3 md:gap-5 group
                 ${flow.loading || !flow.inputText.trim()
-                ? 'bg-slate-100/90 backdrop-blur-sm text-slate-400 border border-slate-200 cursor-not-allowed'
-                : 'bg-gradient-to-r from-[#4F46E5] to-[#9333EA] text-white hover:shadow-[0_8px_40px_rgba(79,70,229,0.5)] border border-white/20'
+                ? 'bg-slate-200 text-slate-400 border-2 border-slate-300 cursor-not-allowed'
+                : 'btn-pop'
               }`}
           >
             <div className="flex items-center justify-center gap-3 md:gap-5 relative z-10">
               {flow.loading ? (
                 <>
-                  <div className="w-6 h-6 md:w-8 md:h-8 border-4 border-white/20 border-t-white rounded-full animate-spin"></div>
+                  <div className="w-6 h-6 md:w-8 md:h-8 border-4 border-slate-400 border-t-slate-600 rounded-full animate-spin"></div>
                   <span className="opacity-80">PROCESSING...</span>
                 </>
               ) : (
                 <>
                   <div className="relative">
-                    <SparklesIcon className="w-6 h-6 md:w-8 md:h-8 group-hover:rotate-12 transition-transform" />
-                    <div className="absolute inset-0 bg-white/50 blur-lg animate-ping-slow opacity-50" />
+                    <SparklesIcon className={`w-6 h-6 md:w-8 md:h-8 group-hover:rotate-12 transition-transform ${flow.resultGroups.length > 0 ? 'text-black' : 'text-primary'}`} />
                   </div>
-                  <span className="drop-shadow-sm uppercase">Generate Post</span>
+                  <span className={`drop-shadow-none uppercase ${flow.resultGroups.length > 0 ? 'text-black' : 'text-primary'}`}>
+                    {flow.resultGroups.length === 0
+                      ? '投稿を生成'
+                      : (flow.resultGroups[0].config.inputText !== flow.inputText
+                        ? '内容を更新して生成'
+                        : '再生成する')}
+                  </span>
                 </>
               )}
             </div>
@@ -259,8 +279,11 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
             flow.handleApplyPreset(p);
             setIsPresetModalOpen(false);
           }}
-          initialPresetId={undefined} // Or pass if needed
+          initialPresetId={flow.activePresetId || undefined}
           isSaving={isSavingPreset}
+          onReorder={props.refreshPresets}
+          trainingItems={trainingItems}
+          onToggleTraining={(text, platform, presetId, replaceId, source) => onToggleFavorite(text, platform, presetId, replaceId, source || 'manual')}
         />
       )}
 

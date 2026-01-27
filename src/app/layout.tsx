@@ -6,7 +6,10 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: "MisePo - 店舗向けAI投稿作成",
   description: "An AI-powered social media post generator specialized for physical businesses like restaurants and salons.",
+  robots: "noindex, nofollow",
 };
+
+import { Feedback } from '../components/Feedback';
 
 export default function RootLayout({
   children,
@@ -33,10 +36,34 @@ export default function RootLayout({
             }
           })
         }} />
+
+        {/* Google Analytics (gtag.js) */}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-XN6G9DC24K"></script>
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-XN6G9DC24K');
+          `
+        }} />
+
         <script src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`} async defer></script>
+
+        {/* Google Analytics (gtag.js) */}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-XN6G9DC24K"></script>
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-XN6G9DC24K');
+          `
+        }} />
       </head>
       <body>
         <div id="root">{children}</div>
+        <Feedback />
       </body>
     </html>
   );

@@ -3,7 +3,8 @@ import { Platform } from '../../../types';
 import {
     InstagramIcon,
     XIcon,
-    GoogleMapsIcon
+    GoogleMapsIcon,
+    LineIcon
 } from '../../Icons';
 
 // --- Footer Helper Functions ---
@@ -18,7 +19,7 @@ export function insertInstagramFooter(text: string, footer: string): string {
 
     if (match) {
         const body = text.slice(0, match.index).trimEnd();
-        const hashtags = match[0].trimStart();
+        const hashtags = match[0].trim();
         return `${body}\n\n${cleanFooter}\n\n${hashtags}`;
     }
 
@@ -40,6 +41,7 @@ export function getPlatformIcon(p: Platform) {
         case Platform.Instagram: return React.createElement(InstagramIcon, { className: "w-4 h-4" });
         case Platform.X: return React.createElement(XIcon, { className: "w-4 h-4" });
         case Platform.GoogleMaps: return React.createElement(GoogleMapsIcon, { className: "w-4 h-4" });
+        case Platform.Line: return React.createElement(LineIcon, { className: "w-4 h-4" });
         default: return null;
     }
 }
@@ -79,3 +81,4 @@ export function enforcePresetNameValue(value: string, maxWidth = 20): string {
     }
     return current;
 }
+

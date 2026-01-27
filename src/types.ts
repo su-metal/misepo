@@ -2,7 +2,9 @@
 export enum Platform {
   X = 'X (Twitter)',
   Instagram = 'Instagram',
-  GoogleMaps = 'Google Maps'
+  Line = 'LINE',
+  GoogleMaps = 'Google Maps',
+  General = 'General'
 }
 
 export enum PostPurpose {
@@ -59,16 +61,19 @@ export interface GenerationConfig {
   // Optional output controls
   language?: string;
   storeSupplement?: string; // Google Maps only
-  customPrompt?: string;
+  customPrompt?: string; // Additional instructions for the AI
 
   // Decoration Control
-  includeSymbols?: boolean; // e.g., ✦, ▷
-  includeEmojis?: boolean; // e.g., ✨, 😊
+  includeSymbols?: boolean; // Whether to include decorative symbols
+  includeEmojis?: boolean; // Whether to include emojis
+  gmapPurpose?: GoogleMapPurpose; // Explicit purpose for Google Maps (Reply vs Promotion)
   
   // Platform specific
   xConstraint140?: boolean; // X (Twitter) only
   instagramFooter?: string; // New: Footer text to append
   post_samples?: { [key in Platform]?: string }; // Passed from active preset
+  persona_yaml?: string | null; // Can be a monolithic YAML string (Legacy) OR a serialized JSON string `{ [key in Platform]: string }`
+  presetId?: string; // ID of the preset used for this generation
 }
 
 export interface GeneratedResult {
@@ -80,23 +85,18 @@ export interface GeneratedResult {
 export interface GeneratedPost {
   id: string;
   timestamp: number;
-  config: {
-    platforms: Platform[];
-    postPurpose: PostPurpose;
-    gmapPurpose: GoogleMapPurpose;
-    tone: Tone;
-    length: Length;
-    inputText: string;
-    starRating?: number | null; // Added
-    language?: string;
-    storeSupplement?: string;
-    customPrompt?: string;
-    includeSymbols?: boolean;
-    includeEmojis?: boolean;
-    xConstraint140?: boolean;
-    instagramFooter?: string;
-  };
+  config: Omit<GenerationConfig, 'platform'> & { platforms: Platform[] };
   results: GeneratedResult[];
+  isPinned: boolean; 
+}
+
+export interface TrainingItem {
+  id: string;
+  content: string;
+  platform: Platform;
+  presetId: string;
+  createdAt: string;
+  source?: 'generated' | 'manual'; // New: Distinguish origin
 }
 
 export interface Preset {
@@ -105,6 +105,7 @@ export interface Preset {
   avatar: string | null;
   custom_prompt: string | null;
   post_samples?: { [key in Platform]?: string }; // New: Few-shot learning samples per platform
+  persona_yaml?: string | null; // New: Analyzed persona rules in YAML format
   sort_order: number;
   googlePlaceId?: string;
 }

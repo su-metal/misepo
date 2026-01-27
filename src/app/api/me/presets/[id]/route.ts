@@ -9,6 +9,7 @@ interface PresetUpdate {
   avatar?: string | null;
   custom_prompt?: string | null;
   post_samples?: { [key: string]: string } | null;
+  persona_yaml?: string | null;
 }
 
 export async function PATCH(
@@ -39,6 +40,7 @@ export async function PATCH(
   if (body.avatar !== undefined) updateFields.avatar = body.avatar;
   if (body.custom_prompt !== undefined) updateFields.custom_prompt = body.custom_prompt;
   if (body.post_samples !== undefined) updateFields.post_samples = body.post_samples;
+  if (body.persona_yaml !== undefined) updateFields.persona_yaml = body.persona_yaml;
 
   if (Object.keys(updateFields).length === 0) {
     return NextResponse.json({ ok: true });

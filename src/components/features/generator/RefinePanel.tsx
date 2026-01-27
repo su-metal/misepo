@@ -29,6 +29,27 @@ export const RefinePanel: React.FC<RefinePanelProps> = ({
                     placeholder="AIにお願いしたい修正内容を入力..."
                     autoFocus
                 />
+                <div className="mt-4 flex flex-wrap gap-2 mb-6">
+                    {[
+                        { label: '✨ 読みやすく整える', text: '文体や内容は一切変えずに、スマホ画面で読みやすくなるように適宜記号や「改行」や「空白行（1行あけ）」をバランスよく使って整形してください。' },
+                        { label: '📝 スッキリ短く', text: '内容の質を落とさず、できるだけ簡潔に短くまとめてください。' },
+                        { label: '📣 情熱を伝える', text: 'もっとお店の情熱が伝わるような、感情豊かな表現を増やしてください。' },
+                        { label: '🤝 詳しく丁寧に', text: 'より詳細な情報を盛り込んで、丁寧で誠実なトーンに調整してください。' },
+                    ].map((chip, idx) => (
+                        <button
+                            key={idx}
+                            onClick={() => {
+                                onRefineTextChange(chip.text);
+                                // Set timeout to allow state to settle before performing refine
+                                setTimeout(() => onRefine(), 0);
+                            }}
+                            className="px-4 py-2 rounded-full bg-white border-2 border-black/10 text-[11px] font-black text-black/60 hover:border-black hover:text-black transition-all shadow-sm active:scale-95"
+                        >
+                            {chip.label}
+                        </button>
+                    ))}
+                </div>
+
                 <div className="mt-3 flex items-center justify-end gap-2">
                     <button
                         onClick={onCancel}
@@ -39,12 +60,12 @@ export const RefinePanel: React.FC<RefinePanelProps> = ({
                     <button
                         onClick={onRefine}
                         disabled={isRefining || !refineText.trim()}
-                        className="flex items-center gap-2 px-6 py-1.5 rounded-full bg-accent text-primary text-xs font-black hover:scale-[1.02] active:scale-[0.98] transition shadow-md disabled:opacity-50"
+                        className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white text-xs font-black hover:bg-black hover:scale-[1.02] active:scale-[0.98] transition shadow-lg disabled:opacity-50 disabled:shadow-none"
                     >
                         {isRefining ? (
-                            <div className="w-3.5 h-3.5 border-2 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+                            <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                         ) : (
-                            <RotateCcwIcon className="w-3.5 h-3.5" />
+                            <MagicWandIcon className="w-3.5 h-3.5" />
                         )}
                         修正して再生成
                     </button>

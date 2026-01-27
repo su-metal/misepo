@@ -5,6 +5,9 @@ import { env } from "@/lib/env";
 
 const APP_ID = env.APP_ID;
 const PROFILE_KEY = "store_profile";
+const NO_STORE_HEADERS = { "Cache-Control": "no-store" };
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export async function GET() {
   const supabase = await createClient();

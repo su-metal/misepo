@@ -5,8 +5,7 @@ import { CharCounter } from './CharCounter';
 import { AutoResizingTextarea } from './AutoResizingTextarea';
 import { RefinePanel } from './RefinePanel';
 import { PostPreviewModal } from './PostPreviewModal';
-import { CopyIcon, CrownIcon, MagicWandIcon, RotateCcwIcon, ExternalLinkIcon, EyeIcon, SparklesIcon } from '../../Icons';
-
+import { CopyIcon, CrownIcon, MagicWandIcon, RotateCcwIcon, ExternalLinkIcon, EyeIcon, SparklesIcon, LineIcon } from '../../Icons';
 interface PostResultTabsProps {
     results: GeneratedResult[];
     activeTab: number;
@@ -26,6 +25,11 @@ interface PostResultTabsProps {
     isRefining: boolean;
     includeFooter: boolean;
     onIncludeFooterChange: (val: boolean) => void;
+    presetId?: string;
+    favorites: Set<string>;
+    onToggleFavorite: (text: string, platform: Platform, presetId: string | null, replaceId?: string, source?: 'generated' | 'manual') => Promise<void>;
+    onAutoFormat: (gIdx: number, iIdx: number) => void;
+    isAutoFormatting: { [key: string]: boolean };
 }
 
 export const PostResultTabs: React.FC<PostResultTabsProps> = ({
@@ -46,28 +50,33 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
     onPerformRefine,
     isRefining,
     includeFooter,
-    onIncludeFooterChange
+    onIncludeFooterChange,
+    presetId,
+    favorites,
+    onToggleFavorite,
+    onAutoFormat,
+    isAutoFormatting,
 }) => {
-    const [previewState, setPreviewState] = React.useState<{ isOpen: boolean, platform: Platform, text: string } | null>(null);
+    const [previewState, setPreviewState] = React.useState<{ isOpen: boolean, platform: Platform, text: string, gIdx: number, iIdx: number } | null>(null);
 
     const getPlatformTheme = (platform: Platform) => {
         switch (platform) {
             case Platform.X:
                 return {
-                    icon: <div className="w-10 h-10 bg-slate-950 rounded-full flex items-center justify-center text-white text-xl font-black shadow-lg">𝕏</div>,
-                    label: 'X (Twitter)',
-                    actionColor: "bg-slate-950 hover:bg-black active:scale-[0.98]",
+                    icon: <div className="w-10 h-10 bg-black rounded-xl flex items-center justify-center text-white text-xl font-black shadow-[4px_4px_0px_0px_#9B8FD4] border-2 border-white/20">𝕏</div>,
+                    label: 'X',
+                    actionColor: "bg-black text-white hover:bg-black/80 active:scale-[0.98] shadow-[6px_6px_0px_0px_#9B8FD4] border-white/20",
                     actionLabel: "Xで投稿する",
-                    contentClasses: "text-[16px] text-slate-800 font-bold leading-relaxed tracking-tight",
+                    contentClasses: "text-[16px] text-black font-bold leading-relaxed tracking-tight",
                     wrapperClass: "max-w-[375px]",
-                    brandTextColor: "text-slate-950",
-                    brandBgColor: "bg-slate-950/5",
-                    brandBorderColor: "border-slate-950/10",
+                    brandTextColor: "text-black",
+                    brandBgColor: "bg-black/5",
+                    brandBorderColor: "border-white/10",
                 };
             case Platform.Instagram:
                 return {
                     icon: (
-                        <div className="w-10 h-10 bg-gradient-to-tr from-[#FFDC80] via-[#B8E600] to-[#BC1888] rounded-2xl flex items-center justify-center text-white shadow-lg">
+                        <div className="w-10 h-10 bg-[#E88BA3] rounded-2xl flex items-center justify-center text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] border-2 border-black">
                             <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M12 2c2.717 0 3.056.01 4.122.06 1.065.05 1.79.217 2.428.465.66.254 1.216.598 1.772 1.153a4.908 4.908 0 0 1 1.153 1.772c.247.637.415 1.363.465 2.428.047 1.066.06 1.405.06 4.122 0 2.717-.01 3.056-.06 4.122-.05 1.065-.218 1.79-.465 2.428a4.883 4.883 0 0 1-1.153 1.772 4.915 4.915 0 0 1-1.772 1.153c-.637.247-1.363.415-2.428.465-1.066.047-1.405.06-4.122.06-2.717 0-3.056-.01-4.122-.06-1.065-.05-1.79-.218-2.428-.465a4.89 4.89 0 0 1-1.772-1.153 4.904 4.904 0 0 1-1.153-1.772c-.248-.637-.415-1.363-.465-2.428C2.013 15.056 2 14.717 2 12c0-2.717.01-3.056.06-4.122.05-1.066.217-1.79.465-2.428a4.88 4.88 0 0 1 1.153-1.772A4.897 4.897 0 0 1 5.45 2.525c.638-.248 1.362-.415 2.428-.465C8.944 2.013 9.283 2 12 2zm0 5a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm6.5-.25a1.25 1.25 0 1 0-2.5 0 1.25 1.25 0 0 0 2.5 0zM12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6z" />
                             </svg>
@@ -78,51 +87,67 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                         <button
                             key="inst-toggle"
                             onClick={() => onIncludeFooterChange(!includeFooter)}
-                            className={`glass-button flex items-center gap-3 px-4 py-2 rounded-full transition-all text-[11px] font-black border ${includeFooter
-                                ? 'bg-accent/20 text-accent border-accent/30'
-                                : 'bg-white/5 text-slate-400 border-white/10'
+                            className={`flex items-center gap-3 px-4 py-2 rounded-xl transition-all text-[11px] font-black border-2 ${includeFooter
+                                ? 'bg-[#9B8FD4] text-black border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]'
+                                : 'bg-black/5 text-black/40 border-black/10'
                                 }`}
                         >
-                            <span className={`w-2.5 h-2.5 rounded-full transition-colors ${includeFooter ? 'bg-accent animate-pulse' : 'bg-slate-500'}`} />
-                            <span className="tracking-widest uppercase">Show Shop Info</span>
+                            <span className={`w-2 h-2 rounded-full transition-colors ${includeFooter ? 'bg-black' : 'bg-black/20'}`} />
+                            <span className="tracking-widest uppercase">店舗情報を表示</span>
                         </button>
                     ),
-                    actionColor: "bg-[#E1306C] hover:bg-[#c21d56] active:scale-[0.98]",
+                    actionColor: "bg-[#E88BA3] hover:bg-[#E88BA3]/90 active:scale-[0.98] text-black border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]",
                     actionLabel: "Instagramを起動",
-                    contentClasses: "text-[15px] text-slate-800 font-bold leading-relaxed tracking-tight",
+                    contentClasses: "text-[15px] text-black font-bold leading-relaxed tracking-tight",
                     wrapperClass: "max-w-[340px]",
-                    brandTextColor: "text-brand-instagram",
-                    brandBgColor: "bg-brand-instagram/5",
-                    brandBorderColor: "border-brand-instagram/10",
+                    brandTextColor: "text-[#E88BA3]",
+                    brandBgColor: "bg-[#E88BA3]/5",
+                    brandBorderColor: "border-[#E88BA3]/10",
                 };
             case Platform.GoogleMaps:
                 return {
                     icon: (
-                        <div className="w-10 h-10 bg-brand-green rounded-2xl flex items-center justify-center text-white shadow-lg">
+                        <div className="w-10 h-10 bg-[#4DB39A] rounded-2xl flex items-center justify-center text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] border-2 border-black">
                             <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
                             </svg>
                         </div>
                     ),
                     label: 'Google Maps',
-                    actionColor: "bg-brand-green hover:bg-[#2d9147] active:scale-[0.98] text-white",
+                    actionColor: "bg-[#4DB39A] hover:bg-[#4DB39A]/90 active:scale-[0.98] text-black border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]",
                     actionLabel: "Googleマップで返信する",
-                    contentClasses: "text-[15px] text-slate-800 font-bold leading-relaxed tracking-tight",
+                    contentClasses: "text-[15px] text-black font-bold leading-relaxed tracking-tight",
                     wrapperClass: "max-w-[325px]",
-                    brandTextColor: "text-brand-green",
-                    brandBgColor: "bg-brand-green/5",
-                    brandBorderColor: "border-brand-green/10",
+                    brandTextColor: "text-[#4DB39A]",
+                    brandBgColor: "bg-[#4DB39A]/5",
+                    brandBorderColor: "border-[#4DB39A]/10",
+                };
+            case Platform.Line:
+                return {
+                    icon: (
+                        <div className="w-10 h-10 bg-[#06C755] rounded-2xl flex items-center justify-center text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] border-2 border-black">
+                            <LineIcon className="w-6 h-6" />
+                        </div>
+                    ),
+                    label: 'LINE',
+                    actionColor: "bg-[#06C755] hover:bg-[#06C755]/90 active:scale-[0.98] text-white border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]",
+                    actionLabel: "LINEで送る",
+                    contentClasses: "text-[15px] text-black font-bold leading-relaxed tracking-tight",
+                    wrapperClass: "max-w-[400px]",
+                    brandTextColor: "text-[#06C755]",
+                    brandBgColor: "bg-[#06C755]/5",
+                    brandBorderColor: "border-[#06C755]/10",
                 };
             default:
                 return {
                     icon: null,
                     label: platform,
-                    actionColor: 'bg-primary',
+                    actionColor: 'bg-black text-white hover:bg-black/80',
                     actionLabel: '投稿する',
-                    contentClasses: "text-base text-slate-800 font-black",
-                    brandTextColor: "text-primary",
-                    brandBgColor: "bg-primary/5",
-                    brandBorderColor: "border-primary/10",
+                    contentClasses: "text-base text-black font-black",
+                    brandTextColor: "text-black",
+                    brandBgColor: "bg-black/5",
+                    brandBorderColor: "border-black/10",
                 };
         }
     };
@@ -149,6 +174,8 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                         <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
                     </svg>
                 );
+            case Platform.Line:
+                return <LineIcon className={`${iconClass} text-[#06C755]`} />;
             default:
                 return null;
         }
@@ -159,11 +186,11 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
             <div className={`space-y-8 animate-in fade-in duration-700 ${results.length === 0 ? 'hidden md:block' : ''}`}>
 
                 {/* Main Results Container - Tabs Integrated Inside */}
-                <div className="glass-panel text-primary rounded-[48px] shadow-2xl shadow-indigo-900/10 flex flex-col min-h-[600px] overflow-hidden group/main hover:border-white/60 transition-all duration-500">
+                <div className="section-card text-primary rounded-[48px] flex flex-col min-h-[600px] overflow-hidden group/main transition-all duration-500">
 
                     {/* Integrated Tab Navigation Header */}
                     {results.length > 0 && (
-                        <div className="flex items-center w-full border-b border-white/20">
+                        <div className="flex items-center w-full border-b-[2px] border-black">
                             {results.map((res, idx) => {
                                 const isSelected = activeTab === idx;
                                 const theme = getPlatformTheme(res.platform); // Get theme for the current platform
@@ -171,15 +198,15 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                     <div
                                         key={res.platform}
                                         onClick={() => onTabChange(idx)}
-                                        className={`flex-1 py-4 flex items-center justify-center gap-3 cursor-pointer transition-all duration-300 border-b-2 hover:bg-white/5
+                                        className={`flex-1 py-4 flex items-center justify-center gap-1.5 md:gap-3 cursor-pointer transition-all duration-300 border-r-[2px] last:border-r-0 border-black px-2
                                             ${isSelected
-                                                ? `bg-white/10 ${theme.brandBorderColor?.replace('border', 'border-b') || 'border-primary'}`
-                                                : 'border-transparent'
+                                                ? `bg-black/5`
+                                                : 'bg-white hover:bg-black/5'
                                             }`}
                                     >
                                         {getTabIcon(res.platform, isSelected)}
-                                        <span className={`text-[11px] font-black tracking-[0.2em] uppercase transition-colors ${isSelected ? (theme.brandTextColor || 'text-primary') : 'text-slate-400'}`}>
-                                            {res.platform === Platform.X ? 'X (Twitter)' : res.platform}
+                                        <span className={`text-[10px] md:text-[11px] font-black tracking-[0.1em] md:tracking-[0.2em] uppercase transition-colors truncate ${isSelected ? 'text-black' : 'text-black/30'}`}>
+                                            {theme.label}
                                         </span>
                                     </div>
                                 );
@@ -188,19 +215,19 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                     )}
 
                     {/* Results Content Area */}
-                    <div className="flex-1 overflow-y-auto no-scrollbar">
+                    <div className="flex-1">
                         {results.length === 0 ? (
                             // Placeholder when no results
                             <div className="p-12 h-full flex flex-col items-center justify-center text-center space-y-8 animate-in fade-in duration-1000">
-                                <h2 className="text-3xl font-black text-primary uppercase tracking-[0.25em] text-center">プレビュー (Live Preview)</h2>
+                                <h2 className="text-3xl font-black text-black uppercase tracking-[0.25em] text-center">プレビュー (ライブプレビュー)</h2>
 
                                 <div className="space-y-6 max-w-sm">
-                                    <div className="w-24 h-24 rounded-[32px] bg-slate-100 border-2 border-slate-200 flex items-center justify-center text-slate-300 mx-auto">
+                                    <div className="w-24 h-24 rounded-[32px] bg-black/5 border-[3px] border-black flex items-center justify-center text-black/20 mx-auto">
                                         <SparklesIcon className="w-12 h-12" />
                                     </div>
-                                    <h3 className="text-xl font-black text-primary uppercase tracking-widest">生成待機中 (Awaiting Input)</h3>
-                                    <p className="text-slate-400 text-sm font-bold leading-relaxed">
-                                        左側のフォームに投稿のアイデアを入力して、<br />プロフェッショナルな投稿を瞬時に生成しましょう。
+                                    <h3 className="text-xl font-black text-black uppercase tracking-widest">入力待ち</h3>
+                                    <p className="text-black/40 text-sm font-bold leading-relaxed">
+                                        左側のフォームに内容やアイデアを入力して、<br />プロフェッショナルな投稿を瞬時に生成しましょう。
                                     </p>
                                 </div>
                             </div>
@@ -209,82 +236,109 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                 const theme = getPlatformTheme(res.platform);
                                 return (
                                     <div key={res.platform} className={activeTab === gIdx ? 'block animate-in fade-in duration-500' : 'hidden'}>
-                                        <div className={`divide-y-2 ${theme.brandBorderColor || 'divide-white/10'}`}>
+                                        <div className={`divide-y-[2px] ${theme.brandBorderColor?.replace('border', 'divide') || 'divide-black/10'}`}>
                                             {res.data.map((text, iIdx) => (
-                                                <div key={iIdx} className="py-6 px-6 flex flex-col relative text-left">
+                                                <div key={iIdx} className="py-10 px-8 lg:px-12 flex flex-col relative text-left bg-white transition-colors duration-500">
 
-                                                    {/* Text Area */}
-                                                    <div className={`mb-4 ${theme.wrapperClass || ''}`}>
-                                                        <AutoResizingTextarea
-                                                            value={text}
-                                                            onChange={(e) => onManualEdit(gIdx, iIdx, e.target.value)}
-                                                            className={`w-full bg-transparent focus:outline-none resize-none placeholder:text-primary/20 whitespace-pre-wrap ${theme.contentClasses || 'text-base text-primary font-bold'}`}
-                                                            trigger={activeTab}
+                                                    {/* Text Area Content Wrapper */}
+                                                    <div className={`mb-2 relative group/textarea ${theme.wrapperClass || ''}`}>
+                                                        {text ? (
+                                                            <AutoResizingTextarea
+                                                                value={text}
+                                                                onChange={(e) => onManualEdit(gIdx, iIdx, e.target.value)}
+                                                                className={`w-full bg-transparent focus:outline-none resize-none placeholder:text-black/10 whitespace-pre-wrap overflow-hidden ${theme.contentClasses || 'text-base text-black font-bold'}`}
+                                                                trigger={activeTab}
+                                                            />
+                                                        ) : (
+                                                            <div className="py-4 text-black/20 italic">コンテンツがありません</div>
+                                                        )}
+                                                    </div>
+
+                                                    {/* Character Count (One level down, Right Aligned) */}
+                                                    <div className="flex justify-end mb-6 opacity-40">
+                                                        <CharCounter
+                                                            platform={res.platform}
+                                                            text={text}
+                                                            config={{ platform: res.platform } as any}
+                                                            minimal={true}
+                                                            footerText={storeProfile.instagramFooter}
                                                         />
                                                     </div>
 
-                                                    {/* Meta Row: Toggle & Char Count */}
-                                                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4 pt-4 border-t-2 border-white/10">
-                                                        <div className="flex-1">
-                                                            {theme.extra && theme.extra(gIdx, iIdx)}
-                                                        </div>
-                                                        <div className="bg-slate-50 px-5 py-2 rounded-full border border-slate-100">
-                                                            <CharCounter
-                                                                platform={res.platform}
-                                                                text={text}
-                                                                config={{ platform: res.platform } as any}
-                                                            />
-                                                        </div>
-                                                    </div>
+                                                    {/* Unified Action Layout */}
+                                                    <div className="mt-auto pt-8 border-t-[2px] border-black/5">
+                                                        {/* Utility Row: Settings & Tools */}
+                                                        <div className="flex items-center justify-between mb-6 gap-3">
+                                                            {/* Left: Platform Specifics */}
+                                                            <div className="flex items-center gap-2">
+                                                                {theme.extra && theme.extra(gIdx, iIdx)}
+                                                            </div>
 
-                                                    {/* Actions Grid */}
-                                                    <div className="flex flex-col gap-4">
-                                                        <button
-                                                            onClick={() => setPreviewState({ isOpen: true, platform: res.platform, text })}
-                                                            className="glass-button flex items-center justify-center gap-3 py-5 rounded-[24px] bg-white/10 text-xs font-black text-slate-600 border border-white/20 hover:bg-white/20 transition-all uppercase tracking-widest shadow-sm"
-                                                        >
-                                                            <EyeIcon className="w-5 h-5" />
-                                                            <span>Preview</span>
-                                                        </button>
+                                                            {/* Right: Inspection & Favoriting */}
+                                                            <div className="flex items-center gap-2">
+                                                                <FavoriteButton
+                                                                    platform={res.platform}
+                                                                    text={text}
+                                                                    presetId={presetId || null}
+                                                                    isTrained={favorites.has(text.trim())}
+                                                                    onToggle={onToggleFavorite}
+                                                                />
+                                                                {/* Refined Secondary Preview Button */}
+                                                                <button
+                                                                    onClick={() => setPreviewState({ isOpen: true, platform: res.platform, text, gIdx, iIdx })}
+                                                                    className="flex items-center justify-center w-11 h-11 rounded-xl bg-black/5 text-black/40 border-2 border-black/5 hover:border-black/20 hover:text-black transition-all"
+                                                                    title="プレビュー"
+                                                                >
+                                                                    <EyeIcon className="w-5 h-5" />
+                                                                </button>
+                                                            </div>
+                                                        </div>
 
-                                                        <div className="grid grid-cols-2 gap-3">
-                                                            <button
-                                                                onClick={() => onRegenerateSingle(res.platform)}
-                                                                className="glass-button flex items-center justify-center gap-3 py-5 rounded-[24px] bg-slate-50 text-xs font-black text-slate-500 hover:text-primary hover:bg-slate-100 transition-all uppercase tracking-widest border border-slate-100"
-                                                            >
-                                                                <RotateCcwIcon className="w-5 h-5" />
-                                                                <span>Retry</span>
-                                                            </button>
+                                                        {/* Primary Tier Actions */}
+                                                        <div className="flex flex-col gap-4">
+                                                            {/* Prominent Refine Button */}
                                                             <button
                                                                 onClick={() => onRefineToggle(gIdx, iIdx)}
-                                                                className={`glass-button flex items-center justify-center gap-3 py-5 rounded-[24px] text-xs font-black transition-all uppercase tracking-widest ${refiningKey === `${gIdx}-${iIdx}` ? 'bg-primary border-primary text-white shadow-xl' : 'bg-slate-50 text-accent hover:bg-slate-100 border border-slate-100'}`}
+                                                                className={`flex items-center justify-center gap-3 py-5 rounded-[24px] text-[12px] font-black transition-all uppercase tracking-[0.25em] border-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] ${refiningKey === `${gIdx}-${iIdx}` ? 'bg-[#9B8FD4] border-black text-black' : 'bg-white text-black/40 border-black/10 hover:border-black hover:text-black'}`}
                                                             >
                                                                 <MagicWandIcon className="w-5 h-5" />
-                                                                <span>Refine</span>
+                                                                <span>AIで内容を微調整する</span>
+                                                            </button>
+
+                                                            <button
+                                                                onClick={() => {
+                                                                    if (res.platform === Platform.Line) {
+                                                                        const encodedText = encodeURIComponent(text);
+                                                                        // Fallback: Copy to clipboard just in case app doesn't pre-fill
+                                                                        navigator.clipboard.writeText(text);
+                                                                        window.location.href = `https://line.me/R/share?text=${encodedText}`;
+                                                                    } else {
+                                                                        onShare(res.platform, text);
+                                                                    }
+                                                                }}
+                                                                className={`flex items-center justify-center gap-4 py-6 md:py-8 rounded-[32px] font-black text-lg transition-all uppercase tracking-[0.3em] group border-[3px] border-black mt-2 ${theme.actionColor}`}
+                                                            >
+                                                                <span>{theme.actionLabel}</span>
+                                                                <ExternalLinkIcon className="w-6 h-6 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                                                             </button>
                                                         </div>
-
-                                                        <button
-                                                            onClick={() => onShare(res.platform, text)}
-                                                            className={`flex items-center justify-center gap-4 py-6 rounded-[28px] text-white font-black text-lg transition-all shadow-2xl shadow-slate-200 uppercase tracking-[0.2em] group ${theme.actionColor}`}
-                                                        >
-                                                            <span>{theme.actionLabel}</span>
-                                                            <ExternalLinkIcon className="w-6 h-6 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                                                        </button>
                                                     </div>
 
                                                     {/* Refinement Overlay (per variant) */}
                                                     {refiningKey === `${gIdx}-${iIdx}` && (
-                                                        <div className="absolute inset-0 bg-primary/95 backdrop-blur-xl z-20 flex flex-col p-12 animate-in fade-in zoom-in duration-300 rounded-[48px]">
-                                                            <div className="flex-1 flex flex-col">
-                                                                <div className="mb-10 text-center">
-                                                                    <div className="w-16 h-16 bg-accent rounded-[18px] flex items-center justify-center shadow-lg mx-auto mb-6">
-                                                                        <MagicWandIcon className="w-8 h-8 text-white" />
+                                                        <div className="absolute inset-0 bg-white/95 backdrop-blur-md z-20 flex flex-col p-12 animate-in fade-in zoom-in duration-300 rounded-[45px] border-2 border-black/5">
+                                                            <div className="flex-1 flex flex-col items-center justify-center max-w-lg mx-auto w-full">
+                                                                <div className="mb-10 text-center space-y-4">
+                                                                    <div className="w-20 h-20 bg-white rounded-[24px] flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] border-2 border-black mx-auto">
+                                                                        <MagicWandIcon className="w-10 h-10 text-black" />
                                                                     </div>
-                                                                    <h4 className="text-[10px] font-black text-pink-400 uppercase tracking-[0.4em] mb-2">Advanced Refinement</h4>
-                                                                    <p className="text-3xl font-black text-white leading-tight">What would you like <br />to change?</p>
+                                                                    <div>
+                                                                        <h4 className="text-[11px] font-black text-black/40 uppercase tracking-[0.3em] mb-2">AI個別微調整</h4>
+                                                                        <p className="text-2xl font-black text-black leading-tight">修正内容を教えてください</p>
+                                                                    </div>
                                                                 </div>
-                                                                <div className="flex-1 bg-white/5 rounded-[32px] p-2 border border-white/10">
+
+                                                                <div className="w-full">
                                                                     <RefinePanel
                                                                         refineText={refineText}
                                                                         onRefineTextChange={onRefineTextChange}
@@ -305,19 +359,69 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                         )}
                     </div>
                 </div>
-
-                {/* Preview Modal */}
-                {previewState && (
-                    <PostPreviewModal
-                        isOpen={previewState.isOpen}
-                        onClose={() => setPreviewState(null)}
-                        platform={previewState.platform}
-                        text={previewState.text}
-                        storeProfile={storeProfile}
-                    />
-                )}
             </div>
+
+            {/* Preview Modal */}
+            {previewState && (
+                <PostPreviewModal
+                    isOpen={previewState.isOpen}
+                    onClose={() => setPreviewState(null)}
+                    platform={previewState.platform}
+                    text={previewState.text}
+                    storeProfile={storeProfile}
+                    onChange={(newText) => {
+                        // Update the local preview state so the modal stays in sync
+                        setPreviewState(prev => prev ? { ...prev, text: newText } : null);
+
+                        // Use the stored indices for reliable updates
+                        onManualEdit(previewState.gIdx, previewState.iIdx, newText);
+                    }}
+                />
+            )}
         </>
+    );
+};
+
+const FavoriteButton = ({
+    platform, text, presetId, isTrained, onToggle
+}: {
+    platform: Platform, text: string, presetId: string | null, isTrained: boolean, onToggle: (text: string, platform: Platform, presetId: string | null, replaceId?: string, source?: 'generated' | 'manual') => Promise<void>
+}) => {
+    const [isLoading, setIsLoading] = React.useState(false);
+
+    const handleToggle = async () => {
+        if (isLoading) return;
+
+        if (presetId === undefined) {
+            alert("プリセットが取得できていないため保存できません");
+            return;
+        }
+
+        setIsLoading(true);
+        try {
+            await onToggle(text, platform, presetId, undefined, 'generated');
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return (
+        <button
+            onClick={handleToggle}
+            className={`group flex items-center gap-2 px-3 py-2 rounded-xl transition-all border-2 shadow-sm ${isTrained
+                ? 'bg-indigo-50 text-indigo-600 border-indigo-200 shadow-indigo-100'
+                : 'bg-black/5 text-black/40 border-black/5 hover:border-black/20 hover:text-black'
+                }`}
+            title={isTrained ? "学習を解除" : "AIに文体を学習させる"}
+            disabled={isLoading}
+        >
+            <MagicWandIcon
+                className={`w-4 h-4 transition-all duration-300 ${isTrained ? 'text-black scale-110' : 'text-black/20 group-hover:text-black'}`}
+            />
+            {isTrained && <span className="text-[10px] font-black animate-in fade-in slide-in-from-left-2 tracking-widest uppercase">学習済み</span>}
+        </button>
     );
 };
 

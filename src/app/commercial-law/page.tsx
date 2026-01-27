@@ -12,7 +12,7 @@ export default function CommercialLawPage() {
                                 販売業者
                             </th>
                             <td className="px-6 py-4 text-sm text-gray-900">
-                                MisePo（運営：[運営会社名を記載]）
+                                Misepo運営事務局
                             </td>
                         </tr>
                         <tr>
@@ -20,7 +20,7 @@ export default function CommercialLawPage() {
                                 運営責任者
                             </th>
                             <td className="px-6 py-4 text-sm text-gray-900">
-                                [運営責任者名を記載]
+                                佐田真教
                             </td>
                         </tr>
                         <tr>
@@ -45,7 +45,7 @@ export default function CommercialLawPage() {
                                 メールアドレス
                             </th>
                             <td className="px-6 py-4 text-sm text-gray-900">
-                                support@misepo.com
+                                support@misepo.jp
                             </td>
                         </tr>
                         <tr>
@@ -53,7 +53,7 @@ export default function CommercialLawPage() {
                                 販売URL
                             </th>
                             <td className="px-6 py-4 text-sm text-gray-900">
-                                https://misepo.com
+                                https://misepo.jp
                             </td>
                         </tr>
                         <tr>
@@ -61,7 +61,8 @@ export default function CommercialLawPage() {
                                 商品代金
                             </th>
                             <td className="px-6 py-4 text-sm text-gray-900">
-                                Proプラン：月額 1,480円（税込）
+                                Proプラン：月額 2,980円（税込）
+                                （先着100名様まではキャンペーン価格 1,980円）
                             </td>
                         </tr>
                         <tr>

@@ -100,11 +100,35 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: false, error: "already_active" }, { status: 400 });
     }
 
-    // ---- pick price
-    const priceId =
-      plan === "yearly"
-        ? process.env.STRIPE_PRICE_YEARLY_ID!
-        : process.env.STRIPE_PRICE_MONTHLY_ID!;
+    // ---- pick price (monthly tier logic: first 100 users get Early Bird price)
+    let priceId = plan === "yearly"
+      ? process.env.STRIPE_PRICE_YEARLY_ID!
+      : process.env.STRIPE_PRICE_MONTHLY_ID!;
+
+    if (plan === "monthly") {
+      // Count subscribers who are currently on a paid plan (including trials)
+      const { count, error: countErr } = await supabaseAdmin
+        .from("entitlements")
+        .select("*", { count: "exact", head: true })
+        .not("plan", "eq", "free")
+        .in("status", ["active", "trialing"]);
+
+      if (countErr) {
+        console.error("Critical: subscriber count failed", countErr);
+        // Fallback to standard price if count fails, to avoid blocking sales
+      } else {
+        const subCount = count ?? 0;
+        const EARLY_BIRD_LIMIT = 100;
+        
+        if (subCount < EARLY_BIRD_LIMIT) {
+          // Use Early Bird ID if available
+          priceId = process.env.STRIPE_PRICE_MONTHLY_EARLY_BIRD_ID || priceId;
+        } else {
+          // Use Standard ID if available
+          priceId = process.env.STRIPE_PRICE_MONTHLY_STANDARD_ID || priceId;
+        }
+      }
+    }
 
     // ---- ensure customer
     let customerId = entitlement?.stripe_customer_id ?? null;
@@ -165,6 +189,19 @@ export async function POST(req: Request) {
       success_url: successUrl,
       cancel_url: cancelUrl,
       client_reference_id: userId,
+      custom_text: {
+        submit: {
+          message: `${
+            priceId === process.env.STRIPE_PRICE_MONTHLY_EARLY_BIRD_ID 
+              ? "先着100名様限定の「早期割引プラン」が適用されています。" 
+              : ""
+          }${
+            trialDaysToApply > 0 
+              ? `\n本日より${trialDaysToApply}日間は無料でご利用いただけます。` 
+              : ""
+          }`.trim() || undefined
+        }
+      },
 
       // 推奨：支払い方法は最初に回収（payment_method_collection は指定しない）
       // payment_method_collection: "if_required", // ←カードなしトライアルにしたい時だけ

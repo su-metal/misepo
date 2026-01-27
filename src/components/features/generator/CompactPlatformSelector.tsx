@@ -31,15 +31,15 @@ export const CompactPlatformSelector: React.FC<CompactPlatformSelectorProps> = (
                             className={`
                                 flex-1 flex items-center justify-center gap-2 px-3 py-3 rounded-xl transition-all duration-300
                                 ${isSelected
-                                    ? 'bg-black text-white shadow-lg'
+                                    ? (p === Platform.X ? 'bg-black text-white shadow-[3px_3px_0px_0px_#9B8FD4] -translate-y-[1px]' : 'bg-black text-white shadow-lg')
                                     : 'text-stone-400 hover:text-stone-600'}
                             `}
                         >
-                            <div className={`text-lg ${isSelected ? 'text-white' : 'text-stone-400'}`}>
+                            <div className={`text-lg transition-all duration-300 ${isSelected ? 'text-white' : 'text-stone-400 grayscale opacity-60'}`}>
                                 {getPlatformIcon(p)}
                             </div>
                             <span className={`text-[11px] font-bold md:inline ${isSelected ? 'text-white' : 'text-stone-500'} ${p === Platform.GoogleMaps ? 'hidden sm:inline' : ''}`}>
-                                {p === Platform.X ? 'X (Twitter)' : p === Platform.Instagram ? 'Instagram' : 'Google Maps'}
+                                {p === Platform.X ? 'X' : p === Platform.Instagram ? 'Instagram' : p === Platform.Line ? 'LINE' : 'Google Maps'}
                             </span>
                         </button>
                     );
