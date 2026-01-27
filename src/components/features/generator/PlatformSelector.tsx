@@ -1,6 +1,7 @@
 import { Platform, Preset } from '../../../types';
 import { getPlatformIcon, clampPresetName } from './utils';
 import { SparklesIcon, BookmarkIcon, MoreHorizontalIcon } from '../../Icons';
+import { IS_HOSPITALITY_MODE } from '../../../constants';
 
 interface PlatformSelectorProps {
     platforms: Platform[];
@@ -34,7 +35,7 @@ export const PlatformSelector: React.FC<PlatformSelectorProps> = ({
             {/* Header: Platform Choice */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h3 className="text-[10px] font-black text-[#4DB39A] uppercase tracking-[0.3em] mb-1">Target Engine</h3>
+                    <h3 className={`text-[10px] font-black ${IS_HOSPITALITY_MODE ? 'text-[#D4AF37]' : 'text-[#4DB39A]'} uppercase tracking-[0.3em] mb-1`}>Target Engine</h3>
                     <p className="text-xs font-black text-stone-400">プラットフォーム選択</p>
                 </div>
                 <button
@@ -42,11 +43,11 @@ export const PlatformSelector: React.FC<PlatformSelectorProps> = ({
                     className={`
                         group flex items-center gap-2 px-4 py-2 rounded-xl border-[3px] text-[10px] font-black tracking-widest transition-all
                         ${isMultiGen
-                            ? 'bg-[#4DB39A] border-black text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]'
+                            ? `${IS_HOSPITALITY_MODE ? 'bg-[#2C3E50] text-white' : 'bg-[#4DB39A] text-black'} border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]`
                             : 'bg-white border-black/20 text-gray-500 hover:border-black/40 hover:text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,0.1)]'}
                     `}
                 >
-                    <SparklesIcon className={`w-3.5 h-3.5 ${isMultiGen ? "text-black" : "text-[#4DB39A]"}`} />
+                    <SparklesIcon className={`w-3.5 h-3.5 ${isMultiGen ? (IS_HOSPITALITY_MODE ? "text-white" : "text-black") : (IS_HOSPITALITY_MODE ? "text-[#D4AF37]" : "text-[#4DB39A]")}`} />
                     <span>BATCH MODE</span>
                     <div className={`
                         w-6 h-3.5 rounded-full relative transition-colors duration-300
@@ -71,7 +72,7 @@ export const PlatformSelector: React.FC<PlatformSelectorProps> = ({
                             case Platform.X: return 'bg-black text-white';
                             case Platform.Instagram: return 'bg-[#E88BA3] text-black';
                             case Platform.Line: return 'bg-[#06C755] text-white';
-                            case Platform.GoogleMaps: return 'bg-[#4DB39A] text-black';
+                            case Platform.GoogleMaps: return IS_HOSPITALITY_MODE ? 'bg-[#2C3E50] text-white' : 'bg-[#4DB39A] text-black';
                             default: return 'bg-white text-black';
                         }
                     };
@@ -101,11 +102,11 @@ export const PlatformSelector: React.FC<PlatformSelectorProps> = ({
 
                             {isMultiGen && isSelected && (
                                 <div className="absolute top-3 right-3 w-5 h-5 bg-black border-[2px] border-white rounded-full flex items-center justify-center shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] animate-in zoom-in duration-300">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" className="text-[#4DB39A]"><polyline points="20 6 9 17 4 12" /></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" className={IS_HOSPITALITY_MODE ? 'text-[#D4AF37]' : 'text-[#4DB39A]'}><polyline points="20 6 9 17 4 12" /></svg>
                                 </div>
                             )}
                             {isSelected && !isMultiGen && (
-                                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-1 bg-[#4DB39A] rounded-full blur-[2px]"></div>
+                                <div className={`absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-1 ${IS_HOSPITALITY_MODE ? 'bg-[#D4AF37]' : 'bg-[#4DB39A]'} rounded-full blur-[2px]`}></div>
                             )}
                         </button>
                     );
@@ -139,7 +140,7 @@ export const PlatformSelector: React.FC<PlatformSelectorProps> = ({
                                     className={`
                                         group relative overflow-hidden w-full px-2 py-3 rounded-xl border-[2px] text-xs font-black tracking-widest transition-all duration-300
                                         ${isActive
-                                            ? 'bg-[#4DB39A] text-black border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]'
+                                            ? `${IS_HOSPITALITY_MODE ? 'bg-[#2C3E50] text-white' : 'bg-[#4DB39A] text-black'} border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]`
                                             : 'bg-white text-black/40 border-black/10 hover:border-black/30 hover:text-black shadow-[1px_1px_0px_0px_rgba(0,0,0,0.1)]'}
                                     `}
                                 >

@@ -9,6 +9,7 @@
   --rose: #E88BA3;
   --lavender: #9B8FD4;
   --bg-beige: #f9f5f2;
+  --bg-ivory: #FDFCFB; /* Japanese paper white */
 
   --primary: #000000;     /* Pure Black for Text and Borders */
   --accent: var(--teal);
@@ -37,6 +38,14 @@ body {
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--glass-border);
   box-shadow: var(--glass-shadow);
+}
+
+.font-serif-hospitality {
+  font-family: 'Noto Serif JP', serif;
+}
+
+.shadow-premium {
+  box-shadow: 0 32px 64px -16px rgba(0, 0, 0, 0.08);
 }
 
 /* Pop Section Card - Neo Brutalism Style */

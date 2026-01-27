@@ -2,6 +2,7 @@ import React from 'react';
 import { GeneratedPost, Platform, GeneratedResult, StoreProfile, TrainingItem, Preset } from '../types';
 import { CloseIcon, XIcon, InstagramIcon, GoogleMapsIcon, LineIcon, LineCircleIcon, LockIcon, TrashIcon, HistoryIcon, HelpIcon, LogOutIcon, ChevronDownIcon, PinIcon, MagicWandIcon, MessageCircleIcon } from './Icons';
 import { Feedback } from './Feedback';
+import { UI, IS_HOSPITALITY_MODE, TOKENS } from '../constants';
 
 interface HistorySidebarProps {
   history: GeneratedPost[];
@@ -149,15 +150,15 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
       )}
 
       <div
-        className={`fixed top-0 left-0 h-full bg-[var(--bg-beige)] border-r-[3px] border-black shadow-[8px_0_0_0_rgba(0,0,0,0.1)] w-[85vw] sm:w-[400px] md:w-[480px] transform transition-all duration-500 cubic-bezier(0.2, 0.8, 0.2, 1) z-[9999] flex flex-col overflow-hidden ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}
+        className={`fixed top-0 left-0 h-full ${IS_HOSPITALITY_MODE ? 'bg-[#F9FAFB] border-r border-slate-100 shadow-2xl' : 'bg-[var(--bg-beige)] border-r-[3px] border-black shadow-[8px_0_0_0_rgba(0,0,0,0.1)]'} w-[85vw] sm:w-[400px] md:w-[480px] transform transition-all duration-500 cubic-bezier(0.2, 0.8, 0.2, 1) z-[9999] flex flex-col overflow-hidden ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}
       >
         {/* Header: User Profile & Close */}
-        <div className="p-4 md:p-6 border-b-[3px] border-black relative z-10 bg-[var(--bg-beige)]">
+        <div className={`p-4 md:p-6 border-b-[3px] relative z-10 ${IS_HOSPITALITY_MODE ? 'bg-[#F9FAFB] border-slate-100' : 'bg-[var(--bg-beige)] border-black'}`}>
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-black text-black text-2xl tracking-tighter">MENU</h2>
             <button
               onClick={toggleOpen}
-              className="w-10 h-10 flex items-center justify-center rounded-xl bg-white border-2 border-black text-black hover:bg-[var(--rose)] transition-all active:translate-y-1 active:shadow-none shadow-[4px_4px_0_0_rgba(0,0,0,1)]"
+              className={`w-10 h-10 flex items-center justify-center rounded-xl transition-all ${IS_HOSPITALITY_MODE ? 'bg-white border border-slate-200 text-slate-400 hover:text-black hover:border-slate-400' : 'bg-white border-2 border-black text-black hover:bg-[var(--rose)] active:translate-y-1 active:shadow-none shadow-[4px_4px_0_0_rgba(0,0,0,1)]'}`}
               aria-label="Close menu"
             >
               <CloseIcon className="w-5 h-5" />
@@ -168,13 +169,13 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
             <div className="space-y-4">
               <button
                 onClick={() => { onOpenSettings?.(); toggleOpen(); }}
-                className="flex items-center gap-3 p-3 rounded-xl bg-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] w-full hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] active:translate-x-[0px] active:translate-y-[0px] active:shadow-[2px_2px_0_0_rgba(0,0,0,1)] transition-all text-left group"
+                className={`flex items-center gap-3 p-3 rounded-xl transition-all text-left group ${IS_HOSPITALITY_MODE ? 'bg-white border border-slate-100 shadow-lg shadow-slate-200/50 hover:border-indigo-500' : 'bg-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] w-full hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] active:translate-x-[0px] active:translate-y-[0px] active:shadow-[2px_2px_0_0_rgba(0,0,0,1)]'}`}
               >
-                <div className="w-10 h-10 rounded-lg bg-[var(--lavender)] border-2 border-black flex items-center justify-center text-black font-black text-lg shrink-0">
+                <div className={`w-10 h-10 rounded-lg flex items-center justify-center font-black text-lg shrink-0 ${IS_HOSPITALITY_MODE ? 'bg-indigo-50 text-indigo-600' : 'bg-[var(--lavender)] border-2 border-black text-black'}`}>
                   {(storeProfile?.name?.[0] || 'S').toUpperCase()}
                 </div>
                 <div className="min-w-0">
-                  <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-0">Store Profile</p>
+                  <p className={`text-[9px] font-black uppercase tracking-widest mb-0 ${IS_HOSPITALITY_MODE ? 'text-indigo-400' : 'text-slate-500'}`}>Store Profile</p>
                   <p className="text-sm font-black text-black tracking-tight truncate">{storeProfile?.name || 'User'}</p>
                 </div>
               </button>
@@ -203,7 +204,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
               <div className="flex justify-center">
                 <button
                   onClick={() => { onLogout?.(); toggleOpen(); }}
-                  className="flex items-center gap-2 px-6 py-2 rounded-xl text-slate-400 hover:text-black hover:bg-white border-2 border-transparent hover:border-black transition-all text-[9px] font-black tracking-widest uppercase hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)]"
+                  className={`flex items-center gap-2 px-6 py-2 rounded-xl transition-all text-[9px] font-black tracking-widest uppercase ${IS_HOSPITALITY_MODE ? 'text-slate-400 hover:text-rose-500 hover:bg-rose-50' : 'text-slate-400 hover:text-black hover:bg-white border-2 border-transparent hover:border-black hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)]'}`}
                 >
                   <LogOutIcon className="w-3 h-3" />
                   Sign Out
@@ -226,8 +227,8 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
         <div className="flex-1 overflow-y-auto overscroll-contain p-6 md:p-8 relative z-10 space-y-6 no-scrollbar bg-[var(--bg-beige)]">
           <div className="flex items-center justify-between px-1">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-white rounded-lg border-2 border-black shadow-[2px_2px_0_0_rgba(0,0,0,1)]">
-                <HistoryIcon className="w-4 h-4 text-black" />
+              <div className={`p-2 rounded-lg ${IS_HOSPITALITY_MODE ? 'bg-[#2C3E50] text-[#D4AF37]' : 'bg-white border-2 border-black shadow-[2px_2px_0_0_rgba(0,0,0,1)] text-black'}`}>
+                <HistoryIcon className="w-4 h-4" />
               </div>
               <div className="flex flex-col">
                 <span className="text-[10px] font-black text-black uppercase tracking-[0.3em]">{showTrainedOnly ? 'Collection' : 'History'}</span>
@@ -244,7 +245,11 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
           <div className="flex items-center gap-3">
             <button
               onClick={() => setShowTrainedOnly(!showTrainedOnly)}
-              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border-2 transition-all font-black text-[10px] uppercase tracking-widest ${showTrainedOnly ? 'bg-[var(--teal)] border-black text-black shadow-[4px_4px_0_0_rgba(0,0,0,1)]' : 'bg-white border-black text-slate-500 hover:bg-[var(--teal)] hover:text-black shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)]'}`}
+              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border-2 transition-all font-black text-[10px] uppercase tracking-widest
+                ${showTrainedOnly
+                  ? (IS_HOSPITALITY_MODE ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg' : 'bg-[var(--teal)] border-black text-black shadow-[4px_4px_0_0_rgba(0,0,0,1)]')
+                  : (IS_HOSPITALITY_MODE ? 'bg-white border-slate-200 text-slate-500 hover:border-slate-400' : 'bg-white border-black text-slate-500 hover:bg-[var(--teal)] hover:text-black shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)]')
+                }`}
             >
               <MagicWandIcon className={`w-4 h-4 ${showTrainedOnly ? 'text-black' : 'text-slate-400'}`} />
               <span>{showTrainedOnly ? '学習データ一覧' : '学習済みで絞り込む'}</span>
@@ -255,7 +260,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
             {isLoggedIn ? (
               displayHistory.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-20 text-center opacity-60">
-                  <div className="w-16 h-16 mb-4 rounded-full bg-white border-2 border-black flex items-center justify-center text-slate-300">
+                  <div className={`w-16 h-16 mb-4 rounded-full flex items-center justify-center ${IS_HOSPITALITY_MODE ? 'bg-slate-50 border border-slate-100' : 'bg-white border-2 border-black text-slate-300'}`}>
                     <HistoryIcon className="w-8 h-8" />
                   </div>
                   <p className="text-xs text-slate-400 font-bold tracking-widest uppercase">
@@ -280,15 +285,13 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                       <button
                         onClick={() => {
                           if (isTraining) {
-                            // Restore from training item
-                            // We need to call onSelect with a structure that mimics a history item effectively
                             onSelect(item);
                           } else {
                             onSelect(item);
                           }
                           toggleOpen();
                         }}
-                        className="w-full text-left p-5 rounded-xl bg-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] active:translate-x-[0px] active:translate-y-[0px] active:shadow-[2px_2px_0_0_rgba(0,0,0,1)] transition-all group-hover:bg-[var(--bg-beige)]"
+                        className={`w-full text-left p-5 rounded-xl border-2 transition-all group-hover:bg-[var(--bg-beige)] ${IS_HOSPITALITY_MODE ? 'bg-white border-slate-100 shadow-sm hover:border-[#D4AF37] hover:shadow-lg' : 'bg-white border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] active:translate-x-[0px] active:translate-y-[0px] active:shadow-[2px_2px_0_0_rgba(0,0,0,1)]'}`}
                       >
                         <div className="flex items-center gap-2 mb-3">
                           {item.config.platforms.map((p, pIdx) => (
@@ -394,7 +397,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
             <a href="/privacy" className="text-[10px] font-black text-slate-500 hover:text-black transition-colors uppercase tracking-widest">プライバシーポリシー</a>
             <a href="/commercial-law" className="text-[10px] font-black text-slate-500 hover:text-black transition-colors uppercase tracking-widest">特定商取引法</a>
           </div>
-          <p className="text-[9px] font-bold text-slate-500 text-center uppercase tracking-[0.2em] mt-2">© 2026 MisePo</p>
+          <p className="text-[9px] font-bold text-slate-500 text-center uppercase tracking-[0.2em] mt-2">© 2026 {UI.name}</p>
         </div>
       </div >
     </>

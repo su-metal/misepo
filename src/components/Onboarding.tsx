@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { StoreProfile } from '../types';
-import { INDUSTRIES } from '../constants';
+import { INDUSTRIES, UI, IS_HOSPITALITY_MODE, TOKENS } from '../constants';
 
 interface OnboardingProps {
   onSave: (profile: StoreProfile) => void;
@@ -89,35 +89,35 @@ const Onboarding: React.FC<OnboardingProps> = ({
   return (
 
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-0 sm:p-4 z-[100] backdrop-blur-sm animate-in fade-in duration-500">
-      <div className="bg-white rounded-none sm:rounded-[24px] border-[3px] border-black shadow-[8px_8px_0_0_rgba(0,0,0,1)] w-full max-w-lg md:max-w-6xl md:h-[90vh] h-full sm:max-h-[800px] flex flex-col md:flex-row overflow-y-auto md:overflow-hidden relative animate-in zoom-in-95 duration-500 mobile-scroll-container">
+      <div className={`bg-white rounded-none sm:rounded-[24px] ${IS_HOSPITALITY_MODE ? 'border border-slate-100 shadow-2xl overflow-hidden' : 'border-[3px] border-black shadow-[8px_8px_0_0_rgba(0,0,0,1)]'} w-full max-w-lg md:max-w-6xl md:h-[90vh] h-full sm:max-h-[800px] flex flex-col md:flex-row md:overflow-hidden relative animate-in zoom-in-95 duration-500 mobile-scroll-container`}>
 
         {/* LEFT PANEL */}
-        <div className="md:w-5/12 bg-[var(--bg-beige)] relative p-6 sm:p-8 md:p-12 flex flex-col justify-between shrink-0 border-b-[3px] md:border-b-0 md:border-r-[3px] border-black min-h-min md:h-full">
+        <div className={`md:w-5/12 ${IS_HOSPITALITY_MODE ? 'bg-[#F9FAFB]' : 'bg-[var(--bg-beige)]'} relative p-6 sm:p-8 md:p-12 flex flex-col justify-between shrink-0 border-b-[3px] md:border-b-0 md:border-r-[3px] ${IS_HOSPITALITY_MODE ? 'border-slate-100' : 'border-black'} min-h-min md:h-full`}>
 
           <div className="relative z-10 flex flex-col h-auto md:h-full">
             <div className="mb-6 md:mb-10 animate-in slide-in-from-top-4 duration-700">
               <div className="flex items-center gap-2 mb-2 md:mb-3">
                 <div className="w-2 h-2 rounded-full bg-black shadow-sm animate-pulse"></div>
-                <span className="text-[9px] md:text-[10px] font-black tracking-[0.3em] text-black uppercase">店舗専用アシスタント</span>
+                <span className="text-[9px] md:text-[10px] font-black tracking-[0.3em] text-black uppercase">{IS_HOSPITALITY_MODE ? '宿泊施設専用アシスタント' : '店舗専用アシスタント'}</span>
               </div>
               <h1 className="text-2xl md:text-4xl font-black tracking-tighter leading-none italic text-black">
-                Mise<span className="text-[var(--teal)]">Po</span>
+                {UI.name}
               </h1>
             </div>
 
             <div className="space-y-4 md:space-y-6 mb-6 md:mb-12 flex-1">
               <h2 className="text-lg md:text-3xl font-black leading-tight text-black animate-in slide-in-from-left-4 duration-700 delay-100">
-                {isEditMode ? '店舗設定の最適化' : 'AIが提案する、\n次世代の店舗広報。'}
+                {isEditMode ? (IS_HOSPITALITY_MODE ? '施設設定の最適化' : '店舗設定の最適化') : 'AIが提案する、\n次世代の集客。'}
               </h2>
               <p className="text-slate-600 text-sm font-bold leading-relaxed animate-in slide-in-from-left-4 duration-700 delay-200">
                 {isEditMode
                   ? '設定を変更することで、AIの文章トーンや提案内容がリアルタイムに進化します。'
-                  : 'お店のこだわりや特徴を入力してください。AIがあなたの専任のSNS担当者となります。'}
+                  : `${IS_HOSPITALITY_MODE ? '施設' : 'お店'}のこだわりや特徴を入力してください。AIがあなたの専任の広報担当者となります。`}
               </p>
 
               {/* Status Pill */}
-              <div className="inline-flex items-center gap-2 bg-black border-2 border-black rounded-full px-5 py-2.5 animate-in zoom-in-95 duration-700 delay-300 shadow-[4px_4px_0_0_rgba(0,0,0,0.2)]">
-                <span className="w-1.5 h-1.5 rounded-full bg-[var(--teal)] animate-ping"></span>
+              <div className={`inline-flex items-center gap-2 bg-black border-2 border-black rounded-full px-5 py-2.5 animate-in zoom-in-95 duration-700 delay-300 shadow-[4px_4px_0_0_rgba(0,0,0,0.2)]`}>
+                <span className={`w-1.5 h-1.5 rounded-full ${IS_HOSPITALITY_MODE ? 'bg-[#D4AF37]' : 'bg-[var(--teal)]'} animate-ping`}></span>
                 <span className="text-[10px] font-black uppercase tracking-widest text-white">AI解析エンジンの準備完了</span>
               </div>
             </div>
@@ -148,10 +148,9 @@ const Onboarding: React.FC<OnboardingProps> = ({
 
             {/* Industry Selection */}
             <div className="space-y-6">
-              <div className="flex items-center gap-2 border-l-4 border-black pl-3">
-                <label className="text-xs font-black text-black uppercase tracking-widest">
-                  お店のカテゴリー
-                </label>
+              <div className="flex items-center justify-between">
+                <h3 className="text-[10px] font-black text-black uppercase tracking-[0.3em]">{IS_HOSPITALITY_MODE ? '施設カテゴリー' : '業種カテゴリー'}</h3>
+                {!isEditMode && <span className="bg-black text-white text-[8px] font-black px-2 py-0.5 rounded-full tracking-widest uppercase">Required</span>}
               </div>
               <div className="flex flex-wrap gap-2">
                 {INDUSTRIES.map((ind) => (
@@ -161,8 +160,8 @@ const Onboarding: React.FC<OnboardingProps> = ({
                     onClick={() => setIndustry(ind)}
                     className={`px-6 py-3 rounded-full text-[11px] font-black transition-all duration-200 border-2
                       ${industry === ind
-                        ? 'bg-black border-black text-white shadow-[4px_4px_0_0_rgba(0,0,0,1)]'
-                        : 'bg-white border-black text-slate-500 hover:bg-[var(--teal)] hover:text-black hover:shadow-[2px_2px_0_0_rgba(0,0,0,1)]'
+                        ? (IS_HOSPITALITY_MODE ? 'bg-[#2C3E50] border-[#2C3E50] text-white shadow-lg' : 'bg-black border-black text-white shadow-[4px_4px_0_0_rgba(0,0,0,1)]')
+                        : (IS_HOSPITALITY_MODE ? 'bg-white border-slate-200 text-slate-500 hover:border-slate-400' : 'bg-white border-black text-slate-500 hover:bg-[var(--teal)] hover:text-black hover:shadow-[2px_2px_0_0_rgba(0,0,0,1)]')
                       }`}
                   >
                     {ind}
@@ -185,7 +184,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
                     value={name}
                     onChange={(e) => handleNameChange(e.target.value)}
                     placeholder="例：焼きたてパンの店 アン"
-                    className="w-full px-7 py-6 rounded-2xl bg-white focus:bg-[var(--bg-beige)] border-2 border-black focus:shadow-[4px_4px_0_0_rgba(0,0,0,1)] outline-none transition-all text-xl text-black font-black tracking-tight placeholder:text-slate-300"
+                    className={`w-full px-7 py-6 rounded-2xl transition-all text-xl text-black font-black tracking-tight placeholder:text-slate-300 outline-none ${IS_HOSPITALITY_MODE ? 'bg-slate-50 border border-slate-200 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10' : 'bg-white focus:bg-[var(--bg-beige)] border-2 border-black focus:shadow-[4px_4px_0_0_rgba(0,0,0,1)]'}`}
                     required
                   />
                   <div className="absolute right-7 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-black transition-colors">
@@ -240,7 +239,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
                     value={region}
                     onChange={(e) => setRegion(e.target.value)}
                     placeholder="地名を入れるとより親しみやすい文章になります"
-                    className="w-full px-7 py-6 rounded-2xl bg-white focus:bg-[var(--bg-beige)] border-2 border-black focus:shadow-[4px_4px_0_0_rgba(0,0,0,1)] outline-none transition-all text-xl text-black font-black tracking-tight placeholder:text-slate-300"
+                    className={`w-full px-7 py-6 rounded-2xl transition-all text-xl text-black font-black tracking-tight placeholder:text-slate-300 outline-none ${IS_HOSPITALITY_MODE ? 'bg-slate-50 border border-slate-200 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10' : 'bg-white focus:bg-[var(--bg-beige)] border-2 border-black focus:shadow-[4px_4px_0_0_rgba(0,0,0,1)]'}`}
                   />
                   <div className="absolute right-7 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-black transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
@@ -249,24 +248,21 @@ const Onboarding: React.FC<OnboardingProps> = ({
               </div>
             </div>
 
-            {/* Description Input */}
-            <div className="space-y-4">
-              <div className="flex items-center gap-2 border-l-4 border-black pl-3">
-                <label className="text-xs font-black text-black uppercase tracking-widest">
-                  お店のこだわり・コンセプト
-                </label>
+            {/* Description */}
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h3 className="text-[10px] font-black text-black uppercase tracking-[0.3em]">{IS_HOSPITALITY_MODE ? '施設の特徴・こだわり' : 'お店の特徴・こだわり'}</h3>
               </div>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="例：自家焙煎のコーヒー、夜はオーガニックワインを提供、落ち着いたモダンな内装..."
-                rows={5}
-                className="w-full px-7 py-6 rounded-2xl bg-white focus:bg-[var(--bg-beige)] border-2 border-black focus:shadow-[4px_4px_0_0_rgba(0,0,0,1)] outline-none transition-all resize-none text-base text-black font-black leading-relaxed placeholder:text-slate-300"
+                placeholder={IS_HOSPITALITY_MODE ? "例：創業100年の老舗旅館です。全客室から海が見渡せます。地元の新鮮な魚介類を使った創作料理が自慢です..." : "例：薪窯で焼くナポリピッツァの専門店です。イタリア産の小麦粉 and チーズにこだわっています。家族連れでも楽しめるカジュアルな雰囲気です..."}
+                className={`w-full rounded-2xl p-5 text-black font-bold placeholder:text-black/10 transition-all min-h-[140px] focus:outline-none ${IS_HOSPITALITY_MODE ? 'bg-slate-50 border border-slate-200 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10' : 'bg-white border-[3px] border-black focus:shadow-[6px_6px_0_0_rgba(0,0,0,1)]'}`}
               />
             </div>
 
             {/* Instagram Footer: Info Card */}
-            <div className="bg-white border-2 border-black rounded-[24px] p-8 space-y-5 shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all group">
+            <div className={`rounded-[24px] p-8 space-y-5 transition-all group ${IS_HOSPITALITY_MODE ? 'bg-white border border-slate-100 shadow-xl shadow-slate-200/50' : 'bg-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] hover:translate-x-[-1px] hover:translate-y-[-1px]'}`}>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-lg bg-[#E1306C] border-2 border-black flex items-center justify-center text-white shadow-sm">
@@ -289,12 +285,12 @@ const Onboarding: React.FC<OnboardingProps> = ({
             </div>
 
             {/* Actions */}
-            <div className="flex flex-col sm:flex-row gap-4 pt-4 sticky bottom-0 bg-white border-t-[3px] border-black md:border-0 md:bg-transparent md:static z-20 pb-4">
+            <div className={`flex flex-col sm:flex-row gap-4 pt-4 sticky bottom-0 border-t-[3px] md:border-0 md:static z-20 pb-4 ${IS_HOSPITALITY_MODE ? 'bg-[#F9FAFB] md:bg-transparent border-slate-100' : 'bg-white border-black md:bg-transparent'}`}>
               {onCancel && (
                 <button
                   type="button"
                   onClick={onCancel}
-                  className="flex-1 py-5 rounded-xl border-2 border-black font-black text-[11px] text-black hover:bg-slate-100 transition-all uppercase tracking-widest shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:shadow-[2px_2px_0_0_rgba(0,0,0,1)] active:translate-y-[2px] active:translate-x-[2px]"
+                  className={`flex-1 py-5 rounded-xl border-2 font-black text-[11px] text-black transition-all uppercase tracking-widest ${IS_HOSPITALITY_MODE ? 'bg-white border-slate-200 hover:bg-slate-50 shadow-sm' : 'border-black hover:bg-slate-100 shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:shadow-[2px_2px_0_0_rgba(0,0,0,1)] active:translate-y-[2px] active:translate-x-[2px]'}`}
                 >
                   キャンセル
                 </button>
@@ -302,7 +298,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
               <button
                 type="submit"
                 disabled={name.trim().length < 2}
-                className="flex-[2] relative group overflow-hidden bg-[var(--gold)] text-black border-2 border-black font-black py-5 rounded-xl shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] active:translate-x-[0px] active:translate-y-[0px] active:shadow-[2px_2px_0_0_rgba(0,0,0,1)] transition-all duration-300 flex items-center justify-center gap-4 disabled:opacity-50 disabled:pointer-events-none hover:bg-[var(--rose)]"
+                className={`flex-[2] relative group overflow-hidden font-black py-5 rounded-xl transition-all duration-300 flex items-center justify-center gap-4 disabled:opacity-50 disabled:pointer-events-none ${IS_HOSPITALITY_MODE ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-xl shadow-indigo-100 hover:shadow-indigo-200 hover:-translate-y-0.5' : 'bg-[var(--gold)] text-black border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] active:translate-x-[0px] active:translate-y-[0px] active:shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:bg-[var(--rose)]'}`}
               >
                 <span className="relative z-10 text-xs tracking-[0.2em]">{isEditMode ? '設定を保存する' : '設定を完了してはじめる'}</span>
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="relative z-10 group-hover:translate-x-1 transition-transform"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>

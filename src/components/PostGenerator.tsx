@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import {
   StoreProfile, GeneratedPost, Preset, Platform, UserPlan, TrainingItem
 } from '../types';
+import { UI, IS_HOSPITALITY_MODE, TOKENS } from '../constants';
 import { StarIcon, SparklesIcon } from './Icons';
 import { useGeneratorFlow } from './features/generator/useGeneratorFlow';
 import { GeneratorHeader } from './features/generator/GeneratorHeader';
@@ -128,7 +129,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
   };
 
   return (
-    <div className="min-h-screen overflow-x-hidden">
+    <div className={`min-h-screen overflow-x-hidden ${IS_HOSPITALITY_MODE ? 'bg-[#F9FAFB]' : 'bg-[var(--bg-beige)]'}`}>
 
       <div className="max-w-[1400px] mx-auto py-4 sm:py-8 relative z-10">
         {/* Header Module */}
@@ -238,24 +239,24 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
           <button
             onClick={handleGenerate}
             disabled={flow.loading || !flow.inputText.trim()}
-            className={`w-full max-w-xl py-6 md:py-8 rounded-[32px] font-black text-lg md:text-2xl tracking-[0.2em] flex items-center justify-center gap-3 md:gap-5 group
+            className={`w-full max-w-xl py-6 md:py-8 rounded-[32px] font-black text-lg md:text-2xl tracking-[0.2em] flex items-center justify-center gap-3 md:gap-5 group transition-all duration-500
                 ${flow.loading || !flow.inputText.trim()
-                ? 'bg-slate-200 text-slate-400 border-2 border-slate-300 cursor-not-allowed'
-                : 'btn-pop'
+                ? 'bg-slate-200 text-slate-400 border border-slate-300 cursor-not-allowed'
+                : (IS_HOSPITALITY_MODE ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-2xl shadow-indigo-200 hover:shadow-indigo-300 hover:-translate-y-1 scale-100 hover:scale-[1.02]' : 'bg-[#4DB39A] text-black border-2 border-black shadow-[6px_6px_0_0_rgba(0,0,0,1)] active:scale-95')
               }`}
           >
             <div className="flex items-center justify-center gap-3 md:gap-5 relative z-10">
               {flow.loading ? (
                 <>
-                  <div className="w-6 h-6 md:w-8 md:h-8 border-4 border-slate-400 border-t-slate-600 rounded-full animate-spin"></div>
-                  <span className="opacity-80">PROCESSING...</span>
+                  <div className={`w-6 h-6 md:w-8 md:h-8 border-4 ${IS_HOSPITALITY_MODE ? 'border-white/30 border-t-white' : 'border-slate-400 border-t-slate-600'} rounded-full animate-spin`}></div>
+                  <span className="opacity-80 animate-pulse">PROCESSING...</span>
                 </>
               ) : (
                 <>
                   <div className="relative">
-                    <SparklesIcon className={`w-6 h-6 md:w-8 md:h-8 group-hover:rotate-12 transition-transform ${flow.resultGroups.length > 0 ? 'text-black' : 'text-primary'}`} />
+                    <SparklesIcon className={`w-6 h-6 md:w-8 md:h-8 group-hover:rotate-12 transition-transform ${IS_HOSPITALITY_MODE ? 'text-white' : (flow.resultGroups.length > 0 ? 'text-black' : 'text-primary')}`} />
                   </div>
-                  <span className={`drop-shadow-none uppercase ${flow.resultGroups.length > 0 ? 'text-black' : 'text-primary'}`}>
+                  <span className={`drop-shadow-none uppercase ${IS_HOSPITALITY_MODE ? 'text-white' : (flow.resultGroups.length > 0 ? 'text-black' : 'text-primary')}`}>
                     {flow.resultGroups.length === 0
                       ? '投稿を生成'
                       : (flow.resultGroups[0].config.inputText !== flow.inputText
