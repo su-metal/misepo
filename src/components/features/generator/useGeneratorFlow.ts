@@ -146,9 +146,10 @@ export function useGeneratorFlow(props: {
       }
       setLoadedPresetPrompts(initialPrompts);
 
-      // Set visible customPrompt based on current platform context
-      const firstActive = platforms[0] || Platform.X;
-      setCustomPrompt(initialPrompts[firstActive] || '');
+      // We intentionaly DO NOT set customPrompt here anymore.
+      // This keeps the UI textarea empty for the user to add "one-off" instructions.
+      // The preset prompts are merged internally during performGeneration.
+      setCustomPrompt('');
 
       // Legacy post_samples are ignored to ensure only the 'Learning Data List' is used.
       setCurrentPostSamples({}); 
@@ -293,11 +294,17 @@ export function useGeneratorFlow(props: {
       const purpose = p === Platform.GoogleMaps ? gmapPurpose : postPurpose;
       
       // Resolve Platform-Specific Prompt
-      // In Multi-Gen, use the preset's value for each platform.
-      // In Single-Gen, the visible 'customPrompt' IS the platform's value (or user override).
-      let effectivePrompt = customPrompt;
-      if (targetPlatforms.length > 1 && loadedPresetPrompts[p]) {
-          effectivePrompt = loadedPresetPrompts[p];
+      // Merge System Prompt (from preset) and User Prompt (from UI textarea)
+      let systemPrompt = loadedPresetPrompts[p] || '';
+      let userPrompt = customPrompt.trim();
+      
+      let effectivePrompt = '';
+      if (systemPrompt && userPrompt) {
+          effectivePrompt = `${systemPrompt}\n\n---\n\n【今回の追加指示】\n${userPrompt}`;
+      } else if (systemPrompt) {
+          effectivePrompt = systemPrompt;
+      } else {
+          effectivePrompt = userPrompt;
       }
 
       const config: GenerationConfig = {

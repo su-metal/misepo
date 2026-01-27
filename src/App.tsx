@@ -196,10 +196,12 @@ function App() {
           for (const [platform, content] of Object.entries(legacySamples)) {
             if (!content) continue;
 
+            // Strict Check: ONLY migrate if NO data exists for this platform/preset combination.
+            // This prevents re-migrating old legacy data if the user has edited the learning data 
+            // but not synced it back to the preset's legacy 'post_samples' field.
             const alreadyExists = trainingData.some(item =>
               item.presetId === preset.id &&
-              item.platform === platform &&
-              item.content.trim() === (content as string).trim()
+              item.platform === platform
             );
 
             if (!alreadyExists) {

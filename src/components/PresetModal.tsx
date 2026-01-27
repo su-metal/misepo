@@ -43,7 +43,7 @@ import { AutoResizingTextarea } from './ResizableTextarea';
 
 interface PresetModalProps {
   presets: Preset[];
-  onSave: (preset: Partial<Preset>) => Promise<void>;
+  onSave: (preset: Partial<Preset>) => Promise<Preset | null | void>;
   onDelete: (id: string) => Promise<void>;
   onApply: (preset: Preset) => void;
   onClose: () => void;
@@ -290,14 +290,15 @@ const PresetModal: React.FC<PresetModalProps> = ({
     // The useEffect above will handle setting name, avatar, customPrompts, etc.
   };
 
-  const handleSave = async () => {
+  const handleSave = async (overridePrompts?: { [key: string]: string }) => {
     if (!name.trim()) return;
     setIsInternalSaving(true);
     try {
       // Logic to handle auto-analysis if needed (updating customPrompts active tab)
       // For now, let's keep it simple: Save what's in the state.
 
-      let finalCustomPrompts = { ...customPrompts };
+      // Fix: Use overridden leads (from immediate analysis) or current state
+      let finalCustomPrompts = overridePrompts ? { ...customPrompts, ...overridePrompts } : { ...customPrompts };
 
       // Reconstruct post_samples from trainingItems to ensure DB sync
       const currentPresetId = selectedPresetId || 'omakase';
@@ -323,7 +324,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
       });
       const customPromptJSON = Object.keys(cleanedPrompts).length > 0 ? JSON.stringify(cleanedPrompts) : null;
 
-      await onSave({
+      const result = await onSave({
         id: selectedPresetId || undefined,
         name,
         avatar,
@@ -331,6 +332,29 @@ const PresetModal: React.FC<PresetModalProps> = ({
         persona_yaml: null,
         post_samples: newPostSamples,
       });
+
+      // MIGRATION / COPY LOGIC:
+      // If we just created a NEW preset, the training items are currently orphaned in 'omakase' (or the source preset).
+      // We must COPY them to the new preset ID so they appear in the list.
+      if (!selectedPresetId && result && 'id' in result && result.id) {
+        console.log('[PresetModal] New preset created. Migrating learning items...', result.id);
+        const newId = result.id;
+
+        // Copy all currently visible items to the new ID
+        // We run this in parallel for speed, but catching errors individually
+        await Promise.all(relatedItems.map(async (item) => {
+          try {
+            // Pass 'manual' or keep original source? 'manual' is safer to ensure it sticks.
+            await onToggleTraining(item.content, item.platform as any, newId, undefined, item.source || 'manual');
+          } catch (e) {
+            console.error('Failed to migrate item:', item.id, e);
+          }
+        }));
+
+        // Update local state to point to the new ID, so subsequent edits target the new preset
+        setSelectedPresetId(newId);
+      }
+
       setHasUnanalyzedChanges(false);
       setShowSuccessToast(true);
       setTimeout(() => setShowSuccessToast(false), 3000);
@@ -937,7 +961,28 @@ const PresetModal: React.FC<PresetModalProps> = ({
                       alert('分析するには学習文を1件以上追加してください。');
                       return;
                     }
-                    await performPersonaAnalysis();
+                    const instruction = await performPersonaAnalysis();
+                    if (instruction) {
+                      if (!name.trim()) {
+                        alert('解析が完了しました！この設定を保存するために、プロフィールの名前を入力してください。');
+                        return;
+                      }
+
+                      let override: { [key: string]: string } = {};
+                      try {
+                        if (typeof instruction === 'string' && instruction.trim().startsWith('{')) {
+                          override = JSON.parse(instruction);
+                        } else if (typeof instruction === 'object') {
+                          override = instruction;
+                        } else {
+                          override = { [activePromptTab]: instruction }; // Fallback
+                        }
+                      } catch (e) {
+                        override = { [activePromptTab]: instruction };
+                      }
+
+                      await handleSave(override);
+                    }
                   }}
                   disabled={isAnalyzingPersona}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border-2 border-black transition-all text-[10px] font-black
@@ -1075,7 +1120,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                   </div>
                 )}
                 <button
-                  onClick={handleSave}
+                  onClick={() => handleSave()}
                   disabled={isSaveDisabled}
                   className="w-full bg-[var(--gold)] hover:bg-[var(--rose)] border-2 border-black disabled:opacity-50 disabled:cursor-not-allowed text-black px-8 py-4 md:py-6 rounded-xl font-black text-sm uppercase tracking-[0.3em] flex items-center justify-center gap-4 transition-all transform hover:translate-x-[-2px] hover:translate-y-[-2px] active:translate-x-0 active:translate-y-0 shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] group relative overflow-hidden"
                 >

@@ -740,9 +740,9 @@ Example Output:
 };
 
 export const generateStyleInstruction = async (
-  samples: { content: string, platform: string }[],
-  isPro: boolean = true
-): Promise<string> => {
+  samples: { content: string; platform: string }[],
+  isPro: boolean = false
+): Promise<Record<string, string>> => {
   const modelName = getModelName(isPro);
   const ai = getServerAI();
 
@@ -755,7 +755,13 @@ export const generateStyleInstruction = async (
         let cleanPlatform = p;
         if (p === 'X' || p === 'Twitter') cleanPlatform = 'X (Twitter)';
         else if (p === 'Line') cleanPlatform = 'LINE';
-        normalizedSamples.push({ content: s.content, platform: cleanPlatform });
+        if (s.content.includes('【文体指示書】')) {
+            console.warn(`[Gemini] Skipped learning sample for ${p} because it appears to be a Style Guide.`);
+            return;
+        }
+        // Force trim and TRUNCATE inputs to avoid massive garbage data or repetition triggers
+        const truncatedContent = s.content.trim().substring(0, 1000);
+        normalizedSamples.push({ content: truncatedContent, platform: cleanPlatform });
     });
   });
 
@@ -764,46 +770,57 @@ export const generateStyleInstruction = async (
     return acc;
   }, {} as Record<string, string>);
 
+const styleGuideSchema = {
+    type: Type.OBJECT,
+    properties: {
+        [Platform.X]: { type: Type.STRING },
+        [Platform.Instagram]: { type: Type.STRING },
+        [Platform.Line]: { type: Type.STRING },
+        [Platform.GoogleMaps]: { type: Type.STRING },
+    },
+    // No "required" fields because some records might be missing certain platforms
+};
+
   const systemInstruction = `
-You are an expert linguistic analyst.
-Your task is to analyze social media posts and write a "Style Instruction Guide" for each platform in Japanese.
+You are an expert linguistic analyst specialized in Japanese social media nuances.
+Your task is to analyze social media posts and write a "Style Instruction Guide" (文体指示書) for each platform.
 
 **Goal:**
-Create clear, actionable lists of rules that a writer can follow to mimic the style found in the provided samples for EACH platform.
+Create a **detailed, high-resolution** analysis of the writer's voice.
+Do NOT just be generic. You must capture the specific "quirks", "vocabulary", "sentence rhythm", and "emotional tone" of the user.
 
-**Output Structure (JSON):**
-Return a JSON object where each key is a platform name and the value is the style guide (plain text with bullet points).
-Allowed Keys:
-- "X (Twitter)"
-- "Instagram"
-- "LINE"
-- "Google Maps"
+**Output Structure:**
+Return a JSON object where the keys are strictly: "${Platform.X}", "${Platform.Instagram}", "${Platform.Line}", "${Platform.GoogleMaps}".
+Values must be the style guide string (plain text with bullet points).
 
 **Content Guidelines for each value:**
-- **Tone & Voice**: (e.g. Friendly, Professional, Energetic, Kansai Dialect)
-- **Sentence Endings**: (e.g. 〜です/〜ます, 〜だ/〜である, 〜っす)
-- **Formatting**: (e.g. Use of emojis, line breaks, specific symbols)
-- **Prohibitions**: (e.g. No emojis, No exclamation marks)
+- **Tone & Voice**: Analyze the specific emotion (e.g., "Manic energy", "Calm professional", "Cynical humor").
+- **Keywords & Slang**: List specific words or phrases the user tends to use.
+- **Micro-Habits**: (e.g., "Uses half-width spaces between sentences", "Ends with '...' often", "Uses specific emojis like 🥺").
+- **Structure**: (e.g., "Short bursts of text", "Long storytelling format").
 
 **Rules:**
 - Content MUST be **Natural Japanese**.
 - Start each value with 【文体指示書】.
-- Use bullet points.
-- If a platform is missing from the samples, do not include it in the JSON.
-- **Return ONLY the JSON object. No other text.**
-
-Example JSON:
-{
-  "X (Twitter)": "【文体指示書】\n・簡潔でスピード感のある口調。\n・絵文字は1ツイートに2個まで。",
-  "Instagram": "【文体指示書】\n・おしゃれで親しみやすい雰囲気。\n・ハッシュタグは最低5個付ける。"
-}
+- Use bullet points for readability.
+- **CRITICAL:** If samples are provided for a platform, you **MUST** generate a guide for it. Do not skip it.
+- **CRITICAL:** The value for "X (Twitter)" must ONLY reflect the X samples. Do NOT mix styles.
+- **CRITICAL:** Do NOT use headers like "【Google Maps】" inside the value strings.
 `;
 
-  const userPrompt = `Analyze these samples and return the platform-specific Style Instruction Guides in JSON format:\n\n${
+  const userPrompt = `Deeply analyze these samples and return the platform-specific Style Instruction Guides in JSON format.\nIf a platform has samples, you must provide a detailed analysis for it.\n\n${
     Object.entries(samplesByPlatform).map(([plat, content]) => 
       `--- PLATFORM: ${plat} ---\n${content}`
     ).join("\n")
   }`;
+
+  // Safety Settings: Disable all filters to prevent truncation of "slang" or "rough" tones
+  const safetySettings = [
+    { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_NONE' },
+    { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
+    { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_NONE' },
+    { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE' },
+  ];
 
   const response = await ai.models.generateContent({
     model: modelName,
@@ -811,11 +828,165 @@ Example JSON:
     config: {
       systemInstruction,
       responseMimeType: "application/json",
-      temperature: 0.2,
+      responseSchema: styleGuideSchema,
+      temperature: 0.4,
+      maxOutputTokens: 8192,
+      safetySettings, // Correct placement inside config
     },
   });
 
-  return (response.text || "").trim();
+  /* 
+     DEBUGGING: Check why it stops
+  */
+  const candidate = response.candidates?.[0];
+  console.log('[Gemini] Generation Finish Reason:', candidate?.finishReason);
+  console.log('[Gemini] Output Token Count:', response.usageMetadata?.candidatesTokenCount);
+
+  /* 
+     Robustness Fix: 
+     If the AI is cut off (maxTokens) or hallucinates massive whitespace, 
+     JSON.parse will fail. We try to recover what we can.
+  */
+  let rawText = ""; 
+  try {
+    // Use .text property, not function (differs by SDK version, usually property in simpler wrappers)
+    // If response.text is undefined, fallback to candidate
+    rawText = response.text || candidate?.content?.parts?.[0]?.text || "{}";
+    
+    console.log('[Gemini] Raw Text Length:', rawText.length);
+    if (rawText.length < 500) {
+        console.log('[Gemini] Short Output Detect (First 200 chars):', rawText.substring(0, 200));
+    }
+    let parsed: any;
+    
+    try {
+        parsed = JSON.parse(rawText);
+    } catch (parseError) {
+        console.warn("[Gemini] JSON parsing failed. Attempting robust regex recovery...", parseError);
+        // Robust Fallback: Extract keys using Regex
+        // This allows us to save X and GoogleMaps even if LINE is truncated at the end.
+        parsed = {};
+        const platforms = ['X (Twitter)', 'Instagram', 'LINE', 'Google Maps'];
+        
+        platforms.forEach(p => {
+            // Regex to find: "PlatformName": "Content"
+            // We use [\s\S]*? lazy match to capture content until the next quote-comma or end
+            // This is tricky for nested quotes, but usually sufficient for simple text blocks.
+            // A safer bet is looking for the specific key and capturing until the next key or end of string.
+            
+            // Matches: "Key": "Value..." (handling escaped quotes is hard in simple regex, but we try)
+            // We look for the key, then the colon, then opening quote.
+            const keyPattern = `"${p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"\\s*:\\s*"`;
+            const startIndex = rawText.search(new RegExp(keyPattern));
+            
+            if (startIndex !== -1) {
+                const contentStart = startIndex + rawText.match(new RegExp(keyPattern))![0].length;
+                // Find the end of this value. It usually ends with `",` or `"\n}` or just `"` if truncated.
+                // We'll walk forward counting backslashes to ensure we don't stop at escaped quotes.
+                let contentEnd = -1;
+                let i = contentStart;
+                while (i < rawText.length) {
+                    if (rawText[i] === '"' && rawText[i-1] !== '\\') {
+                        // Potential end. Check if it's followed by comma or close brace or newline (heuristic)
+                        // Or just extract it.
+                        contentEnd = i;
+                        // Determine if this is really the end key. 
+                        // If the next char is non-whitespace and not comma/brace/newline, maybe we stopped early?
+                        // But standard JSON strings end at unescaped quote.
+                        // We check if the next significant char is a comma or other key?
+                        // For recovery, taking the first unescaped quote is usually correct unless the AI put unescaped quotes inside.
+                        break;
+                    }
+                    i++;
+                }
+
+                if (contentEnd !== -1) {
+                    let extracted = rawText.substring(contentStart, contentEnd);
+                    // Unescape standard JSON escapes
+                    try {
+                        extracted = JSON.parse(`"${extracted}"`);
+                    } catch (e) {
+                         // Fallback unescape if simple parse fails (e.g. newlines)
+                         extracted = extracted.replace(/\\n/g, '\n').replace(/\\"/g, '"');
+                    }
+                    parsed[p] = extracted;
+                } else {
+                     // If no end quote found (truncated), take everything until max length
+                     console.warn(`[Gemini] Value for ${p} appears truncated. Taking simplified substring.`);
+                     let extracted = rawText.substring(contentStart);
+                     // Limit length
+                     if (extracted.length > 2000) extracted = extracted.substring(0, 2000);
+                     parsed[p] = extracted; // Raw text, might include garbage at end
+                }
+            }
+        });
+        
+        if (Object.keys(parsed).length === 0) {
+             console.error("[Gemini] Regex recovery failed. Returning empty object.");
+             return {};
+        } else {
+             console.log("[Gemini] Successfully recovered partial data keys:", Object.keys(parsed));
+        }
+    }
+    // Output Sanitation
+    const sanitized: Record<string, string> = {};
+    const keys = Object.keys(parsed);
+
+    keys.forEach(key => {
+        let val = parsed[key];
+        
+        // Anti-Hallucination: Check if value is a nested JSON string
+        if (typeof val === 'string' && val.trim().startsWith('{')) {
+            try {
+                const nested = JSON.parse(val);
+                if (nested[key]) {
+                    val = nested[key];
+                } else {
+                    console.warn(`[Gemini] Detected nested JSON hallucination for ${key}. Discarding.`);
+                    val = ""; 
+                }
+            } catch (e) {
+                // Not JSON
+            }
+        }
+
+        // Strong String Sanitization
+        if (typeof val === 'string') {
+          // 1. Trim whitespace
+          val = val.trim();
+          
+          // 2. Collapse excessive newlines (max 2)
+          val = val.replace(/\n{3,}/g, '\n\n');
+
+          // 3. Remove cross-platform hallucinations (e.g. key is LINE but content has 【X (Twitter)】 header)
+          // We look for headers that differ from the current key.
+          // This is a simple heuristic: if we see another standard platform header, we strip it and everything after?
+          // Or just strip the header line if it looks like a section break? 
+          // Let's safe-guard against obvious mistaken headers.
+          // Common headers we generated: 【文体指示書】 is fine. 
+          // But 【X (Twitter)】 inside LINE is bad.
+          
+          const otherPlatforms = keys.filter(k => k !== key);
+          otherPlatforms.forEach(op => {
+             // Remove lines that explicitly look like platform headers e.g., "【X (Twitter)】" or "## X (Twitter)"
+             // Note: 'op' might contain parens which need escaping for regex, but simple string replace might be safer for strict matches
+             // But usually AI puts it as `【${op}】` or `"${op}"`
+             const badHeader = `【${op}】`;
+             if (val.includes(badHeader)) {
+                val = val.replace(badHeader, '').trim(); 
+             }
+          });
+        }
+
+        sanitized[key] = val;
+    });
+
+    return sanitized; // Return OBJECT, not string
+  } catch (e) {
+    console.error("Failed to parse Gemini response", e);
+    // Fallback: return empty object if parsing fails completely
+    return {};
+  }
 };
 
 // Deprecated alias for backward compatibility updates
