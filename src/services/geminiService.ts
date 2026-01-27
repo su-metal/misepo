@@ -6,6 +6,7 @@ import {
   GenerationConfig,
   Platform,
   StoreProfile,
+  PostPurpose,
   GoogleMapPurpose,
   RiskTier,
   Length,
@@ -50,6 +51,22 @@ const INDUSTRY_PROMPTS: Record<string, string> = {
   'ジム': '役割：トレーナー/インストラクター。重視点：フィットネスの楽しさ、目標達成の喜び、健康的なライフスタイル。ポジティブでモチベーションを上げる表現。',
   '小売': '役割：ショップスタッフ。重視点：商品の魅力（使い方、メリット）、入荷のワクワク感、ギフト提案。購買意欲をそそる具体的な描写。',
   'その他': '役割：店舗/サービスのオーナー。重視点：お客様との繋がり、サービスの独自性、誠実な対応。'
+};
+
+const GMAP_PURPOSE_PROMPTS: Record<string, string> = {
+  [GoogleMapPurpose.Auto]: "口コミの内容に応じて、感謝、謝罪、または説明を適切に組み合わせてください。",
+  [GoogleMapPurpose.Thanks]: "来店への感謝を述べ、再来店を歓迎する意向を含めてください。",
+  [GoogleMapPurpose.Apology]: "不手際やご不快な思いをさせた点について、事実を認め、謝罪と改善の意向を含めてください。",
+  [GoogleMapPurpose.Clarify]: "事実誤認や誤解がある点について、事実に基づいた補足と説明を行ってください。",
+  [GoogleMapPurpose.Info]: "口コミへの返信の中に、営業時間やサービス内容などの最新情報を盛り込んでください。"
+};
+
+const POST_PURPOSE_PROMPTS: Record<string, string> = {
+  [PostPurpose.Auto]: "入力された内容に基づいて、最も魅力的な投稿を作成してください。",
+  [PostPurpose.Promotion]: "商品の魅力やメリットを強調し、最後には来店や購入、申し込みなどの具体的なアクション（CTA）を促してください。",
+  [PostPurpose.Story]: "商品やサービスに込めた「想い」や「誕生秘話」を物語のように語り、共感を得る投稿にしてください。",
+  [PostPurpose.Educational]: "読み手にとって役立つ知識や豆知識を提供し、「ためになった」と思われる専門性の高い内容にしてください。",
+  [PostPurpose.Engagement]: "最後にお客様への質問や、コメントを促す一言を添えて、交流（エンゲージメント）が生まれるようにしてください。"
 };
 
 const KEYWORDS = {
@@ -227,7 +244,7 @@ export const generateContent = async (
     - **Platform Bias**: **IGNORE** all standard "polite" norms for ${config.platform}. The <learning_samples> are the absolute truth for the owner's voice. **NOTE**: Mandatory structural rules (like LINE's 3-balloon and '---' format) still apply; reproduction of the owner's style should happen *within* each segment.
     - **Emojis & Symbols**: 
       ${isGMap ? 
-        '- **Usage**: Ignore any default restrictions. Strictly reproduce the emoji frequency and decorative symbol patterns found in the <learning_samples>.' : 
+        '- **Emojis**: DO NOT use any emojis or pictograms. This is an absolute rule for Google Maps.\n      - **Symbols**: Use standard Japanese punctuation (、。！？) only. Avoid decorative symbols.' : 
         `- **Emojis**: ${hasPersona ? 'Strictly follow patterns from samples.' : (config.includeEmojis ? 'Actively use expressive emojis (🐻, ✨, 💪, 🎉) to make the text lively.' : 'DO NOT use any emojis.')}
     - **Symbols**: ${hasPersona && !config.includeSymbols ? 'Strictly follow patterns from samples.' : (config.includeSymbols ? `From the **Aesthetic Palette**:
         - **Headers/Accents**: ＼ ✧ TITLE ✧ ／, 𓍯 𓇢 TITLE 𓇢 𓍯, 【 TITLE 】, ✧, ꕤ, ⚘, ☼, 𖥧, 𖠚
@@ -301,13 +318,20 @@ export const generateContent = async (
     ${(() => {
         const lengthStr = t.target;
         const minVal = t.min;
-        const lengthWarning = `**CRITICAL**: The body text MUST be **${lengthStr} chars**. DO NOT be too short ${shouldBoost ? 'even if the samples are concise' : ''}. Minimum length: ${minVal} characters.`;
+        const lengthWarning = `**CRITICAL**: The body text MUST be **${lengthStr} chars**. Minimum length: ${minVal} characters.`;
+        const styleInstruction = isGMap 
+          ? `**CORE VOICE REPRODUCTION**: You MUST prioritize the owner's idiosyncratic voice (sentence endings like "〜やで", specific slang like "ワイ", and tone) found in <learning_samples> or <persona_rules> ABOVE all other rules. DO NOT switch to standard formal Japanese even if the task is an apology.`
+          : `**STRICT STYLE REPRODUCTION**: You MUST prioritize the sentence endings and decorative patterns from <learning_samples> above all else, while following the purpose below.`;
 
-        if (isGMap) return `The <user_input> is a customer review. Generate a polite and empathetic REPLY from the owner. ${lengthWarning} Use the facts in <store_context> if provided.`;
+        if (isGMap) {
+            const purposeStr = GMAP_PURPOSE_PROMPTS[config.gmapPurpose || config.purpose as GoogleMapPurpose] || GMAP_PURPOSE_PROMPTS[GoogleMapPurpose.Auto];
+            return `${styleInstruction}\n\nTask: The <user_input> is a customer review. Generate a REPLY from the owner based on this purpose: "${purposeStr}". ${lengthWarning} Use the facts in <store_context> if provided.`;
+        }
         
-        if (config.platform === Platform.Line) return `Generate a LINE message with a clear flow: 1. Hook, 2. Details, 3. Action. ${lengthWarning} Use friendly but professional tone. DO NOT use '---' or numbering. **VISUAL**: Use emoji-sandwiched headers. **LAYOUT**: Prioritize a clean vertical flow with frequent line breaks.`;
+        const postPurposeStr = POST_PURPOSE_PROMPTS[config.purpose as PostPurpose] || POST_PURPOSE_PROMPTS[PostPurpose.Auto];
+        if (config.platform === Platform.Line) return `${styleInstruction}\n\nTask: Generate a LINE message. Purpose: "${postPurposeStr}". Flow: 1. Hook, 2. Details, 3. Action. ${lengthWarning} **VISUAL**: Use emoji-sandwiched headers. **LAYOUT**: Prioritize a clean vertical flow with frequent line breaks.`;
 
-        return `Generate an attractive post based on the <user_input>. ${lengthWarning}`;
+        return `${styleInstruction}\n\nTask: Generate an attractive post for ${config.platform}. Purpose: "${postPurposeStr}". ${lengthWarning}`;
     })()}
     Output a JSON object with:
     - "analysis": Brief context analysis.
@@ -338,14 +362,14 @@ export const generateContent = async (
     return `
 <system_instruction>
   <role>
-    ${isGMap ? `You are the owner of "${profile.name}". Reply politely to customer reviews on Google Maps.` : `You are the SNS manager for "${profile.name}". Create an attractive post for ${config.platform}.`}
+    ${isGMap ? `You are the owner of "${profile.name}". Reply to customer reviews on Google Maps while strictly maintaining your unique voice.` : `You are the SNS manager for "${profile.name}". Create an attractive post for ${config.platform}.`}
   </role>
 
   <rules>
     - Language: ${config.language || 'Japanese'}
     - Length: ${config.length} (Target: ${t.target} chars. Min: ${t.min} chars)
     - Tone: ${config.tone} (${TONE_RULES[config.tone] || TONE_RULES[Tone.Standard]})
-    - Features: ${isInstagram ? 'Visual focus.' : ''}${isX ? 'Under 140 chars.' : ''}${isGMap ? 'Polite reply, NO emojis, NO hashtags.' : ''}${isLine ? 'Direct marketing style. NO hashtags. Focus on clear messaging.' : ''}
+    - Features: ${isInstagram ? 'Visual focus.' : ''}${isX ? 'Under 140 chars.' : ''}${isGMap ? 'NO hashtags. Focus on maintaining the owner\'s personality in the reply.' : ''}${isLine ? 'Direct marketing style. NO hashtags. Focus on clear messaging.' : ''}
     - Emojis: ${isGMap ? 'Do NOT use emojis at all.' : (config.includeEmojis ? "Actively use expressive emojis (🐻, ✨, 💪, 🎉) to make the text lively." : "DO NOT use any emojis (emoticons, icons, pictograms) under any circumstances. Keep it plain text only regarding emojis.")}
     - Special Characters: ${config.includeSymbols ? `From the **Aesthetic Palette**:
         - **Headers/Accents**: ＼ ✧ TITLE ✧ ／, 𓍯 𓇢 TITLE 𓇢 𓍯, 【 TITLE 】, ✧, ꕤ, ⚘, ☼, 𖥧, 𖠚
