@@ -932,21 +932,47 @@ Values must be the style guide string (plain text with bullet points).
     const sanitized: Record<string, string> = {};
     const keys = Object.keys(parsed);
 
-    keys.forEach(key => {
-        let val = parsed[key];
+    keys.forEach(originalKey => {
+        let val = parsed[originalKey];
         
+        // 0. Key Normalization
+        let key = originalKey;
+        const lowerKey = originalKey.toLowerCase();
+        
+        // Map common variations to strict Platform ENUM values
+        if (lowerKey.includes('twitter') || lowerKey === 'x') key = Platform.X; // 'X (Twitter)'
+        else if (lowerKey.includes('instagram') || lowerKey.includes('insta')) key = Platform.Instagram; // 'Instagram'
+        else if (lowerKey.includes('line')) key = Platform.Line; // 'LINE'
+        else if (lowerKey.includes('google') || lowerKey.includes('map')) key = Platform.GoogleMaps; // 'Google Maps'
+
         // Anti-Hallucination: Check if value is a nested JSON string
         if (typeof val === 'string' && val.trim().startsWith('{')) {
             try {
                 const nested = JSON.parse(val);
-                if (nested[key]) {
+                // Try to find the content using either original key or normalized key
+                if (nested[originalKey]) {
+                    val = nested[originalKey];
+                } else if (nested[key]) {
                     val = nested[key];
                 } else {
-                    console.warn(`[Gemini] Detected nested JSON hallucination for ${key}. Discarding.`);
-                    val = ""; 
+                    console.warn(`[Gemini] Detected nested JSON hallucination for ${originalKey}. Discarding wrapper.`);
+                    // If neither key matches, it might be a wrapper with a different key or just the content itself if it was a false positive check?
+                    // But usually if it parses as JSON, it IS a wrapper. 
+                    // Let's fallback to "values" if it's a single key object? 
+                    // For safety, let's just keep 'val' as is (the JSON string) if we can't extract, 
+                    // OR assume the Hallucination check was wrong and treat the string as the content?
+                    // Current logic was: val = "";
+                    
+                    // Improved fallback: check if there's only one key in nested?
+                    const nestedKeys = Object.keys(nested);
+                    if (nestedKeys.length === 1) {
+                         val = nested[nestedKeys[0]];
+                    } else {
+                         val = ""; 
+                    }
                 }
             } catch (e) {
-                // Not JSON
+                // Not JSON, ignore
             }
         }
 
@@ -958,22 +984,28 @@ Values must be the style guide string (plain text with bullet points).
           // 2. Collapse excessive newlines (max 2)
           val = val.replace(/\n{3,}/g, '\n\n');
 
-          // 3. Remove cross-platform hallucinations (e.g. key is LINE but content has 【X (Twitter)】 header)
-          // We look for headers that differ from the current key.
-          // This is a simple heuristic: if we see another standard platform header, we strip it and everything after?
-          // Or just strip the header line if it looks like a section break? 
-          // Let's safe-guard against obvious mistaken headers.
-          // Common headers we generated: 【文体指示書】 is fine. 
-          // But 【X (Twitter)】 inside LINE is bad.
+          // 3. Remove cross-platform hallucinations
+          // We use the NORMALIZED key for checking against other platforms
+          // But we need to check against ALL platform headers
           
-          const otherPlatforms = keys.filter(k => k !== key);
-          otherPlatforms.forEach(op => {
-             // Remove lines that explicitly look like platform headers e.g., "【X (Twitter)】" or "## X (Twitter)"
-             // Note: 'op' might contain parens which need escaping for regex, but simple string replace might be safer for strict matches
-             // But usually AI puts it as `【${op}】` or `"${op}"`
+          const otherPlatforms = keys.filter(k => k !== originalKey); 
+          // Re-calculate strict platforms list for cleaning
+          const allPlatforms = [Platform.X, Platform.Instagram, Platform.Line, Platform.GoogleMaps];
+          
+          allPlatforms.forEach(op => {
+             // Don't clean the header of the CURRENT platform
+             if (op === key) return;
+             
+             // Remove lines that explicitly look like platform headers e.g., "【X (Twitter)】"
              const badHeader = `【${op}】`;
              if (val.includes(badHeader)) {
                 val = val.replace(badHeader, '').trim(); 
+             }
+             
+             // Also check for "Key" variations if AI output "【Twitter】" inside LINE
+             if (op === Platform.X) {
+                 if (val.includes('【Twitter】')) val = val.replace('【Twitter】', '').trim();
+                 if (val.includes('【X】')) val = val.replace('【X】', '').trim();
              }
           });
         }
