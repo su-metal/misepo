@@ -140,20 +140,23 @@ export async function POST(req: Request) {
       }
     }
     if (userId && presetId) {
-      const { data: learningData } = await supabase
+      // Build query for learning samples
+      const { data: learningData, error: learningErr } = await supabase
         .from('learning_sources')
         .select('content')
         .eq('user_id', userId)
         .eq('preset_id', presetId)
-        .in('platform', [config.platform, 'General']) // Fetch both specific and general samples
+        .in('platform', [config.platform, 'General'])
         .order('created_at', { ascending: false })
         .limit(10);
 
-      if (learningData && learningData.length > 0) {
+      if (learningErr) {
+        console.warn("[LEARNING] Failed to fetch learning samples:", learningErr.message);
+      } else if (learningData && learningData.length > 0) {
         learningSamples = learningData.map((item: any) => item.content);
-        console.log(`[LEARNING] Fetched ${learningSamples.length} favorited samples for preset ${presetId}`);
+        console.log(`[LEARNING] Fetched ${learningSamples.length} samples for preset: ${presetId}`);
       } else {
-        console.warn(`[LEARNING] No samples found for preset ${presetId}`);
+        console.log(`[LEARNING] No samples found for preset: ${presetId}`);
       }
     } else {
       console.warn("[LEARNING] Skipped fetch (missing userId or presetId)");
