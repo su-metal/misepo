@@ -144,8 +144,21 @@ export const generateContent = async (
     // Many-shot learning samples formatting
     // Many-shot learning samples formatting
     // Limit to latest 5 or 3000 chars to avoid token explosion
+    // Aggressive filtering for learning samples to prevent prompt injection loops
     const formattedLearningSamples = learningSamples 
         ? learningSamples
+            .filter(s => {
+                const content = s.trim();
+                if (!content) return false;
+                // Reject leaked system prompts
+                if (content.includes('【文体指示書】') || content.includes('System Instruction')) return false;
+                if (content.includes('"analysis":') && content.includes('"posts":')) return false;
+                // Reject extremely short or garbage inputs
+                if (content.length < 5) return false;
+                // Reject massive repetitive spam (simple heuristic: unique chars ratio)
+                // if (new Set(content).size < 5 && content.length > 20) return false; 
+                return true;
+            })
             .slice(0, 5) // Hard cap at 5 recent posts per generation
             .map((s, i) => `<sample id="${i+1}">\n${s.length > 500 ? s.slice(0, 500) + '...' : s}\n</sample>`)
             .join("\n") 

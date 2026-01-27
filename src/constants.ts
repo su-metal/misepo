@@ -2,7 +2,7 @@
 import { Platform, PostPurpose, GoogleMapPurpose, Tone, Length, StoreProfile } from './types';
 
 export const INDUSTRIES = [
-  '飲食店', 'カフェ', '居酒屋', '美容室', 'ネイル・まつげ', 'エステ・サロン', '整体・接骨院', 'ジム', '小売', 'その他'
+  '飲食店', 'カフェ', '居酒屋', '美容室', 'ネイル・まつげ', 'エステ・サロン', '旅館・ホテル', '整体・接骨院', 'ジム', '小売', 'その他'
 ];
 
 export const POST_PURPOSES = [
