@@ -36,6 +36,7 @@ import {
   LeafIcon,
   GemIcon,
   LineIcon,
+  BookOpenIcon,
 } from './Icons';
 import { Platform, Preset, TrainingItem } from '../types';
 import { AutoResizingTextarea } from './ResizableTextarea';
@@ -160,7 +161,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
   const [selectedPresetId, setSelectedPresetId] = useState<string | null>(initialPresetId || null);
   const [name, setName] = useState('');
   const [avatar, setAvatar] = useState('shop');
-  const [customPrompt, setCustomPrompt] = useState('');
+  const [customPrompts, setCustomPrompts] = useState<{ [key: string]: string }>({});
+  const [activePromptTab, setActivePromptTab] = useState<Platform>(Platform.X);
   const [isInternalSaving, setIsInternalSaving] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [orderedPresets, setOrderedPresets] = useState<Preset[]>([]);
@@ -205,57 +207,106 @@ const PresetModal: React.FC<PresetModalProps> = ({
     }
   }, [initialPresetId]);
 
+  // Initialize state when editing an existing preset
+  useEffect(() => {
+    if (selectedPresetId) {
+      const preset = presets.find(p => p.id === selectedPresetId);
+      if (preset) {
+        setName(preset.name);
+        setAvatar(preset.avatar || 'shop');
+
+        // Parse custom_prompt (supports legacy string or new JSON format)
+        try {
+          if (preset.custom_prompt) {
+            if (preset.custom_prompt.trim().startsWith('{')) {
+              const parsed = JSON.parse(preset.custom_prompt);
+              setCustomPrompts(parsed);
+
+              // Migration: If 'General' exists, and specific platforms don't, copy 'General' to them
+              if (parsed['General']) {
+                const updated = { ...parsed };
+                [Platform.X, Platform.Instagram, Platform.Line, Platform.GoogleMaps].forEach(p => {
+                  if (!updated[p]) updated[p] = parsed['General'];
+                });
+                delete updated['General'];
+                setCustomPrompts(updated);
+              }
+            } else {
+              // Legacy string: Apply to all platforms
+              const legacyVal = preset.custom_prompt;
+              const initialPrompts: { [key: string]: string } = {};
+              [Platform.X, Platform.Instagram, Platform.Line, Platform.GoogleMaps].forEach(p => {
+                initialPrompts[p] = legacyVal;
+              });
+              setCustomPrompts(initialPrompts);
+            }
+          } else {
+            setCustomPrompts({});
+          }
+        } catch (e) {
+          const legacyVal = preset.custom_prompt || '';
+          const initialPrompts: { [key: string]: string } = {};
+          [Platform.X, Platform.Instagram, Platform.Line, Platform.GoogleMaps].forEach(p => {
+            initialPrompts[p] = legacyVal;
+          });
+          setCustomPrompts(initialPrompts);
+        }
+        setActivePromptTab(Platform.X); // Reset tab to X
+
+        // Initialize Learning Data
+        // ... (existing logic)
+        const relevantItems = trainingItems.filter(item => item.presetId === preset.id);
+        const map: { [key in Platform]?: string } = {};
+        relevantItems.forEach(item => {
+          // ... (existing logic)
+        });
+        // We use the aggregated map logic same as handleSave but for display? 
+        // Actually, PresetModal uses `trainingItems` directly for the "AI Profile" list.
+        // But for `presetSamples` state (if used elsewhere), we might populate it.
+        // Current implementation seems to assume `trainingItems` is the source of truth for the list.
+      }
+    } else {
+      // New Preset
+      setName('');
+      setAvatar('shop');
+      setCustomPrompts({});
+    }
+    setPersonaYaml(null);
+    setHasUnanalyzedChanges(false);
+    setMobileView('edit');
+  }, [selectedPresetId, presets, trainingItems]);
+
+
   const handleLoadPreset = (id: string) => {
     const preset = presets.find((p) => p.id === id);
     if (preset) {
       setSelectedPresetId(id);
-      setName(preset.name);
-      setAvatar(preset.avatar || 'shop');
-      setCustomPrompt(preset.custom_prompt || '');
-      setPersonaYaml(preset.persona_yaml || null);
-      setHasUnanalyzedChanges(false);
-      setMobileView('edit');
+      // The useEffect above will handle setting name, avatar, customPrompts, etc.
     }
   };
 
   const handleStartNew = () => {
     setSelectedPresetId(null);
-    setName('');
-    setAvatar('shop');
-    setCustomPrompt('');
-    setPersonaYaml(null);
-    setHasUnanalyzedChanges(false);
-    setMobileView('edit');
+    // The useEffect above will handle setting name, avatar, customPrompts, etc.
   };
 
   const handleSave = async () => {
     if (!name.trim()) return;
     setIsInternalSaving(true);
     try {
-      let finalCustomPrompt = customPrompt;
+      // Logic to handle auto-analysis if needed (updating customPrompts active tab)
+      // For now, let's keep it simple: Save what's in the state.
 
-      // Auto-analyze if there are unanalyzed changes
-      if (hasUnanalyzedChanges) {
-        console.log("[SAVE] Detected unanalyzed changes. Auto-running persona analysis...");
-        const instruction = await performPersonaAnalysis();
-        if (instruction) {
-          finalCustomPrompt = instruction;
-          // Note: state update is async, so we use local variable for immediate save
-          setCustomPrompt(instruction);
-        }
-      }
+      let finalCustomPrompts = { ...customPrompts };
 
       // Reconstruct post_samples from trainingItems to ensure DB sync
       const currentPresetId = selectedPresetId || 'omakase';
       const relatedItems = trainingItems.filter(item => item.presetId === currentPresetId);
-
       const newPostSamples: { [key in Platform]?: string } = {};
 
       relatedItems.forEach(item => {
-        // Parse platform string which might be comma-separated or simple string
         const platforms = item.platform.split(',').map(p => p.trim()) as Platform[];
         platforms.forEach(p => {
-          // Append content to existing platform sample or start new
           if (newPostSamples[p]) {
             newPostSamples[p] += `\n\n---\n\n${item.content}`;
           } else {
@@ -264,15 +315,21 @@ const PresetModal: React.FC<PresetModalProps> = ({
         });
       });
 
-      console.log("[SAVE] Aggregated post_samples:", newPostSamples);
+      // Serialize customPrompts
+      // Filter out empty strings to keep JSON clean
+      const cleanedPrompts: { [key: string]: string } = {};
+      Object.entries(finalCustomPrompts).forEach(([k, v]) => {
+        if (v && v.trim()) cleanedPrompts[k] = v.trim();
+      });
+      const customPromptJSON = Object.keys(cleanedPrompts).length > 0 ? JSON.stringify(cleanedPrompts) : null;
 
       await onSave({
         id: selectedPresetId || undefined,
         name,
         avatar,
-        custom_prompt: finalCustomPrompt,
-        persona_yaml: null, // Deprecated: Always clear legacy YAML on save
-        post_samples: newPostSamples, // Explicitly save the aggregated samples
+        custom_prompt: customPromptJSON, // Save as JSON string
+        persona_yaml: null,
+        post_samples: newPostSamples,
       });
       setHasUnanalyzedChanges(false);
       setShowSuccessToast(true);
@@ -352,6 +409,9 @@ const PresetModal: React.FC<PresetModalProps> = ({
   const performPersonaAnalysis = async (): Promise<string | null> => {
     const presetSamples = trainingItems
       .filter(item => item.presetId === (selectedPresetId || 'omakase'))
+      // If we want to filter samples by the ACTIVE tab platform, we could?
+      // But usually "Persona Analysis" looks at ALL samples to form a personality.
+      // Let's keep consuming ALL samples for now. 
       .map(item => ({
         content: item.content,
         platform: item.platform
@@ -368,10 +428,26 @@ const PresetModal: React.FC<PresetModalProps> = ({
       });
       const data = await res.json();
       if (data.instruction) {
-        setCustomPrompt(data.instruction);
+        let instruction = data.instruction;
+        try {
+          // If the AI returned a JSON string, parse it
+          if (typeof instruction === 'string' && instruction.trim().startsWith('{')) {
+            const parsed = JSON.parse(instruction);
+            setCustomPrompts(prev => ({ ...prev, ...parsed }));
+          } else if (typeof instruction === 'object') {
+            setCustomPrompts(prev => ({ ...prev, ...instruction }));
+          } else {
+            // Fallback for flat string
+            setCustomPrompts(prev => ({ ...prev, [activePromptTab]: instruction }));
+          }
+        } catch (e) {
+          console.warn('Failed to parse analysis JSON, falling back to flat string:', e);
+          setCustomPrompts(prev => ({ ...prev, [activePromptTab]: instruction }));
+        }
+
         setPersonaYaml(null); // Clear legacy YAML
         setHasUnanalyzedChanges(false);
-        return data.instruction;
+        return typeof instruction === 'string' ? instruction : JSON.stringify(instruction);
       } else {
         throw new Error(data.error || 'Failed to analyze persona');
       }
@@ -849,18 +925,77 @@ const PresetModal: React.FC<PresetModalProps> = ({
           </div>
 
           <div className="animate-in slide-in-from-bottom-4 duration-500 delay-100">
-            <label className="block text-[10px] md:text-[11px] font-black text-black uppercase tracking-[0.3em] mb-3 md:mb-4">
-              追加の指示プロンプト (Additional Instructions)
-            </label>
+            <div className="flex items-center justify-between mb-3 md:mb-4">
+              <label className="block text-[10px] md:text-[11px] font-black text-black uppercase tracking-[0.3em]">
+                追加の指示プロンプト (Additional Instructions)
+              </label>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={async () => {
+                    const samples = trainingItems.filter(item => item.presetId === (selectedPresetId || 'omakase'));
+                    if (samples.length === 0) {
+                      alert('分析するには学習文を1件以上追加してください。');
+                      return;
+                    }
+                    await performPersonaAnalysis();
+                  }}
+                  disabled={isAnalyzingPersona}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border-2 border-black transition-all text-[10px] font-black
+                            ${isAnalyzingPersona
+                      ? 'bg-slate-100 text-slate-400 border-slate-200'
+                      : 'bg-indigo-600 text-white shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px]'}`}
+                >
+                  {isAnalyzingPersona ? (
+                    <div className="w-3 h-3 border-2 border-slate-400 border-t-transparent rounded-full animate-spin"></div>
+                  ) : (
+                    <MagicWandIcon className="w-3.5 h-3.5" />
+                  )}
+                  <span>AI解析を実行</span>
+                </button>
+                <button
+                  onClick={() => {
+                    const currentVal = customPrompts[activePromptTab] || '';
+                    if (!currentVal.trim()) return;
+                    if (!confirm('現在のタブの内容を全プラットフォームに反映しますか？')) return;
+
+                    const next = { ...customPrompts };
+                    [Platform.X, Platform.Instagram, Platform.Line, Platform.GoogleMaps].forEach(p => {
+                      next[p] = currentVal;
+                    });
+                    setCustomPrompts(next);
+                    setHasUnanalyzedChanges(true);
+                  }}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border-2 border-black hover:bg-black/5 transition-all text-[10px] font-black text-black"
+                >
+                  <SparklesIcon className="w-3.5 h-3.5" />
+                  <span>一括適用</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Platform Tabs for Custom Prompt */}
+            <div className="flex items-center gap-1.5 mb-2 overflow-x-auto pb-1 no-scrollbar">
+              {[Platform.X, Platform.Instagram, Platform.Line, Platform.GoogleMaps].map(p => (
+                <button
+                  key={p}
+                  onClick={() => setActivePromptTab(p)}
+                  className={`px-3 py-1.5 rounded-xl text-[10px] font-black transition-all border-2 border-black flex items-center gap-1.5 whitespace-nowrap
+                        ${activePromptTab === p ? 'bg-black text-white' : 'bg-white text-black/40 hover:text-black hover:bg-black/5'}`}
+                >
+                  <span>{p === Platform.Line ? 'LINE' : (p === Platform.GoogleMaps ? 'Google Maps' : (p === Platform.X ? 'X' : p))}</span>
+                </button>
+              ))}
+            </div>
+
             <div className="relative p-1 rounded-[32px]">
               <AutoResizingTextarea
-                value={customPrompt}
+                value={customPrompts[activePromptTab] || ''}
                 onChange={(val) => {
-                  setCustomPrompt(val);
+                  setCustomPrompts(prev => ({ ...prev, [activePromptTab]: val }));
                   setHasUnanalyzedChanges(true);
                 }}
-                placeholder={'例：\n・「ご来店お待ちしております」は使わないでください\n・必ず「#〇〇」のタグをつけてください\n・語尾は「〜だワン！」にしてください'}
-                className="w-full px-6 py-6 md:px-8 md:py-8 bg-white border-2 border-black focus:bg-[var(--bg-beige)] focus:shadow-[4px_4px_0_0_rgba(0,0,0,1)] outline-none rounded-[24px] text-sm md:text-base text-black font-bold leading-relaxed placeholder-slate-300 transition-all min-h-[120px] md:min-h-[160px]"
+                placeholder={`${activePromptTab}専用のルールを入力（例：ハッシュタグをつけて）`}
+                className="w-full px-5 py-4 md:px-6 md:py-5 bg-white border-2 border-black focus:bg-[var(--bg-beige)] focus:shadow-[4px_4px_0_0_rgba(0,0,0,1)] outline-none rounded-[24px] text-sm md:text-base text-black font-bold leading-relaxed placeholder-slate-300 transition-all min-h-[80px] md:min-h-[100px]"
               />
             </div>
             <p className="text-[10px] md:text-[11px] text-slate-500 font-black mt-3 md:mt-4 leading-relaxed flex items-center gap-1.5 md:gap-2">
@@ -890,7 +1025,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                   {/* <div className="flex flex-col gap-2"> ... </div> */}
                   <p className="text-[11px] md:text-xs text-slate-500 font-bold leading-relaxed max-w-2xl">
                     学習文に基づき、あなたの「書き方の癖」をAIがDNAとして抽出・最適化します。
-                    <span className="text-indigo-600 font-black ml-1.5">※ 保存時に自動で最適化が行われます。</span>
+                    <span className="text-indigo-600 font-black ml-1.5">※ 学習文を追加したら、上の「AI解析を実行」からプロンプトを更新できます。</span>
                   </p>
                 </div>
 

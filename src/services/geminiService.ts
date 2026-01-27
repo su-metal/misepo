@@ -766,31 +766,40 @@ export const generateStyleInstruction = async (
 
   const systemInstruction = `
 You are an expert linguistic analyst.
-Your task is to analyze social media posts and write a "Style Instruction Guide" in Japanese.
+Your task is to analyze social media posts and write a "Style Instruction Guide" for each platform in Japanese.
 
 **Goal:**
-Create a clear, actionable list of rules that a writer can follow to mimic this style from the samples.
-Focus on:
-- **Tone & Voice**: (e.g. Friendly, Professional, Energetic, Kansai Dialect, etc.)
-- **Sentence Endings**: (e.g. 〜です/〜ます, 〜だ/〜である, 〜っす, etc.)
-- **Formatting**: (e.g. Use of emojis, line breaks, specific symbols like ＼ ✧ ／)
+Create clear, actionable lists of rules that a writer can follow to mimic the style found in the provided samples for EACH platform.
+
+**Output Structure (JSON):**
+Return a JSON object where each key is a platform name and the value is the style guide (plain text with bullet points).
+Allowed Keys:
+- "X (Twitter)"
+- "Instagram"
+- "LINE"
+- "Google Maps"
+
+**Content Guidelines for each value:**
+- **Tone & Voice**: (e.g. Friendly, Professional, Energetic, Kansai Dialect)
+- **Sentence Endings**: (e.g. 〜です/〜ます, 〜だ/〜である, 〜っす)
+- **Formatting**: (e.g. Use of emojis, line breaks, specific symbols)
 - **Prohibitions**: (e.g. No emojis, No exclamation marks)
 
-**Output Rules:**
-- Output MUST be **Natural Japanese**.
-- Start with a clear header like 【文体指示書】.
-- Use bullet points for readability.
-- If multiple platforms are provided in the input, you may separate sections (e.g. 【X(Twitter)用】, 【Instagram用】), or create a unified style if they are similar.
-- **Do NOT output YAML or JSON.** Just plain text instructions.
+**Rules:**
+- Content MUST be **Natural Japanese**.
+- Start each value with 【文体指示書】.
+- Use bullet points.
+- If a platform is missing from the samples, do not include it in the JSON.
+- **Return ONLY the JSON object. No other text.**
 
-Example Output:
-【文体指示書】
-・基本の語尾は「〜ですね」「〜しましょう」などの丁寧語を使用してください。
-・絵文字（✨や🌱）を文末に1つだけ付け、親しみやすさを出してください。
-・専門用語は使わず、初心者にもわかる言葉で説明してください。
+Example JSON:
+{
+  "X (Twitter)": "【文体指示書】\n・簡潔でスピード感のある口調。\n・絵文字は1ツイートに2個まで。",
+  "Instagram": "【文体指示書】\n・おしゃれで親しみやすい雰囲気。\n・ハッシュタグは最低5個付ける。"
+}
 `;
 
-  const userPrompt = `Analyze these samples and write the Style Instruction Guide:\n\n${
+  const userPrompt = `Analyze these samples and return the platform-specific Style Instruction Guides in JSON format:\n\n${
     Object.entries(samplesByPlatform).map(([plat, content]) => 
       `--- PLATFORM: ${plat} ---\n${content}`
     ).join("\n")
@@ -801,7 +810,7 @@ Example Output:
     contents: [{ role: "user", parts: [{ text: userPrompt }] }],
     config: {
       systemInstruction,
-      responseMimeType: "text/plain",
+      responseMimeType: "application/json",
       temperature: 0.2,
     },
   });
