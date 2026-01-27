@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { CloseIcon, MagicWandIcon, ChevronDownIcon, AutoSparklesIcon, ClockIcon, BookOpenIcon } from './Icons';
+import { IS_HOSPITALITY_MODE } from '../constants';
 
 interface GuideModalProps {
   isOpen: boolean;
@@ -25,13 +26,13 @@ const GuideModal: React.FC<GuideModalProps> = ({ isOpen, onClose }) => {
   return (
     <div className="fixed inset-0 z-[150] flex items-center justify-center p-0 md:p-6 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-500" onClick={onClose}>
       <div
-        className="bg-white rounded-none md:rounded-[32px] border-[3px] border-black shadow-[8px_8px_0_0_rgba(0,0,0,1)] w-full max-w-4xl h-full md:h-auto md:max-h-[85vh] overflow-hidden flex flex-col relative animate-in zoom-in-95 duration-500 scale-100 mobile-scroll-container"
+        className={`w-full max-w-4xl h-full md:h-auto md:max-h-[85vh] overflow-hidden flex flex-col relative animate-in zoom-in-95 duration-500 scale-100 mobile-scroll-container ${IS_HOSPITALITY_MODE ? 'bg-white md:rounded-[32px] shadow-2xl shadow-slate-200/50 border border-slate-100' : 'bg-white rounded-none md:rounded-[32px] border-[3px] border-black shadow-[8px_8px_0_0_rgba(0,0,0,1)]'}`}
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-6 md:p-8 border-b-[3px] border-black flex items-center justify-between bg-[var(--bg-beige)] sticky top-0 z-20">
+        <div className={`p-6 md:p-8 border-b-[3px] flex items-center justify-between sticky top-0 z-20 ${IS_HOSPITALITY_MODE ? 'bg-slate-50 border-slate-100' : 'bg-[var(--bg-beige)] border-black'}`}>
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-[var(--lavender)] flex items-center justify-center text-black border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)]">
+            <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${IS_HOSPITALITY_MODE ? 'bg-[#1A252F] text-white shadow-lg' : 'bg-[var(--lavender)] text-black border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)]'}`}>
               <MagicWandIcon className="w-6 h-6" />
             </div>
             <div>
@@ -43,7 +44,7 @@ const GuideModal: React.FC<GuideModalProps> = ({ isOpen, onClose }) => {
           </div>
           <button
             onClick={onClose}
-            className="w-10 h-10 flex items-center justify-center bg-white border-2 border-transparent hover:border-black rounded-xl text-slate-400 hover:text-black hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)] transition-all"
+            className={`w-10 h-10 flex items-center justify-center rounded-xl transition-all active:scale-95 ${IS_HOSPITALITY_MODE ? 'bg-white border border-slate-200 text-slate-400 hover:text-[#1A252F] hover:border-slate-300 shadow-sm' : 'bg-white border-2 border-transparent hover:border-black text-slate-400 hover:text-black hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)]'}`}
           >
             <CloseIcon className="w-6 h-6" />
           </button>
@@ -174,7 +175,7 @@ const GuideModal: React.FC<GuideModalProps> = ({ isOpen, onClose }) => {
           <div className="pt-8 pb-4 text-center">
             <button
               onClick={onClose}
-              className="w-full sm:w-auto px-12 py-4 bg-black text-white rounded-xl border-2 border-black font-black text-sm hover:bg-slate-800 transition-all shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] active:translate-x-[0px] active:translate-y-[0px] active:shadow-[2px_2px_0_0_rgba(0,0,0,1)]"
+              className={`w-full sm:w-auto px-12 py-4 font-black text-sm transition-all active:scale-95 rounded-xl ${IS_HOSPITALITY_MODE ? 'bg-[#1A252F] text-white shadow-xl shadow-slate-200' : 'bg-black text-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:bg-slate-800 hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)]'}`}
             >
               理解した
             </button>

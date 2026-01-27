@@ -2,6 +2,7 @@ import React from 'react';
 import { createPortal } from 'react-dom';
 import { Platform, StoreProfile } from '../../../types';
 import { getPlatformIcon } from './utils';
+import { IS_HOSPITALITY_MODE } from '../../../constants';
 import { CloseIcon, HeartIcon, MessageCircleIcon, SendIcon, BookmarkIcon, MoreHorizontalIcon, ShareIcon, RotateCcwIcon } from '../../Icons';
 import { LinePreview } from './LinePreview';
 import { AutoResizingTextarea } from './AutoResizingTextarea';
@@ -50,8 +51,8 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
                 onClick={onClose}
             />
 
-            <div className="relative w-full max-w-lg bg-white rounded-[40px] shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] overflow-hidden animate-in zoom-in-95 duration-200 border-[3px] border-black">
-                <div className="flex items-center justify-between p-8 bg-black/5 border-b-[2px] border-black">
+            <div className={`relative w-full max-w-lg bg-white rounded-[40px] overflow-hidden animate-in zoom-in-95 duration-200 border-black ${IS_HOSPITALITY_MODE ? 'shadow-2xl shadow-slate-200/50 border' : 'shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] border-[3px]'}`}>
+                <div className={`flex items-center justify-between p-8 bg-black/5 border-b-2 border-black ${IS_HOSPITALITY_MODE ? 'bg-slate-50 border-slate-100' : ''}`}>
                     <h3 className="text-[11px] font-black text-black uppercase tracking-[0.4em] flex items-center gap-3">
                         <div className="text-black">
                             {getPlatformIcon(platform)}
@@ -60,7 +61,7 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
                     </h3>
                     <button
                         onClick={onClose}
-                        className="w-10 h-10 flex items-center justify-center rounded-2xl bg-[#F5CC6D] border-2 border-black text-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all active:scale-95"
+                        className={`w-10 h-10 flex items-center justify-center rounded-xl transition-all active:scale-95 group border-2 ${IS_HOSPITALITY_MODE ? 'bg-white border-slate-200 text-[#1A252F] hover:bg-slate-50 shadow-sm' : 'bg-[#F5CC6D] border-black text-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none'}`}
                     >
                         <CloseIcon className="w-5 h-5" />
                     </button>
@@ -220,10 +221,10 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
                     </div>
                 </div>
 
-                <div className="p-8 bg-black/5 border-t-[2px] border-black">
+                <div className={`p-8 bg-black/5 border-t-[2px] border-black ${IS_HOSPITALITY_MODE ? 'bg-slate-50 border-slate-100' : ''}`}>
                     <button
                         onClick={onClose}
-                        className="w-full py-5 bg-white text-black border-[3px] border-black rounded-[24px] font-black text-[13px] uppercase tracking-[0.3em] hover:bg-[#F5CC6D] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-x-[2px] hover:-translate-y-[2px] transition-all active:scale-95 shadow-sm"
+                        className={`w-full py-5 rounded-[24px] font-black text-[13px] uppercase tracking-[0.3em] transition-all active:scale-95 shadow-sm ${IS_HOSPITALITY_MODE ? 'bg-[#1A252F] text-white shadow-xl shadow-slate-200' : 'bg-white text-black border-[3px] border-black hover:bg-[#F5CC6D] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-x-[2px] hover:-translate-y-[2px]'}`}
                     >
                         COMPLETE EDITING
                     </button>
