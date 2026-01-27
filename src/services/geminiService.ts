@@ -280,12 +280,14 @@ export const generateContent = async (
   ${languageRule}
 
   <process_step>
-    1. **Analyze**: Read the <user_input> (Review). Identify the customer's sentiment, specific liked items, and any concerns/observations (e.g., price, payment).
-    2. **Respond (Don't Echo)**: Do NOT simply repeat factual statements from the review (e.g., "The price is 240 yen"). Instead, **Acknowledge** them.
-       - *Bad*: "The price is 240 yen. We are cash only." (Robotic)
-       - *Good*: "We appreciate your feedback on the price. We aim for quality..." or "Thank you for noting our cash-only policy; we appreciate your understanding." (Empathetic)
-    3. **Expand**: Add sensory details or store background to make the reply warm.
-    4. **Draft**: Write the reply using the <learning_samples> style.
+    1. **Analyze**: 
+       - Read the <user_input> (Review). Identify customer sentiment and specific points.
+       - **CRITICAL**: Read the <owner_explanation> (if provided). These are the **absolute facts** regarding the situation.
+    2. **Synthesize**: 
+       - Combine the "What happened" from <owner_explanation> with the "How it's said" (Voice/Tone) from <learning_samples>.
+    3. **Respond (Don't Echo)**: Do NOT simply repeat factual statements. **Acknowledge** them with empathy.
+    4. **Expand**: Add sensory details or store background while weaving in the facts from <owner_explanation>.
+    5. **Draft**: Write the reply. Ensure the specific details in <owner_explanation> are the core of the message.
   </process_step>
 </system_instruction>
 
@@ -312,7 +314,7 @@ export const generateContent = async (
     "${config.inputText}"
   </user_input>
 
-  ${config.storeSupplement ? `<store_context>\n${config.storeSupplement}\n</store_context>` : ""}
+  ${config.storeSupplement ? `<owner_explanation>\n${config.storeSupplement}\n</owner_explanation>` : ""}
 
   <task>
     ${(() => {
@@ -325,7 +327,8 @@ export const generateContent = async (
 
         if (isGMap) {
             const purposeStr = GMAP_PURPOSE_PROMPTS[config.gmapPurpose || config.purpose as GoogleMapPurpose] || GMAP_PURPOSE_PROMPTS[GoogleMapPurpose.Auto];
-            return `${styleInstruction}\n\nTask: The <user_input> is a customer review. Generate a REPLY from the owner based on this purpose: "${purposeStr}". ${lengthWarning} Use the facts in <store_context> if provided.`;
+            const factInstruction = config.storeSupplement ? `\n- **FACTUAL CORE**: You MUST incorporate the specific details provided in <owner_explanation>. These facts are the most important content of the reply.` : '';
+            return `${styleInstruction}${factInstruction}\n\nTask: The <user_input> is a customer review. Generate a REPLY from the owner based on this purpose: "${purposeStr}". ${lengthWarning}`;
         }
         
         const postPurposeStr = POST_PURPOSE_PROMPTS[config.purpose as PostPurpose] || POST_PURPOSE_PROMPTS[PostPurpose.Auto];
@@ -387,15 +390,16 @@ export const generateContent = async (
     "${config.inputText}"
   </user_input>
 
-  ${config.storeSupplement ? `<store_context>\n${config.storeSupplement}\n</store_context>` : ""}
+  ${config.storeSupplement ? `<owner_explanation>\n${config.storeSupplement}\n</owner_explanation>` : ""}
 
   <task>
     ${(() => {
         const lengthStr = t.target;
         const minVal = t.min;
         const lengthWarning = `**CRITICAL**: The body text MUST be **${lengthStr} chars**. DO NOT be too short. Minimum length: ${minVal} characters.`;
+        const factInstruction = config.storeSupplement ? `\n- **FACTUAL CORE**: You MUST incorporate the specific details provided in <owner_explanation>. These facts are key to the reply.` : '';
 
-        if (isGMap) return `The <user_input> is a customer review. Generate a polite and empathetic REPLY from the owner. ${lengthWarning} Use the facts in <store_context> if provided.`;
+        if (isGMap) return `The <user_input> is a customer review. Generate a REPLY from the owner. ${factInstruction} ${lengthWarning}`;
         
         if (isLine) return `Generate a LINE message with a clear flow: 1. Hook, 2. Details, 3. Action. ${lengthWarning} **VISUAL**: Use a header for the hook. **STRICT EMOJI RULE**: ${config.includeEmojis ? 'Use emojis naturally.' : 'DO NOT use any emojis.'} **LAYOUT**: Clean vertical flow.`;
 
