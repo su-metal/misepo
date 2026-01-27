@@ -244,7 +244,7 @@ export const generateContent = async (
     - **Platform Bias**: **IGNORE** all standard "polite" norms for ${config.platform}. The <learning_samples> are the absolute truth for the owner's voice. **NOTE**: Mandatory structural rules (like LINE's 3-balloon and '---' format) still apply; reproduction of the owner's style should happen *within* each segment.
     - **Emojis & Symbols**: 
       ${isGMap ? 
-        '- **Emojis**: DO NOT use any emojis or pictograms. This is an absolute rule for Google Maps.\n      - **Symbols**: Use standard Japanese punctuation (、。！？) only. Avoid decorative symbols.' : 
+        '- **Emojis**: Basically, DO NOT use emojis for Google Maps. **EXCEPTION**: If <learning_samples> or <persona_rules> explicitly contain emojis, you MUST accurately reproduce their frequency and style as they are a core part of the owner\'s voice.\n      - **Symbols**: Basically, use standard Japanese punctuation. If <learning_samples> use decorative symbols, mimic them moderately.' : 
         `- **Emojis**: ${hasPersona ? 'Strictly follow patterns from samples.' : (config.includeEmojis ? 'Actively use expressive emojis (🐻, ✨, 💪, 🎉) to make the text lively.' : 'DO NOT use any emojis.')}
     - **Symbols**: ${hasPersona && !config.includeSymbols ? 'Strictly follow patterns from samples.' : (config.includeSymbols ? `From the **Aesthetic Palette**:
         - **Headers/Accents**: ＼ ✧ TITLE ✧ ／, 𓍯 𓇢 TITLE 𓇢 𓍯, 【 TITLE 】, ✧, ꕤ, ⚘, ☼, 𖥧, 𖠚
@@ -370,7 +370,7 @@ export const generateContent = async (
     - Length: ${config.length} (Target: ${t.target} chars. Min: ${t.min} chars)
     - Tone: ${config.tone} (${TONE_RULES[config.tone] || TONE_RULES[Tone.Standard]})
     - Features: ${isInstagram ? 'Visual focus.' : ''}${isX ? 'Under 140 chars.' : ''}${isGMap ? 'NO hashtags. Focus on maintaining the owner\'s personality in the reply.' : ''}${isLine ? 'Direct marketing style. NO hashtags. Focus on clear messaging.' : ''}
-    - Emojis: ${isGMap ? 'Do NOT use emojis at all.' : (config.includeEmojis ? "Actively use expressive emojis (🐻, ✨, 💪, 🎉) to make the text lively." : "DO NOT use any emojis (emoticons, icons, pictograms) under any circumstances. Keep it plain text only regarding emojis.")}
+    - Emojis: ${isGMap ? 'Prohibited by default. HOWEVER, if <learning_samples> contain emojis, prioritize matching their frequency to preserve the owner\'s style.' : (config.includeEmojis ? "Actively use expressive emojis (🐻, ✨, 💪, 🎉) to make the text lively." : "DO NOT use any emojis (emoticons, icons, pictograms) under any circumstances. Keep it plain text only regarding emojis.")}
     - Special Characters: ${config.includeSymbols ? `From the **Aesthetic Palette**:
         - **Headers/Accents**: ＼ ✧ TITLE ✧ ／, 𓍯 𓇢 TITLE 𓇢 𓍯, 【 TITLE 】, ✧, ꕤ, ⚘, ☼, 𖥧, 𖠚
         - **Dividers**: ${isX ? '**DISABLED for X**. Do NOT use line dividers on X.' : '𓂃𓂃𓂃, ⋆┈┈┈┈┈┈┈┈┈┈⋆, ──────────── (Use to separate Body and CTA)'}
@@ -455,8 +455,13 @@ export const generateContent = async (
         requestConfig.systemInstruction = systemInstruction;
     }
 
-    // Dynamic Thinking Budget: 256
-    const budget = 256;
+    // Dynamic Thinking Budget Calculation
+    let budget = 256; // Default
+    if (config.platform === Platform.X) {
+        budget = attempt === 0 ? 128 : 0; 
+    } else if (config.platform === Platform.GoogleMaps && profile.industry === '旅館・ホテル') {
+        budget = 512;
+    }
     console.debug(`[GEMINI] Attempt: ${attempt}, Platform: ${config.platform}, ThinkingBudget: ${budget}`);
 
     // @ts-ignore - Enable internal reasoning
@@ -666,8 +671,13 @@ Output ONLY the refined text.
         ],
       };
 
-    // Thinking Budget: 256
-    const budget = 256;
+    // Thinking Budget Optimization
+    let budget = 256; // Default
+    if (config.platform === Platform.X) {
+        budget = 128;
+    } else if (config.platform === Platform.GoogleMaps && profile.industry === '旅館・ホテル') {
+        budget = 512;
+    }
 
     // @ts-ignore - Enable internal reasoning for higher quality drafting (Gemini 2.5 Flash feature)
     requestConfig.thinkingConfig = { includeThoughts: true, thinkingBudget: budget }; 
