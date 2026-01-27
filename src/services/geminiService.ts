@@ -431,9 +431,8 @@ export const generateContent = async (
         requestConfig.systemInstruction = systemInstruction;
     }
 
-    // Dynamic Thinking Budget: 0 for X retries, 256 for initial attempts
-    const isXRetry = attempt > 0 && config.platform === Platform.X;
-    const budget = isXRetry ? 0 : 256;
+    // Dynamic Thinking Budget: 256
+    const budget = 256;
     console.debug(`[GEMINI] Attempt: ${attempt}, Platform: ${config.platform}, ThinkingBudget: ${budget}`);
 
     // @ts-ignore - Enable internal reasoning
@@ -643,7 +642,7 @@ Output ONLY the refined text.
         ],
       };
 
-    // Fixed Thinking Budget to 256 tokens to reduce API costs
+    // Thinking Budget: 256
     const budget = 256;
 
     // @ts-ignore - Enable internal reasoning for higher quality drafting (Gemini 2.5 Flash feature)
