@@ -176,6 +176,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
   const [isTrainingLoading, setIsTrainingLoading] = useState(false);
   const [trainingError, setTrainingError] = useState<string | null>(null);
   const [modalText, setModalText] = useState('');
+  const [isPromptExpanded, setIsPromptExpanded] = useState(false);
   const [isSanitizing, setIsSanitizing] = useState(false);
   const [isAnalyzingImage, setIsAnalyzingImage] = useState(false);
   const [isAnalyzingPersona, setIsAnalyzingPersona] = useState(false);
@@ -569,13 +570,13 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
     const platformOrder = [Platform.Instagram, Platform.X, Platform.Line, Platform.GoogleMaps, Platform.General];
 
-    // State for expanded sections (default to all open or just some)
+    // State for expanded sections (default to all collapsed)
     const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
-      [Platform.Instagram]: true,
-      [Platform.X]: true,
-      [Platform.Line]: true,
-      [Platform.GoogleMaps]: true,
-      [Platform.General]: true,
+      [Platform.Instagram]: false,
+      [Platform.X]: false,
+      [Platform.Line]: false,
+      [Platform.GoogleMaps]: false,
+      [Platform.General]: false,
     });
 
     const toggleSection = (platform: string) => {
@@ -606,7 +607,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
     };
 
     return (
-      <div className="py-8 md:py-12">
+      <div className="py-8 md:py-12 px-6 md:px-10">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
           <div className="flex items-center gap-5">
             <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] bg-indigo-600`}>
@@ -648,7 +649,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
             </div>
           </div>
         ) : (
-          <div className="space-y-8">
+          <div className="space-y-12">
             {platformOrder.map(platform => {
               const platformItems = groupedSamples[platform] || [];
               if (platformItems.length === 0) return null;
@@ -687,11 +688,11 @@ const PresetModal: React.FC<PresetModalProps> = ({
                       <div
                         key={item.id}
                         className={`
-                          group relative flex flex-col justify-between p-2.5 md:p-4 rounded-xl bg-white border-2 border-black 
+                          group relative flex flex-col justify-between p-3 md:p-5 rounded-xl bg-white border-2 border-black 
                           hover:bg-[var(--bg-beige)] hover:shadow-[3px_3px_0_0_rgba(0,0,0,1)] hover:-translate-y-0.5 
                           transition-all cursor-pointer 
-                          min-h-[90px] w-[140px] shrink-0
-                          sm:min-h-[120px] sm:w-[240px]
+                          min-h-[110px] w-[160px] shrink-0
+                          sm:min-h-[140px] sm:w-[280px]
                         `}
                         onClick={() => {
                           setModalText(item.content);
@@ -702,12 +703,12 @@ const PresetModal: React.FC<PresetModalProps> = ({
                         }}
                       >
                         <div>
-                          <p className="text-[9px] md:text-[10px] text-black font-bold line-clamp-3 md:line-clamp-4 leading-relaxed whitespace-pre-wrap break-all">
+                          <p className="text-[11px] md:text-[13px] text-black font-bold line-clamp-3 md:line-clamp-4 leading-relaxed whitespace-pre-wrap break-all">
                             {item.content}
                           </p>
                         </div>
                         <div className="mt-2 md:mt-3 flex items-end justify-between">
-                          <span className="text-[8px] md:text-[9px] font-black text-slate-300 uppercase tracking-wider scale-90 origin-bottom-left">{item.source === 'generated' ? 'AI' : 'Manual'}</span>
+                          <span className="text-[9px] md:text-[11px] font-black text-slate-300 uppercase tracking-wider scale-90 origin-bottom-left">{item.source === 'generated' ? 'AI' : 'Manual'}</span>
                           <button
                             type="button"
                             onClick={(e) => {
@@ -873,74 +874,74 @@ const PresetModal: React.FC<PresetModalProps> = ({
                   基本設定 (Basic Proflie)
                 </label>
 
-                <div className="flex flex-col bg-white border-2 border-black rounded-[24px] shadow-[4px_4px_0_0_rgba(0,0,0,1)] overflow-hidden">
+                <div className="bg-white border-2 border-black rounded-[24px] shadow-[4px_4px_0_0_rgba(0,0,0,1)] overflow-hidden">
+                  <div className="flex flex-row divide-x-2 divide-slate-100">
+                    {/* Part 1: Profile Name (Primary) */}
+                    <div className="flex-[3] p-4 md:p-8">
+                      <label className="block text-[10px] md:text-[11px] font-black text-black uppercase tracking-[0.3em] mb-3">
+                        プロフィール名
+                      </label>
+                      <div className="relative group">
+                        <input
+                          type="text"
+                          value={name}
+                          onChange={(e) => handleNameChange(e.target.value)}
+                          placeholder="例: 店長（公式）"
+                          className="w-full px-4 py-3 md:px-7 md:py-5 bg-slate-50 border-2 border-slate-200 focus:border-black focus:bg-white outline-none rounded-xl text-sm md:text-base text-black font-black placeholder-slate-300 transition-all"
+                        />
+                      </div>
+                    </div>
 
-                  {/* Part 1: Profile Name */}
-                  <div className="p-6 md:p-8 border-b-2 border-slate-100">
-                    <label className="block text-[10px] md:text-[11px] font-black text-black uppercase tracking-[0.3em] mb-3">
-                      プロフィール名 (Account Name)
-                    </label>
-                    <div className="relative group">
-                      <input
-                        type="text"
-                        value={name}
-                        onChange={(e) => handleNameChange(e.target.value)}
-                        placeholder="例: 店長（公式）"
-                        className="w-full px-5 py-4 md:px-7 md:py-5 bg-slate-50 border-2 border-slate-200 focus:border-black focus:bg-white outline-none rounded-xl text-sm md:text-base text-black font-black placeholder-slate-300 transition-all"
-                      />
+                    {/* Part 2: Icon Selection Trigger (Secondary) */}
+                    <div className={`p-4 md:p-8 flex flex-col justify-center transition-colors duration-300 ${isIconSelectorOpen ? 'bg-[var(--bg-beige)]/30' : 'bg-white'}`}>
+                      <div
+                        onClick={() => setIsIconSelectorOpen(!isIconSelectorOpen)}
+                        className="flex flex-col items-center justify-center gap-1 cursor-pointer group select-none"
+                      >
+                        <label className="block text-[10px] md:text-[11px] font-black text-black uppercase tracking-[0.3em] group-hover:text-indigo-600 transition-colors">
+                          アイコン
+                        </label>
+                        <div className="flex items-center gap-2">
+                          <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-[var(--gold)] border-2 border-black flex items-center justify-center text-black shadow-sm group-hover:scale-110 transition-transform">
+                            {renderAvatar(avatar, "w-5 h-5 md:w-6 md:h-6")}
+                          </div>
+                          <div className={`w-5 h-5 md:w-6 md:h-6 rounded-full bg-slate-100 border-2 border-black flex items-center justify-center transition-transform duration-300 ${isIconSelectorOpen ? 'rotate-180 bg-black border-black' : 'group-hover:bg-slate-200'}`}>
+                            <ChevronDownIcon className={`w-2.5 h-2.5 md:w-3 md:h-3 transition-colors ${isIconSelectorOpen ? 'text-white' : 'text-black'}`} />
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
-                  {/* Part 2: Icon Selection */}
-                  <div className={`p-6 md:p-8 transition-colors duration-300 ${isIconSelectorOpen ? 'bg-[var(--bg-beige)]/30' : 'bg-white'}`}>
-                    <div
-                      onClick={() => setIsIconSelectorOpen(!isIconSelectorOpen)}
-                      className="flex items-center justify-between cursor-pointer group select-none"
-                    >
-                      <div>
-                        <label className="block text-[10px] md:text-[11px] font-black text-black uppercase tracking-[0.3em] mb-1 group-hover:text-indigo-600 transition-colors">
-                          アイコンの選択 (Select Icon)
-                        </label>
-                        <div className="text-sm font-bold text-slate-500">
-                          {AVATAR_OPTIONS.find(o => o.id === avatar)?.label}
-                        </div>
+                  {/* Part 3: Expandable Icon Grid (Full Width) */}
+                  <div className={`transition-all duration-300 ease-in-out overflow-hidden border-t-2 border-slate-100 ${isIconSelectorOpen ? 'max-h-[500px] opacity-100 bg-[var(--bg-beige)]/10' : 'max-h-0 opacity-0'}`}>
+                    <div className="p-6 md:p-8">
+                      <div className="grid grid-cols-5 md:flex md:flex-wrap gap-2 md:gap-3">
+                        {AVATAR_OPTIONS.map((item) => {
+                          const Icon = item.icon;
+                          const isSelected = avatar === item.id;
+                          return (
+                            <button
+                              key={item.id}
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setAvatar(item.id);
+                              }}
+                              title={item.label}
+                              className={`
+                                w-11 h-11 md:w-14 md:h-14 flex items-center justify-center rounded-xl transition-all duration-300 relative shrink-0 border-2
+                                ${isSelected
+                                  ? 'bg-[var(--gold)] shadow-[3px_3px_0_0_rgba(0,0,0,1)] border-black text-black z-10 scale-105'
+                                  : 'bg-white text-slate-300 hover:bg-white hover:text-slate-500 border-slate-200 hover:border-black hover:shadow-sm'
+                                }
+                              `}
+                            >
+                              <Icon className="w-5 h-5 md:w-6 md:h-6" />
+                            </button>
+                          );
+                        })}
                       </div>
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-[var(--gold)] border-2 border-black flex items-center justify-center text-black shadow-sm group-hover:scale-110 transition-transform">
-                          {renderAvatar(avatar, "w-5 h-5 md:w-6 md:h-6")}
-                        </div>
-                        <div className={`w-8 h-8 rounded-full bg-slate-100 border-2 border-black flex items-center justify-center transition-transform duration-300 ${isIconSelectorOpen ? 'rotate-180 bg-black border-black' : 'group-hover:bg-slate-200'}`}>
-                          <ChevronDownIcon className={`w-4 h-4 transition-colors ${isIconSelectorOpen ? 'text-white' : 'text-black'}`} />
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Expandable Icon Grid */}
-                    <div className={`grid grid-cols-5 md:flex md:flex-wrap gap-2 md:gap-3 transition-all duration-300 ease-in-out overflow-hidden ${isIconSelectorOpen ? 'max-h-[500px] opacity-100 pt-6 mt-2' : 'max-h-0 opacity-0'}`}>
-                      {AVATAR_OPTIONS.map((item) => {
-                        const Icon = item.icon;
-                        const isSelected = avatar === item.id;
-                        return (
-                          <button
-                            key={item.id}
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setAvatar(item.id);
-                            }}
-                            title={item.label}
-                            className={`
-                              w-10 h-10 md:w-14 md:h-14 flex items-center justify-center rounded-xl transition-all duration-300 relative shrink-0 border-2
-                              ${isSelected
-                                ? 'bg-[var(--gold)] shadow-[3px_3px_0_0_rgba(0,0,0,1)] border-black text-black z-10 scale-105'
-                                : 'bg-white text-slate-300 hover:bg-white hover:text-slate-500 border-slate-200 hover:border-black hover:shadow-sm'
-                              }
-                            `}
-                          >
-                            <Icon className="w-4 h-4 md:w-6 md:h-6" />
-                          </button>
-                        );
-                      })}
                     </div>
                   </div>
                 </div>
@@ -949,11 +950,62 @@ const PresetModal: React.FC<PresetModalProps> = ({
           </div>
 
           <div className="animate-in slide-in-from-bottom-4 duration-500 delay-100">
-            <div className="flex items-center justify-between mb-3 md:mb-4">
+            <label className="block text-[10px] md:text-[11px] font-black text-slate-800 uppercase tracking-[0.3em] mb-3 md:mb-5">
+              AIプロフィールの育成 (文体学習)
+            </label>
+            <div className="bg-white border-2 border-black rounded-[32px] overflow-hidden shadow-[4px_4px_0_0_rgba(0,0,0,1)]">
+              {/* Console Header: Status and Description */}
+              <div className="p-6 md:p-8 border-b-2 border-slate-100 bg-[var(--bg-beige)]/30">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center border border-indigo-100">
+                      <MagicWandIcon className="w-5 h-5 text-indigo-500" />
+                    </div>
+                    <div>
+                      <h4 className="text-sm md:text-base font-black text-black leading-tight">スタイル・インテリジェンス</h4>
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-0.5">Automated Optimization</p>
+                    </div>
+                  </div>
+                  <p className="text-[11px] md:text-sm text-slate-500 font-bold leading-relaxed max-w-[280px] md:max-w-xl">
+                    学習文から「書き方の癖」を抽出・最適化します。
+                    <span className="text-indigo-600 font-black block md:inline mt-1 md:mt-0 md:ml-2">※学習文追加後に下の解析を実行してください。</span>
+                  </p>
+                </div>
+
+                {/* Desktop Hints Row (Subtle) */}
+                <div className="hidden md:flex items-center gap-8 mt-4 pt-4 border-t border-slate-100/50">
+                  <div className="flex items-center gap-2">
+                    <MagicWandIcon className="w-3 h-3 text-indigo-400" />
+                    <span className="text-[10px] text-slate-400 font-bold">各SNS 5件まで登録可</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <SparklesIcon className="w-3 h-3 text-rose-400" />
+                    <span className="text-[10px] text-slate-400 font-bold">AI伏せ字で個人情報を保護</span>
+                  </div>
+                </div>
+
+                {/* Mobile-only condensed notice */}
+                <p className="md:hidden text-[10px] text-slate-400 font-bold mt-2">
+                  追加した学習文はプラットフォームごとに編集できます。
+                </p>
+              </div>
+
+              {/* Console Content: Unified Samples List */}
+              <div className="bg-white">
+                {renderUnifiedSamples()}
+              </div>
+            </div>
+          </div>
+
+
+          <div className="animate-in slide-in-from-bottom-4 duration-500 delay-200">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
               <label className="block text-[10px] md:text-[11px] font-black text-black uppercase tracking-[0.3em]">
-                追加の指示プロンプト (Additional Instructions)
+                追加の指示プロンプト
               </label>
-              <div className="flex items-center gap-2">
+
+              {/* Action Buttons Group */}
+              <div className="flex items-center gap-2 p-1.5 bg-slate-100 rounded-[20px] border-2 border-black inline-flex self-start md:self-auto">
                 <button
                   onClick={async () => {
                     const samples = trainingItems.filter(item => item.presetId === (selectedPresetId || 'omakase'));
@@ -985,9 +1037,9 @@ const PresetModal: React.FC<PresetModalProps> = ({
                     }
                   }}
                   disabled={isAnalyzingPersona}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border-2 border-black transition-all text-[10px] font-black
+                  className={`flex items-center gap-1.5 px-4 py-2 rounded-2xl border-2 border-black transition-all text-[10px] font-black whitespace-nowrap
                             ${isAnalyzingPersona
-                      ? 'bg-slate-100 text-slate-400 border-slate-200'
+                      ? 'bg-slate-200 text-slate-400 border-slate-300 shadow-none'
                       : 'bg-indigo-600 text-white shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px]'}`}
                 >
                   {isAnalyzingPersona ? (
@@ -1010,7 +1062,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                     setCustomPrompts(next);
                     setHasUnanalyzedChanges(true);
                   }}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border-2 border-black hover:bg-black/5 transition-all text-[10px] font-black text-black"
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-2xl bg-white border-2 border-black hover:bg-black/5 transition-all text-[10px] font-black text-black whitespace-nowrap"
                 >
                   <SparklesIcon className="w-3.5 h-3.5" />
                   <span>一括適用</span>
@@ -1018,123 +1070,94 @@ const PresetModal: React.FC<PresetModalProps> = ({
               </div>
             </div>
 
-            {/* Platform Tabs for Custom Prompt */}
-            <div className="flex items-center gap-1.5 mb-2 overflow-x-auto pb-1 no-scrollbar">
-              {[Platform.X, Platform.Instagram, Platform.Line, Platform.GoogleMaps].map(p => (
-                <button
-                  key={p}
-                  onClick={() => setActivePromptTab(p)}
-                  className={`px-3 py-1.5 rounded-xl text-[10px] font-black transition-all border-2 border-black flex items-center gap-1.5 whitespace-nowrap
-                        ${activePromptTab === p ? 'bg-black text-white' : 'bg-white text-black/40 hover:text-black hover:bg-black/5'}`}
-                >
-                  <span>{p === Platform.Line ? 'LINE' : (p === Platform.GoogleMaps ? 'Google Maps' : (p === Platform.X ? 'X' : p))}</span>
-                </button>
-              ))}
+            {/* Platform Segmented Control (一体型タブ) */}
+            <div className="bg-slate-100 p-1 rounded-2xl border-2 border-black inline-flex w-full md:w-auto mb-3 overflow-hidden">
+              {[Platform.X, Platform.Instagram, Platform.Line, Platform.GoogleMaps].map(p => {
+                const isActive = activePromptTab === p;
+                return (
+                  <button
+                    key={p}
+                    onClick={() => setActivePromptTab(p)}
+                    className={`
+                      flex-1 md:flex-none px-3 md:px-5 py-2 rounded-xl text-[10px] font-black transition-all flex items-center justify-center gap-2 whitespace-nowrap
+                      ${isActive
+                        ? 'bg-black text-white shadow-[2px_2px_0_0_rgba(0,0,0,0.2)]'
+                        : 'text-slate-400 hover:text-black hover:bg-white/50'}
+                    `}
+                  >
+                    {/* Platform Specific Icons for distinction */}
+                    {p === Platform.X && <span className="w-3 h-3 flex items-center justify-center font-serif">𝕏</span>}
+                    {p === Platform.Instagram && <div className="w-3 h-3 rounded-[3px] border-[1.5px] border-current opacity-70" />}
+                    {p === Platform.Line && <div className="w-3 h-3 rounded-full border-[1.5px] border-current opacity-70" />}
+                    {p === Platform.GoogleMaps && <div className="w-3 h-3 rounded-[3px] border-[1.5px] border-current border-dotted opacity-70" />}
+
+                    <span>{p === Platform.Line ? 'LINE' : (p === Platform.GoogleMaps ? 'G-Maps' : (p === Platform.X ? 'X' : p))}</span>
+                  </button>
+                );
+              })}
             </div>
 
-            <div className="relative p-1 rounded-[32px]">
-              <AutoResizingTextarea
-                value={customPrompts[activePromptTab] || ''}
-                onChange={(val) => {
-                  setCustomPrompts(prev => ({ ...prev, [activePromptTab]: val }));
-                  setHasUnanalyzedChanges(true);
-                }}
-                placeholder={`${activePromptTab}専用のルールを入力（例：ハッシュタグをつけて）`}
-                className="w-full px-5 py-4 md:px-6 md:py-5 bg-white border-2 border-black focus:bg-[var(--bg-beige)] focus:shadow-[4px_4px_0_0_rgba(0,0,0,1)] outline-none rounded-[24px] text-sm md:text-base text-black font-bold leading-relaxed placeholder-slate-300 transition-all min-h-[80px] md:min-h-[100px]"
-              />
+            <div className="relative p-1 rounded-[32px] group">
+              {/* Mobile View: Toggle Button to Open Modal */}
+              <div
+                className="md:hidden w-full px-5 py-5 bg-slate-50 border-2 border-black rounded-[24px] cursor-pointer hover:bg-slate-100 transition-all flex items-center justify-between group"
+                onClick={() => setIsPromptExpanded(true)}
+              >
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm text-black font-bold truncate opacity-60">
+                    {customPrompts[activePromptTab] || `${activePromptTab}専用のルールを入力...`}
+                  </p>
+                </div>
+                <div className="flex items-center gap-1.5 ml-4 shrink-0">
+                  <span className="text-[10px] font-black text-indigo-600 uppercase tracking-widest">編集する</span>
+                  <SparklesIcon className="w-3.5 h-3.5 text-indigo-500 group-hover:rotate-12 transition-transform" />
+                </div>
+              </div>
+
+              {/* Desktop View: Inline Textarea */}
+              <div className="hidden md:block">
+                <AutoResizingTextarea
+                  value={customPrompts[activePromptTab] || ''}
+                  onChange={(val) => {
+                    setCustomPrompts(prev => ({ ...prev, [activePromptTab]: val }));
+                    setHasUnanalyzedChanges(true);
+                  }}
+                  placeholder={`${activePromptTab}専用のルールを入力（例：ハッシュタグをつけて）`}
+                  className="w-full px-5 py-4 md:px-6 md:py-5 bg-white border-2 border-black focus:bg-[var(--bg-beige)] focus:shadow-[4px_4px_0_0_rgba(0,0,0,1)] outline-none rounded-[24px] text-sm md:text-base text-black font-bold leading-relaxed placeholder-slate-300 transition-all min-h-[80px] md:min-h-[100px]"
+                />
+              </div>
             </div>
             <p className="text-[10px] md:text-[11px] text-slate-500 font-black mt-3 md:mt-4 leading-relaxed flex items-center gap-1.5 md:gap-2">
               <span className="w-2 h-2 rounded-full bg-[var(--teal)]"></span>
               文体は「過去の投稿学習」が優先されます。ここは特定のルールや制約を指定するのに便利です。
             </p>
           </div>
+        </div>
 
-          <div className="animate-in slide-in-from-bottom-4 duration-500 delay-200">
-            <label className="block text-[10px] md:text-[11px] font-black text-slate-800 uppercase tracking-[0.3em] mb-3 md:mb-5">
-              AIプロフィールの育成 (文体学習)
-            </label>
-            <div className="bg-white border-2 border-black rounded-[32px] overflow-hidden shadow-[4px_4px_0_0_rgba(0,0,0,1)]">
-              {/* Console Header: Status and Description */}
-              <div className="p-6 md:p-8 border-b-2 border-slate-100 bg-[var(--bg-beige)]/30">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center border border-indigo-100">
-                      <MagicWandIcon className="w-5 h-5 text-indigo-500" />
-                    </div>
-                    <div>
-                      <h4 className="text-sm md:text-base font-black text-black leading-tight">スタイル・インテリジェンス</h4>
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-0.5">Automated Optimization</p>
-                    </div>
-                  </div>
-                  {/* Header: Intelligence Status - REMOVED per user request */}
-                  {/* <div className="flex flex-col gap-2"> ... </div> */}
-                  <p className="text-[11px] md:text-xs text-slate-500 font-bold leading-relaxed max-w-2xl">
-                    学習文に基づき、あなたの「書き方の癖」をAIがDNAとして抽出・最適化します。
-                    <span className="text-indigo-600 font-black ml-1.5">※ 学習文を追加したら、上の「AI解析を実行」からプロンプトを更新できます。</span>
-                  </p>
-                </div>
-
-                {/* Console Body: Hints Grid */}
-                <div className=" py-5 bg-slate-50/30 border-b-2 border-slate-100">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
-                    <div className="flex gap-4 items-start">
-                      <div className="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center shrink-0 shadow-sm mt-0.5">
-                        <MagicWandIcon className="w-4 h-4 text-indigo-400" />
-                      </div>
-                      <div className="space-y-1">
-                        <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">効果的な学習</h5>
-                        <p className="text-[11px] text-slate-500 leading-relaxed font-bold">
-                          各SNSごとに<span className="text-indigo-600">最大5件</span>まで登録できます。
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex gap-4 items-start">
-                      <div className="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center shrink-0 shadow-sm mt-0.5">
-                        <SparklesIcon className="w-4 h-4 text-rose-400" />
-                      </div>
-                      <div className="space-y-1">
-                        <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">プライバシー</h5>
-                        <p className="text-[11px] text-slate-500 leading-relaxed font-bold">
-                          「AI伏せ字」を使えば、固有名詞などを安全に隠して学習データを作成できます。
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Console Content: Unified Samples List */}
-                <div className="bg-white">
-                  {renderUnifiedSamples()}
+        <div className="p-8 md:p-10 border-t-[3px] border-black bg-white flex flex-col md:flex-row items-stretch justify-between gap-6 shrink-0 z-10 relative">
+          <div className="flex-1 flex flex-col gap-2 relative">
+            {showSuccessToast && (
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 z-[50] animate-in slide-in-from-bottom-2 fade-in duration-500">
+                <div className="bg-white text-black px-5 py-2.5 rounded-xl shadow-[4px_4px_0_0_rgba(0,0,0,1)] flex items-center gap-2 border-2 border-black whitespace-nowrap">
+                  <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
+                  <span className="text-[11px] font-black uppercase tracking-widest">保存しました</span>
                 </div>
               </div>
-            </div>
-
-            <div className="p-8 md:p-10 border-t-[3px] border-black bg-white flex flex-col md:flex-row items-stretch justify-between gap-6 shrink-0 z-10 relative">
-              <div className="flex-1 flex flex-col gap-2 relative">
-                {showSuccessToast && (
-                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 z-[50] animate-in slide-in-from-bottom-2 fade-in duration-500">
-                    <div className="bg-white text-black px-5 py-2.5 rounded-xl shadow-[4px_4px_0_0_rgba(0,0,0,1)] flex items-center gap-2 border-2 border-black whitespace-nowrap">
-                      <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
-                      <span className="text-[11px] font-black uppercase tracking-widest">保存しました</span>
-                    </div>
-                  </div>
-                )}
-                <button
-                  onClick={() => handleSave()}
-                  disabled={isSaveDisabled}
-                  className="w-full bg-[var(--gold)] hover:bg-[var(--rose)] border-2 border-black disabled:opacity-50 disabled:cursor-not-allowed text-black px-8 py-4 md:py-6 rounded-xl font-black text-sm uppercase tracking-[0.3em] flex items-center justify-center gap-4 transition-all transform hover:translate-x-[-2px] hover:translate-y-[-2px] active:translate-x-0 active:translate-y-0 shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] group relative overflow-hidden"
-                >
-                  {(isInternalSaving || isAnalyzingPersona) ? (
-                    <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin"></div>
-                  ) : (
-                    <SaveIcon className="w-5 h-5 group-hover:scale-110 transition-transform relative z-10" />
-                  )}
-                  <span className="relative z-10">
-                    {isAnalyzingPersona ? '解析＆保存中...' : (selectedPresetId ? '更新して保存' : '新規作成して保存')}
-                  </span>
-                </button>
-              </div>
-            </div>
+            )}
+            <button
+              onClick={() => handleSave()}
+              disabled={isSaveDisabled}
+              className="w-full bg-[var(--gold)] hover:bg-[var(--rose)] border-2 border-black disabled:opacity-50 disabled:cursor-not-allowed text-black px-8 py-4 md:py-6 rounded-xl font-black text-sm uppercase tracking-[0.3em] flex items-center justify-center gap-4 transition-all transform hover:translate-x-[-2px] hover:translate-y-[-2px] active:translate-x-0 active:translate-y-0 shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] group relative overflow-hidden"
+            >
+              {(isInternalSaving || isAnalyzingPersona) ? (
+                <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin"></div>
+              ) : (
+                <SaveIcon className="w-5 h-5 group-hover:scale-110 transition-transform relative z-10" />
+              )}
+              <span className="relative z-10">
+                {isAnalyzingPersona ? '解析＆保存中...' : (selectedPresetId ? '更新して保存' : '新規作成して保存')}
+              </span>
+            </button>
           </div>
         </div>
       </div>
@@ -1446,10 +1469,63 @@ const PresetModal: React.FC<PresetModalProps> = ({
     document.body
   );
 
+  const promptEditOverlay = isPromptExpanded && createPortal(
+    <div className="fixed inset-0 z-[250] bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 md:p-10 animate-in fade-in duration-300">
+      <div
+        className="w-full max-w-4xl max-h-[90vh] md:max-h-[85vh] bg-white rounded-[32px] border-[3px] border-black shadow-[8px_8px_0_0_rgba(0,0,0,1)] flex flex-col overflow-hidden animate-in zoom-in-95 duration-500"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="p-6 md:p-8 border-b-[3px] border-black bg-[var(--bg-beige)] flex items-center justify-between shrink-0">
+          <div className="flex items-center gap-4">
+            <div className="p-2.5 bg-black text-white rounded-xl">
+              <MagicWandIcon className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="font-black text-lg md:text-xl text-black leading-tight">
+                {activePromptTab === Platform.Line ? 'LINE' : (activePromptTab === Platform.GoogleMaps ? 'Google Maps' : (activePromptTab === Platform.X ? 'X' : activePromptTab))} の追加ルール
+              </h3>
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-0.5">Prompt Editor</p>
+            </div>
+          </div>
+          <button
+            onClick={() => setIsPromptExpanded(false)}
+            className="p-3 hover:bg-rose-50 rounded-xl text-slate-400 hover:text-rose-500 border-2 border-transparent hover:border-black transition-all"
+          >
+            <CloseIcon className="w-6 h-6" />
+          </button>
+        </div>
+
+        <div className="flex-1 p-6 md:p-10 bg-slate-50 overflow-y-auto min-h-[200px] md:min-h-[300px]">
+          <AutoResizingTextarea
+            autoFocus
+            value={customPrompts[activePromptTab] || ''}
+            onChange={(val) => {
+              setCustomPrompts(prev => ({ ...prev, [activePromptTab]: val }));
+              setHasUnanalyzedChanges(true);
+            }}
+            placeholder={`${activePromptTab}専用のルールを入力（例：ハッシュタグをつけて）`}
+            className="w-full h-full min-h-[250px] md:min-h-[350px] bg-transparent outline-none text-base md:text-lg text-black font-bold leading-relaxed placeholder-slate-300 transition-all no-scrollbar"
+          />
+        </div>
+
+        <div className="p-6 md:p-8 border-t-[3px] border-black bg-white flex justify-end shrink-0">
+          <button
+            onClick={() => setIsPromptExpanded(false)}
+            className="w-full md:w-auto px-10 py-4 bg-black text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:shadow-none translate-x-[-2px] translate-y-[-2px] hover:translate-x-0 hover:translate-y-0 transition-all active:scale-95"
+          >
+            設定を完了する
+          </button>
+        </div>
+      </div>
+    </div>,
+    document.body
+  );
+
   return (
     <>
       {mainPortal}
       {focusModeOverlay}
+      {promptEditOverlay}
     </>
   );
 };
