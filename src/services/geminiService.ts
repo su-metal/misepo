@@ -6,6 +6,7 @@ import {
   GenerationConfig,
   Platform,
   StoreProfile,
+  PostPurpose,
   GoogleMapPurpose,
   RiskTier,
   Length,
@@ -36,6 +37,36 @@ const TONE_RULES = {
   [Tone.Standard]: "標準的な「です・ます」調。適度に丁寧で、誰にでも伝わりやすくバランスの取れた口調。",
   [Tone.Friendly]: "「です・ます」調をベースにしつつ、親しみやすさを重視。感嘆符（！）や明るい言葉選びを積極的に行い、活気のある口筋にする。",
   [Tone.Casual]: "非常にフランクな口調。絵文字や流行の表現、あるいは「だ・である」を交えたSNSらしい親近感のある表現を用いる。"
+};
+
+const INDUSTRY_PROMPTS: Record<string, string> = {
+  '飲食店': '役割：飲食店のオーナー。重視点：料理のシズル感（味、香り、温度）、季節の食材へのこだわり、来店への感謝。温かみのある表現を心がける。',
+  'カフェ': '役割：カフェのオーナー/スタッフ。重視点：癒やしの空間、コーヒーやスイーツの香り、ゆったりとした時間の流れ。おしゃれで落ち着いたトーン。',
+  '居酒屋': '役割：居酒屋の大将/スタッフ。重視点：活気ある雰囲気、お酒と料理の相性、宴会の楽しさ。元気で親しみやすいトーン。',
+  '美容室': '役割：美容師/スタイリスト。重視点：お客様の変身（Before/After）、髪の悩みへの共感、トレンド感、リラックス。専門性を出しつつ親身な姿勢。',
+  'ネイル・まつげ': '役割：ネイリスト/アイリスト。重視点：細部の美しさ、デザインの可愛さ、施術中の会話、モチベーションアップ。キラキラした表現やトレンド用語。',
+  'エステ・サロン': '役割：エステティシャン/セラピスト。重視点：心身の癒やし、自分へのご褒美、美への追求。包容力のある優しいトーン。',
+  '旅館・ホテル': '役割：宿泊施設の支配人/女将。重視点：非日常的な体験、旅の思い出、季節の移ろい、心温まるおもてなし。格式と親しみのバランス。',
+  '整体・接骨院': '役割：整体師/柔道整復師。重視点：健康へのアドバイス、痛みの改善、身体のメンテナンス。信頼感と安心感を与える落ち着いたトーン。',
+  'ジム': '役割：トレーナー/インストラクター。重視点：フィットネスの楽しさ、目標達成の喜び、健康的なライフスタイル。ポジティブでモチベーションを上げる表現。',
+  '小売': '役割：ショップスタッフ。重視点：商品の魅力（使い方、メリット）、入荷のワクワク感、ギフト提案。購買意欲をそそる具体的な描写。',
+  'その他': '役割：店舗/サービスのオーナー。重視点：お客様との繋がり、サービスの独自性、誠実な対応。'
+};
+
+const GMAP_PURPOSE_PROMPTS: Record<string, string> = {
+  [GoogleMapPurpose.Auto]: "口コミの内容に応じて、感謝、謝罪、または説明を適切に組み合わせてください。",
+  [GoogleMapPurpose.Thanks]: "来店への感謝を述べ、再来店を歓迎する意向を含めてください。",
+  [GoogleMapPurpose.Apology]: "不手際やご不快な思いをさせた点について、事実を認め、謝罪と改善の意向を含めてください。",
+  [GoogleMapPurpose.Clarify]: "事実誤認や誤解がある点について、事実に基づいた補足と説明を行ってください。",
+  [GoogleMapPurpose.Info]: "口コミへの返信の中に、営業時間やサービス内容などの最新情報を盛り込んでください。"
+};
+
+const POST_PURPOSE_PROMPTS: Record<string, string> = {
+  [PostPurpose.Auto]: "入力された内容に基づいて、最も魅力的な投稿を作成してください。",
+  [PostPurpose.Promotion]: "商品の魅力やメリットを強調し、最後には来店や購入、申し込みなどの具体的なアクション（CTA）を促してください。",
+  [PostPurpose.Story]: "商品やサービスに込めた「想い」や「誕生秘話」を物語のように語り、共感を得る投稿にしてください。",
+  [PostPurpose.Educational]: "読み手にとって役立つ知識や豆知識を提供し、「ためになった」と思われる専門性の高い内容にしてください。",
+  [PostPurpose.Engagement]: "最後にお客様への質問や、コメントを促す一言を添えて、交流（エンゲージメント）が生まれるようにしてください。"
 };
 
 const KEYWORDS = {
@@ -145,34 +176,46 @@ export const generateContent = async (
     // Many-shot learning samples formatting
     // Limit to latest 5 or 3000 chars to avoid token explosion
     // Aggressive filtering for learning samples to prevent prompt injection loops
-    const formattedLearningSamples = learningSamples 
-        ? learningSamples
-            .filter(s => {
-                const content = s.trim();
-                if (!content) return false;
-                // Reject leaked system prompts
-                if (content.includes('【文体指示書】') || content.includes('System Instruction')) return false;
-                if (content.includes('"analysis":') && content.includes('"posts":')) return false;
-                // Reject extremely short or garbage inputs
-                if (content.length < 5) return false;
-                // Reject massive repetitive spam (simple heuristic: unique chars ratio)
-                // if (new Set(content).size < 5 && content.length > 20) return false; 
-                return true;
-            })
-            .slice(0, 5) // Hard cap at 5 recent posts per generation
-            .map((s, i) => `<sample id="${i+1}">\n${s.length > 500 ? s.slice(0, 500) + '...' : s}\n</sample>`)
-            .join("\n") 
-        : "";
+    const validSamples = learningSamples
+        ? learningSamples.filter(s => {
+            const content = s.trim();
+            if (!content) return false;
+            if (content.includes('【文体指示書】') || content.includes('System Instruction')) return false;
+            if (content.includes('"analysis":') && content.includes('"posts":')) return false;
+            if (content.length < 5) return false;
+            return true;
+        })
+        : [];
+
+    // Emoji detection logic
+    // If samples exist but contain NO emojis, force disable emojis
+    if (validSamples.length > 0) {
+        const emojiRegex = /\p{Emoji_Presentation}|\p{Extended_Pictographic}/u;
+        const hasEmoji = validSamples.some(s => emojiRegex.test(s));
+        if (!hasEmoji && config.includeEmojis) {
+            console.log("[LEARNING] No emojis found in samples. Force disabling emojis.");
+            config.includeEmojis = false;
+        }
+    }
+
+    const formattedLearningSamples = validSamples
+        .slice(0, 5) // Hard cap at 5 recent posts per generation
+        .map((s, i) => `<sample id="${i + 1}">\n${s.length > 500 ? s.slice(0, 500) + '...' : s}\n</sample>`)
+        .join("\n");
+
 
     if (hasPersona) {
-        const languageRule = config.language && config.language !== 'Japanese' 
-          ? `\n<language_rule>\nGenerate the content in **${config.language}**. Even if the language is different, reproduce the store owner's character (friendliness, passion, expertise, etc.) from the samples within the context of ${config.language}.\n</language_rule>`
-          : `\n<language_rule>\nPrimary Language: Japanese. \n*Exception*: If <learning_samples> contain phrases in other languages (e.g., English greetings), you MUST include them to maintain the persona's flavor.\n</language_rule>`;
+        const languageRule = config.language && config.language !== 'Japanese'
+            ? `\n<language_rule>\nGenerate the content in **${config.language}**. Even if the language is different, reproduce the store owner's character (friendliness, passion, expertise, etc.) from the samples within the context of ${config.language}.\n</language_rule>`
+            : `\n<language_rule>\nPrimary Language: Japanese. \n*Exception*: If <learning_samples> contain phrases in other languages (e.g., English greetings), you MUST include them to maintain the persona's flavor.\n</language_rule>`;
 
-      return `
+        const industryRole = INDUSTRY_PROMPTS[profile.industry] || INDUSTRY_PROMPTS['その他'];
+
+        return `
 <system_instruction>
   <role>
     You are the "Ghostwriter" for the store owner of "${profile.name}".
+    ${industryRole}
     ${profile.description ? `<store_dna>
     SOURCE_MATERIAL:
     ${profile.description}
@@ -201,7 +244,7 @@ export const generateContent = async (
     - **Platform Bias**: **IGNORE** all standard "polite" norms for ${config.platform}. The <learning_samples> are the absolute truth for the owner's voice. **NOTE**: Mandatory structural rules (like LINE's 3-balloon and '---' format) still apply; reproduction of the owner's style should happen *within* each segment.
     - **Emojis & Symbols**: 
       ${isGMap ? 
-        '- **Usage**: Ignore any default restrictions. Strictly reproduce the emoji frequency and decorative symbol patterns found in the <learning_samples>.' : 
+        '- **Emojis**: Basically, DO NOT use emojis for Google Maps. **EXCEPTION**: If <learning_samples> or <persona_rules> explicitly contain emojis, you MUST accurately reproduce their frequency and style as they are a core part of the owner\'s voice.\n      - **Symbols**: Basically, use standard Japanese punctuation. If <learning_samples> use decorative symbols, mimic them moderately.' : 
         `- **Emojis**: ${hasPersona ? 'Strictly follow patterns from samples.' : (config.includeEmojis ? 'Actively use expressive emojis (🐻, ✨, 💪, 🎉) to make the text lively.' : 'DO NOT use any emojis.')}
     - **Symbols**: ${hasPersona && !config.includeSymbols ? 'Strictly follow patterns from samples.' : (config.includeSymbols ? `From the **Aesthetic Palette**:
         - **Headers/Accents**: ＼ ✧ TITLE ✧ ／, 𓍯 𓇢 TITLE 𓇢 𓍯, 【 TITLE 】, ✧, ꕤ, ⚘, ☼, 𖥧, 𖠚
@@ -237,12 +280,14 @@ export const generateContent = async (
   ${languageRule}
 
   <process_step>
-    1. **Analyze**: Read the <user_input> (Review). Identify the customer's sentiment, specific liked items, and any concerns/observations (e.g., price, payment).
-    2. **Respond (Don't Echo)**: Do NOT simply repeat factual statements from the review (e.g., "The price is 240 yen"). Instead, **Acknowledge** them.
-       - *Bad*: "The price is 240 yen. We are cash only." (Robotic)
-       - *Good*: "We appreciate your feedback on the price. We aim for quality..." or "Thank you for noting our cash-only policy; we appreciate your understanding." (Empathetic)
-    3. **Expand**: Add sensory details or store background to make the reply warm.
-    4. **Draft**: Write the reply using the <learning_samples> style.
+    1. **Analyze**: 
+       - Read the <user_input> (Review). Identify customer sentiment and specific points.
+       - **CRITICAL**: Read the <owner_explanation> (if provided). These are the **absolute facts** regarding the situation.
+    2. **Synthesize**: 
+       - Combine the "What happened" from <owner_explanation> with the "How it's said" (Voice/Tone) from <learning_samples>.
+    3. **Respond (Don't Echo)**: Do NOT simply repeat factual statements. **Acknowledge** them with empathy.
+    4. **Expand**: Add sensory details or store background while weaving in the facts from <owner_explanation>.
+    5. **Draft**: Write the reply. Ensure the specific details in <owner_explanation> are the core of the message.
   </process_step>
 </system_instruction>
 
@@ -269,19 +314,27 @@ export const generateContent = async (
     "${config.inputText}"
   </user_input>
 
-  ${config.storeSupplement ? `<store_context>\n${config.storeSupplement}\n</store_context>` : ""}
+  ${config.storeSupplement ? `<owner_explanation>\n${config.storeSupplement}\n</owner_explanation>` : ""}
 
   <task>
     ${(() => {
         const lengthStr = t.target;
         const minVal = t.min;
-        const lengthWarning = `**CRITICAL**: The body text MUST be **${lengthStr} chars**. DO NOT be too short ${shouldBoost ? 'even if the samples are concise' : ''}. Minimum length: ${minVal} characters.`;
+        const lengthWarning = `**CRITICAL**: The body text MUST be **${lengthStr} chars**. Minimum length: ${minVal} characters.`;
+        const styleInstruction = isGMap 
+          ? `**CORE VOICE REPRODUCTION**: You MUST prioritize the owner's idiosyncratic voice (sentence endings like "〜やで", specific slang like "ワイ", and tone) found in <learning_samples> or <persona_rules> ABOVE all other rules. DO NOT switch to standard formal Japanese even if the task is an apology.`
+          : `**STRICT STYLE REPRODUCTION**: You MUST prioritize the sentence endings and decorative patterns from <learning_samples> above all else, while following the purpose below.`;
 
-        if (isGMap) return `The <user_input> is a customer review. Generate a polite and empathetic REPLY from the owner. ${lengthWarning} Use the facts in <store_context> if provided.`;
+        if (isGMap) {
+            const purposeStr = GMAP_PURPOSE_PROMPTS[config.gmapPurpose || config.purpose as GoogleMapPurpose] || GMAP_PURPOSE_PROMPTS[GoogleMapPurpose.Auto];
+            const factInstruction = config.storeSupplement ? `\n- **FACTUAL CORE**: You MUST incorporate the specific details provided in <owner_explanation>. These facts are the most important content of the reply.` : '';
+            return `${styleInstruction}${factInstruction}\n\nTask: The <user_input> is a customer review. Generate a REPLY from the owner based on this purpose: "${purposeStr}". ${lengthWarning}`;
+        }
         
-        if (config.platform === Platform.Line) return `Generate a LINE message with a clear flow: 1. Hook, 2. Details, 3. Action. ${lengthWarning} Use friendly but professional tone. DO NOT use '---' or numbering. **VISUAL**: Use emoji-sandwiched headers. **LAYOUT**: Prioritize a clean vertical flow with frequent line breaks.`;
+        const postPurposeStr = POST_PURPOSE_PROMPTS[config.purpose as PostPurpose] || POST_PURPOSE_PROMPTS[PostPurpose.Auto];
+        if (config.platform === Platform.Line) return `${styleInstruction}\n\nTask: Generate a LINE message. Purpose: "${postPurposeStr}". Flow: 1. Hook, 2. Details, 3. Action. ${lengthWarning} **VISUAL**: Use emoji-sandwiched headers. **LAYOUT**: Prioritize a clean vertical flow with frequent line breaks.`;
 
-        return `Generate an attractive post based on the <user_input>. ${lengthWarning}`;
+        return `${styleInstruction}\n\nTask: Generate an attractive post for ${config.platform}. Purpose: "${postPurposeStr}". ${lengthWarning}`;
     })()}
     Output a JSON object with:
     - "analysis": Brief context analysis.
@@ -312,15 +365,15 @@ export const generateContent = async (
     return `
 <system_instruction>
   <role>
-    ${isGMap ? `You are the owner of "${profile.name}". Reply politely to customer reviews on Google Maps.` : `You are the SNS manager for "${profile.name}". Create an attractive post for ${config.platform}.`}
+    ${isGMap ? `You are the owner of "${profile.name}". Reply to customer reviews on Google Maps while strictly maintaining your unique voice.` : `You are the SNS manager for "${profile.name}". Create an attractive post for ${config.platform}.`}
   </role>
 
   <rules>
     - Language: ${config.language || 'Japanese'}
     - Length: ${config.length} (Target: ${t.target} chars. Min: ${t.min} chars)
     - Tone: ${config.tone} (${TONE_RULES[config.tone] || TONE_RULES[Tone.Standard]})
-    - Features: ${isInstagram ? 'Visual focus.' : ''}${isX ? 'Under 140 chars.' : ''}${isGMap ? 'Polite reply, NO emojis, NO hashtags.' : ''}${isLine ? 'Direct marketing style. NO hashtags. Focus on clear messaging.' : ''}
-    - Emojis: ${isGMap ? 'Do NOT use emojis at all.' : (config.includeEmojis ? "Actively use expressive emojis (🐻, ✨, 💪, 🎉) to make the text lively." : "DO NOT use any emojis (emoticons, icons, pictograms) under any circumstances. Keep it plain text only regarding emojis.")}
+    - Features: ${isInstagram ? 'Visual focus.' : ''}${isX ? 'Under 140 chars.' : ''}${isGMap ? 'NO hashtags. Focus on maintaining the owner\'s personality in the reply.' : ''}${isLine ? 'Direct marketing style. NO hashtags. Focus on clear messaging.' : ''}
+    - Emojis: ${isGMap ? 'Prohibited by default. HOWEVER, if <learning_samples> contain emojis, prioritize matching their frequency to preserve the owner\'s style.' : (config.includeEmojis ? "Actively use expressive emojis (🐻, ✨, 💪, 🎉) to make the text lively." : "DO NOT use any emojis (emoticons, icons, pictograms) under any circumstances. Keep it plain text only regarding emojis.")}
     - Special Characters: ${config.includeSymbols ? `From the **Aesthetic Palette**:
         - **Headers/Accents**: ＼ ✧ TITLE ✧ ／, 𓍯 𓇢 TITLE 𓇢 𓍯, 【 TITLE 】, ✧, ꕤ, ⚘, ☼, 𖥧, 𖠚
         - **Dividers**: ${isX ? '**DISABLED for X**. Do NOT use line dividers on X.' : '𓂃𓂃𓂃, ⋆┈┈┈┈┈┈┈┈┈┈⋆, ──────────── (Use to separate Body and CTA)'}
@@ -337,15 +390,16 @@ export const generateContent = async (
     "${config.inputText}"
   </user_input>
 
-  ${config.storeSupplement ? `<store_context>\n${config.storeSupplement}\n</store_context>` : ""}
+  ${config.storeSupplement ? `<owner_explanation>\n${config.storeSupplement}\n</owner_explanation>` : ""}
 
   <task>
     ${(() => {
         const lengthStr = t.target;
         const minVal = t.min;
         const lengthWarning = `**CRITICAL**: The body text MUST be **${lengthStr} chars**. DO NOT be too short. Minimum length: ${minVal} characters.`;
+        const factInstruction = config.storeSupplement ? `\n- **FACTUAL CORE**: You MUST incorporate the specific details provided in <owner_explanation>. These facts are key to the reply.` : '';
 
-        if (isGMap) return `The <user_input> is a customer review. Generate a polite and empathetic REPLY from the owner. ${lengthWarning} Use the facts in <store_context> if provided.`;
+        if (isGMap) return `The <user_input> is a customer review. Generate a REPLY from the owner. ${factInstruction} ${lengthWarning}`;
         
         if (isLine) return `Generate a LINE message with a clear flow: 1. Hook, 2. Details, 3. Action. ${lengthWarning} **VISUAL**: Use a header for the hook. **STRICT EMOJI RULE**: ${config.includeEmojis ? 'Use emojis naturally.' : 'DO NOT use any emojis.'} **LAYOUT**: Clean vertical flow.`;
 
@@ -405,9 +459,13 @@ export const generateContent = async (
         requestConfig.systemInstruction = systemInstruction;
     }
 
-    // Dynamic Thinking Budget: 0 for X retries, 256 for initial attempts
-    const isXRetry = attempt > 0 && config.platform === Platform.X;
-    const budget = isXRetry ? 0 : 256;
+    // Dynamic Thinking Budget Calculation
+    let budget = 256; // Default
+    if (config.platform === Platform.X) {
+        budget = attempt === 0 ? 128 : 0; 
+    } else if (config.platform === Platform.GoogleMaps && profile.industry === '旅館・ホテル') {
+        budget = 512;
+    }
     console.debug(`[GEMINI] Attempt: ${attempt}, Platform: ${config.platform}, ThinkingBudget: ${budget}`);
 
     // @ts-ignore - Enable internal reasoning
@@ -617,8 +675,13 @@ Output ONLY the refined text.
         ],
       };
 
-    // Fixed Thinking Budget to 256 tokens to reduce API costs
-    const budget = 256;
+    // Thinking Budget Optimization
+    let budget = 256; // Default
+    if (config.platform === Platform.X) {
+        budget = 128;
+    } else if (config.platform === Platform.GoogleMaps && profile.industry === '旅館・ホテル') {
+        budget = 512;
+    }
 
     // @ts-ignore - Enable internal reasoning for higher quality drafting (Gemini 2.5 Flash feature)
     requestConfig.thinkingConfig = { includeThoughts: true, thinkingBudget: budget }; 
@@ -758,6 +821,12 @@ export const generateStyleInstruction = async (
 ): Promise<Record<string, string>> => {
   const modelName = getModelName(isPro);
   const ai = getServerAI();
+
+  // If no samples provided, return empty object immediately
+  if (!samples || samples.length === 0) {
+    console.log("[Gemini] No samples provided for style analysis. Returning empty.");
+    return {};
+  }
 
   // Group samples by platform for the prompt
   const normalizedSamples: { content: string, platform: string }[] = [];
