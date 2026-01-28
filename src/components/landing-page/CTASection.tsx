@@ -4,31 +4,39 @@ import { Icons } from '../LandingPageIcons';
 
 export const CTASection = () => {
     return (
-        <section className="py-32 bg-black text-white relative overflow-hidden border-b-[6px] border-black">
+        <section className="py-32 bg-slate-900 text-white relative overflow-hidden">
+            {/* Background Gradients */}
+            <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-40">
+                <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-[#E88BA3] rounded-full blur-[120px]" />
+                <div className="absolute bottom-[-20%] left-[-10%] w-[800px] h-[800px] bg-[#4DB39A] rounded-full blur-[120px]" />
+            </div>
+
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
                 <div className="mb-12">
-                    <div className="inline-block px-6 py-2 bg-[#F5CC6D] border-[3px] border-white rounded-2xl shadow-[6px_6px_0px_0px_rgba(255,255,255,0.2)] text-black text-sm font-black uppercase tracking-[0.2em] mb-8 -rotate-1">
-                        最後に、店主様へ。
+                    <div className="inline-block px-4 py-1.5 bg-[#F5CC6D]/20 border border-[#F5CC6D]/30 rounded-full text-[#F5CC6D] text-xs font-bold uppercase tracking-widest mb-8 backdrop-blur-sm">
+                        For Business Owners
                     </div>
                 </div>
-                <h2 className="text-5xl md:text-8xl font-black mb-10 leading-[1.1] italic uppercase">
+                <h2 className="text-4xl md:text-6xl font-bold mb-10 leading-tight">
                     365日の<br className="md:hidden" />SNSの悩み、<br />
-                    <span className="underline decoration-[10px] decoration-[#E88BA3] underline-offset-[12px]">これでおしまい。</span>
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#E88BA3] to-[#F5CC6D]">これでおしまい。</span>
                 </h2>
-                <p className="text-xl md:text-3xl text-white font-bold leading-relaxed mb-16 max-w-2xl mx-auto opacity-70 italic">
+                <p className="text-lg md:text-xl text-slate-300 font-medium leading-relaxed mb-16 max-w-2xl mx-auto">
                     あなたの情熱は、<br className="md:hidden" />本来のお客様のために。<br />
                     文章作成は、あなたの『分身』に任せてください。
                 </p>
-                <div className="flex flex-col gap-8 justify-center items-center">
+                <div className="flex flex-col gap-6 justify-center items-center">
                     <button
                         onClick={() => window.location.href = '/start'}
-                        className="group px-12 py-7 bg-[#4DB39A] text-black border-[4px] border-white rounded-2xl font-black text-3xl uppercase italic shadow-[12px_12px_0px_0px_rgba(255,255,255,0.2)] hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-none transition-all flex items-center gap-4"
+                        className="group relative px-10 py-5 bg-white text-slate-900 rounded-full font-bold text-xl shadow-2xl shadow-white/10 hover:shadow-white/20 hover:-translate-y-1 transition-all flex items-center gap-3 overflow-hidden"
                     >
-                        今すぐ無料で始める
-                        <Icons.ChevronUp className="rotate-90 stroke-[5px] group-hover:translate-x-2 transition-transform" size={32} />
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-slate-100/50 to-transparent translate-x-[-100%] group-hover:animate-shimmer" />
+                        <span className="relative z-10">今すぐ無料で始める</span>
+                        <Icons.ArrowRight className="relative z-10 group-hover:translate-x-1 transition-transform" size={24} />
                     </button>
-                    <div className="bg-[#4DB39A] px-6 py-2 border-[2px] border-white rounded-2xl shadow-[4px_4px_0px_0px_rgba(255,255,255,0.2)] rotate-1">
-                        <p className="text-sm text-black font-black uppercase tracking-[0.2em]">
+                    <div className="flex items-center gap-2 text-[#4DB39A]">
+                        <Icons.CheckCircle size={16} />
+                        <p className="text-sm font-bold tracking-wide">
                             まずは7日間、無料で体験
                         </p>
                     </div>

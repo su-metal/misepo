@@ -46,25 +46,32 @@ export const DemoSection = ({
     }, [demoResult]);
 
     return (
-        <section id="demo" className="py-24 bg-black text-white relative overflow-hidden border-b-[6px] border-white">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-slate-900 via-black to-black opacity-50" />
+        <section id="demo" className="py-24 bg-[#F9F7F2] text-slate-800 relative overflow-hidden">
+            <div className="absolute inset-0 bg-white/40 skew-y-3 transform origin-top-left z-0 h-full" />
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div className="text-center mb-16">
-                    <h2 className="text-4xl md:text-7xl font-black mb-8 tracking-tight italic uppercase text-white">
-                        <span className="bg-[#E88BA3] px-4 py-2 border-[4px] border-white rounded-2xl shadow-[8px_8px_0px_0px_rgba(255,255,255,0.2)] inline-block -rotate-2 text-black">AIの実力</span>を<br className="md:hidden" />今すぐ体験
+                    <span className="inline-block px-4 py-1.5 bg-white border border-[#E88BA3]/20 rounded-full text-[#E88BA3] text-sm font-bold tracking-widest shadow-sm mb-6">
+                        AI DEMO
+                    </span>
+                    <h2 className="text-4xl md:text-5xl font-bold mb-6 text-slate-800 leading-tight">
+                        <span className="bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700">AIの実力を、</span><br className="md:hidden" />
+                        <span className="text-[#E88BA3]">今すぐ体験。</span>
                     </h2>
-                    <p className="text-white/60 text-xl font-bold uppercase tracking-widest">利用シーンに合わせて、MisePoの生成クオリティをチェックしてください。</p>
+                    <p className="text-slate-500 text-lg font-medium max-w-2xl mx-auto">
+                        利用シーンに合わせて、MisePoの生成クオリティをチェック。<br />
+                        まるでプロが書いたような文章が、一瞬で生まれます。
+                    </p>
                 </div>
 
                 {/* Scenario Tabs */}
-                <div className="flex flex-wrap justify-center gap-4 mb-12">
+                <div className="flex flex-wrap justify-center gap-3 mb-12">
                     {demoScenarios.map((scenario, idx) => (
                         <button
                             key={scenario.id}
                             onClick={() => setActiveScenarioIdx(idx)}
-                            className={`px-6 py-3 border-[3px] rounded-2xl font-black text-sm uppercase transition-all ${activeScenarioIdx === idx
-                                ? 'bg-[#F5CC6D] text-black border-black shadow-[6px_6px_0px_0px_rgba(255,255,255,0.5)] -translate-y-1'
-                                : 'bg-black text-white border-white/20 hover:border-white/50'
+                            className={`px-6 py-2.5 rounded-full font-bold text-sm transition-all duration-300 ${activeScenarioIdx === idx
+                                ? 'bg-slate-800 text-white shadow-lg shadow-slate-800/20 scale-105'
+                                : 'bg-white text-slate-500 hover:bg-slate-50 hover:text-slate-700 shadow-sm border border-slate-100'
                                 }`}
                         >
                             {scenario.label}
@@ -72,16 +79,15 @@ export const DemoSection = ({
                     ))}
                 </div>
 
-                <div className="bg-black border-[4px] border-white rounded-2xl shadow-[12px_12px_0px_0px_rgba(255,255,255,0.1)] overflow-hidden max-w-5xl mx-auto flex flex-col md:flex-row min-h-[600px] relative">
-                    <div className="p-8 md:w-1/2 border-b md:border-b-0 md:border-r-[4px] border-white flex flex-col bg-[#f9f5f2] text-black">
+                <div className="bg-white rounded-[40px] shadow-[0_30px_60px_rgba(0,0,0,0.08)] overflow-hidden max-w-5xl mx-auto flex flex-col md:flex-row min-h-[600px] relative border border-slate-100">
+                    <div className="p-10 md:w-1/2 md:border-r border-slate-100 flex flex-col bg-white">
                         <div className="flex items-center justify-between mb-8">
-                            <label className="text-xl font-black uppercase italic tracking-tight">投稿メモを入力</label>
-                            <span className="text-[10px] font-black text-white bg-black border-[2px] border-white rounded-2xl px-3 py-1 uppercase tracking-widest italic">{activeScenario.modeBadge}</span>
+                            <label className="text-xl font-bold text-slate-800">投稿メモを入力</label>
+                            <span className="text-xs font-bold text-white bg-slate-800 rounded-full px-3 py-1">{activeScenario.modeBadge}</span>
                         </div>
-                        <div className="relative mb-8 group">
-                            <div className="absolute inset-0 bg-black/5 blur-xl -z-10 rounded-2xl" />
+                        <div className="relative mb-8 group flex-1">
                             <textarea
-                                className="relative w-full h-48 p-6 bg-white border-[4px] border-black rounded-2xl text-black font-bold focus:outline-none resize-none text-lg leading-relaxed shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]"
+                                className="w-full h-full min-h-[200px] p-6 bg-slate-50 rounded-3xl text-slate-600 font-bold focus:outline-none resize-none text-lg leading-relaxed border-2 border-transparent focus:border-[#E88BA3]/20 focus:bg-white transition-all"
                                 readOnly
                                 value={activeScenario.input}
                             />
@@ -89,9 +95,9 @@ export const DemoSection = ({
                         <button
                             onClick={handleDemoGenerate}
                             disabled={isDemoGenerating}
-                            className={`w-full py-5 border-[4px] border-black rounded-2xl font-black text-xl uppercase italic flex items-center justify-center gap-3 transition-all relative overflow-hidden group ${isDemoGenerating
-                                ? 'bg-white text-black cursor-wait shadow-none translate-x-[4px] translate-y-[4px]'
-                                : 'bg-[#E88BA3] text-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none'
+                            className={`w-full py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 transition-all relative overflow-hidden group ${isDemoGenerating
+                                ? 'bg-slate-100 text-slate-400 cursor-wait'
+                                : 'bg-[#E88BA3] text-white shadow-xl shadow-[#E88BA3]/30 hover:shadow-[#E88BA3]/40 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]'
                                 }`}
                         >
                             {isDemoGenerating ? (
@@ -100,14 +106,14 @@ export const DemoSection = ({
                                 <><Icons.Sparkles size={24} className="group-hover:animate-pulse" /> AIで文章を生成する</>
                             )}
                         </button>
-                        <div className="mt-auto pt-10 border-t-[3px] border-black/10">
-                            <div className="flex items-center gap-3 mb-6">
-                                <Icons.Zap size={20} className="text-[#F5CC6D]" fill="currentColor" />
-                                <h3 className="font-black text-black text-sm uppercase tracking-wider">MisePo Features</h3>
+                        <div className="mt-8 pt-8 border-t border-slate-100">
+                            <div className="flex items-center gap-2 mb-4">
+                                <Icons.Zap size={18} className="text-[#F5CC6D]" fill="currentColor" />
+                                <h3 className="font-bold text-slate-400 text-xs uppercase tracking-wider">MisePo Features</h3>
                             </div>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6">
                                 {["Instagram / X 同時作成", "公式LINE 配信作成", "Googleマップ クチコミ返信", "AIお手本学習 (分身機能)"].map((item, i) => (
-                                    <div key={i} className="flex items-center gap-2 text-xs font-black uppercase tracking-tighter">
+                                    <div key={i} className="flex items-center gap-2 text-xs font-bold text-slate-500">
                                         <Icons.CheckCircle size={14} className="text-[#4DB39A] shrink-0" />
                                         <span>{item}</span>
                                     </div>
@@ -116,93 +122,106 @@ export const DemoSection = ({
                         </div>
                     </div>
 
-                    <div className="md:w-1/2 p-8 flex flex-col items-center justify-center relative overflow-hidden bg-black/40">
-                        <div className="w-full max-w-sm relative z-10">
-                            <div className="bg-white border-[4px] border-black rounded-none max-w-xs mx-auto shadow-[12px_12px_0px_0px_rgba(255,255,255,0.1)] overflow-hidden text-sm flex flex-col h-[500px] relative group">
+                    <div className="md:w-1/2 p-10 flex flex-col items-center justify-center relative overflow-hidden bg-slate-50/50">
+                        <div className="absolute inset-0 bg-[#E88BA3]/5" />
+
+                        {/* Abstract Canvas for Result */}
+                        <div className="w-full max-w-sm relative z-10 perspective-1000">
+                            <div className="bg-white rounded-3xl shadow-[0_20px_40px_-10px_rgba(0,0,0,0.1)] border border-slate-100 p-6 min-h-[480px] flex flex-col relative transition-transform duration-500 hover:scale-[1.02]">
                                 {demoResult && (
-                                    <div className="absolute bottom-6 right-6 z-50 pointer-events-none">
-                                        <div className="bg-[#4DB39A] text-white px-3 py-1.5 border-[2px] border-black rounded-xl font-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] flex items-center gap-1.5 whitespace-nowrap -rotate-2 animate-in slide-in-from-bottom-4 fade-in duration-300">
+                                    <div className="absolute -top-3 -right-3 z-50 pointer-events-none">
+                                        <div className="bg-[#4DB39A] text-white px-3 py-1.5 rounded-full font-bold shadow-lg shadow-[#4DB39A]/20 flex items-center gap-1.5 whitespace-nowrap animate-in slide-in-from-bottom-4 fade-in duration-300">
                                             <Icons.CheckCircle size={16} />
-                                            <span className="text-xs uppercase italic">Generated!</span>
+                                            <span className="text-xs">Generated!</span>
                                         </div>
                                     </div>
                                 )}
 
                                 {activeScenario.id === "google_maps" ? (
-                                    /* Google Maps Mockup */
-                                    <div className="flex flex-col h-full bg-slate-50">
-                                        <div className="p-4 border-b-[2px] border-black bg-white">
-                                            <div className="flex items-center gap-2 mb-2">
-                                                <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-black text-xs">Y</div>
-                                                <span className="font-black text-xs">Yuki Sato</span>
+                                    /* Google Maps Abstract View */
+                                    <div className="flex flex-col h-full">
+                                        <div className="mb-4 pb-4 border-b border-slate-100">
+                                            <div className="flex items-center gap-3 mb-2">
+                                                <div className="w-8 h-8 bg-slate-200 rounded-full flex items-center justify-center text-slate-500 font-bold text-xs">U</div>
+                                                <span className="font-bold text-sm text-slate-700">Yuki Sato</span>
                                             </div>
-                                            <div className="flex gap-1 text-[#F5CC6D] mb-1"><Icons.Star size={12} fill="currentColor" /><Icons.Star size={12} fill="currentColor" /><Icons.Star size={12} fill="currentColor" /><Icons.Star size={12} fill="currentColor" /><Icons.Star size={12} fill="currentColor" /></div>
-                                            <p className="text-[10px] text-black leading-snug font-bold">「初めて来ましたが、ドーナツがふわふわで最高でした！コーヒーも深みがあって好みです。また来ます！」</p>
+                                            <div className="flex gap-0.5 text-[#F5CC6D] mb-2"><Icons.Star size={12} fill="currentColor" /><Icons.Star size={12} fill="currentColor" /><Icons.Star size={12} fill="currentColor" /><Icons.Star size={12} fill="currentColor" /><Icons.Star size={12} fill="currentColor" /></div>
+                                            <p className="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3 rounded-xl">「初めて来ましたが、ドーナツがふわふわで最高でした！コーヒーも深みがあって好みです。また来ます！」</p>
                                         </div>
-                                        <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 no-scrollbar">
-                                            <div className="bg-white border-[2px] border-black p-4 rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)] relative">
-                                                <div className="text-[10px] font-black text-black/40 uppercase mb-2">オーナーからの返信</div>
-                                                <div className={`text-xs text-black leading-relaxed whitespace-pre-wrap font-bold ${demoResult ? 'opacity-100' : 'opacity-30 italic'}`}>
-                                                    {isDemoGenerating ? "AIによる返信を生成中..." : demoResult || "ここにAIの返信が表示されます..."}
+                                        <div ref={scrollRef} className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
+                                            <div className="bg-blue-50/50 p-4 rounded-2xl relative">
+                                                <div className="text-[10px] font-bold text-blue-400 uppercase mb-2 tracking-wider">Owner Response</div>
+                                                <div className={`text-sm text-slate-700 leading-relaxed whitespace-pre-wrap ${demoResult ? 'opacity-100' : 'opacity-40'}`}>
+                                                    {isDemoGenerating ? (
+                                                        <span className="animate-pulse">AIが最適な返信を思考中...</span>
+                                                    ) : demoResult || "ここにAIの返信が表示されます..."}
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 ) : activeScenario.id === "line" ? (
-                                    /* LINE Mockup */
-                                    <div className="flex flex-col h-full bg-[#7494C0]">
-                                        <div className="p-3 border-b-[2px] border-black bg-white flex items-center gap-3">
-                                            <div className="w-8 h-8 bg-[#06C755] border-[2px] border-black rounded-full flex items-center justify-center text-white">
-                                                <Icons.MessageCircle size={14} fill="currentColor" />
+                                    /* LINE Abstract View */
+                                    <div className="flex flex-col h-full">
+                                        <div className="p-4 border-b border-slate-100 flex items-center gap-3">
+                                            <div className="w-8 h-8 bg-[#06C755] rounded-full flex items-center justify-center text-white shadow-md shadow-[#06C755]/20">
+                                                <Icons.MessageCircle size={16} fill="currentColor" />
                                             </div>
-                                            <span className="font-black text-xs">LINE</span>
+                                            <span className="font-bold text-sm text-slate-700">Official Account</span>
                                         </div>
-                                        <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 no-scrollbar flex flex-col gap-4">
-                                            <div className="text-[9px] text-white/50 font-black uppercase text-center my-2">Today</div>
-                                            <div className="flex gap-2">
-                                                <div className="w-8 h-8 bg-[#06C755] border-[2px] border-black rounded-2xl flex-shrink-0" />
-                                                <div className="bg-[#FFFFFF] border-[2px] border-black p-3 rounded-2xl rounded-tl-none shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] max-w-[85%] relative">
-                                                    <div className={`text-xs text-black leading-relaxed whitespace-pre-wrap font-bold ${demoResult ? 'opacity-100' : 'opacity-30 italic'}`}>
-                                                        {isDemoGenerating ? "メッセージを作成中..." : demoResult || "ここにLINEメッセージが表示されます..."}
+                                        <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 custom-scrollbar flex flex-col gap-4">
+                                            <div className="text-[10px] text-slate-400 font-bold uppercase text-center my-2 tracking-wider">Today</div>
+                                            <div className="flex gap-3">
+                                                <div className="w-8 h-8 bg-[#06C755] rounded-full flex-shrink-0 shadow-sm" />
+                                                <div className="bg-white border border-slate-100 p-4 rounded-2xl rounded-tl-none shadow-sm max-w-[85%] relative">
+                                                    <div className={`text-sm text-slate-700 leading-relaxed whitespace-pre-wrap ${demoResult ? 'opacity-100' : 'opacity-40 italic'}`}>
+                                                        {isDemoGenerating ? (
+                                                            <span className="animate-pulse">メッセージを作成中...</span>
+                                                        ) : demoResult || "ここにLINEメッセージが表示されます..."}
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 ) : (
-                                    /* Instagram Mockup */
-                                    <>
-                                        <div className="flex items-center justify-between p-3 border-b-[2px] border-black shrink-0 bg-white z-10">
-                                            <div className="flex items-center gap-2">
-                                                <div className="w-8 h-8 border-[2px] border-black rounded-2xl overflow-hidden">
+                                    /* Instagram Abstract View */
+                                    <div className="flex flex-col h-full">
+                                        <div className="flex items-center justify-between p-4 border-b border-slate-100 shrink-0 z-10">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-8 h-8 rounded-full overflow-hidden shadow-sm">
                                                     <img src="https://picsum.photos/id/64/100/100" alt="avatar" className="w-full h-full object-cover" />
                                                 </div>
-                                                <span className="font-black text-black text-xs uppercase tracking-tighter">misepo_cafe</span>
+                                                <span className="font-bold text-slate-800 text-xs uppercase tracking-tight">misepo_cafe</span>
                                             </div>
-                                            <Icons.MoreHorizontal size={16} className="text-black" />
+                                            <Icons.MoreHorizontal size={18} className="text-slate-400" />
                                         </div>
-                                        <div ref={scrollRef} className="overflow-y-auto no-scrollbar flex-1 bg-white">
-                                            <div className="bg-gray-100 aspect-square w-full relative group shrink-0 border-b-[2px] border-black">
+                                        <div ref={scrollRef} className="overflow-y-auto custom-scrollbar flex-1">
+                                            <div className="aspect-square w-full relative group shrink-0 overflow-hidden rounded-2xl shadow-sm mb-4">
                                                 <img src={activeScenario.id === "casual" ? "https://picsum.photos/id/225/600/600" : "https://picsum.photos/id/425/600/600"} alt="post" className="w-full h-full object-cover" />
                                                 {demoResult && (
-                                                    <div className="absolute inset-0 bg-white/20 animate-pulse pointer-events-none" />
+                                                    <div className="absolute inset-0 bg-white/10 animate-pulse pointer-events-none" />
                                                 )}
                                             </div>
-                                            <div className="p-4 bg-white text-black">
+                                            <div className="px-2">
                                                 <div className="flex justify-between mb-3">
-                                                    <div className="flex gap-4 text-black"><Icons.Heart size={24} className={`transition-colors cursor-pointer ${demoResult ? 'text-[#E88BA3] fill-[#E88BA3]' : 'stroke-[2px]'}`} /><Icons.MessageCircle size={24} className="stroke-[2px]" /><Icons.Send size={24} className="stroke-[2px]" /></div>
-                                                    <Icons.Bookmark size={24} className="text-black stroke-[2px]" />
+                                                    <div className="flex gap-4 text-slate-700">
+                                                        <Icons.Heart size={22} className={`transition-colors cursor-pointer ${demoResult ? 'text-[#E88BA3] fill-[#E88BA3]' : 'hover:text-[#E88BA3]'}`} />
+                                                        <Icons.MessageCircle size={22} className="hover:text-slate-900" />
+                                                        <Icons.Send size={22} className="hover:text-slate-900" />
+                                                    </div>
+                                                    <Icons.Bookmark size={22} className="text-slate-700 hover:text-slate-900" />
                                                 </div>
-                                                <p className="font-black text-[10px] uppercase tracking-widest mb-2">128 likes</p>
-                                                <div className="text-xs text-black leading-relaxed whitespace-pre-wrap select-none font-bold">
-                                                    <span className="font-black mr-2 uppercase">misepo_cafe</span>
-                                                    <span className={`${demoResult ? 'opacity-100' : 'opacity-30 italic'}`}>
-                                                        {isDemoGenerating ? "AI is generating your post..." : demoResult || "Your AI-generated content will appear here..."}
+                                                <p className="font-bold text-xs text-slate-800 mb-2">128 likes</p>
+                                                <div className="text-sm text-slate-600 leading-relaxed whitespace-pre-wrap select-none">
+                                                    <span className="font-bold mr-2 text-slate-800">misepo_cafe</span>
+                                                    <span className={`${demoResult ? 'opacity-100' : 'opacity-40 italic'}`}>
+                                                        {isDemoGenerating ? (
+                                                            <span className="animate-pulse">Generating post...</span>
+                                                        ) : demoResult || "Your AI-generated content will appear here..."}
                                                     </span>
                                                 </div>
                                             </div>
                                         </div>
-                                    </>
+                                    </div>
                                 )}
                             </div>
                         </div>
