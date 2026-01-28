@@ -87,10 +87,11 @@ export async function POST(req: Request) {
       entitlement = created;
     }
 
-    // If already on a paid plan, don't create a new checkout
-    const isPaidSubscriber = entitlement?.plan !== 'free' && (entitlement?.status === 'active' || entitlement?.status === 'trialing');
+    // If already on a paid plan (monthly/yearly), don't create a new checkout
+    const isAlreadyPaid = (entitlement?.plan === 'monthly' || entitlement?.plan === 'yearly') && 
+                          (entitlement?.status === 'active' || entitlement?.status === 'trialing');
 
-    if (isPaidSubscriber) {
+    if (isAlreadyPaid) {
       return NextResponse.json({ ok: false, error: "already_active" }, { status: 400 });
     }
 

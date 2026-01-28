@@ -1,8 +1,10 @@
 "use client";
-import React from 'react';
+import React, { useState } from 'react';
 import { Icons } from '../LandingPageIcons';
 
 export const PricingSection = () => {
+    const [isYearly, setIsYearly] = useState(false);
+
     return (
         <>
             {/* Comparison (Cost Performance) */}
@@ -110,11 +112,33 @@ export const PricingSection = () => {
 
                         <div className="relative border-[6px] border-black rounded-2xl p-8 md:p-12 flex flex-col bg-black text-white shadow-[20px_20px_0px_0px_rgba(0,0,0,0.1)] overflow-hidden group">
                             <div className="relative z-10 text-center mb-12">
-                                <h3 className="text-2xl font-black mb-4 text-[#F5CC6D] uppercase italic tracking-[0.1em]">プロプラン</h3>
+                                <div className="flex justify-center items-center gap-4 mb-8">
+                                    <span className={`text-lg font-black ${!isYearly ? 'text-white' : 'text-white/30'} uppercase italic tracking-wider transition-colors`}>Monthly</span>
+                                    <button
+                                        onClick={() => setIsYearly(!isYearly)}
+                                        className="w-16 h-8 bg-white/20 rounded-full relative transition-all duration-300 shadow-inner focus:outline-none"
+                                    >
+                                        <div className={`absolute top-1 left-1 w-6 h-6 bg-[#F5CC6D] rounded-full border-[2px] border-black transition-all duration-300 ${isYearly ? 'translate-x-8' : 'translate-x-0'}`} />
+                                    </button>
+                                    <div className="flex items-center gap-2">
+                                        <span className={`text-lg font-black ${isYearly ? 'text-white' : 'text-white/30'} uppercase italic tracking-wider transition-colors`}>Yearly</span>
+                                        <span className="bg-[#E88BA3] text-black text-[10px] font-black px-2 py-1 border-[2px] border-black rounded-lg shadow-[2px_2px_0px_0px_rgba(0,0,0,0.2)] -rotate-3 animate-pulse whitespace-nowrap">
+                                            2ヶ月分お得!
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <h3 className="text-2xl font-black mb-4 text-[#F5CC6D] uppercase italic tracking-[0.1em]">
+                                    {isYearly ? '年間プロプラン' : '月間プロプラン'}
+                                </h3>
                                 <div className="flex items-center justify-center gap-4 mb-4">
                                     <div className="flex items-baseline gap-2">
-                                        <span className="text-6xl md:text-7xl font-black tracking-tighter italic">¥1,980</span>
-                                        <span className="text-white/50 font-black text-xl italic">/月</span>
+                                        <span className="text-5xl md:text-7xl font-black tracking-tighter italic">
+                                            {isYearly ? '¥19,800' : '¥1,980'}
+                                        </span>
+                                        <span className="text-white/50 font-black text-xl italic">
+                                            /{isYearly ? '年' : '月'}
+                                        </span>
                                     </div>
                                 </div>
                                 <p className="text-sm font-black text-[#4DB39A] uppercase tracking-[0.3em] mb-2">
@@ -142,7 +166,7 @@ export const PricingSection = () => {
                                 ))}
                             </ul>
 
-                            <button onClick={() => window.location.href = '/start'} className="w-full py-6 bg-[#F5CC6D] text-black font-black text-2xl uppercase italic border-[4px] border-white rounded-2xl shadow-[8px_8px_0px_0px_rgba(255,255,255,0.2)] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] transition-all flex items-center justify-center gap-3">
+                            <button onClick={() => window.location.href = `/start?plan=${isYearly ? 'yearly' : 'monthly'}`} className="w-full py-6 bg-[#F5CC6D] text-black font-black text-2xl uppercase italic border-[4px] border-white rounded-2xl shadow-[8px_8px_0px_0px_rgba(255,255,255,0.2)] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] transition-all flex items-center justify-center gap-3">
                                 7日間無料で始める <Icons.ChevronUp className="rotate-90 stroke-[4px]" size={24} />
                             </button>
                             <div className="mt-8 pt-8 border-t border-white/10">

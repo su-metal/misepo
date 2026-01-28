@@ -90,20 +90,56 @@ export async function GET() {
     }
   }
 
+  // --- TRIAL ELIGIBILITY CHECK ---
+  const { data: trialRedemption } = await supabaseAdmin
+    .from("promotion_redemptions")
+    .select("id")
+    .eq("app_id", APP_ID)
+    .eq("user_id", userId)
+    .eq("promo_key", "trial_7days")
+    .maybeSingle();
+
+  const isEligibleForTrial = !trialRedemption;
+
   // --- CARDLESS TRIAL INITIALIZATION ---
   let finalTrialEndsAt = ent.trial_ends_at;
-  if (!finalTrialEndsAt && ent.plan === 'free' && ent.status === 'active') {
+  let currentPlan = ent.plan;
+  let currentStatus = ent.status;
+
+  if (isEligibleForTrial && currentPlan === 'free') {
     // New user or user without trial. Initialize it to 7 days from now (JST)
     const jstOffset = 9 * 60 * 60 * 1000;
     const nowJST = new Date(Date.now() + jstOffset);
     const endsAtJST = new Date(nowJST.getTime() + (7 * 24 * 60 * 60 * 1000));
     finalTrialEndsAt = new Date(endsAtJST.getTime() - jstOffset).toISOString();
 
+    // Mark trial as redeemed FIRST to prevent race condition
     await supabaseAdmin
+      .from("promotion_redemptions")
+      .insert({
+        app_id: APP_ID,
+        user_id: userId,
+        promo_key: "trial_7days"
+      });
+
+    // Update to 'trial' plan and 'active' status
+    const { data: updated } = await supabaseAdmin
       .from('entitlements')
-      .update({ trial_ends_at: finalTrialEndsAt })
+      .update({ 
+        plan: 'trial',
+        status: 'active',
+        trial_ends_at: finalTrialEndsAt 
+      })
       .eq('app_id', APP_ID)
-      .eq('user_id', userId);
+      .eq('user_id', userId)
+      .select("plan,status,expires_at,trial_ends_at,billing_reference_id")
+      .single();
+    
+    if (updated) {
+      ent = updated;
+      currentPlan = updated.plan;
+      currentStatus = updated.status;
+    }
     
     console.log(`[PlanAPI] Initialized cardless trial for ${userId}: ends at ${finalTrialEndsAt}`);
   }
@@ -113,18 +149,10 @@ export async function GET() {
   const expiresMs = ent.expires_at ? new Date(ent.expires_at).getTime() : null;
 
   const isTrialWindow = trialEndsMs !== null && trialEndsMs > nowMs;
-  const isPaidActive = ent.plan !== 'free' && ent.status === 'active' && (expiresMs === null || expiresMs > nowMs);
+  const isPaidActive = currentPlan !== 'free' && currentPlan !== 'trial' && currentStatus === 'active' && (expiresMs === null || expiresMs > nowMs);
   
   const canUseApp = isTrialWindow || isPaidActive;
   const isPro = isPaidActive; // Explicitly Pro if paid
-
-  const { data: trialRedemption } = await supabaseAdmin
-    .from("promotion_redemptions")
-    .select("id")
-    .eq("app_id", APP_ID)
-    .eq("user_id", userId)
-    .eq("promo_key", "trial_7days")
-    .maybeSingle();
 
   // --- Usage Stats Calculation ---
   let usage = 0;
@@ -175,13 +203,13 @@ export async function GET() {
   return NextResponse.json({
     ok: true,
     app_id: APP_ID,
-    plan: ent.plan,
-    status: ent.status,
+    plan: currentPlan,
+    status: currentStatus,
     expires_at: ent.expires_at,
     trial_ends_at: finalTrialEndsAt,
     canUseApp,
     isPro,
-    eligibleForTrial: !trialRedemption,
+    eligibleForTrial: isEligibleForTrial,
     limit,
     usage,
     usage_period,
