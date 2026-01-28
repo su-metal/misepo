@@ -556,6 +556,16 @@ export function useGeneratorFlow(props: {
     }, 1200);
   };
 
+  const handleCopy = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setToastMessage("コピーしました！");
+      setTimeout(() => setToastMessage(null), 3000);
+    } catch (err) {
+      alert("コピーに失敗しました");
+    }
+  };
+
   // Restoration logic
   useEffect(() => {
     if (restorePost) {
@@ -648,6 +658,7 @@ export function useGeneratorFlow(props: {
     handleAutoFormat,
     isAutoFormatting,
     handleShare,
+    handleCopy,
     activePresetId,
     favorites,
     onToggleFavorite,

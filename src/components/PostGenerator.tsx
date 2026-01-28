@@ -219,6 +219,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
                 presetId={flow.activePresetId || undefined}
                 onAutoFormat={flow.handleAutoFormat}
                 isAutoFormatting={flow.isAutoFormatting}
+                onCopy={flow.handleCopy}
               />
             </div>
           </div>
