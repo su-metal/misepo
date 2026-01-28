@@ -416,7 +416,7 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                         </div>
 
                         {/* RIGHT COL: Style Settings */}
-                        <div className="p-5 rounded-[20px] flex flex-col gap-5 flex-1 bg-white border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                        <div className="p-5 rounded-[20px] flex flex-col gap-5 flex-1 bg-white border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
                             <div className="flex items-center justify-between px-2">
                                 <div className="flex items-center gap-2">
                                     <div className="w-8 h-8 rounded-lg flex items-center justify-center font-black text-sm shadow-sm border bg-black text-white border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)]">3</div>
