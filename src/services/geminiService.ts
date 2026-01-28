@@ -54,6 +54,75 @@ const INDUSTRY_PROMPTS: Record<string, string> = {
   'その他': '役割：店舗/サービスのオーナー。重視点：お客様との繋がり、サービスの独自性、誠実な対応。'
 };
 
+const TONE_INDUSTRY_ADJUSTMENTS: Record<string, Record<Tone, string>> = {
+  '飲食店': {
+    [Tone.Formal]: '格式高いレストランのように、上品で一貫した敬語を使用してください。おもてなしの精神と料理への誇りを強調します。',
+    [Tone.Standard]: '丁寧かつ誠実に、料理へのこだわりや来店への感謝をバランスよく伝えてください。',
+    [Tone.Friendly]: '活気あるスタッフの笑顔が浮かぶような、明るくアットホームな接客調を心がけてください。',
+    [Tone.Casual]: '親近感のある言葉遣いで、常連客と話すような温かい交流を演出してください。'
+  },
+  'カフェ': {
+    [Tone.Formal]: '洗練された空間にふさわしい、落ち着きと気品のある言葉遣いを選択してください。',
+    [Tone.Standard]: 'ゆったりとした時間の流れを大切にする丁寧さで、空間やメニューの魅力を伝えてください。',
+    [Tone.Friendly]: 'おしゃれで軽やかなトーンで、日常の小さな幸せに寄り添うような返信にしてください。',
+    [Tone.Casual]: 'お友達を招待するような、リラックスしたフランクな表現を織り交ぜてください。'
+  },
+  '居酒屋': {
+    [Tone.Formal]: '信頼感を重視し、賑わいの中にも一本筋の通った誠実な対応を表現してください。',
+    [Tone.Standard]: '元気よく、かつ節度を守った丁寧さで、お酒と料理の楽しさを伝えてください。',
+    [Tone.Friendly]: '大将やスタッフの顔が見えるような、親しみやすく威勢の良いトーンにしてください。',
+    [Tone.Casual]: 'ざっくばらんな付き合いを大切にする、非常に距離の近い「飲み仲間」のような口癖にしてください。'
+  },
+  '美容室': {
+    [Tone.Formal]: 'プロフェッショナルとしての見識と技術への自信を、凛とした丁寧な言葉で表現してください。',
+    [Tone.Standard]: 'お客様の美しさを引き立てる提案力を感じさせる、品のあるトーンを心がけてください。',
+    [Tone.Friendly]: 'お客様のライフスタイルに寄り添う、親身で会話が弾むようなトーンにしてください。',
+    [Tone.Casual]: '最新のトレンドを共有するような、ワクワク感のある非常にフランクな口筋にしてください。'
+  },
+  'ネイル・まつげ': {
+    [Tone.Formal]: '技術の繊細さとこだわりを、美意識の高い丁寧な言葉遣いで伝えてください。',
+    [Tone.Standard]: '清潔感と安心感を第一に、細やかな配慮が伝わる丁寧な表現を選んでください。',
+    [Tone.Friendly]: 'トレンド感と共感を取り入れた、キラキラとした明るいトーンを意識してください。',
+    [Tone.Casual]: '女子会のような、最新の「可愛い」を共感し合える親密な口調にしてください。'
+  },
+  'エステ・サロン': {
+    [Tone.Formal]: '非日常の優雅さを演出するため、高級感のある極めて丁寧な敬語を使用してください。',
+    [Tone.Standard]: 'お客様の癒やしと美を第一に考えた、包み込むような優しい丁寧さを意識してください。',
+    [Tone.Friendly]: '美のパートナーとして、心を開いて相談できるような温かなトーンにしてください。',
+    [Tone.Casual]: '深い信頼関係に基づいた、リラックスして話せる親身なトーンにしてください。'
+  },
+  '旅館・ホテル': {
+    [Tone.Formal]: '日本の伝統的な「おもてなし」を象徴する、最高級の敬語（謙譲語・尊敬語）を駆使してください。',
+    [Tone.Standard]: '旅の情緒とお客様の思い出を大切にする、品位ある温かな返信を心がけてください。',
+    [Tone.Friendly]: '定宿に帰ってきたような、安心感と親しみのある「おかえりなさい」の精神を表現してください。',
+    [Tone.Casual]: '少し距離を縮めた、旅の楽しさを分かち合える温かい交流を目指してください。'
+  },
+  '整体・接骨院': {
+    [Tone.Formal]: '医療従事者としての責任と倫理観に基づき、極めて誠実で落ち着いた言葉を選んでください。',
+    [Tone.Standard]: '安心感を与える論理的な解説と、お体に寄り添う丁寧な言葉をバランスよく配置してください。',
+    [Tone.Friendly]: '一緒に改善を目指すパートナーとして、温かな励ましと共感を含めてください。',
+    [Tone.Casual]: '日々のメンテナンスを気楽に相談できる、頼れる知り合いのような親近感を演出してください。'
+  },
+  'ジム': {
+    [Tone.Formal]: '目標達成をサポートするプロとして、規律正しく信頼感のある言葉を使用してください。',
+    [Tone.Standard]: 'ポジティブで健康的なエナジーを感じさせる、標準的でハツラツとした敬語を心がけてください。',
+    [Tone.Friendly]: 'やる気を引き出す前向きな言葉と、コミュニティの一体感を重視したトーンにしてください。',
+    [Tone.Casual]: '一緒に汗を流す仲間に向けるような、気合と活気のあるフランクな表現を使ってください。'
+  },
+  '小売': {
+    [Tone.Formal]: '商品への深い知識と、ブランドの価値を守る誠実な信頼感を丁寧に伝えてください。',
+    [Tone.Standard]: 'お客様のニーズに寄り添う、丁寧で親しみやすい「接客プロ」のトーンを意識してください。',
+    [Tone.Friendly]: 'おすすめの品を楽しく紹介するような、明るく期待感の高まる表現を使用してください。',
+    [Tone.Casual]: '「これ、いいよ！」と自信を持って勧められる、非常に心理的距離の近い提案調にしてください。'
+  },
+  'その他': {
+    [Tone.Formal]: '多方面に配慮した、非の打ち所がない極めて丁寧で誠実な対応を貫いてください。',
+    [Tone.Standard]: '誰にでも伝わりやすく、バランスの取れた標準的な丁寧さを維持してください。',
+    [Tone.Friendly]: '親近感を出しつつも、最低限の節度を保った誠実なトーンを心がけてください。',
+    [Tone.Casual]: '気軽なコミュニケーションを重視した、親しみやすさ全開の口調にしてください。'
+  }
+};
+
 const GMAP_PURPOSE_PROMPTS: Record<string, string> = {
   [GoogleMapPurpose.Auto]: "口コミの内容に応じて、感謝、謝罪、または説明を適切に組み合わせてください。",
   [GoogleMapPurpose.Thanks]: "来店への感謝を述べ、再来店を歓迎する意向を含めてください。",
@@ -211,12 +280,14 @@ export const generateContent = async (
             : `\n<language_rule>\nPrimary Language: Japanese. \n*Exception*: If <learning_samples> contain phrases in other languages (e.g., English greetings), you MUST include them to maintain the persona's flavor.\n</language_rule>`;
 
         const industryRole = INDUSTRY_PROMPTS[profile.industry] || INDUSTRY_PROMPTS['その他'];
+        const industryToneAdjust = isGMap ? (TONE_INDUSTRY_ADJUSTMENTS[profile.industry]?.[config.tone] || TONE_INDUSTRY_ADJUSTMENTS['その他']?.[config.tone] || "") : "";
 
         return `
 <system_instruction>
   <role>
     You are the "Ghostwriter" for the store owner of "${profile.name}".
     ${industryRole}
+    ${industryToneAdjust ? `TONE_SPECIFIC_INSTRUCTION: ${industryToneAdjust}` : ""}
     ${profile.description ? `<store_dna>
     SOURCE_MATERIAL:
     ${profile.description}
@@ -246,7 +317,7 @@ export const generateContent = async (
     - **Emojis & Symbols**: 
       ${isGMap ? 
         '- **Emojis**: Basically, DO NOT use emojis for Google Maps. **EXCEPTION**: If <learning_samples> or <persona_rules> explicitly contain emojis, you MUST accurately reproduce their frequency and style as they are a core part of the owner\'s voice.\n      - **Symbols**: Basically, use standard Japanese punctuation. If <learning_samples> use decorative symbols, mimic them moderately.' : 
-        `- **Emojis**: ${hasPersona ? 'Strictly follow patterns from samples.' : (config.includeEmojis ? 'Actively use expressive emojis (🐻, ✨, 💪, 🎉) to make the text lively.' : 'DO NOT use any emojis.')}
+        `- **Emojis**: ${hasPersona ? 'Strictly follow patterns from samples.' : (config.includeEmojis ? `Select emojis that perfectly match the post's content and the industry (${profile.industry}). Prioritize variety and situational relevance (e.g., seasonal items, specific products, or relevant activities) over generic symbols to ensure a natural and engaging selection.` : 'DO NOT use any emojis.')}
     - **Symbols**: ${hasPersona && !config.includeSymbols ? 'Strictly follow patterns from samples.' : (config.includeSymbols ? `From the **Aesthetic Palette**:
         - **Headers/Accents**: ＼ ✧ TITLE ✧ ／, 𓍯 𓇢 TITLE 𓇢 𓍯, 【 TITLE 】, ✧, ꕤ, ⚘, ☼, 𖥧, 𖠚
         - **Dividers**: ${isX ? '**DISABLED for X**. Do NOT use line dividers on X.' : '𓂃𓂃𓂃, ⋆┈┈┈┈┈┈┈┈┈┈⋆, ──────────── (Use 1-2 sets to separate sections)'} 
@@ -373,8 +444,9 @@ export const generateContent = async (
     - Language: ${config.language || 'Japanese'}
     - Length: ${config.length} (Target: ${t.target} chars. Min: ${t.min} chars)
     - Tone: ${config.tone} (${TONE_RULES[config.tone] || TONE_RULES[Tone.Standard]})
+    ${isGMap ? `- Industry Specific Tone: ${TONE_INDUSTRY_ADJUSTMENTS[profile.industry]?.[config.tone] || TONE_INDUSTRY_ADJUSTMENTS['その他']?.[config.tone] || ""}` : ""}
     - Features: ${isInstagram ? 'Visual focus.' : ''}${isX ? 'Under 140 chars.' : ''}${isGMap ? 'NO hashtags. Focus on maintaining the owner\'s personality in the reply.' : ''}${isLine ? 'Direct marketing style. NO hashtags. Focus on clear messaging.' : ''}
-    - Emojis: ${isGMap ? 'Prohibited by default. HOWEVER, if <learning_samples> contain emojis, prioritize matching their frequency to preserve the owner\'s style.' : (config.includeEmojis ? "Actively use expressive emojis (🐻, ✨, 💪, 🎉) to make the text lively." : "DO NOT use any emojis (emoticons, icons, pictograms) under any circumstances. Keep it plain text only regarding emojis.")}
+    - Emojis: ${isGMap ? 'Prohibited by default. HOWEVER, if <learning_samples> contain emojis, prioritize matching their frequency to preserve the owner\'s style.' : (config.includeEmojis ? `Select emojis that are highly relevant to the industry (${profile.industry}) and current topic. Prioritize contextual variety (e.g., specific items, seasonal symbols, or mood-appropriate faces) and avoid repetition or over-reliance on specific characters.` : "DO NOT use any emojis (emoticons, icons, pictograms) under any circumstances. Keep it plain text only regarding emojis.")}
     - Special Characters: ${config.includeSymbols ? `From the **Aesthetic Palette**:
         - **Headers/Accents**: ＼ ✧ TITLE ✧ ／, 𓍯 𓇢 TITLE 𓇢 𓍯, 【 TITLE 】, ✧, ꕤ, ⚘, ☼, 𖥧, 𖠚
         - **Dividers**: ${isX ? '**DISABLED for X**. Do NOT use line dividers on X.' : '𓂃𓂃𓂃, ⋆┈┈┈┈┈┈┈┈┈┈⋆, ──────────── (Use to separate Body and CTA)'}
