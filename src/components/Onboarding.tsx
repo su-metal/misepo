@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { StoreProfile } from '../types';
-import { INDUSTRIES, IS_HOSPITALITY_MODE, COLORS } from '../constants';
+import { INDUSTRIES, COLORS } from '../constants';
 
 interface OnboardingProps {
   onSave: (profile: StoreProfile) => void;
@@ -149,7 +149,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
             {/* Industry Selection */}
             <div className="space-y-6">
               <div className="flex items-center justify-between">
-                <h3 className="text-[10px] font-black text-black uppercase tracking-[0.3em]">{IS_HOSPITALITY_MODE ? '施設カテゴリー' : '業種カテゴリー'}</h3>
+                <h3 className="text-[10px] font-black text-black uppercase tracking-[0.3em]">施設カテゴリー</h3>
                 {!isEditMode && <span className={`bg-[${COLORS.navy}] text-[${COLORS.gold}] text-[8px] font-black px-2 py-0.5 rounded-full tracking-widest uppercase`}>Required</span>}
               </div>
               <div className="flex flex-wrap gap-2">
@@ -160,8 +160,8 @@ const Onboarding: React.FC<OnboardingProps> = ({
                     onClick={() => setIndustry(ind)}
                     className={`px-6 py-3 rounded-xl text-[11px] font-black transition-all duration-200 border-2
                         ${industry === ind
-                        ? (IS_HOSPITALITY_MODE ? `bg-[${COLORS.primary}] text-white border-transparent shadow-lg shadow-[${COLORS.primary}]/20` : 'bg-[var(--teal)] border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] scale-[1.02] z-10 text-black')
-                        : (IS_HOSPITALITY_MODE ? 'bg-white border-slate-200 text-slate-500 hover:border-slate-400' : 'bg-white border-black text-slate-500 hover:bg-[var(--teal)] hover:text-black hover:shadow-[2px_2px_0_0_rgba(0,0,0,1)]')
+                        ? `bg-[${COLORS.primary}] text-white border-transparent shadow-lg shadow-[${COLORS.primary}]/20`
+                        : 'bg-white border-slate-200 text-slate-500 hover:border-slate-400'
                       }`}
                   >
                     {ind}
@@ -184,7 +184,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
                     value={name}
                     onChange={(e) => handleNameChange(e.target.value)}
                     placeholder="例：焼きたてパンの店 アン"
-                    className={`w-full px-7 py-6 rounded-2xl transition-all text-xl text-black font-black tracking-tight placeholder:text-slate-300 outline-none ${IS_HOSPITALITY_MODE ? `bg-slate-50 border border-slate-200 focus:bg-white focus:border-[${COLORS.primary}] focus:ring-4 focus:ring-[${COLORS.primary}]/10` : 'bg-white focus:bg-[var(--bg-beige)] border-2 border-black focus:shadow-[4px_4px_0_0_rgba(0,0,0,1)]'}`}
+                    className={`w-full px-7 py-6 rounded-2xl transition-all text-xl text-black font-black tracking-tight placeholder:text-slate-300 outline-none bg-slate-50 border border-slate-200 focus:bg-white focus:border-[${COLORS.primary}] focus:ring-4 focus:ring-[${COLORS.primary}]/10`}
                     required
                   />
                   <div className="absolute right-7 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-black transition-colors">
@@ -239,7 +239,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
                     value={region}
                     onChange={(e) => setRegion(e.target.value)}
                     placeholder="地名を入れるとより親しみやすい文章になります"
-                    className={`w-full px-7 py-6 rounded-2xl transition-all text-xl text-black font-black tracking-tight placeholder:text-slate-300 outline-none ${IS_HOSPITALITY_MODE ? `bg-slate-50 border border-slate-200 focus:bg-white focus:border-[${COLORS.primary}] focus:ring-4 focus:ring-[${COLORS.primary}]/10` : 'bg-white focus:bg-[var(--bg-beige)] border-2 border-black focus:shadow-[4px_4px_0_0_rgba(0,0,0,1)]'}`}
+                    className={`w-full px-7 py-6 rounded-2xl transition-all text-xl text-black font-black tracking-tight placeholder:text-slate-300 outline-none bg-slate-50 border border-slate-200 focus:bg-white focus:border-[${COLORS.primary}] focus:ring-4 focus:ring-[${COLORS.primary}]/10`}
                   />
                   <div className="absolute right-7 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-black transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
@@ -258,14 +258,14 @@ const Onboarding: React.FC<OnboardingProps> = ({
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="例：自家焙煎のコーヒー、夜はオーガニックワインを提供、落ち着いたモダンな内装..."
+                placeholder="例：創業100年の老舗旅館です。全客室から海が見渡せます。地元の新鮮な魚介類を使った創作料理が自慢です..."
                 rows={5}
-                className={`w-full px-7 py-6 rounded-2xl transition-all resize-none text-base text-black font-black leading-relaxed placeholder:text-slate-300 outline-none ${IS_HOSPITALITY_MODE ? `bg-slate-50 border border-slate-200 focus:bg-white focus:border-[${COLORS.primary}] focus:ring-4 focus:ring-[${COLORS.primary}]/10` : 'bg-white focus:bg-[var(--bg-beige)] border-2 border-black focus:shadow-[4px_4px_0_0_rgba(0,0,0,1)]'}`}
+                className={`w-full px-7 py-6 rounded-2xl transition-all resize-none text-base text-black font-black leading-relaxed placeholder:text-slate-300 outline-none bg-slate-50 border border-slate-200 focus:bg-white focus:border-[${COLORS.primary}] focus:ring-4 focus:ring-[${COLORS.primary}]/10`}
               />
             </div>
 
             {/* Instagram Footer: Info Card */}
-            <div className="bg-white border-2 border-black rounded-[24px] p-8 space-y-5 shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all group">
+            <div className="bg-white border border-slate-100 rounded-[24px] p-8 space-y-5 shadow-md transition-all group">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-lg bg-[#E1306C] border-2 border-black flex items-center justify-center text-white shadow-sm">
@@ -283,17 +283,17 @@ const Onboarding: React.FC<OnboardingProps> = ({
                 onChange={(e) => setInstagramFooter(e.target.value)}
                 placeholder="📍 アクセス情報や営業時間をセット..."
                 rows={6}
-                className={`w-full px-6 py-4 rounded-xl transition-all resize-none text-sm text-slate-700 leading-relaxed placeholder-slate-300 font-bold min-h-[160px] outline-none ${IS_HOSPITALITY_MODE ? `bg-slate-50 border border-slate-200 focus:bg-white focus:border-[${COLORS.primary}]` : 'bg-slate-50 border-2 border-slate-200 focus:bg-white focus:border-black'}`}
+                className={`w-full px-6 py-4 rounded-xl transition-all resize-none text-sm text-slate-700 leading-relaxed placeholder-slate-300 font-bold min-h-[160px] outline-none bg-slate-50 border border-slate-200 focus:bg-white focus:border-[${COLORS.primary}]`}
               />
             </div>
 
             {/* Actions */}
-            <div className="flex flex-col sm:flex-row gap-4 pt-4 sticky bottom-0 bg-white border-t-[3px] border-black md:border-0 md:bg-transparent md:static z-20 pb-4">
+            <div className="flex flex-col sm:flex-row gap-4 pt-4 sticky bottom-0 bg-[#F9FAFB] md:bg-transparent border-t border-slate-100 md:border-0 md:static z-20 pb-4">
               {onCancel && (
                 <button
                   type="button"
                   onClick={onCancel}
-                  className="flex-1 py-5 rounded-xl border-2 border-black font-black text-[11px] text-black hover:bg-slate-100 transition-all uppercase tracking-widest shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:shadow-[2px_2px_0_0_rgba(0,0,0,1)] active:translate-y-[2px] active:translate-x-[2px]"
+                  className="flex-1 py-5 rounded-xl border-2 font-black text-[11px] text-black transition-all uppercase tracking-widest bg-white border-slate-200 hover:bg-slate-50 shadow-sm"
                 >
                   キャンセル
                 </button>
@@ -301,7 +301,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
               <button
                 type="submit"
                 disabled={name.trim().length < 2}
-                className="flex-[2] relative group overflow-hidden bg-[var(--gold)] text-black border-2 border-black font-black py-5 rounded-xl shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] active:translate-x-[0px] active:translate-y-[0px] active:shadow-[2px_2px_0_0_rgba(0,0,0,1)] transition-all duration-300 flex items-center justify-center gap-4 disabled:opacity-50 disabled:pointer-events-none hover:bg-[var(--rose)]"
+                className={`flex-[2] relative group overflow-hidden font-black py-5 rounded-xl transition-all duration-300 flex items-center justify-center gap-4 disabled:opacity-50 disabled:pointer-events-none bg-gradient-to-br from-[${COLORS.navy}] to-[${COLORS.navyDeep}] text-white shadow-md hover:-translate-y-0.5`}
               >
                 <span className="relative z-10 text-xs tracking-[0.2em]">{isEditMode ? '設定を保存する' : '設定を完了してはじめる'}</span>
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="relative z-10 group-hover:translate-x-1 transition-transform"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
@@ -314,7 +314,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
         {onCancel && (
           <button
             onClick={onCancel}
-            className="absolute top-4 right-4 md:top-8 md:right-8 flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-xl bg-white text-black hover:bg-[var(--rose)] border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] transition-all group/close active:shadow-[2px_2px_0_0_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] z-50"
+            className={`absolute top-4 right-4 md:top-8 md:right-8 flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-xl transition-all group/close active:translate-x-[2px] active:translate-y-[2px] z-50 bg-white border border-slate-100 shadow-md text-[${COLORS.navy}] hover:bg-slate-50`}
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
           </button>

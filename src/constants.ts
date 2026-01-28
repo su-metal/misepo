@@ -1,8 +1,8 @@
 
 import { Platform, PostPurpose, GoogleMapPurpose, Tone, Length, StoreProfile, AppMode } from './types';
 
-// Vertical SaaS Mode Switch
-export const IS_HOSPITALITY_MODE = false; // Set to true for Hospitality Mode
+// Vertical SaaS Mode Switch - DEPRECATED / REMOVED
+// Defaulting to Hospitality Mode (Neo Brutalism)
 
 // Color Palette Definitions
 export const COLORS = {
@@ -36,70 +36,38 @@ export const COLORS = {
   }
 };
 
-export const MODE_CONFIG = {
-  [AppMode.Standard]: {
-    customerLabel: "お客様",
-    visitLabel: "来店",
-    ownerLabel: "店主",
-    primaryColor: COLORS.primary,
-    accentColor: COLORS.accent,
-    bgHighlight: `bg-[${COLORS.primary}]/10`,
-    textHighlight: `text-[${COLORS.primary}]`,
-    name: "MisePo",
-  },
-  [AppMode.Hospitality]: {
-    customerLabel: "ゲスト様",
-    visitLabel: "ご宿泊・ご来館",
-    ownerLabel: "支配人/スタッフ",
-    primaryColor: COLORS.navy,
-    accentColor: COLORS.gold,
-    bgHighlight: `bg-[${COLORS.gold}]/10`,
-    textHighlight: `text-[${COLORS.gold}]`,
-    name: "MisePo Hospitality",
-  }
+// Enforce Hospitality Mode Config
+export const UI = {
+  customerLabel: "ゲスト様",
+  visitLabel: "ご宿泊・ご来館",
+  ownerLabel: "支配人/スタッフ",
+  primaryColor: COLORS.navy,
+  accentColor: COLORS.gold,
+  bgHighlight: `bg-[${COLORS.gold}]/10`,
+  textHighlight: `text-[${COLORS.gold}]`,
+  name: "MisePo Hospitality",
 };
 
-export const CURRENT_MODE = IS_HOSPITALITY_MODE ? AppMode.Hospitality : AppMode.Standard;
-export const UI = MODE_CONFIG[CURRENT_MODE];
-
-// Design System Tokens
+// Design System Tokens - Fixed to Neo Brutalism (previously Hospitality Mode)
 export const TOKENS = {
-  container: IS_HOSPITALITY_MODE 
-    ? `bg-white rounded-[32px] border border-blue-50 shadow-[0_12px_24px_rgba(0,0,0,0.04)]` 
-    : `bg-white rounded-[48px] border-[3px] border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]`,
+  container: `bg-white rounded-[32px] border border-blue-50 shadow-[0_12px_24px_rgba(0,0,0,0.04)]`,
   
-  card: IS_HOSPITALITY_MODE
-    ? `bg-white rounded-[20px] border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.04)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.06)] transition-all duration-500`
-    : `bg-white rounded-[32px] border-[2px] border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all`,
+  card: `bg-white rounded-[20px] border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.04)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.06)] transition-all duration-500`,
 
-  cardActionable: IS_HOSPITALITY_MODE
-    ? `bg-white rounded-[16px] border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300`
-    : `bg-white rounded-2xl border-[3px] border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-all`,
+  cardActionable: `bg-white rounded-[16px] border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300`,
 
-  input: IS_HOSPITALITY_MODE
-    ? `bg-slate-50/50 border border-slate-200 focus:border-[${COLORS.primary}] focus:bg-white focus:ring-4 focus:ring-[${COLORS.primary}]/10 rounded-xl transition-all`
-    : `bg-white border-[3px] border-black rounded-2xl focus:shadow-[6px_6px_0_0_rgba(0,0,0,1)] transition-all`,
+  input: `bg-slate-50/50 border border-slate-200 focus:border-[${COLORS.primary}] focus:bg-white focus:ring-4 focus:ring-[${COLORS.primary}]/10 rounded-xl transition-all`,
 
-  buttonPrimary: IS_HOSPITALITY_MODE
-    ? `bg-[${COLORS.primary}] text-white border border-[${COLORS.primary}]/10 shadow-md hover:-translate-y-0.5 active:scale-95 transition-all rounded-xl`
-    : `bg-[${COLORS.primary}] text-black border-[3px] border-black shadow-[6px_6px_0_0_rgba(0,0,0,1)] active:scale-95 transition-all rounded-2xl`,
+  buttonPrimary: `bg-[${COLORS.primary}] text-white border border-[${COLORS.primary}]/10 shadow-md hover:-translate-y-0.5 active:scale-95 transition-all rounded-xl`,
 
-  buttonSecondary: IS_HOSPITALITY_MODE
-    ? `bg-[${COLORS.accent}]/40 text-[${COLORS.navy}] hover:bg-[${COLORS.accent}]/60 active:scale-95 transition-all rounded-xl`
-    : `bg-[${COLORS.accent}] text-black border-[3px] border-black shadow-[6px_6px_0_0_rgba(0,0,0,1)] active:scale-95 transition-all rounded-2xl`,
+  buttonSecondary: `bg-[${COLORS.accent}]/40 text-[${COLORS.navy}] hover:bg-[${COLORS.accent}]/60 active:scale-95 transition-all rounded-xl`,
 
-  buttonGhost: IS_HOSPITALITY_MODE
-    ? `bg-slate-50 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-xl transition-all`
-    : `bg-black/5 text-black/40 hover:text-black hover:bg-black/10 rounded-xl transition-all`,
+  buttonGhost: `bg-slate-50 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-xl transition-all`,
   
-  badge: IS_HOSPITALITY_MODE
-    ? `bg-[${COLORS.accent}]/40 text-[${COLORS.navy}] border border-[${COLORS.accent}]/60 rounded-lg font-bold`
-    : `bg-[#9B8FD4] text-black border-2 border-black rounded-xl shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-black`,
+  badge: `bg-[${COLORS.accent}]/40 text-[${COLORS.navy}] border border-[${COLORS.accent}]/60 rounded-lg font-bold`,
 };
 
-export const INDUSTRIES = IS_HOSPITALITY_MODE 
-  ? ['旅館・ホテル', '飲食店', 'カフェ', '居酒屋', '美容室', 'ネイル・まつげ', 'エステ・サロン', '整体・接骨院', 'ジム', '小売', 'その他']
-  : ['飲食店', 'カフェ', '居酒屋', '美容室', 'ネイル・まつげ', 'エステ・サロン', '旅館・ホテル', '整体・接骨院', 'ジム', '小売', 'その他'];
+export const INDUSTRIES = ['旅館・ホテル', '飲食店', 'カフェ', '居酒屋', '美容室', 'ネイル・まつげ', 'エステ・サロン', '整体・接骨院', 'ジム', '小売', 'その他'];
 
 export const POST_PURPOSES = [
   { value: PostPurpose.Promotion, label: '宣伝・告知', icon: '📢' },
