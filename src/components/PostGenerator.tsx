@@ -28,6 +28,7 @@ interface PostGeneratorProps {
   onOpenHistory?: () => void;
   onLogout: () => void;
   plan: UserPlan;
+  refreshPlan?: () => Promise<void>;
   resetResultsTrigger?: number;
   shouldShowTour?: boolean;
 }
@@ -37,7 +38,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
     storeProfile, isLoggedIn, onOpenLogin, presets,
     onGenerateSuccess, onTaskComplete, trainingItems, onToggleFavorite, restorePost,
     onOpenGuide, onOpenSettings, onOpenHistory, onLogout,
-    plan, resetResultsTrigger, shouldShowTour
+    plan, refreshPlan, resetResultsTrigger, shouldShowTour
   } = props;
 
   const favorites = React.useMemo(() => new Set(trainingItems.map(t => t.content.trim())), [trainingItems]);
@@ -45,7 +46,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
   const flow = useGeneratorFlow({
     storeProfile, isLoggedIn, onOpenLogin,
     onGenerateSuccess, onTaskComplete, favorites, onToggleFavorite, restorePost,
-    resetResultsTrigger
+    resetResultsTrigger, refreshPlan
   });
 
   const [isPresetModalOpen, setIsPresetModalOpen] = React.useState(false);

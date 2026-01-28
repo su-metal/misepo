@@ -1,27 +1,24 @@
 import { useState, useCallback, useEffect } from 'react';
+import { UserPlan } from '../types';
 
 export function usePlan(user: any) {
-  const [plan, setPlan] = useState<{
-    isPro: boolean;
-    canUseApp: boolean;
-    eligibleForTrial: boolean;
-    plan: string;
-    status: string;
-    trial_ends_at: string | null;
-  }>({
+  const [plan, setPlan] = useState<UserPlan>({
     isPro: false,
     canUseApp: true,
     eligibleForTrial: true,
     plan: 'free',
     status: 'active',
-    trial_ends_at: null
+    trial_ends_at: null,
+    usage: 0,
+    limit: 0,
+    usage_period: 'daily'
   });
   const [loading, setLoading] = useState(false);
 
   const refreshPlan = useCallback(async (loggedInOverride?: boolean) => {
     const isLoggedIn = loggedInOverride !== undefined ? loggedInOverride : !!user;
     if (!isLoggedIn) {
-      setPlan({ isPro: false, canUseApp: true, eligibleForTrial: true, plan: 'free', status: 'active', trial_ends_at: null });
+      setPlan({ isPro: false, canUseApp: true, eligibleForTrial: true, plan: 'free', status: 'active', trial_ends_at: null, usage: 0, limit: 0, usage_period: 'daily' });
       return;
     }
 
@@ -36,7 +33,10 @@ export function usePlan(user: any) {
           eligibleForTrial: !!data.eligibleForTrial,
           plan: data.plan,
           status: data.status,
-          trial_ends_at: data.trial_ends_at
+          trial_ends_at: data.trial_ends_at,
+          usage: data.usage,
+          limit: data.limit,
+          usage_period: data.usage_period
         });
       }
     } catch (err) {

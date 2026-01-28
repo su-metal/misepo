@@ -34,6 +34,8 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
   }
 
+  let effectiveEnt: any = null;
+
   if (userId) {
     const { data: ent, error: entErr } = await supabaseAdmin
       .from("entitlements")
@@ -49,7 +51,7 @@ export async function POST(req: Request) {
       );
     }
 
-    let effectiveEnt = ent ?? null;
+    effectiveEnt = ent ?? null;
     if (!effectiveEnt) {
       const { data: created, error: createErr } = await supabaseAdmin
         .from("entitlements")
@@ -101,12 +103,67 @@ export async function POST(req: Request) {
     );
   }
 
-  const config = body.config as GenerationConfig | undefined;
-  if (!config) {
+  const configs = (body.configs as GenerationConfig[]) || (body.config ? [body.config as GenerationConfig] : []);
+  if (configs.length === 0) {
     return NextResponse.json(
       { ok: false, error: "Missing generation config" },
       { status: 400 }
     );
+  }
+
+  // Cost calculation: 1 for single, 2 for simultaneous
+  const cost = configs.length > 1 ? 2 : 1;
+  const runType = configs.length > 1 ? "multi-gen" : "generation";
+
+  // --- Usage Limit Check ---
+  if (userId) {
+    // Calculate JST Date (UTC+9)
+    // Server is likely UTC. 
+    // To get "Today 0:00 JST", we shift UTC+9, zero out time, then shift back to UTC.
+    const nowUTC = new Date();
+    const jstOffset = 9 * 60 * 60 * 1000;
+    const nowJST = new Date(nowUTC.getTime() + jstOffset);
+
+    // Start of the day in JST
+    const startOfTodayJST = new Date(nowJST.getFullYear(), nowJST.getMonth(), nowJST.getDate());
+    // Start of the month in JST
+    const startOfMonthJST = new Date(nowJST.getFullYear(), nowJST.getMonth(), 1);
+
+    // Convert back to UTC string for DB comparison
+    const startOfToday = new Date(startOfTodayJST.getTime() - jstOffset).toISOString();
+    const startOfMonth = new Date(startOfMonthJST.getTime() - jstOffset).toISOString();
+
+    // Sum costs of runs for this user since today/month
+    // Note: older runs without weighting are counted as 1 by default
+    const { data: recentRuns, error: countErr } = await supabaseAdmin
+      .from("ai_runs")
+      .select("run_type, created_at")
+      .eq("user_id", userId)
+      .eq("app_id", APP_ID)
+      .gte("created_at", startOfMonth);
+
+    if (countErr) {
+        console.error("[LIMIT CHECK] Query error:", countErr);
+    } else {
+        const totalMonthCredits = recentRuns.reduce((sum, run) => sum + (run.run_type === 'multi-gen' ? 2 : 1), 0);
+        const totalTodayCredits = recentRuns
+            .filter(run => run.created_at >= startOfToday)
+            .reduce((sum, run) => sum + (run.run_type === 'multi-gen' ? 2 : 1), 0);
+        
+        const isTrial = effectiveEnt?.status === 'trialing' || (effectiveEnt?.plan === 'free' && effectiveEnt?.status === 'inactive');
+        const isPro = effectiveEnt?.plan === 'pro' && effectiveEnt?.status === 'active';
+
+        if (isTrial && totalTodayCredits + cost > 10) {
+            return NextResponse.json({ ok: false, error: "daily_limit_reached", limit: 10, current: totalTodayCredits }, { status: 403 });
+        }
+        if (isPro && totalMonthCredits + cost > 300) {
+            return NextResponse.json({ ok: false, error: "monthly_limit_reached", limit: 300, current: totalMonthCredits }, { status: 403 });
+        }
+        // Fallback for generic free if not trialing (e.g. 5/day default if unspecified, but following user request for 10)
+        if (!isPro && totalTodayCredits + cost > 10) {
+            return NextResponse.json({ ok: false, error: "usage_limit_reached" }, { status: 403 });
+        }
+    }
   }
 
   let savedRunId: string | null = null;
@@ -118,116 +175,71 @@ export async function POST(req: Request) {
   console.debug("Generating content for user", userId);
 
   try {
-    const isPro = true; // Auth already checked above
-    
-    // Fetch learning sources (favorites) - Filter by presetId
-    let learningSamples: string[] = [];
-    if (userId) {
-      const { data: presetRows, error: presetErr } = await supabase
-        .from("learning_sources")
-        .select("preset_id")
-        .eq("user_id", userId);
+    // --- Batch Generation Execution ---
+    const results = await Promise.all(configs.map(async (config) => {
+      // Resolve Platform-Specific learning samples for this config
+      let learningSamples: string[] = [];
+      if (userId && presetId) {
+        const { data: learningData } = await supabase
+          .from('learning_sources')
+          .select('content')
+          .eq('user_id', userId)
+          .eq('preset_id', presetId)
+          .in('platform', [config.platform, 'General'])
+          .order('created_at', { ascending: false })
+          .limit(10);
 
-      if (presetErr) {
-        console.warn("[LEARNING] Failed to fetch preset summary:", presetErr.message);
-      } else if (presetRows) {
-        const counts = presetRows.reduce<Record<string, number>>((acc, row: any) => {
-          const key = row.preset_id || "null";
-          acc[key] = (acc[key] || 0) + 1;
-          return acc;
-        }, {});
-        console.debug("[LEARNING] Preset sample counts:", counts);
+        if (learningData) {
+          learningSamples = learningData.map((item: any) => item.content);
+        }
       }
-    }
-    if (userId && presetId) {
-      // Build query for learning samples
-      const { data: learningData, error: learningErr } = await supabase
-        .from('learning_sources')
-        .select('content')
-        .eq('user_id', userId)
-        .eq('preset_id', presetId)
-        .in('platform', [config.platform, 'General'])
-        .order('created_at', { ascending: false })
-        .limit(10);
 
-      if (learningErr) {
-        console.warn("[LEARNING] Failed to fetch learning samples:", learningErr.message);
-      } else if (learningData && learningData.length > 0) {
-        learningSamples = learningData.map((item: any) => item.content);
-        console.log(`[LEARNING] Fetched ${learningSamples.length} samples for preset: ${presetId}`);
-      } else {
-        console.log(`[LEARNING] No samples found for preset: ${presetId}`);
+      // Apply persona_yaml
+      if (userId && presetId) {
+        const { data: presetData } = await supabase
+          .from("user_presets")
+          .select("persona_yaml")
+          .eq("id", presetId)
+          .eq("user_id", userId)
+          .single();
+        if (presetData?.persona_yaml) {
+          config.persona_yaml = presetData.persona_yaml;
+        }
       }
-    } else {
-      console.warn("[LEARNING] Skipped fetch (missing userId or presetId)");
-    }
 
-    // Fetch persona_yaml if presetId is provided
-    if (userId && presetId) {
-      const { data: presetData, error: presetFetchErr } = await supabase
-        .from("user_presets")
-        .select("persona_yaml")
-        .eq("id", presetId)
-        .eq("user_id", userId)
+      return generateContent(profile, config, true, learningSamples);
+    }));
+
+    // --- History & Counter Update ---
+    if (userId && body.save_history !== false) {
+      const { data: runData, error: runError } = await supabaseAdmin
+        .from("ai_runs")
+        .insert({
+          app_id: APP_ID,
+          user_id: userId,
+          run_type: runType, // 'generation' or 'multi-gen'
+        })
+        .select("id")
         .single();
-      
-      if (!presetFetchErr && presetData?.persona_yaml) {
-        console.log(`[LEARNING] Applied persona_yaml from preset ${presetId}`);
-        config.persona_yaml = presetData.persona_yaml;
-      }
-    }
 
-    const generatedData = await generateContent(profile, config, isPro, learningSamples);
-
-    if (userId) {
-      const runType =
-        typeof body.run_type === "string" && body.run_type.trim()
-          ? body.run_type
-          : "generation";
-
-      const inputPayload = { profile, config };
-      const shouldSaveHistory = body.save_history !== false;
-
-      if (shouldSaveHistory) {
-        // Step 1: Create ai_runs record first (required for foreign key)
-        const { data: runData, error: runError } = await supabaseAdmin
-          .from("ai_runs")
+      if (!runError && runData) {
+        savedRunId = runData.id;
+        // Batch record save (combined results)
+        await supabaseAdmin
+          .from("ai_run_records")
           .insert({
+            run_id: runData.id,
             app_id: APP_ID,
             user_id: userId,
-            run_type: runType,
-          })
-          .select("id")
-          .single();
-
-        if (runError) {
-          console.error("[HISTORY SAVE] Failed to create ai_runs:", runError);
-        } else if (runData) {
-          // Step 2: Create ai_run_records with the run_id (include all columns)
-          const { error: recordError } = await supabaseAdmin
-            .from("ai_run_records")
-            .insert({
-              run_id: runData.id,
-              app_id: APP_ID,
-              user_id: userId,
-              input: inputPayload,
-              output: generatedData, // Save full object { analysis, posts }
-            });
-
-          if (!recordError) {
-            savedRunId = runData.id;
-            console.log("[HISTORY SAVE] Success:", { savedRunId });
-          } else {
-            console.error("[HISTORY SAVE] Failed to save record:", recordError);
-          }
-        }
+            input: { profile, configs },
+            output: { results },
+          });
       }
     }
 
     return NextResponse.json({
       ok: true,
-      result: generatedData.posts, // Keep result as array for frontend compatibility
-      analysis: generatedData.analysis, // Return analysis as separate field
+      results,
       run_id: savedRunId,
     });
   } catch (e: any) {

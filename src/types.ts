@@ -122,6 +122,10 @@ export interface UserPlan {
   plan: string;
   status: string;
   trial_ends_at: string | null;
+  // Usage Stats
+  limit?: number;
+  usage?: number;
+  usage_period?: 'daily' | 'monthly';
 }
 
 export interface AppState {

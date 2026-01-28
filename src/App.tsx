@@ -482,6 +482,7 @@ function App() {
             onOpenHistory={() => setIsSidebarOpen(true)}
             onLogout={logout}
             plan={plan}
+            refreshPlan={refreshPlan}
           />
         </main>
       </div>
