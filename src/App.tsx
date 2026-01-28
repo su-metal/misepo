@@ -236,7 +236,7 @@ function App() {
 
   // --- Handlers ---
   const handleUpgrade = () => {
-    router.push('/start');
+    router.push('/start?upgrade=true');
   };
 
   const handleOnboardingSave = async (profile: StoreProfile) => {
