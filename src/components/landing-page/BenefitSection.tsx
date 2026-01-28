@@ -11,7 +11,7 @@ export const BenefitSection = () => {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     <div className="text-center mb-20">
                         <span className="bg-white text-[#E88BA3] font-bold tracking-widest text-xs uppercase mb-6 px-4 py-1.5 border border-[#E88BA3]/20 rounded-full shadow-sm inline-block">Why MisePo?</span>
-                        <h2 className="text-3xl md:text-5xl font-bold text-slate-800 mb-8 tracking-tight leading-tight">
+                        <h2 className="text-4xl md:text-6xl font-bold text-slate-800 mb-8 tracking-tight leading-tight">
                             なぜ今、<br className="md:hidden" /><span className="text-[#E88BA3]">MisePo（分身）</span>が<br className="md:hidden" />必要なのか？
                         </h2>
                         <p className="text-slate-500 text-lg max-w-2xl mx-auto leading-relaxed font-medium">
@@ -92,7 +92,7 @@ export const BenefitSection = () => {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     <div className="text-center mb-24">
                         <span className="bg-[#4DB39A]/10 text-[#4DB39A] font-bold tracking-widest text-xs uppercase mb-6 px-4 py-1.5 border border-[#4DB39A]/20 rounded-full inline-block">Solution</span>
-                        <h2 className="text-3xl md:text-5xl font-bold mb-10 tracking-tight leading-tight">
+                        <h2 className="text-4xl md:text-6xl font-bold mb-10 tracking-tight leading-tight">
                             AIが、<br className="md:hidden" /><span className="text-transparent bg-clip-text bg-gradient-to-r from-[#E88BA3] to-[#F5CC6D]">あなたの『分身』</span><br className="md:hidden" />になる。
                         </h2>
                         <p className="text-slate-400 text-lg max-w-2xl mx-auto leading-relaxed font-medium">

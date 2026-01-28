@@ -8,7 +8,7 @@ export const FeaturesSection = ({ isMobile }: { isMobile: boolean }) => {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center max-w-3xl mx-auto mb-20">
                     <span className="bg-white text-slate-500 font-bold tracking-widest text-xs uppercase mb-6 px-4 py-1.5 border border-slate-200 rounded-full shadow-sm inline-block">All-in-One Platform</span>
-                    <h2 className="text-3xl md:text-5xl font-bold text-slate-800 mb-8 tracking-tight leading-tight">
+                    <h2 className="text-4xl md:text-6xl font-bold text-slate-800 mb-8 tracking-tight leading-tight">
                         必要なのは、<br />
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F5CC6D] to-[#E88BA3]">このアプリひとつだけ。</span>
                     </h2>
@@ -94,7 +94,7 @@ export const FeaturesSection = ({ isMobile }: { isMobile: boolean }) => {
                         <div className="relative z-10 flex flex-col md:flex-row items-center gap-10">
                             <div className="flex-1 text-center md:text-left">
                                 <div className="inline-flex items-center gap-2 bg-slate-800 text-[#E88BA3] px-4 py-1.5 rounded-full font-bold text-[10px] uppercase tracking-widest mb-6 border border-slate-700/50"><Icons.Zap size={14} /> Performance</div>
-                                <h3 className="text-3xl md:text-5xl font-bold mb-6 leading-tight">圧倒的な<br className="md:hidden" />スピード</h3>
+                                <h3 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">圧倒的な<br className="md:hidden" />スピード</h3>
                                 <p className="text-slate-400 text-lg font-medium leading-relaxed">PWA（プログレッシブウェブアプリ）技術により、ネイティブアプリ同等の起動速度を実現。お客様対応の合間にもストレスなく利用できます。</p>
                             </div>
                             <div className="flex-1 flex justify-center">

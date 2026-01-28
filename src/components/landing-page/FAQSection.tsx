@@ -11,7 +11,7 @@ export const FAQSection = ({ faqs, openFaq, setOpenFaq }: { faqs: FAQ[]; openFaq
     return (
         <section id="faq" className="py-24 bg-white">
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 className="text-3xl md:text-5xl font-bold text-center text-slate-800 mb-16 tracking-tight">
+                <h2 className="text-4xl md:text-6xl font-bold text-center text-slate-800 mb-16 tracking-tight">
                     <span className="bg-gradient-to-r from-[#9B8FD4] to-[#9B8FD4]/70 bg-clip-text text-transparent">よくある質問</span>
                 </h2>
                 <div className="space-y-4">

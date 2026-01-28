@@ -11,9 +11,9 @@ export const UnifiedFlowSection = () => {
             accent: "text-[#F5CC6D]",
             bgAccent: "bg-[#F5CC6D]/10",
             mockup: (
-                <div className="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm w-full relative overflow-hidden group-hover:bg-[#fcf8f0] transition-colors">
-                    <div className="flex flex-col gap-2 font-medium text-[10px] text-slate-500">
-                        <div className="flex items-center gap-2">
+                <div className="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm w-full relative overflow-hidden group-hover:bg-[#fcf8f0] transition-colors">
+                    <div className="flex flex-col gap-2.5 font-bold text-[13px] text-slate-600">
+                        <div className="flex items-center gap-2.5">
                             <div className="w-1.5 h-1.5 bg-[#4DB39A] rounded-full" />
                             <span>新作ドーナツ登場</span>
                         </div>
@@ -57,13 +57,13 @@ export const UnifiedFlowSection = () => {
             bgAccent: "bg-[#E88BA3]/10",
             mockup: (
                 <div className="w-full grid grid-cols-2 gap-2">
-                    <div className="bg-white border border-slate-100 rounded-xl p-2.5 flex items-center gap-2 shadow-sm">
+                    <div className="bg-white border border-slate-100 rounded-xl p-3 flex items-center gap-2 shadow-sm">
                         <div className="w-4 h-4 rounded-full bg-[#F5CC6D]/20 border border-[#F5CC6D]" />
-                        <span className="text-[9px] font-bold text-slate-600 uppercase">Casual</span>
+                        <span className="text-[11px] font-bold text-slate-600 uppercase">Casual</span>
                     </div>
-                    <div className="bg-slate-800 rounded-xl p-2.5 flex items-center gap-2 shadow-md">
+                    <div className="bg-slate-800 rounded-xl p-3 flex items-center gap-2 shadow-md">
                         <div className="w-4 h-4 rounded-full bg-[#E88BA3] border border-white/20" />
-                        <span className="text-[9px] font-bold uppercase text-white">Persona Agent</span>
+                        <span className="text-[11px] font-bold uppercase text-white">Persona Agent</span>
                     </div>
                     <div className="col-span-2 bg-slate-50 border border-slate-100 border-dashed rounded-xl p-2 flex items-center justify-center">
                         <span className="text-[8px] font-bold text-slate-400">More Settings...</span>
@@ -114,7 +114,7 @@ export const UnifiedFlowSection = () => {
                 {/* Section Header */}
                 <div className="text-center max-w-3xl mx-auto mb-20 md:mb-32">
                     <span className="inline-block px-4 py-1.5 bg-white text-[#9B8FD4] border border-[#9B8FD4]/20 rounded-full text-xs font-bold uppercase tracking-widest mb-6 shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-500">3 Easy Steps</span>
-                    <h2 className="text-3xl md:text-5xl font-bold text-slate-800 mb-8 tracking-tight leading-tight animate-in fade-in slide-in-from-bottom-4 duration-700">
+                    <h2 className="text-4xl md:text-6xl font-bold text-slate-800 mb-8 tracking-tight leading-tight animate-in fade-in slide-in-from-bottom-4 duration-700">
                         「作成」から「投稿」まで、<br />
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#4DB39A] to-[#2D8A74]">流れるように。</span>
                     </h2>
@@ -131,7 +131,7 @@ export const UnifiedFlowSection = () => {
 
                     {creationSteps.map((step, index) => (
                         <div key={index} className="flex flex-col group animate-in fade-in slide-in-from-bottom-8 duration-500 h-full" style={{ animationDelay: `${index * 150}ms` }}>
-                            <div className="bg-white border border-slate-100 rounded-[40px] p-8 h-full shadow-[0_20px_40px_-10px_rgba(0,0,0,0.05)] hover:-translate-y-2 hover:shadow-[0_40px_60px_-15px_rgba(0,0,0,0.1)] transition-all flex flex-col min-h-[300px]">
+                            <div className="bg-white border border-slate-100 rounded-[32px] p-6 h-full shadow-[0_20px_40px_-10px_rgba(0,0,0,0.05)] hover:-translate-y-2 hover:shadow-[0_40px_60px_-15px_rgba(0,0,0,0.1)] transition-all flex flex-col">
                                 <div className="flex items-center justify-between mb-6">
                                     <div className={`${step.bgAccent} ${step.accent} px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider`}>
                                         STEP {step.number}
@@ -139,12 +139,12 @@ export const UnifiedFlowSection = () => {
                                     <div className="w-1.5 h-1.5 rounded-full bg-slate-200" />
                                 </div>
 
-                                <h3 className="text-xl font-bold text-slate-800 mb-3 tracking-tight">{step.title}</h3>
-                                <p className="text-slate-500 text-sm font-medium leading-relaxed mb-8 flex-1">
+                                <h3 className="text-xl font-bold text-slate-800 mb-2 tracking-tight">{step.title}</h3>
+                                <p className="text-slate-500 text-sm font-medium leading-relaxed mb-6">
                                     {step.desc}
                                 </p>
 
-                                <div className="mt-auto flex items-center justify-center min-h-[100px]">
+                                <div className="mt-auto flex items-center justify-center">
                                     {step.mockup}
                                 </div>
                             </div>
