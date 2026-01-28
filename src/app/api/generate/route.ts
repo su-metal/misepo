@@ -194,8 +194,31 @@ export async function POST(req: Request) {
         }
       }
 
-      // Apply persona_yaml
-      if (userId && presetId) {
+      const hasLearningSamples = learningSamples.length > 0;
+
+      // FALLBACK LOGIC: 
+      // If we have a presetId but NO learning samples for this specific platform config,
+      // we treat it as "Omakase" (Default) mode for this platform.
+      // This means we IGNORE the preset's system prompt and persona_yaml.
+      // We ONLY keep the user's manual customPrompt.
+      if (presetId && !hasLearningSamples) {
+          console.log(`[LEARNING] Fallback to Omakase for ${config.platform} (No learning data)`);
+          config.presetPrompt = undefined;
+          config.persona_yaml = null;
+          // config.customPrompt remains as is (User's manual instruction)
+      } else {
+          // Normal Case: Combine Preset Prompt + User Prompt
+          if (config.presetPrompt) {
+              if (config.customPrompt) {
+                  config.customPrompt = `${config.presetPrompt}\n\n---\n\n【今回の追加指示】\n${config.customPrompt}`;
+              } else {
+                  config.customPrompt = config.presetPrompt;
+              }
+          }
+      }
+
+      // Apply persona_yaml (Only if not fell back)
+      if (userId && presetId && config.persona_yaml !== null) { // Check null explicit
         const { data: presetData } = await supabase
           .from("user_presets")
           .select("persona_yaml")

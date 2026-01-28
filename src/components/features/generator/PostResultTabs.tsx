@@ -28,6 +28,7 @@ interface PostResultTabsProps {
     presetId?: string;
     onAutoFormat: (gIdx: number, iIdx: number) => void;
     isAutoFormatting: { [key: string]: boolean };
+    onCopy: (text: string) => void;
 }
 
 export const PostResultTabs: React.FC<PostResultTabsProps> = ({
@@ -52,6 +53,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
     presetId,
     onAutoFormat,
     isAutoFormatting,
+    onCopy,
 }) => {
     const [previewState, setPreviewState] = React.useState<{ isOpen: boolean, platform: Platform, text: string, gIdx: number, iIdx: number } | null>(null);
 
@@ -272,6 +274,14 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
 
                                                             {/* Right: Inspection */}
                                                             <div className="flex items-center gap-2">
+                                                                <button
+                                                                    onClick={() => onCopy(text)}
+                                                                    className="flex items-center justify-center w-11 h-11 rounded-xl bg-black/5 text-black/40 border-2 border-black/5 hover:border-black/20 hover:text-black transition-all"
+                                                                    title="コピー"
+                                                                >
+                                                                    <CopyIcon className="w-5 h-5" />
+                                                                </button>
+
                                                                 {/* Refined Secondary Preview Button */}
                                                                 <button
                                                                     onClick={() => setPreviewState({ isOpen: true, platform: res.platform, text, gIdx, iIdx })}

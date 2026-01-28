@@ -46,7 +46,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
   const flow = useGeneratorFlow({
     storeProfile, isLoggedIn, onOpenLogin,
     onGenerateSuccess, onTaskComplete, favorites, onToggleFavorite, restorePost,
-    resetResultsTrigger, refreshPlan
+    resetResultsTrigger, refreshPlan, trainingItems
   });
 
   const [isPresetModalOpen, setIsPresetModalOpen] = React.useState(false);
@@ -147,51 +147,51 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
 
           {/* Left Column: Input Form (8 Cols) */}
           <div className="lg:col-span-8">
-            <div ref={inputRef} className="pb-0 lg:pb-0">
-              <PostInputForm
-                platforms={flow.platforms}
-                activePlatform={flow.platforms[0] || Platform.Instagram}
-                isMultiGen={flow.isMultiGenMode}
-                onPlatformToggle={flow.handlePlatformToggle}
-                onToggleMultiGen={flow.handleToggleMultiGen}
-                onSetActivePlatform={flow.handleSetActivePlatform}
-                platform={flow.platforms[0] || Platform.Instagram}
-                postPurpose={flow.postPurpose}
-                gmapPurpose={flow.gmapPurpose}
-                onPostPurposeChange={flow.setPostPurpose}
-                onGmapPurposeChange={flow.setGmapPurpose}
-                tone={flow.tone}
-                onToneChange={flow.setTone}
-                length={flow.length}
-                onLengthChange={flow.setLength}
-                inputText={flow.inputText}
-                onInputTextChange={flow.setInputText}
-                starRating={flow.starRating}
-                onStarRatingChange={flow.onStarRatingChange}
-                includeEmojis={flow.includeEmojis}
-                onIncludeEmojisChange={flow.setIncludeEmojis}
-                includeSymbols={flow.includeSymbols}
-                onIncludeSymbolsChange={flow.setIncludeSymbols}
-                xConstraint140={flow.xConstraint140}
-                onXConstraint140Change={flow.setXConstraint140}
-                isGenerating={flow.loading}
-                onGenerate={handleGenerate}
-                generateButtonRef={buttonRef}
-                plan={plan}
-                presets={presets}
-                activePresetId={flow.activePresetId}
-                onApplyPreset={flow.handleApplyPreset}
-                onOpenPresetModal={() => setIsPresetModalOpen(true)}
-                customPrompt={flow.customPrompt}
-                onCustomPromptChange={flow.setCustomPrompt}
-                storeSupplement={flow.storeSupplement}
-                onStoreSupplementChange={flow.setStoreSupplement}
-                language={flow.language}
-                onLanguageChange={flow.setLanguage}
-                onOpenGuide={onOpenGuide}
-                hasResults={flow.resultGroups.length > 0}
-              />
-            </div>
+            <PostInputForm
+              platforms={flow.platforms}
+              activePlatform={flow.platforms[0] || Platform.Instagram}
+              isMultiGen={flow.isMultiGenMode}
+              // ...
+              isStyleLocked={flow.isStyleLocked}
+              onPlatformToggle={flow.handlePlatformToggle}
+              onToggleMultiGen={flow.handleToggleMultiGen}
+              onSetActivePlatform={flow.handleSetActivePlatform}
+              platform={flow.platforms[0] || Platform.Instagram}
+              postPurpose={flow.postPurpose}
+              gmapPurpose={flow.gmapPurpose}
+              onPostPurposeChange={flow.setPostPurpose}
+              onGmapPurposeChange={flow.setGmapPurpose}
+              tone={flow.tone}
+              onToneChange={flow.setTone}
+              length={flow.length}
+              onLengthChange={flow.setLength}
+              inputText={flow.inputText}
+              onInputTextChange={flow.setInputText}
+              starRating={flow.starRating}
+              onStarRatingChange={flow.onStarRatingChange}
+              includeEmojis={flow.includeEmojis}
+              onIncludeEmojisChange={flow.setIncludeEmojis}
+              includeSymbols={flow.includeSymbols}
+              onIncludeSymbolsChange={flow.setIncludeSymbols}
+              xConstraint140={flow.xConstraint140}
+              onXConstraint140Change={flow.setXConstraint140}
+              isGenerating={flow.loading}
+              onGenerate={handleGenerate}
+              generateButtonRef={buttonRef}
+              plan={plan}
+              presets={presets}
+              activePresetId={flow.activePresetId}
+              onApplyPreset={flow.handleApplyPreset}
+              onOpenPresetModal={() => setIsPresetModalOpen(true)}
+              customPrompt={flow.customPrompt}
+              onCustomPromptChange={flow.setCustomPrompt}
+              storeSupplement={flow.storeSupplement}
+              onStoreSupplementChange={flow.setStoreSupplement}
+              language={flow.language}
+              onLanguageChange={flow.setLanguage}
+              onOpenGuide={onOpenGuide}
+              hasResults={flow.resultGroups.length > 0}
+            />
           </div>
 
           {/* Right Column: Results (4 Cols) */}
@@ -219,6 +219,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
                 presetId={flow.activePresetId || undefined}
                 onAutoFormat={flow.handleAutoFormat}
                 isAutoFormatting={flow.isAutoFormatting}
+                onCopy={flow.handleCopy}
               />
             </div>
           </div>
@@ -268,42 +269,48 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
         </div>
       </div>
 
-      {isPresetModalOpen && (
-        <PresetModal
-          onClose={() => setIsPresetModalOpen(false)}
-          presets={presets}
-          onSave={handleSavePreset}
-          onDelete={handleDeletePreset}
-          onApply={(p) => {
-            flow.handleApplyPreset(p);
-            setIsPresetModalOpen(false);
-          }}
-          initialPresetId={flow.activePresetId || undefined}
-          isSaving={isSavingPreset}
-          onReorder={props.refreshPresets}
-          trainingItems={trainingItems}
-          onToggleTraining={(text, platform, presetId, replaceId, source) => onToggleFavorite(text, platform, presetId, replaceId, source || 'manual')}
-        />
-      )}
+      {
+        isPresetModalOpen && (
+          <PresetModal
+            onClose={() => setIsPresetModalOpen(false)}
+            presets={presets}
+            onSave={handleSavePreset}
+            onDelete={handleDeletePreset}
+            onApply={(p) => {
+              flow.handleApplyPreset(p);
+              setIsPresetModalOpen(false);
+            }}
+            initialPresetId={flow.activePresetId || undefined}
+            isSaving={isSavingPreset}
+            onReorder={props.refreshPresets}
+            trainingItems={trainingItems}
+            onToggleTraining={(text, platform, presetId, replaceId, source) => onToggleFavorite(text, platform, presetId, replaceId, source || 'manual')}
+          />
+        )
+      }
 
-      {shouldShowTour && (
-        <GuestTour
-          isOpen={shouldShowTour}
-          onClose={() => { }}
-          inputRef={inputRef}
-          buttonRef={buttonRef}
-          instagramRef={instagramRef as any}
-        />
-      )}
+      {
+        shouldShowTour && (
+          <GuestTour
+            isOpen={shouldShowTour}
+            onClose={() => { }}
+            inputRef={inputRef}
+            buttonRef={buttonRef}
+            instagramRef={instagramRef as any}
+          />
+        )
+      }
 
-      {flow.toastMessage && (
-        <div className="fixed bottom-24 md:bottom-8 left-1/2 -translate-x-1/2 z-[110] animate-in slide-in-from-bottom-4 duration-300 pointer-events-none">
-          <div className="bg-stone-900 text-white px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border border-stone-700">
-            <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
-            <span className="text-sm font-bold">{flow.toastMessage}</span>
+      {
+        flow.toastMessage && (
+          <div className="fixed bottom-24 md:bottom-8 left-1/2 -translate-x-1/2 z-[110] animate-in slide-in-from-bottom-4 duration-300 pointer-events-none">
+            <div className="bg-stone-900 text-white px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border border-stone-700">
+              <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
+              <span className="text-sm font-bold">{flow.toastMessage}</span>
+            </div>
           </div>
-        </div>
-      )}
+        )
+      }
 
       <LoadingModal isOpen={flow.loading} />
     </div>

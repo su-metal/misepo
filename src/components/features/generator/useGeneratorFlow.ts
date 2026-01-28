@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { 
   Platform, PostPurpose, GoogleMapPurpose, Tone, Length, 
-  StoreProfile, GenerationConfig, GeneratedPost, Preset, GeneratedResult 
+  StoreProfile, GenerationConfig, GeneratedPost, Preset, GeneratedResult, TrainingItem 
 } from '../../../types';
 import { DEMO_SAMPLE_TEXT, LOADING_TIPS } from '../../../constants';
 import { insertInstagramFooter, removeInstagramFooter } from './utils';
@@ -23,6 +23,7 @@ export function useGeneratorFlow(props: {
   restorePost?: GeneratedPost | null;
   resetResultsTrigger?: number;
   refreshPlan?: () => Promise<void>;
+  trainingItems: TrainingItem[];
 }) {
   const { 
     storeProfile, isLoggedIn, onOpenLogin, onGenerateSuccess, 
@@ -62,13 +63,35 @@ export function useGeneratorFlow(props: {
 
   const [activePresetId, setActivePresetId] = useState<string | null>(null);
 
+  // Calculate if style controls should be locked
+  // Locked ONLY if:
+  // 1. A preset is active
+  // 2. AND that preset has matching learning data (Platform specific OR General)
+  // If no learning data exists, we allow manual overrides (Tone/Emojis, etc.) even with a preset.
+  const isStyleLocked = !!activePresetId && (() => {
+      if (!props.trainingItems) return false;
+      
+      // In multi-gen, strictly speaking we might lock if ANY platform has data, 
+      // but for simplicity/user-freedom, let's look at the "primary" or "first" platform logic.
+      // Or simply: if we are in multi-gen, we usually lock everything anyway or treat it as general.
+      // Let's iterate the active platforms.
+      return platforms.some(p => 
+          props.trainingItems.some(t => 
+              t.presetId === activePresetId && 
+              (t.platform === p || t.platform === Platform.General)
+          )
+      );
+  })();
+
   // Track if user manually changed toggles (to preserve their choice)
   const [userChangedEmoji, setUserChangedEmoji] = useState(false);
   const [userChangedSymbols, setUserChangedSymbols] = useState(false);
 
   // Initialize emoji/symbols based on default tone (only on first render)
   useEffect(() => {
-    // Set default values based on initial tone
+    // Only set defaults if NOT locked by a preset (or if preset has no data)
+    // Actually, handleApplyPreset does reset these. 
+    // This effect is mostly for initial mount.
     if (tone === Tone.Formal) {
       setIncludeEmojis(false);
       setIncludeSymbols(false);
@@ -156,8 +179,12 @@ export function useGeneratorFlow(props: {
       setCurrentPostSamples({}); 
       setActivePresetId(preset.id);
 
-      // Reset stylistic settings to "neutral/plain" state when a preset is applied.
-      // This prevents "locked" state from leaking previous styles (e.g. Emoji OFF from Formal tone).
+      // Check if we should enforce "plain/neutral" style or allow existing user definition?
+      // User request: "If no learning data, unlock controls".
+      // But when APPLYING, should we reset? 
+      // Yes, reset to neutral to avoid carrying over "Formal" from previous manual state if the preset itself doesn't enforce it.
+      // The locking logic will then determine if the user can CHANGE it suitable.
+      
       setTone(Tone.Standard);
       setIncludeEmojis(true);
       setIncludeSymbols(false);
@@ -293,14 +320,6 @@ export function useGeneratorFlow(props: {
       
       let systemPrompt = loadedPresetPrompts[p] || '';
       let userPrompt = customPrompt.trim();
-      let effectivePrompt = '';
-      if (systemPrompt && userPrompt) {
-          effectivePrompt = `${systemPrompt}\n\n---\n\n【今回の追加指示】\n${userPrompt}`;
-      } else if (systemPrompt) {
-          effectivePrompt = systemPrompt;
-      } else {
-          effectivePrompt = userPrompt;
-      }
 
       const config: GenerationConfig = {
         platform: p,
@@ -311,7 +330,8 @@ export function useGeneratorFlow(props: {
         starRating: p === Platform.GoogleMaps ? starRating : undefined,
         language,
         storeSupplement,
-        customPrompt: effectivePrompt,
+        customPrompt: userPrompt, // Only user instructions
+        presetPrompt: systemPrompt, // Separate preset instructions
         xConstraint140,
         includeSymbols,
         includeEmojis,
@@ -536,6 +556,16 @@ export function useGeneratorFlow(props: {
     }, 1200);
   };
 
+  const handleCopy = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setToastMessage("コピーしました！");
+      setTimeout(() => setToastMessage(null), 3000);
+    } catch (err) {
+      alert("コピーに失敗しました");
+    }
+  };
+
   // Restoration logic
   useEffect(() => {
     if (restorePost) {
@@ -628,8 +658,10 @@ export function useGeneratorFlow(props: {
     handleAutoFormat,
     isAutoFormatting,
     handleShare,
+    handleCopy,
     activePresetId,
     favorites,
-    onToggleFavorite
+    onToggleFavorite,
+    isStyleLocked,
   };
 }

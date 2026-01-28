@@ -52,7 +52,11 @@ export function normalizeResults(raw: any, fallbackPlatform: Platform): Generate
       if (typeof r === 'string') {
         addResult(fallbackPlatform, [r]);
       } else if (r && typeof r === 'object') {
-        addResult(r.platform || fallbackPlatform, Array.isArray(r.data) ? r.data : (r.data ? [r.data] : []));
+        // Handle both 'data' (normalized) and 'posts' (raw from gemini)
+        const content = r.data || r.posts; 
+        if (content) {
+            addResult(r.platform || fallbackPlatform, Array.isArray(content) ? content : [content]);
+        }
       }
     });
   }
@@ -71,23 +75,35 @@ export function normalizeResults(raw: any, fallbackPlatform: Platform): Generate
 }
 
 export function mapHistoryEntry(entry: any): GeneratedPost {
-  // The API saves input as {profile, config}, so unwrap if necessary
-  const rawConfig = entry.config?.config || entry.config || {};
-  // Results might be in entry.result (array of GeneratedResult) or entry.results
-  const rawResults = entry.result || entry.results || [];
+  // The API returns { id, timestamp, isPinned, config, results }
+  // config is already rec.input.config (unwrapped in route.ts)
+  // results is rec.output (unwrapped in route.ts)
+  
+  const rawConfig = entry.config || {};
+  let rawResults = entry.results || entry.result || [];
+  
+  // Unwrap nested results if present (failed save wrapper from api/generate)
+  if (!Array.isArray(rawResults) && rawResults.results && Array.isArray(rawResults.results)) {
+    rawResults = rawResults.results;
+  }
+  
   const rawPurpose = rawConfig.purpose ?? rawConfig.postPurpose;
   const purpose = isPostPurpose(rawPurpose) || isGoogleMapPurpose(rawPurpose)
     ? rawPurpose
     : PostPurpose.Promotion;
+    
   const gmapPurpose = isGoogleMapPurpose(rawConfig.gmapPurpose)
     ? rawConfig.gmapPurpose
     : (isGoogleMapPurpose(rawPurpose) ? rawPurpose : GoogleMapPurpose.Auto);
   
+  // Try to find a fallback platform if none in config
+  const fallbackPlatform = normalizePlatform(rawConfig.platform || rawConfig.platforms?.[0]);
+
   return {
     id: entry.id?.toString() || crypto.randomUUID(),
     timestamp: typeof entry.timestamp === 'number' ? entry.timestamp : (entry.created_at ? new Date(entry.created_at).getTime() : Date.now()),
     config: {
-      platforms: Array.isArray(rawConfig.platforms) ? rawConfig.platforms.map(normalizePlatform) : [normalizePlatform(rawConfig.platform)],
+      platforms: Array.isArray(rawConfig.platforms) ? rawConfig.platforms.map(normalizePlatform) : [fallbackPlatform],
       purpose,
       gmapPurpose,
       tone: rawConfig.tone || Tone.Standard,
@@ -102,7 +118,7 @@ export function mapHistoryEntry(entry: any): GeneratedPost {
       xConstraint140: rawConfig.xConstraint140,
       instagramFooter: rawConfig.instagramFooter,
     },
-    results: normalizeResults(rawResults, normalizePlatform(rawConfig.platform)),
+    results: normalizeResults(rawResults, fallbackPlatform),
     isPinned: typeof entry.isPinned === 'boolean' ? entry.isPinned : Boolean(entry.is_pinned || rawConfig.isPinned),
   };
 }
