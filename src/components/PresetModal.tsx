@@ -38,7 +38,8 @@ import {
   LineIcon,
   BookOpenIcon,
 } from './Icons';
-import { Platform, Preset, TrainingItem } from '../types';
+import { Platform, Preset, PostPurpose, Tone, Length, TrainingItem } from '../types';
+import { UI, IS_HOSPITALITY_MODE, COLORS } from '../constants';
 import { AutoResizingTextarea } from './ResizableTextarea';
 
 interface PresetModalProps {
@@ -104,10 +105,10 @@ const SortablePresetRow = ({
       ref={setNodeRef}
       style={style}
       className={`
-        group flex items-center gap-3 p-4 rounded-xl transition-all duration-300 border-2 border-black
+        group flex items-center gap-3 p-4 rounded-xl transition-all duration-300
         ${isSelected
-          ? 'bg-[var(--teal)] shadow-[4px_4px_0_0_rgba(0,0,0,1)] scale-[1.02] z-10'
-          : 'bg-white hover:bg-[var(--bg-beige)] hover:shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:-translate-y-0.5'
+          ? (IS_HOSPITALITY_MODE ? 'bg-gradient-to-br from-[#1A252F] to-[#111820] text-[#D4AF37] border border-[#D4AF37]/30 shadow-lg' : 'bg-[var(--teal)] border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] scale-[1.02] z-10 text-black')
+          : (IS_HOSPITALITY_MODE ? 'bg-white border border-slate-100 hover:bg-slate-50 text-slate-800' : 'bg-white border-2 border-black hover:bg-[var(--bg-beige)] hover:shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:-translate-y-0.5 text-slate-800')
         }
         ${isDragging ? 'opacity-50' : ''}
       `}
@@ -610,7 +611,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
       <div className="py-8 md:py-12 px-6 md:px-10">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
           <div className="flex items-center gap-5">
-            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] bg-indigo-600`}>
+            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] bg-indigo-950`}>
               <MagicWandIcon className="w-7 h-7" />
             </div>
             <div>
@@ -753,7 +754,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
           </div>
           <button
             onClick={handleStartNew}
-            className="p-3 bg-white text-black border-2 border-black rounded-xl hover:bg-[var(--gold)] hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all active:translate-x-0 active:translate-y-0 active:shadow-none group"
+            className={`p-3 rounded-xl transition-all active:scale-95 group border-2 ${IS_HOSPITALITY_MODE ? 'bg-white border-slate-200 text-[#1A252F] hover:bg-slate-50 shadow-sm' : 'bg-white text-black border-black hover:bg-[var(--gold)] hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px]'}`}
           >
             <MagicWandIcon className="w-6 h-6 group-hover:rotate-12 transition-transform" />
           </button>
@@ -1199,7 +1200,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
           <div className="flex items-center justify-between w-full md:w-auto">
             <div className="flex items-center gap-3 md:gap-4">
               <div className={`p-2.5 md:p-3 rounded-xl border-2 border-black ${expandingPlatform === Platform.X ? 'shadow-[2px_2px_0_0_#9B8FD4]' : 'shadow-[2px_2px_0_0_rgba(0,0,0,1)]'} ${expandingPlatform === Platform.Instagram ? 'bg-pink-50 text-pink-500' :
-                expandingPlatform === Platform.X ? 'bg-slate-900 text-white' :
+                expandingPlatform === Platform.X ? `bg-[${COLORS.navy}] text-[${COLORS.gold}]` :
                   expandingPlatform === Platform.Line ? 'bg-[#06C755] text-white' :
                     expandingPlatform === Platform.GoogleMaps ? 'bg-blue-600 text-white' :
                       'bg-indigo-500 text-white'
@@ -1511,7 +1512,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
         <div className="p-6 md:p-8 border-t-[3px] border-black bg-white flex justify-end shrink-0">
           <button
             onClick={() => setIsPromptExpanded(false)}
-            className="w-full md:w-auto px-10 py-4 bg-black text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:shadow-none translate-x-[-2px] translate-y-[-2px] hover:translate-x-0 hover:translate-y-0 transition-all active:scale-95"
+            className={`w-full md:w-auto px-10 py-4 font-black text-sm uppercase tracking-widest transition-all active:scale-95 rounded-2xl ${IS_HOSPITALITY_MODE ? 'bg-[#1A252F] text-white shadow-xl shadow-slate-200' : 'bg-black text-white shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:shadow-none translate-x-[-2px] translate-y-[-2px] hover:translate-x-0 hover:translate-y-0'}`}
           >
             設定を完了する
           </button>

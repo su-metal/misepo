@@ -12,6 +12,7 @@ import {
   Length,
   Tone,
 } from "../types";
+import { IS_HOSPITALITY_MODE } from "../constants";
 import crypto from 'crypto';
 
 // Define the schema for structured output (Array of strings)
@@ -460,7 +461,7 @@ export const generateContent = async (
     }
 
     // Dynamic Thinking Budget Calculation
-    let budget = 256; // Default
+    let budget = IS_HOSPITALITY_MODE ? 512 : 256;
     if (config.platform === Platform.X) {
         budget = attempt === 0 ? 128 : 0; 
     } else if (config.platform === Platform.GoogleMaps && profile.industry === '旅館・ホテル') {
@@ -675,10 +676,10 @@ Output ONLY the refined text.
         ],
       };
 
-    // Thinking Budget Optimization
-    let budget = 256; // Default
+    // Dynamic Thinking Budget Calculation
+    let budget = IS_HOSPITALITY_MODE ? 512 : 256;
     if (config.platform === Platform.X) {
-        budget = 128;
+        budget = 0; 
     } else if (config.platform === Platform.GoogleMaps && profile.industry === '旅館・ホテル') {
         budget = 512;
     }

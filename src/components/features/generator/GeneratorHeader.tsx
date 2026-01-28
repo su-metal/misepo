@@ -1,6 +1,7 @@
 import React from 'react';
 import { MenuIcon, StarIcon } from '../../Icons';
 import { StoreProfile, UserPlan } from '../../../types';
+import { UI, IS_HOSPITALITY_MODE, TOKENS, COLORS } from '../../../constants';
 
 interface GeneratorHeaderProps {
     onOpenHistory: () => void;
@@ -20,30 +21,12 @@ export const GeneratorHeader: React.FC<GeneratorHeaderProps> = ({
 
     return (
         <header className="sticky top-4 z-[100] w-full sm:px-0">
-            <div className="bg-white py-3 px-8 flex items-center justify-between gap-4 transition-all duration-300 rounded-2xl border-[3px] border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+            <div className={`py-3 px-8 flex items-center justify-between gap-4 transition-all duration-300 ${TOKENS.container}`}>
 
                 {/* Left: Brand Space */}
                 <div className="flex items-center gap-4">
-                    <span className="text-2xl font-black text-black tracking-tighter drop-shadow-none">MisePo</span>
+                    <span className={`text-2xl tracking-tighter drop-shadow-none ${IS_HOSPITALITY_MODE ? 'font-serif-hospitality font-bold' : 'font-black text-black'}`}>{UI.name}</span>
 
-                    {/* Status Badge - Pop Style */}
-                    <div className="flex items-center">
-                        {isTrial ? (
-                            <div className="flex items-center gap-2 px-4 py-1.5 bg-[#9B8FD4] border-[2px] border-black rounded-xl shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                                <StarIcon className="w-3 h-3 text-black animate-pulse" />
-                                <span className="text-[10px] font-black text-black uppercase tracking-widest leading-none">Free Trial</span>
-                            </div>
-                        ) : isPro ? (
-                            <div className="flex items-center gap-2 px-4 py-1.5 bg-[#F5CC6D] border-[2px] border-black rounded-xl shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                                <div className="w-1.5 h-1.5 rounded-full bg-black animate-pulse"></div>
-                                <span className="text-[10px] font-black text-black uppercase tracking-widest leading-none">Pro Plan</span>
-                            </div>
-                        ) : (
-                            <div className="flex items-center gap-2 px-4 py-1.5 bg-white border-[2px] border-black rounded-xl">
-                                <span className="text-[10px] font-black text-black opacity-40 uppercase tracking-widest leading-none">Free Plan</span>
-                            </div>
-                        )}
-                    </div>
                 </div>
 
                 {/* Right: Consolidated Menu */}
@@ -52,8 +35,8 @@ export const GeneratorHeader: React.FC<GeneratorHeaderProps> = ({
                         onClick={onOpenHistory}
                         className="flex items-center gap-3 pl-4 md:pl-6 pr-2 md:pr-4 py-2 transition-all active:scale-95 group"
                     >
-                        <div className="w-8 h-8 md:w-9 md:h-9 rounded-xl bg-[#4DB39A] border-[2px] border-black flex items-center justify-center overflow-hidden transition-transform group-hover:scale-110 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                            <span className="text-xs md:text-sm font-black text-black">
+                        <div className={`w-8 h-8 md:w-9 md:h-9 rounded-xl ${IS_HOSPITALITY_MODE ? `bg-[${COLORS.navy}] shadow-lg shadow-slate-200 border-none` : (IS_HOSPITALITY_MODE ? 'bg-[#2C3E50]' : 'bg-[#4DB39A]') + ' border-[2px] border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]'} flex items-center justify-center overflow-hidden transition-transform group-hover:scale-110`}>
+                            <span className={`text-xs md:text-sm font-black ${IS_HOSPITALITY_MODE ? 'text-white' : 'text-black'}`}>
                                 {(storeProfile?.name?.[0] || 'U').toUpperCase()}
                             </span>
                         </div>
