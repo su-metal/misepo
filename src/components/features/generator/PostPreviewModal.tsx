@@ -50,7 +50,7 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
                 onClick={onClose}
             />
 
-            <div className="relative w-full max-w-lg bg-white rounded-[40px] overflow-hidden animate-in zoom-in-95 duration-200 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] border-[3px]">
+            <div className="relative w-full max-w-lg bg-white rounded-[40px] overflow-hidden animate-in zoom-in-95 duration-200 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] border-[3px]">
                 <div className="flex items-center justify-between p-8 bg-black/5 border-b-2 border-black">
                     <h3 className="text-[11px] font-black text-black uppercase tracking-[0.4em] flex items-center gap-3">
                         <div className="text-black">

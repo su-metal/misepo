@@ -1194,7 +1194,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
   const focusModeOverlay = expandingPlatform && createPortal(
     <div className="fixed inset-0 z-[200] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 md:p-10 animate-in fade-in duration-300">
-      <div className="w-full max-w-4xl h-full max-h-[800px] bg-white rounded-3xl border-[3px] border-black shadow-[8px_8px_0_0_rgba(0,0,0,1)] flex flex-col overflow-hidden animate-in zoom-in-95 duration-500">
+      <div className="w-full max-w-4xl h-full max-h-[800px] bg-white rounded-3xl border-[3px] border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] flex flex-col overflow-hidden animate-in zoom-in-95 duration-500">
         <div className="p-5 md:p-8 border-b-[3px] border-black flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shrink-0 bg-[var(--bg-beige)]">
           <div className="flex items-center justify-between w-full md:w-auto">
             <div className="flex items-center gap-3 md:gap-4">

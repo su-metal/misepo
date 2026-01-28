@@ -114,7 +114,7 @@ export const Feedback = ({ mode = 'floating' }: { mode?: 'floating' | 'sidebar' 
                     onClick={() => setIsOpen(false)}
                 >
                     <div
-                        className="w-full max-w-lg rounded-[32px] overflow-hidden flex flex-col relative animate-in zoom-in-95 duration-300 bg-[var(--bg-beige)] border-[3px] border-black shadow-[8px_8px_0_0_rgba(0,0,0,1)]"
+                        className="w-full max-w-lg rounded-[32px] overflow-hidden flex flex-col relative animate-in zoom-in-95 duration-300 bg-[var(--bg-beige)] border-[3px] border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)]"
                         onClick={e => e.stopPropagation()}
                     >
                         {/* Header */}

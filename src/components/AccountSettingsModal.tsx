@@ -21,6 +21,15 @@ const AccountSettingsModal: React.FC<AccountSettingsModalProps> = ({ user, plan,
 
     const [isPortalLoading, setIsPortalLoading] = React.useState(false);
 
+    // Lock body scroll when modal is open
+    React.useEffect(() => {
+        const originalStyle = window.getComputedStyle(document.body).overflow;
+        document.body.style.overflow = 'hidden';
+        return () => {
+            document.body.style.overflow = originalStyle;
+        };
+    }, []);
+
     const getTrialRemainingDays = () => {
         if (!plan?.trial_ends_at) return 0;
         const remaining = new Date(plan.trial_ends_at).getTime() - Date.now();
@@ -46,9 +55,9 @@ const AccountSettingsModal: React.FC<AccountSettingsModalProps> = ({ user, plan,
     };
 
     return createPortal(
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 z-[200] animate-in fade-in duration-300" onClick={onClose}>
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 z-[200] animate-in fade-in duration-300" onClick={onClose}>
             <div
-                className="w-full max-w-lg rounded-[32px] overflow-hidden animate-in zoom-in-95 duration-300 bg-[var(--bg-beige)] border-[3px] border-black shadow-[8px_8px_0_0_rgba(0,0,0,1)]"
+                className="w-full max-w-lg max-h-[90dvh] flex flex-col rounded-[32px] overflow-hidden animate-in zoom-in-95 duration-300 bg-[var(--bg-beige)] border-[3px] border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)]"
                 onClick={e => e.stopPropagation()}
             >
                 {/* Header */}
@@ -62,7 +71,7 @@ const AccountSettingsModal: React.FC<AccountSettingsModalProps> = ({ user, plan,
                     </button>
                 </div>
 
-                <div className="p-6 md:p-8 space-y-8 bg-[var(--bg-beige)]">
+                <div className="flex-1 overflow-y-auto overscroll-contain min-h-0 p-6 md:p-8 space-y-8 bg-[var(--bg-beige)]">
 
                     {/* User Profile Card */}
                     <div className="flex items-center gap-5 p-5 bg-white rounded-2xl transition-all border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)]">

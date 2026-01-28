@@ -26,7 +26,7 @@ const GuideModal: React.FC<GuideModalProps> = ({ isOpen, onClose }) => {
   return (
     <div className="fixed inset-0 z-[150] flex items-center justify-center p-0 md:p-6 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-500" onClick={onClose}>
       <div
-        className="w-full max-w-4xl h-full md:h-auto md:max-h-[85vh] overflow-hidden flex flex-col relative animate-in zoom-in-95 duration-500 scale-100 mobile-scroll-container bg-white rounded-none md:rounded-[32px] border-[3px] border-black shadow-[8px_8px_0_0_rgba(0,0,0,1)]"
+        className="w-full max-w-4xl h-full md:h-auto md:max-h-[85vh] overflow-hidden flex flex-col relative animate-in zoom-in-95 duration-500 scale-100 mobile-scroll-container bg-white rounded-none md:rounded-[32px] border-[3px] border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)]"
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
