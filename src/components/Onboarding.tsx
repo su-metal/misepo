@@ -257,7 +257,8 @@ const Onboarding: React.FC<OnboardingProps> = ({
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder={IS_HOSPITALITY_MODE ? "例：創業100年の老舗旅館です。全客室から海が見渡せます。地元の新鮮な魚介類を使った創作料理が自慢です..." : "例：薪窯で焼くナポリピッツァの専門店です。イタリア産の小麦粉 and チーズにこだわっています。家族連れでも楽しめるカジュアルな雰囲気です..."}
-                className={`w-full rounded-2xl p-5 text-black font-bold placeholder:text-black/10 transition-all min-h-[140px] focus:outline-none ${IS_HOSPITALITY_MODE ? `bg-slate-50 border border-slate-200 focus:bg-white focus:border-[${COLORS.primary}] focus:ring-4 focus:ring-[${COLORS.primary}]/10` : 'bg-white border-[3px] border-black focus:shadow-[6px_6px_0_0_rgba(0,0,0,1)]'}`}
+                rows={5}
+                className={`w-full px-7 py-6 rounded-2xl transition-all resize-none text-base text-black font-black leading-relaxed placeholder:text-slate-300 outline-none ${IS_HOSPITALITY_MODE ? `bg-slate-50 border border-slate-200 focus:bg-white focus:border-[${COLORS.primary}] focus:ring-4 focus:ring-[${COLORS.primary}]/10` : 'bg-white focus:bg-[var(--bg-beige)] border-2 border-black focus:shadow-[4px_4px_0_0_rgba(0,0,0,1)]'}`}
               />
             </div>
 
@@ -280,7 +281,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
                 onChange={(e) => setInstagramFooter(e.target.value)}
                 placeholder="📍 アクセス情報や営業時間をセット..."
                 rows={6}
-                className={`w-full px-6 py-4 rounded-xl bg-slate-50 border-2 border-slate-200 focus:bg-white focus:border-[${COLORS.gold}] outline-none transition-all resize-none text-sm text-slate-700 leading-relaxed placeholder-slate-300 font-bold min-h-[160px]`}
+                className={`w-full px-6 py-4 rounded-xl transition-all resize-none text-sm text-slate-700 leading-relaxed placeholder-slate-300 font-bold min-h-[160px] outline-none ${IS_HOSPITALITY_MODE ? `bg-slate-50 border border-slate-200 focus:bg-white focus:border-[${COLORS.primary}]` : 'bg-slate-50 border-2 border-slate-200 focus:bg-white focus:border-black'}`}
               />
             </div>
 
