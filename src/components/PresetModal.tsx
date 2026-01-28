@@ -253,18 +253,6 @@ const PresetModal: React.FC<PresetModalProps> = ({
           setCustomPrompts(initialPrompts);
         }
         setActivePromptTab(Platform.X); // Reset tab to X
-
-        // Initialize Learning Data
-        // ... (existing logic)
-        const relevantItems = trainingItems.filter(item => item.presetId === preset.id);
-        const map: { [key in Platform]?: string } = {};
-        relevantItems.forEach(item => {
-          // ... (existing logic)
-        });
-        // We use the aggregated map logic same as handleSave but for display? 
-        // Actually, PresetModal uses `trainingItems` directly for the "AI Profile" list.
-        // But for `presetSamples` state (if used elsewhere), we might populate it.
-        // Current implementation seems to assume `trainingItems` is the source of truth for the list.
       }
     } else {
       // New Preset
@@ -275,8 +263,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
     setPersonaYaml(null);
     setHasUnanalyzedChanges(false);
     setMobileView('edit');
-  }, [selectedPresetId, presets, trainingItems]);
-
+  }, [selectedPresetId]);
 
   const handleLoadPreset = (id: string) => {
     const preset = presets.find((p) => p.id === id);
