@@ -38,8 +38,8 @@ import {
   LineIcon,
   BookOpenIcon,
 } from './Icons';
-import { Platform, Preset, TrainingItem } from '../types';
-import { IS_HOSPITALITY_MODE } from '../constants';
+import { Platform, Preset, PostPurpose, Tone, Length, TrainingItem } from '../types';
+import { UI, IS_HOSPITALITY_MODE, COLORS } from '../constants';
 import { AutoResizingTextarea } from './ResizableTextarea';
 
 interface PresetModalProps {
@@ -107,7 +107,7 @@ const SortablePresetRow = ({
       className={`
         group flex items-center gap-3 p-4 rounded-xl transition-all duration-300
         ${isSelected
-          ? (IS_HOSPITALITY_MODE ? 'bg-gradient-to-br from-indigo-950 to-slate-900 text-white shadow-lg' : 'bg-[var(--teal)] border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] scale-[1.02] z-10 text-black')
+          ? (IS_HOSPITALITY_MODE ? 'bg-gradient-to-br from-[#1A252F] to-[#111820] text-[#D4AF37] border border-[#D4AF37]/30 shadow-lg' : 'bg-[var(--teal)] border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] scale-[1.02] z-10 text-black')
           : (IS_HOSPITALITY_MODE ? 'bg-white border border-slate-100 hover:bg-slate-50 text-slate-800' : 'bg-white border-2 border-black hover:bg-[var(--bg-beige)] hover:shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:-translate-y-0.5 text-slate-800')
         }
         ${isDragging ? 'opacity-50' : ''}
@@ -1200,7 +1200,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
           <div className="flex items-center justify-between w-full md:w-auto">
             <div className="flex items-center gap-3 md:gap-4">
               <div className={`p-2.5 md:p-3 rounded-xl border-2 border-black ${expandingPlatform === Platform.X ? 'shadow-[2px_2px_0_0_#9B8FD4]' : 'shadow-[2px_2px_0_0_rgba(0,0,0,1)]'} ${expandingPlatform === Platform.Instagram ? 'bg-pink-50 text-pink-500' :
-                expandingPlatform === Platform.X ? 'bg-slate-900 text-white' :
+                expandingPlatform === Platform.X ? `bg-[${COLORS.navy}] text-[${COLORS.gold}]` :
                   expandingPlatform === Platform.Line ? 'bg-[#06C755] text-white' :
                     expandingPlatform === Platform.GoogleMaps ? 'bg-blue-600 text-white' :
                       'bg-indigo-500 text-white'

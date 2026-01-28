@@ -1,7 +1,7 @@
 import { Platform, Preset } from '../../../types';
 import { getPlatformIcon, clampPresetName } from './utils';
 import { SparklesIcon, BookmarkIcon, MoreHorizontalIcon } from '../../Icons';
-import { IS_HOSPITALITY_MODE } from '../../../constants';
+import { IS_HOSPITALITY_MODE, COLORS } from '../../../constants';
 
 interface PlatformSelectorProps {
     platforms: Platform[];
@@ -35,28 +35,29 @@ export const PlatformSelector: React.FC<PlatformSelectorProps> = ({
             {/* Header: Platform Choice */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h3 className={`text-[10px] font-black ${IS_HOSPITALITY_MODE ? 'text-[#D4AF37]' : 'text-[#4DB39A]'} uppercase tracking-[0.3em] mb-1`}>Target Engine</h3>
+                    <h3 className={`text - [10px] font - black ${IS_HOSPITALITY_MODE ? 'text-[#D4AF37]' : 'text-[#4DB39A]'} uppercase tracking - [0.3em] mb - 1`}>Target Engine</h3>
                     <p className="text-xs font-black text-stone-400">プラットフォーム選択</p>
                 </div>
                 <button
                     onClick={onToggleMultiGen}
                     className={`
-                        group flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black tracking-widest transition-all
+                        group flex items - center gap - 2 px - 4 py - 2 ${IS_HOSPITALITY_MODE ? 'rounded-xl' : 'rounded-xl'} text - [10px] font - black tracking - widest transition - all
                         ${isMultiGen
-                            ? (IS_HOSPITALITY_MODE ? 'bg-gradient-to-br from-indigo-950 to-slate-900 text-white shadow-xl shadow-indigo-900/40' : 'bg-[#4DB39A] text-black border-[3px] border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]')
-                            : (IS_HOSPITALITY_MODE ? 'bg-white border border-slate-100 text-slate-400 hover:text-slate-600 shadow-sm' : 'bg-white border-[3px] border-black/20 text-gray-500 hover:border-black/40 hover:text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,0.1)]')}
-                    `}
+                            ? (IS_HOSPITALITY_MODE ? 'bg-gradient-to-br from-[#1A252F] to-[#111820] text-[#D4AF37] border border-[#D4AF37]/30 shadow-xl shadow-black/40' : 'bg-[#4DB39A] text-black border-[3px] border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]')
+                            : (IS_HOSPITALITY_MODE ? 'bg-white border border-slate-100 text-slate-400 hover:text-slate-600 shadow-sm' : 'bg-white border-[3px] border-black/20 text-gray-500 hover:border-black/40 hover:text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,0.1)]')
+                        }
+`}
                 >
-                    <SparklesIcon className={`w-3.5 h-3.5 ${isMultiGen ? (IS_HOSPITALITY_MODE ? "text-white" : "text-black") : (IS_HOSPITALITY_MODE ? "text-[#D4AF37]" : "text-[#4DB39A]")}`} />
+                    <SparklesIcon className={`w - 3.5 h - 3.5 ${isMultiGen ? (IS_HOSPITALITY_MODE ? "text-white" : "text-black") : (IS_HOSPITALITY_MODE ? "text-[#D4AF37]" : "text-[#4DB39A]")} `} />
                     <span>BATCH MODE</span>
                     <div className={`
-                        w-6 h-3.5 rounded-full relative transition-colors duration-300
+w - 6 h - 3.5 rounded - full relative transition - colors duration - 300
                         ${isMultiGen ? 'bg-black/20' : 'bg-black/10'}
-                    `}>
+`}>
                         <div className={`
-                            absolute top-0.5 w-2.5 h-2.5 rounded-full transition-all duration-300
+                            absolute top - 0.5 w - 2.5 h - 2.5 rounded - full transition - all duration - 300
                             ${isMultiGen ? 'bg-black left-3' : 'bg-white left-0.5'}
-                        `}></div>
+`}></div>
                     </div>
                 </button>
             </div>
@@ -71,7 +72,7 @@ export const PlatformSelector: React.FC<PlatformSelectorProps> = ({
                         switch (p) {
                             case Platform.X: return 'bg-black text-white';
                             case Platform.Instagram: return 'bg-[#E88BA3] text-black';
-                            case Platform.Line: return 'bg-[#06C755] text-white';
+                            case Platform.Line: return IS_HOSPITALITY_MODE ? `bg-[${COLORS.navy}] text-[${COLORS.gold}]` : 'bg-[#06C755] text-white';
                             case Platform.GoogleMaps: return IS_HOSPITALITY_MODE ? 'bg-[#2C3E50] text-white' : 'bg-[#4DB39A] text-black';
                             default: return 'bg-white text-black';
                         }
@@ -82,21 +83,23 @@ export const PlatformSelector: React.FC<PlatformSelectorProps> = ({
                             key={p}
                             onClick={() => isMultiGen ? onPlatformToggle(p) : onSetActivePlatform(p)}
                             className={`
-                                relative flex flex-col items-center justify-center gap-3 p-5 rounded-2xl transition-all duration-300 group
+                                relative flex flex - col items - center justify - center gap - 3 p - 5 ${IS_HOSPITALITY_MODE ? 'rounded-xl' : 'rounded-2xl'} transition - all duration - 300 group
                                 ${isSelected
                                     ? (IS_HOSPITALITY_MODE ? 'bg-white border border-slate-100 shadow-xl shadow-slate-200/50 hover:-translate-y-0.5' : `bg-white border-[3px] border-black ${p === Platform.X ? 'shadow-[6px_6px_0px_0px_#9B8FD4]' : 'shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]'} hover:translate-x-[-2px] hover:translate-y-[-2px] ${p === Platform.X ? 'hover:shadow-[8px_8px_0px_0px_#9B8FD4]' : 'hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]'}`)
-                                    : (IS_HOSPITALITY_MODE ? 'bg-white border border-slate-100/50 text-slate-400 opacity-60' : 'bg-white border-[3px] border-gray-200 hover:border-gray-300 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]')}
-                            `}
+                                    : (IS_HOSPITALITY_MODE ? 'bg-white border border-slate-100/50 text-slate-400 opacity-60' : 'bg-white border-[3px] border-gray-200 hover:border-gray-300 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]')
+                                }
+`}
                         >
                             <div className={`
-                                w-12 h-12 rounded-xl transition-all duration-300 flex items-center justify-center
+w - 12 h - 12 rounded - xl transition - all duration - 300 flex items - center justify - center
                                 ${isSelected
                                     ? `${getSelectedStyle(p)} ${IS_HOSPITALITY_MODE ? 'shadow-lg border-none' : 'border-[2px] border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]'}`
-                                    : 'bg-gray-50 border-black/10 text-gray-400 group-hover:bg-white group-hover:text-black group-hover:border-black/30 grayscale'}
-                            `}>
+                                    : 'bg-gray-50 border-black/10 text-gray-400 group-hover:bg-white group-hover:text-black group-hover:border-black/30 grayscale'
+                                }
+`}>
                                 {getPlatformIcon(p)}
                             </div>
-                            <span className={`text-[10px] font-black tracking-widest uppercase ${isSelected ? 'text-black' : 'text-black/40 group-hover:text-black'}`}>
+                            <span className={`text - [10px] font - black tracking - widest uppercase ${isSelected ? 'text-black' : 'text-black/40 group-hover:text-black'} `}>
                                 {p === Platform.Line ? 'LINE' : p}
                             </span>
 
@@ -135,11 +138,13 @@ export const PlatformSelector: React.FC<PlatformSelectorProps> = ({
                                     key={ps.id}
                                     onClick={() => onApplyPreset(ps)}
                                     className={`
-                                                group relative overflow-hidden w-full px-2 py-3 rounded-xl transition-all duration-300 text-xs font-black tracking-widest
+                                                group relative overflow - hidden w - full px - 2 py - 3 rounded - xl transition - all duration - 300 text - xs font - black tracking - widest
                                                 ${isActive
-                                            ? (IS_HOSPITALITY_MODE ? 'bg-gradient-to-br from-indigo-950 to-slate-900 text-white shadow-xl shadow-indigo-900/40' : `bg-[#4DB39A] text-black border-[2px] border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]`)
-                                            : (IS_HOSPITALITY_MODE ? 'bg-white text-slate-400 border border-slate-100 hover:text-slate-600 shadow-sm' : 'bg-white text-black/40 border-[2px] border-black/10 hover:border-black/30 hover:text-black shadow-[1px_1px_0px_0px_rgba(0,0,0,0.1)]')}
-                                            `}
+                                            ? (IS_HOSPITALITY_MODE ? `bg-[${COLORS.primary}] text-white shadow-xl shadow-[${COLORS.primary}]/30
+` : `bg-[#4DB39A] text-black border-[2px] border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]`)
+                                            : (IS_HOSPITALITY_MODE ? 'bg-white text-slate-400 border border-slate-100 hover:text-slate-600 shadow-sm' : 'bg-white text-black/40 border-[2px] border-black/10 hover:border-black/30 hover:text-black shadow-[1px_1px_0px_0px_rgba(0,0,0,0.1)]')
+                                        }
+`}
                                 >
                                     <span className="relative z-10 block truncate w-full text-center">{ps.name.toUpperCase()}</span>
                                 </button>
