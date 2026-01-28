@@ -458,10 +458,7 @@ function App() {
         onOpenAccount={() => setShowAccountSettings(true)}
         onLogout={logout}
         storeProfile={storeProfile}
-        favorites={favorites}
-        trainingItems={trainingItems}
         presets={presets}
-        onToggleFavorite={handleToggleTraining}
         onTogglePin={handleTogglePin}
       />
 
