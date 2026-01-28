@@ -93,12 +93,15 @@ export async function GET() {
         ? row.ai_run_records[0]
         : row.ai_run_records;
 
+      const inputData = rec?.input ?? {};
+      const storedConfig = inputData.config ?? {};
+      
       return {
         id: row.id,
-        created_at: row.created_at,
-        is_pinned: row.is_pinned,
-        config: rec?.input ?? {},
-        result: rec?.output ?? [],
+        timestamp: new Date(row.created_at).getTime(),
+        isPinned: row.is_pinned,
+        config: storedConfig,
+        results: rec?.output ?? [],
       };
     });
 

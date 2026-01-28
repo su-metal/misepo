@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { LOADING_TIPS } from '../constants';
 import { AutoSparklesIcon } from './Icons';
+import { useScrollLock } from '../hooks/useScrollLock';
 
 interface LoadingModalProps {
     isOpen: boolean;
 }
 
 const LoadingModal: React.FC<LoadingModalProps> = ({ isOpen }) => {
+    useScrollLock(isOpen);
     const [tipIndex, setTipIndex] = useState(0);
 
     useEffect(() => {

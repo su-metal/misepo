@@ -15,6 +15,7 @@ export function useStartFlow() {
 
   // クライアントサイドで intent を取得 (SSR中は null、クライアントで確定)
   const [intent, setIntent] = useState<"trial" | "login" | null>(null);
+  const [initialPlan, setInitialPlan] = useState<"monthly" | "yearly">("monthly");
 
   // intent の初期化 (クライアントサイドのみ)
   useEffect(() => {
@@ -23,35 +24,47 @@ export function useStartFlow() {
     const fromStorage = window.localStorage.getItem("login_intent") as "trial" | "login" | null;
     const resolved = fromUrl ?? fromStorage ?? "login";
     setIntent(resolved);
+
+    const planFromUrl = searchParams.get("plan") as "monthly" | "yearly" | null;
+    const planFromStorage = window.localStorage.getItem("login_plan") as "monthly" | "yearly" | null;
+    if (planFromUrl) setInitialPlan(planFromUrl);
+    else if (planFromStorage) setInitialPlan(planFromStorage);
   }, [searchParams]);
 
-  const startGoogleLogin = async (nextIntent: "trial" | "login") => {
-    // ログイン後のために intent を保存
+  const startGoogleLogin = async (nextIntent: "trial" | "login", nextPlan: "monthly" | "yearly" = "monthly") => {
+    // ログイン後のために intent と plan を保存
     if (typeof window !== "undefined") {
       window.localStorage.setItem("login_intent", nextIntent);
+      window.localStorage.setItem("login_plan", nextPlan);
     }
 
     if (isLoggedIn) {
-      await goCheckout();
+      await goCheckout(nextPlan);
       return;
     }
+
+    // Force sign out first to ensure account selection works
+    await supabase.auth.signOut();
 
     const origin = window.location.origin;
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
         redirectTo: `${origin}/auth/callback?intent=${encodeURIComponent(nextIntent)}`,
-        queryParams: { prompt: "select_account" },
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent', // Force consent screen to ensure account picker appears
+        },
       },
     });
   };
 
-  const goCheckout = useCallback(async () => {
+  const goCheckout = useCallback(async (plan: "monthly" | "yearly" = initialPlan) => {
     setIsRedirecting(true);
     const res = await fetch("/api/billing/checkout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ plan: "monthly" }),
+      body: JSON.stringify({ plan }),
     });
     const data = await res.json().catch(() => null);
 
@@ -59,6 +72,7 @@ export function useStartFlow() {
       // 決済へ進むので意図をクリア
       if (typeof window !== "undefined") {
         window.localStorage.removeItem("login_intent");
+        window.localStorage.removeItem("login_plan");
       }
       window.location.href = data.url;
     } else if (data?.error === "already_active") {
@@ -113,8 +127,9 @@ export function useStartFlow() {
         }
 
         console.log('[useStartFlow] User cannot use app. Intent:', intent);
-        // intent が "trial" or "login" に関わらず、利用可能なら /generate へ送っている
-        // ここに来るのは「利用不可（期限切れ、未登録）」の場合
+        
+        // Removed auto-checkout for trial intent. 
+        // Backend now auto-assigns 7-day cardless trial to 'free' plan users on GET /api/me/plan.
         
         setLoading(false);
       } catch (err) {
@@ -133,6 +148,7 @@ export function useStartFlow() {
     intent: intent ?? "login", // 外部には "login" をデフォルトとして返す
     isRedirecting,
     startGoogleLogin,
-    goCheckout
+    goCheckout,
+    initialPlan
   };
 }

@@ -85,7 +85,7 @@ export function mapHistoryEntry(entry: any): GeneratedPost {
   
   return {
     id: entry.id?.toString() || crypto.randomUUID(),
-    timestamp: entry.created_at ? new Date(entry.created_at).getTime() : Date.now(),
+    timestamp: typeof entry.timestamp === 'number' ? entry.timestamp : (entry.created_at ? new Date(entry.created_at).getTime() : Date.now()),
     config: {
       platforms: Array.isArray(rawConfig.platforms) ? rawConfig.platforms.map(normalizePlatform) : [normalizePlatform(rawConfig.platform)],
       purpose,
@@ -103,6 +103,6 @@ export function mapHistoryEntry(entry: any): GeneratedPost {
       instagramFooter: rawConfig.instagramFooter,
     },
     results: normalizeResults(rawResults, normalizePlatform(rawConfig.platform)),
-    isPinned: Boolean(entry.is_pinned || rawConfig.isPinned),
+    isPinned: typeof entry.isPinned === 'boolean' ? entry.isPinned : Boolean(entry.is_pinned || rawConfig.isPinned),
   };
 }

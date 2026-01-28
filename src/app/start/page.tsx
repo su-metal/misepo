@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useState, useEffect } from "react";
 import Link from "next/link";
 import { useStartFlow } from "@/hooks/useStartFlow";
 
@@ -11,8 +11,16 @@ function StartPageContent() {
     eligibleForTrial,
     isRedirecting,
     intent,
-    startGoogleLogin
+    startGoogleLogin,
+    initialPlan
   } = useStartFlow();
+
+  const [plan, setPlan] = useState<"monthly" | "yearly">("monthly");
+
+  // Sync with initial plan from URL/Storage
+  useEffect(() => {
+    setPlan(initialPlan);
+  }, [initialPlan]);
 
   // Show full-screen loader when:
   // 1. Redirecting to checkout, OR
@@ -72,10 +80,32 @@ function StartPageContent() {
             <div className="inline-block px-4 py-2 bg-[#F5CC6D] text-black border-[3px] border-black rounded-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-[10px] font-black uppercase tracking-[0.25em] mb-4 -rotate-1">
               READY TO START
             </div>
+
+            {/* Plan Toggle */}
+            <div className="flex justify-center items-center gap-3 mb-6 animate-in slide-in-from-bottom-2 duration-500">
+              <span className={`text-xs font-black ${plan !== "yearly" ? 'text-black' : 'text-black/30'} uppercase italic tracking-wider transition-colors`}>Monthly</span>
+              <button
+                onClick={() => setPlan(plan === "yearly" ? "monthly" : "yearly")}
+                className="w-12 h-6 bg-black/5 rounded-full relative transition-all duration-300 shadow-inner focus:outline-none border-[2px] border-black/10"
+              >
+                <div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-[#F5CC6D] rounded-full border-[2px] border-black transition-all duration-300 ${plan === "yearly" ? 'translate-x-6' : 'translate-x-0'}`} />
+              </button>
+              <div className="flex items-center gap-2">
+                <span className={`text-xs font-black ${plan === "yearly" ? 'text-black' : 'text-black/30'} uppercase italic tracking-wider transition-colors`}>Yearly</span>
+                {plan === "yearly" && (
+                  <span className="bg-[#E88BA3] text-black text-[8px] font-black px-1.5 py-0.5 border-[1.5px] border-black rounded-md -rotate-3 animate-pulse whitespace-nowrap">
+                    お得!
+                  </span>
+                )}
+              </div>
+            </div>
+
             <h1 className="text-4xl sm:text-5xl font-black text-black tracking-tighter leading-none mb-3 uppercase italic">
               MisePo <span className="text-[#E88BA3]">Studio</span>
             </h1>
-            <p className="text-[10px] font-black text-black/40 uppercase tracking-[0.3em]">Next-Gen AI Marketing Engine</p>
+            <p className="text-[10px] font-black text-black/40 uppercase tracking-[0.3em]">
+              {plan === "yearly" ? "Annual Plan Selected" : "Monthly Plan Selected"}
+            </p>
           </div>
 
           <div className="space-y-6">
@@ -83,13 +113,16 @@ function StartPageContent() {
               <p className="text-sm font-black text-black/80 leading-relaxed whitespace-pre-line">
                 {eligibleForTrial === false
                   ? "プロプランに登録して、\n全機能へのアクセス権を取得してください。"
-                  : "Googleログインですぐに開始！\n7日間の無料体験（クレカ登録不要）"}
+                  : (plan === "yearly"
+                    ? "Googleログインですぐに開始！\n年額プランで登録（7日間無料体験）"
+                    : "Googleログインですぐに開始！\n7日間の無料体験（クレカ登録不要）")
+                }
               </p>
             </div>
 
             <button
               className="group relative w-full py-4 bg-[#E88BA3] text-black border-[4px] border-black rounded-[24px] font-black text-lg italic shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] active:scale-95 transition-all overflow-hidden"
-              onClick={() => startGoogleLogin("trial")}
+              onClick={() => startGoogleLogin("trial", plan)}
               disabled={loading}
             >
               <div className="flex flex-col items-center justify-center gap-1">
@@ -98,7 +131,10 @@ function StartPageContent() {
                     <div className="w-6 h-6 border-[3px] border-black/20 border-t-black rounded-full animate-spin" />
                   ) : (
                     <>
-                      {eligibleForTrial === false ? "プロプランに登録する" : "無料で試してみる"}
+                      {eligibleForTrial === false
+                        ? (plan === "yearly" ? "年額プランに登録する" : "プロプランに登録する")
+                        : "無料で試してみる"
+                      }
                       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" className="group-hover:translate-x-1 transition-transform">
                         <path d="M5 12h14M12 5l7 7-7 7" />
                       </svg>

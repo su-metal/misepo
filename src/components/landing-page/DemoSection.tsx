@@ -23,11 +23,27 @@ export const DemoSection = ({
     demoScenarios,
     activeScenarioIdx,
     setActiveScenarioIdx,
-    isDemoGenerating,
     demoResult,
+    isDemoGenerating,
     handleDemoGenerate
 }: DemoSectionProps) => {
     const activeScenario = demoScenarios[activeScenarioIdx];
+    const scrollRef = React.useRef<HTMLDivElement>(null);
+
+    // Auto-scroll to bottom when demoResult changes (and is not empty)
+    React.useEffect(() => {
+        if (demoResult && scrollRef.current) {
+            // Slight delay to ensure rendering is complete
+            setTimeout(() => {
+                if (scrollRef.current) {
+                    scrollRef.current.scrollTo({
+                        top: scrollRef.current.scrollHeight,
+                        behavior: 'smooth'
+                    });
+                }
+            }, 100);
+        }
+    }, [demoResult]);
 
     return (
         <section id="demo" className="py-24 bg-black text-white relative overflow-hidden border-b-[6px] border-white">
@@ -104,10 +120,10 @@ export const DemoSection = ({
                         <div className="w-full max-w-sm relative z-10">
                             <div className="bg-white border-[4px] border-black rounded-none max-w-xs mx-auto shadow-[12px_12px_0px_0px_rgba(255,255,255,0.1)] overflow-hidden text-sm flex flex-col h-[500px] relative group">
                                 {demoResult && (
-                                    <div className="absolute top-[40%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-50">
-                                        <div className="bg-[#4DB39A] text-white px-8 py-4 border-[3px] border-black rounded-2xl font-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] flex items-center gap-2 whitespace-nowrap -rotate-3 animate-bounce-in">
-                                            <Icons.CheckCircle size={28} />
-                                            <span className="text-xl uppercase italic">Success!</span>
+                                    <div className="absolute bottom-6 right-6 z-50 pointer-events-none">
+                                        <div className="bg-[#4DB39A] text-white px-3 py-1.5 border-[2px] border-black rounded-xl font-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] flex items-center gap-1.5 whitespace-nowrap -rotate-2 animate-in slide-in-from-bottom-4 fade-in duration-300">
+                                            <Icons.CheckCircle size={16} />
+                                            <span className="text-xs uppercase italic">Generated!</span>
                                         </div>
                                     </div>
                                 )}
@@ -123,7 +139,7 @@ export const DemoSection = ({
                                             <div className="flex gap-1 text-[#F5CC6D] mb-1"><Icons.Star size={12} fill="currentColor" /><Icons.Star size={12} fill="currentColor" /><Icons.Star size={12} fill="currentColor" /><Icons.Star size={12} fill="currentColor" /><Icons.Star size={12} fill="currentColor" /></div>
                                             <p className="text-[10px] text-black leading-snug font-bold">「初めて来ましたが、ドーナツがふわふわで最高でした！コーヒーも深みがあって好みです。また来ます！」</p>
                                         </div>
-                                        <div className="flex-1 overflow-y-auto p-4 no-scrollbar">
+                                        <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 no-scrollbar">
                                             <div className="bg-white border-[2px] border-black p-4 rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)] relative">
                                                 <div className="text-[10px] font-black text-black/40 uppercase mb-2">オーナーからの返信</div>
                                                 <div className={`text-xs text-black leading-relaxed whitespace-pre-wrap font-bold ${demoResult ? 'opacity-100' : 'opacity-30 italic'}`}>
@@ -141,7 +157,7 @@ export const DemoSection = ({
                                             </div>
                                             <span className="font-black text-xs">LINE</span>
                                         </div>
-                                        <div className="flex-1 overflow-y-auto p-4 no-scrollbar flex flex-col gap-4">
+                                        <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 no-scrollbar flex flex-col gap-4">
                                             <div className="text-[9px] text-white/50 font-black uppercase text-center my-2">Today</div>
                                             <div className="flex gap-2">
                                                 <div className="w-8 h-8 bg-[#06C755] border-[2px] border-black rounded-2xl flex-shrink-0" />
@@ -165,7 +181,7 @@ export const DemoSection = ({
                                             </div>
                                             <Icons.MoreHorizontal size={16} className="text-black" />
                                         </div>
-                                        <div className="overflow-y-auto no-scrollbar flex-1 bg-white">
+                                        <div ref={scrollRef} className="overflow-y-auto no-scrollbar flex-1 bg-white">
                                             <div className="bg-gray-100 aspect-square w-full relative group shrink-0 border-b-[2px] border-black">
                                                 <img src={activeScenario.id === "casual" ? "https://picsum.photos/id/225/600/600" : "https://picsum.photos/id/425/600/600"} alt="post" className="w-full h-full object-cover" />
                                                 {demoResult && (

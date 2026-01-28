@@ -4,6 +4,7 @@ import { createPortal } from 'react-dom';
 import { User } from '@supabase/supabase-js';
 import { UserPlan } from '../types';
 import { CloseIcon, LogOutIcon, StarIcon, ExternalLinkIcon } from './Icons';
+import { useScrollLock } from '../hooks/useScrollLock';
 
 interface AccountSettingsModalProps {
     user: User | null;
@@ -22,13 +23,7 @@ const AccountSettingsModal: React.FC<AccountSettingsModalProps> = ({ user, plan,
     const [isPortalLoading, setIsPortalLoading] = React.useState(false);
 
     // Lock body scroll when modal is open
-    React.useEffect(() => {
-        const originalStyle = window.getComputedStyle(document.body).overflow;
-        document.body.style.overflow = 'hidden';
-        return () => {
-            document.body.style.overflow = originalStyle;
-        };
-    }, []);
+    useScrollLock();
 
     const getTrialRemainingDays = () => {
         if (!plan?.trial_ends_at) return 0;

@@ -6,10 +6,25 @@ export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
   const intent = searchParams.get("intent") ?? "login";
+  const error = searchParams.get("error");
+  const errorDescription = searchParams.get("error_description");
+
+  if (error) {
+    console.error("Auth error in callback:", error, errorDescription);
+    const redirectUrl = new URL("/start", origin);
+    redirectUrl.searchParams.set("error", errorDescription ?? "Authentication failed");
+    return NextResponse.redirect(redirectUrl.toString());
+  }
 
   if (code) {
     const supabase = await createClient();
-    await supabase.auth.exchangeCodeForSession(code);
+    const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+    if (exchangeError) {
+      console.error("Exchange code error:", exchangeError);
+      const redirectUrl = new URL("/start", origin);
+      redirectUrl.searchParams.set("error", "Session exchange failed");
+      return NextResponse.redirect(redirectUrl.toString());
+    }
   }
 
   const next = searchParams.get("next") ?? (intent === "trial" ? "/start" : "/generate");
