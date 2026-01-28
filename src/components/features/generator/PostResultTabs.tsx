@@ -6,7 +6,6 @@ import { AutoResizingTextarea } from './AutoResizingTextarea';
 import { RefinePanel } from './RefinePanel';
 import { PostPreviewModal } from './PostPreviewModal';
 import { CopyIcon, CrownIcon, MagicWandIcon, RotateCcwIcon, ExternalLinkIcon, EyeIcon, SparklesIcon, LineIcon } from '../../Icons';
-import { UI, IS_HOSPITALITY_MODE, COLORS, TOKENS } from '../../../constants';
 interface PostResultTabsProps {
     results: GeneratedResult[];
     activeTab: number;
@@ -64,20 +63,20 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
         switch (platform) {
             case Platform.X:
                 return {
-                    icon: <div className={`w-10 h-10 bg-black rounded-xl flex items-center justify-center text-white text-xl font-black ${IS_HOSPITALITY_MODE ? 'shadow-lg' : 'shadow-[4px_4px_0px_0px_#9B8FD4]'} border-2 border-white/20`}>𝕏</div>,
+                    icon: <div className="w-10 h-10 bg-black rounded-xl flex items-center justify-center text-white text-xl font-black shadow-[4px_4px_0px_0px_#9B8FD4] border-2 border-white/20">𝕏</div>,
                     label: 'X',
-                    actionColor: IS_HOSPITALITY_MODE ? `bg-[${COLORS.primary}] text-white shadow-md rounded-2xl` : "bg-black text-white hover:bg-black/80 active:scale-[0.98] shadow-[6px_6px_0px_0px_#9B8FD4] border-white/20",
+                    actionColor: "bg-black text-white hover:bg-black/80 active:scale-[0.98] shadow-[6px_6px_0px_0px_#9B8FD4] border-white/20",
                     actionLabel: "Xで投稿する",
                     contentClasses: "text-[16px] text-black font-bold leading-relaxed tracking-tight",
                     wrapperClass: "max-w-[375px]",
                     brandTextColor: "text-black",
                     brandBgColor: "bg-black/5",
-                    brandBorderColor: `border-[${COLORS.primary}]/20`,
+                    brandBorderColor: "border-[#000000]/20",
                 };
             case Platform.Instagram:
                 return {
                     icon: (
-                        <div className={`w-10 h-10 bg-[#E88BA3] rounded-2xl flex items-center justify-center text-black ${IS_HOSPITALITY_MODE ? 'shadow-lg border-white/20' : 'shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] border-2 border-black'}`}>
+                        <div className="w-10 h-10 bg-[#E88BA3] rounded-2xl flex items-center justify-center text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] border-2 border-black">
                             <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M12 2c2.717 0 3.056.01 4.122.06 1.065.05 1.79.217 2.428.465.66.254 1.216.598 1.772 1.153a4.908 4.908 0 0 1 1.153 1.772c.247.637.415 1.363.465 2.428.047 1.066.06 1.405.06 4.122 0 2.717-.01 3.056-.06 4.122-.05 1.065-.218 1.79-.465 2.428a4.883 4.883 0 0 1-1.153 1.772 4.915 4.915 0 0 1-1.772 1.153c-.637.247-1.363.415-2.428.465-1.066.047-1.405.06-4.122.06-2.717 0-3.056-.01-4.122-.06-1.065-.05-1.79-.218-2.428-.465a4.89 4.89 0 0 1-1.772-1.153 4.904 4.904 0 0 1-1.153-1.772c-.248-.637-.415-1.363-.465-2.428C2.013 15.056 2 14.717 2 12c0-2.717.01-3.056.06-4.122.05-1.066.217-1.79.465-2.428a4.88 4.88 0 0 1 1.153-1.772A4.897 4.897 0 0 1 5.45 2.525c.638-.248 1.362-.415 2.428-.465C8.944 2.013 9.283 2 12 2zm0 5a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm6.5-.25a1.25 1.25 0 1 0-2.5 0 1.25 1.25 0 0 0 2.5 0zM12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6z" />
                             </svg>
@@ -89,15 +88,15 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                             key="inst-toggle"
                             onClick={() => onIncludeFooterChange(!includeFooter)}
                             className={`flex items-center gap-3 px-4 py-2 rounded-xl transition-all text-[11px] font-black border-2 ${includeFooter
-                                ? (IS_HOSPITALITY_MODE ? 'bg-indigo-950 text-white border-transparent shadow-md' : 'bg-[#9B8FD4] text-black border-black shadow-md')
+                                ? 'bg-[#9B8FD4] text-black border-black shadow-md'
                                 : 'bg-black/5 text-black/40 border-black/10'
                                 }`}
                         >
-                            <span className={`w-2 h-2 rounded-full transition-colors ${includeFooter ? (IS_HOSPITALITY_MODE ? 'bg-white' : 'bg-black') : 'bg-black/20'}`} />
+                            <span className={`w-2 h-2 rounded-full transition-colors ${includeFooter ? 'bg-black' : 'bg-black/20'}`} />
                             <span className="tracking-widest uppercase">施設情報を表示</span>
                         </button>
                     ),
-                    actionColor: IS_HOSPITALITY_MODE ? `bg-[${COLORS.primary}] text-white shadow-md rounded-2xl` : "bg-[#E88BA3] hover:bg-[#E88BA3]/90 active:scale-[0.98] text-black border-2 border-black shadow-md",
+                    actionColor: "bg-[#E88BA3] hover:bg-[#E88BA3]/90 active:scale-[0.98] text-black border-2 border-black shadow-md",
                     actionLabel: "Instagramを起動",
                     contentClasses: "text-[15px] text-black font-bold leading-relaxed tracking-tight",
                     wrapperClass: "max-w-[340px]",
@@ -108,31 +107,30 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
             case Platform.GoogleMaps:
                 return {
                     icon: (
-                        <div className={`w-10 h-10 ${IS_HOSPITALITY_MODE ? `bg-[${COLORS.accent}]/10`
-                            : 'bg-[#4DB39A] text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]'} rounded-2xl flex items-center justify-center border-2 border-black`}>
+                        <div className="w-10 h-10 bg-[#4DB39A] text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rounded-2xl flex items-center justify-center border-2 border-black">
                             <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
                             </svg>
                         </div>
                     ),
                     label: 'Google Maps',
-                    actionColor: IS_HOSPITALITY_MODE ? `bg-[${COLORS.primary}] text-white shadow-md rounded-2xl` : 'bg-[#4DB39A] text-black hover:bg-[#4DB39A]/90 active:scale-[0.98] border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]',
+                    actionColor: 'bg-[#4DB39A] text-black hover:bg-[#4DB39A]/90 active:scale-[0.98] border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]',
                     actionLabel: "Googleマップで返信する",
                     contentClasses: "text-[15px] text-black font-bold leading-relaxed tracking-tight",
                     wrapperClass: "max-w-[325px]",
-                    brandTextColor: `${IS_HOSPITALITY_MODE ? 'text-[#2C3E50]' : 'text-[#4DB39A]'}`,
-                    brandBgColor: `${IS_HOSPITALITY_MODE ? 'bg-[#2C3E50]/5' : 'bg-[#4DB39A]/5'}`,
-                    brandBorderColor: `${IS_HOSPITALITY_MODE ? 'border-[#2C3E50]/10' : 'border-[#4DB39A]/10'}`,
+                    brandTextColor: "text-[#4DB39A]",
+                    brandBgColor: "bg-[#4DB39A]/5",
+                    brandBorderColor: "border-[#4DB39A]/10",
                 };
             case Platform.Line:
                 return {
                     icon: (
-                        <div className={`w-10 h-10 bg-[#06C755] rounded-2xl flex items-center justify-center text-white ${IS_HOSPITALITY_MODE ? 'shadow-lg border-white/20' : 'shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] border-black'} border-2`}>
+                        <div className="w-10 h-10 bg-[#06C755] rounded-2xl flex items-center justify-center text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] border-black border-2">
                             <LineIcon className="w-6 h-6" />
                         </div>
                     ),
                     label: 'LINE',
-                    actionColor: IS_HOSPITALITY_MODE ? `bg-[#06C755] text-white shadow-md hover:bg-[#05a647] rounded-2xl` : "bg-[#06C755] hover:bg-[#06C755]/90 active:scale-[0.98] text-white border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]",
+                    actionColor: "bg-[#06C755] hover:bg-[#06C755]/90 active:scale-[0.98] text-white border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]",
                     actionLabel: "LINEで送る",
                     contentClasses: "text-[15px] text-black font-bold leading-relaxed tracking-tight",
                     wrapperClass: "max-w-[400px]",
@@ -172,7 +170,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                 );
             case Platform.GoogleMaps:
                 return (
-                    <svg className={`${iconClass} ${IS_HOSPITALITY_MODE ? 'text-[#2C3E50]' : 'text-brand-green'}`} viewBox="0 0 24 24" fill="currentColor">
+                    <svg className={`${iconClass} text-brand-green`} viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
                     </svg>
                 );
@@ -188,11 +186,11 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
             <div className={`space-y-8 animate-in fade-in duration-700 ${results.length === 0 ? 'hidden md:block' : ''}`}>
 
                 {/* Main Results Container - Tabs Integrated Inside */}
-                <div className={`text-primary flex flex-col min-h-[600px] overflow-hidden group/main transition-all duration-500 ${TOKENS.container}`}>
+                <div className="text-primary flex flex-col min-h-[600px] overflow-hidden group/main transition-all duration-500 w-full max-w-6xl mx-auto">
 
                     {/* Integrated Tab Navigation Header */}
                     {results.length > 0 && (
-                        <div className={`flex items-center w-full border-b-[2px] ${IS_HOSPITALITY_MODE ? 'border-slate-100 bg-slate-50/50' : 'border-black bg-white'}`}>
+                        <div className="flex items-center w-full border-b-[2px] border-black bg-white">
                             {results.map((res, idx) => {
                                 const isSelected = activeTab === idx;
                                 const theme = getPlatformTheme(res.platform);
@@ -200,10 +198,10 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                     <div
                                         key={res.platform}
                                         onClick={() => onTabChange(idx)}
-                                        className={`flex-1 py-4 flex items-center justify-center gap-1.5 md:gap-3 cursor-pointer transition-all duration-300 border-r-[2px] last:border-r-0 ${IS_HOSPITALITY_MODE ? 'border-slate-100' : 'border-black'} px-2
+                                        className={`flex-1 py-4 flex items-center justify-center gap-1.5 md:gap-3 cursor-pointer transition-all duration-300 border-r-[2px] last:border-r-0 border-black px-2
                                             ${isSelected
-                                                ? (IS_HOSPITALITY_MODE ? 'bg-white shadow-sm ring-1 ring-slate-100' : 'bg-black/5')
-                                                : (IS_HOSPITALITY_MODE ? 'hover:bg-white/80' : 'bg-white hover:bg-black/5')
+                                                ? 'bg-black/5'
+                                                : 'bg-white hover:bg-black/5'
                                             }`}
                                     >
                                         {getTabIcon(res.platform, isSelected)}
@@ -221,13 +219,13 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                         {results.length === 0 ? (
                             // Placeholder when no results
                             <div className="p-12 h-full flex flex-col items-center justify-center text-center space-y-8 animate-in fade-in duration-1000">
-                                <h2 className={`text-3xl tracking-[0.25em] text-center ${IS_HOSPITALITY_MODE ? 'font-serif-hospitality font-bold text-[#1A252F]' : 'font-black text-black uppercase'}`}>プレビュー</h2>
+                                <h2 className="text-3xl tracking-[0.25em] text-center font-black text-black uppercase">プレビュー</h2>
 
                                 <div className="space-y-6 max-w-sm">
-                                    <div className={`w-24 h-24 rounded-[32px] ${IS_HOSPITALITY_MODE ? 'bg-slate-50 border-slate-100 shadow-inner' : 'bg-black/5 border-[3px] border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]'} flex items-center justify-center text-black/10 mx-auto`}>
+                                    <div className="w-24 h-24 rounded-[32px] bg-black/5 border-[3px] border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center text-black/10 mx-auto">
                                         <SparklesIcon className="w-12 h-12" />
                                     </div>
-                                    <h3 className={`text-xl tracking-widest ${IS_HOSPITALITY_MODE ? 'font-serif-hospitality font-bold text-[#1A252F]' : 'font-black text-black uppercase'}`}>入力待ち</h3>
+                                    <h3 className="text-xl tracking-widest font-black text-black uppercase">入力待ち</h3>
                                     <p className="text-black/40 text-sm font-bold leading-relaxed">
                                         左側のフォームに内容やアイデアを入力して、<br />プロフェッショナルな投稿を瞬時に生成しましょう。
                                     </p>
@@ -301,7 +299,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                             {/* Prominent Refine Button */}
                                                             <button
                                                                 onClick={() => onRefineToggle(gIdx, iIdx)}
-                                                                className={`flex items-center justify-center gap-3 py-5 ${IS_HOSPITALITY_MODE ? 'rounded-[16px]' : 'rounded-[24px]'} text-[12px] font-black transition-all uppercase tracking-[0.25em] ${IS_HOSPITALITY_MODE ? (refiningKey === `${gIdx}-${iIdx}` ? `bg-[${COLORS.primary}] text-white shadow-xl shadow-[${COLORS.primary}]/30` : 'bg-white text-slate-400 border border-slate-100 shadow-sm hover:border-slate-300 hover:text-slate-600') : (refiningKey === `${gIdx}-${iIdx}` ? 'bg-[#9B8FD4] border-black text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]' : 'bg-white text-black/40 border-black/10 hover:border-black hover:text-black border-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]')}`}
+                                                                className={`flex items-center justify-center gap-3 py-5 rounded-[24px] text-[12px] font-black transition-all uppercase tracking-[0.25em] ${refiningKey === `${gIdx}-${iIdx}` ? 'bg-[#9B8FD4] border-black text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]' : 'bg-white text-black/40 border-black/10 hover:border-black hover:text-black border-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]'}`}
                                                             >
                                                                 <MagicWandIcon className="w-5 h-5" />
                                                                 <span>AIで内容を微調整する</span>
@@ -318,7 +316,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                                         onShare(res.platform, text);
                                                                     }
                                                                 }}
-                                                                className={`flex items-center justify-center gap-4 py-6 md:py-8 ${IS_HOSPITALITY_MODE ? 'rounded-[20px]' : 'rounded-[32px]'} font-black text-lg transition-all uppercase tracking-[0.3em] group mt-2 ${theme.actionColor} ${!IS_HOSPITALITY_MODE ? 'border-[3px] border-black' : ''}`}
+                                                                className={`flex items-center justify-center gap-4 py-6 md:py-8 rounded-[32px] font-black text-lg transition-all uppercase tracking-[0.3em] group mt-2 ${theme.actionColor} border-[3px] border-black`}
                                                             >
                                                                 <span>{theme.actionLabel}</span>
                                                                 <ExternalLinkIcon className="w-6 h-6 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
@@ -413,7 +411,7 @@ const FavoriteButton = ({
         <button
             onClick={handleToggle}
             className={`group flex items-center gap-2 px-3 py-2 rounded-xl transition-all border-2 shadow-sm ${isTrained
-                ? `bg-[${COLORS.accent}]/20 text-[${COLORS.primary}] border-[${COLORS.accent}]/40 shadow-[${COLORS.accent}]/10`
+                ? 'bg-[#F5CC6D] text-black border-black shadow-[2px_2px_0_0_black]'
                 : 'bg-black/5 text-black/40 border-black/5 hover:border-black/20 hover:text-black'
                 }`}
             title={isTrained ? "学習を解除" : "AIに文体を学習させる"}

@@ -1,73 +1,9 @@
 
-import { Platform, PostPurpose, GoogleMapPurpose, Tone, Length, StoreProfile, AppMode } from './types';
+import { Platform, PostPurpose, GoogleMapPurpose, Tone, Length, StoreProfile } from './types';
 
-// Vertical SaaS Mode Switch - DEPRECATED / REMOVED
-// Defaulting to Hospitality Mode (Neo Brutalism)
-
-// Color Palette Definitions
-export const COLORS = {
-  // 指定配色：スカイ・フレッシュ・ブルー
-  primary: "#0071b9",        // メインブルー (Brand Blue)
-  accent: "#C6DCE8",         // 薄い水色 (Lighter Blue)
-  navy: "#122646",           // テキストカラー (Deep Indigo Text)
-  navyDeep: "#0D1B32",       // さらに深い紺
-  
-  // 既存マッピングの互換性維持
-  gold: "#0071b9",           // 以前のゴールド箇所をメインブルーへ
-  goldDark: "#005a94",       
-  
-  slate: {
-    50: "#F8FAFC",
-    100: "#F1F5F9",
-    200: "#E2E8F0",
-    400: "#94A3B8",
-    500: "#64748B",
-    600: "#475569",
-    900: "#0F172A",
-  },
-  indigo_palette: {
-    50: "#EEF2FF",
-    100: "#E0E7FF",
-    500: "#6366F1",
-    600: "#4F46E5",
-    700: "#4338CA",
-    900: "#312E81",
-    950: "#1E1B4B",
-  }
-};
-
-// Enforce Hospitality Mode Config
-export const UI = {
-  customerLabel: "ゲスト様",
-  visitLabel: "ご宿泊・ご来館",
-  ownerLabel: "支配人/スタッフ",
-  primaryColor: COLORS.navy,
-  accentColor: COLORS.gold,
-  bgHighlight: `bg-[${COLORS.gold}]/10`,
-  textHighlight: `text-[${COLORS.gold}]`,
-  name: "MisePo Hospitality",
-};
-
-// Design System Tokens - Fixed to Neo Brutalism (previously Hospitality Mode)
-export const TOKENS = {
-  container: `bg-white rounded-[32px] border border-blue-50 shadow-[0_12px_24px_rgba(0,0,0,0.04)]`,
-  
-  card: `bg-white rounded-[20px] border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.04)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.06)] transition-all duration-500`,
-
-  cardActionable: `bg-white rounded-[16px] border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300`,
-
-  input: `bg-slate-50/50 border border-slate-200 focus:border-[${COLORS.primary}] focus:bg-white focus:ring-4 focus:ring-[${COLORS.primary}]/10 rounded-xl transition-all`,
-
-  buttonPrimary: `bg-[${COLORS.primary}] text-white border border-[${COLORS.primary}]/10 shadow-md hover:-translate-y-0.5 active:scale-95 transition-all rounded-xl`,
-
-  buttonSecondary: `bg-[${COLORS.accent}]/40 text-[${COLORS.navy}] hover:bg-[${COLORS.accent}]/60 active:scale-95 transition-all rounded-xl`,
-
-  buttonGhost: `bg-slate-50 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-xl transition-all`,
-  
-  badge: `bg-[${COLORS.accent}]/40 text-[${COLORS.navy}] border border-[${COLORS.accent}]/60 rounded-lg font-bold`,
-};
-
-export const INDUSTRIES = ['旅館・ホテル', '飲食店', 'カフェ', '居酒屋', '美容室', 'ネイル・まつげ', 'エステ・サロン', '整体・接骨院', 'ジム', '小売', 'その他'];
+export const INDUSTRIES = [
+  '飲食店', 'カフェ', '居酒屋', '美容室', 'ネイル・まつげ', 'エステ・サロン', '旅館・ホテル', '整体・接骨院', 'ジム', '小売', 'その他'
+];
 
 export const POST_PURPOSES = [
   { value: PostPurpose.Promotion, label: '宣伝・告知', icon: '📢' },
@@ -106,7 +42,7 @@ export const LANGUAGES = [
 
 export const GUEST_PROFILE: StoreProfile = {
   industry: 'その他',
-  name: 'サンプル店',
+  name: 'サンプル店舗',
   region: '日本',
   description: 'これはサンプルです。',
 };
@@ -124,3 +60,11 @@ export const LOADING_TIPS = [
   "💡 複数のSNS向けに同時生成も可能。それぞれのプラットフォームに最適な長さに調整されます。",
   "💡 AIが学習したスタイルは「プリセット」として保存し、いつでも切り替えられます。"
 ];
+
+export const UI = {
+  name: "MisePo",
+};
+
+export const TOKENS = {
+  container: 'bg-white border-[3px] border-black shadow-[8px_8px_0_0_rgba(0,0,0,1)] rounded-3xl',
+};

@@ -1,7 +1,7 @@
 import React from 'react';
 import { MenuIcon, StarIcon } from '../../Icons';
 import { StoreProfile, UserPlan } from '../../../types';
-import { UI, IS_HOSPITALITY_MODE, TOKENS, COLORS } from '../../../constants';
+import { UI, TOKENS } from '../../../constants';
 
 interface GeneratorHeaderProps {
     onOpenHistory: () => void;
@@ -25,7 +25,7 @@ export const GeneratorHeader: React.FC<GeneratorHeaderProps> = ({
 
                 {/* Left: Brand Space */}
                 <div className="flex items-center gap-4">
-                    <span className={`text-2xl tracking-tighter drop-shadow-none ${IS_HOSPITALITY_MODE ? 'font-serif-hospitality font-bold' : 'font-black text-black'}`}>{UI.name}</span>
+                    <span className="text-2xl tracking-tighter drop-shadow-none font-black text-black">{UI.name}</span>
 
                 </div>
 
@@ -35,8 +35,8 @@ export const GeneratorHeader: React.FC<GeneratorHeaderProps> = ({
                         onClick={onOpenHistory}
                         className="flex items-center gap-3 pl-4 md:pl-6 pr-2 md:pr-4 py-2 transition-all active:scale-95 group"
                     >
-                        <div className={`w-8 h-8 md:w-9 md:h-9 rounded-xl ${IS_HOSPITALITY_MODE ? `bg-[${COLORS.navy}] shadow-lg shadow-slate-200 border-none` : (IS_HOSPITALITY_MODE ? 'bg-[#2C3E50]' : 'bg-[#4DB39A]') + ' border-[2px] border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]'} flex items-center justify-center overflow-hidden transition-transform group-hover:scale-110`}>
-                            <span className={`text-xs md:text-sm font-black ${IS_HOSPITALITY_MODE ? 'text-white' : 'text-black'}`}>
+                        <div className="w-8 h-8 md:w-9 md:h-9 rounded-xl bg-[#4DB39A] border-[2px] border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center overflow-hidden transition-transform group-hover:scale-110">
+                            <span className="text-xs md:text-sm font-black text-black">
                                 {(storeProfile?.name?.[0] || 'U').toUpperCase()}
                             </span>
                         </div>
