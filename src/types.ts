@@ -1,9 +1,4 @@
 
-export enum AppMode {
-  Standard = 'standard',
-  Hospitality = 'hospitality'
-}
-
 export enum Platform {
   X = 'X (Twitter)',
   Instagram = 'Instagram',
