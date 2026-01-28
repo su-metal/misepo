@@ -176,7 +176,7 @@ export function useGeneratorFlow(props: {
         setIncludeEmojis(false);
         setIncludeSymbols(false);
         // Switch prompt to GMap specific
-        setCustomPrompt(loadedPresetPrompts[Platform.GoogleMaps] || '');
+        // setCustomPrompt(loadedPresetPrompts[Platform.GoogleMaps] || '');
       } else {
         // If it's X, Instagram, or LINE and we're in multi-gen, keep current multi platforms
         setPlatforms(platforms);
@@ -189,7 +189,7 @@ export function useGeneratorFlow(props: {
       }
       
       // Update customPrompt for single platform selection mode
-      setCustomPrompt(loadedPresetPrompts[p] || '');
+      // setCustomPrompt(loadedPresetPrompts[p] || '');
     }
   };
 
@@ -199,14 +199,14 @@ export function useGeneratorFlow(props: {
       setIsMultiGenMode(false);
       setIncludeEmojis(false);
       setIncludeSymbols(false);
-      setCustomPrompt(loadedPresetPrompts[Platform.GoogleMaps] || '');
+      // setCustomPrompt(loadedPresetPrompts[Platform.GoogleMaps] || '');
       return;
     }
 
     if (platforms.includes(Platform.GoogleMaps)) {
       setPlatforms([p]);
       setIsMultiGenMode(false);
-      setCustomPrompt(loadedPresetPrompts[p] || '');
+      // setCustomPrompt(loadedPresetPrompts[p] || '');
       return;
     }
 
@@ -218,7 +218,7 @@ export function useGeneratorFlow(props: {
           if (nextPlatforms.length === 1) {
              setIsMultiGenMode(false);
              // Switched to single mode, update prompt
-             setCustomPrompt(loadedPresetPrompts[nextPlatforms[0]] || '');
+             // setCustomPrompt(loadedPresetPrompts[nextPlatforms[0]] || '');
           }
         }
       } else {
@@ -226,7 +226,7 @@ export function useGeneratorFlow(props: {
       }
     } else {
       setPlatforms([p]);
-      setCustomPrompt(loadedPresetPrompts[p] || '');
+      // setCustomPrompt(loadedPresetPrompts[p] || '');
     }
   };
 
@@ -236,13 +236,13 @@ export function useGeneratorFlow(props: {
     if (nextMode) {
       setPlatforms([Platform.X, Platform.Instagram, Platform.Line]);
       // Multi-gen ON: Switch to first of the three
-      setCustomPrompt(loadedPresetPrompts[Platform.X] || '');
+      // setCustomPrompt(loadedPresetPrompts[Platform.X] || '');
     } else {
       if (platforms.length > 1) {
           const first = platforms[0];
           setPlatforms([first]);
           // Multi-gen OFF: Switch to First Platform prompt
-          setCustomPrompt(loadedPresetPrompts[first] || '');
+          // setCustomPrompt(loadedPresetPrompts[first] || '');
       }
     }
   };
