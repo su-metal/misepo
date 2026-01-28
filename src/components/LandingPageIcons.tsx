@@ -129,6 +129,11 @@ export const Icons: any = {
             <polyline points="6 9 12 15 18 9" />
         </svg>
     ),
+    ArrowRight: ({ size = 24, className = "" }: { size?: number; className?: string }) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+            <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
+        </svg>
+    ),
     PlusCircle: ({ size = 24, className = "" }: { size?: number; className?: string }) => (
         <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
             <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="16" /><line x1="8" y1="12" x2="16" y2="12" />

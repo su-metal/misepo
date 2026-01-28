@@ -75,124 +75,137 @@ export default function HeroSection() {
     }
 
     return (
-        <div className="relative z-10 h-auto">
-            <div
-                className="relative min-h-screen h-auto md:h-screen w-full overflow-hidden flex flex-col md:block bg-[#fceee3] pb-32 md:pb-0"
-            >
+        <div className="relative z-10 h-auto overflow-hidden">
+            <div className="absolute inset-0 bg-[#F9F7F2] -z-20" />
 
+            {/* Soft Background Gradients */}
+            <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-[#E88BA3]/10 rounded-full blur-[120px] -z-10" />
+            <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-[#4DB39A]/10 rounded-full blur-[120px] -z-10" />
+
+            <div
+                className="relative min-h-screen h-auto md:h-screen w-full flex flex-col md:block pb-32 md:pb-0"
+            >
                 <div className="max-w-7xl mx-auto w-full h-full relative px-4 flex flex-col md:relative md:block">
                     {/* Mobile Text (Static at top) */}
-                    <div className="md:hidden pt-24 px-4 text-center z-20 relative mb-2 shrink-0">
-                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#F2C94C] border-[3px] border-black rounded-2xl shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] mb-6">
-                            <span className="w-2 h-2 rounded-full bg-black animate-pulse" />
-                            <span className="text-xs font-black text-black uppercase">7日間の無料体験実施中</span>
+                    <div className="md:hidden pt-24 px-4 text-center z-20 relative mb-12 shrink-0">
+                        <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white border border-[#F5CC6D]/30 rounded-full shadow-sm mb-6">
+                            <span className="w-2 h-2 rounded-full bg-[#F5CC6D] animate-pulse" />
+                            <span className="text-xs font-bold text-slate-600 uppercase tracking-widest">7日間の無料体験実施中</span>
                         </div>
-                        <h1 className="text-4xl font-black text-black tracking-tighter leading-tight mb-6">
+                        <h1 className="text-4xl font-bold text-slate-800 tracking-tight leading-tight mb-6">
                             AIなのに、<br />
-                            <span className="gradient-text">あなたの言葉。</span>
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#E88BA3] to-[#F5CC6D]">あなたの言葉。</span>
                         </h1>
-                        <p className="text-base text-black font-bold leading-relaxed px-2 mb-8">
-                            丁寧だけどキレイなだけのAIは卒業。MisePoはあなたのお手本から「書き癖」を学習し、店主の『分身』としてSNS運用を代行します。
+                        <p className="text-sm text-slate-500 font-medium leading-relaxed px-2 mb-8">
+                            丁寧だけどキレイなだけのAIは卒業。<br />
+                            MisePoはあなたのお手本から「書き癖」を学習し、<br />
+                            店主の『分身』としてSNS運用を代行します。
                         </p>
                         <div className="flex flex-col gap-4 max-w-sm mx-auto mt-2 px-4">
-                            <button onClick={() => window.location.href = '/start'} className="neo-brutalism-button w-full px-6 py-5 bg-[#4DB39A] text-white font-black hover:bg-black transition-all flex items-center justify-center gap-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none">
+                            <button onClick={() => window.location.href = '/start'} className="w-full px-6 py-4 bg-gradient-to-r from-[#4DB39A] to-[#45a089] text-white font-bold rounded-2xl shadow-lg shadow-[#4DB39A]/30 flex items-center justify-center gap-2 active:scale-95 transition-all">
                                 <Icons.Sparkles size={20} className="text-[#F5CC6D]" />
                                 <span className="text-lg tracking-widest">無料で試してみる</span>
                             </button>
-                            {/* Mobile Pricing Button Removed for Space */}
                         </div>
                     </div>
 
                     {/* Desktop Text (Absolute) */}
                     <div className="hidden md:block absolute top-1/2 -translate-y-1/2 left-4 lg:left-8 z-20 max-w-xl">
-                        <div className="inline-flex items-center gap-3 px-4 py-2 bg-[#F2C94C] border-[3px] border-black rounded-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mb-8">
-                            <span className="flex h-3 w-3 relative">
-                                <span className="animate-ping absolute inline-flex h-full w-full bg-black opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-3 w-3 bg-black"></span>
+                        <div className="inline-flex items-center gap-3 px-4 py-2 bg-white/80 backdrop-blur-sm border border-slate-200/50 rounded-full shadow-sm mb-8">
+                            <span className="flex h-2.5 w-2.5 relative">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#4DB39A] opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#4DB39A]"></span>
                             </span>
-                            <span className="text-sm font-black text-black">SNS運用をAIが丸ごと代行！ 7日間の無料体験実施中</span>
+                            <span className="text-xs font-bold text-slate-500 tracking-wide">SNS運用をAIが丸ごと代行！ 7日間の無料体験実施中</span>
                         </div>
-                        <h1 className="text-6xl lg:text-[5.5rem] font-black text-black tracking-tighter leading-[1.0] mb-8">
+                        <h1 className="text-6xl lg:text-[5.5rem] font-bold text-slate-800 tracking-tighter leading-[1.1] mb-8">
                             AIなのに、<br />
-                            <span className="gradient-text">あなたの言葉。</span>
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#E88BA3] to-[#F5CC6D]">あなたの言葉。</span>
                         </h1>
-                        <p className="text-xl text-black font-bold leading-relaxed mb-10 max-w-lg">
+                        <p className="text-lg text-slate-500 font-medium leading-relaxed mb-10 max-w-lg">
                             丁寧だけどキレイなだけのAIは卒業。MisePoはあなたのお手本から「書き癖」を学習し、想いのこもった文章を30秒で作成。店主の『分身』が、運用を代行します。
                         </p>
                         <div className="flex gap-4">
-                            <button onClick={() => window.location.href = '/start'} className="neo-brutalism-button px-8 py-5 bg-[#4DB39A] text-white font-black hover:bg-black transition-all flex items-center gap-2">
+                            <button onClick={() => window.location.href = '/start'} className="px-8 py-4 bg-slate-900 text-white font-bold rounded-2xl shadow-xl shadow-slate-900/20 hover:shadow-2xl hover:bg-slate-800 transition-all flex items-center gap-3 active:scale-95">
                                 <Icons.Sparkles size={20} className="text-[#F5CC6D]" />
                                 無料で試してみる
                             </button>
-                            <button onClick={() => window.location.href = '#pricing'} className="neo-brutalism-button px-8 py-5 bg-white text-black font-black hover:bg-[#F5CC6D] transition-all">
+                            <button onClick={() => window.location.href = '#pricing'} className="px-8 py-4 bg-white text-slate-700 font-bold rounded-2xl border border-slate-200 hover:bg-slate-50 transition-all active:scale-95 shadow-sm">
                                 料金プラン
                             </button>
                         </div>
                     </div>
 
-                    {/* Phone Animation Container */}
-                    <div className="relative mt-20 md:mt-0 h-[450px] md:h-auto md:absolute md:inset-0 md:left-[55%] lg:left-[50%] flex items-start md:items-center justify-center pointer-events-none w-full md:w-auto">
-                        <div className="relative w-[300px] h-[600px] scale-[0.8] md:scale-[0.75] lg:scale-[0.85] xl:scale-100 origin-top md:origin-center mx-auto">
+                    {/* Animation Container (Abstract Cards) */}
+                    <div className="relative mt-0 md:mt-0 h-[500px] md:h-auto md:absolute md:inset-0 md:left-[50%] lg:left-[50%] flex items-center justify-center pointer-events-none w-full md:w-auto">
+                        <div className="relative w-[320px] h-[640px] scale-[0.8] md:scale-[0.8] lg:scale-[0.9] xl:scale-100 origin-center mx-auto">
 
-                            {/* CENTER PHONE (MisePo) */}
+                            {/* CENTER CARD (MisePo AI) */}
                             <div
-                                className={`absolute inset-0 transition-all duration-1000 ease-in-out origin-center
+                                className={`absolute inset-0 transition-all duration-1000 cubic-bezier(0.25, 1, 0.5, 1) origin-center
                                 ${isPosted
-                                        ? 'scale-75 -translate-x-[10vw] md:-translate-x-[200px] -rotate-12 opacity-60 z-10 blur-[1px]'
+                                        ? 'scale-90 -translate-x-[150px] rotate-[-8deg] opacity-40 z-10 blur-[2px]'
                                         : 'scale-100 translate-x-0 rotate-0 opacity-100 z-30 blur-none'
                                     }`}
                             >
-                                <div className="w-full h-full bg-white border-[6px] border-black rounded-2xl shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] relative overflow-hidden">
-                                    <div className="absolute top-0 left-1/2 -translate-x-1/2 h-6 w-32 bg-black z-40" />
-                                    <div className="w-full h-full bg-[#f8f8f8] relative flex flex-col pt-10">
-                                        <div className="px-4 pb-4 border-b-[3px] border-black flex justify-between items-center bg-white">
-                                            <div className="p-2"><Icons.Menu className="text-black" size={20} /></div>
-                                            <span className="font-black text-black uppercase tracking-tight">MisePo</span>
-                                            <div className="w-8 h-8 bg-[#F2C94C] border-[3px] border-black rounded-2xl flex items-center justify-center"><Icons.Sparkles size={16} fill="currentColor" /></div>
+                                <div className="w-full h-full bg-white rounded-[48px] shadow-[0_40px_80px_-20px_rgba(0,0,0,0.15)] relative overflow-hidden ring-1 ring-black/5">
+                                    <div className="absolute top-0 inset-x-0 h-32 bg-gradient-to-b from-slate-50/50 to-transparent pointer-events-none" />
+
+                                    <div className="w-full h-full relative flex flex-col pt-12">
+                                        {/* Abstract Header */}
+                                        <div className="px-8 pb-6 flex justify-between items-center">
+                                            <div className="p-2 bg-slate-50 rounded-full"><Icons.Menu className="text-slate-400" size={20} /></div>
+                                            <div className="w-8 h-8 bg-[#F5CC6D]/20 rounded-full flex items-center justify-center text-[#F5CC6D]"><Icons.Sparkles size={16} fill="currentColor" /></div>
                                         </div>
-                                        <div className="p-4 flex-1 flex flex-col justify-center pb-20">
-                                            {/* In-Screen Narrative Tooltip */}
-                                            <div className={`transition-all duration-300 w-full flex justify-center mb-3 ${effectiveProgress > 100 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`}>
-                                                <div className="bg-black text-white px-3 py-1.5 border-[2px] border-white rounded-xl shadow-md font-black text-xs flex items-center gap-2 inline-block">
+
+                                        <div className="px-6 flex-1 flex flex-col justify-center pb-24">
+                                            {/* Status Badge */}
+                                            <div className={`transition-all duration-500 w-full flex justify-center mb-6 ${effectiveProgress > 100 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+                                                <div className="bg-slate-800 text-white px-4 py-2 rounded-full shadow-lg font-bold text-xs flex items-center gap-2">
                                                     {effectiveProgress < 3000 && (
                                                         <>
-                                                            <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
-                                                            1. メモを入力中...
+                                                            <span className="w-1.5 h-1.5 bg-[#4DB39A] rounded-full animate-pulse" />
+                                                            Thinking...
                                                         </>
                                                     )}
                                                     {effectiveProgress >= 3000 && effectiveProgress < 5000 && (
                                                         <>
-                                                            <Icons.Sparkles size={12} className="text-[#F2C94C] animate-spin" />
-                                                            2. AIが文章を生成中...
+                                                            <Icons.Sparkles size={12} className="text-[#F5CC6D] animate-spin" />
+                                                            Writing...
                                                         </>
                                                     )}
                                                     {effectiveProgress >= 5000 && (
                                                         <>
-                                                            <div className="bg-[#27AE60] border-[1px] border-white rounded-full p-0.5"><Icons.Check size={8} className="text-white" strokeWidth={4} /></div>
-                                                            3. 文章が完成！
+                                                            <div className="bg-[#4DB39A] rounded-full p-0.5"><Icons.Check size={8} className="text-white" strokeWidth={3} /></div>
+                                                            Done!
                                                         </>
                                                     )}
                                                 </div>
                                             </div>
 
-                                            <div className="bg-white border-[3px] border-black rounded-2xl p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mb-4 space-y-3">
-                                                <div className="flex gap-2">
-                                                    <span className="px-2 py-1 bg-[#E93E7E] text-white text-[10px] font-black border-[2px] border-black rounded-2xl">Instagram</span>
-                                                    <span className="px-2 py-1 bg-white text-black text-[10px] font-black border-[2px] border-black rounded-2xl">Casual</span>
+                                            {/* AI Input/Output Card */}
+                                            <div className="bg-white rounded-[32px] p-6 shadow-xl shadow-slate-200/50 border border-slate-100 mb-6 relative overflow-hidden group">
+                                                <div className="absolute top-0 right-0 p-12 bg-gradient-to-br from-[#E88BA3]/10 to-transparent rounded-bl-[100px] -z-10 opacity-50 transition-opacity group-hover:opacity-100" />
+
+                                                <div className="flex gap-2 mb-4">
+                                                    <span className="px-3 py-1 bg-[#E88BA3]/10 text-[#E88BA3] text-[10px] font-bold rounded-full">Instagram</span>
+                                                    <span className="px-3 py-1 bg-slate-100 text-slate-500 text-[10px] font-bold rounded-full">Casual</span>
                                                 </div>
-                                                <div className={`space-y-2 transition-all duration-500 ease-in-out ${isGenerating ? 'animate-pulse' : ''}`} style={{ opacity: textOpacity }}>
-                                                    <div className="text-sm text-black min-h-[60px] whitespace-pre-wrap font-bold leading-relaxed">
+
+                                                <div className={`space-y-2 transition-all duration-500 ease-in-out min-h-[140px]`} style={{ opacity: textOpacity }}>
+                                                    <div className="text-sm text-slate-600 whitespace-pre-wrap font-medium leading-loose">
                                                         {currentText}
-                                                        <span className={`${isTypingDone ? 'hidden' : 'inline'} animate-pulse text-[#E93E7E]`}>_</span>
+                                                        <span className={`${isTypingDone ? 'hidden' : 'inline'} animate-pulse text-[#E88BA3]`}>|</span>
                                                     </div>
                                                 </div>
 
-                                                <div className="relative pt-2">
-                                                    <div className={`border-[3px] border-black rounded-2xl py-4 font-black text-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all duration-300 ${isGenerating ? 'bg-[#F2C94C] translate-x-[2px] translate-y-[2px] shadow-none' : 'bg-[#E93E7E] text-white hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]'}`}>
-                                                        {isGenerating ? "生成中..." : isResultShown ? "投稿する" : "生成する"}
+                                                <div className="relative pt-6 mt-2">
+                                                    <div className={`w-full py-4 rounded-2xl font-bold text-center text-sm transition-all duration-500 ${isGenerating ? 'bg-slate-100 text-slate-400' : 'bg-slate-900 text-white shadow-lg shadow-slate-900/20'}`}>
+                                                        {isGenerating ? "Generating..." : isResultShown ? "Post to Instagram" : "Generate"}
                                                     </div>
+
                                                     {effectiveProgress >= 1900 && effectiveProgress <= 2300 && (
-                                                        <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-14 h-14 bg-black/10 border-[2px] border-black rounded-2xl animate-ping pointer-events-none" />
+                                                        <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[10%] w-full h-full bg-[#E88BA3]/20 rounded-2xl animate-ping opacity-30 pointer-events-none" />
                                                     )}
                                                 </div>
                                             </div>
@@ -201,92 +214,85 @@ export default function HeroSection() {
                                 </div>
                             </div>
 
-                            {/* LEFT PHONE (Instagram) */}
+                            {/* LEFT CARD (Instagram Result) */}
                             <div
-                                className={`absolute inset-0 transition-all duration-1000 ease-in-out origin-center
+                                className={`absolute inset-0 transition-all duration-1000 cubic-bezier(0.25, 1, 0.5, 1) origin-center
                                 ${isPosted
                                         ? 'scale-100 translate-x-0 translate-y-0 rotate-0 z-40'
-                                        : 'scale-90 -translate-x-[120px] translate-y-12 -rotate-12 z-20 opacity-80'
+                                        : 'scale-95 -translate-x-[40px] translate-y-8 rotate-[-4deg] z-20 opacity-0'
                                     }`}
                             >
-                                <div className="w-full h-full bg-white rounded-2xl border-[6px] border-black shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] overflow-hidden relative flex flex-col">
+                                <div className="w-full h-full bg-white rounded-[48px] shadow-[0_40px_80px_-20px_rgba(0,0,0,0.1)] relative overflow-hidden ring-1 ring-black/5 flex flex-col">
 
-                                    {/* Success Overlay when posted (Non-blocking) */}
+                                    {/* Success Overlay (Subtle) */}
                                     {isPosted && (
                                         <div className="absolute inset-0 z-50 pointer-events-none overflow-hidden">
-                                            {/* Large Confetti stickers (Brutalism Style) */}
-                                            <div className="absolute inset-0">
-                                                <div className="absolute top-[10%] left-[10%] w-8 h-8 bg-[#F2C94C] border-[2px] border-black rounded-2xl rotate-12 animate-fall" />
-                                                <div className="absolute top-[20%] right-[10%] w-6 h-6 bg-[#E93E7E] border-[2px] border-black rounded-2xl -rotate-12 animate-fall" />
-                                                <div className="absolute bottom-[20%] left-[15%] w-10 h-10 bg-[#08A092] border-[2px] border-black rounded-2xl rotate-45 animate-fall" />
-                                            </div>
-
-                                            {/* Success Toast (Bottom) - Only show after scroll finishes (>6800) */}
-                                            <div className={`absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-3 bg-black text-white px-5 py-4 border-[3px] border-white rounded-2xl shadow-xl w-[90%] justify-center transition-all duration-500 transform ${effectiveProgress > 6800 ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-                                                <div className="w-6 h-6 bg-[#27AE60] border-[1px] border-white rounded-2xl flex items-center justify-center shrink-0">
-                                                    <Icons.Check size={14} strokeWidth={4} />
+                                            {/* Toast */}
+                                            <div className={`absolute bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-3 bg-white/90 backdrop-blur-md text-slate-800 px-6 py-4 rounded-2xl shadow-2xl w-[85%] justify-center border border-white/50 transition-all duration-700 transform ${effectiveProgress > 6800 ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}>
+                                                <div className="w-6 h-6 bg-[#4DB39A] rounded-full flex items-center justify-center shrink-0 shadow-lg shadow-[#4DB39A]/30">
+                                                    <Icons.Check size={12} className="text-white" strokeWidth={3} />
                                                 </div>
-                                                <p className="font-black text-sm uppercase">Success!</p>
+                                                <p className="font-bold text-sm">Successfully Posted!</p>
                                             </div>
                                         </div>
                                     )}
 
                                     {/* Header */}
-                                    <div className="px-4 py-3 flex items-center justify-between border-b-[3px] border-black z-10 bg-white sticky top-0 shrink-0">
-                                        <div className="font-black text-lg uppercase italic underline decoration-[3px] decoration-[#E93E7E]">Instagram</div>
-                                        <div className="flex gap-4">
-                                            <Icons.Heart size={22} className="text-black" />
-                                            <Icons.MessageCircle size={22} className="text-black" />
+                                    <div className="px-6 py-5 flex items-center justify-between z-10 bg-white/80 backdrop-blur-md sticky top-0 shrink-0">
+                                        <div className="font-bold text-lg text-slate-800">Instagram</div>
+                                        <div className="flex gap-4 text-slate-400">
+                                            <Icons.Heart size={24} />
+                                            <Icons.MessageCircle size={24} />
                                         </div>
                                     </div>
 
                                     {/* Content Scroll Area */}
                                     <div className="flex-1 overflow-hidden relative bg-white">
-                                        {/* Skeleton Overlay for Waiting State */}
-                                        <div className={`absolute inset-0 bg-[#f8f8f8] z-20 transition-opacity duration-500 flex flex-col ${isPosted ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-                                            <div className="p-4 space-y-4 flex-1">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="w-8 h-8 bg-white border-[2px] border-black rounded-2xl animate-pulse" />
-                                                    <div className="w-24 h-3 bg-black/10 animate-pulse" />
+                                        {/* Skeleton Overlay */}
+                                        <div className={`absolute inset-0 bg-white z-20 transition-opacity duration-500 flex flex-col ${isPosted ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+                                            <div className="p-6 space-y-6 flex-1">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="w-10 h-10 bg-slate-100 rounded-full animate-pulse" />
+                                                    <div className="w-32 h-4 bg-slate-100 rounded-full animate-pulse" />
                                                 </div>
-                                                <div className="w-full aspect-square bg-black/5 border-[3px] border-black rounded-2xl animate-pulse" />
+                                                <div className="w-full aspect-square bg-slate-50 rounded-[32px] animate-pulse" />
                                             </div>
                                         </div>
 
                                         {/* Real Content */}
-                                        <div className="flex flex-col bg-white transition-transform duration-[2850ms] ease-out" style={isPosted ? innerContentStyle : {}}>
-                                            {/* Story/User Header */}
-                                            <div className="px-3 py-2 flex items-center gap-2">
-                                                <div className="border-[2px] border-black rounded-2xl p-[2px] bg-[#F2C94C]">
-                                                    <div className="w-8 h-8 bg-white border-[1px] border-black rounded-2xl flex items-center justify-center">
-                                                        <Icons.Smartphone size={14} className="text-black" />
+                                        <div className="flex flex-col bg-white transition-transform duration-[2850ms] ease-out pt-2" style={isPosted ? innerContentStyle : {}}>
+                                            {/* Post Header */}
+                                            <div className="px-6 py-2 flex items-center gap-3 mb-2">
+                                                <div className="p-[2px] bg-gradient-to-tr from-[#E88BA3] to-[#F5CC6D] rounded-full">
+                                                    <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center p-0.5">
+                                                        <Icons.Smartphone size={14} className="text-slate-300" />
                                                     </div>
                                                 </div>
-                                                <span className="font-black text-xs text-black uppercase">MisePo Cafe</span>
-                                                <Icons.MoreHorizontal size={16} className="ml-auto text-black" />
+                                                <span className="font-bold text-xs text-slate-700">MisePo Cafe</span>
+                                                <Icons.MoreHorizontal size={16} className="ml-auto text-slate-300" />
                                             </div>
 
-                                            {/* Image */}
-                                            <div className="aspect-square bg-[#f8f8f8] border-y-[3px] border-black relative flex items-center justify-center overflow-hidden flex-shrink-0">
-                                                <div className="text-8xl filter grayscale invert">🍓</div>
-                                                <div className="absolute bottom-3 right-3 px-2 py-1 bg-black text-white text-[10px] font-black">1/3</div>
+                                            {/* Image Card */}
+                                            <div className="mx-4 aspect-square bg-slate-50 rounded-[32px] relative flex items-center justify-center overflow-hidden flex-shrink-0 shadow-inner">
+                                                <div className="text-[80px] drop-shadow-2xl grayscale-[0.2]">🍓</div>
+                                                <div className="absolute bottom-4 right-4 px-3 py-1 bg-black/50 backdrop-blur-md text-white/90 text-[10px] font-bold rounded-full">1/3</div>
                                             </div>
 
                                             {/* Actions & Caption */}
-                                            <div className="p-3 space-y-3 pb-20">
-                                                <div className="flex justify-between items-center text-black">
-                                                    <div className="flex gap-4">
-                                                        <Icons.Heart className="text-[#E93E7E] fill-[#E93E7E]" size={24} />
-                                                        <Icons.MessageCircle size={24} />
-                                                        <Icons.Send size={24} />
+                                            <div className="p-6 space-y-4 pb-24">
+                                                <div className="flex justify-between items-center text-slate-700">
+                                                    <div className="flex gap-5">
+                                                        <Icons.Heart className="text-[#E88BA3] fill-[#E88BA3]" size={26} />
+                                                        <Icons.MessageCircle size={26} />
+                                                        <Icons.Send size={26} />
                                                     </div>
-                                                    <Icons.Bookmark size={24} />
+                                                    <Icons.Bookmark size={26} />
                                                 </div>
-                                                <p className="font-black text-xs underline">1,203 likes</p>
+                                                <p className="font-bold text-xs text-slate-800">1,203 likes</p>
                                                 <div className="text-xs space-y-2">
-                                                    <div className="text-black font-bold leading-relaxed">
-                                                        <span className="font-black mr-2 bg-[#F2C94C] px-1 uppercase">MisePo Cafe</span>
-                                                        <span className="whitespace-pre-wrap block mt-2 px-1 border-l-[3px] border-[#E93E7E]">
+                                                    <div className="text-slate-600 font-medium leading-relaxed">
+                                                        <span className="font-bold mr-2 text-slate-900">MisePo Cafe</span>
+                                                        <span className="whitespace-pre-wrap block mt-2 text-slate-500">
                                                             {generatedResult}
                                                         </span>
                                                     </div>
@@ -296,78 +302,45 @@ export default function HeroSection() {
                                     </div>
 
                                     {/* Bottom Nav */}
-                                    <div className="h-12 border-t-[3px] border-black bg-white flex justify-around items-center px-2 shrink-0 z-20">
-                                        <Icons.Home size={24} className="text-black" />
-                                        <Icons.Search size={24} className="text-black" />
-                                        <div className="w-8 h-8 bg-black flex items-center justify-center"><Icons.PlusSquare size={16} className="text-white" /></div>
-                                        <Icons.Film size={24} className="text-black" />
-                                        <div className="w-7 h-7 bg-[#F2C94C] border-[2px] border-black rounded-2xl" />
+                                    <div className="h-16 bg-white/90 backdrop-blur-xl border-t border-slate-100 flex justify-around items-center px-4 shrink-0 z-20 rounded-b-[48px]">
+                                        <Icons.Home size={24} className="text-slate-800" />
+                                        <Icons.Search size={24} className="text-slate-300" />
+                                        <div className="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center shadow-lg shadow-slate-900/20"><Icons.PlusSquare size={18} className="text-white" /></div>
+                                        <Icons.Film size={24} className="text-slate-300" />
+                                        <div className="w-6 h-6 rounded-full bg-slate-200" />
                                     </div>
                                 </div>
                             </div>
 
-                            {/* RIGHT PHONE (Google Maps - Background) */}
+                            {/* RIGHT CARD (Google Maps - Background) */}
                             <div
-                                className={`absolute right-[-100px] top-20 w-[260px] h-[520px] transition-all duration-700 ease-in-out
-                                ${isPosted ? 'translate-x-[30px] opacity-40 scale-90' : 'translate-x-[100px] opacity-90 rotate-12 delay-100'}
+                                className={`absolute right-[-80px] top-32 w-[280px] h-[540px] transition-all duration-1000 ease-in-out
+                                ${isPosted ? 'translate-x-[40px] opacity-60 scale-95 blur-[1px]' : 'translate-x-[120px] opacity-100 rotate-[6deg]'}
                             `}
                             >
-                                <div className="w-full h-full bg-white border-[6px] border-black rounded-2xl shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] relative flex flex-col font-black overflow-hidden">
+                                <div className="w-full h-full bg-white rounded-[40px] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] relative flex flex-col overflow-hidden ring-1 ring-black/5 opacity-80 backdrop-blur-sm">
                                     {/* Maps Header */}
-                                    <div className="p-3 bg-white border-b-[3px] border-black shadow-sm z-20">
-                                        <div className="bg-white border-[3px] border-black rounded-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] px-3 py-2 flex items-center gap-2 mb-3">
-                                            <Icons.ChevronDown size={14} className="text-black rotate-90" />
-                                            <span className="text-[10px] text-black font-black uppercase">Restaurants near me</span>
-                                            <div className="ml-auto w-6 h-6 bg-[#845EF7] border-[2px] border-black rounded-2xl text-white flex items-center justify-center text-[10px] font-black">M</div>
-                                        </div>
-                                        <div className="flex gap-4 overflow-x-hidden text-[10px] font-black text-black pb-2">
-                                            <span className="opacity-40">OVERVIEW</span>
-                                            <span className="text-[#08A092] border-b-[3px] border-[#08A092] pb-1 -mb-3">UPDATES</span>
-                                            <span className="opacity-40">REVIEWS</span>
+                                    <div className="p-5 bg-white border-b border-slate-50 z-20">
+                                        <div className="bg-slate-50 rounded-full px-4 py-2 flex items-center gap-2 mb-4">
+                                            <Icons.Search size={14} className="text-slate-400" />
+                                            <span className="text-[10px] text-slate-400 font-bold">Restaurants near me</span>
                                         </div>
                                     </div>
 
-                                    {/* Maps Content (Updates) */}
-                                    <div className="flex-1 bg-[#f8f8f8] p-3 overflow-hidden">
-                                        <div className="bg-white border-[3px] border-black rounded-2xl p-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mb-4">
-                                            <div className="flex items-center gap-2 mb-3">
-                                                <div className="w-8 h-8 bg-[#F2C94C] border-[2px] border-black rounded-2xl flex items-center justify-center text-black"><Icons.Smartphone size={14} /></div>
+                                    {/* Maps Content (Cards) */}
+                                    <div className="flex-1 bg-slate-50/50 p-4 space-y-4">
+                                        <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100">
+                                            <div className="flex items-center gap-3 mb-3">
+                                                <div className="w-8 h-8 bg-[#F5CC6D]/20 rounded-full flex items-center justify-center text-[#F5CC6D]"><Icons.MapPin size={14} fill="currentColor" /></div>
                                                 <div>
-                                                    <div className="text-[10px] font-black text-black">MisePo Cafe</div>
-                                                    <div className="text-[8px] text-black/60 font-black uppercase">2 days ago</div>
+                                                    <div className="text-xs font-bold text-slate-700">MisePo Cafe</div>
+                                                    <div className="text-[9px] text-slate-400 font-medium">4.8 ★★★★★ (120)</div>
                                                 </div>
-                                                <Icons.MoreHorizontal size={14} className="ml-auto text-black" />
                                             </div>
-                                            <p className="text-[10px] text-black font-black leading-relaxed mb-3 line-clamp-2">
-                                                【春限定】とろける幸せ、いちごタルト解禁🍓 サクサクのクッキ... <span className="text-[#E93E7E] underline decoration-2">More</span>
-                                            </p>
-                                            <div className="w-full h-24 bg-white border-[2px] border-black rounded-2xl mb-3 overflow-hidden relative">
-                                                <div className="absolute inset-0 flex items-center justify-center text-4xl grayscale grayscale-100 invert">🍓</div>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <button className="flex-1 py-1.5 border-[2px] border-black rounded-2xl bg-white font-black text-[9px] uppercase shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none">
-                                                    Call
-                                                </button>
-                                                <button className="flex-1 py-1.5 border-[2px] border-black rounded-2xl bg-[#F2C94C] font-black text-[9px] uppercase shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none">
-                                                    Share
-                                                </button>
+                                            <div className="w-full h-20 bg-slate-100 rounded-xl mb-3 overflow-hidden relative">
+                                                <div className="absolute inset-0 flex items-center justify-center text-3xl opacity-50">🍓</div>
                                             </div>
                                         </div>
-                                    </div>
-
-                                    {/* Maps Bottom Nav */}
-                                    <div className="h-12 bg-white border-t-[3px] border-black flex justify-between items-center px-4 shrink-0 z-20">
-                                        {['Explore', 'Go', 'Saved', 'Updates'].map((item, idx) => (
-                                            <div key={item} className={`flex flex-col items-center gap-1 ${idx === 3 ? 'text-[#08A092]' : 'text-black opacity-30'}`}>
-                                                <div className="w-5 h-5 flex items-center justify-center">
-                                                    {idx === 0 && <Icons.MapPin size={18} />}
-                                                    {idx === 1 && <Icons.Compass size={18} />}
-                                                    {idx === 2 && <Icons.Bookmark size={18} />}
-                                                    {idx === 3 && <Icons.Bell size={18} fill="currentColor" />}
-                                                </div>
-                                                <span className="text-[7px] font-black uppercase tracking-tighter">{item}</span>
-                                            </div>
-                                        ))}
                                     </div>
                                 </div>
                             </div>

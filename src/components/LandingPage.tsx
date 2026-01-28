@@ -195,38 +195,10 @@ open11:00-close 17:00
 
       <style jsx global>{`
                 :root {
-                  --border-bold: 3px solid #000;
-                  --shadow-neo: 5px 5px 0px 0px #000;
-                  --shadow-neo-lg: 8px 8px 0px 0px #000;
-                  --shadow-neo-sm: 3px 3px 0px 0px #000;
+                  --border-bold: 1px solid rgba(0,0,0,0.05);
+                  --shadow-soft: 0 10px 40px -10px rgba(0,0,0,0.05);
                 }
                 html { scroll-behavior: smooth; scroll-padding-top: 80px; }
-                .neo-brutalism-card {
-                  background: #fff;
-                  border: var(--border-bold);
-                  box-shadow: var(--shadow-neo);
-                  border-radius: 1rem;
-                  transition: all 0.2s ease;
-                }
-                .neo-brutalism-card:hover {
-                  transform: translate(-2px, -2px);
-                  box-shadow: 7px 7px 0px 0px #000;
-                }
-                .neo-brutalism-button {
-                  border: var(--border-bold);
-                  box-shadow: var(--shadow-neo-sm);
-                  border-radius: 0.75rem;
-                  transition: all 0.1s ease;
-                }
-                .neo-brutalism-button:active {
-                  transform: translate(2px, 2px);
-                  box-shadow: 0px 0px 0px 0px #000;
-                }
-                .gradient-text { 
-                  -webkit-text-stroke: 1px #000;
-                  color: #8fa9e9;
-                  text-shadow: 3px 3px 0px #000;
-                }
                 @keyframes float { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-10px) rotate(1deg); } }
                 .animate-float { animation: float 4s ease-in-out infinite; }
                 .no-scrollbar::-webkit-scrollbar { display: none; }
