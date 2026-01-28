@@ -2,7 +2,7 @@ import React from 'react';
 import { createPortal } from 'react-dom';
 import { Platform, StoreProfile } from '../../../types';
 import { getPlatformIcon } from './utils';
-import { IS_HOSPITALITY_MODE } from '../../../constants';
+import { IS_HOSPITALITY_MODE, COLORS } from '../../../constants';
 import { CloseIcon, HeartIcon, MessageCircleIcon, SendIcon, BookmarkIcon, MoreHorizontalIcon, ShareIcon, RotateCcwIcon } from '../../Icons';
 import { LinePreview } from './LinePreview';
 import { AutoResizingTextarea } from './AutoResizingTextarea';
@@ -224,7 +224,7 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
                 <div className={`p-8 bg-black/5 border-t-[2px] border-black ${IS_HOSPITALITY_MODE ? 'bg-slate-50 border-slate-100' : ''}`}>
                     <button
                         onClick={onClose}
-                        className={`w-full py-5 rounded-[24px] font-black text-[13px] uppercase tracking-[0.3em] transition-all active:scale-95 shadow-sm ${IS_HOSPITALITY_MODE ? 'bg-[#1A252F] text-white shadow-xl shadow-slate-200' : 'bg-white text-black border-[3px] border-black hover:bg-[#F5CC6D] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-x-[2px] hover:-translate-y-[2px]'}`}
+                        className={`w-full py-5 rounded-[24px] font-black text-[13px] uppercase tracking-[0.3em] transition-all active:scale-95 shadow-sm ${IS_HOSPITALITY_MODE ? `bg-[${COLORS.primary}] text-white shadow-xl shadow-[${COLORS.primary}]/20` : 'bg-white text-black border-[3px] border-black hover:bg-[#F5CC6D] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-x-[2px] hover:-translate-y-[2px]'}`}
                     >
                         COMPLETE EDITING
                     </button>
