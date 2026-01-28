@@ -154,7 +154,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
                 </label>
               </div>
               <div className="flex flex-wrap gap-2">
-                {INDUSTRIES.map((ind) => (
+                {INDUSTRIES.filter(ind => ind !== '旅館・ホテル').map((ind) => (
                   <button
                     key={ind}
                     type="button"
