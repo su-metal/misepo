@@ -89,35 +89,35 @@ const Onboarding: React.FC<OnboardingProps> = ({
   return (
 
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-0 sm:p-4 z-[100] backdrop-blur-sm animate-in fade-in duration-500">
-      <div className="bg-white rounded-none sm:rounded-[24px] border-[3px] border-black shadow-[8px_8px_0_0_rgba(0,0,0,1)] w-full max-w-lg md:max-w-6xl md:h-[90vh] h-full sm:max-h-[800px] flex flex-col md:flex-row overflow-y-auto md:overflow-hidden relative animate-in zoom-in-95 duration-500 mobile-scroll-container">
+      <div className="bg-white rounded-none sm:rounded-[24px] border border-slate-100 shadow-2xl overflow-hidden w-full max-w-lg md:max-w-6xl md:h-[90vh] h-full sm:max-h-[800px] flex flex-col md:flex-row md:overflow-hidden relative animate-in zoom-in-95 duration-500 mobile-scroll-container">
 
         {/* LEFT PANEL */}
-        <div className="md:w-5/12 bg-[var(--bg-beige)] relative p-6 sm:p-8 md:p-12 flex flex-col justify-between shrink-0 border-b-[3px] md:border-b-0 md:border-r-[3px] border-black min-h-min md:h-full">
+        <div className="md:w-5/12 bg-[#F9FAFB] relative p-6 sm:p-8 md:p-12 flex flex-col justify-between shrink-0 border-b-[3px] md:border-b-0 md:border-r-[3px] border-slate-100 min-h-min md:h-full">
 
           <div className="relative z-10 flex flex-col h-auto md:h-full">
             <div className="mb-6 md:mb-10 animate-in slide-in-from-top-4 duration-700">
               <div className="flex items-center gap-2 mb-2 md:mb-3">
                 <div className="w-2 h-2 rounded-full bg-black shadow-sm animate-pulse"></div>
-                <span className="text-[9px] md:text-[10px] font-black tracking-[0.3em] text-black uppercase">店舗専用アシスタント</span>
+                <span className="text-[9px] md:text-[10px] font-black tracking-[0.3em] text-black uppercase">宿泊施設専用アシスタント</span>
               </div>
-              <h1 className="text-2xl md:text-4xl font-black tracking-tighter leading-none italic text-black">
-                Mise<span className="text-[var(--teal)]">Po</span>
+              <h1 className={`text-2xl md:text-4xl tracking-tighter leading-none italic font-serif-hospitality text-[${COLORS.navy}]`}>
+                MisePo Hospitality
               </h1>
             </div>
 
             <div className="space-y-4 md:space-y-6 mb-6 md:mb-12 flex-1">
-              <h2 className="text-lg md:text-3xl font-black leading-tight text-black animate-in slide-in-from-left-4 duration-700 delay-100">
-                {isEditMode ? '店舗設定の最適化' : 'AIが提案する、\n次世代の店舗広報。'}
+              <h2 className={`text-lg md:text-3xl leading-tight animate-in slide-in-from-left-4 duration-700 delay-100 font-serif-hospitality font-bold text-[${COLORS.navy}]`}>
+                {isEditMode ? '施設設定の最適化' : 'AIが提案する、\n次世代の集客。'}
               </h2>
               <p className="text-slate-600 text-sm font-bold leading-relaxed animate-in slide-in-from-left-4 duration-700 delay-200">
                 {isEditMode
                   ? '設定を変更することで、AIの文章トーンや提案内容がリアルタイムに進化します。'
-                  : 'お店のこだわりや特徴を入力してください。AIがあなたの専任のSNS担当者となります。'}
+                  : '施設 のこだわりや特徴を入力してください。AIがあなたの専任の広報担当者となります。'}
               </p>
 
               {/* Status Pill */}
-              <div className="inline-flex items-center gap-2 bg-black border-2 border-black rounded-full px-5 py-2.5 animate-in zoom-in-95 duration-700 delay-300 shadow-[4px_4px_0_0_rgba(0,0,0,0.2)]">
-                <span className="w-1.5 h-1.5 rounded-full bg-[var(--teal)] animate-ping"></span>
+              <div className={`inline-flex items-center gap-2 rounded-full px-5 py-2.5 animate-in zoom-in-95 duration-700 delay-300 bg-[${COLORS.primary}] shadow-lg shadow-[${COLORS.primary}]/20`}>
+                <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span>
                 <span className="text-[10px] font-black uppercase tracking-widest text-white">AI解析エンジンの準備完了</span>
               </div>
             </div>
@@ -128,8 +128,8 @@ const Onboarding: React.FC<OnboardingProps> = ({
                 { title: '個性学習エンジン', desc: '業種やコンセプトを深く理解し、常に「らしい」表現を維持。', icon: 'M13 2L3 14h9l-1 8 10-12h-9l1-8z' },
                 { title: 'マルチプラットフォーム', desc: '投稿先ごとの特性を考慮し、一貫性のある発信を自動化。', icon: 'M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z' }
               ].map((feat, i) => (
-                <div key={i} className="flex items-start gap-4 p-5 rounded-xl bg-white text-black border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] transition-all cursor-default group/feat">
-                  <div className="w-10 h-10 rounded-lg bg-[var(--lavender)] border-2 border-black flex items-center justify-center text-black shrink-0 group-hover/feat:scale-110 transition-all duration-300 shadow-sm">
+                <div key={i} className="flex items-start gap-4 p-5 rounded-2xl transition-all cursor-default group/feat bg-white border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-0.5">
+                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 group-hover/feat:scale-110 transition-all duration-300 bg-slate-50 text-[${COLORS.primary}]`}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d={feat.icon} /></svg>
                   </div>
                   <div>
@@ -248,12 +248,10 @@ const Onboarding: React.FC<OnboardingProps> = ({
               </div>
             </div>
 
-            {/* Description Input */}
-            <div className="space-y-4">
-              <div className="flex items-center gap-2 border-l-4 border-black pl-3">
-                <label className="text-xs font-black text-black uppercase tracking-widest">
-                  お店のこだわり・コンセプト
-                </label>
+            {/* Description */}
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h3 className="text-[10px] font-black text-black uppercase tracking-[0.3em]">施設の特徴・こだわり</h3>
               </div>
               <textarea
                 value={description}
