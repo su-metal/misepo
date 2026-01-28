@@ -241,7 +241,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
             className={`w-full max-w-xl py-6 md:py-8 rounded-[32px] font-black text-lg md:text-2xl tracking-[0.2em] flex items-center justify-center gap-3 md:gap-5 group transition-all duration-500
                 ${flow.loading || !flow.inputText.trim()
                 ? 'bg-slate-200 text-slate-400 border border-slate-300 cursor-not-allowed'
-                : 'bg-[#4DB39A] text-black border-2 border-black shadow-[6px_6px_0_0_rgba(0,0,0,1)] active:scale-95'
+                : 'bg-[#F5CC6D] text-black border-2 border-black shadow-[6px_6px_0_0_rgba(0,0,0,1)] active:scale-95'
               }`}
           >
             <div className="flex items-center justify-center gap-3 md:gap-5 relative z-10">
