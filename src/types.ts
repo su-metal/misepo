@@ -7,6 +7,11 @@ export enum Platform {
   General = 'General'
 }
 
+export enum AppMode {
+  Standard = 'Standard',
+  Hospitality = 'Hospitality'
+}
+
 export enum PostPurpose {
   Auto = 'auto',
   Promotion = 'promotion',

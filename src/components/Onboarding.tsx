@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { StoreProfile } from '../types';
-import { INDUSTRIES } from '../constants';
+import { INDUSTRIES, IS_HOSPITALITY_MODE, COLORS } from '../constants';
 
 interface OnboardingProps {
   onSave: (profile: StoreProfile) => void;
@@ -148,10 +148,9 @@ const Onboarding: React.FC<OnboardingProps> = ({
 
             {/* Industry Selection */}
             <div className="space-y-6">
-              <div className="flex items-center gap-2 border-l-4 border-black pl-3">
-                <label className="text-xs font-black text-black uppercase tracking-widest">
-                  お店のカテゴリー
-                </label>
+              <div className="flex items-center justify-between">
+                <h3 className="text-[10px] font-black text-black uppercase tracking-[0.3em]">{IS_HOSPITALITY_MODE ? '施設カテゴリー' : '業種カテゴリー'}</h3>
+                {!isEditMode && <span className={`bg-[${COLORS.navy}] text-[${COLORS.gold}] text-[8px] font-black px-2 py-0.5 rounded-full tracking-widest uppercase`}>Required</span>}
               </div>
               <div className="flex flex-wrap gap-2">
                 {INDUSTRIES.filter(ind => ind !== '旅館・ホテル').map((ind) => (
@@ -159,10 +158,10 @@ const Onboarding: React.FC<OnboardingProps> = ({
                     key={ind}
                     type="button"
                     onClick={() => setIndustry(ind)}
-                    className={`px-6 py-3 rounded-full text-[11px] font-black transition-all duration-200 border-2
-                      ${industry === ind
-                        ? 'bg-black border-black text-white shadow-[4px_4px_0_0_rgba(0,0,0,1)]'
-                        : 'bg-white border-black text-slate-500 hover:bg-[var(--teal)] hover:text-black hover:shadow-[2px_2px_0_0_rgba(0,0,0,1)]'
+                    className={`px-6 py-3 rounded-xl text-[11px] font-black transition-all duration-200 border-2
+                        ${industry === ind
+                        ? (IS_HOSPITALITY_MODE ? `bg-[${COLORS.primary}] text-white border-transparent shadow-lg shadow-[${COLORS.primary}]/20` : 'bg-[var(--teal)] border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] scale-[1.02] z-10 text-black')
+                        : (IS_HOSPITALITY_MODE ? 'bg-white border-slate-200 text-slate-500 hover:border-slate-400' : 'bg-white border-black text-slate-500 hover:bg-[var(--teal)] hover:text-black hover:shadow-[2px_2px_0_0_rgba(0,0,0,1)]')
                       }`}
                   >
                     {ind}
@@ -185,7 +184,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
                     value={name}
                     onChange={(e) => handleNameChange(e.target.value)}
                     placeholder="例：焼きたてパンの店 アン"
-                    className="w-full px-7 py-6 rounded-2xl bg-white focus:bg-[var(--bg-beige)] border-2 border-black focus:shadow-[4px_4px_0_0_rgba(0,0,0,1)] outline-none transition-all text-xl text-black font-black tracking-tight placeholder:text-slate-300"
+                    className={`w-full px-7 py-6 rounded-2xl transition-all text-xl text-black font-black tracking-tight placeholder:text-slate-300 outline-none ${IS_HOSPITALITY_MODE ? `bg-slate-50 border border-slate-200 focus:bg-white focus:border-[${COLORS.primary}] focus:ring-4 focus:ring-[${COLORS.primary}]/10` : 'bg-white focus:bg-[var(--bg-beige)] border-2 border-black focus:shadow-[4px_4px_0_0_rgba(0,0,0,1)]'}`}
                     required
                   />
                   <div className="absolute right-7 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-black transition-colors">
@@ -240,7 +239,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
                     value={region}
                     onChange={(e) => setRegion(e.target.value)}
                     placeholder="地名を入れるとより親しみやすい文章になります"
-                    className="w-full px-7 py-6 rounded-2xl bg-white focus:bg-[var(--bg-beige)] border-2 border-black focus:shadow-[4px_4px_0_0_rgba(0,0,0,1)] outline-none transition-all text-xl text-black font-black tracking-tight placeholder:text-slate-300"
+                    className={`w-full px-7 py-6 rounded-2xl transition-all text-xl text-black font-black tracking-tight placeholder:text-slate-300 outline-none ${IS_HOSPITALITY_MODE ? `bg-slate-50 border border-slate-200 focus:bg-white focus:border-[${COLORS.primary}] focus:ring-4 focus:ring-[${COLORS.primary}]/10` : 'bg-white focus:bg-[var(--bg-beige)] border-2 border-black focus:shadow-[4px_4px_0_0_rgba(0,0,0,1)]'}`}
                   />
                   <div className="absolute right-7 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-black transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
@@ -261,7 +260,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="例：自家焙煎のコーヒー、夜はオーガニックワインを提供、落ち着いたモダンな内装..."
                 rows={5}
-                className="w-full px-7 py-6 rounded-2xl bg-white focus:bg-[var(--bg-beige)] border-2 border-black focus:shadow-[4px_4px_0_0_rgba(0,0,0,1)] outline-none transition-all resize-none text-base text-black font-black leading-relaxed placeholder:text-slate-300"
+                className={`w-full px-7 py-6 rounded-2xl transition-all resize-none text-base text-black font-black leading-relaxed placeholder:text-slate-300 outline-none ${IS_HOSPITALITY_MODE ? `bg-slate-50 border border-slate-200 focus:bg-white focus:border-[${COLORS.primary}] focus:ring-4 focus:ring-[${COLORS.primary}]/10` : 'bg-white focus:bg-[var(--bg-beige)] border-2 border-black focus:shadow-[4px_4px_0_0_rgba(0,0,0,1)]'}`}
               />
             </div>
 
@@ -284,7 +283,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
                 onChange={(e) => setInstagramFooter(e.target.value)}
                 placeholder="📍 アクセス情報や営業時間をセット..."
                 rows={6}
-                className="w-full px-6 py-4 rounded-xl bg-slate-50 border-2 border-slate-200 focus:bg-white focus:border-black outline-none transition-all resize-none text-sm text-slate-700 leading-relaxed placeholder-slate-300 font-bold min-h-[160px]"
+                className={`w-full px-6 py-4 rounded-xl transition-all resize-none text-sm text-slate-700 leading-relaxed placeholder-slate-300 font-bold min-h-[160px] outline-none ${IS_HOSPITALITY_MODE ? `bg-slate-50 border border-slate-200 focus:bg-white focus:border-[${COLORS.primary}]` : 'bg-slate-50 border-2 border-slate-200 focus:bg-white focus:border-black'}`}
               />
             </div>
 
