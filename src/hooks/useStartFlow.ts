@@ -118,7 +118,18 @@ export function useStartFlow() {
         setEligibleForTrial(payload?.eligibleForTrial ?? true);
 
         if (allowed) {
-          console.log('[useStartFlow] User can use app, redirecting to /generate');
+          console.log('[useStartFlow] User can use app, checking for upgrade intent...');
+          
+          // If the user explicitly came here to upgrade, don't redirect them back to the app.
+          const isUpgrade = searchParams.get("upgrade") === "true";
+          if (isUpgrade) {
+            console.log('[useStartFlow] Upgrade intent detected, staying on start page.');
+            setLoading(false);
+            setIsLoggedIn(true);
+            return;
+          }
+
+          console.log('[useStartFlow] No upgrade intent, redirecting to /generate');
           if (typeof window !== "undefined") {
             window.localStorage.removeItem("login_intent");
           }

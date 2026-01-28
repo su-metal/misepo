@@ -37,7 +37,7 @@ export function useAuth() {
       window.localStorage.removeItem('login_intent');
     }
     await supabase.auth.signOut();
-    window.location.href = '/start';
+    window.location.href = '/';
   };
 
   return { user, loading, loginWithGoogle, logout };

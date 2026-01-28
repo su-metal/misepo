@@ -17,7 +17,7 @@ export default function CancelPage() {
 
   useEffect(() => {
     if (countdown === 0) {
-      router.push('/start');
+      router.push('/generate');
     }
   }, [countdown, router]);
 
@@ -59,10 +59,10 @@ export default function CancelPage() {
             </div>
 
             <button
-              onClick={() => router.push('/start')}
+              onClick={() => router.push('/generate')}
               className="w-full py-6 bg-black text-white font-black text-xl italic rounded-[24px] shadow-[10px_10px_0px_0px_rgba(0,0,0,0.2)] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] active:scale-95 transition-all uppercase tracking-wider"
             >
-              Return to Portal
+              Return to Dashboard
             </button>
           </div>
 

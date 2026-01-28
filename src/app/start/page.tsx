@@ -3,6 +3,7 @@
 import { Suspense, useState, useEffect } from "react";
 import Link from "next/link";
 import { useStartFlow } from "@/hooks/useStartFlow";
+import { Icons } from "@/components/LandingPageIcons";
 
 function StartPageContent() {
   const {
@@ -54,115 +55,132 @@ function StartPageContent() {
         <div className="absolute bottom-[20%] right-[10%] w-48 h-48 border-[4px] border-black/5 rounded-[40px] -rotate-12"></div>
       </div>
 
-      <div className="w-full max-w-md relative z-10 animate-in fade-in zoom-in duration-800">
-        <div className="bg-white border-[6px] border-black shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] rounded-[40px] p-6 md:p-10 relative overflow-hidden group">
+      <div className="w-full max-w-2xl relative z-10 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+        {/* Back Button */}
+        <Link
+          href={isLoggedIn ? "/generate" : "/"}
+          className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-black/40 hover:text-black transition-colors mb-8 group"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" className="group-hover:-translate-x-1 transition-transform">
+            <path d="M19 12H5M12 19l-7-7 7-7" />
+          </svg>
+          {isLoggedIn ? "Back to Dashboard" : "Back to Home"}
+        </Link>
 
-          {/* Back Button */}
-          <Link
-            href="/"
-            className="absolute top-8 left-8 w-12 h-12 flex items-center justify-center bg-white border-[3px] border-black rounded-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all z-20 group/back hover:bg-[#F5CC6D]"
-          >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="3.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M19 12H5M12 19l-7-7 7-7" />
-            </svg>
-          </Link>
+        <div className="text-center mb-10 pt-2">
+          <h1 className="text-4xl sm:text-5xl font-black text-black tracking-tighter leading-none mb-3 uppercase italic">
+            MisePo <span className="text-[#E88BA3]">Studio</span>
+          </h1>
+          <p className="text-[11px] font-black text-black/40 uppercase tracking-[0.3em]">Ignite your social presence in seconds</p>
+        </div>
 
-          <div className="text-center mb-6 pt-6">
-            <div className="inline-block px-4 py-2 bg-[#F5CC6D] text-black border-[3px] border-black rounded-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-[10px] font-black uppercase tracking-[0.25em] mb-4 -rotate-1">
-              READY TO START
-            </div>
-
-            {/* Plan Toggle */}
-            <div className="flex justify-center items-center gap-3 mb-6 animate-in slide-in-from-bottom-2 duration-500">
-              <span className={`text-xs font-black ${plan !== "yearly" ? 'text-black' : 'text-black/30'} uppercase italic tracking-wider transition-colors`}>Monthly</span>
-              <button
-                onClick={() => setPlan(plan === "yearly" ? "monthly" : "yearly")}
-                className="w-12 h-6 bg-black/5 rounded-full relative transition-all duration-300 shadow-inner focus:outline-none border-[2px] border-black/10"
-              >
-                <div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-[#F5CC6D] rounded-full border-[2px] border-black transition-all duration-300 ${plan === "yearly" ? 'translate-x-6' : 'translate-x-0'}`} />
-              </button>
-              <div className="flex items-center gap-2">
-                <span className={`text-xs font-black ${plan === "yearly" ? 'text-black' : 'text-black/30'} uppercase italic tracking-wider transition-colors`}>Yearly</span>
-                {plan === "yearly" && (
-                  <span className="bg-[#E88BA3] text-black text-[8px] font-black px-1.5 py-0.5 border-[1.5px] border-black rounded-md -rotate-3 animate-pulse whitespace-nowrap">
-                    お得!
-                  </span>
-                )}
+        <div className="space-y-8">
+          {/* Direct Trial Entry for Eligible Users */}
+          {eligibleForTrial !== false && (
+            <div className="bg-[#4DB39A] text-white rounded-[32px] p-8 text-center relative shadow-2xl transform transition-all hover:scale-[1.01]">
+              <div className="inline-block bg-white/20 backdrop-blur-md text-white text-[10px] font-black px-4 py-1 rounded-full mb-4 uppercase tracking-[0.2em]">
+                Risk-Free Discovery
               </div>
-            </div>
-
-            <h1 className="text-4xl sm:text-5xl font-black text-black tracking-tighter leading-none mb-3 uppercase italic">
-              MisePo <span className="text-[#E88BA3]">Studio</span>
-            </h1>
-            <p className="text-[10px] font-black text-black/40 uppercase tracking-[0.3em]">
-              {plan === "yearly" ? "Annual Plan Selected" : "Monthly Plan Selected"}
-            </p>
-          </div>
-
-          <div className="space-y-6">
-            <div className="bg-black/[0.03] border-[3px] border-dashed border-black/10 rounded-[28px] p-4 text-center">
-              <p className="text-sm font-black text-black/80 leading-relaxed whitespace-pre-line">
-                {eligibleForTrial === false
-                  ? "プロプランに登録して、\n全機能へのアクセス権を取得してください。"
-                  : (plan === "yearly"
-                    ? "Googleログインですぐに開始！\n年額プランで登録（7日間無料体験）"
-                    : "Googleログインですぐに開始！\n7日間の無料体験（クレカ登録不要）")
-                }
+              <h3 className="text-3xl font-black mb-3 italic">まずは7日間、無料で体験</h3>
+              <p className="text-sm font-bold text-white/90 mb-8 leading-relaxed max-w-sm mx-auto">
+                クレジットカード登録は不要。10秒であなたの「分身」が投稿を作成し始めます。
               </p>
-            </div>
-
-            <button
-              className="group relative w-full py-4 bg-[#E88BA3] text-black border-[4px] border-black rounded-[24px] font-black text-lg italic shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] active:scale-95 transition-all overflow-hidden"
-              onClick={() => startGoogleLogin("trial", plan)}
-              disabled={loading}
-            >
-              <div className="flex flex-col items-center justify-center gap-1">
-                <span className="relative z-10 flex items-center gap-3">
-                  {loading ? (
-                    <div className="w-6 h-6 border-[3px] border-black/20 border-t-black rounded-full animate-spin" />
-                  ) : (
-                    <>
-                      {eligibleForTrial === false
-                        ? (plan === "yearly" ? "年額プランに登録する" : "プロプランに登録する")
-                        : "無料で試してみる"
-                      }
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" className="group-hover:translate-x-1 transition-transform">
-                        <path d="M5 12h14M12 5l7 7-7 7" />
-                      </svg>
-                    </>
-                  )}
-                </span>
-                {!loading && (
-                  <span className="text-[9px] text-black/40 font-black uppercase tracking-widest mt-1">
-                    Google ACCOUNT LOGIN
-                  </span>
+              <button
+                className="w-full py-5 bg-white text-[#4DB39A] rounded-[20px] font-black text-2xl italic shadow-xl active:scale-95 transition-all flex items-center justify-center gap-4"
+                onClick={() => startGoogleLogin("trial", "monthly")}
+                disabled={loading}
+              >
+                {loading ? <div className="w-6 h-6 border-[4px] border-[#4DB39A]/20 border-t-[#4DB39A] rounded-full animate-spin" /> : (
+                  <>
+                    無料で試してみる
+                    <Icons.ChevronUp size={24} className="rotate-90 stroke-[4px]" />
+                  </>
                 )}
-              </div>
-            </button>
-          </div>
-
-          <div className="mt-6 pt-4 border-t-[3px] border-dashed border-black/5 flex flex-col items-center gap-4">
-            <p className="text-[9px] text-black/30 text-center font-black leading-relaxed uppercase tracking-widest">
-              初回は認証後に自動でアカウントが生成されます。<br />
-              クレカ登録不要・10秒で開始できます。
-            </p>
-            <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-2xl bg-white border-[3px] border-black flex items-center justify-center text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)]">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
-              </div>
-              <div className="w-10 h-10 rounded-2xl bg-[#4DB39A] border-[3px] border-black flex items-center justify-center text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)]">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
+              </button>
+              <div className="mt-6 flex items-center justify-center gap-6 text-[10px] font-black uppercase tracking-wider opacity-90">
+                <span className="flex items-center gap-1.5"><Icons.Check size={14} strokeWidth={4} /> No Card</span>
+                <span className="flex items-center gap-1.5"><Icons.Check size={14} strokeWidth={4} /> 7 Days Free</span>
               </div>
             </div>
+          )}
+
+          <div className="pt-4">
+            <div className="text-center mb-6">
+              <span className="text-[11px] font-black text-black/20 uppercase tracking-[0.4em] font-sans">
+                {eligibleForTrial !== false ? 'Upgrade your experience' : 'Choose your subscription'}
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Monthly Plan Card */}
+              <div className="bg-white rounded-[32px] p-8 flex flex-col relative transition-all border-2 border-transparent hover:border-black/5 shadow-sm hover:shadow-md">
+                <div className="mb-4">
+                  <span className="text-[10px] font-black text-black/30 uppercase tracking-widest mb-1 block">STANDARD</span>
+                  <h3 className="text-2xl font-black text-black uppercase italic">月額プラン</h3>
+                </div>
+                <div className="mb-6 flex items-baseline gap-1">
+                  <span className="text-3xl font-black">¥1,980</span>
+                  <span className="text-xs font-bold text-black/40 uppercase">/ month</span>
+                </div>
+                <ul className="space-y-3 mb-10 flex-grow">
+                  {['月間300回生成', '全プラットフォーム対応', 'AI分身学習機能'].map((feature, i) => (
+                    <li key={i} className="flex items-center gap-2 text-sm font-bold text-black/60">
+                      <Icons.Check size={16} strokeWidth={4} className="text-[#4DB39A]" />
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+                <button
+                  className="w-full py-4 bg-zinc-900 text-white rounded-[16px] font-black text-base italic hover:bg-black transition-all shadow-lg"
+                  onClick={() => startGoogleLogin("trial", "monthly")}
+                  disabled={loading}
+                >
+                  {loading ? "..." : "月額で開始"}
+                </button>
+              </div>
+
+              {/* Yearly Plan Card */}
+              <div className="bg-white rounded-[32px] p-8 flex flex-col relative transition-all border-2 border-[#E88BA3]/10 hover:border-[#E88BA3]/30 shadow-sm hover:shadow-md">
+                <div className="absolute top-6 right-8 bg-[#E88BA3] text-white text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-widest shadow-sm">
+                  SAVE 17%
+                </div>
+                <div className="mb-4">
+                  <span className="text-[10px] font-black text-[#E88BA3] uppercase tracking-widest mb-1 block">BEST VALUE</span>
+                  <h3 className="text-2xl font-black text-black uppercase italic">年額プラン</h3>
+                </div>
+                <div className="mb-6 flex items-baseline gap-1">
+                  <span className="text-3xl font-black text-[#E88BA3]">¥19,800</span>
+                  <span className="text-xs font-bold text-black/40 uppercase">/ year</span>
+                </div>
+                <ul className="space-y-3 mb-10 flex-grow">
+                  {['月間300回生成', '全プラットフォーム対応', '最優先機能アップデート'].map((feature, i) => (
+                    <li key={i} className="flex items-center gap-2 text-sm font-bold text-black/60">
+                      <Icons.Check size={16} strokeWidth={4} className="text-[#E88BA3]" />
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+                <button
+                  className="w-full py-4 bg-[#E88BA3] text-white rounded-[16px] font-black text-base italic hover:bg-[#D67A91] transition-all shadow-lg"
+                  onClick={() => startGoogleLogin("trial", "yearly")}
+                  disabled={loading}
+                >
+                  {loading ? "..." : "年額で開始"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-16 pt-10 border-t border-black/5 flex flex-col items-center gap-6">
+          <p className="text-[10px] text-black/30 text-center font-black leading-relaxed uppercase tracking-[0.2em] max-w-xs">
+            初回は認証後に自動でアカウントが生成されます。
+            安全で透明な決済システムを採用しています。
+          </p>
+          <div className="flex items-center gap-6 opacity-40 grayscale group-hover:grayscale-0 transition-all">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
+            <span className="text-[10px] font-black uppercase tracking-widest">Secure & encrypted</span>
           </div>
         </div>
       </div>
