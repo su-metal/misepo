@@ -15,9 +15,9 @@ import HistorySidebar from './components/HistorySidebar'; // Corrected
 import AccountSettingsModal from './components/AccountSettingsModal';
 import GuestDemoModal from './components/GuestDemoModal';
 import GuideModal from './components/GuideModal';
-import { LockIcon, LogOutIcon } from './components/Icons';
 import TrainingReplacementModal from './components/features/generator/TrainingReplacementModal';
 import { Platform, TrainingItem } from './types';
+import { TrialEndedBarrier } from './components/features/billing/TrialEndedBarrier';
 
 
 const UpgradeBanner = ({ plan, onUpgrade }: { plan: string, onUpgrade: () => void }) => (
@@ -231,17 +231,30 @@ function App() {
     init();
   }, [authLoading, user?.id, fetchProfile, fetchHistory, fetchPresets, fetchTrainingItems]);
 
-  // Strict Redirect for Paid-Only Model
-  useEffect(() => {
-    if (!authLoading && initDone && isLoggedIn) {
-      // If initialized, logged in, but cannot use app (expired/free) -> Redirect to Payment
-      if (!plan.canUseApp) {
-        router.push('/start');
-      }
-    }
-  }, [authLoading, initDone, isLoggedIn, plan.canUseApp, router]);
+  // REMOVED: legacy redirect to /start when plan expires. 
+  // We now handle this by showing the TrialEndedBarrier on the dashboard.
 
   // --- Handlers ---
+  const handleUpgrade = async () => {
+    try {
+      const res = await fetch("/api/billing/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan: "monthly" }),
+      });
+      const data = await res.json().catch(() => null);
+
+      if (res.ok && data?.ok && data?.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error(data?.error || "Checkout failed");
+      }
+    } catch (err) {
+      console.error('Upgrade failed:', err);
+      alert('決済画面への移動に失敗しました。');
+    }
+  };
+
   const handleOnboardingSave = async (profile: StoreProfile) => {
     setStoreProfile(profile);
     setShowOnboarding(false);
@@ -463,27 +476,56 @@ function App() {
       />
 
       <div className="flex-1 flex flex-col min-w-0">
-        {!plan.isPro && isLoggedIn && <UpgradeBanner plan={plan.plan} onUpgrade={() => router.push('/start')} />}
+        {!plan.isPro && isLoggedIn && <UpgradeBanner plan={plan.plan} onUpgrade={handleUpgrade} />}
 
         <main className="flex-1 overflow-y-auto overflow-x-hidden">
-          <PostGenerator
-            storeProfile={storeProfile!}
-            isLoggedIn={isLoggedIn}
-            onOpenLogin={() => router.push('/start')}
-            presets={presets}
-            refreshPresets={fetchPresets}
-            onGenerateSuccess={handleGenerateSuccess}
-            onTaskComplete={() => { /* no-op */ }}
-            trainingItems={trainingItems}
-            onToggleFavorite={handleToggleTraining}
-            restorePost={activeHistoryItem}
-            onOpenGuide={() => setShowGuide(true)}
-            onOpenSettings={() => setShowOnboarding(true)}
-            onOpenHistory={() => setIsSidebarOpen(true)}
-            onLogout={logout}
-            plan={plan}
-            refreshPlan={refreshPlan}
-          />
+          {isLoggedIn && !plan.canUseApp ? (
+            <div className="relative h-full">
+              <TrialEndedBarrier
+                usageCount={plan.usage || 0}
+                onUpgrade={handleUpgrade}
+              />
+              <div className="opacity-10 pointer-events-none blur-sm h-full">
+                <PostGenerator
+                  storeProfile={storeProfile!}
+                  isLoggedIn={isLoggedIn}
+                  onOpenLogin={() => router.push('/start')}
+                  presets={presets}
+                  refreshPresets={fetchPresets}
+                  onGenerateSuccess={handleGenerateSuccess}
+                  onTaskComplete={() => { /* no-op */ }}
+                  trainingItems={trainingItems}
+                  onToggleFavorite={handleToggleTraining}
+                  restorePost={activeHistoryItem}
+                  onOpenGuide={() => setShowGuide(true)}
+                  onOpenSettings={() => setShowOnboarding(true)}
+                  onOpenHistory={() => setIsSidebarOpen(true)}
+                  onLogout={logout}
+                  plan={plan}
+                  refreshPlan={refreshPlan}
+                />
+              </div>
+            </div>
+          ) : (
+            <PostGenerator
+              storeProfile={storeProfile!}
+              isLoggedIn={isLoggedIn}
+              onOpenLogin={() => router.push('/start')}
+              presets={presets}
+              refreshPresets={fetchPresets}
+              onGenerateSuccess={handleGenerateSuccess}
+              onTaskComplete={() => { /* no-op */ }}
+              trainingItems={trainingItems}
+              onToggleFavorite={handleToggleTraining}
+              restorePost={activeHistoryItem}
+              onOpenGuide={() => setShowGuide(true)}
+              onOpenSettings={() => setShowOnboarding(true)}
+              onOpenHistory={() => setIsSidebarOpen(true)}
+              onLogout={logout}
+              plan={plan}
+              refreshPlan={refreshPlan}
+            />
+          )}
         </main>
       </div>
 

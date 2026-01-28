@@ -31,6 +31,11 @@ export function useStartFlow() {
       window.localStorage.setItem("login_intent", nextIntent);
     }
 
+    if (isLoggedIn) {
+      await goCheckout();
+      return;
+    }
+
     const origin = window.location.origin;
     await supabase.auth.signInWithOAuth({
       provider: "google",
@@ -64,6 +69,7 @@ export function useStartFlow() {
       router.replace("/generate");
     } else {
       setIsRedirecting(false);
+      setLoading(false); // Ensure loading is off if checkout fails
       alert(data?.error ?? "Checkout failed");
     }
   }, [router]);
@@ -75,41 +81,46 @@ export function useStartFlow() {
 
     let cancelled = false;
     (async () => {
-      const { data } = await supabase.auth.getUser();
-      if (cancelled) return;
+      try {
+        const { data, error: userError } = await supabase.auth.getUser();
+        if (cancelled) return;
 
-      if (!data.user) {
-        setIsLoggedIn(false);
-        setLoading(false);
-        return;
-      }
-
-      setIsLoggedIn(true);
-      const res = await fetch("/api/me/plan", { cache: "no-store" });
-      const payload = await res.json().catch(() => null);
-
-      if (cancelled) return;
-
-      const allowed = !!(res.ok && payload?.ok && payload?.canUseApp);
-      setCanUseApp(allowed);
-      setEligibleForTrial(payload?.eligibleForTrial ?? true);
-
-      if (allowed) {
-        // 利用可能なら意図をクリアして遷移
-        if (typeof window !== "undefined") {
-          window.localStorage.removeItem("login_intent");
+        if (userError || !data.user) {
+          console.log('[useStartFlow] No user found or error:', userError);
+          setIsLoggedIn(false);
+          setLoading(false);
+          return;
         }
-        router.replace("/generate");
-        return;
-      }
 
-      // intent が "trial" なら自動的にチェックアウトへ
-      if (intent === "trial") {
-        await goCheckout();
-        return;
-      }
+        setIsLoggedIn(true);
+        console.log('[useStartFlow] User is logged in, fetching plan...');
+        const res = await fetch("/api/me/plan", { cache: "no-store" });
+        const payload = await res.json().catch(() => null);
 
-      setLoading(false);
+        if (cancelled) return;
+
+        const allowed = !!(res.ok && payload?.ok && payload?.canUseApp);
+        setCanUseApp(allowed);
+        setEligibleForTrial(payload?.eligibleForTrial ?? true);
+
+        if (allowed) {
+          console.log('[useStartFlow] User can use app, redirecting to /generate');
+          if (typeof window !== "undefined") {
+            window.localStorage.removeItem("login_intent");
+          }
+          router.replace("/generate");
+          return;
+        }
+
+        console.log('[useStartFlow] User cannot use app. Intent:', intent);
+        // intent が "trial" or "login" に関わらず、利用可能なら /generate へ送っている
+        // ここに来るのは「利用不可（期限切れ、未登録）」の場合
+        
+        setLoading(false);
+      } catch (err) {
+        console.error('[useStartFlow] Fatal error in flow:', err);
+        setLoading(false);
+      }
     })();
     return () => { cancelled = true; };
   }, [intent, router, supabase, goCheckout]);

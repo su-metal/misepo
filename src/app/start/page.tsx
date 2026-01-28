@@ -47,7 +47,7 @@ function StartPageContent() {
       </div>
 
       <div className="w-full max-w-md relative z-10 animate-in fade-in zoom-in duration-800">
-        <div className="bg-white border-[6px] border-black shadow-[20px_20px_0px_0px_rgba(0,0,0,1)] rounded-[40px] p-6 md:p-10 relative overflow-hidden group">
+        <div className="bg-white border-[6px] border-black shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] rounded-[40px] p-6 md:p-10 relative overflow-hidden group">
 
           {/* Back Button */}
           <Link
@@ -83,7 +83,7 @@ function StartPageContent() {
               <p className="text-sm font-black text-black/80 leading-relaxed whitespace-pre-line">
                 {eligibleForTrial === false
                   ? "プロプランに登録して、\n全機能へのアクセス権を取得してください。"
-                  : "7日間の無料体験トライアルで、\nMisePoの全機能を解禁できます。"}
+                  : "Googleログインですぐに開始！\n7日間の無料体験（クレカ登録不要）"}
               </p>
             </div>
 
@@ -117,7 +117,7 @@ function StartPageContent() {
           <div className="mt-6 pt-4 border-t-[3px] border-dashed border-black/5 flex flex-col items-center gap-4">
             <p className="text-[9px] text-black/30 text-center font-black leading-relaxed uppercase tracking-widest">
               初回は認証後に自動でアカウントが生成されます。<br />
-              安心してご利用ください。
+              クレカ登録不要・10秒で開始できます。
             </p>
             <div className="flex items-center gap-4">
               <div className="w-10 h-10 rounded-2xl bg-white border-[3px] border-black flex items-center justify-center text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)]">

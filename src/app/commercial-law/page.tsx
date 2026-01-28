@@ -61,8 +61,8 @@ export default function CommercialLawPage() {
                                 商品代金
                             </th>
                             <td className="px-6 py-4 text-sm text-gray-900">
-                                Proプラン：月額 2,980円（税込）
-                                （先着100名様まではキャンペーン価格 1,980円）
+                                Proプラン：月額 1,980円（税込）
+                                （月間300回生成可能）
                             </td>
                         </tr>
                         <tr>
