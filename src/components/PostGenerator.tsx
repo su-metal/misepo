@@ -195,7 +195,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
 
           {/* Right Column: Results (4 Cols) */}
           <div className="lg:col-span-4">
-            <div ref={resultsRef} className="pb-8 md:pb-20 px-2">
+            <div ref={resultsRef} className="pb-8 md:pb-20 px-4">
               <PostResultTabs
                 results={flow.resultGroups}
                 activeTab={flow.activeTab}

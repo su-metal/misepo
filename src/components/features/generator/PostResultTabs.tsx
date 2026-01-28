@@ -186,11 +186,11 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
             <div className={`space-y-8 animate-in fade-in duration-700 ${results.length === 0 ? 'hidden md:block' : ''}`}>
 
                 {/* Main Results Container - Tabs Integrated Inside */}
-                <div className="text-primary flex flex-col min-h-[600px] overflow-hidden group/main transition-all duration-500 w-full max-w-6xl mx-auto">
+                <div className="text-primary flex flex-col min-h-[600px] overflow-hidden group/main transition-all duration-500 w-full max-w-6xl mx-auto bg-white rounded-[32px] border-[3px] border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)]">
 
                     {/* Integrated Tab Navigation Header */}
                     {results.length > 0 && (
-                        <div className="flex items-center w-full border-b-[2px] border-black bg-white">
+                        <div className="flex items-center w-full border-b-[3px] border-black bg-white">
                             {results.map((res, idx) => {
                                 const isSelected = activeTab === idx;
                                 const theme = getPlatformTheme(res.platform);
@@ -198,7 +198,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                     <div
                                         key={res.platform}
                                         onClick={() => onTabChange(idx)}
-                                        className={`flex-1 py-4 flex items-center justify-center gap-1.5 md:gap-3 cursor-pointer transition-all duration-300 border-r-[2px] last:border-r-0 border-black px-2
+                                        className={`flex-1 py-4 flex items-center justify-center gap-1.5 md:gap-3 cursor-pointer transition-all duration-300 border-r-[3px] last:border-r-0 border-black px-2
                                             ${isSelected
                                                 ? 'bg-black/5'
                                                 : 'bg-white hover:bg-black/5'
@@ -236,7 +236,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                 const theme = getPlatformTheme(res.platform);
                                 return (
                                     <div key={res.platform} className={activeTab === gIdx ? 'block animate-in fade-in duration-500' : 'hidden'}>
-                                        <div className={`divide-y-[2px] ${theme.brandBorderColor?.replace('border', 'divide') || 'divide-black/10'}`}>
+                                        <div className={`divide-y-[3px] ${theme.brandBorderColor?.replace('border', 'divide') || 'divide-black/10'}`}>
                                             {res.data.map((text, iIdx) => (
                                                 <div key={iIdx} className={`py-10 px-8 lg:px-12 flex flex-col relative text-left bg-white transition-colors duration-500`}>
 
@@ -266,7 +266,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                     </div>
 
                                                     {/* Unified Action Layout */}
-                                                    <div className="mt-auto pt-8 border-t-[2px] border-black/5">
+                                                    <div className="mt-auto pt-8 border-t-[3px] border-black/5">
                                                         {/* Utility Row: Settings & Tools */}
                                                         <div className="flex items-center justify-between mb-6 gap-3">
                                                             {/* Left: Platform Specifics */}

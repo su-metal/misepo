@@ -57,7 +57,7 @@ const AccountSettingsModal: React.FC<AccountSettingsModalProps> = ({ user, plan,
     return createPortal(
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 z-[200] animate-in fade-in duration-300" onClick={onClose}>
             <div
-                className="w-full max-w-lg max-h-[90dvh] flex flex-col rounded-[32px] overflow-hidden animate-in zoom-in-95 duration-300 bg-[var(--bg-beige)] border-[3px] border-black shadow-[8px_8px_0_0_rgba(0,0,0,1)]"
+                className="w-full max-w-lg max-h-[90dvh] flex flex-col rounded-[32px] overflow-hidden animate-in zoom-in-95 duration-300 bg-[var(--bg-beige)] border-[3px] border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)]"
                 onClick={e => e.stopPropagation()}
             >
                 {/* Header */}

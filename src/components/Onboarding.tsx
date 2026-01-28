@@ -89,7 +89,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
   return (
 
     <div className="fixed inset-0 bg-slate-900/60 flex items-center justify-center p-0 sm:p-4 z-[100] backdrop-blur-sm animate-in fade-in duration-500">
-      <div className="bg-white rounded-none sm:rounded-[32px] border-[3px] border-black shadow-[8px_8px_0_0_rgba(0,0,0,1)] overflow-hidden w-full max-w-lg md:max-w-6xl md:h-[90vh] h-full sm:max-h-[800px] flex flex-col md:flex-row md:overflow-hidden relative animate-in zoom-in-95 duration-500 mobile-scroll-container">
+      <div className="bg-white rounded-none sm:rounded-[32px] border-[3px] border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] overflow-hidden w-full max-w-lg md:max-w-6xl md:h-[90vh] h-full sm:max-h-[800px] flex flex-col md:flex-row md:overflow-hidden relative animate-in zoom-in-95 duration-500 mobile-scroll-container">
 
         {/* LEFT PANEL */}
         <div className="md:w-5/12 bg-[var(--bg-beige)] relative p-6 sm:p-8 md:p-12 flex flex-col justify-between shrink-0 border-b-[3px] md:border-b-0 md:border-r-[3px] border-black min-h-min md:h-full">
