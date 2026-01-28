@@ -42,7 +42,7 @@ export const LANGUAGES = [
 
 export const GUEST_PROFILE: StoreProfile = {
   industry: 'その他',
-  name: 'サンプル店',
+  name: 'サンプル店舗',
   region: '日本',
   description: 'これはサンプルです。',
 };
