@@ -2,7 +2,7 @@
 import { Platform, PostPurpose, GoogleMapPurpose, Tone, Length, StoreProfile, AppMode } from './types';
 
 // Vertical SaaS Mode Switch
-export const IS_HOSPITALITY_MODE = true; // Set to true for Hospitality Mode
+export const IS_HOSPITALITY_MODE = false; // Set to true for Hospitality Mode
 
 export const MODE_CONFIG = {
   [AppMode.Standard]: {
