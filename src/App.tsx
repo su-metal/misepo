@@ -235,24 +235,8 @@ function App() {
   // We now handle this by showing the TrialEndedBarrier on the dashboard.
 
   // --- Handlers ---
-  const handleUpgrade = async () => {
-    try {
-      const res = await fetch("/api/billing/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan: "monthly" }),
-      });
-      const data = await res.json().catch(() => null);
-
-      if (res.ok && data?.ok && data?.url) {
-        window.location.href = data.url;
-      } else {
-        throw new Error(data?.error || "Checkout failed");
-      }
-    } catch (err) {
-      console.error('Upgrade failed:', err);
-      alert('決済画面への移動に失敗しました。');
-    }
+  const handleUpgrade = () => {
+    router.push('/start');
   };
 
   const handleOnboardingSave = async (profile: StoreProfile) => {
