@@ -76,6 +76,7 @@ interface PostInputFormProps {
     onLanguageChange: (val: string) => void;
     onOpenGuide?: () => void;
     hasResults?: boolean;
+    isStyleLocked?: boolean;
 }
 
 const PURPOSES = [
@@ -146,7 +147,8 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
     language,
     onLanguageChange,
     onOpenGuide,
-    hasResults = false
+    hasResults = false,
+    isStyleLocked = false
 }) => {
     const textareaRef = React.useRef<HTMLTextAreaElement>(null);
     const [isPromptExpanded, setIsPromptExpanded] = React.useState(!!customPrompt);
@@ -424,14 +426,14 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                 </div>
                             </div>
                             {/* Tone Selection */}
-                            <section>
+                            <section className="relative">
                                 <h3 className="text-[10px] font-black text-black/30 uppercase tracking-widest mb-1.5 px-1">トーン</h3>
-                                <div className={`flex flex-row gap-1.5 bg-black/5 p-1 rounded-[16px] border border-black/10 ${activePresetId ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                                <div className={`flex flex-row gap-1.5 bg-black/5 p-1 rounded-[16px] border border-black/10 ${isStyleLocked ? 'opacity-50 cursor-not-allowed' : ''}`}>
                                     {TONES.map((t) => (
                                         <button
                                             key={t.id}
                                             onClick={() => onToneChange(t.id)}
-                                            disabled={!!activePresetId}
+                                            disabled={isStyleLocked}
                                             className={`flex-1 py-1.5 px-1 rounded-[12px] text-[12px] font-black transition-all flex items-center justify-center gap-1.5 relative border-2 ${tone === t.id
                                                 ? 'bg-[#F5CC6D] text-black border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] -translate-y-[1px]'
                                                 : 'text-black/40 hover:text-black hover:bg-white border-transparent'
@@ -441,6 +443,16 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                         </button>
                                     ))}
                                 </div>
+
+                                {/* Lock Overlay */}
+                                {isStyleLocked && (
+                                    <div className="absolute inset-0 flex items-center justify-center z-20 animate-in fade-in zoom-in-95 duration-300 pointer-events-none">
+                                        <div className="bg-black shadow-[4px_4px_0px_0px_#F5CC6D] border-2 border-white text-white px-5 py-2.5 rounded-xl flex items-center gap-2.5 transform scale-90 sm:scale-100">
+                                            <MagicWandIcon className="w-4 h-4 text-[#F5CC6D]" />
+                                            <span className="text-[11px] font-black tracking-widest whitespace-nowrap">AI学習スタイル適用中</span>
+                                        </div>
+                                    </div>
+                                )}
                             </section>
 
                             {/* Length Selection */}
@@ -483,14 +495,14 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
 
                             {/* Style Options (Emoji/Symbol) */}
                             {!isGoogleMaps && (
-                                <section className="animate-in fade-in duration-500 delay-150">
-                                    <div className={`flex flex-row items-center gap-2 bg-white px-3 py-2 rounded-[20px] border-[2px] border-black/10 shadow-sm ${activePresetId ? 'opacity-50' : ''}`}>
+                                <section className="animate-in fade-in duration-500 delay-150 relative">
+                                    <div className={`flex flex-row items-center gap-2 bg-white px-3 py-2 rounded-[20px] border-[2px] border-black/10 shadow-sm ${isStyleLocked ? 'opacity-50' : ''}`}>
                                         <div className="flex-1 flex items-center justify-between px-2">
                                             <span className="text-[10px] font-black text-black uppercase tracking-widest leading-none">絵文字</span>
                                             <button
                                                 onClick={() => onIncludeEmojisChange(!includeEmojis)}
-                                                disabled={!!activePresetId}
-                                                className={`relative inline-flex h-4 w-7 items-center rounded-xl transition-all duration-300 ${activePresetId ? 'cursor-not-allowed' : ''} ${includeEmojis ? 'bg-[#4DB39A]' : 'bg-black/10'}`}
+                                                disabled={isStyleLocked}
+                                                className={`relative inline-flex h-4 w-7 items-center rounded-xl transition-all duration-300 ${isStyleLocked ? 'cursor-not-allowed' : ''} ${includeEmojis ? 'bg-[#4DB39A]' : 'bg-black/10'}`}
                                             >
                                                 <span className={`inline-block h-3 w-3 transform rounded-xl bg-white transition-transform duration-300 ${includeEmojis ? 'translate-x-3.5' : 'translate-x-0.5'} shadow-sm`} />
                                             </button>
@@ -500,13 +512,23 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                             <span className="text-[10px] font-black text-black uppercase tracking-widest leading-none">特殊文字</span>
                                             <button
                                                 onClick={() => onIncludeSymbolsChange(!includeSymbols)}
-                                                disabled={!!activePresetId}
-                                                className={`relative inline-flex h-4 w-7 items-center rounded-xl transition-all duration-300 ${activePresetId ? 'cursor-not-allowed' : ''} ${includeSymbols ? 'bg-[#4DB39A]' : 'bg-black/10'}`}
+                                                disabled={isStyleLocked}
+                                                className={`relative inline-flex h-4 w-7 items-center rounded-xl transition-all duration-300 ${isStyleLocked ? 'cursor-not-allowed' : ''} ${includeSymbols ? 'bg-[#4DB39A]' : 'bg-black/10'}`}
                                             >
                                                 <span className={`inline-block h-3 w-3 transform rounded-xl bg-white transition-transform duration-300 ${includeSymbols ? 'translate-x-3.5' : 'translate-x-0.5'} shadow-sm`} />
                                             </button>
                                         </div>
                                     </div>
+
+                                    {/* Lock Overlay */}
+                                    {isStyleLocked && (
+                                        <div className="absolute inset-0 flex items-center justify-center z-20 animate-in fade-in zoom-in-95 duration-300 pointer-events-none">
+                                            <div className="bg-black shadow-[4px_4px_0px_0px_#F5CC6D] border-2 border-white text-white px-5 py-2.5 rounded-xl flex items-center gap-2.5 transform scale-90 sm:scale-100">
+                                                <MagicWandIcon className="w-4 h-4 text-[#F5CC6D]" />
+                                                <span className="text-[11px] font-black tracking-widest whitespace-nowrap">AI学習スタイル適用中</span>
+                                            </div>
+                                        </div>
+                                    )}
                                 </section>
                             )}
 

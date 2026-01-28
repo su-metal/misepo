@@ -66,7 +66,8 @@ export interface GenerationConfig {
   // Optional output controls
   language?: string;
   storeSupplement?: string; // Google Maps only
-  customPrompt?: string; // Additional instructions for the AI
+  customPrompt?: string; // User's manual instructions
+  presetPrompt?: string; // System instructions from the active preset
 
   // Decoration Control
   includeSymbols?: boolean; // Whether to include decorative symbols
