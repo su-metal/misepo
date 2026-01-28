@@ -26,8 +26,6 @@ interface PostResultTabsProps {
     includeFooter: boolean;
     onIncludeFooterChange: (val: boolean) => void;
     presetId?: string;
-    favorites: Set<string>;
-    onToggleFavorite: (text: string, platform: Platform, presetId: string | null, replaceId?: string, source?: 'generated' | 'manual') => Promise<void>;
     onAutoFormat: (gIdx: number, iIdx: number) => void;
     isAutoFormatting: { [key: string]: boolean };
 }
@@ -52,8 +50,6 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
     includeFooter,
     onIncludeFooterChange,
     presetId,
-    favorites,
-    onToggleFavorite,
     onAutoFormat,
     isAutoFormatting,
 }) => {
@@ -274,15 +270,8 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                                 {theme.extra && theme.extra(gIdx, iIdx)}
                                                             </div>
 
-                                                            {/* Right: Inspection & Favoriting */}
+                                                            {/* Right: Inspection */}
                                                             <div className="flex items-center gap-2">
-                                                                <FavoriteButton
-                                                                    platform={res.platform}
-                                                                    text={text}
-                                                                    presetId={presetId || null}
-                                                                    isTrained={favorites.has(text.trim())}
-                                                                    onToggle={onToggleFavorite}
-                                                                />
                                                                 {/* Refined Secondary Preview Button */}
                                                                 <button
                                                                     onClick={() => setPreviewState({ isOpen: true, platform: res.platform, text, gIdx, iIdx })}
@@ -379,49 +368,6 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                 />
             )}
         </>
-    );
-};
-
-const FavoriteButton = ({
-    platform, text, presetId, isTrained, onToggle
-}: {
-    platform: Platform, text: string, presetId: string | null, isTrained: boolean, onToggle: (text: string, platform: Platform, presetId: string | null, replaceId?: string, source?: 'generated' | 'manual') => Promise<void>
-}) => {
-    const [isLoading, setIsLoading] = React.useState(false);
-
-    const handleToggle = async () => {
-        if (isLoading) return;
-
-        if (presetId === undefined) {
-            alert("プリセットが取得できていないため保存できません");
-            return;
-        }
-
-        setIsLoading(true);
-        try {
-            await onToggle(text, platform, presetId, undefined, 'generated');
-        } catch (e) {
-            console.error(e);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    return (
-        <button
-            onClick={handleToggle}
-            className={`group flex items-center gap-2 px-3 py-2 rounded-xl transition-all border-2 shadow-sm ${isTrained
-                ? 'bg-[#F5CC6D] text-black border-black shadow-[2px_2px_0_0_black]'
-                : 'bg-black/5 text-black/40 border-black/5 hover:border-black/20 hover:text-black'
-                }`}
-            title={isTrained ? "学習を解除" : "AIに文体を学習させる"}
-            disabled={isLoading}
-        >
-            <MagicWandIcon
-                className={`w-4 h-4 transition-all duration-300 ${isTrained ? 'text-black scale-110' : 'text-black/20 group-hover:text-black'}`}
-            />
-            {isTrained && <span className="text-[10px] font-black animate-in fade-in slide-in-from-left-2 tracking-widest uppercase">学習済み</span>}
-        </button>
     );
 };
 

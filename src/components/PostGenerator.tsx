@@ -216,8 +216,6 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
                 includeFooter={flow.includeFooter}
                 onIncludeFooterChange={flow.setIncludeFooter}
                 presetId={flow.activePresetId || undefined}
-                favorites={flow.favorites}
-                onToggleFavorite={flow.onToggleFavorite}
                 onAutoFormat={flow.handleAutoFormat}
                 isAutoFormatting={flow.isAutoFormatting}
               />
