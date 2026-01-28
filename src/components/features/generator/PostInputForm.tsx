@@ -444,12 +444,12 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                     ))}
                                 </div>
 
-                                {/* Lock Overlay */}
+                                {/* Lock Overlay (Subtle Version) */}
                                 {isStyleLocked && (
-                                    <div className="absolute inset-0 flex items-center justify-center z-20 animate-in fade-in zoom-in-95 duration-300 pointer-events-none">
-                                        <div className="bg-black shadow-[4px_4px_0px_0px_#F5CC6D] border-2 border-white text-white px-5 py-2.5 rounded-xl flex items-center gap-2.5 transform scale-90 sm:scale-100">
-                                            <MagicWandIcon className="w-4 h-4 text-[#F5CC6D]" />
-                                            <span className="text-[11px] font-black tracking-widest whitespace-nowrap">AI学習スタイル適用中</span>
+                                    <div className="absolute inset-0 flex items-center justify-center z-20 animate-in fade-in zoom-in-95 duration-300 pointer-events-none backdrop-blur-[1px]">
+                                        <div className="bg-white/80 backdrop-blur-md border border-black/5 shadow-lg text-black/60 px-4 py-2 rounded-xl flex items-center gap-2 transform scale-90 sm:scale-100">
+                                            <MagicWandIcon className="w-3.5 h-3.5 text-[#F5CC6D]" />
+                                            <span className="text-[10px] font-black tracking-widest whitespace-nowrap">AI学習スタイル適用中</span>
                                         </div>
                                     </div>
                                 )}
@@ -520,12 +520,12 @@ export const PostInputForm: React.FC<PostInputFormProps> = ({
                                         </div>
                                     </div>
 
-                                    {/* Lock Overlay */}
+                                    {/* Lock Overlay (Subtle Version) */}
                                     {isStyleLocked && (
-                                        <div className="absolute inset-0 flex items-center justify-center z-20 animate-in fade-in zoom-in-95 duration-300 pointer-events-none">
-                                            <div className="bg-black shadow-[4px_4px_0px_0px_#F5CC6D] border-2 border-white text-white px-5 py-2.5 rounded-xl flex items-center gap-2.5 transform scale-90 sm:scale-100">
-                                                <MagicWandIcon className="w-4 h-4 text-[#F5CC6D]" />
-                                                <span className="text-[11px] font-black tracking-widest whitespace-nowrap">AI学習スタイル適用中</span>
+                                        <div className="absolute inset-0 flex items-center justify-center z-20 animate-in fade-in zoom-in-95 duration-300 pointer-events-none backdrop-blur-[1px]">
+                                            <div className="bg-white/80 backdrop-blur-md border border-black/5 shadow-lg text-black/60 px-4 py-2 rounded-xl flex items-center gap-2 transform scale-90 sm:scale-100">
+                                                <MagicWandIcon className="w-3.5 h-3.5 text-[#F5CC6D]" />
+                                                <span className="text-[10px] font-black tracking-widest whitespace-nowrap">AI学習スタイル適用中</span>
                                             </div>
                                         </div>
                                     )}
