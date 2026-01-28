@@ -116,7 +116,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
               </p>
 
               {/* Status Pill */}
-              <div className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 animate-in zoom-in-95 duration-700 delay-300 bg-black border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)]">
+              <div className="hidden md:inline-flex items-center gap-2 rounded-full px-5 py-2.5 animate-in zoom-in-95 duration-700 delay-300 bg-black border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)]">
                 <span className="w-1.5 h-1.5 rounded-full bg-[var(--teal)] animate-ping"></span>
                 <span className="text-[10px] font-black uppercase tracking-widest text-white">AI Engine Ready</span>
               </div>
@@ -143,7 +143,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
         </div>
 
         {/* RIGHT PANEL: Modern Form */}
-        <div className="flex-1 bg-white md:overflow-y-auto overscroll-contain animate-in slide-in-from-right-8 duration-700">
+        <div className="flex-1 bg-white overflow-y-auto overscroll-contain animate-in slide-in-from-right-8 duration-700">
           <form onSubmit={handleSubmit} className="p-8 md:p-14 space-y-12">
 
             {/* Industry Selection */}
