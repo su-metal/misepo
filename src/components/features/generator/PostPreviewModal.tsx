@@ -5,6 +5,7 @@ import { getPlatformIcon } from './utils';
 import { CloseIcon, HeartIcon, MessageCircleIcon, SendIcon, BookmarkIcon, MoreHorizontalIcon, ShareIcon, RotateCcwIcon } from '../../Icons';
 import { LinePreview } from './LinePreview';
 import { AutoResizingTextarea } from './AutoResizingTextarea';
+import { useScrollLock } from '../../../hooks/useScrollLock';
 
 interface PostPreviewModalProps {
     isOpen: boolean;
@@ -26,17 +27,16 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
     // State to handle client-side rendering for Portal
     const [mounted, setMounted] = React.useState(false);
 
+    useScrollLock(isOpen);
+
     React.useEffect(() => {
         setMounted(true);
         if (isOpen) {
-            document.body.style.overflow = 'hidden';
             document.body.setAttribute('data-preview-modal-open', 'true');
         } else {
-            document.body.style.overflow = '';
             document.body.removeAttribute('data-preview-modal-open');
         }
         return () => {
-            document.body.style.overflow = '';
             document.body.removeAttribute('data-preview-modal-open');
         };
     }, [isOpen]);

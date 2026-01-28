@@ -2,6 +2,7 @@ import React from 'react';
 import { createPortal } from 'react-dom';
 import { TrainingItem, Platform } from '../../../types';
 import { CloseIcon, InstagramIcon, XIcon, GoogleMapsIcon, MagicWandIcon, TrashIcon } from '../../Icons';
+import { useScrollLock } from '../../../hooks/useScrollLock';
 
 interface TrainingReplacementModalProps {
     isOpen: boolean;
@@ -22,6 +23,8 @@ const TrainingReplacementModal: React.FC<TrainingReplacementModalProps> = ({
     platform,
     presetName,
 }) => {
+    useScrollLock(isOpen);
+
     if (!isOpen) return null;
 
     const getPlatformIcon = (p: Platform) => {

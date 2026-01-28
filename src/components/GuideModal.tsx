@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { CloseIcon, MagicWandIcon, ChevronDownIcon, AutoSparklesIcon, ClockIcon, BookOpenIcon } from './Icons';
+import { useScrollLock } from '../hooks/useScrollLock';
 
 
 interface GuideModalProps {
@@ -10,16 +11,7 @@ interface GuideModalProps {
 const GuideModal: React.FC<GuideModalProps> = ({ isOpen, onClose }) => {
   const [activeTab, setActiveTab] = useState<'basics' | 'advanced'>('basics');
 
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [isOpen]);
+  useScrollLock(isOpen);
 
   if (!isOpen) return null;
 

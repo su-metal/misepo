@@ -1,6 +1,7 @@
 
 import React, { useEffect } from 'react';
 import { SparklesIcon } from './Icons';
+import { useScrollLock } from '../hooks/useScrollLock';
 
 interface GuestDemoModalProps {
   onClose: () => void;
@@ -8,10 +9,7 @@ interface GuestDemoModalProps {
 
 const GuestDemoModal: React.FC<GuestDemoModalProps> = ({ onClose }) => {
   // Lock body scroll
-  useEffect(() => {
-    document.body.style.overflow = 'hidden';
-    return () => { document.body.style.overflow = 'unset'; };
-  }, []);
+  useScrollLock();
 
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-stone-900/60 backdrop-blur-sm animate-in fade-in duration-500">

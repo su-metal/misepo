@@ -40,6 +40,7 @@ import {
 } from './Icons';
 import { Platform, Preset, PostPurpose, Tone, Length, TrainingItem } from '../types';
 import { AutoResizingTextarea } from './ResizableTextarea';
+import { useScrollLock } from '../hooks/useScrollLock';
 
 interface PresetModalProps {
   presets: Preset[];
