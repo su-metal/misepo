@@ -23,10 +23,24 @@ export const GeneratorHeader: React.FC<GeneratorHeaderProps> = ({
         <header className="sticky top-4 z-[100] w-full sm:px-0">
             <div className={`py-3 px-8 flex items-center justify-between gap-4 transition-all duration-300 ${TOKENS.container}`}>
 
-                {/* Left: Brand Space */}
-                <div className="flex items-center gap-4">
-                    <span className="text-2xl tracking-tighter drop-shadow-none font-black text-black">{UI.name}</span>
+                <div className="flex items-center gap-2 sm:gap-4">
+                    <span className="text-xl sm:text-2xl tracking-tighter drop-shadow-none font-black text-black whitespace-nowrap">{UI.name}</span>
 
+                    {/* Usage Badge (Subtle & Rounded) */}
+                    {plan && typeof plan.usage !== 'undefined' && typeof plan.limit !== 'undefined' && (
+                        <div className="flex flex-col items-start px-3 py-1.5 bg-white/50 backdrop-blur-sm border border-slate-200 rounded-2xl">
+                            <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-500 leading-none">
+                                <span className="tracking-tighter">残り:</span>
+                                <span className={`text-sm font-black tracking-tight ${plan.limit - plan.usage <= 0 ? 'text-red-500' : 'text-slate-900'}`}>
+                                    {Math.max(0, plan.limit - plan.usage)}
+                                </span>
+                                <span className="opacity-40">/ {plan.limit}</span>
+                                <span className="ml-1 px-1.5 py-0.5 bg-slate-100 rounded-md text-[8px] text-slate-400">
+                                    {plan.usage_period === 'monthly' ? '月' : '日'}
+                                </span>
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 {/* Right: Consolidated Menu */}

@@ -107,6 +107,52 @@ export async function GET() {
     .eq("promo_key", "trial_7days")
     .maybeSingle();
 
+  // --- Usage Stats Calculation ---
+  let usage = 0;
+  let limit = 0;
+  let usage_period: 'daily' | 'monthly' = 'daily';
+
+  // JST Calculation (Same as generate/route.ts)
+  const jstOffset = 9 * 60 * 60 * 1000;
+  const nowUTC = new Date();
+  const nowJST = new Date(nowUTC.getTime() + jstOffset);
+
+  const startOfTodayJST = new Date(nowJST.getFullYear(), nowJST.getMonth(), nowJST.getDate());
+  const startOfMonthJST = new Date(nowJST.getFullYear(), nowJST.getMonth(), 1);
+
+  const startOfToday = new Date(startOfTodayJST.getTime() - jstOffset).toISOString();
+  const startOfMonth = new Date(startOfMonthJST.getTime() - jstOffset).toISOString();
+
+  if (isPro) {
+    // Pro: Monthly Limit (300)
+    limit = 300;
+    usage_period = 'monthly';
+    const { data: usageData } = await supabaseAdmin
+      .from("ai_runs")
+      .select("run_type")
+      .eq("user_id", userId)
+      .eq("app_id", APP_ID)
+      .gte("created_at", startOfMonth);
+    
+    if (usageData) {
+        usage = usageData.reduce((acc, curr) => acc + (curr.run_type === 'multi-gen' ? 2 : 1), 0);
+    }
+  } else {
+    // Free/Trial: Daily Limit (10)
+    limit = 10;
+    usage_period = 'daily';
+    const { data: usageData } = await supabaseAdmin
+      .from("ai_runs")
+      .select("run_type")
+      .eq("user_id", userId)
+      .eq("app_id", APP_ID)
+      .gte("created_at", startOfToday);
+      
+    if (usageData) {
+        usage = usageData.reduce((acc, curr) => acc + (curr.run_type === 'multi-gen' ? 2 : 1), 0);
+    }
+  }
+
   return NextResponse.json({
     ok: true,
     app_id: APP_ID,
@@ -117,5 +163,8 @@ export async function GET() {
     canUseApp,
     isPro,
     eligibleForTrial: !trialRedemption,
+    limit,
+    usage,
+    usage_period,
   }, { headers: NO_STORE_HEADERS });
 }

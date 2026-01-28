@@ -22,10 +22,11 @@ export function useGeneratorFlow(props: {
   onToggleFavorite: (text: string, platform: Platform, presetId: string | null, replaceId?: string, source?: 'generated' | 'manual') => Promise<void>;
   restorePost?: GeneratedPost | null;
   resetResultsTrigger?: number;
+  refreshPlan?: () => Promise<void>;
 }) {
   const { 
     storeProfile, isLoggedIn, onOpenLogin, onGenerateSuccess, 
-    onTaskComplete, favorites, onToggleFavorite, restorePost, resetResultsTrigger 
+    onTaskComplete, favorites, onToggleFavorite, restorePost, resetResultsTrigger, refreshPlan 
   } = props;
 
   // --- State ---
@@ -286,18 +287,12 @@ export function useGeneratorFlow(props: {
     setLoading(true);
     if (!isRegeneration) setResultGroups([]);
     
-    const generatedResults: GeneratedResult[] = [];
-    const newGroups: ResultGroup[] = [];
-    let latestRunId: string | null = null;
-
-    const resultsPromises = targetPlatforms.map(async (p) => {
+    // Resolve Configs for all target platforms
+    const batchConfigs = targetPlatforms.map(p => {
       const purpose = p === Platform.GoogleMaps ? gmapPurpose : postPurpose;
       
-      // Resolve Platform-Specific Prompt
-      // Merge System Prompt (from preset) and User Prompt (from UI textarea)
       let systemPrompt = loadedPresetPrompts[p] || '';
       let userPrompt = customPrompt.trim();
-      
       let effectivePrompt = '';
       if (systemPrompt && userPrompt) {
           effectivePrompt = `${systemPrompt}\n\n---\n\n【今回の追加指示】\n${userPrompt}`;
@@ -325,89 +320,97 @@ export function useGeneratorFlow(props: {
         presetId: activePresetId || undefined,
         gmapPurpose: (p === Platform.GoogleMaps) ? gmapPurpose : undefined
       };
+      return config;
+    });
 
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 60000); // 60s timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 60000); // 60s timeout
 
-      try {
-        const res = await fetch("/api/generate", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          signal: controller.signal,
-          body: JSON.stringify({
-            profile: storeProfile,
-            config,
-            save_history: targetPlatforms.length === 1,
-            run_type: "generation",
-            presetId: activePresetId
-          }),
-        });
+    try {
+      const res = await fetch("/api/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        signal: controller.signal,
+        body: JSON.stringify({
+          profile: storeProfile,
+          configs: batchConfigs, // Sent as array
+          save_history: true,
+          presetId: activePresetId
+        }),
+      });
 
-        clearTimeout(timeoutId);
-        const data = await res.json();
-        if (!res.ok || !data.ok) throw new Error(data.error ?? "Generate failed");
+      clearTimeout(timeoutId);
+      const data = await res.json();
+      
+      if (!res.ok || !data.ok) {
+        if (res.status === 403) {
+            if (data.error === 'daily_limit_reached') {
+                alert(`本日の生成制限（10回）に達しました。明日またご利用いただけます。`);
+            } else if (data.error === 'monthly_limit_reached') {
+                alert(`今月の生成制限（300回）に達しました。来月までお待ちいただくか、サポートにお問い合わせください。`);
+            } else {
+                alert(`生成制限に達しました。`);
+            }
+            setLoading(false);
+            return false;
+        }
+        throw new Error(data.error ?? "Generate failed");
+      }
 
-        const content = (data.result as string[]).map(t => t.replace(/\\n/g, '\n').replace(/\\n/g, '\n').trim());
+      // Backend returns results array
+      const rawResults = data.results as any[];
+      const newGroups: ResultGroup[] = [];
+      const generatedResults: GeneratedResult[] = [];
+      
+      rawResults.forEach((r, idx) => {
+        const platform = batchConfigs[idx].platform;
+        const groupData = (r.posts as string[]).map(t => t.replace(/\\n/g, '\n').replace(/\\n/g, '\n').trim());
         
-        let finalContent = content;
-        if (p === Platform.Instagram && includeFooter && storeProfile.instagramFooter) {
-          finalContent = content.map(text => insertInstagramFooter(text, storeProfile.instagramFooter!));
+        let finalContent = groupData;
+        if (platform === Platform.Instagram && includeFooter && storeProfile.instagramFooter) {
+            finalContent = groupData.map(text => insertInstagramFooter(text, storeProfile.instagramFooter!));
         }
 
-        return { platform: p, data: finalContent, config, run_id: data.run_id?.toString() || null };
-      } catch (e) {
-        console.error(`Error generating for ${p}`, e);
-        return null;
-      }
-    });
-
-    const settledResults = await Promise.all(resultsPromises);
-    
-    settledResults.forEach(res => {
-      if (res) {
-        newGroups.push({ platform: res.platform, data: res.data, config: res.config });
-        generatedResults.push({ platform: res.platform, data: res.data });
-        if (res.run_id) latestRunId = res.run_id;
-      }
-    });
-
-    setResultGroups(newGroups);
-    if (!isRegeneration) setActiveTab(0);
-    setLoading(false);
-
-    if (isLoggedIn && !isRegeneration) {
-      const historyConfig = {
-        platforms: targetPlatforms,
-        purpose: postPurpose,
-        postPurpose, tone, length, inputText,
-        starRating: starRating ?? undefined,
-        language, storeSupplement, customPrompt,
-        xConstraint140, includeSymbols, includeEmojis,
-        instagramFooter: (targetPlatforms.includes(Platform.Instagram) && includeFooter) ? storeProfile.instagramFooter : undefined,
-        presetId: activePresetId || undefined,
-        gmapPurpose: targetPlatforms.includes(Platform.GoogleMaps) ? gmapPurpose : undefined
-      };
-
-      if (targetPlatforms.length > 1) {
-        const aggregatedId = await saveAggregatedHistory({
-          profile: storeProfile,
-          config: historyConfig,
-          result: generatedResults,
-          runType: "generation",
-        });
-        latestRunId = aggregatedId ?? latestRunId;
-      }
-
-      onGenerateSuccess({
-        id: latestRunId ?? `gen-${Date.now()}`,
-        timestamp: Date.now(),
-        config: historyConfig,
-        results: generatedResults,
-        isPinned: false,
+        newGroups.push({ platform, data: finalContent, config: batchConfigs[idx] });
+        generatedResults.push({ platform, data: finalContent });
       });
+
+      setResultGroups(newGroups);
+      if (!isRegeneration) setActiveTab(0);
+      setLoading(false);
+
+      if (isLoggedIn && !isRegeneration) {
+        const historyConfig = {
+          platforms: targetPlatforms,
+          purpose: postPurpose,
+          postPurpose, tone, length, inputText,
+          starRating: starRating ?? undefined,
+          language, storeSupplement, customPrompt,
+          xConstraint140, includeSymbols, includeEmojis,
+          instagramFooter: (targetPlatforms.includes(Platform.Instagram) && includeFooter) ? storeProfile.instagramFooter : undefined,
+          presetId: activePresetId || undefined,
+          gmapPurpose: targetPlatforms.includes(Platform.GoogleMaps) ? gmapPurpose : undefined
+        };
+
+        onGenerateSuccess({
+          id: data.run_id?.toString() || `gen-${Date.now()}`,
+          timestamp: Date.now(),
+          config: historyConfig,
+          results: generatedResults,
+          isPinned: false,
+        });
+      }
+
+      if (refreshPlan) refreshPlan();
+
+      onTaskComplete();
+      return true;
+    } catch (e: any) {
+      console.error(`Error generating batch`, e);
+      alert("生成に失敗しました: " + (e.message || "Unknown error"));
+      setLoading(false);
+      return false;
     }
-    onTaskComplete();
-    return true; // Indicate success for scrolling
   };
 
   const handleManualEdit = (gIdx: number, iIdx: number, text: string) => {
