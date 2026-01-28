@@ -94,7 +94,18 @@ export async function GET() {
         : row.ai_run_records;
 
       const inputData = rec?.input ?? {};
-      const storedConfig = inputData.config ?? {};
+      
+      // If config is missing but configs array exists (multi-gen), merge them
+      let storedConfig = inputData.config;
+      if (!storedConfig && Array.isArray(inputData.configs) && inputData.configs.length > 0) {
+        storedConfig = {
+          ...inputData.configs[0],
+          // Extract all platforms from the batch for the history UI icons
+          platforms: inputData.configs.map((c: any) => c.platform)
+        };
+      }
+      
+      if (!storedConfig) storedConfig = {};
       
       return {
         id: row.id,
