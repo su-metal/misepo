@@ -87,16 +87,10 @@ export async function POST(req: Request) {
       entitlement = created;
     }
 
-    // if already active, don't create a new checkout
-    const canUseApp = entitlement
-      ? computeCanUseApp({
-          status: entitlement.status ?? null,
-          expires_at: entitlement.expires_at ?? null,
-          trial_ends_at: entitlement.trial_ends_at ?? null,
-        })
-      : false;
+    // If already on a paid plan, don't create a new checkout
+    const isPaidSubscriber = entitlement?.plan !== 'free' && (entitlement?.status === 'active' || entitlement?.status === 'trialing');
 
-    if (canUseApp) {
+    if (isPaidSubscriber) {
       return NextResponse.json({ ok: false, error: "already_active" }, { status: 400 });
     }
 
@@ -192,12 +186,8 @@ export async function POST(req: Request) {
       custom_text: {
         submit: {
           message: `${
-            priceId === process.env.STRIPE_PRICE_MONTHLY_EARLY_BIRD_ID 
-              ? "先着100名様限定の「早期割引プラン」が適用されています。" 
-              : ""
-          }${
             trialDaysToApply > 0 
-              ? `\n本日より${trialDaysToApply}日間は無料でご利用いただけます。` 
+              ? `本日より${trialDaysToApply}日間は無料でご利用いただけます。` 
               : ""
           }`.trim() || undefined
         }

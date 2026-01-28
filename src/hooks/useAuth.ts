@@ -33,6 +33,9 @@ export function useAuth() {
   };
 
   const logout = async () => {
+    if (typeof window !== 'undefined') {
+      window.localStorage.removeItem('login_intent');
+    }
     await supabase.auth.signOut();
     window.location.href = '/start';
   };

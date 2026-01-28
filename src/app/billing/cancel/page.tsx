@@ -30,7 +30,7 @@ export default function CancelPage() {
       </div>
 
       <div className="w-full max-w-md relative z-10 animate-in fade-in zoom-in duration-1000">
-        <div className="bg-white border-[6px] border-black shadow-[20px_20px_0px_0px_rgba(0,0,0,1)] rounded-[40px] p-8 md:p-12 relative overflow-hidden text-center">
+        <div className="bg-white border-[6px] border-black shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] rounded-[40px] p-8 md:p-12 relative overflow-hidden text-center">
 
           <div className="w-24 h-24 bg-white border-[4px] border-black rounded-[32px] flex items-center justify-center mx-auto mb-10 shadow-[8px_8px_0px_0px_rgba(0,0,0,0.15)] group hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] transition-all">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-rose-500 stroke-[4px]" fill="none" viewBox="0 0 24 24" stroke="currentColor">

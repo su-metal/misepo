@@ -90,14 +90,33 @@ export async function GET() {
     }
   }
 
+  // --- CARDLESS TRIAL INITIALIZATION ---
+  let finalTrialEndsAt = ent.trial_ends_at;
+  if (!finalTrialEndsAt && ent.plan === 'free' && ent.status === 'active') {
+    // New user or user without trial. Initialize it to 7 days from now (JST)
+    const jstOffset = 9 * 60 * 60 * 1000;
+    const nowJST = new Date(Date.now() + jstOffset);
+    const endsAtJST = new Date(nowJST.getTime() + (7 * 24 * 60 * 60 * 1000));
+    finalTrialEndsAt = new Date(endsAtJST.getTime() - jstOffset).toISOString();
+
+    await supabaseAdmin
+      .from('entitlements')
+      .update({ trial_ends_at: finalTrialEndsAt })
+      .eq('app_id', APP_ID)
+      .eq('user_id', userId);
+    
+    console.log(`[PlanAPI] Initialized cardless trial for ${userId}: ends at ${finalTrialEndsAt}`);
+  }
+
   const nowMs = Date.now();
-  const trialEndsMs = ent.trial_ends_at ? new Date(ent.trial_ends_at).getTime() : null;
+  const trialEndsMs = finalTrialEndsAt ? new Date(finalTrialEndsAt).getTime() : null;
   const expiresMs = ent.expires_at ? new Date(ent.expires_at).getTime() : null;
 
-  const isTrial = trialEndsMs !== null && trialEndsMs > nowMs;
-  const isPaidActive = ent.status === "active" && (expiresMs === null || expiresMs > nowMs);
-  const canUseApp = isTrial || isPaidActive;
-  const isPro = canUseApp;
+  const isTrialWindow = trialEndsMs !== null && trialEndsMs > nowMs;
+  const isPaidActive = ent.plan !== 'free' && ent.status === 'active' && (expiresMs === null || expiresMs > nowMs);
+  
+  const canUseApp = isTrialWindow || isPaidActive;
+  const isPro = isPaidActive; // Explicitly Pro if paid
 
   const { data: trialRedemption } = await supabaseAdmin
     .from("promotion_redemptions")
@@ -124,7 +143,7 @@ export async function GET() {
   const startOfMonth = new Date(startOfMonthJST.getTime() - jstOffset).toISOString();
 
   if (isPro) {
-    // Pro: Monthly Limit (300)
+    // Paid Pro: Monthly Limit (300)
     limit = 300;
     usage_period = 'monthly';
     const { data: usageData } = await supabaseAdmin
@@ -137,8 +156,8 @@ export async function GET() {
     if (usageData) {
         usage = usageData.reduce((acc, curr) => acc + (curr.run_type === 'multi-gen' ? 2 : 1), 0);
     }
-  } else {
-    // Free/Trial: Daily Limit (10)
+  } else if (isTrialWindow) {
+    // Trial: Daily Limit (10)
     limit = 10;
     usage_period = 'daily';
     const { data: usageData } = await supabaseAdmin
@@ -147,7 +166,7 @@ export async function GET() {
       .eq("user_id", userId)
       .eq("app_id", APP_ID)
       .gte("created_at", startOfToday);
-      
+    
     if (usageData) {
         usage = usageData.reduce((acc, curr) => acc + (curr.run_type === 'multi-gen' ? 2 : 1), 0);
     }
@@ -159,7 +178,7 @@ export async function GET() {
     plan: ent.plan,
     status: ent.status,
     expires_at: ent.expires_at,
-    trial_ends_at: ent.trial_ends_at,
+    trial_ends_at: finalTrialEndsAt,
     canUseApp,
     isPro,
     eligibleForTrial: !trialRedemption,

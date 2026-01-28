@@ -49,10 +49,9 @@ export const PricingSection = () => {
                             </div>
                             <h3 className="text-2xl font-black text-black mb-6 mt-4 uppercase italic">MisePo (AI)</h3>
                             <div className="flex items-center justify-center gap-3 mb-2">
-                                <span className="text-black opacity-20 line-through font-black text-xl italic">¥2,980</span>
                                 <span className="text-5xl md:text-6xl font-black text-black italic">¥1,980</span>
                             </div>
-                            <p className="text-sm text-[#E88BA3] font-black uppercase tracking-widest mb-10 italic">先着100名限定 / 1日約66円</p>
+                            <p className="text-sm text-[#E88BA3] font-black uppercase tracking-widest mb-10 italic">1ヶ月 300クレジット</p>
                             <ul className="space-y-4 text-sm font-black text-black text-left bg-black/[0.03] border-[2px] border-dashed border-black/20 p-6 mt-auto">
                                 <li className="flex gap-3 items-start"><Icons.CheckCircle size={20} className="text-[#4DB39A] shrink-0" /> <span>圧倒的なコスパ</span></li>
                                 <li className="flex gap-3 items-start"><Icons.CheckCircle size={20} className="text-[#4DB39A] shrink-0" /> <span>爆速生成・自由編集</span></li>
@@ -84,8 +83,8 @@ export const PricingSection = () => {
                                         <Icons.Sparkles size={28} />
                                     </div>
                                     <div>
-                                        <h3 className="font-black text-black text-xl mb-1 uppercase tracking-tight">AI投稿生成 無制限</h3>
-                                        <p className="text-black font-bold opacity-50">納得いくまで何度でも作り直せます。</p>
+                                        <h3 className="font-black text-black text-xl mb-1 uppercase tracking-tight">AI投稿生成 300回/月</h3>
+                                        <p className="text-black font-bold opacity-50">納得いくまでバリエーションを作れます。</p>
                                     </div>
                                 </div>
                                 <div className="flex gap-6">
@@ -111,23 +110,15 @@ export const PricingSection = () => {
 
                         <div className="relative border-[6px] border-black rounded-2xl p-8 md:p-12 flex flex-col bg-black text-white shadow-[20px_20px_0px_0px_rgba(0,0,0,0.1)] overflow-hidden group">
                             <div className="relative z-10 text-center mb-12">
-                                <div className="inline-flex flex-col items-center gap-1 px-6 py-2 bg-[#E88BA3] text-black border-[3px] border-white shadow-[6px_6px_0px_0px_rgba(255,255,255,0.2)] mb-10 animate-pulse rounded-2xl">
-                                    <div className="flex items-center gap-2 text-sm font-black uppercase tracking-[0.2em] italic">
-                                        <Icons.Sparkles size={18} fill="currentColor" />
-                                        先着限定・早期割引
-                                    </div>
-                                    <div className="text-[10px] font-black opacity-70 uppercase tracking-widest">先着100名様までの特別価格</div>
-                                </div>
                                 <h3 className="text-2xl font-black mb-4 text-[#F5CC6D] uppercase italic tracking-[0.1em]">プロプラン</h3>
                                 <div className="flex items-center justify-center gap-4 mb-4">
-                                    <span className="text-white/30 line-through font-black text-2xl italic">¥2,980</span>
                                     <div className="flex items-baseline gap-2">
                                         <span className="text-6xl md:text-7xl font-black tracking-tighter italic">¥1,980</span>
                                         <span className="text-white/50 font-black text-xl italic">/月</span>
                                     </div>
                                 </div>
                                 <p className="text-sm font-black text-[#4DB39A] uppercase tracking-[0.3em] mb-2">
-                                    1日あたり約66円
+                                    月間300回まで生成可能
                                 </p>
                             </div>
 
@@ -135,7 +126,7 @@ export const PricingSection = () => {
 
                             <ul className="space-y-6 mb-12 text-left relative z-10">
                                 {[
-                                    "AI投稿生成 (無制限)",
+                                    "AI投稿生成 (300回/月)",
                                     "Instagram / X / Google 全対応",
                                     "口コミ返信 AI自動生成",
                                     "お手本学習 (分身機能)",
@@ -156,8 +147,8 @@ export const PricingSection = () => {
                             </button>
                             <div className="mt-8 pt-8 border-t border-white/10">
                                 <p className="text-center text-[10px] text-white/40 font-bold leading-relaxed uppercase tracking-widest">
-                                    ✓ 7日間の無料体験（クレジットカード登録が必要です）<br />
-                                    ※体験終了後は月額 ¥1,980（先着限定価格）が適用されます。いつでも解約可能です。
+                                    ✓ 7日間の無料体験（Googleログインで即開始 / 1日10回まで）<br />
+                                    ※体験終了後、継続する場合のみ月額 ¥1,980 が適用されます。
                                 </p>
                             </div>
                         </div>

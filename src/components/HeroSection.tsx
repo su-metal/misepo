@@ -85,7 +85,7 @@ export default function HeroSection() {
                     <div className="md:hidden pt-24 px-4 text-center z-20 relative mb-2 shrink-0">
                         <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#F2C94C] border-[3px] border-black rounded-2xl shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] mb-6">
                             <span className="w-2 h-2 rounded-full bg-black animate-pulse" />
-                            <span className="text-xs font-black text-black uppercase">限定モニター価格</span>
+                            <span className="text-xs font-black text-black uppercase">7日間の無料体験実施中</span>
                         </div>
                         <h1 className="text-4xl font-black text-black tracking-tighter leading-tight mb-6">
                             AIなのに、<br />
@@ -110,7 +110,7 @@ export default function HeroSection() {
                                 <span className="animate-ping absolute inline-flex h-full w-full bg-black opacity-75"></span>
                                 <span className="relative inline-flex rounded-full h-3 w-3 bg-black"></span>
                             </span>
-                            <span className="text-sm font-black text-black">【限定100店舗】 先行モニター価格 月額1,980円</span>
+                            <span className="text-sm font-black text-black">SNS運用をAIが丸ごと代行！ 7日間の無料体験実施中</span>
                         </div>
                         <h1 className="text-6xl lg:text-[5.5rem] font-black text-black tracking-tighter leading-[1.0] mb-8">
                             AIなのに、<br />
