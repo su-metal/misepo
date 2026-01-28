@@ -153,7 +153,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
                 {!isEditMode && <span className={`bg-[${COLORS.navy}] text-[${COLORS.gold}] text-[8px] font-black px-2 py-0.5 rounded-full tracking-widest uppercase`}>Required</span>}
               </div>
               <div className="flex flex-wrap gap-2">
-                {INDUSTRIES.map((ind) => (
+                {INDUSTRIES.filter(ind => ind !== '旅館・ホテル').map((ind) => (
                   <button
                     key={ind}
                     type="button"
