@@ -19,12 +19,15 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import {
   CloseIcon,
+  PencilIcon,
   MagicWandIcon,
   SparklesIcon,
   SaveIcon,
   TrashIcon,
   MenuIcon,
   InstagramIcon,
+  XIcon,
+  GoogleMapsIcon,
   BookmarkIcon,
   ChevronDownIcon,
   CoffeeIcon,
@@ -37,10 +40,12 @@ import {
   GemIcon,
   LineIcon,
   BookOpenIcon,
+  RotateCcwIcon,
+  PlusIcon,
+  ClockIcon,
 } from './Icons';
 import { Platform, Preset, PostPurpose, Tone, Length, TrainingItem } from '../types';
 import { AutoResizingTextarea } from './ResizableTextarea';
-import { useScrollLock } from '../hooks/useScrollLock';
 
 interface PresetModalProps {
   presets: Preset[];
@@ -105,28 +110,30 @@ const SortablePresetRow = ({
       ref={setNodeRef}
       style={style}
       className={`
-        group flex items-center gap-3 p-4 rounded-xl transition-all duration-300
+        group flex items-center gap-3 p-3.5 rounded-2xl transition-all duration-300 border
         ${isSelected
-          ? 'bg-[#4DB39A] border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] scale-[1.02] z-10 text-black'
-          : 'bg-white border-2 border-black hover:bg-[var(--bg-beige)] hover:shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:-translate-y-0.5 text-slate-800'
+          ? 'bg-white border-indigo-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] ring-1 ring-indigo-500/20'
+          : 'bg-white/40 border-stone-100 hover:bg-white hover:border-stone-200 hover:shadow-sm'
         }
-        ${isDragging ? 'opacity-50' : ''}
+        ${isDragging ? 'opacity-50 ring-2 ring-indigo-500' : ''}
       `}
     >
       <div
         {...attributes}
         {...listeners}
-        className={`cursor-grab active:cursor-grabbing p-1 transition-colors touch-none ${isSelected ? 'text-black' : 'text-slate-300 hover:text-black'}`}
+        className={`cursor-grab active:cursor-grabbing p-1 transition-colors touch-none ${isSelected ? 'text-indigo-400' : 'text-stone-300 hover:text-stone-500'}`}
       >
-        <MenuIcon className="w-5 h-5" />
+        <MenuIcon className="w-4 h-4" />
       </div>
       <button
         onClick={() => onSelect(preset.id)}
         className="flex-1 text-left min-w-0"
       >
-        <div className={`font-black text-sm truncate mb-0.5 ${isSelected ? 'text-black' : 'text-slate-800'}`}>{preset.name}</div>
-        <div className={`text-[10px] font-bold uppercase tracking-widest truncate ${isSelected ? 'text-black/70' : 'text-slate-400'}`}>
-          Custom Style
+        <div className={`font-black text-[13px] truncate mb-0.5 ${isSelected ? 'text-indigo-950' : 'text-stone-700'}`}>
+          {preset.name}
+        </div>
+        <div className={`text-[10px] font-bold uppercase tracking-widest truncate ${isSelected ? 'text-indigo-400' : 'text-stone-400'}`}>
+          Bunshin Profile
         </div>
       </button>
       <button
@@ -135,12 +142,12 @@ const SortablePresetRow = ({
           onDelete(preset.id);
         }}
         disabled={deletingId === preset.id}
-        className={`p-2.5 rounded-lg transition-all opacity-0 group-hover:opacity-100 ${isSelected ? 'text-black hover:bg-black/10' : 'text-slate-300 hover:text-rose-500 hover:bg-rose-50'}`}
+        className={`p-2 rounded-xl transition-all opacity-0 group-hover:opacity-100 ${isSelected ? 'text-stone-300 hover:text-stone-900 hover:bg-stone-50' : 'text-stone-200 hover:text-rose-500 hover:bg-rose-50'}`}
       >
         {deletingId === preset.id ? (
           <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
         ) : (
-          <TrashIcon className="w-4 h-4" />
+          <TrashIcon className="w-3.5 h-3.5" />
         )}
       </button>
     </div>
@@ -170,23 +177,20 @@ const PresetModal: React.FC<PresetModalProps> = ({
   const [isReordering, setIsReordering] = useState(false);
   const [orderError, setOrderError] = useState<string | null>(null);
   const [mobileView, setMobileView] = useState<'list' | 'edit'>('list');
+  const [activeSubTab, setActiveSubTab] = useState<'profile' | 'learning' | 'advanced'>('profile');
   const [showSuccessToast, setShowSuccessToast] = useState(false);
-  const [showOrderSuccessToast, setShowOrderSuccessToast] = useState(false);
+  const [isIconSelectorOpen, setIsIconSelectorOpen] = useState(false);
   const [expandingPlatform, setExpandingPlatform] = useState<Platform | null>(null);
   const [editingSampleId, setEditingSampleId] = useState<string | null>(null);
-  const [isTrainingLoading, setIsTrainingLoading] = useState(false);
-  const [trainingError, setTrainingError] = useState<string | null>(null);
   const [modalText, setModalText] = useState('');
-  const [isPromptExpanded, setIsPromptExpanded] = useState(false);
-  const [isSanitizing, setIsSanitizing] = useState(false);
-  const [isAnalyzingImage, setIsAnalyzingImage] = useState(false);
-  const [isAnalyzingPersona, setIsAnalyzingPersona] = useState(false);
-  const [personaYaml, setPersonaYaml] = useState<string | null>(null);
-  const [hasUnanalyzedChanges, setHasUnanalyzedChanges] = useState(false);
   const [selectedPlatforms, setSelectedPlatforms] = useState<Platform[]>([Platform.General]);
-  const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const [isTrainingLoading, setIsTrainingLoading] = useState(false);
+  const [isSanitizing, setIsSanitizing] = useState(false);
+  const [learningMode, setLearningMode] = useState<'sns' | 'maps'>('sns');
+  const [isAnalyzingPersona, setIsAnalyzingPersona] = useState(false);
+  const [isStyleExpanded, setIsStyleExpanded] = useState(false);
 
-  const [isIconSelectorOpen, setIsIconSelectorOpen] = useState(false);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const isSaving = isExternalSaving || isInternalSaving;
 
@@ -194,22 +198,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
     setOrderedPresets(presets);
   }, [presets]);
 
-  // Lock body scroll
-  useEffect(() => {
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, []);
-
-  useEffect(() => {
-    if (initialPresetId) {
-      handleLoadPreset(initialPresetId);
-      setMobileView('edit');
-    }
-  }, [initialPresetId]);
-
-  // Initialize state when editing an existing preset
+  // Handle Preset Switching
   useEffect(() => {
     if (selectedPresetId) {
       const preset = presets.find(p => p.id === selectedPresetId);
@@ -217,14 +206,12 @@ const PresetModal: React.FC<PresetModalProps> = ({
         setName(preset.name);
         setAvatar(preset.avatar || 'shop');
 
-        // Parse custom_prompt (supports legacy string or new JSON format)
         try {
           if (preset.custom_prompt) {
             if (preset.custom_prompt.trim().startsWith('{')) {
               const parsed = JSON.parse(preset.custom_prompt);
               setCustomPrompts(parsed);
 
-              // Migration: If 'General' exists, and specific platforms don't, copy 'General' to them
               if (parsed['General']) {
                 const updated = { ...parsed };
                 [Platform.X, Platform.Instagram, Platform.Line, Platform.GoogleMaps].forEach(p => {
@@ -234,7 +221,6 @@ const PresetModal: React.FC<PresetModalProps> = ({
                 setCustomPrompts(updated);
               }
             } else {
-              // Legacy string: Apply to all platforms
               const legacyVal = preset.custom_prompt;
               const initialPrompts: { [key: string]: string } = {};
               [Platform.X, Platform.Instagram, Platform.Line, Platform.GoogleMaps].forEach(p => {
@@ -253,43 +239,29 @@ const PresetModal: React.FC<PresetModalProps> = ({
           });
           setCustomPrompts(initialPrompts);
         }
-        setActivePromptTab(Platform.X); // Reset tab to X
       }
     } else {
-      // New Preset
       setName('');
       setAvatar('shop');
       setCustomPrompts({});
     }
-    setPersonaYaml(null);
-    setHasUnanalyzedChanges(false);
-    setMobileView('edit');
-  }, [selectedPresetId]);
+  }, [selectedPresetId, presets]);
 
-  const handleLoadPreset = (id: string) => {
-    const preset = presets.find((p) => p.id === id);
-    if (preset) {
-      setSelectedPresetId(id);
-      // The useEffect above will handle setting name, avatar, customPrompts, etc.
-    }
-  };
+  useEffect(() => {
+    setIsStyleExpanded(false);
+  }, [learningMode, selectedPresetId]);
 
   const handleStartNew = () => {
     setSelectedPresetId(null);
-    // The useEffect above will handle setting name, avatar, customPrompts, etc.
+    setMobileView('edit');
+    setActiveSubTab('profile');
   };
 
   const handleSave = async (overridePrompts?: { [key: string]: string }) => {
     if (!name.trim()) return;
     setIsInternalSaving(true);
     try {
-      // Logic to handle auto-analysis if needed (updating customPrompts active tab)
-      // For now, let's keep it simple: Save what's in the state.
-
-      // Fix: Use overridden leads (from immediate analysis) or current state
       let finalCustomPrompts = overridePrompts ? { ...customPrompts, ...overridePrompts } : { ...customPrompts };
-
-      // Reconstruct post_samples from trainingItems to ensure DB sync
       const currentPresetId = selectedPresetId || 'omakase';
       const relatedItems = trainingItems.filter(item => item.presetId === currentPresetId);
       const newPostSamples: { [key in Platform]?: string } = {};
@@ -305,8 +277,6 @@ const PresetModal: React.FC<PresetModalProps> = ({
         });
       });
 
-      // Serialize customPrompts
-      // Filter out empty strings to keep JSON clean
       const cleanedPrompts: { [key: string]: string } = {};
       Object.entries(finalCustomPrompts).forEach(([k, v]) => {
         if (v && v.trim()) cleanedPrompts[k] = v.trim();
@@ -317,34 +287,23 @@ const PresetModal: React.FC<PresetModalProps> = ({
         id: selectedPresetId || undefined,
         name,
         avatar,
-        custom_prompt: customPromptJSON, // Save as JSON string
+        custom_prompt: customPromptJSON,
         persona_yaml: null,
         post_samples: newPostSamples,
       });
 
-      // MIGRATION / COPY LOGIC:
-      // If we just created a NEW preset, the training items are currently orphaned in 'omakase' (or the source preset).
-      // We must COPY them to the new preset ID so they appear in the list.
       if (!selectedPresetId && result && 'id' in result && result.id) {
-        console.log('[PresetModal] New preset created. Migrating learning items...', result.id);
         const newId = result.id;
-
-        // Copy all currently visible items to the new ID
-        // We run this in parallel for speed, but catching errors individually
         await Promise.all(relatedItems.map(async (item) => {
           try {
-            // Pass 'manual' or keep original source? 'manual' is safer to ensure it sticks.
             await onToggleTraining(item.content, item.platform as any, newId, undefined, item.source || 'manual');
           } catch (e) {
             console.error('Failed to migrate item:', item.id, e);
           }
         }));
-
-        // Update local state to point to the new ID, so subsequent edits target the new preset
         setSelectedPresetId(newId);
       }
 
-      setHasUnanalyzedChanges(false);
       setShowSuccessToast(true);
       setTimeout(() => setShowSuccessToast(false), 3000);
     } catch (err) {
@@ -381,7 +340,6 @@ const PresetModal: React.FC<PresetModalProps> = ({
     }
   };
 
-  // Drag and Drop sensors
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
@@ -397,9 +355,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
     const newOrder = arrayMove(orderedPresets, oldIndex, newIndex);
     setOrderedPresets(newOrder);
 
-    // Save order to backend
     setIsReordering(true);
-    setOrderError(null);
     try {
       const res = await fetch('/api/me/presets/reorder', {
         method: 'PATCH',
@@ -408,59 +364,78 @@ const PresetModal: React.FC<PresetModalProps> = ({
       });
       if (!res.ok) throw new Error('Failed to save order');
       if (onReorder) await onReorder();
-      setShowOrderSuccessToast(true);
-      setTimeout(() => setShowOrderSuccessToast(false), 2000);
     } catch (err) {
       console.error('Failed to reorder:', err);
-      setOrderError('並び替えの保存に失敗しました');
-      setOrderedPresets(presets); // Only revert on error
+      setOrderedPresets(presets);
     } finally {
       setIsReordering(false);
     }
   };
 
-  const performPersonaAnalysis = async (): Promise<string | null> => {
-    const presetSamples = trainingItems
-      .filter(item => item.presetId === (selectedPresetId || 'omakase'))
-      // If we want to filter samples by the ACTIVE tab platform, we could?
-      // But usually "Persona Analysis" looks at ALL samples to form a personality.
-      // Let's keep consuming ALL samples for now. 
+  const performPersonaAnalysis = async (overrideSamples?: { content: string, platform: string }[]): Promise<any> => {
+    // Current target platform based on tab mode
+    const targetKey = learningMode === 'maps' ? Platform.GoogleMaps : 'General';
+
+    // Filter samples relevant to the current mode
+    // SNS mode: Includes X, Instagram, Line, General
+    // Maps mode: Includes GoogleMaps
+    const samplesToUse = overrideSamples || trainingItems
+      .filter(item => {
+        const p = item.presetId === (selectedPresetId || 'omakase');
+        const plats = item.platform.split(',').map(s => s.trim());
+        const isMaps = plats.includes(Platform.GoogleMaps);
+        if (learningMode === 'maps') return p && isMaps;
+        return p && !isMaps;
+      })
       .map(item => ({
         content: item.content,
         platform: item.platform
       }));
 
-    if (presetSamples.length === 0) return null;
+    if (samplesToUse.length === 0) return null;
 
     setIsAnalyzingPersona(true);
     try {
       const res = await fetch('/api/ai/analyze-persona', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ samples: presetSamples }),
+        body: JSON.stringify({ samples: samplesToUse }),
       });
       const data = await res.json();
       if (data.instruction) {
         let instruction = data.instruction;
-        try {
-          // If the AI returned a JSON string, parse it
-          if (typeof instruction === 'string' && instruction.trim().startsWith('{')) {
-            const parsed = JSON.parse(instruction);
-            setCustomPrompts(prev => ({ ...prev, ...parsed }));
-          } else if (typeof instruction === 'object') {
-            setCustomPrompts(prev => ({ ...prev, ...instruction }));
-          } else {
-            // Fallback for flat string
-            setCustomPrompts(prev => ({ ...prev, [activePromptTab]: instruction }));
+        const newPrompts = { ...customPrompts };
+
+        // Helper to extract string content
+        let contentToApply = '';
+
+        if (typeof instruction === 'string' && !instruction.trim().startsWith('{')) {
+          contentToApply = instruction;
+        } else {
+          try {
+            const parsed = typeof instruction === 'string' ? JSON.parse(instruction) : instruction;
+            if (learningMode === 'sns') {
+              contentToApply = parsed.General || (typeof instruction === 'string' ? instruction : JSON.stringify(instruction));
+            } else {
+              contentToApply = parsed.GoogleMaps || (typeof instruction === 'string' ? instruction : JSON.stringify(instruction));
+            }
+          } catch (e) {
+            contentToApply = typeof instruction === 'string' ? instruction : JSON.stringify(instruction);
           }
-        } catch (e) {
-          console.warn('Failed to parse analysis JSON, falling back to flat string:', e);
-          setCustomPrompts(prev => ({ ...prev, [activePromptTab]: instruction }));
         }
 
-        setPersonaYaml(null); // Clear legacy YAML
-        setHasUnanalyzedChanges(false);
-        return typeof instruction === 'string' ? instruction : JSON.stringify(instruction);
+        // Apply to Targets
+        if (learningMode === 'sns') {
+          newPrompts['General'] = contentToApply;
+          newPrompts[Platform.X] = contentToApply;
+          newPrompts[Platform.Instagram] = contentToApply;
+          newPrompts[Platform.Line] = contentToApply;
+        } else {
+          newPrompts[Platform.GoogleMaps] = contentToApply;
+        }
+
+        setCustomPrompts(newPrompts);
+        return newPrompts;
       } else {
         throw new Error(data.error || 'Failed to analyze persona');
       }
@@ -472,34 +447,10 @@ const PresetModal: React.FC<PresetModalProps> = ({
     }
   };
 
-  const renderAvatar = (id: string, className = "w-6 h-6") => {
+  const renderAvatarIcon = (id: string, className = "w-5 h-5") => {
     const opt = AVATAR_OPTIONS.find(o => o.id === id) || AVATAR_OPTIONS[0];
     const Icon = opt.icon;
     return <Icon className={className} />;
-  };
-
-  const enforceSaveNameWidth = (n: string) => {
-    return n.length > 20 ? n.slice(0, 20) : n;
-  };
-
-  const handleNameChange = async (val: string) => {
-    const limited = enforceSaveNameWidth(val);
-    setName(limited);
-  };
-
-  const isSaveDisabled = isSaving || !name.trim();
-
-  // Handle mobile view transitions
-  const editVisibilityClass = mobileView === 'edit' ? 'flex' : 'hidden md:flex';
-  const listVisibilityClass = mobileView === 'list' ? 'flex' : 'hidden md:flex';
-
-  const goToListView = () => setMobileView('list');
-
-  const getSamplesForPlatform = (platform: Platform): TrainingItem[] => {
-    return trainingItems.filter(item =>
-      item.platform === platform &&
-      item.presetId === (selectedPresetId || 'omakase')
-    );
   };
 
   const handleToggleTrainingInternal = async (text: string, platforms: Platform[]) => {
@@ -508,1004 +459,650 @@ const PresetModal: React.FC<PresetModalProps> = ({
     if (!normalizedText || platforms.length === 0) return;
 
     const replaceId = editingSampleId || undefined;
-    const platformString = platforms.join(', ') as any; // Join for DB storage
+    const platformString = platforms.join(', ') as any;
 
     setIsTrainingLoading(true);
-    setTrainingError(null);
     try {
       await onToggleTraining(normalizedText, platformString, presetId, replaceId, 'manual');
-      setHasUnanalyzedChanges(true);
+
+      // Close overlay immediately for better UX
       setExpandingPlatform(null);
-      setEditingSampleId(null); // Reset editing state
+      setEditingSampleId(null);
+      setModalText('');
+
+      // Construct optimistic samples for immediate analysis
+      let newSamples = trainingItems
+        .filter(item => item.presetId === presetId)
+        .map(item => ({ content: item.content, platform: item.platform }));
+
+      if (replaceId) {
+        newSamples = newSamples.map(s => {
+          // Identify the item being replaced. Since we don't have IDs in the mapped array,
+          // we should actually map from trainingItems directly but replace the specific index?
+          // Simplest is to filter out the old one by ID from trainingItems first.
+          // Yet, here we only have mapped content.
+          // Let's re-filter trainingItems properly.
+          return s; // placeholder
+        });
+        // Re-do strictly:
+        const baseItems = trainingItems.filter(item => item.presetId === presetId && item.id !== replaceId);
+        newSamples = baseItems.map(i => ({ content: i.content, platform: i.platform }));
+        newSamples.push({ content: normalizedText, platform: platformString });
+      } else {
+        newSamples.push({ content: normalizedText, platform: platformString });
+      }
+
+      // Trigger Auto-Analysis
+      setIsAnalyzingPersona(true); // Show spinner immediately
+      const newStyle = await performPersonaAnalysis(newSamples);
+
+      if (newStyle && name.trim()) {
+        // Auto-save the new style to the preset if we have a name
+        // We pass the newStyle as overridePrompts to handleSave
+        // Note: handleSave expects {[key:string]: string}.
+        // performPersonaAnalysis returns object or string. We normalized it to return object above.
+        await handleSave(newStyle as any);
+      }
+
     } catch (err: any) {
-      const msg = err.message || '保存に失敗しました';
-      setTrainingError(msg);
-      alert(`[ERROR] ${msg}`);
+      alert(`保存に失敗しました: ${err.message}`);
     } finally {
       setIsTrainingLoading(false);
+      setIsAnalyzingPersona(false);
     }
   };
 
-  const renderUnifiedSamples = () => {
-    const samples = trainingItems.filter(item =>
-      item.presetId === (selectedPresetId || 'omakase')
-    );
+  const currentPresetSamples = useMemo(() => {
+    return trainingItems.filter(item => item.presetId === (selectedPresetId || 'omakase'));
+  }, [trainingItems, selectedPresetId]);
 
-    // Group samples by platform
-    const groupedSamples = useMemo(() => {
-      const groups: Record<string, TrainingItem[]> = {};
-      samples.forEach(item => {
-        // Normalize platform key
-        const keys = item.platform.split(',').map(p => p.trim());
-        keys.forEach(k => {
-          // Map to main platforms or 'Other'
-          let key = k;
-          if (k.includes('Instagram')) key = Platform.Instagram;
-          else if (k.includes('X') || k.includes('Twitter')) key = Platform.X;
-          else if (k.includes('LINE') || k.includes('Line')) key = Platform.Line;
-          else if (k.includes('Google') || k.includes('Map')) key = Platform.GoogleMaps;
-          else if (k === 'General') key = Platform.General;
+  // Tabbed Content Renders
+  const renderProfileTab = () => (
+    <div className="space-y-10 animate-in fade-in slide-in-from-bottom-2 duration-500">
+      <div className="space-y-6">
+        <label className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em] mb-4 block">Basic Information</label>
 
-          if (!groups[key]) groups[key] = [];
-          // Avoid duplicates if multiple keys point to same platform group (rare)
-          if (!groups[key].find(i => i.id === item.id)) {
-            groups[key].push(item);
-          }
-        });
-      });
-      return groups;
-    }, [samples]);
-
-    const platformOrder = [Platform.Instagram, Platform.X, Platform.Line, Platform.GoogleMaps, Platform.General];
-
-    // State for expanded sections (default to all collapsed)
-    const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
-      [Platform.Instagram]: false,
-      [Platform.X]: false,
-      [Platform.Line]: false,
-      [Platform.GoogleMaps]: false,
-      [Platform.General]: false,
-    });
-
-    const toggleSection = (platform: string) => {
-      setExpandedSections(prev => ({
-        ...prev,
-        [platform]: !prev[platform]
-      }));
-    };
-
-    const getPlatformIcon = (platform: string) => {
-      switch (platform) {
-        case Platform.Instagram: return <InstagramIcon className="w-5 h-5" />;
-        case Platform.X: return <span className="font-bold text-lg leading-none">𝕏</span>;
-        case Platform.Line: return <LineIcon className="w-5 h-5" />;
-        case Platform.GoogleMaps: return <div className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center text-white text-[10px] font-bold">G</div>;
-        default: return <SparklesIcon className="w-5 h-5" />;
-      }
-    };
-
-    const getPlatformLabel = (platform: string) => {
-      switch (platform) {
-        case Platform.Instagram: return 'Instagram';
-        case Platform.X: return 'X (Twitter)';
-        case Platform.Line: return 'LINE Official';
-        case Platform.GoogleMaps: return 'Google Maps';
-        default: return 'General / Other';
-      }
-    };
-
-    return (
-      <div className="py-8 md:py-12 px-6 md:px-10">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
-          <div className="flex items-center gap-5">
-            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] bg-indigo-950`}>
-              <MagicWandIcon className="w-7 h-7" />
-            </div>
-            <div>
-              <h4 className="text-sm md:text-lg font-black text-black tracking-tight leading-none mb-1.5">学習データ・ベース</h4>
-              <div className="flex items-center gap-2.5">
-                <span className="text-[10px] md:text-[11px] font-black text-slate-400 uppercase tracking-widest leading-none">
-                  {samples.length} / 50 Samples
-                </span>
-                <span className="px-2 py-0.5 bg-indigo-50 text-indigo-600 text-[9px] font-black rounded-md border border-indigo-100 uppercase tracking-wider">Stored</span>
+        <div className="flex flex-col md:flex-row gap-8 items-start">
+          <div className="flex flex-col items-center gap-4">
+            <button
+              onClick={() => setIsIconSelectorOpen(!isIconSelectorOpen)}
+              className="w-24 h-24 rounded-[2rem] bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-sm hover:shadow-md transition-all active:scale-95 group relative overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/0 to-indigo-500/5 group-hover:to-indigo-500/10 transition-all" />
+              <div className="relative transform group-hover:scale-110 transition-transform">
+                {renderAvatarIcon(avatar, "w-10 h-10")}
               </div>
-            </div>
+              <div className="absolute bottom-1 right-1 w-6 h-6 bg-white rounded-full border border-stone-100 flex items-center justify-center text-stone-400 shadow-sm">
+                <ChevronDownIcon className={`w-3 h-3 transition-transform ${isIconSelectorOpen ? 'rotate-180' : ''}`} />
+              </div>
+            </button>
+            <span className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">Icon Selection</span>
           </div>
-          <button
-            type="button"
-            onClick={() => {
-              setModalText('');
-              setEditingSampleId(null);
-              setExpandingPlatform(Platform.General);
-            }}
-            disabled={samples.length >= 50}
-            className={`flex items-center gap-2 px-6 py-3 text-[11px] font-black rounded-xl transition-all group border-2 border-black ${samples.length >= 50 ? 'bg-slate-100 text-slate-400' : 'bg-white text-black hover:bg-[var(--teal)] hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)]'}`}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" className="group-hover:rotate-90 transition-transform"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            <span>新しい学習文を追加</span>
-          </button>
+
+          <div className="flex-1 w-full space-y-2">
+            <h4 className="text-[13px] font-bold text-stone-900 tracking-tight ml-1">プロフィール名</h4>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="例: 店長（公式）, SNS担当者"
+              className="w-full px-6 py-5 bg-stone-50 border border-stone-100 focus:bg-white focus:border-indigo-300 focus:ring-4 focus:ring-indigo-500/5 outline-none rounded-3xl text-stone-800 font-bold placeholder-stone-300 transition-all shadow-sm"
+            />
+            <p className="text-[10px] text-stone-400 font-medium ml-1">
+              AIが「誰になりきって」投稿するかを決める最も基本的な設定です。
+            </p>
+          </div>
         </div>
 
-        {samples.length === 0 ? (
-          <div className="py-12 border-2 border-dashed border-slate-200 rounded-2xl flex flex-col items-center justify-center text-slate-300 gap-3 mx-6 md:mx-10">
-            <div className="w-16 h-16 rounded-full bg-slate-50 flex items-center justify-center">
-              <SparklesIcon className="w-8 h-8 opacity-20" />
+        {isIconSelectorOpen && (
+          <div className="p-6 bg-stone-50/50 rounded-[2.5rem] border border-stone-100 animate-in zoom-in-95 duration-300 overflow-hidden">
+            <div className="grid grid-cols-4 sm:grid-cols-6 gap-3">
+              {AVATAR_OPTIONS.map(opt => (
+                <button
+                  key={opt.id}
+                  onClick={() => { setAvatar(opt.id); setIsIconSelectorOpen(false); }}
+                  className={`aspect-square rounded-2xl flex items-center justify-center transition-all ${avatar === opt.id ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200' : 'bg-white border border-stone-100 text-stone-400 hover:text-stone-600 hover:border-stone-200'}`}
+                  title={opt.label}
+                >
+                  {React.createElement(opt.icon, { className: "w-6 h-6" })}
+                </button>
+              ))}
             </div>
-            <div className="text-center">
-              <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest">No data collected yet</p>
-              <p className="text-[10px] font-bold text-slate-300 mt-1">過去に書いた文章を学習させましょう</p>
-            </div>
-          </div>
-        ) : (
-          <div className="space-y-12">
-            {platformOrder.map(platform => {
-              const platformItems = groupedSamples[platform] || [];
-              if (platformItems.length === 0) return null;
-
-              const isExpanded = expandedSections[platform];
-
-              return (
-                <div key={platform} className="animate-in fade-in slide-in-from-bottom-2 duration-500">
-                  <button
-                    onClick={() => toggleSection(platform)}
-                    className="flex items-center gap-3 mb-4 group w-full text-left"
-                  >
-                    <div className={`p-2 rounded-lg border-2 border-black transition-all ${isExpanded ? 'bg-black text-white' : 'bg-white text-black group-hover:bg-slate-50'}`}>
-                      {getPlatformIcon(platform)}
-                    </div>
-                    <div className="flex-1">
-                      <h5 className="font-black text-sm md:text-base text-black flex items-center gap-3">
-                        {getPlatformLabel(platform)}
-                        <span className="px-2 py-0.5 bg-slate-100 text-slate-500 text-[9px] rounded-full border border-slate-200">
-                          {platformItems.length}
-                        </span>
-                      </h5>
-                    </div>
-                    <div className={`transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}>
-                      <ChevronDownIcon className="w-5 h-5 text-slate-400" />
-                    </div>
-                  </button>
-
-                  <div className={`
-                    flex overflow-x-auto pb-6 gap-3 px-1 
-                    md:gap-4
-                    transition-all duration-300 origin-top 
-                    ${isExpanded ? 'opacity-100 scale-100' : 'hidden opacity-0 scale-95'}
-                  `}>
-                    {platformItems.slice(0, 5).map((item) => (
-                      <div
-                        key={item.id}
-                        className={`
-                          group relative flex flex-col justify-between p-3 md:p-5 rounded-xl bg-white border-2 border-black 
-                          hover:bg-[var(--bg-beige)] hover:shadow-[3px_3px_0_0_rgba(0,0,0,1)] hover:-translate-y-0.5 
-                          transition-all cursor-pointer 
-                          min-h-[110px] w-[160px] shrink-0
-                          sm:min-h-[140px] sm:w-[280px]
-                        `}
-                        onClick={() => {
-                          setModalText(item.content);
-                          setEditingSampleId(item.id);
-                          setExpandingPlatform(item.platform);
-                          const platforms = item.platform.split(',').map(p => p.trim()) as Platform[];
-                          setSelectedPlatforms(platforms);
-                        }}
-                      >
-                        <div>
-                          <p className="text-[11px] md:text-[13px] text-black font-bold line-clamp-3 md:line-clamp-4 leading-relaxed whitespace-pre-wrap break-all">
-                            {item.content}
-                          </p>
-                        </div>
-                        <div className="mt-2 md:mt-3 flex items-end justify-between">
-                          <span className="text-[9px] md:text-[11px] font-black text-slate-300 uppercase tracking-wider scale-90 origin-bottom-left">{item.source === 'generated' ? 'AI' : 'Manual'}</span>
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              // Pass the *current section's* platform (e.g. "Instagram") instead of item.platform ("Instagram, X")
-                              // This enables the "Smart Delete" logic in App.tsx to remove just this tag.
-                              const targetPlatform = platform as Platform;
-                              onToggleTraining(item.content, targetPlatform, item.presetId, undefined, 'manual')
-                                .then(() => {
-                                  setHasUnanalyzedChanges(true);
-                                  // Re-expand the current section to show updated state (optional but nice)
-                                  if (!expandedSections[targetPlatform]) toggleSection(targetPlatform);
-                                });
-                            }}
-                            className="p-1 md:p-1.5 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all opacity-100 md:opacity-0 group-hover:opacity-100"
-                          >
-                            <TrashIcon className="w-3.5 h-3.5 md:w-4 md:h-4" />
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
           </div>
         )}
-      </div>
-    );
-  };
-
-  const modalBody = (
-    <div className="flex h-full bg-white relative">
-      {/* SIDEBAR: Profile List */}
-      <div
-        className={`w-full md:w-[420px] shrink-0 border-r-[3px] border-black flex flex-col bg-[var(--bg-beige)] overflow-hidden ${listVisibilityClass}`}
-      >
-        <div className="p-8 border-b-[3px] border-black flex items-center justify-between shrink-0 bg-[var(--bg-beige)]">
-          <div>
-            <h2 className="font-black text-xl text-black tracking-tight">AIプロファイル</h2>
-            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-1">Management</p>
-          </div>
-          <button
-            onClick={handleStartNew}
-            className="p-3 rounded-xl transition-all active:scale-95 group border-2 bg-white text-black border-black hover:bg-[#F5CC6D] hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px]"
-          >
-            <MagicWandIcon className="w-6 h-6 group-hover:rotate-12 transition-transform" />
-          </button>
-        </div>
-
-        <div className="px-8 pb-4 relative">
-          {showOrderSuccessToast && (
-            <div className="absolute inset-x-0 -top-2 px-8 z-50 animate-in slide-in-from-top-1 fade-in duration-300">
-              <div className="bg-green-500 text-white text-[10px] font-black uppercase tracking-[0.2em] py-1.5 rounded-full text-center shadow-lg shadow-green-100 flex items-center justify-center gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></div>
-                順序を保存しました
-              </div>
-            </div>
-          )}
-        </div>
-
-        <div className="flex-1 overflow-hidden flex flex-col p-6 space-y-6">
-          <div className="mb-6 bg-indigo-50/50 border border-indigo-100/50 rounded-2xl p-4">
-            <p className="text-[11px] text-indigo-900/80 font-bold leading-relaxed flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse shadow-sm shadow-indigo-200"></span>
-              上位3件が入力画面に表示されます
-            </p>
-          </div>
-
-          <div className="flex-1 overflow-y-auto space-y-3 no-scrollbar pb-6 px-1">
-            {orderedPresets.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-20 text-center space-y-3 opacity-60">
-                <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center text-slate-300 mb-2">
-                  <BookmarkIcon className="w-8 h-8" />
-                </div>
-                <div className="text-xs font-bold text-slate-400">
-                  プリセットがありません
-                </div>
-                <button onClick={handleStartNew} className="text-xs font-black text-indigo-500 hover:underline">
-                  新しく作成する
-                </button>
-              </div>
-            ) : (
-              <DndContext
-                sensors={sensors}
-                collisionDetection={closestCenter}
-                onDragEnd={handleDragEnd}
-              >
-                <SortableContext
-                  items={orderedPresets.map((preset) => preset.id)}
-                  strategy={verticalListSortingStrategy}
-                >
-                  <div className="space-y-3">
-                    {orderedPresets.map((preset) => (
-                      <SortablePresetRow
-                        key={preset.id}
-                        preset={preset}
-                        deletingId={deletingId}
-                        isReordering={isReordering}
-                        onSelect={handleLoadPreset}
-                        onDelete={handleDeletePreset}
-                        isSelected={selectedPresetId === preset.id}
-                      />
-                    ))}
-                  </div>
-                </SortableContext>
-              </DndContext>
-            )}
-            {orderedPresets.length >= 10 && (
-              <div className="bg-rose-50 border border-rose-100 rounded-2xl p-4">
-                <p className="text-[10px] text-rose-500 font-bold leading-tight">
-                  保存上限(10件)に達しています。既存の設定を編集してください。
-                </p>
-              </div>
-            )}
-          </div>
-          {orderError && (
-            <p className="mt-4 text-[10px] text-rose-500 font-bold animate-pulse">{orderError}</p>
-          )}
-        </div>
-      </div>
-
-      {/* MAIN CONTENT: Premium Form */}
-      <div
-        className={`flex-1 flex flex-col bg-white min-h-0 overflow-hidden h-full ${editVisibilityClass}`}
-      >
-        <div className="p-6 md:p-10 border-b-[3px] border-black flex items-center justify-between shrink-0 bg-white">
-          <div className="flex items-center gap-5">
-            <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-[var(--lavender)] border-2 border-black text-black shadow-[4px_4px_0_0_rgba(0,0,0,1)]">
-              <MagicWandIcon className="w-6 h-6" />
-            </div>
-            <div>
-              <h2 className="font-black text-lg md:text-2xl text-black tracking-tighter">プロファイルの編集</h2>
-              <p className="text-[9px] md:text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] opacity-80">Profile Editor</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-4">
-            {mobileView === 'edit' && (
-              <button
-                type="button"
-                onClick={goToListView}
-                className="md:hidden flex items-center gap-2 px-5 py-2.5 text-xs font-black text-black bg-white border-2 border-black rounded-full hover:bg-slate-50 transition-all active:scale-95 shadow-[2px_2px_0_0_rgba(0,0,0,1)]"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
-                戻る
-              </button>
-            )}
-            <button
-              onClick={onClose}
-              className="p-3 hover:bg-rose-50 rounded-xl text-slate-400 hover:text-rose-500 border-2 border-transparent hover:border-black hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)] transition-all active:scale-90"
-            >
-              <CloseIcon className="w-7 h-7" />
-            </button>
-          </div>
-        </div>
-
-        <div className="flex-1 overflow-y-auto p-6 md:p-12 space-y-10">
-          <div className="animate-in slide-in-from-bottom-4 duration-500">
-            <div className="space-y-8">
-              {/* Profile Settings (Name & Icon) - Unified Block */}
-              <div className="space-y-4">
-                <label className="block text-[10px] md:text-[11px] font-black text-black uppercase tracking-[0.3em] mb-3 md:mb-4">
-                  基本設定 (Basic Proflie)
-                </label>
-
-                <div className="bg-white border-2 border-black rounded-[24px] shadow-[4px_4px_0_0_rgba(0,0,0,1)] overflow-hidden">
-                  <div className="flex flex-row divide-x-2 divide-slate-100">
-                    {/* Part 1: Profile Name (Primary) */}
-                    <div className="flex-[3] p-4 md:p-8">
-                      <label className="block text-[10px] md:text-[11px] font-black text-black uppercase tracking-[0.3em] mb-3">
-                        プロフィール名
-                      </label>
-                      <div className="relative group">
-                        <input
-                          type="text"
-                          value={name}
-                          onChange={(e) => handleNameChange(e.target.value)}
-                          placeholder="例: 店長（公式）"
-                          className="w-full px-4 py-3 md:px-7 md:py-5 bg-slate-50 border-2 border-slate-200 focus:border-black focus:bg-white outline-none rounded-xl text-sm md:text-base text-black font-black placeholder-slate-300 transition-all"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Part 2: Icon Selection Trigger (Secondary) */}
-                    <div className={`p-4 md:p-8 flex flex-col justify-center transition-colors duration-300 ${isIconSelectorOpen ? 'bg-[var(--bg-beige)]/30' : 'bg-white'}`}>
-                      <div
-                        onClick={() => setIsIconSelectorOpen(!isIconSelectorOpen)}
-                        className="flex flex-col items-center justify-center gap-1 cursor-pointer group select-none"
-                      >
-                        <label className="block text-[10px] md:text-[11px] font-black text-black uppercase tracking-[0.3em] group-hover:text-indigo-600 transition-colors">
-                          アイコン
-                        </label>
-                        <div className="flex items-center gap-2">
-                          <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-[var(--gold)] border-2 border-black flex items-center justify-center text-black shadow-sm group-hover:scale-110 transition-transform">
-                            {renderAvatar(avatar, "w-5 h-5 md:w-6 md:h-6")}
-                          </div>
-                          <div className={`w-5 h-5 md:w-6 md:h-6 rounded-full bg-slate-100 border-2 border-black flex items-center justify-center transition-transform duration-300 ${isIconSelectorOpen ? 'rotate-180 bg-black border-black' : 'group-hover:bg-slate-200'}`}>
-                            <ChevronDownIcon className={`w-2.5 h-2.5 md:w-3 md:h-3 transition-colors ${isIconSelectorOpen ? 'text-white' : 'text-black'}`} />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Part 3: Expandable Icon Grid (Full Width) */}
-                  <div className={`transition-all duration-300 ease-in-out overflow-hidden border-t-2 border-slate-100 ${isIconSelectorOpen ? 'max-h-[500px] opacity-100 bg-[var(--bg-beige)]/10' : 'max-h-0 opacity-0'}`}>
-                    <div className="p-6 md:p-8">
-                      <div className="grid grid-cols-5 md:flex md:flex-wrap gap-2 md:gap-3">
-                        {AVATAR_OPTIONS.map((item) => {
-                          const Icon = item.icon;
-                          const isSelected = avatar === item.id;
-                          return (
-                            <button
-                              key={item.id}
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setAvatar(item.id);
-                              }}
-                              title={item.label}
-                              className={`
-                                w-11 h-11 md:w-14 md:h-14 flex items-center justify-center rounded-xl transition-all duration-300 relative shrink-0 border-2
-                                ${isSelected
-                                  ? 'bg-[var(--gold)] shadow-[3px_3px_0_0_rgba(0,0,0,1)] border-black text-black z-10 scale-105'
-                                  : 'bg-white text-slate-300 hover:bg-white hover:text-slate-500 border-slate-200 hover:border-black hover:shadow-sm'
-                                }
-                              `}
-                            >
-                              <Icon className="w-5 h-5 md:w-6 md:h-6" />
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="animate-in slide-in-from-bottom-4 duration-500 delay-100">
-            <label className="block text-[10px] md:text-[11px] font-black text-slate-800 uppercase tracking-[0.3em] mb-3 md:mb-5">
-              AIプロフィールの育成 (文体学習)
-            </label>
-            <div className="bg-white border-2 border-black rounded-[32px] overflow-hidden shadow-[4px_4px_0_0_rgba(0,0,0,1)]">
-              {/* Console Header: Status and Description */}
-              <div className="p-6 md:p-8 border-b-2 border-slate-100 bg-[var(--bg-beige)]/30">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center border border-indigo-100">
-                      <MagicWandIcon className="w-5 h-5 text-indigo-500" />
-                    </div>
-                    <div>
-                      <h4 className="text-sm md:text-base font-black text-black leading-tight">スタイル・インテリジェンス</h4>
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-0.5">Automated Optimization</p>
-                    </div>
-                  </div>
-                  <p className="text-[11px] md:text-sm text-slate-500 font-bold leading-relaxed max-w-[280px] md:max-w-xl">
-                    学習文から「書き方の癖」を抽出・最適化します。
-                    <span className="text-indigo-600 font-black block md:inline mt-1 md:mt-0 md:ml-2">※学習文追加後に下の解析を実行してください。</span>
-                  </p>
-                </div>
-
-                {/* Desktop Hints Row (Subtle) */}
-                <div className="hidden md:flex items-center gap-8 mt-4 pt-4 border-t border-slate-100/50">
-                  <div className="flex items-center gap-2">
-                    <MagicWandIcon className="w-3 h-3 text-indigo-400" />
-                    <span className="text-[10px] text-slate-400 font-bold">各SNS 5件まで登録可</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <SparklesIcon className="w-3 h-3 text-rose-400" />
-                    <span className="text-[10px] text-slate-400 font-bold">AI伏せ字で個人情報を保護</span>
-                  </div>
-                </div>
-
-                {/* Mobile-only condensed notice */}
-                <p className="md:hidden text-[10px] text-slate-400 font-bold mt-2">
-                  追加した学習文はプラットフォームごとに編集できます。
-                </p>
-              </div>
-
-              {/* Console Content: Unified Samples List */}
-              <div className="bg-white">
-                {renderUnifiedSamples()}
-              </div>
-            </div>
-          </div>
-
-
-          <div className="animate-in slide-in-from-bottom-4 duration-500 delay-200">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
-              <label className="block text-[10px] md:text-[11px] font-black text-black uppercase tracking-[0.3em]">
-                追加の指示プロンプト
-              </label>
-
-              {/* Action Buttons Group */}
-              <div className="flex items-center gap-2 p-1.5 bg-slate-100 rounded-[20px] border-2 border-black inline-flex self-start md:self-auto">
-                <button
-                  onClick={async () => {
-                    const samples = trainingItems.filter(item => item.presetId === (selectedPresetId || 'omakase'));
-                    if (samples.length === 0) {
-                      alert('分析するには学習文を1件以上追加してください。');
-                      return;
-                    }
-                    const instruction = await performPersonaAnalysis();
-                    if (instruction) {
-                      if (!name.trim()) {
-                        alert('解析が完了しました！この設定を保存するために、プロフィールの名前を入力してください。');
-                        return;
-                      }
-
-                      let override: { [key: string]: string } = {};
-                      try {
-                        if (typeof instruction === 'string' && instruction.trim().startsWith('{')) {
-                          override = JSON.parse(instruction);
-                        } else if (typeof instruction === 'object') {
-                          override = instruction;
-                        } else {
-                          override = { [activePromptTab]: instruction }; // Fallback
-                        }
-                      } catch (e) {
-                        override = { [activePromptTab]: instruction };
-                      }
-
-                      await handleSave(override);
-                    }
-                  }}
-                  disabled={isAnalyzingPersona}
-                  className={`flex items-center gap-1.5 px-4 py-2 rounded-2xl border-2 border-black transition-all text-[10px] font-black whitespace-nowrap
-                            ${isAnalyzingPersona
-                      ? 'bg-slate-200 text-slate-400 border-slate-300 shadow-none'
-                      : 'bg-indigo-600 text-white shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px]'}`}
-                >
-                  {isAnalyzingPersona ? (
-                    <div className="w-3 h-3 border-2 border-slate-400 border-t-transparent rounded-full animate-spin"></div>
-                  ) : (
-                    <MagicWandIcon className="w-3.5 h-3.5" />
-                  )}
-                  <span>AI解析を実行</span>
-                </button>
-                <button
-                  onClick={() => {
-                    const currentVal = customPrompts[activePromptTab] || '';
-                    if (!currentVal.trim()) return;
-                    if (!confirm('現在のタブの内容を全プラットフォームに反映しますか？')) return;
-
-                    const next = { ...customPrompts };
-                    [Platform.X, Platform.Instagram, Platform.Line, Platform.GoogleMaps].forEach(p => {
-                      next[p] = currentVal;
-                    });
-                    setCustomPrompts(next);
-                    setHasUnanalyzedChanges(true);
-                  }}
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-2xl bg-white border-2 border-black hover:bg-black/5 transition-all text-[10px] font-black text-black whitespace-nowrap"
-                >
-                  <SparklesIcon className="w-3.5 h-3.5" />
-                  <span>一括適用</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Platform Segmented Control (一体型タブ) */}
-            <div className="bg-slate-100 p-1 rounded-2xl border-2 border-black inline-flex w-full md:w-auto mb-3 overflow-hidden">
-              {[Platform.X, Platform.Instagram, Platform.Line, Platform.GoogleMaps].map(p => {
-                const isActive = activePromptTab === p;
-                return (
-                  <button
-                    key={p}
-                    onClick={() => setActivePromptTab(p)}
-                    className={`
-                      flex-1 md:flex-none px-3 md:px-5 py-2 rounded-xl text-[10px] font-black transition-all flex items-center justify-center gap-2 whitespace-nowrap
-                      ${isActive
-                        ? 'bg-black text-white shadow-[2px_2px_0_0_rgba(0,0,0,0.2)]'
-                        : 'text-slate-400 hover:text-black hover:bg-white/50'}
-                    `}
-                  >
-                    {/* Platform Specific Icons for distinction */}
-                    {p === Platform.X && <span className="w-3 h-3 flex items-center justify-center font-serif">𝕏</span>}
-                    {p === Platform.Instagram && <div className="w-3 h-3 rounded-[3px] border-[1.5px] border-current opacity-70" />}
-                    {p === Platform.Line && <div className="w-3 h-3 rounded-full border-[1.5px] border-current opacity-70" />}
-                    {p === Platform.GoogleMaps && <div className="w-3 h-3 rounded-[3px] border-[1.5px] border-current border-dotted opacity-70" />}
-
-                    <span>{p === Platform.Line ? 'LINE' : (p === Platform.GoogleMaps ? 'G-Maps' : (p === Platform.X ? 'X' : p))}</span>
-                  </button>
-                );
-              })}
-            </div>
-
-            <div className="relative p-1 rounded-[32px] group">
-              {/* Mobile View: Toggle Button to Open Modal */}
-              <div
-                className="md:hidden w-full px-5 py-5 bg-slate-50 border-2 border-black rounded-[24px] cursor-pointer hover:bg-slate-100 transition-all flex items-center justify-between group"
-                onClick={() => setIsPromptExpanded(true)}
-              >
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm text-black font-bold truncate opacity-60">
-                    {customPrompts[activePromptTab] || `${activePromptTab}専用のルールを入力...`}
-                  </p>
-                </div>
-                <div className="flex items-center gap-1.5 ml-4 shrink-0">
-                  <span className="text-[10px] font-black text-indigo-600 uppercase tracking-widest">編集する</span>
-                  <SparklesIcon className="w-3.5 h-3.5 text-indigo-500 group-hover:rotate-12 transition-transform" />
-                </div>
-              </div>
-
-              {/* Desktop View: Inline Textarea */}
-              <div className="hidden md:block">
-                <AutoResizingTextarea
-                  value={customPrompts[activePromptTab] || ''}
-                  onChange={(val) => {
-                    setCustomPrompts(prev => ({ ...prev, [activePromptTab]: val }));
-                    setHasUnanalyzedChanges(true);
-                  }}
-                  placeholder={`${activePromptTab}専用のルールを入力（例：ハッシュタグをつけて）`}
-                  className="w-full px-5 py-4 md:px-6 md:py-5 bg-white border-2 border-black focus:bg-[var(--bg-beige)] focus:shadow-[4px_4px_0_0_rgba(0,0,0,1)] outline-none rounded-[24px] text-sm md:text-base text-black font-bold leading-relaxed placeholder-slate-300 transition-all min-h-[80px] md:min-h-[100px]"
-                />
-              </div>
-            </div>
-            <p className="text-[10px] md:text-[11px] text-slate-500 font-black mt-3 md:mt-4 leading-relaxed flex items-center gap-1.5 md:gap-2">
-              <span className="w-2 h-2 rounded-full bg-[var(--teal)]"></span>
-              文体は「過去の投稿学習」が優先されます。ここは特定のルールや制約を指定するのに便利です。
-            </p>
-          </div>
-        </div>
-
-        <div className="p-8 md:p-10 border-t-[3px] border-black bg-white flex flex-col md:flex-row items-stretch justify-between gap-6 shrink-0 z-10 relative">
-          <div className="flex-1 flex flex-col gap-2 relative">
-            {showSuccessToast && (
-              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 z-[50] animate-in slide-in-from-bottom-2 fade-in duration-500">
-                <div className="bg-white text-black px-5 py-2.5 rounded-xl shadow-[4px_4px_0_0_rgba(0,0,0,1)] flex items-center gap-2 border-2 border-black whitespace-nowrap">
-                  <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
-                  <span className="text-[11px] font-black uppercase tracking-widest">保存しました</span>
-                </div>
-              </div>
-            )}
-            <button
-              onClick={() => handleSave()}
-              disabled={isSaveDisabled}
-              className="w-full bg-[var(--gold)] hover:bg-[var(--rose)] border-2 border-black disabled:opacity-50 disabled:cursor-not-allowed text-black px-8 py-4 md:py-6 rounded-xl font-black text-sm uppercase tracking-[0.3em] flex items-center justify-center gap-4 transition-all transform hover:translate-x-[-2px] hover:translate-y-[-2px] active:translate-x-0 active:translate-y-0 shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] group relative overflow-hidden"
-            >
-              {(isInternalSaving || isAnalyzingPersona) ? (
-                <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin"></div>
-              ) : (
-                <SaveIcon className="w-5 h-5 group-hover:scale-110 transition-transform relative z-10" />
-              )}
-              <span className="relative z-10">
-                {isAnalyzingPersona ? '解析＆保存中...' : (selectedPresetId ? '更新して保存' : '新規作成して保存')}
-              </span>
-            </button>
-          </div>
-        </div>
       </div>
     </div>
   );
 
-  const mainPortal = createPortal(
-    <div
-      className="fixed inset-0 z-[150] bg-slate-900/40 backdrop-blur-md transition-all duration-300 animate-in fade-in"
-      onClick={onClose}
-    >
-      <div className="hidden md:flex w-full h-full items-center justify-center p-6">
-        <div
-          className="w-full max-w-6xl h-[90vh] rounded-[24px] overflow-hidden animate-in zoom-in-95 duration-500 scale-100 border-[3px] border-black shadow-[8px_8px_0_0_rgba(0,0,0,1)]"
-          onClick={(e) => e.stopPropagation()}
-        >
-          {modalBody}
+  const renderLearningAndStyleTab = () => {
+    const currentStyleText = learningMode === 'sns'
+      ? (customPrompts['General'] || customPrompts[Platform.X] || '')
+      : (customPrompts[Platform.GoogleMaps] || '');
+
+    const filteredSamples = currentPresetSamples.filter(item => {
+      const isMaps = item.platform.includes(Platform.GoogleMaps);
+      return learningMode === 'maps' ? isMaps : !isMaps;
+    });
+
+    return (
+      <div className="space-y-10 animate-in fade-in slide-in-from-bottom-2 duration-500">
+        {/* MODE TOGGLE (Two-Track Identity) */}
+        <div className="flex justify-center">
+          <div className="bg-stone-100 p-1.5 rounded-[1.5rem] flex gap-1 shadow-inner border border-stone-200">
+            <button
+              onClick={() => setLearningMode('sns')}
+              className={`px-8 py-3 rounded-[1.2rem] font-black text-xs tracking-widest transition-all flex items-center gap-2 ${learningMode === 'sns' ? 'bg-white text-indigo-600 shadow-md transform scale-100' : 'text-stone-400 hover:text-stone-600'}`}
+            >
+              <SparklesIcon className="w-4 h-4" />
+              SNS IDENTITY
+            </button>
+            <button
+              onClick={() => setLearningMode('maps')}
+              className={`px-8 py-3 rounded-[1.2rem] font-black text-xs tracking-widest transition-all flex items-center gap-2 ${learningMode === 'maps' ? 'bg-white text-teal-600 shadow-md transform scale-100' : 'text-stone-400 hover:text-stone-600'}`}
+            >
+              <GoogleMapsIcon className="w-4 h-4" />
+              MAPS REPLIES
+            </button>
+          </div>
+        </div>
+
+        <div className="p-8 bg-gradient-to-br from-indigo-500/5 to-purple-500/5 rounded-[2.5rem] border border-indigo-100/50 space-y-4 relative overflow-hidden group">
+
+
+          {/* 1. Style Analysis Section */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between px-2">
+              <div className="space-y-1">
+                <label className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em] block">
+                  {learningMode === 'sns' ? 'Standard Tone & Vibe' : 'Customer Service Tone'}
+                </label>
+                <h4 className="font-black text-stone-900 tracking-tighter text-lg">
+                  {learningMode === 'sns' ? 'いつもの投稿スタイル' : '口コミ返信スタイル'}
+                </h4>
+              </div>
+              {/* Hidden Analyze button (Auto-run only? Or keep as manual fallback?) Keeping generic update button just in case */}
+              {/* If simple mode, minimal UI. Let's keep it clean. */}
+            </div>
+
+            <div className={`border rounded-[2.5rem] p-8 relative overflow-hidden group min-h-[160px] flex items-center ${learningMode === 'sns' ? 'bg-gradient-to-br from-indigo-50/50 to-purple-50/50 border-indigo-100' : 'bg-gradient-to-br from-teal-50/50 to-emerald-50/50 border-teal-100'}`}>
+              <div className="absolute top-0 right-0 p-10 opacity-5 group-hover:opacity-10 transition-opacity">
+                {learningMode === 'sns' ? <SparklesIcon className="w-32 h-32 text-indigo-600" /> : <GoogleMapsIcon className="w-32 h-32 text-teal-600" />}
+              </div>
+
+              <div className="relative z-10 w-full">
+                {currentStyleText ? (
+                  <div className="space-y-3">
+                    <p className={`text-sm font-bold text-stone-700 leading-relaxed whitespace-pre-wrap ${!isStyleExpanded ? 'line-clamp-3' : ''}`}>
+                      {currentStyleText}
+                    </p>
+                    <button
+                      onClick={() => setIsStyleExpanded(!isStyleExpanded)}
+                      className="text-[10px] font-black text-indigo-500 hover:text-indigo-600 uppercase tracking-widest flex items-center gap-1 transition-all"
+                    >
+                      {isStyleExpanded ? (
+                        <>
+                          <ChevronDownIcon className="w-3 h-3 rotate-180" />
+                          <span>Show Less</span>
+                        </>
+                      ) : (
+                        <>
+                          <ChevronDownIcon className="w-3 h-3" />
+                          <span>Read More</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center gap-3 opacity-40">
+                    <MagicWandIcon className="w-8 h-8 text-stone-300" />
+                    <p className="text-xs font-bold text-stone-400 text-center">
+                      {learningMode === 'sns'
+                        ? 'まだスタイルが学習されていません。\n下の「Add SNS Data」から普段の投稿を追加してください。'
+                        : 'まだ返信スタイルが学習されていません。\n下の「Add Reply Data」から過去の返信履歴を追加してください。'}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* 2. Training Data Section */}
+          <div className="space-y-6">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-2 pt-4 border-t border-stone-100">
+              <div className="space-y-1">
+                <label className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em] block">Learning Source</label>
+                <h4 className="font-black text-stone-900 tracking-tighter text-lg">
+                  {learningMode === 'sns' ? 'SNS学習データ' : '返信学習データ'}
+                </h4>
+              </div>
+              <button
+                onClick={() => {
+                  setModalText('');
+                  // Default platform based on mode
+                  setExpandingPlatform(learningMode === 'sns' ? Platform.General : Platform.GoogleMaps);
+                  setSelectedPlatforms(learningMode === 'sns' ? [Platform.General] : [Platform.GoogleMaps]);
+                }}
+                className={`flex items-center gap-2 px-6 py-3 border text-white rounded-2xl font-black text-[11px] uppercase tracking-widest transition-all shadow-lg active:scale-95 ${learningMode === 'sns' ? 'bg-stone-900 border-stone-900 hover:bg-indigo-600 hover:border-indigo-600 shadow-indigo-100' : 'bg-teal-700 border-teal-700 hover:bg-teal-600 hover:border-teal-600 shadow-teal-100'}`}
+              >
+                <PlusIcon className="w-4 h-4" />
+                <span>{learningMode === 'sns' ? 'Add SNS Data' : 'Add Reply Data'}</span>
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {filteredSamples.length === 0 ? (
+                <div className="col-span-full py-12 flex flex-col items-center justify-center text-center space-y-4 opacity-40">
+                  <div className="w-16 h-16 rounded-[2rem] bg-stone-50 border border-stone-100 flex items-center justify-center text-stone-200">
+                    <BookOpenIcon className="w-8 h-8" />
+                  </div>
+                  <div className="space-y-1">
+                    <p className="font-black text-stone-900 tracking-widest uppercase text-xs">No Data</p>
+                    <p className="text-[10px] font-bold text-stone-500">データがありません</p>
+                  </div>
+                </div>
+              ) : (
+                filteredSamples.map((item, idx) => (
+                  <div
+                    key={item.id}
+                    className="group p-5 bg-white border border-stone-100 rounded-[2rem] shadow-sm hover:shadow-md hover:border-indigo-100 transition-all flex flex-col justify-between min-h-[140px] relative overflow-hidden"
+                  >
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className={`text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest ${learningMode === 'sns' ? 'bg-indigo-50 text-indigo-400' : 'bg-teal-50 text-teal-500'}`}>
+                          {learningMode === 'sns' ? 'SNS Post' : 'Review Reply'}
+                        </span>
+                        <span className="text-[9px] font-black text-stone-300 uppercase tracking-widest">
+                          {item.source || 'manual'}
+                        </span>
+                      </div>
+                      <p className="text-xs text-stone-600 font-bold leading-relaxed line-clamp-3">
+                        {item.content}
+                      </p>
+                    </div>
+
+                    <div className="mt-4 flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0">
+                      <button
+                        onClick={() => {
+                          setModalText(item.content);
+                          setEditingSampleId(item.id);
+                          setExpandingPlatform(learningMode === 'sns' ? Platform.General : Platform.GoogleMaps); // Use logic to infer? Simplified to current mode.
+                          setSelectedPlatforms(learningMode === 'sns' ? [Platform.General] : [Platform.GoogleMaps]);
+                        }}
+                        className="p-2 text-stone-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
+                        title="編集"
+                      >
+                        <PencilIcon className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => onToggleTraining(item.content, item.platform as any, item.presetId, undefined, 'manual')}
+                        className="p-2 text-stone-400 hover:text-rose-500 hover:bg-rose-50 rounded-xl transition-all"
+                      >
+                        <TrashIcon className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
         </div>
       </div>
-      <div className="md:hidden fixed inset-x-0 bottom-0 flex justify-center p-0">
-        <div
-          className="w-full max-h-[98dvh] bg-transparent rounded-t-[32px] overflow-hidden flex flex-col animate-in slide-in-from-bottom-10 duration-500"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <div className="flex justify-center py-4 absolute top-0 inset-x-0 z-50 pointer-events-none">
-            <span className="block w-16 h-1.5 rounded-full bg-slate-300/50 backdrop-blur-sm" />
-          </div>
-          <div className="flex-1 overflow-hidden">{modalBody}</div>
+    );
+  };
+
+  const renderAdvancedTab = () => (
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-2">
+        <div className="space-y-1">
+          <label className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em] block">Advanced Settings</label>
+          <h4 className="font-black text-stone-900 tracking-tighter text-lg">手動オーバーライド設定</h4>
         </div>
+
+        <div className="flex items-center gap-2 bg-stone-100 p-1 rounded-2xl border border-stone-200 shadow-inner">
+          {activePromptTab !== Platform.GoogleMaps && (
+            <button
+              onClick={() => {
+                const current = customPrompts[activePromptTab] || '';
+                if (!current.trim()) return;
+                if (!confirm('SNSプラットフォーム（X, Instagram, LINE）すべてに反映しますか？')) return;
+                const next = { ...customPrompts };
+                [Platform.X, Platform.Instagram, Platform.Line].forEach(p => next[p] = current);
+                setCustomPrompts(next);
+              }}
+              className="px-4 py-2.5 font-black text-[11px] text-stone-500 hover:text-stone-900 transition-colors"
+            >
+              SNSへ一括適用
+            </button>
+          )}
+        </div>
+      </div>
+
+      <div className="bg-stone-50 border border-stone-100 rounded-[2.5rem] overflow-hidden">
+        <div className="flex border-b border-stone-100 bg-white/50">
+          {[Platform.X, Platform.Instagram, Platform.Line, Platform.GoogleMaps].map(p => (
+            <button
+              key={p}
+              onClick={() => setActivePromptTab(p)}
+              className={`flex-1 py-4 text-[11px] font-black transition-all border-b-2 ${activePromptTab === p ? 'text-indigo-600 border-indigo-600 bg-white' : 'text-stone-400 border-transparent hover:text-stone-600'}`}
+            >
+              {p === Platform.GoogleMaps ? 'G-Maps' : p}
+            </button>
+          ))}
+        </div>
+
+        <div className="p-8">
+          <AutoResizingTextarea
+            value={customPrompts[activePromptTab] || ''}
+            onChange={(val) => setCustomPrompts(prev => ({ ...prev, [activePromptTab]: val }))}
+            placeholder={`${activePromptTab} で投稿を生成する際の「こだわり」を直接編集できます。\n通常は「Learning & Style」タブの自動生成をお使いください。`}
+            className="w-full min-h-[240px] bg-transparent outline-none text-stone-800 font-bold leading-relaxed placeholder-stone-300 resize-none no-scrollbar text-base"
+          />
+        </div>
+      </div>
+
+      <p className="text-[10px] text-stone-400 font-medium px-4 leading-relaxed">
+        ※ここでは、AIが生成したスタイル定義を手動で修正できます。専門的なプロンプト調整が必要な場合にご利用ください。
+      </p>
+    </div>
+  );
+
+  const modalBody = (
+    <div className="flex h-full bg-stone-50 overflow-hidden text-stone-900 font-inter">
+      {/* SIDEBAR */}
+      <div className={`w-full md:w-[320px] lg:w-[380px] shrink-0 bg-stone-50 border-r border-stone-100 flex flex-col ${mobileView === 'list' ? 'flex' : 'hidden md:flex'}`}>
+        <div className="px-8 py-8 flex items-center justify-between">
+          <div className="space-y-1">
+            <h2 className="text-2xl font-black tracking-tight text-stone-900 leading-none">分身</h2>
+            <p className="text-[10px] font-bold text-stone-400 uppercase tracking-[0.2em]">Profiles</p>
+          </div>
+          <button
+            onClick={onClose}
+            className="md:hidden w-10 h-10 rounded-xl bg-white border border-stone-100 flex items-center justify-center text-stone-400 hover:text-stone-900 shadow-sm transition-all"
+          >
+            <CloseIcon className="w-5 h-5" />
+          </button>
+        </div>
+
+        <div className="px-8 pb-4 flex items-center justify-between">
+          <label className="text-[10px] font-black text-stone-300 uppercase tracking-widest">Select Profile</label>
+          <button
+            onClick={handleStartNew}
+            className="flex items-center gap-1.5 text-[10px] font-black text-indigo-600 hover:text-indigo-700 transition-colors uppercase tracking-widest"
+          >
+            <PlusIcon className="w-3.5 h-3.5" />
+            <span>Add New</span>
+          </button>
+        </div>
+
+        <div className="flex-1 overflow-y-auto p-6 pt-0 space-y-3 no-scrollbar">
+          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+            <SortableContext items={orderedPresets.map(p => p.id)} strategy={verticalListSortingStrategy}>
+              <div className="space-y-3">
+                {orderedPresets.map(p => (
+                  <SortablePresetRow
+                    key={p.id}
+                    preset={p}
+                    deletingId={deletingId}
+                    isReordering={isReordering}
+                    onSelect={(id) => { setSelectedPresetId(id); setMobileView('edit'); }}
+                    onDelete={handleDeletePreset}
+                    isSelected={selectedPresetId === p.id}
+                  />
+                ))}
+              </div>
+            </SortableContext>
+          </DndContext>
+
+          {orderedPresets.length === 0 && (
+            <div className="py-20 text-center opacity-40">
+              <ClockIcon className="w-10 h-10 mx-auto mb-4 text-stone-200" />
+              <p className="text-xs font-bold text-stone-500">プロフィールがありません</p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* MAIN VIEW */}
+      <div className={`flex-1 flex flex-col bg-white overflow-hidden shadow-2xl relative z-10 ${mobileView === 'edit' ? 'flex' : 'hidden md:flex'}`}>
+        {/* Header - Multi-row to avoid congestion */}
+        <div className="bg-white/80 backdrop-blur-md relative z-10 shrink-0 border-b border-stone-100 flex flex-col">
+          {/* Top Row: Actions & Status */}
+          <div className="px-6 py-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              {mobileView === 'edit' && (
+                <button
+                  onClick={() => setMobileView('list')}
+                  className="md:hidden w-10 h-10 rounded-xl bg-white border border-stone-100 flex items-center justify-center text-stone-400 hover:text-stone-900 shadow-sm transition-all mr-1"
+                >
+                  <ChevronDownIcon className="w-5 h-5 rotate-90" />
+                </button>
+              )}
+
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-sm shrink-0">
+                  {renderAvatarIcon(avatar, "w-5 h-5")}
+                </div>
+                <div className="min-w-0">
+                  <span className="text-[9px] font-black text-stone-300 uppercase tracking-[0.2em] block leading-none mb-1">Editing Profile</span>
+                  <h4 className="text-sm font-black text-stone-900 tracking-tight truncate max-w-[120px] md:max-w-[200px] leading-none">{name || 'Unnamed Profile'}</h4>
+                </div>
+              </div>
+            </div>
+
+            <button
+              onClick={onClose}
+              className="w-10 h-10 rounded-xl bg-stone-50 border border-stone-100 flex items-center justify-center text-stone-400 hover:text-rose-500 hover:bg-rose-50 transition-all font-bold"
+            >
+              <CloseIcon className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* Bottom Row: Pill Tabs */}
+          <div className="px-6 pb-6 pt-0 flex justify-center">
+            <div className="flex items-center gap-1.5 p-1 bg-stone-100 rounded-2xl border border-stone-200/50 shadow-inner">
+              <button
+                onClick={() => setActiveSubTab('profile')}
+                className={`px-6 py-2.5 text-[10px] font-black transition-all rounded-[1rem] tracking-widest whitespace-nowrap ${activeSubTab === 'profile' ? 'bg-white text-indigo-600 shadow-sm' : 'text-stone-400 hover:text-stone-600'}`}
+              >
+                PROFILE
+              </button>
+              <button
+                onClick={() => setActiveSubTab('learning')}
+                className={`px-6 py-2.5 text-[10px] font-black transition-all rounded-[1rem] tracking-widest whitespace-nowrap ${activeSubTab === 'learning' ? 'bg-white text-indigo-600 shadow-sm' : 'text-stone-400 hover:text-stone-600'}`}
+              >
+                LEARNING & STYLE
+              </button>
+              <button
+                onClick={() => setActiveSubTab('advanced')}
+                className={`px-6 py-2.5 text-[10px] font-black transition-all rounded-[1rem] tracking-widest whitespace-nowrap ${activeSubTab === 'advanced' ? 'bg-white text-indigo-600 shadow-sm' : 'text-stone-400 hover:text-stone-600'}`}
+              >
+                ADVANCED
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Tab Content */}
+        <div className="flex-1 overflow-y-auto p-8 md:p-12 no-scrollbar pb-32">
+          {activeSubTab === 'profile' && renderProfileTab()}
+          {activeSubTab === 'learning' && renderLearningAndStyleTab()}
+          {activeSubTab === 'advanced' && renderAdvancedTab()}
+        </div>
+
+        {/* Footer Actions */}
+        <div className="absolute bottom-0 left-0 right-0 p-8 pt-4 bg-gradient-to-t from-white via-white to-white/0 pointer-events-none">
+          <div className="max-w-4xl mx-auto flex gap-4 pointer-events-auto">
+            {!selectedPresetId ? (
+              <button
+                onClick={() => handleSave()}
+                disabled={isSaving || !name.trim()}
+                className="flex-1 py-5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-[2rem] font-black text-sm tracking-[0.2em] shadow-xl shadow-indigo-100 hover:opacity-90 active:scale-95 transition-all disabled:opacity-30 flex items-center justify-center gap-3"
+              >
+                {isSaving ? <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <SaveIcon className="w-5 h-5" />}
+                <span>CREATE PROFILE</span>
+              </button>
+            ) : (
+              <div className="flex-1 flex gap-3">
+                <button
+                  onClick={() => handleSave()}
+                  disabled={isSaving || !name.trim()}
+                  className="flex-1 py-5 bg-stone-900 text-white rounded-[2rem] font-black text-sm tracking-[0.2em] shadow-xl shadow-stone-100 hover:bg-indigo-600 active:scale-95 transition-all disabled:opacity-30 flex items-center justify-center gap-3"
+                >
+                  {isSaving ? <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <SaveIcon className="w-5 h-5" />}
+                  <span>UPDATE</span>
+                </button>
+                <button
+                  onClick={handleApplyCurrent}
+                  className="px-10 py-5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-[2rem] font-black text-sm tracking-[0.2em] shadow-xl shadow-indigo-100 hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-3"
+                >
+                  <MagicWandIcon className="w-5 h-5" />
+                  <span>APPLY</span>
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {showSuccessToast && (
+        <div className="fixed top-12 left-1/2 -translate-x-1/2 z-[300] animate-in slide-in-from-top-4 duration-500">
+          <div className="bg-stone-900 text-white px-8 py-3 rounded-full font-black text-xs tracking-widest uppercase shadow-2xl flex items-center gap-3">
+            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+            SAVED SUCCESSFULLY
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
+  const mainPortal = createPortal(
+    <div className="fixed inset-0 z-[150] flex items-center justify-center p-0 md:p-8">
+      {/* Backdrop */}
+      <div className="absolute inset-0 bg-stone-950/20 backdrop-blur-md animate-in fade-in duration-500" onClick={onClose} />
+
+      {/* Container */}
+      <div className="w-full max-w-7xl h-full md:max-h-[850px] bg-white md:rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-10 duration-700 relative z-10 flex flex-col border border-stone-100">
+        {modalBody}
       </div>
     </div>,
     document.body
   );
 
+  // Focus Mode Overlay (Learning Editor)
   const focusModeOverlay = expandingPlatform && createPortal(
-    <div className="fixed inset-0 z-[200] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 md:p-10 animate-in fade-in duration-300">
-      <div className="w-full max-w-4xl h-full max-h-[800px] bg-white rounded-3xl border-[3px] border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] flex flex-col overflow-hidden animate-in zoom-in-95 duration-500">
-        <div className="p-5 md:p-8 border-b-[3px] border-black flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shrink-0 bg-[var(--bg-beige)]">
-          <div className="flex items-center justify-between w-full md:w-auto">
-            <div className="flex items-center gap-3 md:gap-4">
-              <div className={`p-2.5 md:p-3 rounded-xl border-2 border-black ${expandingPlatform === Platform.X ? 'shadow-[2px_2px_0_0_#9B8FD4]' : 'shadow-[2px_2px_0_0_rgba(0,0,0,1)]'} ${expandingPlatform === Platform.Instagram ? 'bg-pink-50 text-pink-500' :
-                expandingPlatform === Platform.X ? 'bg-black text-white' :
-                  expandingPlatform === Platform.Line ? 'bg-[#06C755] text-white' :
-                    expandingPlatform === Platform.GoogleMaps ? 'bg-blue-600 text-white' :
-                      'bg-indigo-500 text-white'
-                }`}>
-                {expandingPlatform === Platform.Instagram && <InstagramIcon className="w-5 h-5 md:w-6 md:h-6" />}
-                {expandingPlatform === Platform.X && <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="md:w-6 md:h-6"><path d="M4 4l11.733 16h4.267l-11.733 -16z" /><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" /></svg>}
-                {expandingPlatform === Platform.Line && <LineIcon className="w-5 h-5 md:w-6 md:h-6" />}
-                {expandingPlatform === Platform.GoogleMaps && <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" className="md:w-6 md:h-6"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" /></svg>}
-                {expandingPlatform === Platform.General && <MagicWandIcon className="w-5 h-5 md:w-6 md:h-6" />}
-              </div>
-              <div>
-                <h3 className="font-black text-lg md:text-xl text-slate-800 tracking-tight">
-                  {expandingPlatform === Platform.General ? '文章スタイルの学習' : `${expandingPlatform} の文体学習`}
-                </h3>
-                <p className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest">Focus Mode Editor</p>
-              </div>
-            </div>
-            {/* Mobile Close Button */}
-            <button
-              onClick={() => {
-                setExpandingPlatform(null);
-                setEditingSampleId(null);
-                setSelectedPlatforms([Platform.General]);
-              }}
-              className="md:hidden p-3 bg-white hover:bg-slate-100 text-slate-500 rounded-xl transition-all border-2 border-slate-200 shadow-[2px_2px_0_0_rgba(0,0,0,1)] active:translate-x-0 active:translate-y-0"
-              title="閉じる"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-            </button>
-          </div>
-          <div className="flex flex-wrap items-center gap-2 md:gap-3 w-full md:w-auto">
-            <input
-              type="file"
-              ref={fileInputRef}
-              className="hidden"
-              accept="image/*"
-              onChange={async (e) => {
-                const file = e.target.files?.[0];
-                if (!file || !expandingPlatform) return;
+    <div className="fixed inset-0 z-[300] flex items-center justify-center p-0 md:p-8">
+      <div className="absolute inset-0 bg-indigo-950/20 backdrop-blur-xl animate-in fade-in duration-500" onClick={() => setExpandingPlatform(null)} />
 
-                setIsAnalyzingImage(true);
-                try {
-                  const reader = new FileReader();
-                  reader.onloadend = async () => {
-                    const base64 = reader.result as string;
-                    const res = await fetch('/api/ai/analyze-screenshot', {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({
-                        image: base64,
-                        mimeType: file.type,
-                        platform: expandingPlatform,
-                      }),
-                    });
-                    const data = await res.json();
-                    if (data.ok && data.text) {
-                      setModalText(prev => {
-                        const separator = prev.trim() ? '\n---\n' : '';
-                        return prev + separator + data.text;
-                      });
-                    }
-                  };
-                  reader.readAsDataURL(file);
-                } catch (err) {
-                  console.error('Image analysis failed:', err);
-                } finally {
-                  setIsAnalyzingImage(false);
-                  if (fileInputRef.current) fileInputRef.current.value = '';
-                }
-              }}
-            />
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              disabled={isAnalyzingImage}
-              className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-4 md:px-5 py-3 rounded-xl font-black text-[10px] md:text-[11px] transition-all transform hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 border-2 border-black shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)] ${expandingPlatform === Platform.Instagram ? 'bg-white text-pink-500 hover:bg-pink-50' :
-                expandingPlatform === Platform.X ? 'bg-white text-slate-700 hover:bg-slate-50' :
-                  expandingPlatform === Platform.Line ? 'bg-white text-[#06C755] hover:bg-green-50' :
-                    'bg-white text-blue-600 hover:bg-blue-50'
-                }`}
-            >
-              {isAnalyzingImage ? (
-                <>
-                  <div className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
-                  <span>解析中...</span>
-                </>
-              ) : (
-                <>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" /><circle cx="12" cy="13" r="4" /></svg>
-                  <span className="hidden md:inline">スクショから読み込む</span>
-                  <span className="md:hidden">スクショ読込</span>
-                </>
-              )}
-            </button>
-            <button
-              onClick={async () => {
-                const currentText = modalText;
-                if (!currentText.trim() || isSanitizing) return;
-                setIsSanitizing(true);
-                try {
-                  const res = await fetch('/api/ai/sanitize', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ text: currentText }),
-                  });
-                  const data = await res.json();
-                  if (data.ok && data.sanitized) {
-                    setModalText(data.sanitized);
-                  }
-                } catch (err) {
-                  console.error('Sanitization failed:', err);
-                } finally {
-                  setIsSanitizing(false);
-                }
-              }}
-              disabled={isSanitizing || !modalText.trim()}
-              className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-4 md:px-5 py-3 rounded-xl font-black text-[10px] md:text-[11px] transition-all transform hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 border-2 border-black shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)] ${expandingPlatform === Platform.Instagram ? 'bg-pink-50 text-pink-600 hover:bg-pink-100' :
-                expandingPlatform === Platform.X ? 'bg-slate-100 text-slate-700 hover:bg-slate-200' :
-                  expandingPlatform === Platform.Line ? 'bg-green-50 text-[#06C755] hover:bg-green-100' :
-                    'bg-blue-50 text-blue-600 hover:bg-blue-100'
-                }`}
-            >
-              {isSanitizing ? (
-                <>
-                  <div className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
-                  <span className="hidden md:inline">AIが名前を伏せ字にしています...</span>
-                  <span className="md:hidden">伏せ字中...</span>
-                </>
-              ) : (
-                <>
-                  <MagicWandIcon className="w-3.5 h-3.5 md:w-4 md:h-4" />
-                  <span className="hidden md:inline">AIで名前を伏せる</span>
-                  <span className="md:hidden text-[11px]">AI伏せ字</span>
-                </>
-              )}
-            </button>
-            <button
-              onClick={() => {
-                handleToggleTrainingInternal(modalText, selectedPlatforms);
-              }}
-              disabled={isTrainingLoading || selectedPlatforms.length === 0}
-              className={`flex-1 md:flex-none p-3 bg-[#001738] hover:bg-slate-900 text-white rounded-xl transition-all font-black text-sm px-6 md:px-10 border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] active:translate-x-0 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2`}
-            >
-              {isTrainingLoading && <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>}
-              {editingSampleId ? '内容を更新' : `${selectedPlatforms.length === 1 && selectedPlatforms[0] === Platform.General ? '共通' : '選択媒体'}として学習`}
-            </button>
-            <button
-              onClick={() => {
-                setExpandingPlatform(null);
-                setEditingSampleId(null);
-                setSelectedPlatforms([Platform.General]);
-              }}
-              className="hidden md:flex p-3 bg-white hover:bg-slate-100 text-slate-500 rounded-xl transition-all border-2 border-slate-200 shadow-[2px_2px_0_0_rgba(0,0,0,1)] active:translate-x-0 active:translate-y-0"
-              title="閉じる"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-            </button>
+      <div className="w-full max-w-4xl h-full md:max-h-[700px] bg-white md:rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-500 relative z-10 flex flex-col">
+        <div className="p-8 md:p-10 border-b border-stone-100 flex items-center justify-between bg-stone-50/50">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shadow-lg shadow-indigo-100">
+              <MagicWandIcon className="w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="font-black text-xl text-stone-900 tracking-tight">{editingSampleId ? '学習データの編集' : '新しい学習データ'}</h3>
+              <p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">Training Focus</p>
+            </div>
           </div>
+          <button
+            onClick={() => {
+              setExpandingPlatform(null);
+              setEditingSampleId(null);
+            }}
+            className="p-3 text-stone-300 hover:text-stone-900 transition-colors"
+          >
+            <CloseIcon className="w-7 h-7" />
+          </button>
         </div>
 
-        {/* Platform Selection Groups */}
-        {/* Platform Selection Groups - Compacted */}
-        <div className="px-5 md:px-6 py-2 bg-white border-b-2 border-slate-200 flex flex-col gap-2 shrink-0">
-          <div className="space-y-2">
-            {/* SNS Group */}
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest pl-1">SNS 投稿スタイル (発信向け)</span>
+        <div className="flex-1 overflow-y-auto p-10 space-y-8 no-scrollbar">
+          <div className="space-y-4">
+            {/* REMOVED: Simple text explanation instead of complex multiselect */}
+            <div className="flex items-center justify-between px-2">
+              <div className="space-y-1">
+                <h4 className="font-black text-stone-900 tracking-tight text-sm">
+                  {learningMode === 'sns' ? '普段の投稿文を入力' : '過去の返信内容を入力'}
+                </h4>
+                <p className="text-[10px] text-stone-500 font-medium">
+                  {learningMode === 'sns' ? 'X, Instagram, LINEなどの投稿をそのまま貼り付けてください。' : 'Googleマップでの口コミへの返信文を貼り付けてください。'}
+                </p>
               </div>
-              <div className="flex flex-wrap items-center gap-1.5">
-                {[Platform.General, Platform.Instagram, Platform.X, Platform.Line].map((p) => {
-                  const isCommonSelected = selectedPlatforms.includes(Platform.General);
-                  const isSelected = p === Platform.General ? isCommonSelected : (isCommonSelected || selectedPlatforms.includes(p));
-
-                  return (
-                    <button
-                      key={p}
-                      type="button"
-                      onClick={() => {
-                        if (p === Platform.General) {
-                          if (isCommonSelected) {
-                            setSelectedPlatforms([Platform.Instagram]); // Default back to one
-                          } else {
-                            // Select only SNS platforms (X, Instagram, Line) + General
-                            setSelectedPlatforms([Platform.General, Platform.X, Platform.Instagram, Platform.Line]);
-                          }
-                        } else {
-                          if (isSelected) {
-                            if (selectedPlatforms.length > 1) {
-                              // If common was active, unselecting one must turn off common
-                              setSelectedPlatforms(selectedPlatforms.filter(item => item !== p && item !== Platform.General));
-                            }
-                          } else {
-                            setSelectedPlatforms([...selectedPlatforms, p]);
-                          }
-                        }
-                      }}
-                      className={`
-                        px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all border-2
-                        ${isSelected
-                          ? `bg-black text-white border-black ${p === Platform.X ? 'shadow-[1px_1px_0_0_#9B8FD4]' : 'shadow-[1px_1px_0_0_rgba(0,0,0,1)]'} -translate-y-0.5`
-                          : 'bg-white text-slate-400 border-slate-100 hover:border-black hover:text-black'
-                        }
-                      `}
-                    >
-                      {p === Platform.General ? '共通スタイル' : p.split(' ')[0]}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Google Maps Group */}
-            <div className="pt-2 border-t border-slate-50 flex items-center justify-between">
-              <div className="flex flex-wrap items-center gap-1.5">
-                <span className="text-[9px] font-black text-blue-400 uppercase tracking-widest pl-1 mr-2">返信スタイル (対話向け)</span>
-                {[Platform.GoogleMaps].map((p) => {
-                  const isCommonSelected = selectedPlatforms.includes(Platform.General);
-                  const isSelected = selectedPlatforms.includes(p);
-                  return (
-                    <button
-                      key={p}
-                      type="button"
-                      onClick={() => {
-                        if (isSelected) {
-                          if (selectedPlatforms.length > 1) {
-                            setSelectedPlatforms(selectedPlatforms.filter(item => item !== p));
-                          }
-                        } else {
-                          setSelectedPlatforms([...selectedPlatforms, p]);
-                        }
-                      }}
-                      className={`
-                        px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all border-2
-                        ${isSelected
-                          ? 'bg-blue-600 text-white border-blue-600 shadow-[1px_1px_0_0_rgba(29,78,216,0.2)] -translate-y-0.5'
-                          : 'bg-white text-slate-400 border-slate-100 hover:border-blue-600 hover:text-blue-600'
-                        }
-                      `}
-                    >
-                      {p.split(' ')[0]}
-                    </button>
-                  );
-                })}
-              </div>
-              <span className="text-[9px] font-bold text-blue-500 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100 flex items-center gap-1 shrink-0 ml-auto">
-                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="8" /></svg>
-                単独学習推奨
+              <span className={`text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-widest ${learningMode === 'sns' ? 'bg-indigo-50 text-indigo-500' : 'bg-teal-50 text-teal-600'}`}>
+                {learningMode === 'sns' ? 'For SNS' : 'For Maps'}
               </span>
             </div>
           </div>
-        </div>
 
-        <div className="flex-1 overflow-hidden flex flex-col bg-slate-50">
-          <div className="flex-1 p-5 md:p-8 overflow-y-auto">
-            <AutoResizingTextarea
-              autoFocus
-              value={modalText}
-              onChange={setModalText}
-              className="w-full h-full min-h-[400px] bg-transparent outline-none text-base md:text-lg text-slate-800 font-bold leading-loose placeholder-slate-300 resize-none no-scrollbar"
-              placeholder={'ここに過去の投稿を貼り付けてください...'}
-            />
+          <div className="space-y-4 pt-2">
+            <div className="flex items-center justify-between px-2">
+              <span className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em]"></span>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  className="flex items-center gap-2 text-[10px] font-black text-indigo-600 hover:opacity-70"
+                >
+                  <TieIcon className="w-3.5 h-3.5" />
+                  スクショ解析
+                </button>
+                <button
+                  onClick={async () => {
+                    setIsSanitizing(true);
+                    const res = await fetch('/api/ai/sanitize', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: modalText }) });
+                    const data = await res.json();
+                    if (data.ok) setModalText(data.sanitized);
+                    setIsSanitizing(false);
+                  }}
+                  disabled={isSanitizing || !modalText.trim()}
+                  className="flex items-center gap-2 text-[10px] font-black text-indigo-600 hover:opacity-70 disabled:opacity-30"
+                >
+                  <SparklesIcon className="w-3.5 h-3.5" />
+                  AI伏せ字
+                </button>
+              </div>
+            </div>
+
+            <div className="bg-stone-50 border border-stone-100 rounded-[2.5rem] p-8">
+              <AutoResizingTextarea
+                autoFocus
+                value={modalText}
+                onChange={setModalText}
+                placeholder={learningMode === 'sns' ? "例：今日は雨だけど元気に営業中！足元に気をつけて来てね☔️ #カフェ" : "例：高評価ありがとうございます！またのご来店を心よりお待ちしております。"}
+                className="w-full min-h-[300px] bg-transparent outline-none text-stone-800 font-bold leading-relaxed placeholder-stone-200 resize-none no-scrollbar text-lg"
+              />
+            </div>
           </div>
         </div>
+
+        <div className="p-8 border-t border-stone-100 flex justify-end">
+          <button
+            onClick={() => handleToggleTrainingInternal(modalText, selectedPlatforms)}
+            disabled={isTrainingLoading || !modalText.trim()}
+            className="w-full md:w-auto px-12 py-5 bg-stone-900 text-white rounded-[2rem] font-black text-sm tracking-[0.2em] shadow-xl hover:bg-indigo-600 active:scale-95 transition-all disabled:opacity-30 flex items-center justify-center gap-3"
+          >
+            {isTrainingLoading ? <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <SaveIcon className="w-5 h-5" />}
+            <span>SAVE TRAINING DATA</span>
+          </button>
+        </div>
+
+        <input
+          type="file"
+          ref={fileInputRef}
+          className="hidden"
+          accept="image/*"
+          onChange={async (e) => {
+            const file = e.target.files?.[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onloadend = async () => {
+              const res = await fetch('/api/ai/analyze-screenshot', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ image: reader.result as string, mimeType: file.type, platform: expandingPlatform }) });
+              const data = await res.json();
+              if (data.ok) setModalText(prev => prev + (prev.trim() ? '\n---\n' : '') + data.text);
+            };
+            reader.readAsDataURL(file);
+          }}
+        />
       </div>
     </div>,
-    document.body
-  );
-
-  const promptEditOverlay = isPromptExpanded && createPortal(
-    <div className="fixed inset-0 z-[250] bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 md:p-10 animate-in fade-in duration-300">
-      <div
-        className="w-full max-w-4xl max-h-[90vh] md:max-h-[85vh] bg-white rounded-[32px] border-[3px] border-black shadow-[8px_8px_0_0_rgba(0,0,0,1)] flex flex-col overflow-hidden animate-in zoom-in-95 duration-500"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="p-6 md:p-8 border-b-[3px] border-black bg-[var(--bg-beige)] flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-4">
-            <div className="p-2.5 bg-black text-white rounded-xl">
-              <MagicWandIcon className="w-5 h-5" />
-            </div>
-            <div>
-              <h3 className="font-black text-lg md:text-xl text-black leading-tight">
-                {activePromptTab === Platform.Line ? 'LINE' : (activePromptTab === Platform.GoogleMaps ? 'Google Maps' : (activePromptTab === Platform.X ? 'X' : activePromptTab))} の追加ルール
-              </h3>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-0.5">Prompt Editor</p>
-            </div>
-          </div>
-          <button
-            onClick={() => setIsPromptExpanded(false)}
-            className="p-3 hover:bg-rose-50 rounded-xl text-slate-400 hover:text-rose-500 border-2 border-transparent hover:border-black transition-all"
-          >
-            <CloseIcon className="w-6 h-6" />
-          </button>
-        </div>
-
-        <div className="flex-1 p-6 md:p-10 bg-slate-50 overflow-y-auto min-h-[200px] md:min-h-[300px]">
-          <AutoResizingTextarea
-            autoFocus
-            value={customPrompts[activePromptTab] || ''}
-            onChange={(val) => {
-              setCustomPrompts(prev => ({ ...prev, [activePromptTab]: val }));
-              setHasUnanalyzedChanges(true);
-            }}
-            placeholder={`${activePromptTab}専用のルールを入力（例：ハッシュタグをつけて）`}
-            className="w-full h-full min-h-[250px] md:min-h-[350px] bg-transparent outline-none text-base md:text-lg text-black font-bold leading-relaxed placeholder-slate-300 transition-all no-scrollbar"
-          />
-        </div>
-
-        <div className="p-6 md:p-8 border-t-[3px] border-black bg-white flex justify-end shrink-0">
-          <button
-            onClick={() => setIsPromptExpanded(false)}
-            className="w-full md:w-auto px-10 py-4 font-black text-sm uppercase tracking-widest transition-all active:scale-95 rounded-2xl bg-black text-white shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:shadow-none translate-x-[-2px] translate-y-[-2px] hover:translate-x-0 hover:translate-y-0"
-          >
-            設定を完了する
-          </button>
-        </div>
-      </div>
-    </div >,
     document.body
   );
 
@@ -1513,7 +1110,6 @@ const PresetModal: React.FC<PresetModalProps> = ({
     <>
       {mainPortal}
       {focusModeOverlay}
-      {promptEditOverlay}
     </>
   );
 };

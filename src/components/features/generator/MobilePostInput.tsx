@@ -211,7 +211,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                         return (
                             <button
                                 key={p}
-                                onClick={() => onSetActivePlatform(p)}
+                                onClick={() => handlePlatformSelect(p)}
                                 className={`
                                     group relative w-full px-6 py-5 rounded-[28px] flex items-center gap-5
                                     transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.98]
