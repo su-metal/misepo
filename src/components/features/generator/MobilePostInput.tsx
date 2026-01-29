@@ -223,10 +223,10 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                 `}
                             >
                                 <div className={`
-                                    w-13 h-13 rounded-2xl flex items-center justify-center transition-all duration-300
+                                    flex items-center justify-center transition-all duration-300
                                     ${isActive
-                                        ? 'bg-white text-[#6366F1]'
-                                        : 'bg-[#F5F5F5] text-[#111111] group-hover:bg-[#EAEAEA]'
+                                        ? 'text-[#6366F1]'
+                                        : 'text-[#111111]'
                                     }
                                 `}>
                                     {getPlatformIcon(p, {
