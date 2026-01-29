@@ -51,7 +51,7 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
     onPlusClick
 }) => {
     return (
-        <div className="sm:hidden fixed bottom-0 left-0 right-0 z-[110] px-6 pb-8 bg-transparent pointer-events-none">
+        <div className="sm:hidden fixed bottom-0 left-0 right-0 z-[110] px-6 pb-6 bg-transparent pointer-events-none">
             {/* The Floating Bar Background - Glassmorphic */}
             <div className="relative h-20 w-full flex items-center justify-between px-8 bg-white/80 backdrop-blur-2xl rounded-[40px] overflow-visible pointer-events-auto border border-white/60 shadow-[0_20px_50px_rgba(0,0,0,0.1)]">
 

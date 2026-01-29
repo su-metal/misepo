@@ -136,7 +136,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
   return (
     <div className="min-h-screen overflow-x-hidden bg-[var(--bg-beige)]">
 
-      <div className="max-w-[1400px] mx-auto py-4 sm:py-8 relative z-10">
+      <div className="max-w-[1400px] mx-auto pt-4 sm:pt-8 pb-0 relative z-10">
         {/* Header Module */}
         <div className="hidden sm:block mx-3 sm:mx-8 mb-10 transition-all duration-1000 animate-in fade-in slide-in-from-top-4">
           <GeneratorHeader
@@ -230,7 +230,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
 
           {/* Right Column: Results (4 Cols) */}
           <div className="hidden lg:col-span-4 lg:block">
-            <div ref={resultsRef} className="pb-8 md:pb-20 px-4">
+            <div ref={resultsRef} className="pb-4 md:pb-8 px-4">
               <PostResultTabs
                 results={flow.resultGroups}
                 activeTab={flow.activeTab}
@@ -259,16 +259,12 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
           </div>
         </div>
 
-        {/* Footnote */}
-        <p className="text-center text-[10px] font-black text-black opacity-30 uppercase tracking-widest mt-12 pb-8 sm:pb-0 animate-in fade-in duration-1000">
-          AI-Powered High Performance Content Generation
-        </p>
       </div>
 
       {/* Sticky Generation Footer */}
       <div className="hidden sm:block fixed bottom-0 left-0 right-0 z-[90]">
         <div className="absolute inset-x-0 bottom-0 h-24 md:h-32 bg-gradient-to-t from-[var(--bg-beige)] via-[var(--bg-beige)]/90 to-transparent pointer-events-none" />
-        <div className="relative px-4 py-3 pb-8 md:pb-12 safe-area-bottom flex items-center justify-center">
+        <div className="relative px-4 py-3 pb-4 md:pb-6 safe-area-bottom flex items-center justify-center">
           <button
             onClick={handleGenerate}
             disabled={flow.loading || !flow.inputText.trim()}
