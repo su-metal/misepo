@@ -232,8 +232,8 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                         <p className="text-[11px] text-[#666666] font-bold uppercase tracking-[0.2em]">Select your canvas</p>
                     </div>
 
-                    {/* Refined Bento Grid Platform Selection */}
-                    <div className="grid grid-cols-2 grid-rows-[125px_125px_auto] gap-3 px-1 mb-0 mt-4">
+                    {/* Standard 2x2 Grid Platform Selection */}
+                    <div className="grid grid-cols-2 gap-3 px-1 mb-8 mt-4">
                         {(() => {
                             const getPlatformDetails = (platform: Platform) => {
                                 switch (platform) {
@@ -272,10 +272,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             return [Platform.Instagram, Platform.X, Platform.Line, Platform.GoogleMaps].map((p, idx) => {
                                 const isActive = platforms.includes(p);
                                 const details = getPlatformDetails(p);
-                                const isInsta = p === Platform.Instagram;
-                                const isGoogle = p === Platform.GoogleMaps;
-                                const bentoClass = isInsta ? 'row-span-2 h-full' :
-                                    isGoogle ? 'col-span-2 h-[140px]' : 'h-full';
+                                const bentoClass = 'h-[160px]';
 
                                 return (
                                     <div
@@ -319,7 +316,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                     {details.tagline}
                                                 </span>
                                                 <div className="flex flex-col leading-tight">
-                                                    <h3 className={`font-black tracking-tighter ${p === Platform.Instagram ? 'text-2xl' : 'text-xl'} transition-colors duration-500 ${isActive ? 'text-black' : 'text-[#111111]'}`} style={{ fontFamily: 'Inter, sans-serif' }}>
+                                                    <h3 className={`font-black tracking-tighter text-xl transition-colors duration-500 ${isActive ? 'text-black' : 'text-[#111111]'}`} style={{ fontFamily: 'Inter, sans-serif' }}>
                                                         {details.name}
                                                     </h3>
                                                     <p className={`text-[11px] font-medium transition-opacity ${isActive ? 'text-black/50' : 'text-[#999999]'}`}>
