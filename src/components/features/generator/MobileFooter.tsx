@@ -76,7 +76,14 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
                 <button
                     onClick={onPlusClick}
                     disabled={isGenerating}
-                    className={`absolute top-[-26px] left-1/2 -translate-x-1/2 w-16 h-16 rounded-full flex items-center justify-center z-20 shadow-[0_15px_30px_rgba(0,0,0,0.2)] active:scale-90 transition-all duration-500 border-4 border-[#FAFAFA] ${isConfirmStep ? 'bg-[#111111] rotate-0 scale-110' : 'bg-[#111111] rotate-180 scale-100'}`}
+                    className={`
+                        absolute top-[-26px] left-1/2 -translate-x-1/2 w-16 h-16 rounded-full flex items-center justify-center z-20 
+                        shadow-[0_15px_30px_rgba(0,0,0,0.2)] active:scale-90 transition-all duration-500 border-4 border-[#FAFAFA]
+                        ${isConfirmStep
+                            ? 'bg-gradient-to-br from-[#6366F1] to-[#A855F7] rotate-0 scale-110 shadow-[0_10px_25px_rgba(168,85,247,0.4)] border-white'
+                            : 'bg-[#111111] rotate-180 scale-100 border-[#FAFAFA]'
+                        }
+                    `}
                     aria-label={isConfirmStep ? "Generate Post" : "New Post"}
                 >
                     <div className="relative w-full h-full flex items-center justify-center">

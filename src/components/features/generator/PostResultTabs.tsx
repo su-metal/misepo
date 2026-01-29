@@ -63,7 +63,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                 return {
                     icon: <div className="w-10 h-10 bg-[#111111] rounded-xl flex items-center justify-center text-white text-xl font-black shadow-sm border border-[#111111]">𝕏</div>,
                     label: 'X',
-                    actionColor: "bg-[#111111] text-white hover:bg-black shadow-lg",
+                    actionColor: "bg-[#111111] text-white shadow-[0_10px_30px_rgba(0,0,0,0.15)]",
                     actionLabel: "Xで投稿する",
                     contentClasses: "text-[16px] text-[#111111] font-bold leading-relaxed tracking-tight",
                     wrapperClass: "max-w-[375px]",
@@ -86,7 +86,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                             key="inst-toggle"
                             onClick={() => onIncludeFooterChange(!includeFooter)}
                             className={`flex items-center gap-3 px-4 py-2 rounded-xl transition-all text-[11px] font-black border ${includeFooter
-                                ? 'bg-[#111111] text-white border-[#111111] shadow-sm'
+                                ? 'bg-gradient-to-r from-[#111111] to-[#2D2D2D] text-white border-transparent shadow-md'
                                 : 'bg-[#FAFAFA] text-[#999999] border-[#E5E5E5]'
                                 }`}
                         >
@@ -94,7 +94,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                             <span className="tracking-[0.2em] uppercase">Footer</span>
                         </button>
                     ),
-                    actionColor: "bg-[#111111] text-white hover:bg-black shadow-lg",
+                    actionColor: "bg-[#111111] text-white shadow-[0_10px_30px_rgba(0,0,0,0.15)]",
                     actionLabel: "Instagramを起動",
                     contentClasses: "text-[15px] text-[#111111] font-bold leading-relaxed tracking-tight",
                     wrapperClass: "max-w-[340px]",
@@ -128,24 +128,26 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                         </div>
                     ),
                     label: 'LINE',
-                    actionColor: "bg-[#111111] hover:bg-black text-white shadow-lg",
+                    actionColor: "bg-[#111111] text-white shadow-[0_10px_30px_rgba(0,0,0,0.15)]",
                     actionLabel: "LINEで送る",
                     contentClasses: "text-[15px] text-[#111111] font-bold leading-relaxed tracking-tight",
                     wrapperClass: "max-w-[400px]",
                     brandTextColor: "text-[#111111]",
                     brandBgColor: "bg-[#FAFAFA]",
                     brandBorderColor: "border-[#E5E5E5]",
+                    shine: true,
                 };
             default:
                 return {
                     icon: null,
                     label: platform,
-                    actionColor: 'bg-[#111111] text-white hover:bg-black',
-                    actionLabel: '投稿する',
+                    actionColor: "bg-gradient-to-r from-[#111111] to-[#2D2D2D] text-white shadow-[0_10px_30px_rgba(0,0,0,0.15)]",
+                    actionLabel: "投稿する",
                     contentClasses: "text-base text-[#111111] font-black",
                     brandTextColor: "text-[#111111]",
                     brandBgColor: "bg-[#FAFAFA]",
                     brandBorderColor: "border-[#E5E5E5]",
+                    shine: true,
                 };
         }
     };
@@ -302,7 +304,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                                 onClick={() => onRefineToggle(gIdx, iIdx)}
                                                                 className={`flex items-center justify-center gap-4 py-6 rounded-[28px] text-[12px] font-black transition-all duration-500 uppercase tracking-[0.3em] overflow-hidden relative group
                                                                     ${refiningKey === `${gIdx}-${iIdx}`
-                                                                        ? 'bg-[#111111] text-white shadow-xl'
+                                                                        ? 'bg-gradient-to-r from-[#6366F1] to-[#A855F7] text-white shadow-[0_10px_25px_rgba(168,85,247,0.4)]'
                                                                         : 'bg-[#FAFAFA] text-[#999999] border border-[#E5E5E5] hover:bg-[#F5F5F5] hover:text-[#111111]'
                                                                     }`}
                                                             >
@@ -320,8 +322,10 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                                         onShare(res.platform, text);
                                                                     }
                                                                 }}
-                                                                className={`flex items-center justify-center gap-5 py-8 rounded-[40px] font-black text-lg transition-all duration-700 uppercase tracking-[0.4em] group mt-2 relative overflow-hidden shadow-xl active:scale-[0.98] ${theme.actionColor}`}
+                                                                className={`flex items-center justify-center gap-5 py-8 rounded-[40px] font-black text-lg transition-all duration-700 uppercase tracking-[0.4em] group mt-2 relative overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.15)] active:scale-[0.98] ${theme.actionColor}`}
                                                             >
+                                                                {/* Dynamic Shine Overlay */}
+                                                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
                                                                 <span className="relative z-10">{theme.actionLabel}</span>
                                                                 <ExternalLinkIcon className="w-6 h-6 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform relative z-10" />
                                                             </button>

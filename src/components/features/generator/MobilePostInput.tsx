@@ -217,7 +217,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                     transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.98]
                                     border shadow-sm
                                     ${isActive
-                                        ? 'bg-[#111111] text-white border-[#111111] shadow-[0_15px_30px_rgba(0,0,0,0.15)] translate-x-1'
+                                        ? 'bg-gradient-to-br from-[#6366F1] to-[#A855F7] text-white border-transparent shadow-[0_15px_30px_rgba(168,85,247,0.25)] translate-x-1'
                                         : 'bg-white border-[#E5E5E5] hover:bg-[#F5F5F5] hover:border-[#D4D4D4]'
                                     }
                                 `}
@@ -268,7 +268,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                 <div className="mt-4 p-6 rounded-[32px] bg-white border border-[#E5E5E5] relative overflow-hidden group shadow-sm hover:shadow-md transition-shadow">
                     <div className="absolute -right-4 -top-4 w-24 h-24 bg-[#F5F5F5] rounded-full blur-2xl opacity-50 group-hover:opacity-100 transition-opacity" />
                     <div className="relative z-10">
-                        <div className="inline-flex px-3 py-1 rounded-full bg-[#111111] text-[10px] font-black text-white uppercase tracking-widest mb-2">Premium</div>
+                        <div className="inline-flex px-3 py-1 rounded-full bg-gradient-to-r from-[#6366F1] to-[#A855F7] text-[10px] font-black text-white uppercase tracking-widest mb-2 shadow-[0_5px_15px_rgba(99,102,241,0.3)]">Premium</div>
                         <h4 className="text-lg font-black text-[#111111] mb-1">AI Omakase Mode</h4>
                         <p className="text-xs text-[#666666] leading-relaxed font-medium">Let our advanced AI handle the entire strategy and posting for you.</p>
                     </div>
@@ -279,7 +279,13 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
             {isStepDrawerOpen && (
                 <div className="fixed inset-0 z-[130] flex items-end">
                     {/* Immersive Backdrop */}
-                    <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" onClick={() => setIsStepDrawerOpen(false)} />
+                    <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" onClick={() => {
+                        setIsStepDrawerOpen(false);
+                        // Reset step to platform when closing from input/confirm steps
+                        if (mobileStep !== 'result') {
+                            setMobileStep('platform');
+                        }
+                    }} />
 
                     {/* Sliding Panel (Monochrome) */}
                     <div className={`absolute bottom-0 left-0 right-0 bg-[#FAFAFA] border-t border-[#E5E5E5] rounded-t-[54px] shadow-[0_-20px_60px_rgba(0,0,0,0.1)] animate-nyoki flex flex-col ${mobileStep === 'confirm' || mobileStep === 'result' ? 'h-[94vh]' : 'h-[88vh]'} ${mobileStep === 'result' ? 'pb-8 safe-area-bottom' : 'pb-24'}`}>
