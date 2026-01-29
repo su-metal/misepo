@@ -38,7 +38,7 @@ export const CompactPlatformSelector: React.FC<CompactPlatformSelectorProps> = (
                             <div className={`text-lg transition-all duration-300 ${isSelected ? 'text-[#6366F1]' : 'text-stone-400 grayscale opacity-60'}`}>
                                 {getPlatformIcon(p, {
                                     className: "w-5 h-5",
-                                    textFill: p === Platform.Line && isSelected ? "#111111" : (isSelected ? "#6366F1" : "currentColor")
+                                    textFill: p === Platform.Line && isSelected ? "#EFF0FE" : (isSelected ? "#6366F1" : "currentColor")
                                 })}
                             </div>
                             <span className={`

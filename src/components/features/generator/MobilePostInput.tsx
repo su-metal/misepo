@@ -231,7 +231,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                 `}>
                                     {getPlatformIcon(p, {
                                         className: "w-6 h-6",
-                                        textFill: p === Platform.Line && isActive ? "#111111" : (isActive ? "#6366F1" : "white")
+                                        textFill: p === Platform.Line && isActive ? "#EFF0FE" : (isActive ? "#6366F1" : "white")
                                     })}
                                 </div>
                                 <div className="flex flex-col text-left">

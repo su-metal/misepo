@@ -89,7 +89,7 @@ w-12 h-12 rounded-xl transition-all duration-300 flex items-center justify-cente
 `}>
                                 {getPlatformIcon(p, {
                                     className: "w-6 h-6",
-                                    textFill: p === Platform.Line && isSelected ? "#111111" : (isSelected ? "#6366F1" : "currentColor")
+                                    textFill: p === Platform.Line && isSelected ? "#EFF0FE" : (isSelected ? "#6366F1" : "currentColor")
                                 })}
                             </div>
                             <span className={`
