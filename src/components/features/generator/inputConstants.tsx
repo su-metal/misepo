@@ -53,6 +53,7 @@ export interface PostInputFormProps {
     isStyleLocked?: boolean;
     onReset?: () => void;
     resetTrigger?: number;
+    closeDrawerTrigger?: number; // New prop for closing drawer without reset
     // Result related props
     generatedResults?: any[]; // Using any[] here to avoid circular or complex import issues if needed, but GeneratedResult is better.
     activeResultTab?: number;

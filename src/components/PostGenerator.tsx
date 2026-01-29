@@ -55,6 +55,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
   const [isSavingPreset, setIsSavingPreset] = React.useState(false); // Add saving state
   const [mobileActiveTab, setMobileActiveTab] = React.useState<'home' | 'history' | 'learning' | 'settings'>('home');
   const [mobileStep, setMobileStep] = React.useState<'platform' | 'input' | 'confirm' | 'result'>('platform');
+  const [closeDrawerTrigger, setCloseDrawerTrigger] = React.useState(0);
   const [resetTrigger, setResetTrigger] = React.useState(0);
   const [isMobileResultOpen, setIsMobileResultOpen] = React.useState(false);
   const resultsRef = useRef<HTMLDivElement>(null);
@@ -227,6 +228,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
               onMobileResultOpen={setIsMobileResultOpen}
               onStepChange={setMobileStep}
               restoreId={restorePost?.id}
+              closeDrawerTrigger={closeDrawerTrigger}
             />
           </div>
 
@@ -354,6 +356,10 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
           isGenerating={flow.loading}
           onTabChange={(tab) => {
             setMobileActiveTab(tab);
+            if (tab === 'home') {
+              // Close drawer but keep state
+              setCloseDrawerTrigger(prev => prev + 1);
+            }
             if (tab === 'history' && onOpenHistory) onOpenHistory();
             if (tab === 'settings' && onOpenSettings) onOpenSettings();
             if (tab === 'learning') setIsPresetModalOpen(true);

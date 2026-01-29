@@ -28,7 +28,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     refineText, onRefineTextChange, onPerformRefine, isRefining,
     includeFooter, onIncludeFooterChange, onAutoFormat,
     isAutoFormatting, onCopy, onMobileResultOpen, restoreId,
-    onStepChange
+    onStepChange, closeDrawerTrigger
 }) => {
     const textareaRef = React.useRef<HTMLTextAreaElement>(null);
     const [mobileStep, setMobileStep] = React.useState<'platform' | 'input' | 'confirm' | 'result'>('platform');
@@ -64,6 +64,17 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
             setIsStepDrawerOpen(false);
         }
     }, [resetTrigger]);
+
+    // Handle Close Drawer (Home Tap) - Keep state
+    React.useEffect(() => {
+        if (closeDrawerTrigger && closeDrawerTrigger > 0) {
+            setIsStepDrawerOpen(false);
+            // We just close the drawer, leaving 'mobileStep' as is (or reset it to 'platform' if desired, 
+            // but user asked to keep content. 'mobileStep' defines which drawer STEP is open.
+            // If we close the drawer, effectively we are back to 'platform' VIEW, but the STATE is preserved.
+            // Actually, if we close the drawer, we just close the overlay.
+        }
+    }, [closeDrawerTrigger]);
 
     // Auto-expand and switch to result step solely when generation completes
     const prevIsGenerating = React.useRef(isGenerating);
