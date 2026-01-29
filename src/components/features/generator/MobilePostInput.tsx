@@ -148,7 +148,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
             </div>
 
             {/* Step 1: Home (Platform Grid) */}
-            <div className={`flex flex-col gap-8 p-6 transition-all duration-500 ${isStepDrawerOpen ? 'blur-md scale-[0.98] opacity-60' : 'opacity-100'}`}>
+            <div className={`flex flex-col gap-6 p-6 transition-all duration-500 ${isStepDrawerOpen ? 'blur-md scale-[0.98] opacity-60' : 'opacity-100'}`}>
                 {/* Header Profile Style */}
                 <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-3">
@@ -174,7 +174,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                     )}
                 </div>
 
-                <div className="py-2 flex flex-col gap-0.5 items-start">
+                <div className="flex flex-col gap-0.5 items-start -mb-2">
                     <h2 className="text-[18px] font-black text-[#1F1F2F] tracking-tight">投稿先を選択</h2>
                     <p className="text-[11px] text-[#7C7C8C] font-bold uppercase tracking-widest opacity-60">Platform Selection</p>
                 </div>
