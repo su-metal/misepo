@@ -53,6 +53,7 @@ export interface PostInputFormProps {
     isStyleLocked?: boolean;
     onReset?: () => void;
     resetTrigger?: number;
+    closeDrawerTrigger?: number; // New prop for closing drawer without reset
     // Result related props
     generatedResults?: any[]; // Using any[] here to avoid circular or complex import issues if needed, but GeneratedResult is better.
     activeResultTab?: number;
@@ -75,6 +76,7 @@ export interface PostInputFormProps {
     isAutoFormatting?: { [key: string]: boolean };
     onCopy?: (text: string) => void;
     onMobileResultOpen?: (isOpen: boolean) => void;
+    onStepChange?: (step: 'platform' | 'input' | 'confirm' | 'result') => void;
     restoreId?: string;
 }
 

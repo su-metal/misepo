@@ -438,7 +438,7 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen flex text-slate-700">
+    <div className="min-h-screen text-[#111111]">
       <HistorySidebar
         isOpen={isSidebarOpen}
         toggleOpen={() => setIsSidebarOpen(false)}
@@ -459,7 +459,7 @@ function App() {
         onTogglePin={handleTogglePin}
       />
 
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="min-w-0">
         {!plan.isPro && isLoggedIn && <UpgradeBanner plan={plan.plan} onUpgrade={handleUpgrade} />}
 
         <main className="flex-1 overflow-y-auto overflow-x-hidden">

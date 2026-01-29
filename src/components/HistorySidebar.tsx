@@ -104,7 +104,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
       )}
 
       <div
-        className={`fixed top-0 left-0 h-full bg-[var(--bg-beige)] border-r-[3px] border-black shadow-[8px_0_0_0_rgba(0,0,0,0.1)] w-[85vw] sm:w-[400px] md:w-[480px] transform transition-all duration-500 cubic-bezier(0.2, 0.8, 0.2, 1) z-[9999] flex flex-col overflow-hidden ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}
+        className={`fixed top-0 left-0 h-full bg-[var(--bg-beige)] border-r-[3px] border-black w-[85vw] sm:w-[400px] md:w-[480px] transform transition-all duration-500 cubic-bezier(0.2, 0.8, 0.2, 1) z-[9999] flex flex-col overflow-hidden ${isOpen ? 'translate-x-0 shadow-[8px_0_0_0_rgba(0,0,0,0.1)]' : '-translate-x-full shadow-none'}`}
       >
         {/* Header: User Profile & Close */}
         <div className="p-4 md:p-6 border-b-[3px] relative z-10 bg-[var(--bg-beige)] border-black">

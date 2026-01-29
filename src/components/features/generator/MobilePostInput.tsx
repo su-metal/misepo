@@ -27,19 +27,27 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     onShare, getShareButtonLabel, refiningKey, onRefineToggle,
     refineText, onRefineTextChange, onPerformRefine, isRefining,
     includeFooter, onIncludeFooterChange, onAutoFormat,
-    isAutoFormatting, onCopy, onMobileResultOpen, restoreId
+    isAutoFormatting, onCopy, onMobileResultOpen, restoreId,
+    onStepChange, closeDrawerTrigger
 }) => {
     const textareaRef = React.useRef<HTMLTextAreaElement>(null);
     const [mobileStep, setMobileStep] = React.useState<'platform' | 'input' | 'confirm' | 'result'>('platform');
     const [isStepDrawerOpen, setIsStepDrawerOpen] = React.useState(false);
     const [isPromptExpanded, setIsPromptExpanded] = React.useState(false);
 
+    // Notify parent about step changes
+    React.useEffect(() => {
+        if (onStepChange) {
+            onStepChange(mobileStep);
+        }
+    }, [mobileStep, onStepChange]);
+
     // Notify parent about result open state to hide footer
     React.useEffect(() => {
         if (onMobileResultOpen) {
-            onMobileResultOpen(isStepDrawerOpen);
+            onMobileResultOpen(mobileStep === 'result');
         }
-    }, [isStepDrawerOpen, onMobileResultOpen]);
+    }, [mobileStep, onMobileResultOpen]);
 
     // Handle Restore from History
     React.useEffect(() => {
@@ -56,6 +64,17 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
             setIsStepDrawerOpen(false);
         }
     }, [resetTrigger]);
+
+    // Handle Close Drawer (Home Tap) - Keep state
+    React.useEffect(() => {
+        if (closeDrawerTrigger && closeDrawerTrigger > 0) {
+            setIsStepDrawerOpen(false);
+            // We just close the drawer, leaving 'mobileStep' as is (or reset it to 'platform' if desired, 
+            // but user asked to keep content. 'mobileStep' defines which drawer STEP is open.
+            // If we close the drawer, effectively we are back to 'platform' VIEW, but the STATE is preserved.
+            // Actually, if we close the drawer, we just close the overlay.
+        }
+    }, [closeDrawerTrigger]);
 
     // Auto-expand and switch to result step solely when generation completes
     const prevIsGenerating = React.useRef(isGenerating);
@@ -143,7 +162,8 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
             {/* Minimal Monochrome Background */}
             <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden bg-[#F9F9F9]">
                 {/* Subtle Monochrome Gradients */}
-                <div className="absolute top-0 left-0 right-0 h-[40%] bg-gradient-to-b from-[#EAEAEA] via-[#F9F9F9] to-transparent opacity-100" />
+                {/* Subtle Monochrome Gradients - Removed top gradient as it looked like a shadow */}
+
 
                 {/* Monochrome Blurs for Detail */}
                 <div className="absolute top-[-5%] right-[-5%] w-[60%] h-[60%] bg-[#E0E0E0] rounded-full blur-[120px] opacity-30" />
@@ -252,7 +272,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                     <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" onClick={() => setIsStepDrawerOpen(false)} />
 
                     {/* Sliding Panel (Monochrome) */}
-                    <div className={`absolute bottom-0 left-0 right-0 bg-[#FAFAFA] border-t border-[#E5E5E5] rounded-t-[54px] shadow-[0_-20px_60px_rgba(0,0,0,0.1)] transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] flex flex-col ${mobileStep === 'confirm' || mobileStep === 'result' || (mobileStep === 'input' && isGoogleMaps) ? 'h-[94vh]' : 'h-[72vh]'} pb-24`}>
+                    <div className={`absolute bottom-0 left-0 right-0 bg-[#FAFAFA] border-t border-[#E5E5E5] rounded-t-[54px] shadow-[0_-20px_60px_rgba(0,0,0,0.1)] animate-nyoki flex flex-col ${mobileStep === 'confirm' || mobileStep === 'result' || (mobileStep === 'input' && isGoogleMaps) ? 'h-[94vh]' : 'h-[72vh]'} pb-24`}>
                         {/* Drag Handle */}
                         <div className="w-full flex justify-center py-6">
                             <div className="w-16 h-1.5 bg-[#E5E5E5] rounded-full" />
@@ -520,18 +540,6 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                 </select>
                                             </div>
                                         )}
-                                    </div>
-
-                                    {/* Generate Button - Solid Monochrome */}
-                                    <div className="pt-4">
-                                        <button
-                                            onClick={() => onGenerate()}
-                                            className="w-full py-8 bg-[#111111] text-white rounded-[44px] font-black text-xl uppercase tracking-[0.4em] shadow-[0_20px_40px_-10px_rgba(0,0,0,0.3)] active:scale-[0.97] transition-all flex items-center justify-center gap-6 group relative overflow-hidden"
-                                        >
-                                            <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                                            <SparklesIcon className="w-8 h-8 group-hover:rotate-12 transition-transform relative z-10 text-white" />
-                                            <span className="relative z-10">{isGenerating ? 'Analyzing...' : 'Generate'}</span>
-                                        </button>
                                     </div>
                                 </div>
                             )}

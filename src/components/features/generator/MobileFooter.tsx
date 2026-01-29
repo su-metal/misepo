@@ -7,11 +7,15 @@ interface MobileFooterProps {
     activeTab: 'home' | 'history' | 'learning' | 'settings';
     onTabChange: (tab: 'home' | 'history' | 'learning' | 'settings') => void;
     onPlusClick: () => void;
+    currentStep?: 'platform' | 'input' | 'confirm' | 'result';
+    isGenerating?: boolean;
+    onGenerate?: () => void;
 }
 
 /**
  * Stylish Custom Icons for Footer - Updated for Glassmorphism
  */
+// ... (icons remain same, skipping for brevity but keeping structure)
 const CustomHome = ({ active }: { active: boolean }) => (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M3 10L12 3L21 10V20C21 20.5523 20.5523 21 20 21H15V14H9V21H4C3.44772 21 3 20.5523 3 20V10Z"
@@ -49,10 +53,15 @@ const CustomSettings = ({ active }: { active: boolean }) => (
 export const MobileFooter: React.FC<MobileFooterProps> = ({
     activeTab,
     onTabChange,
-    onPlusClick
+    onPlusClick,
+    currentStep = 'platform',
+    isGenerating = false,
+    onGenerate
 }) => {
+    const isConfirmStep = currentStep === 'confirm';
+
     return (
-        <div className="sm:hidden fixed bottom-0 left-0 right-0 z-[110] px-6 pb-8 bg-transparent pointer-events-none">
+        <div className="sm:hidden fixed bottom-0 left-0 right-0 z-[150] px-6 pb-8 bg-transparent pointer-events-none">
             {/* The Floating Bar Background - Monochrome */}
             <div className="relative h-20 w-full flex items-center justify-between px-8 bg-white/95 backdrop-blur-xl rounded-[40px] overflow-visible pointer-events-auto border border-[#E5E5E5] shadow-[0_20px_40px_rgba(0,0,0,0.1)]">
 
@@ -63,29 +72,45 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
                     </svg>
                 </div>
 
-                {/* The Central Plus Button - Monochrome */}
+                {/* The Central Plus/Generate Button - Monochrome with Animation */}
                 <button
                     onClick={onPlusClick}
-                    className="absolute top-[-26px] left-1/2 -translate-x-1/2 w-16 h-16 bg-[#111111] rounded-full flex items-center justify-center z-20 shadow-[0_15px_30px_rgba(0,0,0,0.2)] active:scale-90 active:rotate-90 transition-all border-4 border-[#FAFAFA]"
-                    aria-label="New Post"
+                    disabled={isGenerating}
+                    className={`absolute top-[-26px] left-1/2 -translate-x-1/2 w-16 h-16 rounded-full flex items-center justify-center z-20 shadow-[0_15px_30px_rgba(0,0,0,0.2)] active:scale-90 transition-all duration-500 border-4 border-[#FAFAFA] ${isConfirmStep ? 'bg-[#111111] rotate-0 scale-110' : 'bg-[#111111] rotate-180 scale-100'}`}
+                    aria-label={isConfirmStep ? "Generate Post" : "New Post"}
                 >
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 5V19M5 12H19" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
+                    <div className="relative w-full h-full flex items-center justify-center">
+                        {/* Plus Icon - Animates out */}
+                        <svg
+                            width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                            className={`absolute transition-all duration-500 ease-out ${isConfirmStep ? 'opacity-0 scale-50 rotate-90' : 'opacity-100 scale-100 rotate-0'}`}
+                        >
+                            <path d="M12 5V19M5 12H19" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+
+                        {/* Sparkles/Generate Icon - Animates in */}
+                        <div className={`absolute transition-all duration-500 ease-out ${isConfirmStep ? 'opacity-100 scale-100 rotate-0' : 'opacity-0 scale-50 -rotate-90'}`}>
+                            {isGenerating ? (
+                                <div className="w-7 h-7 border-3 border-white/30 border-t-white rounded-full animate-spin" />
+                            ) : (
+                                <SparklesIcon className="w-7 h-7 text-white" />
+                            )}
+                        </div>
+                    </div>
                 </button>
 
                 {/* Left Side Items */}
                 <div className="flex items-center gap-12 flex-1 justify-start h-full pt-2">
                     <button
                         onClick={() => onTabChange('home')}
-                        className="flex flex-col items-center gap-1.5 transition-all active:scale-90"
+                        className={`flex flex-col items-center gap-1.5 transition-all active:scale-90 ${isConfirmStep ? 'opacity-40 grayscale pointer-events-none' : ''}`}
                     >
                         <CustomHome active={activeTab === 'home'} />
                         <span className={`text-[8px] font-black uppercase tracking-[0.2em] ${activeTab === 'home' ? 'text-[#111111]' : 'text-[#999999]'}`}>Home</span>
                     </button>
                     <button
                         onClick={() => onTabChange('history')}
-                        className="flex flex-col items-center gap-1.5 transition-all active:scale-90"
+                        className={`flex flex-col items-center gap-1.5 transition-all active:scale-90 ${isConfirmStep ? 'opacity-40 grayscale pointer-events-none' : ''}`}
                     >
                         <CustomHistory active={activeTab === 'history'} />
                         <span className={`text-[8px] font-black uppercase tracking-[0.2em] ${activeTab === 'history' ? 'text-[#111111]' : 'text-[#999999]'}`}>History</span>
@@ -96,14 +121,14 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
                 <div className="flex items-center gap-12 flex-1 justify-end h-full pt-2">
                     <button
                         onClick={() => onTabChange('learning')}
-                        className="flex flex-col items-center gap-1.5 transition-all active:scale-90"
+                        className={`flex flex-col items-center gap-1.5 transition-all active:scale-90 ${isConfirmStep ? 'opacity-40 grayscale pointer-events-none' : ''}`}
                     >
                         <CustomAvatar active={activeTab === 'learning'} />
                         <span className={`text-[8px] font-black uppercase tracking-[0.2em] ${activeTab === 'learning' ? 'text-[#111111]' : 'text-[#999999]'}`}>分身</span>
                     </button>
                     <button
                         onClick={() => onTabChange('settings')}
-                        className="flex flex-col items-center gap-1.5 transition-all active:scale-90"
+                        className={`flex flex-col items-center gap-1.5 transition-all active:scale-90 ${isConfirmStep ? 'opacity-40 grayscale pointer-events-none' : ''}`}
                     >
                         <CustomSettings active={activeTab === 'settings'} />
                         <span className={`text-[8px] font-black uppercase tracking-[0.2em] ${activeTab === 'settings' ? 'text-[#111111]' : 'text-[#999999]'}`}>Setting</span>
@@ -113,3 +138,4 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
         </div>
     );
 };
+
