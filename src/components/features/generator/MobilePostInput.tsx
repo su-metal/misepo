@@ -37,9 +37,9 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     // Notify parent about result open state to hide footer
     React.useEffect(() => {
         if (onMobileResultOpen) {
-            onMobileResultOpen(mobileStep === 'result' && isStepDrawerOpen);
+            onMobileResultOpen(isStepDrawerOpen);
         }
-    }, [mobileStep, isStepDrawerOpen, onMobileResultOpen]);
+    }, [isStepDrawerOpen, onMobileResultOpen]);
 
     // Handle Restore from History
     React.useEffect(() => {
@@ -233,7 +233,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                     <div className="absolute inset-0 bg-white/40 backdrop-blur-md" onClick={() => setIsStepDrawerOpen(false)} />
 
                     {/* Sliding Panel */}
-                    <div className={`absolute bottom-0 left-0 right-0 bg-white/90 backdrop-blur-2xl border-t border-white/60 rounded-t-[48px] shadow-[0_-20px_80px_rgba(0,0,0,0.1)] transition-all duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] flex flex-col ${mobileStep === 'confirm' || mobileStep === 'result' || (mobileStep === 'input' && isGoogleMaps) ? 'h-[92vh]' : 'h-[70vh]'} ${mobileStep === 'result' ? 'pb-8' : 'pb-32'}`}>
+                    <div className={`absolute bottom-0 left-0 right-0 bg-white/90 backdrop-blur-2xl border-t border-white/60 rounded-t-[48px] shadow-[0_-20px_80px_rgba(0,0,0,0.1)] transition-all duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] flex flex-col ${mobileStep === 'confirm' || mobileStep === 'result' || (mobileStep === 'input' && isGoogleMaps) ? 'h-[92vh]' : 'h-[70vh]'} pb-24`}>
                         {/* Drag Handle */}
                         <div className="w-full flex justify-center py-6">
                             <div className="w-16 h-1.5 bg-[#E2E2E8] rounded-full" />
@@ -266,7 +266,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                         {/* Drawer Content */}
                         <div className="flex-1 overflow-y-auto px-8 py-4">
                             {mobileStep === 'input' && (
-                                <div className="flex flex-col items-center justify-center h-full gap-8 animate-in fade-in zoom-in-95 duration-700">
+                                <div className="flex flex-col items-center gap-8 animate-in fade-in zoom-in-95 duration-700">
 
                                     {/* Google Maps Specific Layout (Text-First) */}
                                     {isGoogleMaps ? (
@@ -276,12 +276,12 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                 <p className="text-sm text-[#7C7C8C]">Googleマップの口コミを貼り付けてください</p>
                                             </div>
 
-                                            <div className="relative flex-1 max-h-[60vh]">
+                                            <div className="relative flex-1 max-h-[35vh]">
                                                 <AutoResizingTextarea
                                                     value={inputText}
                                                     onChange={(e) => onInputTextChange(e.target.value)}
                                                     placeholder="ここに口コミをペースト..."
-                                                    className="w-full h-full min-h-[300px] p-8 bg-white border border-[#F0F0F5] rounded-[40px] text-lg font-medium leading-relaxed focus:outline-none focus:ring-4 focus:ring-[#4A90E2]/10 transition-all shadow-[inset_0_2px_10px_rgba(0,0,0,0.02)] placeholder:text-[#AFAFB8]"
+                                                    className="w-full h-full min-h-[160px] p-8 bg-white border border-[#F0F0F5] rounded-[40px] text-lg font-medium leading-relaxed focus:outline-none focus:ring-4 focus:ring-[#4A90E2]/10 transition-all shadow-[inset_0_2px_10px_rgba(0,0,0,0.02)] placeholder:text-[#AFAFB8]"
                                                 />
                                                 {/* Floating Mic Button for GMap (Secondary) */}
                                                 <button
