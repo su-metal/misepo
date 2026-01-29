@@ -4,7 +4,7 @@ import { AutoResizingTextarea } from './AutoResizingTextarea';
 import { getPlatformIcon } from './utils';
 import {
     AutoSparklesIcon, MagicWandIcon, MicIcon, EraserIcon, InfoIcon,
-    SparklesIcon, RotateCcwIcon, InstagramIcon, LineIcon, GoogleMapsIcon, ChevronRightIcon
+    SparklesIcon, RotateCcwIcon, InstagramIcon, LineIcon, GoogleMapsIcon, ChevronRightIcon, CloseIcon
 } from '../../Icons';
 import {
     PostInputFormProps, renderAvatar, PURPOSES, GMAP_PURPOSES, TONES, LENGTHS
@@ -180,6 +180,17 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
     return (
         <div className="flex flex-col h-full min-h-[100dvh] relative overflow-hidden font-inter bg-[var(--bg-primary)]">
+            <style dangerouslySetInnerHTML={{
+                __html: `
+                @keyframes tactile-pop {
+                    0% { transform: scale(0.98); }
+                    40% { transform: scale(1.04); }
+                    100% { transform: scale(0.98); }
+                }
+                .animate-tactile-pop {
+                    animation: tactile-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+                }
+            `}} />
             {/* Minimal Monochrome Background */}
             <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden bg-[var(--bg-primary)]">
                 {/* Subtle Monochrome Gradients */}
@@ -227,13 +238,13 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                         )}
                     </div>
 
-                    <div className="flex flex-col gap-0.5 items-start px-2 mb-0">
+                    <div className="flex flex-col gap-0.5 items-start px-2 mt-6 mb-0">
                         <h2 className="text-[12px] font-black text-[#111111] tracking-tight">投稿先を選択</h2>
                         <p className="text-[11px] text-[#666666] font-bold uppercase tracking-[0.2em]">Select your canvas</p>
                     </div>
 
                     {/* Standard 2x2 Grid Platform Selection */}
-                    <div className="grid grid-cols-2 gap-3 px-1 mb-8 mt-4">
+                    <div className="grid grid-cols-2 gap-3 px-1 mb-6 mt-4">
                         {(() => {
                             const getPlatformDetails = (platform: Platform) => {
                                 switch (platform) {
@@ -282,8 +293,8 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             relative rounded-[40px] overflow-hidden cursor-pointer border transition-all duration-500 group
                                             ${bentoClass}
                                             ${isActive
-                                                ? 'bg-[var(--plexo-yellow)] border-[var(--plexo-yellow)] shadow-lg scale-[0.98]'
-                                                : `bg-white border-[#EBEBEB] shadow-sm hover:border-[#D0D0D0] active:scale-[0.97]`
+                                                ? 'bg-[var(--plexo-yellow)] border-[var(--plexo-yellow)] shadow-lg scale-[0.98] animate-tactile-pop'
+                                                : `bg-white border-[#EBEBEB] shadow-sm hover:border-[#D0D0D0] active:scale-[0.95]`
                                             }
                                         `}
                                     >
@@ -302,12 +313,9 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                         e.stopPropagation();
                                                         handlePlatformSelect(p);
                                                     }}
-                                                    className={`
-                                                        w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 active:scale-90
-                                                        ${isActive ? 'text-black/20' : 'text-[#EEEEEE]'}
-                                                    `}
+                                                    className="w-9 h-9 rounded-full bg-black flex items-center justify-center transition-all duration-300 active:scale-90 shadow-lg"
                                                 >
-                                                    <ChevronRightIcon className="w-5 h-5" />
+                                                    <ChevronRightIcon className="w-5 h-5 text-[var(--plexo-yellow)]" />
                                                 </div>
                                             </div>
 
@@ -332,7 +340,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                     </div>
 
                     {/* Bottom Section - Promotional Card */}
-                    <div className="mt-auto pt-3">
+                    <div className="mt-auto pt-0">
                         <div
                             onClick={handleOmakaseStart}
                             className={`
@@ -407,6 +415,17 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         {getPlatformIcon(p, "w-5 h-5")}
                                     </div>
                                 ))}
+                                <button
+                                    onClick={() => {
+                                        setIsStepDrawerOpen(false);
+                                        if (mobileStep !== 'result') {
+                                            setMobileStep('platform');
+                                        }
+                                    }}
+                                    className="w-10 h-10 rounded-full bg-white border border-[#E5E5E5] flex items-center justify-center shadow-sm active:scale-90 transition-all ml-2 z-20"
+                                >
+                                    <CloseIcon className="w-5 h-5 text-[#111111]" />
+                                </button>
                             </div>
                         </div>
 
