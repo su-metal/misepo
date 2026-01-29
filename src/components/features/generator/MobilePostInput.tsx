@@ -174,20 +174,20 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                     )}
                 </div>
 
-                <div className="text-center py-2 flex flex-col gap-1 items-start">
-                    <h2 className="text-[28px] font-bold text-[#1F1F2F] tracking-tight">Select Target</h2>
-                    <p className="text-sm text-[#7C7C8C] font-medium">Choose a platform to start generation</p>
+                <div className="py-2 flex flex-col gap-0.5 items-start">
+                    <h2 className="text-[18px] font-black text-[#1F1F2F] tracking-tight">投稿先を選択</h2>
+                    <p className="text-[11px] text-[#7C7C8C] font-bold uppercase tracking-widest opacity-60">Platform Selection</p>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col gap-3">
                     {[Platform.Instagram, Platform.Line, Platform.X, Platform.GoogleMaps].map((p) => {
                         const getStyle = (plt: Platform) => {
                             switch (plt) {
-                                case Platform.Instagram: return 'bg-gradient-to-br from-[#9747FF] to-[#E88BA3] text-white shadow-[#E88BA3]/20';
-                                case Platform.Line: return 'bg-white text-[#1F1F2F] shadow-[#06C755]/10';
-                                case Platform.X: return 'bg-[#1F1F2F] text-white shadow-black/20';
-                                case Platform.GoogleMaps: return 'bg-white text-[#1F1F2F] shadow-[#4A90E2]/10';
-                                default: return 'bg-white text-[#1F1F2F]';
+                                case Platform.Instagram: return 'selected:bg-gradient-to-r from-[#9747FF]/10 to-[#E88BA3]/10 border-[#E88BA3]/20 text-[#E88BA3]';
+                                case Platform.Line: return 'selected:bg-[#06C755]/5 border-[#06C755]/10 text-[#06C755]';
+                                case Platform.X: return 'selected:bg-black/5 border-black/10 text-[#1F1F2F]';
+                                case Platform.GoogleMaps: return 'selected:bg-[#4A90E2]/5 border-[#4A90E2]/10 text-[#4A90E2]';
+                                default: return 'border-white/40 text-[#1F1F2F]';
                             }
                         };
                         const isActive = platforms.includes(p);
@@ -196,20 +196,50 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             <button
                                 key={p}
                                 onClick={() => handlePlatformSelect(p)}
-                                className={`group relative py-6 rounded-[28px] flex flex-col items-center justify-center transition-all duration-300 active:scale-95 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.08)] border border-white/40 backdrop-blur-sm ${getStyle(p)} w-full`}
+                                className={`
+                                    group relative w-full px-6 py-5 rounded-[24px] flex items-center gap-6 
+                                    transition-all duration-500 ease-out active:scale-[0.98]
+                                    border backdrop-blur-xl
+                                    ${isActive
+                                        ? 'bg-white shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] border-white translate-x-1'
+                                        : 'bg-white/40 border-white/40 hover:bg-white/60 translate-x-0'
+                                    }
+                                `}
                             >
-                                <div className="absolute top-4 right-6 opacity-40 group-hover:opacity-100 transition-opacity">
-                                    <div className="w-1 h-1 rounded-full bg-current mb-0.5" />
-                                    <div className="w-1 h-1 rounded-full bg-current mb-0.5" />
-                                    <div className="w-1 h-1 rounded-full bg-current" />
+                                {/* Platform Glow Effect */}
+                                {isActive && (
+                                    <div className="absolute inset-0 rounded-[24px] opacity-20 blur-xl z-[-1]"
+                                        style={{ backgroundColor: p === Platform.Instagram ? '#E88BA3' : p === Platform.Line ? '#06C755' : p === Platform.X ? '#1F1F2F' : '#4A90E2' }}
+                                    />
+                                )}
+
+                                <div className={`
+                                    w-14 h-14 rounded-[18px] flex items-center justify-center transition-all duration-500
+                                    ${isActive
+                                        ? 'bg-[#1F1F2F] text-white scale-110 shadow-lg'
+                                        : 'bg-white/80 text-[#AFAFB8] grayscale group-hover:grayscale-0 group-hover:scale-105'
+                                    }
+                                `}>
+                                    {getPlatformIcon(p, "w-7 h-7")}
                                 </div>
 
-                                <div className="p-4 rounded-2xl bg-white/20 backdrop-blur-md mb-4 shadow-sm group-active:scale-90 transition-transform">
-                                    {getPlatformIcon(p, "w-10 h-10")}
+                                <div className="flex flex-col items-start flex-1 gap-0.5">
+                                    <span className={`text-[10px] font-black uppercase tracking-[0.2em] transition-colors duration-500 ${isActive ? 'text-[#9747FF]' : 'text-[#AFAFB8]'}`}>
+                                        Engine Option
+                                    </span>
+                                    <span className={`text-[18px] font-black tracking-tight transition-colors duration-500 ${isActive ? 'text-[#1F1F2F]' : 'text-[#7C7C8C]'}`}>
+                                        {p === Platform.GoogleMaps ? 'Google Maps' : p === Platform.Instagram ? 'Instagram' : p}
+                                    </span>
                                 </div>
-                                <span className="text-xs font-bold uppercase tracking-[0.2em] mr-[-0.2em]">
-                                    {p === Platform.GoogleMaps ? 'Maps' : p === Platform.Instagram ? 'Instagram' : p}
-                                </span>
+
+                                <div className={`
+                                    w-8 h-8 rounded-full flex items-center justify-center transition-all duration-500
+                                    ${isActive ? 'bg-[#9747FF] text-white rotate-0' : 'bg-[#F0F0F5] text-[#AFAFB8] -rotate-45 opacity-0 group-hover:opacity-100'}
+                                `}>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M5 12h14M12 5l7 7-7 7" />
+                                    </svg>
+                                </div>
                             </button>
                         );
                     })}
