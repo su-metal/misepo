@@ -275,7 +275,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                 const isInsta = p === Platform.Instagram;
                                 const isGoogle = p === Platform.GoogleMaps;
                                 const bentoClass = isInsta ? 'row-span-2 h-full' :
-                                    isGoogle ? 'col-span-2 h-[110px]' : 'h-full';
+                                    isGoogle ? 'col-span-2 h-[140px]' : 'h-full';
 
                                 return (
                                     <div
@@ -350,7 +350,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                     </div>
 
                     {/* Bottom Section - Promotional Card */}
-                    <div className="mt-auto pt-6">
+                    <div className="mt-auto pt-3">
                         <div
                             onClick={handleOmakaseStart}
                             className={`
