@@ -11,6 +11,8 @@ import { PostResultTabs } from './features/generator/PostResultTabs';
 import GuestTour from './GuestTour';
 import PresetModal from './PresetModal';
 import LoadingModal from './LoadingModal';
+import { MobileFooter } from './features/generator/MobileFooter';
+import { PostInputFormProps } from './features/generator/inputConstants';
 
 interface PostGeneratorProps {
   storeProfile: StoreProfile;
@@ -51,6 +53,8 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
 
   const [isPresetModalOpen, setIsPresetModalOpen] = React.useState(false);
   const [isSavingPreset, setIsSavingPreset] = React.useState(false); // Add saving state
+  const [mobileActiveTab, setMobileActiveTab] = React.useState<'home' | 'history' | 'learning' | 'settings'>('home');
+  const [resetTrigger, setResetTrigger] = React.useState(0);
   const resultsRef = useRef<HTMLDivElement>(null);
 
   // Refs for GuestTour
@@ -191,6 +195,10 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
               onLanguageChange={flow.setLanguage}
               onOpenGuide={onOpenGuide}
               hasResults={flow.resultGroups.length > 0}
+              onReset={() => {
+                flow.setInputText('');
+                setResetTrigger(prev => prev + 1);
+              }}
             />
           </div>
 
@@ -232,7 +240,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
       </div>
 
       {/* Sticky Generation Footer */}
-      <div className="fixed bottom-0 left-0 right-0 z-[90]">
+      <div className="hidden sm:block fixed bottom-0 left-0 right-0 z-[90]">
         <div className="absolute inset-x-0 bottom-0 h-24 md:h-32 bg-gradient-to-t from-[var(--bg-beige)] via-[var(--bg-beige)]/90 to-transparent pointer-events-none" />
         <div className="relative px-4 py-3 pb-8 md:pb-12 safe-area-bottom flex items-center justify-center">
           <button
@@ -313,6 +321,22 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
       }
 
       <LoadingModal isOpen={flow.loading} />
+
+      {/* Mobile Footer Navigation */}
+      <MobileFooter
+        activeTab={mobileActiveTab}
+        onTabChange={(tab) => {
+          setMobileActiveTab(tab);
+          if (tab === 'history' && onOpenHistory) onOpenHistory();
+          if (tab === 'settings' && onOpenSettings) onOpenSettings();
+          if (tab === 'learning') setIsPresetModalOpen(true);
+        }}
+        onPlusClick={() => {
+          setMobileActiveTab('home');
+          flow.setInputText('');
+          setResetTrigger(prev => prev + 1);
+        }}
+      />
     </div>
   );
 };
