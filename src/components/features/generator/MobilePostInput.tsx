@@ -211,7 +211,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                         return (
                             <button
                                 key={p}
-                                onClick={() => handlePlatformSelect(p)}
+                                onClick={() => onSetActivePlatform(p)}
                                 className={`
                                     group relative w-full px-6 py-5 rounded-[28px] flex items-center gap-5
                                     transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.98]
@@ -241,9 +241,16 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                     </span>
                                 </div>
 
-                                <div className={`
-                                    w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300
-                                    ${isActive ? 'bg-white/20 rotate-0 scale-100 text-white' : 'bg-transparent text-[#CCCCCC] opacity-0 -translate-x-4 scale-50 group-hover:opacity-100 group-hover:translate-x-0 group-hover:scale-100 group-hover:text-[#111111]'}
+                                <div
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        onSetActivePlatform(p);
+                                        setMobileStep('input');
+                                        setIsStepDrawerOpen(true);
+                                    }}
+                                    className={`
+                                    w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 cursor-pointer hover:scale-110 active:scale-95
+                                    ${isActive ? 'bg-white/20 rotate-0 scale-100 text-white' : 'bg-transparent text-[#CCCCCC] opacity-100 scale-100'} 
                                 `}>
                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
                                         <path d="M5 12h14M12 5l7 7-7 7" />
