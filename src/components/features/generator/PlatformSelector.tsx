@@ -75,7 +75,7 @@ w-6 h-3.5 rounded-full relative transition-colors duration-300
                             className={`
                                 relative flex flex-col items-center justify-center gap-3 p-5 rounded-2xl transition-all duration-300 group
                                 ${isSelected
-                                    ? `border-[3px] border-black ${p === Platform.X ? 'bg-black text-white shadow-[6px_6px_0px_0px_#9B8FD4]' : p === Platform.Instagram ? 'bg-[#E88BA3] text-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]' : p === Platform.Line ? 'bg-[#06C755] text-white shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]' : 'bg-[#4DB39A] text-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]'} hover:translate-x-[-2px] hover:translate-y-[-2px]`
+                                    ? `border-[3px] border-black text-white bg-gradient-to-br from-[#6366F1] to-[#A855F7]`
                                     : 'bg-white border-[3px] border-gray-200 hover:border-gray-300 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] text-black/40'
                                 }
 `}
