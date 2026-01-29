@@ -225,11 +225,14 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                 <div className={`
                                     w-13 h-13 rounded-2xl flex items-center justify-center transition-all duration-300
                                     ${isActive
-                                        ? 'bg-white/20 text-white'
+                                        ? 'bg-transparent text-white'
                                         : 'bg-[#F5F5F5] text-[#111111] group-hover:bg-[#EAEAEA]'
                                     }
                                 `}>
-                                    {getPlatformIcon(p, "w-6 h-6")}
+                                    {getPlatformIcon(p, {
+                                        className: "w-6 h-6",
+                                        textFill: p === Platform.Line && isActive ? "#111111" : "white"
+                                    })}
                                 </div>
 
                                 <div className="flex flex-col items-start flex-1 gap-0.5">
