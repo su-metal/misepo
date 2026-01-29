@@ -61,9 +61,9 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
         switch (platform) {
             case Platform.X:
                 return {
-                    icon: <div className="w-10 h-10 bg-[var(--plexo-black)] rounded-xl flex items-center justify-center text-[var(--plexo-yellow)] text-xl font-black shadow-sm border border-[var(--plexo-black)]">𝕏</div>,
+                    icon: <div className="w-10 h-10 bg-[var(--plexo-dark-gray)] rounded-xl flex items-center justify-center text-[var(--plexo-yellow)] text-xl font-black shadow-sm border border-[var(--plexo-dark-gray)]">𝕏</div>,
                     label: 'X',
-                    actionColor: "bg-[var(--plexo-black)] text-[var(--plexo-yellow)] shadow-[0_10px_30px_rgba(0,0,0,0.2)]",
+                    actionColor: "bg-[var(--plexo-dark-gray)] text-[var(--plexo-yellow)] shadow-[0_10px_30px_rgba(102,102,102,0.3)]",
                     actionLabel: "Xで投稿する",
                     contentClasses: "text-[16px] text-[var(--plexo-black)] font-bold leading-relaxed tracking-tight",
                     wrapperClass: "max-w-[375px]",
@@ -94,7 +94,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                             <span className="tracking-[0.2em] uppercase">Footer</span>
                         </button>
                     ),
-                    actionColor: "bg-[var(--plexo-black)] text-[var(--plexo-yellow)] shadow-[0\_10px_30px_rgba(0,0,0,0.2)]",
+                    actionColor: "bg-[var(--plexo-dark-gray)] text-[var(--plexo-yellow)] shadow-[0_10px_30px_rgba(102,102,102,0.3)]",
                     actionLabel: "Instagramを起動",
                     contentClasses: "text-[15px] text-[var(--plexo-black)] font-bold leading-relaxed tracking-tight",
                     wrapperClass: "max-w-[340px]",
@@ -112,7 +112,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                         </div>
                     ),
                     label: 'Google Maps',
-                    actionColor: 'bg-[var(--plexo-white)] text-[var(--plexo-black)] hover:bg-[var(--bg-secondary)] shadow-lg border border-[var(--plexo-med-gray)]',
+                    actionColor: 'bg-[var(--plexo-dark-gray)] text-[var(--plexo-yellow)] hover:opacity-90 shadow-lg border border-[var(--plexo-dark-gray)]',
                     actionLabel: "Googleマップで返信する",
                     contentClasses: "text-[15px] text-[var(--plexo-black)] font-bold leading-relaxed tracking-tight",
                     wrapperClass: "max-w-[325px]",
@@ -123,12 +123,12 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
             case Platform.Line:
                 return {
                     icon: (
-                        <div className="w-10 h-10 bg-[var(--plexo-black)] rounded-2xl flex items-center justify-center text-[var(--plexo-yellow)] shadow-sm border border-[var(--plexo-black)]">
+                        <div className="w-10 h-10 bg-[var(--plexo-dark-gray)] rounded-2xl flex items-center justify-center text-[var(--plexo-yellow)] shadow-sm border border-[var(--plexo-dark-gray)]">
                             <LineIcon className="w-6 h-6" />
                         </div>
                     ),
                     label: 'LINE',
-                    actionColor: "bg-[var(--plexo-black)] text-[var(--plexo-yellow)] shadow-[0_10px_30px_rgba(0,0,0,0.2)]",
+                    actionColor: "bg-[var(--plexo-dark-gray)] text-[var(--plexo-yellow)] shadow-[0\_10px_30px_rgba(102,102,102,0.3)]",
                     actionLabel: "LINEで送る",
                     contentClasses: "text-[15px] text-[var(--plexo-black)] font-bold leading-relaxed tracking-tight",
                     wrapperClass: "max-w-[400px]",
@@ -200,7 +200,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                         onClick={() => onTabChange(idx)}
                                         className={`flex-1 py-5 flex items-center justify-center gap-1.5 md:gap-3 cursor-pointer transition-all duration-500 border-r border-[#E5E5E5] px-2 group
                                             ${isSelected
-                                                ? 'bg-[var(--plexo-black)]'
+                                                ? 'bg-[var(--plexo-dark-gray)]'
                                                 : 'hover:bg-[var(--bg-secondary)]'
                                             }`}
                                     >
