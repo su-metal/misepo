@@ -228,7 +228,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                     </div>
 
                     <div className="flex flex-col gap-0.5 items-start px-2 mb-0">
-                        <h2 className="text-[14px] font-black text-[#111111] tracking-tight">投稿先を選択</h2>
+                        <h2 className="text-[12px] font-black text-[#111111] tracking-tight">投稿先を選択</h2>
                         <p className="text-[11px] text-[#666666] font-bold uppercase tracking-[0.2em]">Select your canvas</p>
                     </div>
 
@@ -282,28 +282,20 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         key={p}
                                         onClick={() => onPlatformToggle(p)}
                                         className={`
-                                            relative rounded-[32px] overflow-hidden cursor-pointer border transition-all duration-500 group
+                                            relative rounded-[40px] overflow-hidden cursor-pointer border transition-all duration-500 group
                                             ${bentoClass}
                                             ${isActive
-                                                ? 'bg-[var(--plexo-yellow)] border-[var(--plexo-yellow)] shadow-2xl scale-[0.98]'
+                                                ? 'bg-[var(--plexo-yellow)] border-[var(--plexo-yellow)] shadow-lg scale-[0.98]'
                                                 : `bg-white border-[#EBEBEB] shadow-sm hover:border-[#D0D0D0] active:scale-[0.97]`
                                             }
                                         `}
                                     >
-                                        {/* Background Decoration to "Fill Gaps" */}
-                                        <div className={`absolute inset-0 bg-gradient-to-br ${details.color} opacity-40 group-hover:opacity-60 transition-opacity`} />
-
-                                        {/* Floating platform icon in background (Watermark feel) */}
-                                        <div className={`absolute -right-2 -bottom-4 opacity-[0.03] scale-[2.5] transition-transform duration-700 group-hover:scale-[2.8] pointer-events-none text-black`}>
-                                            {details.icon}
-                                        </div>
-
                                         {/* Bento Card Content */}
-                                        <div className="absolute inset-0 p-5 flex flex-col justify-between">
+                                        <div className="absolute inset-0 p-6 flex flex-col justify-between">
                                             <div className="flex justify-between items-start">
                                                 <div className={`
-                                                    w-10 h-10 rounded-2xl flex items-center justify-center transition-all duration-300
-                                                    ${isActive ? 'bg-[var(--plexo-black)] text-[var(--plexo-yellow)]' : 'bg-white shadow-sm text-[#BBBBBB]'}
+                                                    transition-all duration-300
+                                                    ${isActive ? 'text-black' : 'text-[#BBBBBB]'}
                                                 `}>
                                                     {details.icon}
                                                 </div>
@@ -314,35 +306,28 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                         handlePlatformSelect(p);
                                                     }}
                                                     className={`
-                                                        w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 shadow-sm active:scale-90
-                                                        ${isActive ? 'bg-black/5 text-[var(--plexo-black)] backdrop-blur-md' : 'bg-[#F4F4F4]/80 text-[#BBBBBB]'}
+                                                        w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 active:scale-90
+                                                        ${isActive ? 'text-black/20' : 'text-[#EEEEEE]'}
                                                     `}
                                                 >
-                                                    <ChevronRightIcon className="w-4 h-4" />
+                                                    <ChevronRightIcon className="w-5 h-5" />
                                                 </div>
                                             </div>
 
                                             <div className="flex flex-col">
-                                                <span className={`text-[9px] font-black uppercase tracking-[0.15em] transition-all duration-300 mb-1 ${isActive ? 'text-[var(--plexo-black)]/60' : 'text-[#BBBBBB]'}`}>
+                                                <span className={`text-[9px] font-black uppercase tracking-[0.15em] transition-all duration-300 mb-1 ${isActive ? 'text-black/40' : 'text-[#BBBBBB]'}`}>
                                                     {details.tagline}
                                                 </span>
                                                 <div className="flex flex-col leading-tight">
-                                                    <h3 className={`font-black tracking-tighter ${isInsta ? 'text-2xl' : 'text-lg'} transition-colors duration-500 ${isActive ? 'text-[var(--plexo-black)]' : 'text-[#111111]'}`} style={{ fontFamily: 'Inter, sans-serif' }}>
+                                                    <h3 className={`font-black tracking-tighter ${p === Platform.Instagram ? 'text-2xl' : 'text-xl'} transition-colors duration-500 ${isActive ? 'text-black' : 'text-[#111111]'}`} style={{ fontFamily: 'Inter, sans-serif' }}>
                                                         {details.name}
                                                     </h3>
-                                                    <p className={`text-[10px] font-medium transition-opacity ${isActive ? 'text-[var(--plexo-black)]/60' : 'text-[#999999]'}`}>
+                                                    <p className={`text-[11px] font-medium transition-opacity ${isActive ? 'text-black/50' : 'text-[#999999]'}`}>
                                                         {details.sub}
                                                     </p>
                                                 </div>
                                             </div>
                                         </div>
-
-                                        {/* Interaction Glow */}
-                                        {isActive && (
-                                            <div className="absolute top-0 right-0 p-3">
-                                                <div className="w-1.5 h-1.5 rounded-full bg-[var(--plexo-yellow)] animate-pulse shadow-[0_0_8px_rgba(248,234,93,0.8)]" />
-                                            </div>
-                                        )}
                                     </div>
                                 );
                             });
