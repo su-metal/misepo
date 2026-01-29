@@ -55,6 +55,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
   const [isSavingPreset, setIsSavingPreset] = React.useState(false); // Add saving state
   const [mobileActiveTab, setMobileActiveTab] = React.useState<'home' | 'history' | 'learning' | 'settings'>('home');
   const [resetTrigger, setResetTrigger] = React.useState(0);
+  const [isMobileResultOpen, setIsMobileResultOpen] = React.useState(false);
   const resultsRef = useRef<HTMLDivElement>(null);
 
   // Refs for GuestTour
@@ -201,11 +202,33 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
                 setResetTrigger(prev => prev + 1);
               }, [flow.setInputText])}
               resetTrigger={resetTrigger}
+              // Result props
+              generatedResults={flow.resultGroups}
+              activeResultTab={flow.activeTab}
+              onResultTabChange={flow.setActiveTab}
+              onManualEdit={flow.handleManualEdit}
+              onToggleFooter={flow.handleToggleFooter}
+              onRefine={flow.performRefine}
+              onRegenerateSingle={(platform) => flow.performGeneration([platform], true)}
+              onShare={flow.handleShare}
+              getShareButtonLabel={getShareButtonLabel}
+              refiningKey={flow.refiningKey}
+              onRefineToggle={flow.handleRefineToggle}
+              refineText={flow.refineText}
+              onRefineTextChange={flow.setRefineText}
+              onPerformRefine={flow.performRefine}
+              isRefining={flow.isRefining}
+              includeFooter={flow.includeFooter}
+              onIncludeFooterChange={flow.setIncludeFooter}
+              onAutoFormat={flow.handleAutoFormat}
+              isAutoFormatting={flow.isAutoFormatting}
+              onCopy={flow.handleCopy}
+              onMobileResultOpen={setIsMobileResultOpen}
             />
           </div>
 
           {/* Right Column: Results (4 Cols) */}
-          <div className="lg:col-span-4">
+          <div className="hidden lg:col-span-4 lg:block">
             <div ref={resultsRef} className="pb-8 md:pb-20 px-4">
               <PostResultTabs
                 results={flow.resultGroups}
@@ -325,20 +348,22 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
       <LoadingModal isOpen={flow.loading} />
 
       {/* Mobile Footer Navigation */}
-      <MobileFooter
-        activeTab={mobileActiveTab}
-        onTabChange={(tab) => {
-          setMobileActiveTab(tab);
-          if (tab === 'history' && onOpenHistory) onOpenHistory();
-          if (tab === 'settings' && onOpenSettings) onOpenSettings();
-          if (tab === 'learning') setIsPresetModalOpen(true);
-        }}
-        onPlusClick={() => {
-          setMobileActiveTab('home');
-          flow.setInputText('');
-          setResetTrigger(prev => prev + 1);
-        }}
-      />
+      {!isMobileResultOpen && (
+        <MobileFooter
+          activeTab={mobileActiveTab}
+          onTabChange={(tab) => {
+            setMobileActiveTab(tab);
+            if (tab === 'history' && onOpenHistory) onOpenHistory();
+            if (tab === 'settings' && onOpenSettings) onOpenSettings();
+            if (tab === 'learning') setIsPresetModalOpen(true);
+          }}
+          onPlusClick={() => {
+            setMobileActiveTab('home');
+            flow.setInputText('');
+            setResetTrigger(prev => prev + 1);
+          }}
+        />
+      )}
     </div>
   );
 };

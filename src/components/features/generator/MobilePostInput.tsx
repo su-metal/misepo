@@ -9,6 +9,7 @@ import {
 import {
     PostInputFormProps, renderAvatar, PURPOSES, GMAP_PURPOSES, TONES, LENGTHS
 } from './inputConstants';
+import { PostResultTabs } from './PostResultTabs';
 
 export const MobilePostInput: React.FC<PostInputFormProps> = ({
     platforms, activePlatform, isMultiGen, onPlatformToggle, onToggleMultiGen, onSetActivePlatform,
@@ -20,11 +21,24 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     onApplyPreset, onOpenPresetModal, customPrompt, onCustomPromptChange,
     storeSupplement, onStoreSupplementChange, language, onLanguageChange,
     onOpenGuide, hasResults = false, isStyleLocked = false,
-    onReset, storeProfile, resetTrigger
+    onReset, storeProfile, resetTrigger,
+    generatedResults = [], activeResultTab = 0, onResultTabChange,
+    onManualEdit, onToggleFooter, onRefine, onRegenerateSingle,
+    onShare, getShareButtonLabel, refiningKey, onRefineToggle,
+    refineText, onRefineTextChange, onPerformRefine, isRefining,
+    includeFooter, onIncludeFooterChange, onAutoFormat,
+    isAutoFormatting, onCopy, onMobileResultOpen
 }) => {
     const textareaRef = React.useRef<HTMLTextAreaElement>(null);
-    const [mobileStep, setMobileStep] = React.useState<'platform' | 'input' | 'confirm'>('platform');
+    const [mobileStep, setMobileStep] = React.useState<'platform' | 'input' | 'confirm' | 'result'>('platform');
     const [isStepDrawerOpen, setIsStepDrawerOpen] = React.useState(false);
+
+    // Notify parent about result open state to hide footer
+    React.useEffect(() => {
+        if (onMobileResultOpen) {
+            onMobileResultOpen(mobileStep === 'result');
+        }
+    }, [mobileStep, onMobileResultOpen]);
 
     // Handle Reset from parent
     React.useEffect(() => {
@@ -33,6 +47,14 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
             setIsStepDrawerOpen(false);
         }
     }, [resetTrigger]);
+
+    // Auto-expand and switch to result step when generation completes
+    React.useEffect(() => {
+        if (hasResults && isGenerating === false && generatedResults.length > 0) {
+            setMobileStep('result');
+            setIsStepDrawerOpen(true);
+        }
+    }, [hasResults, isGenerating, generatedResults.length]);
 
     const [isListening, setIsListening] = React.useState(false);
     const recognitionRef = React.useRef<any>(null);
@@ -83,7 +105,9 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     };
 
     const handleBackStep = () => {
-        if (mobileStep === 'confirm') {
+        if (mobileStep === 'result') {
+            setMobileStep('confirm');
+        } else if (mobileStep === 'confirm') {
             setMobileStep('input');
         } else if (mobileStep === 'input') {
             setIsStepDrawerOpen(false);
@@ -169,12 +193,12 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
             {/* Bottom Sheet Drawer - Glassmorphism Style */}
             {isStepDrawerOpen && (
-                <div className="fixed inset-0 z-[100] transition-all">
+                <div className="fixed inset-0 z-[130] flex items-end">
                     {/* Backdrop */}
                     <div className="absolute inset-0 bg-white/40 backdrop-blur-md" onClick={() => setIsStepDrawerOpen(false)} />
 
                     {/* Sliding Panel */}
-                    <div className={`absolute bottom-0 left-0 right-0 bg-white/90 backdrop-blur-2xl border-t border-white/60 rounded-t-[48px] shadow-[0_-20px_80px_rgba(0,0,0,0.1)] transition-all duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] flex flex-col ${mobileStep === 'confirm' ? 'h-[92vh]' : 'h-[70vh]'} pb-32`}>
+                    <div className={`absolute bottom-0 left-0 right-0 bg-white/90 backdrop-blur-2xl border-t border-white/60 rounded-t-[48px] shadow-[0_-20px_80px_rgba(0,0,0,0.1)] transition-all duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] flex flex-col ${mobileStep === 'confirm' || mobileStep === 'result' ? 'h-[92vh]' : 'h-[70vh]'} ${mobileStep === 'result' ? 'pb-8' : 'pb-32'}`}>
                         {/* Drag Handle */}
                         <div className="w-full flex justify-center py-6">
                             <div className="w-16 h-1.5 bg-[#E2E2E8] rounded-full" />
@@ -188,9 +212,11 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                 </button>
                                 <div className="flex flex-col">
                                     <h3 className="text-sm font-bold text-[#1F1F2F] tracking-tight">
-                                        {mobileStep === 'input' ? 'Describe Content' : 'Final Review'}
+                                        {mobileStep === 'input' ? 'Describe Content' : mobileStep === 'confirm' ? 'Final Review' : 'Generated Posts'}
                                     </h3>
-                                    <span className="text-[10px] font-medium text-[#7C7C8C] uppercase tracking-widest">{mobileStep === 'input' ? 'Step 2 of 3' : 'Step 3 of 3'}</span>
+                                    <span className="text-[10px] font-medium text-[#7C7C8C] uppercase tracking-widest">
+                                        {mobileStep === 'input' ? 'Step 2 of 3' : mobileStep === 'confirm' ? 'Step 3 of 3' : 'Success!'}
+                                    </span>
                                 </div>
                             </div>
                             <div className="flex -space-x-2">
@@ -372,15 +398,43 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                     <div className="pt-4">
                                         <button
                                             onClick={() => {
-                                                setIsStepDrawerOpen(false);
+                                                // We keep the drawer open (it might show a local loading state or just wait for the effect)
                                                 onGenerate();
                                             }}
                                             className="w-full py-8 bg-[#1F1F2F] text-white rounded-[40px] font-bold text-xl uppercase tracking-[0.3em] shadow-[0_20px_40px_-10px_rgba(0,0,0,0.3)] active:scale-95 transition-all flex items-center justify-center gap-6 group hover:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.4)]"
                                         >
                                             <SparklesIcon className="w-8 h-8 group-hover:rotate-12 transition-transform" />
-                                            <span>Generate</span>
+                                            <span>{isGenerating ? 'Generating...' : 'Generate'}</span>
                                         </button>
                                     </div>
+                                </div>
+                            )}
+
+                            {mobileStep === 'result' && (
+                                <div className="h-full animate-in fade-in slide-in-from-bottom-10 duration-700 pb-20">
+                                    <PostResultTabs
+                                        results={generatedResults}
+                                        activeTab={activeResultTab}
+                                        onTabChange={onResultTabChange!}
+                                        onManualEdit={onManualEdit!}
+                                        onToggleFooter={onToggleFooter!}
+                                        onRefine={onRefine!}
+                                        onRegenerateSingle={onRegenerateSingle!}
+                                        onShare={onShare!}
+                                        getShareButtonLabel={getShareButtonLabel!}
+                                        storeProfile={storeProfile}
+                                        refiningKey={refiningKey!}
+                                        onRefineToggle={onRefineToggle!}
+                                        refineText={refineText!}
+                                        onRefineTextChange={onRefineTextChange!}
+                                        onPerformRefine={onPerformRefine!}
+                                        isRefining={isRefining!}
+                                        includeFooter={includeFooter!}
+                                        onIncludeFooterChange={onIncludeFooterChange!}
+                                        onAutoFormat={onAutoFormat!}
+                                        isAutoFormatting={isAutoFormatting!}
+                                        onCopy={onCopy!}
+                                    />
                                 </div>
                             )}
                         </div>

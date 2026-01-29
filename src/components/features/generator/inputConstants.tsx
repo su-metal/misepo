@@ -53,6 +53,28 @@ export interface PostInputFormProps {
     isStyleLocked?: boolean;
     onReset?: () => void;
     resetTrigger?: number;
+    // Result related props
+    generatedResults?: any[]; // Using any[] here to avoid circular or complex import issues if needed, but GeneratedResult is better.
+    activeResultTab?: number;
+    onResultTabChange?: (index: number) => void;
+    onManualEdit?: (groupIndex: number, itemIndex: number, text: string) => void;
+    onToggleFooter?: (groupIndex: number, itemIndex: number) => void;
+    onRefine?: (groupIndex: number, itemIndex: number) => void;
+    onRegenerateSingle?: (platform: Platform) => void;
+    onShare?: (platform: Platform, text: string) => void;
+    getShareButtonLabel?: (p: Platform) => string;
+    refiningKey?: string | null;
+    onRefineToggle?: (gIdx: number, iIdx: number) => void;
+    refineText?: string;
+    onRefineTextChange?: (text: string) => void;
+    onPerformRefine?: (gIdx: number, iIdx: number) => void;
+    isRefining?: boolean;
+    includeFooter?: boolean;
+    onIncludeFooterChange?: (val: boolean) => void;
+    onAutoFormat?: (gIdx: number, iIdx: number) => void;
+    isAutoFormatting?: { [key: string]: boolean };
+    onCopy?: (text: string) => void;
+    onMobileResultOpen?: (isOpen: boolean) => void;
 }
 
 export const AVATAR_OPTIONS = [
