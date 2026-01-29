@@ -18,7 +18,7 @@ export const DesktopPostInput: React.FC<PostInputFormProps> = ({
     isGenerating, onGenerate, generateButtonRef, plan, presets, activePresetId,
     onApplyPreset, onOpenPresetModal, customPrompt, onCustomPromptChange,
     storeSupplement, onStoreSupplementChange, language, onLanguageChange,
-    onOpenGuide, hasResults = false, isStyleLocked = false
+    onOpenGuide, hasResults = false, isStyleLocked = false, storeProfile
 }) => {
     const textareaRef = React.useRef<HTMLTextAreaElement>(null);
     const [isPromptExpanded, setIsPromptExpanded] = React.useState(!!customPrompt);

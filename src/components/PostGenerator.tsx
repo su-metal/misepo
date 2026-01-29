@@ -152,6 +152,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
           {/* Left Column: Input Form (8 Cols) */}
           <div className="lg:col-span-8">
             <PostInputForm
+              storeProfile={storeProfile}
               platforms={flow.platforms}
               activePlatform={flow.platforms[0] || Platform.Instagram}
               isMultiGen={flow.isMultiGenMode}

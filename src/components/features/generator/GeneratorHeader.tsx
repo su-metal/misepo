@@ -20,8 +20,8 @@ export const GeneratorHeader: React.FC<GeneratorHeaderProps> = ({
     const isPro = plan?.status === 'active';
 
     return (
-        <header className="sticky top-4 z-[100] w-full sm:px-0">
-            <div className={`py-3 px-8 flex items-center justify-between gap-4 transition-all duration-300 ${TOKENS.container}`}>
+        <header className="sticky top-0 sm:top-4 z-[100] w-full sm:px-0">
+            <div className={`py-3 px-6 sm:px-8 flex items-center justify-between gap-4 transition-all duration-300 ${TOKENS.container} bg-white/80 backdrop-blur-md border border-white/50 shadow-sm sm:rounded-[32px]`}>
 
                 <div className="flex items-center gap-2 sm:gap-4">
                     <span className="text-xl sm:text-2xl tracking-tighter drop-shadow-none font-black text-black whitespace-nowrap">{UI.name}</span>

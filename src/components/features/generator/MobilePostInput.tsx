@@ -20,7 +20,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     onApplyPreset, onOpenPresetModal, customPrompt, onCustomPromptChange,
     storeSupplement, onStoreSupplementChange, language, onLanguageChange,
     onOpenGuide, hasResults = false, isStyleLocked = false,
-    onReset
+    onReset, storeProfile
 }) => {
     const textareaRef = React.useRef<HTMLTextAreaElement>(null);
     const [mobileStep, setMobileStep] = React.useState<'platform' | 'input' | 'confirm'>('platform');
@@ -92,69 +92,111 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     };
 
     return (
-        <div className="flex flex-col h-full min-h-[500px] relative overflow-hidden">
+        <div className="flex flex-col h-full min-h-[100dvh] relative overflow-hidden font-inter">
+            {/* Premium Soft Background Gradient */}
+            <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden">
+                <div className="absolute top-[-10%] left-[-10%] w-[120%] h-[120%] bg-[#E8E9FF]" />
+                <div className="absolute top-[10%] right-[-10%] w-[80%] h-[80%] bg-[#F0E5FF] rounded-full blur-[120px] opacity-60 animate-pulse [animation-duration:10s]" />
+                <div className="absolute bottom-[-10%] left-[-10%] w-[80%] h-[80%] bg-[#FFECF5] rounded-full blur-[120px] opacity-60 animate-pulse [animation-duration:8s]" />
+            </div>
+
             {/* Step 1: Home (Platform Grid) */}
-            <div className={`flex flex-col gap-10 p-4 transition-all duration-500 ${isStepDrawerOpen ? 'blur-sm scale-95 opacity-50' : 'opacity-100'}`}>
-                <div className="text-center py-4">
-                    <h2 className="text-sm font-black text-black/40 uppercase tracking-[0.3em]">1. Home</h2>
+            <div className={`flex flex-col gap-8 p-6 transition-all duration-500 ${isStepDrawerOpen ? 'blur-md scale-[0.98] opacity-60' : 'opacity-100'}`}>
+                {/* Header Profile Style */}
+                <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#9747FF] to-[#E88BA3] flex items-center justify-center text-white font-bold text-sm shadow-sm ring-2 ring-white/50">
+                            {storeProfile.name?.substring(0, 1) || 'M'}
+                        </div>
+                        <div className="flex flex-col">
+                            <span className="text-[10px] font-medium text-[#7C7C8C] uppercase tracking-[0.1em]">Welcome back</span>
+                            <span className="text-sm font-bold text-[#1F1F2F]">Hello, {storeProfile.name || 'User'}</span>
+                        </div>
+                    </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-6 px-4">
-                    {[Platform.X, Platform.Instagram, Platform.Line, Platform.GoogleMaps].map((p) => {
-                        const getColor = (plt: Platform) => {
+                <div className="text-center py-2 flex flex-col gap-1 items-start">
+                    <h2 className="text-[28px] font-bold text-[#1F1F2F] tracking-tight">Select Target</h2>
+                    <p className="text-sm text-[#7C7C8C] font-medium">Choose a platform to start generation</p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                    {[Platform.Instagram, Platform.Line, Platform.X, Platform.GoogleMaps].map((p) => {
+                        const getStyle = (plt: Platform) => {
                             switch (plt) {
-                                case Platform.X: return 'bg-black text-white';
-                                case Platform.Instagram: return 'bg-[#E88BA3] text-white';
-                                case Platform.Line: return 'bg-[#06C755] text-white';
-                                case Platform.GoogleMaps: return 'bg-[#4A90E2] text-white';
-                                default: return 'bg-white text-black';
+                                case Platform.Instagram: return 'bg-gradient-to-br from-[#9747FF] to-[#E88BA3] text-white shadow-[#E88BA3]/20';
+                                case Platform.Line: return 'bg-white text-[#1F1F2F] shadow-[#06C755]/10';
+                                case Platform.X: return 'bg-[#1F1F2F] text-white shadow-black/20';
+                                case Platform.GoogleMaps: return 'bg-white text-[#1F1F2F] shadow-[#4A90E2]/10';
+                                default: return 'bg-white text-[#1F1F2F]';
                             }
                         };
+                        const isActive = platforms.includes(p);
+
                         return (
                             <button
                                 key={p}
                                 onClick={() => handlePlatformSelect(p)}
-                                className={`aspect-square rounded-[32px] flex items-center justify-center border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all ${getColor(p)}`}
+                                className={`group relative aspect-square rounded-[32px] flex flex-col items-center justify-center transition-all duration-300 active:scale-95 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.08)] border border-white/40 backdrop-blur-sm ${getStyle(p)} w-full`}
                             >
-                                <div className="flex flex-col items-center gap-2">
-                                    <div className="scale-150 mb-2">{getPlatformIcon(p, "w-10 h-10")}</div>
-                                    <span className="text-[10px] font-black uppercase tracking-widest">
-                                        {p === Platform.GoogleMaps ? 'Maps' : p === Platform.Instagram ? 'Insta' : p}
-                                    </span>
+                                <div className="absolute top-4 right-6 opacity-40 group-hover:opacity-100 transition-opacity">
+                                    <div className="w-1 h-1 rounded-full bg-current mb-0.5" />
+                                    <div className="w-1 h-1 rounded-full bg-current mb-0.5" />
+                                    <div className="w-1 h-1 rounded-full bg-current" />
                                 </div>
+
+                                <div className="p-4 rounded-2xl bg-white/20 backdrop-blur-md mb-4 shadow-sm group-active:scale-90 transition-transform">
+                                    {getPlatformIcon(p, "w-10 h-10")}
+                                </div>
+                                <span className="text-xs font-bold uppercase tracking-[0.2em] mr-[-0.2em]">
+                                    {p === Platform.GoogleMaps ? 'Maps' : p === Platform.Instagram ? 'Instagram' : p}
+                                </span>
                             </button>
                         );
                     })}
                 </div>
+
+                {/* Promotional Style Card (Reference Image Bottom) */}
+                <div className="mt-4 p-6 rounded-[32px] bg-gradient-to-r from-[#9747FF]/10 to-[#E88BA3]/10 border border-white/60 backdrop-blur-md relative overflow-hidden group">
+                    <div className="absolute -right-4 -top-4 w-24 h-24 bg-gradient-to-br from-[#9747FF] to-[#E88BA3] rounded-full blur-2xl opacity-20 group-hover:opacity-40 transition-opacity" />
+                    <div className="relative z-10">
+                        <div className="inline-flex px-3 py-1 rounded-full bg-white text-[10px] font-bold text-[#9747FF] uppercase tracking-wider mb-2 shadow-sm">Premium</div>
+                        <h4 className="text-lg font-bold text-[#1F1F2F] mb-1">AI Omakase Mode</h4>
+                        <p className="text-xs text-[#7C7C8C] leading-relaxed">Let our advanced AI handle the entire strategy and posting for you.</p>
+                    </div>
+                </div>
             </div>
 
-            {/* Bottom Sheet Drawer */}
+            {/* Bottom Sheet Drawer - Glassmorphism Style */}
             {isStepDrawerOpen && (
                 <div className="fixed inset-0 z-[100] transition-all">
                     {/* Backdrop */}
-                    <div className="absolute inset-0 bg-black/5" onClick={() => setIsStepDrawerOpen(false)} />
+                    <div className="absolute inset-0 bg-white/40 backdrop-blur-md" onClick={() => setIsStepDrawerOpen(false)} />
 
                     {/* Sliding Panel */}
-                    <div className={`absolute bottom-16 left-0 right-0 bg-white border-t-[4px] border-black rounded-t-[40px] shadow-[0_-20px_50px_rgba(0,0,0,0.1)] transition-all duration-500 ease-out flex flex-col ${mobileStep === 'confirm' ? 'min-h-[85vh]' : 'min-h-[60vh]'} pb-24`}>
+                    <div className={`absolute bottom-0 left-0 right-0 bg-white/90 backdrop-blur-2xl border-t border-white/60 rounded-t-[48px] shadow-[0_-20px_80px_rgba(0,0,0,0.1)] transition-all duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] flex flex-col ${mobileStep === 'confirm' ? 'h-[92vh]' : 'h-[70vh]'} pb-32`}>
                         {/* Drag Handle */}
-                        <div className="w-full flex justify-center py-4">
-                            <div className="w-12 h-1.5 bg-black/10 rounded-full" />
+                        <div className="w-full flex justify-center py-6">
+                            <div className="w-16 h-1.5 bg-[#E2E2E8] rounded-full" />
                         </div>
 
                         {/* Drawer Header */}
                         <div className="px-8 pb-4 flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                                <button onClick={handleBackStep} className="w-10 h-10 rounded-full bg-slate-50 border-2 border-black flex items-center justify-center shadow-[2px_2px_0_0_rgba(0,0,0,1)] active:scale-95">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round"><path d="M15 18l-6-6 6-6" /></svg>
+                            <div className="flex items-center gap-4">
+                                <button onClick={handleBackStep} className="w-12 h-12 rounded-2xl bg-white border border-[#F0F0F5] flex items-center justify-center shadow-lg active:scale-90 transition-all">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1F1F2F" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
                                 </button>
-                                <h3 className="text-[12px] font-black text-black uppercase tracking-[0.2em]">
-                                    {mobileStep === 'input' ? '2. Input (Bottom Sheet)' : '3. Confirm & Gen'}
-                                </h3>
+                                <div className="flex flex-col">
+                                    <h3 className="text-sm font-bold text-[#1F1F2F] tracking-tight">
+                                        {mobileStep === 'input' ? 'Describe Content' : 'Final Review'}
+                                    </h3>
+                                    <span className="text-[10px] font-medium text-[#7C7C8C] uppercase tracking-widest">{mobileStep === 'input' ? 'Step 2 of 3' : 'Step 3 of 3'}</span>
+                                </div>
                             </div>
-                            <div className="flex gap-1">
+                            <div className="flex -space-x-2">
                                 {platforms.map(p => (
-                                    <div key={p} className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center border-2 border-black/5">
-                                        {getPlatformIcon(p, "w-5 h-5 opacity-40")}
+                                    <div key={p} className="w-10 h-10 rounded-full bg-white border-2 border-[#F0F0F5] flex items-center justify-center shadow-sm z-10 transition-transform active:translate-y-[-4px]">
+                                        {getPlatformIcon(p, "w-5 h-5")}
                                     </div>
                                 ))}
                             </div>
@@ -163,41 +205,47 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                         {/* Drawer Content */}
                         <div className="flex-1 overflow-y-auto px-8 py-4">
                             {mobileStep === 'input' && (
-                                <div className="flex flex-col items-center justify-center h-full gap-8 animate-in fade-in zoom-in-95 duration-500">
-                                    <div className="flex items-center justify-center gap-4 mb-4">
-                                        <div className="w-24 h-24 rounded-2xl bg-slate-100 border-[3px] border-black/5" />
-                                        <div className="w-24 h-24 rounded-2xl bg-slate-100 border-[3px] border-black/5" />
-                                    </div>
-
+                                <div className="flex flex-col items-center justify-center h-full gap-10 animate-in fade-in zoom-in-95 duration-700">
                                     <button
                                         onClick={toggleVoiceInput}
-                                        className={`w-48 h-48 rounded-full border-[6px] border-black flex flex-col items-center justify-center transition-all shadow-[10px_10px_0_0_rgba(0,0,0,1)] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none ${isListening ? 'bg-[#FF5A5F] animate-pulse' : 'bg-[#70F3DE]'}`}
+                                        className={`relative w-40 h-40 rounded-full flex items-center justify-center transition-all duration-500 ${isListening ? 'scale-110' : 'hover:scale-105'}`}
                                     >
-                                        <div className="mb-2">
+                                        {/* Animated Rings for Listening */}
+                                        {isListening && (
+                                            <>
+                                                <div className="absolute inset-0 rounded-full bg-[#FF5A5F]/20 animate-ping [animation-duration:2s]" />
+                                                <div className="absolute inset-2 rounded-full bg-[#FF5A5F]/30 animate-ping [animation-duration:1.5s]" />
+                                            </>
+                                        )}
+                                        <div className={`w-full h-full rounded-full flex flex-col items-center justify-center transition-all duration-300 shadow-xl ${isListening ? 'bg-[#FF5A5F] text-white shadow-[#FF5A5F]/40' : 'bg-white text-[#1F1F2F] shadow-black/5 border border-[#F0F0F5]'}`}>
                                             {isListening ? (
-                                                <div className="flex gap-1.5 h-10 items-center">
-                                                    <div className="w-2 h-8 bg-black rounded-full animate-bounce [animation-delay:0s]" />
-                                                    <div className="w-2 h-10 bg-black rounded-full animate-bounce [animation-delay:0.1s]" />
-                                                    <div className="w-2 h-8 bg-black rounded-full animate-bounce [animation-delay:0.2s]" />
+                                                <div className="flex gap-2 h-10 items-center">
+                                                    <div className="w-2 h-8 bg-white rounded-full animate-bounce [animation-delay:0s]" />
+                                                    <div className="w-2 h-10 bg-white rounded-full animate-bounce [animation-delay:0.1s]" />
+                                                    <div className="w-2 h-8 bg-white rounded-full animate-bounce [animation-delay:0.2s]" />
                                                 </div>
                                             ) : (
-                                                <MicIcon className="w-16 h-16 text-black" />
+                                                <MicIcon className="w-14 h-14" />
                                             )}
+                                            <span className={`mt-2 text-[10px] font-bold uppercase tracking-widest ${isListening ? 'text-white' : 'text-[#7C7C8C]'}`}>
+                                                {isListening ? 'Listening' : 'Tap to Speak'}
+                                            </span>
                                         </div>
-                                        <span className="text-sm font-black uppercase text-black">Tap to Speak</span>
                                     </button>
 
-                                    <div className="w-full flex flex-col gap-4">
-                                        <p className="text-[11px] font-black text-black/30 text-center uppercase tracking-widest">(or paste text here)</p>
+                                    <div className="w-full flex flex-col gap-6">
                                         <div className="relative">
                                             <AutoResizingTextarea
                                                 value={inputText}
                                                 onChange={(e) => onInputTextChange(e.target.value)}
-                                                placeholder="..."
-                                                className="w-full min-h-[120px] p-6 bg-slate-50 border-2 border-black rounded-[32px] text-lg font-bold leading-relaxed focus:outline-none placeholder:text-black/10"
+                                                placeholder="Tell AI what to write about..."
+                                                className="w-full min-h-[160px] p-8 bg-white border border-[#F0F0F5] rounded-[40px] text-lg font-medium leading-relaxed focus:outline-none focus:ring-4 focus:ring-[#9747FF]/5 transition-all shadow-sm placeholder:text-[#AFAFB8]"
                                             />
                                             {inputText.trim() && !isListening && (
-                                                <button onClick={() => setMobileStep('confirm')} className="absolute bottom-4 right-4 bg-black text-white px-5 py-2.5 rounded-2xl font-black text-xs uppercase tracking-widest shadow-[4px_4px_0_0_#70F3DE]">
+                                                <button
+                                                    onClick={() => setMobileStep('confirm')}
+                                                    className="absolute bottom-6 right-6 bg-[#1F1F2F] text-white px-8 py-4 rounded-[24px] font-bold text-xs uppercase tracking-[0.2em] shadow-lg active:scale-95 transition-all"
+                                                >
                                                     Next
                                                 </button>
                                             )}
@@ -207,34 +255,47 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             )}
 
                             {mobileStep === 'confirm' && (
-                                <div className="flex flex-col gap-8 animate-in fade-in slide-in-from-bottom-5 duration-500">
-                                    {/* Preview Box */}
-                                    <div className="bg-slate-50 border-2 border-black/5 rounded-[32px] p-8 min-h-[160px] relative">
-                                        <div className="absolute top-6 left-1/2 -translate-x-1/2 flex items-center gap-2">
-                                            <div className="w-1.5 h-1.5 rounded-full bg-black/10" />
-                                            <div className="w-1.5 h-1.5 rounded-full bg-black/10" />
-                                            <div className="w-1.5 h-1.5 rounded-full bg-black/10" />
+                                <div className="flex flex-col gap-8 animate-in fade-in slide-in-from-bottom-10 duration-700">
+                                    {/* Preview Box - Reference Image Card Style */}
+                                    <div className="bg-gradient-to-br from-[#1F1F2F] to-[#2F2F4F] rounded-[40px] p-8 min-h-[180px] relative shadow-2xl overflow-hidden group">
+                                        <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-3xl -mr-16 -mt-16" />
+                                        <div className="flex items-center justify-between mb-6">
+                                            <div className="flex gap-1.5">
+                                                <div className="w-2 h-2 rounded-full bg-white/20" />
+                                                <div className="w-2 h-2 rounded-full bg-white/20" />
+                                                <div className="w-2 h-2 rounded-full bg-white/20" />
+                                            </div>
+                                            <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Captured Content</span>
                                         </div>
-                                        <div className="mt-8 text-black/40 text-center italic font-medium leading-relaxed">
-                                            {inputText.length > 100 ? inputText.substring(0, 100) + '...' : inputText || "Preview: \"Today\'s special...\""}
+                                        <div className="text-white/90 text-sm font-medium leading-relaxed">
+                                            {inputText.length > 200 ? inputText.substring(0, 200) + '...' : inputText || "Your content will appear here..."}
                                         </div>
-                                        <button onClick={() => setMobileStep('input')} className="absolute bottom-4 right-4 p-2 text-black/20 hover:text-black"><RotateCcwIcon className="w-5 h-5" /></button>
+                                        <button onClick={() => setMobileStep('input')} className="absolute bottom-6 right-8 p-3 bg-white/10 rounded-2xl text-white/60 hover:text-white transition-colors backdrop-blur-md">
+                                            <RotateCcwIcon className="w-5 h-5" />
+                                        </button>
                                     </div>
 
-                                    {/* Style Selection */}
-                                    <div className="flex flex-col gap-4">
+                                    {/* Style Selection - Horizontal Pill Style */}
+                                    <div className="flex flex-col gap-5">
                                         <div className="flex items-center justify-between px-2">
-                                            <span className="text-[11px] font-black text-black/40 uppercase tracking-widest">Select Style:</span>
-                                            <button onClick={onOpenPresetModal} className="text-[10px] font-black text-[#0071b9] underline decoration-2 underline-offset-4">学習データ管理</button>
+                                            <span className="text-xs font-bold text-[#1F1F2F] tracking-tight">Select Style</span>
+                                            <button onClick={onOpenPresetModal} className="text-[10px] font-bold text-[#9747FF] uppercase tracking-wider">Manage</button>
                                         </div>
-                                        <div className="grid grid-cols-3 gap-3">
-                                            <button onClick={() => onApplyPreset({ id: 'plain-ai' } as any)} className={`py-4 rounded-xl font-black text-[11px] uppercase transition-all border-2 ${!activePresetId ? 'bg-[#70F3DE] border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] -translate-y-1' : 'bg-slate-50 border-black/5 text-black/40'}`}>
+                                        <div className="flex overflow-x-auto gap-3 pb-2 no-scrollbar">
+                                            <button
+                                                onClick={() => onApplyPreset({ id: 'plain-ai' } as any)}
+                                                className={`flex-shrink-0 px-8 py-4 rounded-[24px] font-bold text-xs uppercase tracking-widest transition-all ${!activePresetId ? 'bg-gradient-to-tr from-[#9747FF] to-[#E88BA3] text-white shadow-lg active:scale-95' : 'bg-white border border-[#F0F0F5] text-[#7C7C8C]'}`}
+                                            >
                                                 AI Standard
                                             </button>
-                                            {presets.slice(0, 5).map((p, idx) => {
+                                            {presets.map((p) => {
                                                 const isSelected = activePresetId === p.id;
                                                 return (
-                                                    <button key={p.id} onClick={() => onApplyPreset(p)} className={`py-4 rounded-xl font-black text-[11px] uppercase truncate px-2 transition-all border-2 ${isSelected ? 'bg-[#FFD54F] border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] -translate-y-1' : 'bg-slate-50 border-black/5 text-black/40'}`}>
+                                                    <button
+                                                        key={p.id}
+                                                        onClick={() => onApplyPreset(p)}
+                                                        className={`flex-shrink-0 px-8 py-4 rounded-[24px] font-bold text-xs uppercase tracking-widest transition-all truncate max-w-[140px] ${isSelected ? 'bg-[#1F1F2F] text-white shadow-lg active:scale-95' : 'bg-white border border-[#F0F0F5] text-[#7C7C8C]'}`}
+                                                    >
                                                         {p.name}
                                                     </button>
                                                 );
@@ -242,47 +303,43 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         </div>
                                     </div>
 
-                                    {/* Additional Settings Mini */}
-                                    <div className="flex flex-col gap-4 bg-slate-50/50 p-6 rounded-[32px] border-2 border-black/5">
-                                        <div className="flex items-center justify-between border-b border-black/5 pb-3">
-                                            <span className="text-[10px] font-black text-black/30 uppercase">Tone</span>
-                                            <div className="flex gap-2">
-                                                {TONES.map(t => (
-                                                    <button key={t.id} onClick={() => onToneChange(t.id)} className={`px-3 py-1.5 rounded-lg text-[10px] font-black border ${tone === t.id ? 'bg-black text-white border-black' : 'bg-white text-black/40 border-black/5'}`}>{t.label}</button>
-                                                ))}
-                                            </div>
+                                    {/* Settings Grid - Modern Minimal */}
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="bg-white p-6 rounded-[32px] border border-[#F0F0F5] flex flex-col gap-3">
+                                            <span className="text-[10px] font-bold text-[#7C7C8C] uppercase tracking-[0.1em]">Tone</span>
+                                            <select
+                                                value={tone}
+                                                onChange={(e) => onToneChange(e.target.value as any)}
+                                                className="bg-transparent text-sm font-bold text-[#1F1F2F] focus:outline-none"
+                                            >
+                                                {TONES.map(t => <option key={t.id} value={t.id}>{t.label}</option>)}
+                                            </select>
                                         </div>
                                         {!isX && (
-                                            <div className="flex items-center justify-between border-b border-black/5 pb-3">
-                                                <span className="text-[10px] font-black text-black/30 uppercase">Length</span>
-                                                <div className="flex gap-2">
-                                                    {LENGTHS.map(l => (
-                                                        <button key={l.id} onClick={() => onLengthChange(l.id)} className={`px-3 py-1.5 rounded-lg text-[10px] font-black border ${length === l.id ? 'bg-black text-white border-black' : 'bg-white text-black/40 border-black/5'}`}>{l.label}</button>
-                                                    ))}
-                                                </div>
+                                            <div className="bg-white p-6 rounded-[32px] border border-[#F0F0F5] flex flex-col gap-3">
+                                                <span className="text-[10px] font-bold text-[#7C7C8C] uppercase tracking-[0.1em]">Length</span>
+                                                <select
+                                                    value={length}
+                                                    onChange={(e) => onLengthChange(e.target.value as any)}
+                                                    className="bg-transparent text-sm font-bold text-[#1F1F2F] focus:outline-none"
+                                                >
+                                                    {LENGTHS.map(l => <option key={l.id} value={l.id}>{l.label}</option>)}
+                                                </select>
                                             </div>
                                         )}
-                                        <div className="flex items-center justify-between">
-                                            <span className="text-[10px] font-black text-black/30 uppercase">Output</span>
-                                            <div className="flex gap-2">
-                                                {['Japanese', 'English'].map(lang => (
-                                                    <button key={lang} onClick={() => onLanguageChange(lang)} className={`px-3 py-1.5 rounded-lg text-[10px] font-black border ${language === lang ? 'bg-black text-white border-black' : 'bg-white text-black/40 border-black/5'}`}>{lang.substring(0, 2)}</button>
-                                                ))}
-                                            </div>
-                                        </div>
                                     </div>
 
-                                    {/* Generate Button */}
+                                    {/* Generate Button - High Contrast Glass */}
                                     <div className="pt-4">
                                         <button
                                             onClick={() => {
                                                 setIsStepDrawerOpen(false);
                                                 onGenerate();
                                             }}
-                                            className="w-full py-7 bg-[#FFD54F] text-black border-[3px] border-black rounded-[32px] font-black text-xl uppercase tracking-[0.2em] shadow-[8px_8px_0_0_rgba(0,0,0,1)] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all flex items-center justify-center gap-4 group"
+                                            className="w-full py-8 bg-[#1F1F2F] text-white rounded-[40px] font-bold text-xl uppercase tracking-[0.3em] shadow-[0_20px_40px_-10px_rgba(0,0,0,0.3)] active:scale-95 transition-all flex items-center justify-center gap-6 group hover:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.4)]"
                                         >
-                                            <SparklesIcon className="w-8 h-8 group-active:rotate-12 transition-transform" />
-                                            <span>Generate Post</span>
+                                            <SparklesIcon className="w-8 h-8 group-hover:rotate-12 transition-transform" />
+                                            <span>Generate</span>
                                         </button>
                                     </div>
                                 </div>

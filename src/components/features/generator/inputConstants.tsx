@@ -1,5 +1,5 @@
 import React from 'react';
-import { PostPurpose, GoogleMapPurpose, Tone, Length, Platform, Preset, UserPlan } from '../../../types';
+import { PostPurpose, GoogleMapPurpose, Tone, Length, Platform, Preset, UserPlan, StoreProfile } from '../../../types';
 import {
     MegaphoneIcon, BookOpenIcon, LightbulbIcon, ChatHeartIcon,
     AutoSparklesIcon, HandHeartIcon, ApologyIcon, InfoIcon, SparklesIcon,
@@ -8,6 +8,7 @@ import {
 } from '../../Icons';
 
 export interface PostInputFormProps {
+    storeProfile: StoreProfile;
     platforms: Platform[];
     activePlatform: Platform;
     isMultiGen: boolean;
