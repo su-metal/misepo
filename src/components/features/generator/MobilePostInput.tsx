@@ -27,7 +27,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     onShare, getShareButtonLabel, refiningKey, onRefineToggle,
     refineText, onRefineTextChange, onPerformRefine, isRefining,
     includeFooter, onIncludeFooterChange, onAutoFormat,
-    isAutoFormatting, onCopy, onMobileResultOpen
+    isAutoFormatting, onCopy, onMobileResultOpen, restoreId
 }) => {
     const textareaRef = React.useRef<HTMLTextAreaElement>(null);
     const [mobileStep, setMobileStep] = React.useState<'platform' | 'input' | 'confirm' | 'result'>('platform');
@@ -36,9 +36,17 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     // Notify parent about result open state to hide footer
     React.useEffect(() => {
         if (onMobileResultOpen) {
-            onMobileResultOpen(mobileStep === 'result');
+            onMobileResultOpen(mobileStep === 'result' && isStepDrawerOpen);
         }
-    }, [mobileStep, onMobileResultOpen]);
+    }, [mobileStep, isStepDrawerOpen, onMobileResultOpen]);
+
+    // Handle Restore from History
+    React.useEffect(() => {
+        if (restoreId) {
+            setMobileStep('result');
+            setIsStepDrawerOpen(true);
+        }
+    }, [restoreId]);
 
     // Handle Reset from parent
     React.useEffect(() => {
@@ -55,6 +63,18 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
             setIsStepDrawerOpen(true);
         }
     }, [hasResults, isGenerating, generatedResults.length]);
+
+    // Background Scroll Lock (Mobile Only)
+    React.useEffect(() => {
+        if (isStepDrawerOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [isStepDrawerOpen]);
 
     const [isListening, setIsListening] = React.useState(false);
     const recognitionRef = React.useRef<any>(null);
@@ -137,6 +157,18 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             <span className="text-sm font-bold text-[#1F1F2F]">Hello, {storeProfile.name || 'User'}</span>
                         </div>
                     </div>
+                    {/* Compact Usage Badge */}
+                    {plan && typeof plan.usage !== 'undefined' && typeof plan.limit !== 'undefined' && (
+                        <div className="flex flex-col items-end">
+                            <span className="text-[10px] font-bold text-[#7C7C8C] tracking-wide mb-0.5">チケット残数</span>
+                            <div className="flex items-center gap-1 bg-white/60 px-2 py-1 rounded-lg border border-white/50 shadow-sm">
+                                <span className={`text-sm font-black leading-none ${plan.limit - plan.usage <= 0 ? 'text-red-500' : 'text-[#1F1F2F]'}`}>
+                                    {Math.max(0, plan.limit - plan.usage)}
+                                </span>
+                                <span className="text-[10px] font-medium text-[#7C7C8C] leading-none">/ {plan.limit}</span>
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 <div className="text-center py-2 flex flex-col gap-1 items-start">
