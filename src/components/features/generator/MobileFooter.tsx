@@ -63,7 +63,7 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
     return (
         <div className="sm:hidden fixed bottom-0 left-0 right-0 z-[150] px-6 pb-8 bg-transparent pointer-events-none">
             {/* The Floating Bar Background - Monochrome */}
-            <div className="relative h-20 w-full flex items-center justify-between px-8 bg-white/95 backdrop-blur-xl rounded-[40px] overflow-visible pointer-events-auto border border-[#E5E5E5] shadow-[0_20px_40px_rgba(0,0,0,0.1)]">
+            <div className="relative h-20 w-full flex items-center justify-between px-7 bg-white/95 backdrop-blur-xl rounded-[40px] overflow-visible pointer-events-auto border border-[#E5E5E5] shadow-[0_20px_40px_rgba(0,0,0,0.1)]">
 
                 {/* Visual Base for the notch/plus area */}
                 <div className="absolute top-[-32px] left-1/2 -translate-x-1/2 w-[88px] h-[88px] z-10 pointer-events-none">
@@ -100,7 +100,7 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
                 </button>
 
                 {/* Left Side Items */}
-                <div className="flex items-center gap-12 flex-1 justify-start h-full pt-2">
+                <div className="flex items-center gap-8 flex-1 justify-start h-full pt-2">
                     <button
                         onClick={() => onTabChange('home')}
                         className={`flex flex-col items-center gap-1.5 transition-all active:scale-90 ${isConfirmStep ? 'opacity-40 grayscale pointer-events-none' : ''}`}
@@ -118,7 +118,7 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
                 </div>
 
                 {/* Right Side Items */}
-                <div className="flex items-center gap-12 flex-1 justify-end h-full pt-2">
+                <div className="flex items-center gap-8 flex-1 justify-end h-full pt-2">
                     <button
                         onClick={() => onTabChange('learning')}
                         className={`flex flex-col items-center gap-1.5 transition-all active:scale-90 ${isConfirmStep ? 'opacity-40 grayscale pointer-events-none' : ''}`}
