@@ -12,11 +12,6 @@ interface HistorySidebarProps {
   toggleOpen: () => void;
   onOpenLogin: () => void;
   onDelete: (id: string) => void;
-  onOpenGuide?: () => void;
-  onOpenSettings?: () => void;
-  onOpenAccount?: () => void;
-  onLogout?: () => void;
-  storeProfile?: StoreProfile | null;
   presets?: Preset[];
   onTogglePin: (id: string, isPinned: boolean) => Promise<void>;
 }
@@ -29,11 +24,6 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
   toggleOpen,
   onOpenLogin,
   onDelete,
-  onOpenGuide,
-  onOpenSettings,
-  onOpenAccount,
-  onLogout,
-  storeProfile,
   presets = [],
   onTogglePin
 }) => {
@@ -108,8 +98,8 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
       >
         {/* Header: User Profile & Close */}
         <div className="p-4 md:p-6 border-b-[3px] relative z-10 bg-[var(--bg-beige)] border-black">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="font-black text-black text-2xl tracking-tighter">MENU</h2>
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="font-black text-black text-2xl tracking-tighter italic uppercase">History</h2>
             <button
               onClick={toggleOpen}
               className="w-10 h-10 flex items-center justify-center rounded-xl transition-all active:scale-95 group bg-white border-2 border-black text-black hover:bg-[var(--rose)] active:translate-y-1 active:shadow-none shadow-[4px_4px_0_0_rgba(0,0,0,1)]"
@@ -119,62 +109,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
             </button>
           </div>
 
-          {isLoggedIn ? (
-            <div className="space-y-4">
-              <button
-                onClick={() => { onOpenSettings?.(); toggleOpen(); }}
-                className="flex items-center gap-3 p-3 rounded-xl transition-all text-left group bg-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] w-full hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] active:translate-x-[0px] active:translate-y-[0px] active:shadow-[2px_2px_0_0_rgba(0,0,0,1)]"
-              >
-                <div className="w-10 h-10 rounded-lg flex items-center justify-center font-black text-lg shrink-0 bg-[var(--lavender)] border-2 border-black text-black">
-                  {(storeProfile?.name?.[0] || 'S').toUpperCase()}
-                </div>
-                <div className="min-w-0">
-                  <p className="text-[9px] font-black uppercase tracking-widest mb-0 text-slate-500">Store Profile</p>
-                  <p className="text-sm font-black text-black tracking-tight truncate">{storeProfile?.name || 'User'}</p>
-                </div>
-              </button>
-
-              {/* Quick Navigation Pack */}
-              <div className="grid grid-cols-3 gap-2">
-                <button
-                  onClick={() => { onOpenAccount?.(); toggleOpen(); }}
-                  className="flex flex-col items-center gap-1.5 p-3 rounded-xl transition-all group bg-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:bg-[var(--bg-beige)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] active:translate-x-[0px] active:translate-y-[0px] active:shadow-[2px_2px_0_0_rgba(0,0,0,1)]"
-                  title="アカウント設定"
-                >
-                  <ChevronDownIcon className="w-4 h-4 text-black group-hover:scale-110 transition-transform" />
-                  <span className="text-[8px] font-black text-black tracking-widest uppercase">Account</span>
-                </button>
-                <button
-                  onClick={() => { onOpenGuide?.(); toggleOpen(); }}
-                  className="flex flex-col items-center gap-1.5 p-3 rounded-xl transition-all group bg-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:bg-[var(--bg-beige)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] active:translate-x-[0px] active:translate-y-[0px] active:shadow-[2px_2px_0_0_rgba(0,0,0,1)]"
-                  title="Docs"
-                >
-                  <HelpIcon className="w-4 h-4 text-black group-hover:scale-110 transition-transform" />
-                  <span className="text-[8px] font-black text-black tracking-widest uppercase">Docs</span>
-                </button>
-                <Feedback mode="sidebar" />
-              </div>
-
-              <div className="flex justify-center">
-                <button
-                  onClick={() => { onLogout?.(); toggleOpen(); }}
-                  className="flex items-center gap-2 px-6 py-2 rounded-xl transition-all text-[9px] font-black tracking-widest uppercase text-slate-400 hover:text-black hover:bg-white border-2 border-transparent hover:border-black hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)]"
-                >
-                  <LogOutIcon className="w-3 h-3" />
-                  Sign Out
-                </button>
-              </div>
-
-            </div>
-          ) : (
-            <button
-              onClick={() => { onOpenLogin(); toggleOpen(); }}
-              className="w-full py-4 bg-[var(--gold)] text-black border-2 border-black rounded-xl shadow-[4px_4px_0_0_rgba(0,0,0,1)] text-sm font-black hover:bg-[var(--rose)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] active:translate-x-[0px] active:translate-y-[0px] active:shadow-[2px_2px_0_0_rgba(0,0,0,1)] transition-all flex items-center justify-center gap-3 group"
-            >
-              ログイン / 登録
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="translate-x-0 group-hover:translate-x-1 transition-transform"><path d="M5 12h14m-7-7 7 7-7 7" /></svg>
-            </button>
-          )}
+          {/* Profile Quick Link removed to keep focus on History */}
         </div>
 
         {/* Content Segment: History */}
@@ -277,14 +212,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
         </div>
 
         {/* Footer: Legal */}
-        <div className="p-6 border-t-[3px] border-black bg-[var(--bg-beige)] relative z-20">
-          <div className="flex items-center justify-center gap-6 mb-2">
-            <a href="/terms" className="text-[10px] font-black text-slate-500 hover:text-black transition-colors uppercase tracking-widest">利用規約</a>
-            <a href="/privacy" className="text-[10px] font-black text-slate-500 hover:text-black transition-colors uppercase tracking-widest">プライバシーポリシー</a>
-            <a href="/commercial-law" className="text-[10px] font-black text-slate-500 hover:text-black transition-colors uppercase tracking-widest">特定商取引法</a>
-          </div>
-          <p className="text-[9px] font-bold text-slate-500 text-center uppercase tracking-[0.2em] mt-2">© 2026 {UI.name}</p>
-        </div>
+        <p className="text-[9px] font-black text-slate-300 text-center uppercase tracking-[0.4em] mt-2">© 2026 {UI.name}</p>
       </div >
     </>
   );

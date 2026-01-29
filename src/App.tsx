@@ -12,6 +12,7 @@ import { GUEST_PROFILE } from './constants';
 import PostGenerator from './components/PostGenerator';
 import OnboardingFlow from './components/Onboarding'; // Corrected
 import HistorySidebar from './components/HistorySidebar'; // Corrected
+import SettingsSidebar from './components/SettingsSidebar';
 import AccountSettingsModal from './components/AccountSettingsModal';
 import GuestDemoModal from './components/GuestDemoModal';
 import GuideModal from './components/GuideModal';
@@ -43,6 +44,7 @@ function App() {
   const [history, setHistory] = useState<GeneratedPost[]>([]);
   const [presets, setPresets] = useState<Preset[]>([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [activeHistoryItem, setActiveHistoryItem] = useState<GeneratedPost | null>(null);
   const [showAccountSettings, setShowAccountSettings] = useState(false);
   const [initDone, setInitDone] = useState(false);
@@ -450,13 +452,30 @@ function App() {
         onDelete={handleDeleteHistory}
         isLoggedIn={isLoggedIn}
         onOpenLogin={() => router.push('/start')}
-        onOpenGuide={() => setShowGuide(true)}
-        onOpenSettings={() => setShowOnboarding(true)}
-        onOpenAccount={() => setShowAccountSettings(true)}
-        onLogout={logout}
-        storeProfile={storeProfile}
         presets={presets}
         onTogglePin={handleTogglePin}
+      />
+
+      <SettingsSidebar
+        isOpen={isSettingsOpen}
+        toggleOpen={() => setIsSettingsOpen(false)}
+        isLoggedIn={isLoggedIn}
+        onOpenLogin={() => router.push('/start')}
+        onOpenStoreProfile={() => {
+          setIsSettingsOpen(false);
+          setShowOnboarding(true);
+        }}
+        onOpenAccount={() => {
+          setIsSettingsOpen(false);
+          setShowAccountSettings(true);
+        }}
+        onOpenGuide={() => {
+          setIsSettingsOpen(false);
+          setShowGuide(true);
+        }}
+        onLogout={logout}
+        storeProfile={storeProfile}
+        plan={plan}
       />
 
       <div className="min-w-0">
@@ -484,7 +503,7 @@ function App() {
                   onOpenGuide={() => setShowGuide(true)}
                   onOpenSettings={() => {
                     setActiveHistoryItem(null);
-                    setShowOnboarding(true);
+                    setIsSettingsOpen(true);
                   }}
                   onOpenHistory={() => setIsSidebarOpen(true)}
                   onLogout={logout}
@@ -508,7 +527,7 @@ function App() {
               onOpenGuide={() => setShowGuide(true)}
               onOpenSettings={() => {
                 setActiveHistoryItem(null);
-                setShowOnboarding(true);
+                setIsSettingsOpen(true);
               }}
               onOpenHistory={() => setIsSidebarOpen(true)}
               onLogout={logout}

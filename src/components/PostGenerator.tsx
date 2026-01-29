@@ -355,14 +355,17 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
           currentStep={mobileStep}
           isGenerating={flow.loading}
           onTabChange={(tab) => {
-            setMobileActiveTab(tab);
             if (tab === 'home') {
-              // Close drawer but keep state
+              setMobileActiveTab('home');
               setCloseDrawerTrigger(prev => prev + 1);
+            } else if (tab === 'history') {
+              if (onOpenHistory) onOpenHistory();
+              // Don't setMobileActiveTab to keep it on 'home' while sidebar is open
+            } else if (tab === 'settings') {
+              if (onOpenSettings) onOpenSettings();
+            } else if (tab === 'learning') {
+              setIsPresetModalOpen(true);
             }
-            if (tab === 'history' && onOpenHistory) onOpenHistory();
-            if (tab === 'settings' && onOpenSettings) onOpenSettings();
-            if (tab === 'learning') setIsPresetModalOpen(true);
           }}
           onPlusClick={mobileStep === 'confirm' ? handleGenerate : () => {
             setMobileActiveTab('home');

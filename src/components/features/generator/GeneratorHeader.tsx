@@ -4,13 +4,13 @@ import { StoreProfile, UserPlan } from '../../../types';
 import { UI, TOKENS } from '../../../constants';
 
 interface GeneratorHeaderProps {
-    onOpenHistory: () => void;
+    onOpenSettings: () => void;
     storeProfile: StoreProfile;
     plan: UserPlan;
 }
 
 export const GeneratorHeader: React.FC<GeneratorHeaderProps> = ({
-    onOpenHistory,
+    onOpenSettings,
     storeProfile,
     plan,
 }) => {
@@ -43,10 +43,9 @@ export const GeneratorHeader: React.FC<GeneratorHeaderProps> = ({
                     )}
                 </div>
 
-                {/* Right: Consolidated Menu */}
                 <div className="flex items-center">
                     <button
-                        onClick={onOpenHistory}
+                        onClick={onOpenSettings}
                         className="flex items-center gap-3 pl-4 md:pl-6 pr-2 md:pr-4 py-2 transition-all active:scale-95 group"
                     >
                         <div className="w-8 h-8 md:w-9 md:h-9 rounded-xl bg-[#4DB39A] border-[2px] border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center overflow-hidden transition-transform group-hover:scale-110">
