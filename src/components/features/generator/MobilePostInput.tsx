@@ -227,13 +227,13 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                         )}
                     </div>
 
-                    <div className="flex flex-col gap-0.5 items-start px-2 mb-4">
-                        <h2 className="text-[20px] font-black text-[#111111] tracking-tight">投稿先を選択</h2>
+                    <div className="flex flex-col gap-0.5 items-start px-2 mb-0">
+                        <h2 className="text-[14px] font-black text-[#111111] tracking-tight">投稿先を選択</h2>
                         <p className="text-[11px] text-[#666666] font-bold uppercase tracking-[0.2em]">Select your canvas</p>
                     </div>
 
                     {/* Refined Bento Grid Platform Selection */}
-                    <div className="grid grid-cols-2 grid-rows-[125px_125px_auto] gap-3 px-1 mb-8 mt-4">
+                    <div className="grid grid-cols-2 grid-rows-[125px_125px_auto] gap-3 px-1 mb-0 mt-4">
                         {(() => {
                             const getPlatformDetails = (platform: Platform) => {
                                 switch (platform) {
@@ -285,7 +285,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             relative rounded-[32px] overflow-hidden cursor-pointer border transition-all duration-500 group
                                             ${bentoClass}
                                             ${isActive
-                                                ? 'bg-[var(--plexo-black)] border-[var(--plexo-black)] shadow-2xl scale-[0.98]'
+                                                ? 'bg-[var(--plexo-yellow)] border-[var(--plexo-yellow)] shadow-2xl scale-[0.98]'
                                                 : `bg-white border-[#EBEBEB] shadow-sm hover:border-[#D0D0D0] active:scale-[0.97]`
                                             }
                                         `}
@@ -294,7 +294,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         <div className={`absolute inset-0 bg-gradient-to-br ${details.color} opacity-40 group-hover:opacity-60 transition-opacity`} />
 
                                         {/* Floating platform icon in background (Watermark feel) */}
-                                        <div className={`absolute -right-2 -bottom-4 opacity-[0.03] scale-[2.5] transition-transform duration-700 group-hover:scale-[2.8] pointer-events-none ${isActive ? 'text-white' : 'text-black'}`}>
+                                        <div className={`absolute -right-2 -bottom-4 opacity-[0.03] scale-[2.5] transition-transform duration-700 group-hover:scale-[2.8] pointer-events-none text-black`}>
                                             {details.icon}
                                         </div>
 
@@ -303,7 +303,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             <div className="flex justify-between items-start">
                                                 <div className={`
                                                     w-10 h-10 rounded-2xl flex items-center justify-center transition-all duration-300
-                                                    ${isActive ? 'bg-[var(--plexo-yellow)] text-black' : 'bg-white shadow-sm text-[#BBBBBB]'}
+                                                    ${isActive ? 'bg-[var(--plexo-black)] text-[var(--plexo-yellow)]' : 'bg-white shadow-sm text-[#BBBBBB]'}
                                                 `}>
                                                     {details.icon}
                                                 </div>
@@ -315,7 +315,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                     }}
                                                     className={`
                                                         w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 shadow-sm active:scale-90
-                                                        ${isActive ? 'bg-white/10 text-[var(--plexo-yellow)] backdrop-blur-md' : 'bg-[#F4F4F4]/80 text-[#BBBBBB]'}
+                                                        ${isActive ? 'bg-black/5 text-[var(--plexo-black)] backdrop-blur-md' : 'bg-[#F4F4F4]/80 text-[#BBBBBB]'}
                                                     `}
                                                 >
                                                     <ChevronRightIcon className="w-4 h-4" />
@@ -323,14 +323,14 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             </div>
 
                                             <div className="flex flex-col">
-                                                <span className={`text-[9px] font-black uppercase tracking-[0.15em] transition-all duration-300 mb-1 ${isActive ? 'text-[var(--plexo-yellow)]' : 'text-[#BBBBBB]'}`}>
+                                                <span className={`text-[9px] font-black uppercase tracking-[0.15em] transition-all duration-300 mb-1 ${isActive ? 'text-[var(--plexo-black)]/60' : 'text-[#BBBBBB]'}`}>
                                                     {details.tagline}
                                                 </span>
                                                 <div className="flex flex-col leading-tight">
-                                                    <h3 className={`font-black tracking-tighter ${isInsta ? 'text-2xl' : 'text-lg'} transition-colors duration-500 ${isActive ? 'text-white' : 'text-[#111111]'}`} style={{ fontFamily: 'Inter, sans-serif' }}>
+                                                    <h3 className={`font-black tracking-tighter ${isInsta ? 'text-2xl' : 'text-lg'} transition-colors duration-500 ${isActive ? 'text-[var(--plexo-black)]' : 'text-[#111111]'}`} style={{ fontFamily: 'Inter, sans-serif' }}>
                                                         {details.name}
                                                     </h3>
-                                                    <p className={`text-[10px] font-medium transition-opacity ${isActive ? 'text-white/60' : 'text-[#999999]'}`}>
+                                                    <p className={`text-[10px] font-medium transition-opacity ${isActive ? 'text-[var(--plexo-black)]/60' : 'text-[#999999]'}`}>
                                                         {details.sub}
                                                     </p>
                                                 </div>
