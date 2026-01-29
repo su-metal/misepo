@@ -61,20 +61,20 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
         switch (platform) {
             case Platform.X:
                 return {
-                    icon: <div className="w-10 h-10 bg-black rounded-xl flex items-center justify-center text-white text-xl font-black shadow-[4px_4px_0px_0px_#9B8FD4] border-2 border-white/20">𝕏</div>,
+                    icon: <div className="w-10 h-10 bg-[#111111] rounded-xl flex items-center justify-center text-white text-xl font-black shadow-sm border border-[#111111]">𝕏</div>,
                     label: 'X',
-                    actionColor: "bg-black text-white hover:bg-black/80 active:scale-[0.98] shadow-[6px_6px_0px_0px_#9B8FD4] border-white/20",
+                    actionColor: "bg-[#111111] text-white hover:bg-black shadow-lg",
                     actionLabel: "Xで投稿する",
-                    contentClasses: "text-[16px] text-black font-bold leading-relaxed tracking-tight",
+                    contentClasses: "text-[16px] text-[#111111] font-bold leading-relaxed tracking-tight",
                     wrapperClass: "max-w-[375px]",
-                    brandTextColor: "text-black",
-                    brandBgColor: "bg-black/5",
-                    brandBorderColor: "border-[#000000]/20",
+                    brandTextColor: "text-[#111111]",
+                    brandBgColor: "bg-[#FAFAFA]",
+                    brandBorderColor: "border-[#E5E5E5]",
                 };
             case Platform.Instagram:
                 return {
                     icon: (
-                        <div className="w-10 h-10 bg-[#E88BA3] rounded-2xl flex items-center justify-center text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] border-2 border-black">
+                        <div className="w-10 h-10 bg-white rounded-2xl flex items-center justify-center text-[#111111] shadow-sm border border-[#E5E5E5]">
                             <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M12 2c2.717 0 3.056.01 4.122.06 1.065.05 1.79.217 2.428.465.66.254 1.216.598 1.772 1.153a4.908 4.908 0 0 1 1.153 1.772c.247.637.415 1.363.465 2.428.047 1.066.06 1.405.06 4.122 0 2.717-.01 3.056-.06 4.122-.05 1.065-.218 1.79-.465 2.428a4.883 4.883 0 0 1-1.153 1.772 4.915 4.915 0 0 1-1.772 1.153c-.637.247-1.363.415-2.428.465-1.066.047-1.405.06-4.122.06-2.717 0-3.056-.01-4.122-.06-1.065-.05-1.79-.218-2.428-.465a4.89 4.89 0 0 1-1.772-1.153 4.904 4.904 0 0 1-1.153-1.772c-.248-.637-.415-1.363-.465-2.428C2.013 15.056 2 14.717 2 12c0-2.717.01-3.056.06-4.122.05-1.066.217-1.79.465-2.428a4.88 4.88 0 0 1 1.153-1.772A4.897 4.897 0 0 1 5.45 2.525c.638-.248 1.362-.415 2.428-.465C8.944 2.013 9.283 2 12 2zm0 5a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm6.5-.25a1.25 1.25 0 1 0-2.5 0 1.25 1.25 0 0 0 2.5 0zM12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6z" />
                             </svg>
@@ -85,67 +85,67 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                         <button
                             key="inst-toggle"
                             onClick={() => onIncludeFooterChange(!includeFooter)}
-                            className={`flex items-center gap-3 px-4 py-2 rounded-xl transition-all text-[11px] font-black border-2 ${includeFooter
-                                ? 'bg-[#9B8FD4] text-black border-black shadow-md'
-                                : 'bg-black/5 text-black/40 border-black/10'
+                            className={`flex items-center gap-3 px-4 py-2 rounded-xl transition-all text-[11px] font-black border ${includeFooter
+                                ? 'bg-[#111111] text-white border-[#111111] shadow-sm'
+                                : 'bg-[#FAFAFA] text-[#999999] border-[#E5E5E5]'
                                 }`}
                         >
-                            <span className={`w-2 h-2 rounded-full transition-colors ${includeFooter ? 'bg-black' : 'bg-black/20'}`} />
-                            <span className="tracking-widest uppercase">施設情報を表示</span>
+                            <span className={`w-1.5 h-1.5 rounded-full transition-colors ${includeFooter ? 'bg-white shadow-[0_0_8px_white]' : 'bg-[#CCCCCC]'}`} />
+                            <span className="tracking-[0.2em] uppercase">Footer</span>
                         </button>
                     ),
-                    actionColor: "bg-[#E88BA3] hover:bg-[#E88BA3]/90 active:scale-[0.98] text-black border-2 border-black shadow-md",
+                    actionColor: "bg-[#111111] text-white hover:bg-black shadow-lg",
                     actionLabel: "Instagramを起動",
-                    contentClasses: "text-[15px] text-black font-bold leading-relaxed tracking-tight",
+                    contentClasses: "text-[15px] text-[#111111] font-bold leading-relaxed tracking-tight",
                     wrapperClass: "max-w-[340px]",
-                    brandTextColor: "text-[#E88BA3]",
-                    brandBgColor: "bg-[#E88BA3]/5",
-                    brandBorderColor: "border-[#E88BA3]/10",
+                    brandTextColor: "text-[#111111]",
+                    brandBgColor: "bg-[#FAFAFA]",
+                    brandBorderColor: "border-[#E5E5E5]",
                 };
             case Platform.GoogleMaps:
                 return {
                     icon: (
-                        <div className="w-10 h-10 bg-[#4DB39A] text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rounded-2xl flex items-center justify-center border-2 border-black">
-                            <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                        <div className="w-10 h-10 bg-white shadow-sm rounded-2xl flex items-center justify-center border border-[#E5E5E5]">
+                            <svg className="w-6 h-6 text-[#111111]" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
                             </svg>
                         </div>
                     ),
                     label: 'Google Maps',
-                    actionColor: 'bg-[#4DB39A] text-black hover:bg-[#4DB39A]/90 active:scale-[0.98] border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]',
+                    actionColor: 'bg-white text-[#111111] hover:bg-[#F5F5F5] shadow-lg border border-[#E5E5E5]',
                     actionLabel: "Googleマップで返信する",
-                    contentClasses: "text-[15px] text-black font-bold leading-relaxed tracking-tight",
+                    contentClasses: "text-[15px] text-[#111111] font-bold leading-relaxed tracking-tight",
                     wrapperClass: "max-w-[325px]",
-                    brandTextColor: "text-[#4DB39A]",
-                    brandBgColor: "bg-[#4DB39A]/5",
-                    brandBorderColor: "border-[#4DB39A]/10",
+                    brandTextColor: "text-[#111111]",
+                    brandBgColor: "bg-[#FAFAFA]",
+                    brandBorderColor: "border-[#E5E5E5]",
                 };
             case Platform.Line:
                 return {
                     icon: (
-                        <div className="w-10 h-10 bg-[#06C755] rounded-2xl flex items-center justify-center text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] border-black border-2">
+                        <div className="w-10 h-10 bg-[#111111] rounded-2xl flex items-center justify-center text-white shadow-sm border border-[#111111]">
                             <LineIcon className="w-6 h-6" />
                         </div>
                     ),
                     label: 'LINE',
-                    actionColor: "bg-[#06C755] hover:bg-[#06C755]/90 active:scale-[0.98] text-white border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]",
+                    actionColor: "bg-[#111111] hover:bg-black text-white shadow-lg",
                     actionLabel: "LINEで送る",
-                    contentClasses: "text-[15px] text-black font-bold leading-relaxed tracking-tight",
+                    contentClasses: "text-[15px] text-[#111111] font-bold leading-relaxed tracking-tight",
                     wrapperClass: "max-w-[400px]",
-                    brandTextColor: "text-[#06C755]",
-                    brandBgColor: "bg-[#06C755]/5",
-                    brandBorderColor: "border-[#06C755]/10",
+                    brandTextColor: "text-[#111111]",
+                    brandBgColor: "bg-[#FAFAFA]",
+                    brandBorderColor: "border-[#E5E5E5]",
                 };
             default:
                 return {
                     icon: null,
                     label: platform,
-                    actionColor: 'bg-black text-white hover:bg-black/80',
+                    actionColor: 'bg-[#111111] text-white hover:bg-black',
                     actionLabel: '投稿する',
-                    contentClasses: "text-base text-black font-black",
-                    brandTextColor: "text-black",
-                    brandBgColor: "bg-black/5",
-                    brandBorderColor: "border-black/10",
+                    contentClasses: "text-base text-[#111111] font-black",
+                    brandTextColor: "text-[#111111]",
+                    brandBgColor: "bg-[#FAFAFA]",
+                    brandBorderColor: "border-[#E5E5E5]",
                 };
         }
     };
@@ -156,24 +156,24 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
         switch (p) {
             case Platform.Instagram:
                 return (
-                    <svg className={`${iconClass} text-brand-instagram`} viewBox="0 0 24 24" fill="currentColor">
+                    <svg className={`${iconClass} ${isSelected ? 'text-[#111111]' : 'text-[#999999]'}`} viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 2c2.717 0 3.056.01 4.122.06 1.065.05 1.79.217 2.428.465.66.254 1.216.598 1.772 1.153a4.908 4.908 0 0 1 1.153 1.772c.247.637.415 1.363.465 2.428.047 1.066.06 1.405.06 4.122 0 2.717-.01 3.056-.06 4.122-.05 1.065-.218 1.79-.465 2.428a4.883 4.883 0 0 1-1.153 1.772 4.915 4.915 0 0 1-1.772 1.153c-.637.247-1.363.415-2.428.465-1.066.047-1.405.06-4.122.06-2.717 0-3.056-.01-4.122-.06-1.065-.05-1.79-.218-2.428-.465a4.89 4.89 0 0 1-1.772-1.153 4.904 4.904 0 0 1-1.153-1.772c-.248-.637-.415-1.363-.465-2.428C2.013 15.056 2 14.717 2 12c0-2.717.01-3.056.06-4.122.05-1.066.217-1.79.465-2.428a4.88 4.88 0 0 1 1.153-1.772A4.897 4.897 0 0 1 5.45 2.525c.638-.248 1.362-.415 2.428-.465C8.944 2.013 9.283 2 12 2zm0 5a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm6.5-.25a1.25 1.25 0 1 0-2.5 0 1.25 1.25 0 0 0 2.5 0zM12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6z" />
                     </svg>
                 );
             case Platform.X:
                 return (
-                    <svg className={`${iconClass} text-slate-950`} viewBox="0 0 24 24" fill="currentColor">
+                    <svg className={`${iconClass} ${isSelected ? 'text-[#111111]' : 'text-[#999999]'}`} viewBox="0 0 24 24" fill="currentColor">
                         <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                     </svg>
                 );
             case Platform.GoogleMaps:
                 return (
-                    <svg className={`${iconClass} text-brand-green`} viewBox="0 0 24 24" fill="currentColor">
+                    <svg className={`${iconClass} ${isSelected ? 'text-[#111111]' : 'text-[#999999]'}`} viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
                     </svg>
                 );
             case Platform.Line:
-                return <LineIcon className={`${iconClass} text-[#06C755]`} />;
+                return <LineIcon className={`${iconClass} ${isSelected ? 'text-[#111111]' : 'text-[#999999]'}`} />;
             default:
                 return null;
         }
@@ -183,12 +183,12 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
         <>
             <div className={`space-y-8 animate-in fade-in duration-700 ${results.length === 0 ? 'hidden md:block' : ''}`}>
 
-                {/* Main Results Container - Tabs Integrated Inside */}
-                <div className="text-primary flex flex-col min-h-[600px] overflow-hidden group/main transition-all duration-500 w-full max-w-6xl mx-auto bg-white rounded-[32px] border-[3px] border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)]">
+                {/* Main Results Container - Monochrome */}
+                <div className="text-primary flex flex-col min-h-[600px] overflow-hidden group/main transition-all duration-700 w-full max-w-6xl mx-auto bg-white rounded-[48px] border border-[#E5E5E5] shadow-sm">
 
-                    {/* Integrated Tab Navigation Header */}
+                    {/* Integrated Tab Navigation Header (Monochrome) */}
                     {results.length > 0 && (
-                        <div className="flex items-center w-full border-b-[3px] border-black bg-white">
+                        <div className="flex items-center w-full border-b border-[#E5E5E5] bg-white">
                             {results.map((res, idx) => {
                                 const isSelected = activeTab === idx;
                                 const theme = getPlatformTheme(res.platform);
@@ -196,14 +196,16 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                     <div
                                         key={res.platform}
                                         onClick={() => onTabChange(idx)}
-                                        className={`flex-1 py-4 flex items-center justify-center gap-1.5 md:gap-3 cursor-pointer transition-all duration-300 border-r-[3px] last:border-r-0 border-black px-2
+                                        className={`flex-1 py-5 flex items-center justify-center gap-1.5 md:gap-3 cursor-pointer transition-all duration-500 border-r border-[#E5E5E5] px-2 group
                                             ${isSelected
-                                                ? 'bg-black/5'
-                                                : 'bg-white hover:bg-black/5'
+                                                ? 'bg-[#FAFAFA]'
+                                                : 'hover:bg-[#F5F5F5]'
                                             }`}
                                     >
-                                        {getTabIcon(res.platform, isSelected)}
-                                        <span className={`text-[10px] md:text-[11px] font-black tracking-[0.1em] md:tracking-[0.2em] uppercase transition-colors truncate ${isSelected ? 'text-black' : 'text-black/30'}`}>
+                                        <div className={`transition-transform duration-500 ${isSelected ? 'scale-110' : 'scale-100 opacity-40 group-hover:opacity-70'}`}>
+                                            {getTabIcon(res.platform, isSelected)}
+                                        </div>
+                                        <span className={`text-[10px] md:text-[11px] font-black tracking-[0.2em] uppercase transition-all duration-500 truncate ${isSelected ? 'text-[#111111] translate-y-0' : 'text-[#999999] translate-y-0.5'}`}>
                                             {theme.label}
                                         </span>
                                     </div>
@@ -215,16 +217,16 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                     {/* Results Content Area */}
                     <div className="flex-1">
                         {results.length === 0 ? (
-                            // Placeholder when no results
+                            // Placeholder when no results (Monochrome)
                             <div className="p-12 h-full flex flex-col items-center justify-center text-center space-y-8 animate-in fade-in duration-1000">
-                                <h2 className="text-3xl tracking-[0.25em] text-center font-black text-black uppercase">プレビュー</h2>
+                                <h2 className="text-3xl tracking-[0.25em] text-center font-black text-[#111111] uppercase">プレビュー</h2>
 
                                 <div className="space-y-6 max-w-sm">
-                                    <div className="w-24 h-24 rounded-[32px] bg-black/5 border-[3px] border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center text-black/10 mx-auto">
+                                    <div className="w-24 h-24 rounded-[32px] bg-[#FAFAFA] border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_#111111] flex items-center justify-center text-[#111111]/20 mx-auto">
                                         <SparklesIcon className="w-12 h-12" />
                                     </div>
-                                    <h3 className="text-xl tracking-widest font-black text-black uppercase">入力待ち</h3>
-                                    <p className="text-black/40 text-sm font-bold leading-relaxed">
+                                    <h3 className="text-xl tracking-widest font-black text-[#111111] uppercase">入力待ち</h3>
+                                    <p className="text-[#999999] text-sm font-bold leading-relaxed">
                                         左側のフォームに内容やアイデアを入力して、<br />プロフェッショナルな投稿を瞬時に生成しましょう。
                                     </p>
                                 </div>
@@ -233,10 +235,10 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                             results.map((res, gIdx) => {
                                 const theme = getPlatformTheme(res.platform);
                                 return (
-                                    <div key={res.platform} className={activeTab === gIdx ? 'block animate-in fade-in duration-500' : 'hidden'}>
-                                        <div className={`divide-y-[3px] ${theme.brandBorderColor?.replace('border', 'divide') || 'divide-black/10'}`}>
+                                    <div key={res.platform} className={activeTab === gIdx ? 'block animate-in fade-in duration-700' : 'hidden'}>
+                                        <div className={`divide-y border-[#E5E5E5]`}>
                                             {res.data.map((text, iIdx) => (
-                                                <div key={iIdx} className={`py-10 px-8 lg:px-12 flex flex-col relative text-left bg-white transition-colors duration-500`}>
+                                                <div key={iIdx} className={`py-12 px-8 lg:px-16 flex flex-col relative text-left transition-colors duration-700`}>
 
                                                     {/* Text Area Content Wrapper */}
                                                     <div className={`mb-2 relative group/textarea ${theme.wrapperClass || ''}`}>
@@ -244,11 +246,11 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                             <AutoResizingTextarea
                                                                 value={text}
                                                                 onChange={(e) => onManualEdit(gIdx, iIdx, e.target.value)}
-                                                                className={`w-full bg-transparent focus:outline-none resize-none placeholder:text-black/10 whitespace-pre-wrap overflow-hidden ${theme.contentClasses || 'text-base text-black font-bold'}`}
+                                                                className={`w-full bg-transparent focus:outline-none resize-none placeholder:text-[#CCCCCC] whitespace-pre-wrap overflow-hidden ${theme.contentClasses || 'text-base text-[#111111] font-bold'}`}
                                                                 trigger={activeTab}
                                                             />
                                                         ) : (
-                                                            <div className="py-4 text-black/20 italic">コンテンツがありません</div>
+                                                            <div className="py-4 text-[#CCCCCC] italic">コンテンツがありません</div>
                                                         )}
                                                     </div>
 
@@ -264,9 +266,9 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                     </div>
 
                                                     {/* Unified Action Layout */}
-                                                    <div className="mt-auto pt-8 border-t-[3px] border-black/5">
+                                                    <div className="mt-auto pt-10 border-t border-[#E5E5E5]">
                                                         {/* Utility Row: Settings & Tools */}
-                                                        <div className="flex items-center justify-between mb-6 gap-3">
+                                                        <div className="flex items-center justify-between mb-8 gap-3">
                                                             {/* Left: Platform Specifics */}
                                                             <div className="flex items-center gap-2">
                                                                 {theme.extra && theme.extra(gIdx, iIdx)}
@@ -276,7 +278,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                             <div className="flex items-center gap-2">
                                                                 <button
                                                                     onClick={() => onCopy(text)}
-                                                                    className="flex items-center justify-center w-11 h-11 rounded-xl bg-black/5 text-black/40 border-2 border-black/5 hover:border-black/20 hover:text-black transition-all"
+                                                                    className="flex items-center justify-center w-12 h-12 rounded-2xl bg-[#FAFAFA] text-[#999999] border border-[#E5E5E5] hover:bg-[#F5F5F5] hover:text-[#111111] transition-all active:scale-95"
                                                                     title="コピー"
                                                                 >
                                                                     <CopyIcon className="w-5 h-5" />
@@ -285,7 +287,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                                 {/* Refined Secondary Preview Button */}
                                                                 <button
                                                                     onClick={() => setPreviewState({ isOpen: true, platform: res.platform, text, gIdx, iIdx })}
-                                                                    className="flex items-center justify-center w-11 h-11 rounded-xl bg-black/5 text-black/40 border-2 border-black/5 hover:border-black/20 hover:text-black transition-all"
+                                                                    className="flex items-center justify-center w-12 h-12 rounded-2xl bg-[#FAFAFA] text-[#999999] border border-[#E5E5E5] hover:bg-[#F5F5F5] hover:text-[#111111] transition-all active:scale-95"
                                                                     title="プレビュー"
                                                                 >
                                                                     <EyeIcon className="w-5 h-5" />
@@ -294,11 +296,15 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                         </div>
 
                                                         {/* Primary Tier Actions */}
-                                                        <div className="flex flex-col gap-4">
+                                                        <div className="flex flex-col gap-5">
                                                             {/* Prominent Refine Button */}
                                                             <button
                                                                 onClick={() => onRefineToggle(gIdx, iIdx)}
-                                                                className={`flex items-center justify-center gap-3 py-5 rounded-[24px] text-[12px] font-black transition-all uppercase tracking-[0.25em] ${refiningKey === `${gIdx}-${iIdx}` ? 'bg-[#9B8FD4] border-black text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]' : 'bg-white text-black/40 border-black/10 hover:border-black hover:text-black border-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]'}`}
+                                                                className={`flex items-center justify-center gap-4 py-6 rounded-[28px] text-[12px] font-black transition-all duration-500 uppercase tracking-[0.3em] overflow-hidden relative group
+                                                                    ${refiningKey === `${gIdx}-${iIdx}`
+                                                                        ? 'bg-[#111111] text-white shadow-xl'
+                                                                        : 'bg-[#FAFAFA] text-[#999999] border border-[#E5E5E5] hover:bg-[#F5F5F5] hover:text-[#111111]'
+                                                                    }`}
                                                             >
                                                                 <MagicWandIcon className="w-5 h-5" />
                                                                 <span>AIで内容を微調整する</span>
@@ -308,32 +314,31 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                                 onClick={() => {
                                                                     if (res.platform === Platform.Line) {
                                                                         const encodedText = encodeURIComponent(text);
-                                                                        // Fallback: Copy to clipboard just in case app doesn't pre-fill
                                                                         navigator.clipboard.writeText(text);
                                                                         window.location.href = `https://line.me/R/share?text=${encodedText}`;
                                                                     } else {
                                                                         onShare(res.platform, text);
                                                                     }
                                                                 }}
-                                                                className={`flex items-center justify-center gap-4 py-6 md:py-8 rounded-[32px] font-black text-lg transition-all uppercase tracking-[0.3em] group mt-2 ${theme.actionColor} border-[3px] border-black`}
+                                                                className={`flex items-center justify-center gap-5 py-8 rounded-[40px] font-black text-lg transition-all duration-700 uppercase tracking-[0.4em] group mt-2 relative overflow-hidden shadow-xl active:scale-[0.98] ${theme.actionColor}`}
                                                             >
-                                                                <span>{theme.actionLabel}</span>
-                                                                <ExternalLinkIcon className="w-6 h-6 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                                                                <span className="relative z-10">{theme.actionLabel}</span>
+                                                                <ExternalLinkIcon className="w-6 h-6 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform relative z-10" />
                                                             </button>
                                                         </div>
                                                     </div>
 
-                                                    {/* Refinement Overlay (per variant) */}
+                                                    {/* Refinement Overlay (per variant) - Monochrome */}
                                                     {refiningKey === `${gIdx}-${iIdx}` && (
-                                                        <div className="absolute inset-0 bg-white/95 backdrop-blur-md z-20 flex flex-col p-12 animate-in fade-in zoom-in duration-300 rounded-[45px] border-2 border-black/5">
+                                                        <div className="absolute inset-0 bg-white/90 backdrop-blur-xl z-20 flex flex-col p-12 animate-in fade-in zoom-in duration-500 rounded-[54px] border border-[#E5E5E5] shadow-2xl">
                                                             <div className="flex-1 flex flex-col items-center justify-center max-w-lg mx-auto w-full">
-                                                                <div className="mb-10 text-center space-y-4">
-                                                                    <div className="w-20 h-20 bg-white rounded-[24px] flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] border-2 border-black mx-auto">
-                                                                        <MagicWandIcon className="w-10 h-10 text-black" />
+                                                                <div className="mb-10 text-center space-y-5">
+                                                                    <div className="w-20 h-20 bg-[#111111] text-white rounded-[28px] flex items-center justify-center shadow-xl border border-white/10 mx-auto">
+                                                                        <MagicWandIcon className="w-10 h-10" />
                                                                     </div>
                                                                     <div>
-                                                                        <h4 className="text-[11px] font-black text-black/40 uppercase tracking-[0.3em] mb-2">AI個別微調整</h4>
-                                                                        <p className="text-2xl font-black text-black leading-tight">修正内容を教えてください</p>
+                                                                        <h4 className="text-[10px] font-black text-[#999999] uppercase tracking-[0.4em] mb-2">AI Refinement</h4>
+                                                                        <p className="text-2xl font-black text-[#111111] leading-tight tracking-tight">How can I improve it?</p>
                                                                     </div>
                                                                 </div>
 

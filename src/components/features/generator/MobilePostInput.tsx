@@ -139,104 +139,93 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     };
 
     return (
-        <div className="flex flex-col h-full min-h-[100dvh] relative overflow-hidden font-inter">
-            {/* Premium Soft Background Gradient */}
-            <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden">
-                <div className="absolute top-[-10%] left-[-10%] w-[120%] h-[120%] bg-[#E8E9FF]" />
-                <div className="absolute top-[10%] right-[-10%] w-[80%] h-[80%] bg-[#F0E5FF] rounded-full blur-[120px] opacity-60 animate-pulse [animation-duration:10s]" />
-                <div className="absolute bottom-[-10%] left-[-10%] w-[80%] h-[80%] bg-[#FFECF5] rounded-full blur-[120px] opacity-60 animate-pulse [animation-duration:8s]" />
+        <div className="flex flex-col h-full min-h-[100dvh] relative overflow-hidden font-inter bg-[#F9F9F9]">
+            {/* Minimal Monochrome Background */}
+            <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden bg-[#F9F9F9]">
+                {/* Subtle Monochrome Gradients */}
+                <div className="absolute top-0 left-0 right-0 h-[40%] bg-gradient-to-b from-[#EAEAEA] via-[#F9F9F9] to-transparent opacity-100" />
+
+                {/* Monochrome Blurs for Detail */}
+                <div className="absolute top-[-5%] right-[-5%] w-[60%] h-[60%] bg-[#E0E0E0] rounded-full blur-[120px] opacity-30" />
+                <div className="absolute top-[5%] left-[-10%] w-[50%] h-[50%] bg-[#D4D4D4] rounded-full blur-[100px] opacity-20" />
+
+                {/* Paper Texture */}
+                <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-multiply bg-[url('https://www.transparenttextures.com/patterns/p6.png')]" />
             </div>
 
             {/* Step 1: Home (Platform Grid) */}
-            <div className={`flex flex-col gap-8 p-6 transition-all duration-500 ${isStepDrawerOpen ? 'blur-md scale-[0.98] opacity-60' : 'opacity-100'}`}>
-                {/* Header Profile Style */}
+            <div className={`flex flex-col gap-6 p-6 transition-all duration-500 ${isStepDrawerOpen ? 'blur-md scale-[0.98] opacity-60' : 'opacity-100'}`}>
+                {/* Header Profile Style - Monochrome */}
                 <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#9747FF] to-[#E88BA3] flex items-center justify-center text-white font-bold text-sm shadow-sm ring-2 ring-white/50">
-                            {storeProfile.name?.substring(0, 1) || 'M'}
+                        <div className="w-10 h-10 rounded-full bg-[#111111] flex items-center justify-center text-white font-bold text-sm shadow-sm ring-2 ring-white/80">
+                            {storeProfile.name?.substring(0, 1) || 'S'}
                         </div>
                         <div className="flex flex-col">
-                            <span className="text-[10px] font-medium text-[#7C7C8C] uppercase tracking-[0.1em]">Welcome back</span>
-                            <span className="text-sm font-bold text-[#1F1F2F]">Hello, {storeProfile.name || 'User'}</span>
+                            <span className="text-[10px] font-black text-[#666666] uppercase tracking-[0.2em] leading-none mb-1">Welcome</span>
+                            <span className="text-sm font-black text-[#111111] tracking-tight">{storeProfile.name || 'Store Admin'}</span>
                         </div>
                     </div>
-                    {/* Compact Usage Badge */}
+                    {/* Compact Usage Badge - Monochrome */}
                     {plan && typeof plan.usage !== 'undefined' && typeof plan.limit !== 'undefined' && (
                         <div className="flex flex-col items-end">
-                            <span className="text-[10px] font-bold text-[#7C7C8C] tracking-wide mb-0.5">チケット残数</span>
-                            <div className="flex items-center gap-1 bg-white/60 px-2 py-1 rounded-lg border border-white/50 shadow-sm">
-                                <span className={`text-sm font-black leading-none ${plan.limit - plan.usage <= 0 ? 'text-red-500' : 'text-[#1F1F2F]'}`}>
+                            <span className="text-[10px] font-bold text-[#666666] tracking-wider mb-0.5 uppercase">Credits</span>
+                            <div className="flex items-center gap-1 bg-white px-3 py-1.5 rounded-xl border border-[#E5E5E5] shadow-sm">
+                                <span className={`text-sm font-black leading-none ${plan.limit - plan.usage <= 0 ? 'text-[#111111]' : 'text-[#111111]'}`}>
                                     {Math.max(0, plan.limit - plan.usage)}
                                 </span>
-                                <span className="text-[10px] font-medium text-[#7C7C8C] leading-none">/ {plan.limit}</span>
+                                <span className="text-[10px] font-bold text-[#999999] leading-none">/ {plan.limit}</span>
                             </div>
                         </div>
                     )}
                 </div>
 
-                <div className="py-2 flex flex-col gap-0.5 items-start">
-                    <h2 className="text-[18px] font-black text-[#1F1F2F] tracking-tight">投稿先を選択</h2>
-                    <p className="text-[11px] text-[#7C7C8C] font-bold uppercase tracking-widest opacity-60">Platform Selection</p>
+                <div className="flex flex-col gap-0.5 items-start px-2 mb-2">
+                    <h2 className="text-[20px] font-black text-[#111111] tracking-tight">投稿先を選択</h2>
+                    <p className="text-[11px] text-[#666666] font-bold uppercase tracking-[0.2em]">Select your canvas</p>
                 </div>
 
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-3 px-2">
                     {[Platform.Instagram, Platform.Line, Platform.X, Platform.GoogleMaps].map((p) => {
-                        const getStyle = (plt: Platform) => {
-                            switch (plt) {
-                                case Platform.Instagram: return 'selected:bg-gradient-to-r from-[#9747FF]/10 to-[#E88BA3]/10 border-[#E88BA3]/20 text-[#E88BA3]';
-                                case Platform.Line: return 'selected:bg-[#06C755]/5 border-[#06C755]/10 text-[#06C755]';
-                                case Platform.X: return 'selected:bg-black/5 border-black/10 text-[#1F1F2F]';
-                                case Platform.GoogleMaps: return 'selected:bg-[#4A90E2]/5 border-[#4A90E2]/10 text-[#4A90E2]';
-                                default: return 'border-white/40 text-[#1F1F2F]';
-                            }
-                        };
                         const isActive = platforms.includes(p);
-
                         return (
                             <button
                                 key={p}
                                 onClick={() => handlePlatformSelect(p)}
                                 className={`
-                                    group relative w-full px-6 py-5 rounded-[24px] flex items-center gap-6 
-                                    transition-all duration-500 ease-out active:scale-[0.98]
-                                    border backdrop-blur-xl
+                                    group relative w-full px-6 py-5 rounded-[28px] flex items-center gap-5
+                                    transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.98]
+                                    border shadow-sm
                                     ${isActive
-                                        ? 'bg-white shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] border-white translate-x-1'
-                                        : 'bg-white/40 border-white/40 hover:bg-white/60 translate-x-0'
+                                        ? 'bg-[#111111] text-white border-[#111111] shadow-[0_15px_30px_rgba(0,0,0,0.15)] translate-x-1'
+                                        : 'bg-white border-[#E5E5E5] hover:bg-[#F5F5F5] hover:border-[#D4D4D4]'
                                     }
                                 `}
                             >
-                                {/* Platform Glow Effect */}
-                                {isActive && (
-                                    <div className="absolute inset-0 rounded-[24px] opacity-20 blur-xl z-[-1]"
-                                        style={{ backgroundColor: p === Platform.Instagram ? '#E88BA3' : p === Platform.Line ? '#06C755' : p === Platform.X ? '#1F1F2F' : '#4A90E2' }}
-                                    />
-                                )}
-
                                 <div className={`
-                                    w-14 h-14 rounded-[18px] flex items-center justify-center transition-all duration-500
+                                    w-13 h-13 rounded-2xl flex items-center justify-center transition-all duration-300
                                     ${isActive
-                                        ? 'bg-[#1F1F2F] text-white scale-110 shadow-lg'
-                                        : 'bg-white/80 text-[#AFAFB8] grayscale group-hover:grayscale-0 group-hover:scale-105'
+                                        ? 'bg-white/20 text-white'
+                                        : 'bg-[#F5F5F5] text-[#111111] group-hover:bg-[#EAEAEA]'
                                     }
                                 `}>
-                                    {getPlatformIcon(p, "w-7 h-7")}
+                                    {getPlatformIcon(p, "w-6 h-6")}
                                 </div>
 
                                 <div className="flex flex-col items-start flex-1 gap-0.5">
-                                    <span className={`text-[10px] font-black uppercase tracking-[0.2em] transition-colors duration-500 ${isActive ? 'text-[#9747FF]' : 'text-[#AFAFB8]'}`}>
-                                        Engine Option
+                                    <span className={`text-[10px] font-black uppercase tracking-[0.2em] transition-colors duration-300 ${isActive ? 'text-white/60' : 'text-[#999999]'}`}>
+                                        Target Channel
                                     </span>
-                                    <span className={`text-[18px] font-black tracking-tight transition-colors duration-500 ${isActive ? 'text-[#1F1F2F]' : 'text-[#7C7C8C]'}`}>
+                                    <span className={`text-[18px] font-black tracking-tight transition-colors duration-300 ${isActive ? 'text-white' : 'text-[#111111]'}`}>
                                         {p === Platform.GoogleMaps ? 'Google Maps' : p === Platform.Instagram ? 'Instagram' : p}
                                     </span>
                                 </div>
 
                                 <div className={`
-                                    w-8 h-8 rounded-full flex items-center justify-center transition-all duration-500
-                                    ${isActive ? 'bg-[#9747FF] text-white rotate-0' : 'bg-[#F0F0F5] text-[#AFAFB8] -rotate-45 opacity-0 group-hover:opacity-100'}
+                                    w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300
+                                    ${isActive ? 'bg-white/20 rotate-0 scale-100 text-white' : 'bg-transparent text-[#CCCCCC] opacity-0 -translate-x-4 scale-50 group-hover:opacity-100 group-hover:translate-x-0 group-hover:scale-100 group-hover:text-[#111111]'}
                                 `}>
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
                                         <path d="M5 12h14M12 5l7 7-7 7" />
                                     </svg>
                                 </div>
@@ -245,48 +234,48 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                     })}
                 </div>
 
-                {/* Promotional Style Card (Reference Image Bottom) */}
-                <div className="mt-4 p-6 rounded-[32px] bg-gradient-to-r from-[#9747FF]/10 to-[#E88BA3]/10 border border-white/60 backdrop-blur-md relative overflow-hidden group">
-                    <div className="absolute -right-4 -top-4 w-24 h-24 bg-gradient-to-br from-[#9747FF] to-[#E88BA3] rounded-full blur-2xl opacity-20 group-hover:opacity-40 transition-opacity" />
+                {/* Promotional Style Card (Monochrome) */}
+                <div className="mt-4 p-6 rounded-[32px] bg-white border border-[#E5E5E5] relative overflow-hidden group shadow-sm hover:shadow-md transition-shadow">
+                    <div className="absolute -right-4 -top-4 w-24 h-24 bg-[#F5F5F5] rounded-full blur-2xl opacity-50 group-hover:opacity-100 transition-opacity" />
                     <div className="relative z-10">
-                        <div className="inline-flex px-3 py-1 rounded-full bg-white text-[10px] font-bold text-[#9747FF] uppercase tracking-wider mb-2 shadow-sm">Premium</div>
-                        <h4 className="text-lg font-bold text-[#1F1F2F] mb-1">AI Omakase Mode</h4>
-                        <p className="text-xs text-[#7C7C8C] leading-relaxed">Let our advanced AI handle the entire strategy and posting for you.</p>
+                        <div className="inline-flex px-3 py-1 rounded-full bg-[#111111] text-[10px] font-black text-white uppercase tracking-widest mb-2">Premium</div>
+                        <h4 className="text-lg font-black text-[#111111] mb-1">AI Omakase Mode</h4>
+                        <p className="text-xs text-[#666666] leading-relaxed font-medium">Let our advanced AI handle the entire strategy and posting for you.</p>
                     </div>
                 </div>
             </div>
 
-            {/* Bottom Sheet Drawer - Glassmorphism Style */}
+            {/* Bottom Sheet Drawer - Monochrome Style */}
             {isStepDrawerOpen && (
                 <div className="fixed inset-0 z-[130] flex items-end">
-                    {/* Backdrop */}
-                    <div className="absolute inset-0 bg-white/40 backdrop-blur-md" onClick={() => setIsStepDrawerOpen(false)} />
+                    {/* Immersive Backdrop */}
+                    <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" onClick={() => setIsStepDrawerOpen(false)} />
 
-                    {/* Sliding Panel */}
-                    <div className={`absolute bottom-0 left-0 right-0 bg-white/90 backdrop-blur-2xl border-t border-white/60 rounded-t-[48px] shadow-[0_-20px_80px_rgba(0,0,0,0.1)] transition-all duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] flex flex-col ${mobileStep === 'confirm' || mobileStep === 'result' || (mobileStep === 'input' && isGoogleMaps) ? 'h-[92vh]' : 'h-[70vh]'} pb-24`}>
+                    {/* Sliding Panel (Monochrome) */}
+                    <div className={`absolute bottom-0 left-0 right-0 bg-[#FAFAFA] border-t border-[#E5E5E5] rounded-t-[54px] shadow-[0_-20px_60px_rgba(0,0,0,0.1)] transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] flex flex-col ${mobileStep === 'confirm' || mobileStep === 'result' || (mobileStep === 'input' && isGoogleMaps) ? 'h-[94vh]' : 'h-[72vh]'} pb-24`}>
                         {/* Drag Handle */}
                         <div className="w-full flex justify-center py-6">
-                            <div className="w-16 h-1.5 bg-[#E2E2E8] rounded-full" />
+                            <div className="w-16 h-1.5 bg-[#E5E5E5] rounded-full" />
                         </div>
 
                         {/* Drawer Header */}
                         <div className="px-8 pb-4 flex items-center justify-between">
                             <div className="flex items-center gap-4">
-                                <button onClick={handleBackStep} className="w-12 h-12 rounded-2xl bg-white border border-[#F0F0F5] flex items-center justify-center shadow-lg active:scale-90 transition-all">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1F1F2F" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
+                                <button onClick={handleBackStep} className="w-12 h-12 rounded-full bg-white border border-[#E5E5E5] flex items-center justify-center shadow-sm active:scale-90 transition-all">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#111111" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
                                 </button>
                                 <div className="flex flex-col">
-                                    <h3 className="text-sm font-bold text-[#1F1F2F] tracking-tight">
+                                    <h3 className="text-[17px] font-black text-[#111111] tracking-tight leading-none mb-1">
                                         {mobileStep === 'input' ? 'Describe Content' : mobileStep === 'confirm' ? 'Final Review' : 'Generated Posts'}
                                     </h3>
-                                    <span className="text-[10px] font-medium text-[#7C7C8C] uppercase tracking-widest">
+                                    <span className="text-[10px] font-black text-[#666666] uppercase tracking-[0.2em] leading-none">
                                         {mobileStep === 'input' ? 'Step 2 of 3' : mobileStep === 'confirm' ? 'Step 3 of 3' : 'Success!'}
                                     </span>
                                 </div>
                             </div>
                             <div className="flex -space-x-2">
                                 {platforms.map(p => (
-                                    <div key={p} className="w-10 h-10 rounded-full bg-white border-2 border-[#F0F0F5] flex items-center justify-center shadow-sm z-10 transition-transform active:translate-y-[-4px]">
+                                    <div key={p} className="w-10 h-10 rounded-full bg-white border-2 border-[#FAFAFA] flex items-center justify-center shadow-sm z-10">
                                         {getPlatformIcon(p, "w-5 h-5")}
                                     </div>
                                 ))}
@@ -302,8 +291,8 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                     {isGoogleMaps ? (
                                         <div className="w-full flex flex-col gap-6">
                                             <div className="text-center space-y-2">
-                                                <h4 className="text-xl font-bold text-[#1F1F2F]">Review Reply</h4>
-                                                <p className="text-sm text-[#7C7C8C]">Googleマップの口コミを貼り付けてください</p>
+                                                <h4 className="text-xl font-bold text-[#111111]">Review Reply</h4>
+                                                <p className="text-sm text-[#666666]">Googleマップの口コミを貼り付けてください</p>
                                             </div>
 
                                             <div className="relative flex-1 max-h-[35vh]">
@@ -311,12 +300,12 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                     value={inputText}
                                                     onChange={(e) => onInputTextChange(e.target.value)}
                                                     placeholder="ここに口コミをペースト..."
-                                                    className="w-full h-full min-h-[160px] p-8 bg-white border border-[#F0F0F5] rounded-[40px] text-lg font-medium leading-relaxed focus:outline-none focus:ring-4 focus:ring-[#4A90E2]/10 transition-all shadow-[inset_0_2px_10px_rgba(0,0,0,0.02)] placeholder:text-[#AFAFB8]"
+                                                    className="w-full h-full min-h-[160px] p-8 bg-white border border-[#E5E5E5] rounded-[40px] text-lg font-bold leading-relaxed focus:outline-none focus:border-[#111111] transition-all placeholder:text-[#CCCCCC] text-[#111111]"
                                                 />
                                                 {/* Floating Mic Button for GMap (Secondary) */}
                                                 <button
                                                     onClick={toggleVoiceInput}
-                                                    className={`absolute bottom-6 left-6 w-12 h-12 rounded-full flex items-center justify-center transition-all ${isListening ? 'bg-[#FF5A5F] text-white animate-pulse' : 'bg-[#F0F0F5] text-[#7C7C8C]'}`}
+                                                    className={`absolute bottom-6 left-6 w-12 h-12 rounded-full flex items-center justify-center transition-all ${isListening ? 'bg-[#111111] text-white animate-pulse' : 'bg-[#F5F5F5] text-[#111111]'}`}
                                                 >
                                                     <MicIcon className="w-6 h-6" />
                                                 </button>
@@ -324,7 +313,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                 {inputText.trim() && (
                                                     <button
                                                         onClick={() => setMobileStep('confirm')}
-                                                        className="absolute bottom-6 right-6 bg-[#1F1F2F] text-white px-8 py-4 rounded-[24px] font-bold text-xs uppercase tracking-[0.2em] shadow-lg active:scale-95 transition-all"
+                                                        className="absolute bottom-6 right-6 bg-[#111111] text-white px-8 py-4 rounded-[24px] font-bold text-xs uppercase tracking-[0.2em] shadow-lg active:scale-95 transition-all"
                                                     >
                                                         Next
                                                     </button>
@@ -335,9 +324,9 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             <div className="flex flex-col gap-3">
                                                 <button
                                                     onClick={() => setIsPromptExpanded(!isPromptExpanded)}
-                                                    className="flex items-center gap-2 text-[#7C7C8C] active:text-[#1F1F2F] transition-colors px-4 py-2"
+                                                    className="flex items-center gap-2 text-[#666666] active:text-[#111111] transition-colors px-4 py-2"
                                                 >
-                                                    <AutoSparklesIcon className={`w-4 h-4 ${customPrompt ? 'text-[#9747FF]' : ''}`} />
+                                                    <AutoSparklesIcon className={`w-4 h-4 ${customPrompt ? 'text-[#111111]' : ''}`} />
                                                     <span className="text-[11px] font-bold uppercase tracking-widest">追加指示（任意）</span>
                                                 </button>
                                                 {isPromptExpanded && (
@@ -355,13 +344,13 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             </div>
 
                                             {/* Google Maps Supplement Field */}
-                                            <div className="p-6 bg-[#F5CC6D]/10 border-[#F5CC6D] border-2 rounded-[32px] animate-in slide-in-from-top-2">
-                                                <h4 className="text-[11px] font-black text-[#C4A052] uppercase mb-3">補足情報 / 当日の事情</h4>
+                                            <div className="p-6 bg-[#C4A052]/10 border-[#C4A052]/20 border rounded-[32px] backdrop-blur-md relative overflow-hidden group">
+                                                <h4 className="relative z-10 text-[10px] font-black text-[#8B7340] uppercase tracking-[0.2em] mb-3">補足情報 / 当日の事情</h4>
                                                 <AutoResizingTextarea
                                                     value={storeSupplement}
                                                     onChange={(e) => onStoreSupplementChange(e.target.value)}
                                                     placeholder="例：急な欠勤で人手が足りなかった、など"
-                                                    className="w-full bg-transparent text-black text-sm font-bold leading-relaxed placeholder-[#C4A052]/40 focus:outline-none resize-none min-h-[60px]"
+                                                    className="relative z-10 w-full bg-transparent text-[#2F3E46] text-sm font-bold leading-relaxed placeholder-[#8B7340]/30 focus:outline-none resize-none min-h-[60px]"
                                                 />
                                             </div>
                                         </div>
@@ -370,26 +359,26 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         <>
                                             <button
                                                 onClick={toggleVoiceInput}
-                                                className={`relative w-40 h-40 rounded-full flex items-center justify-center transition-all duration-500 ${isListening ? 'scale-110' : 'hover:scale-105'}`}
+                                                className={`relative w-40 h-40 rounded-full flex items-center justify-center transition-all duration-700 ${isListening ? 'scale-110' : 'hover:scale-105'}`}
                                             >
-                                                {/* Animated Rings for Listening */}
+                                                {/* Animated Rings for Listening - Monochrome */}
                                                 {isListening && (
                                                     <>
-                                                        <div className="absolute inset-0 rounded-full bg-[#FF5A5F]/20 animate-ping [animation-duration:2s]" />
-                                                        <div className="absolute inset-2 rounded-full bg-[#FF5A5F]/30 animate-ping [animation-duration:1.5s]" />
+                                                        <div className="absolute inset-0 rounded-full bg-[#111111] opacity-10 animate-ping [animation-duration:2s]" />
+                                                        <div className="absolute inset-4 rounded-full bg-[#111111] opacity-10 animate-pulse [animation-duration:1s]" />
                                                     </>
                                                 )}
-                                                <div className={`w-full h-full rounded-full flex flex-col items-center justify-center transition-all duration-300 shadow-xl ${isListening ? 'bg-[#FF5A5F] text-white shadow-[#FF5A5F]/40' : 'bg-white text-[#1F1F2F] shadow-black/5 border border-[#F0F0F5]'}`}>
+                                                <div className={`w-full h-full rounded-full flex flex-col items-center justify-center transition-all duration-500 shadow-xl border border-white/40 ${isListening ? 'bg-[#111111] text-white' : 'bg-white text-[#111111] border-[#E5E5E5]'}`}>
                                                     {isListening ? (
                                                         <div className="flex gap-2 h-10 items-center">
-                                                            <div className="w-2 h-8 bg-white rounded-full animate-bounce [animation-delay:0s]" />
-                                                            <div className="w-2 h-10 bg-white rounded-full animate-bounce [animation-delay:0.1s]" />
-                                                            <div className="w-2 h-8 bg-white rounded-full animate-bounce [animation-delay:0.2s]" />
+                                                            <div className="w-1.5 h-8 bg-white rounded-full animate-bounce [animation-delay:0s]" />
+                                                            <div className="w-1.5 h-10 bg-white rounded-full animate-bounce [animation-delay:0.1s]" />
+                                                            <div className="w-1.5 h-8 bg-white rounded-full animate-bounce [animation-delay:0.2s]" />
                                                         </div>
                                                     ) : (
-                                                        <MicIcon className="w-14 h-14" />
+                                                        <MicIcon className="w-14 h-14 text-[#111111]" />
                                                     )}
-                                                    <span className={`mt-2 text-[10px] font-bold uppercase tracking-widest ${isListening ? 'text-white' : 'text-[#7C7C8C]'}`}>
+                                                    <span className={`mt-2 text-[10px] font-black uppercase tracking-[0.2em] ${isListening ? 'text-white' : 'text-[#999999]'}`}>
                                                         {isListening ? 'Listening' : 'Tap to Speak'}
                                                     </span>
                                                 </div>
@@ -401,12 +390,12 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                         value={inputText}
                                                         onChange={(e) => onInputTextChange(e.target.value)}
                                                         placeholder={isGoogleMaps ? "口コミ内容を貼り付けてください..." : "Tell AI what to write about..."}
-                                                        className="w-full min-h-[160px] p-8 bg-white border border-[#F0F0F5] rounded-[40px] text-lg font-medium leading-relaxed focus:outline-none focus:ring-4 focus:ring-[#9747FF]/5 transition-all shadow-sm placeholder:text-[#AFAFB8]"
+                                                        className="w-full min-h-[160px] p-8 bg-white border border-[#E5E5E5] rounded-[40px] text-lg font-bold leading-relaxed focus:outline-none focus:border-[#111111] transition-all  placeholder:text-[#CCCCCC] text-[#111111]"
                                                     />
                                                     {inputText.trim() && !isListening && (
                                                         <button
                                                             onClick={() => setMobileStep('confirm')}
-                                                            className="absolute bottom-6 right-6 bg-[#1F1F2F] text-white px-8 py-4 rounded-[24px] font-bold text-xs uppercase tracking-[0.2em] shadow-lg active:scale-95 transition-all"
+                                                            className="absolute bottom-6 right-6 bg-[#111111] text-white px-8 py-4 rounded-[24px] font-bold text-xs uppercase tracking-[0.2em] shadow-lg active:scale-95 transition-all"
                                                         >
                                                             Next
                                                         </button>
@@ -417,19 +406,19 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                 <div className="flex flex-col gap-3">
                                                     <button
                                                         onClick={() => setIsPromptExpanded(!isPromptExpanded)}
-                                                        className="flex items-center gap-2 text-[#7C7C8C] active:text-[#1F1F2F] transition-colors px-4 py-2"
+                                                        className="flex items-center gap-2 text-[#666666] active:text-[#111111] transition-colors px-4 py-2"
                                                     >
-                                                        <AutoSparklesIcon className={`w-4 h-4 ${customPrompt ? 'text-[#9747FF]' : ''}`} />
+                                                        <AutoSparklesIcon className={`w-4 h-4 ${customPrompt ? 'text-[#111111]' : ''}`} />
                                                         <span className="text-[11px] font-bold uppercase tracking-widest">追加指示（任意）</span>
                                                     </button>
                                                     {isPromptExpanded && (
-                                                        <div className="p-4 bg-white/60 border border-[#F0F0F5] rounded-2xl animate-in zoom-in-95 shadow-sm">
+                                                        <div className="p-4 bg-white border border-[#E5E5E5] rounded-2xl animate-in zoom-in-95 shadow-sm">
                                                             <input
                                                                 type="text"
                                                                 value={customPrompt}
                                                                 onChange={(e) => onCustomPromptChange(e.target.value)}
                                                                 placeholder="例：テンション高めに..."
-                                                                className="w-full bg-transparent border-none focus:outline-none text-xs font-bold text-[#1F1F2F]"
+                                                                className="w-full bg-transparent border-none focus:outline-none text-xs font-bold text-[#111111]"
                                                                 autoFocus
                                                             />
                                                         </div>
@@ -443,59 +432,48 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
                             {mobileStep === 'confirm' && (
                                 <div className="flex flex-col gap-8 animate-in fade-in slide-in-from-bottom-10 duration-700">
-                                    {/* Preview Box - Reference Image Card Style */}
-                                    <div className="bg-gradient-to-br from-[#1F1F2F] to-[#2F2F4F] rounded-[40px] p-8 min-h-[180px] relative shadow-2xl overflow-hidden group">
-                                        <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-3xl -mr-16 -mt-16" />
+                                    {/* Preview Box - Monochrome */}
+                                    <div className="bg-white border border-[#E5E5E5] rounded-[40px] p-8 min-h-[180px] relative shadow-sm overflow-hidden group">
+                                        <div className="absolute top-0 right-0 w-32 h-32 bg-[#F5F5F5] rounded-full blur-3xl -mr-16 -mt-16" />
                                         <div className="flex items-center justify-between mb-6">
                                             <div className="flex gap-1.5">
-                                                <div className="w-2 h-2 rounded-full bg-white/20" />
-                                                <div className="w-2 h-2 rounded-full bg-white/20" />
-                                                <div className="w-2 h-2 rounded-full bg-white/20" />
+                                                <div className="w-1.5 h-1.5 rounded-full bg-[#111111]/20" />
+                                                <div className="w-1.5 h-1.5 rounded-full bg-[#111111]/20" />
                                             </div>
-                                            <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Captured Content</span>
+                                            <span className="text-[10px] font-black text-[#999999] uppercase tracking-[0.2em]">Source Content</span>
                                         </div>
-                                        <div className="text-white/90 text-sm font-medium leading-relaxed">
+                                        <div className="text-[#111111] text-[15px] font-bold leading-relaxed">
                                             {inputText.length > 200 ? inputText.substring(0, 200) + '...' : inputText || "Your content will appear here..."}
                                         </div>
 
                                         {/* Additional Instructions Review */}
                                         {customPrompt && (
-                                            <div className="mt-4 pt-4 border-t border-white/10">
+                                            <div className="mt-4 pt-4 border-t border-[#E5E5E5]">
                                                 <div className="flex items-center gap-1.5 mb-1">
-                                                    <AutoSparklesIcon className="w-3 h-3 text-[#9747FF]" />
-                                                    <span className="text-[9px] font-bold text-white/30 uppercase tracking-widest block">Extra Instructions</span>
+                                                    <AutoSparklesIcon className="w-3 h-3 text-[#111111]" />
+                                                    <span className="text-[9px] font-black text-[#666666] uppercase tracking-widest block">Extra Instructions</span>
                                                 </div>
-                                                <div className="text-white/60 text-xs italic">
+                                                <div className="text-[#666666] text-xs italic font-medium">
                                                     {customPrompt}
                                                 </div>
                                             </div>
                                         )}
 
-                                        {/* Supplement Review in Confirm Step */}
-                                        {isGoogleMaps && storeSupplement && (
-                                            <div className="mt-4 pt-4 border-t border-white/10">
-                                                <span className="text-[9px] font-bold text-white/30 uppercase tracking-widest block mb-1">Supplement</span>
-                                                <div className="text-white/60 text-xs italic line-clamp-2">
-                                                    {storeSupplement}
-                                                </div>
-                                            </div>
-                                        )}
-
-                                        <button onClick={() => setMobileStep('input')} className="absolute bottom-6 right-8 p-3 bg-white/10 rounded-2xl text-white/60 hover:text-white transition-colors backdrop-blur-md">
+                                        <button onClick={() => setMobileStep('input')} className="absolute bottom-6 right-8 w-11 h-11 bg-white border border-[#E5E5E5] rounded-2xl text-[#999999] hover:text-[#111111] transition-all flex items-center justify-center active:scale-95 shadow-sm">
                                             <RotateCcwIcon className="w-5 h-5" />
                                         </button>
                                     </div>
 
-                                    {/* Style Selection - Horizontal Pill Style */}
-                                    <div className="flex flex-col gap-5">
+                                    {/* Style Selection - Horizontal Pill Style (Monochrome) */}
+                                    <div className="flex flex-col gap-4">
                                         <div className="flex items-center justify-between px-2">
-                                            <span className="text-xs font-bold text-[#1F1F2F] tracking-tight">Select Style</span>
-                                            <button onClick={onOpenPresetModal} className="text-[10px] font-bold text-[#9747FF] uppercase tracking-wider">Manage</button>
+                                            <span className="text-[11px] font-black text-[#666666] uppercase tracking-[0.2em]">Select Style</span>
+                                            <button onClick={onOpenPresetModal} className="text-[10px] font-black text-[#111111] uppercase tracking-widest bg-[#F5F5F5] px-3 py-1 rounded-full border border-[#E5E5E5] hover:bg-[#EAEAEA]">Manage</button>
                                         </div>
-                                        <div className="flex overflow-x-auto gap-3 pb-2 no-scrollbar">
+                                        <div className="flex overflow-x-auto gap-3 pb-2 no-scrollbar px-1">
                                             <button
                                                 onClick={() => onApplyPreset({ id: 'plain-ai' } as any)}
-                                                className={`flex-shrink-0 px-8 py-4 rounded-[24px] font-bold text-xs uppercase tracking-widest transition-all ${!activePresetId ? 'bg-gradient-to-tr from-[#9747FF] to-[#E88BA3] text-white shadow-lg active:scale-95' : 'bg-white border border-[#F0F0F5] text-[#7C7C8C]'}`}
+                                                className={`flex-shrink-0 px-8 py-5 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] transition-all duration-300 shadow-sm ${!activePresetId ? 'bg-[#111111] text-white shadow-xl scale-105 active:scale-95' : 'bg-white border border-[#E5E5E5] text-[#999999]'}`}
                                             >
                                                 AI Standard
                                             </button>
@@ -505,7 +483,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                     <button
                                                         key={p.id}
                                                         onClick={() => onApplyPreset(p)}
-                                                        className={`flex-shrink-0 px-8 py-4 rounded-[24px] font-bold text-xs uppercase tracking-widest transition-all truncate max-w-[140px] ${isSelected ? 'bg-[#1F1F2F] text-white shadow-lg active:scale-95' : 'bg-white border border-[#F0F0F5] text-[#7C7C8C]'}`}
+                                                        className={`flex-shrink-0 px-8 py-5 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] transition-all duration-300 shadow-sm truncate max-w-[160px] ${isSelected ? 'bg-[#111111] text-white shadow-xl scale-105 active:scale-95' : 'bg-white border border-[#E5E5E5] text-[#999999]'}`}
                                                     >
                                                         {p.name}
                                                     </button>
@@ -514,29 +492,29 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         </div>
                                     </div>
 
-                                    {/* Settings Grid - Modern Minimal */}
+                                    {/* Settings Grid - Monochrome */}
                                     <div className="grid grid-cols-2 gap-4">
-                                        <div className={`bg-white p-6 rounded-[32px] border border-[#F0F0F5] flex flex-col gap-3 transition-opacity ${isStyleLocked ? 'opacity-50 relative' : ''}`}>
+                                        <div className={`bg-white p-6 rounded-[32px] border border-[#E5E5E5] flex flex-col gap-2.5 transition-opacity ${isStyleLocked ? 'opacity-50 relative' : ''}`}>
                                             <div className="flex items-center justify-between">
-                                                <span className="text-[10px] font-bold text-[#7C7C8C] uppercase tracking-[0.1em]">Tone</span>
-                                                {isStyleLocked && <div className="text-[8px] bg-black/5 px-1.5 py-0.5 rounded text-black/40 font-bold">LOCKED</div>}
+                                                <span className="text-[9px] font-black text-[#666666] uppercase tracking-[0.2em]">Tone</span>
+                                                {isStyleLocked && <div className="text-[8px] bg-[#F5F5F5] px-1.5 py-0.5 rounded text-[#111111] font-bold">LOCKED</div>}
                                             </div>
                                             <select
                                                 value={tone}
                                                 disabled={isStyleLocked}
                                                 onChange={(e) => onToneChange(e.target.value as any)}
-                                                className="bg-transparent text-sm font-bold text-[#1F1F2F] focus:outline-none disabled:cursor-not-allowed"
+                                                className="bg-transparent text-[15px] font-black text-[#111111] focus:outline-none disabled:cursor-not-allowed appearance-none"
                                             >
                                                 {TONES.map(t => <option key={t.id} value={t.id}>{t.label}</option>)}
                                             </select>
                                         </div>
                                         {!isX && (
-                                            <div className="bg-white p-6 rounded-[32px] border border-[#F0F0F5] flex flex-col gap-3">
-                                                <span className="text-[10px] font-bold text-[#7C7C8C] uppercase tracking-[0.1em]">Length</span>
+                                            <div className="bg-white p-6 rounded-[32px] border border-[#E5E5E5] flex flex-col gap-2.5">
+                                                <span className="text-[9px] font-black text-[#666666] uppercase tracking-[0.2em]">Length</span>
                                                 <select
                                                     value={length}
                                                     onChange={(e) => onLengthChange(e.target.value as any)}
-                                                    className="bg-transparent text-sm font-bold text-[#1F1F2F] focus:outline-none"
+                                                    className="bg-transparent text-[15px] font-black text-[#111111] focus:outline-none appearance-none"
                                                 >
                                                     {LENGTHS.map(l => <option key={l.id} value={l.id}>{l.label}</option>)}
                                                 </select>
@@ -544,17 +522,15 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         )}
                                     </div>
 
-                                    {/* Generate Button - High Contrast Glass */}
+                                    {/* Generate Button - Solid Monochrome */}
                                     <div className="pt-4">
                                         <button
-                                            onClick={() => {
-                                                // We keep the drawer open (it might show a local loading state or just wait for the effect)
-                                                onGenerate();
-                                            }}
-                                            className="w-full py-8 bg-[#1F1F2F] text-white rounded-[40px] font-bold text-xl uppercase tracking-[0.3em] shadow-[0_20px_40px_-10px_rgba(0,0,0,0.3)] active:scale-95 transition-all flex items-center justify-center gap-6 group hover:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.4)]"
+                                            onClick={() => onGenerate()}
+                                            className="w-full py-8 bg-[#111111] text-white rounded-[44px] font-black text-xl uppercase tracking-[0.4em] shadow-[0_20px_40px_-10px_rgba(0,0,0,0.3)] active:scale-[0.97] transition-all flex items-center justify-center gap-6 group relative overflow-hidden"
                                         >
-                                            <SparklesIcon className="w-8 h-8 group-hover:rotate-12 transition-transform" />
-                                            <span>{isGenerating ? 'Generating...' : 'Generate'}</span>
+                                            <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                                            <SparklesIcon className="w-8 h-8 group-hover:rotate-12 transition-transform relative z-10 text-white" />
+                                            <span className="relative z-10">{isGenerating ? 'Analyzing...' : 'Generate'}</span>
                                         </button>
                                     </div>
                                 </div>
