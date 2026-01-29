@@ -56,13 +56,15 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
         }
     }, [resetTrigger]);
 
-    // Auto-expand and switch to result step when generation completes
+    // Auto-expand and switch to result step solely when generation completes
+    const prevIsGenerating = React.useRef(isGenerating);
     React.useEffect(() => {
-        if (hasResults && isGenerating === false && generatedResults.length > 0) {
+        if (prevIsGenerating.current === true && isGenerating === false && hasResults && generatedResults.length > 0) {
             setMobileStep('result');
             setIsStepDrawerOpen(true);
         }
-    }, [hasResults, isGenerating, generatedResults.length]);
+        prevIsGenerating.current = isGenerating;
+    }, [isGenerating, hasResults, generatedResults.length]);
 
     // Background Scroll Lock (Mobile Only)
     React.useEffect(() => {
@@ -402,12 +404,16 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
                                     {/* Settings Grid - Modern Minimal */}
                                     <div className="grid grid-cols-2 gap-4">
-                                        <div className="bg-white p-6 rounded-[32px] border border-[#F0F0F5] flex flex-col gap-3">
-                                            <span className="text-[10px] font-bold text-[#7C7C8C] uppercase tracking-[0.1em]">Tone</span>
+                                        <div className={`bg-white p-6 rounded-[32px] border border-[#F0F0F5] flex flex-col gap-3 transition-opacity ${isStyleLocked ? 'opacity-50 relative' : ''}`}>
+                                            <div className="flex items-center justify-between">
+                                                <span className="text-[10px] font-bold text-[#7C7C8C] uppercase tracking-[0.1em]">Tone</span>
+                                                {isStyleLocked && <div className="text-[8px] bg-black/5 px-1.5 py-0.5 rounded text-black/40 font-bold">LOCKED</div>}
+                                            </div>
                                             <select
                                                 value={tone}
+                                                disabled={isStyleLocked}
                                                 onChange={(e) => onToneChange(e.target.value as any)}
-                                                className="bg-transparent text-sm font-bold text-[#1F1F2F] focus:outline-none"
+                                                className="bg-transparent text-sm font-bold text-[#1F1F2F] focus:outline-none disabled:cursor-not-allowed"
                                             >
                                                 {TONES.map(t => <option key={t.id} value={t.id}>{t.label}</option>)}
                                             </select>
