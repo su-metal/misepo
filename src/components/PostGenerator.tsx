@@ -54,6 +54,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
   const [isPresetModalOpen, setIsPresetModalOpen] = React.useState(false);
   const [isSavingPreset, setIsSavingPreset] = React.useState(false); // Add saving state
   const [mobileActiveTab, setMobileActiveTab] = React.useState<'home' | 'history' | 'learning' | 'settings'>('home');
+  const [mobileStep, setMobileStep] = React.useState<'platform' | 'input' | 'confirm' | 'result'>('platform');
   const [resetTrigger, setResetTrigger] = React.useState(0);
   const [isMobileResultOpen, setIsMobileResultOpen] = React.useState(false);
   const resultsRef = useRef<HTMLDivElement>(null);
@@ -136,7 +137,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
   return (
     <div className="min-h-screen overflow-x-hidden bg-[var(--bg-beige)]">
 
-      <div className="max-w-[1400px] mx-auto pt-4 sm:pt-8 pb-0 relative z-10">
+      <div className="max-w-[1400px] mx-auto sm:pt-8 pb-0 relative z-10">
         {/* Header Module */}
         <div className="hidden sm:block mx-3 sm:mx-8 mb-10 transition-all duration-1000 animate-in fade-in slide-in-from-top-4">
           <GeneratorHeader
@@ -224,6 +225,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
               isAutoFormatting={flow.isAutoFormatting}
               onCopy={flow.handleCopy}
               onMobileResultOpen={setIsMobileResultOpen}
+              onStepChange={setMobileStep}
               restoreId={restorePost?.id}
             />
           </div>
@@ -348,17 +350,20 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
       {!isMobileResultOpen && (
         <MobileFooter
           activeTab={mobileActiveTab}
+          currentStep={mobileStep}
+          isGenerating={flow.loading}
           onTabChange={(tab) => {
             setMobileActiveTab(tab);
             if (tab === 'history' && onOpenHistory) onOpenHistory();
             if (tab === 'settings' && onOpenSettings) onOpenSettings();
             if (tab === 'learning') setIsPresetModalOpen(true);
           }}
-          onPlusClick={() => {
+          onPlusClick={mobileStep === 'confirm' ? handleGenerate : () => {
             setMobileActiveTab('home');
             flow.setInputText('');
             setResetTrigger(prev => prev + 1);
           }}
+          onGenerate={handleGenerate}
         />
       )}
     </div>

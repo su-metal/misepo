@@ -75,6 +75,7 @@ export interface PostInputFormProps {
     isAutoFormatting?: { [key: string]: boolean };
     onCopy?: (text: string) => void;
     onMobileResultOpen?: (isOpen: boolean) => void;
+    onStepChange?: (step: 'platform' | 'input' | 'confirm' | 'result') => void;
     restoreId?: string;
 }
 
