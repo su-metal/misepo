@@ -59,6 +59,7 @@ export interface GenerationConfig {
   tone: Tone;
   length: Length;
   inputText: string;
+  currentDate?: string; // New: Current date for seasonal context
   
   // New: Google Maps Star Rating (1-5)
   starRating?: number | null;

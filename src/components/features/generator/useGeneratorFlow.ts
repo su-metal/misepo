@@ -314,6 +314,10 @@ export function useGeneratorFlow(props: {
     setLoading(true);
     if (!isRegeneration) setResultGroups([]);
     
+    // Get current date for autonomous seasonal context
+    const now = new Date();
+    const currentDate = `${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日`;
+
     // Resolve Configs for all target platforms
     const batchConfigs = targetPlatforms.map(p => {
       const purpose = p === Platform.GoogleMaps ? gmapPurpose : postPurpose;
@@ -327,6 +331,7 @@ export function useGeneratorFlow(props: {
         tone,
         length,
         inputText,
+        currentDate, // Global date awareness
         starRating: p === Platform.GoogleMaps ? starRating : undefined,
         language,
         storeSupplement,
