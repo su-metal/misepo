@@ -29,7 +29,7 @@ export const CompactPlatformSelector: React.FC<CompactPlatformSelectorProps> = (
                             key={p}
                             onClick={() => isMultiGen ? onPlatformToggle(p) : onSetActivePlatform(p)}
                             className={`
-                                flex-1 flex items-center justify-center gap-2 px-3 py-3 rounded-xl transition-all duration-300 border
+                                flex-1 flex items-center justify-center gap-2 px-3 py-3 rounded-xl transition-all duration-300 border-2
                                 ${isSelected
                                     ? 'bg-gradient-to-r from-[#6366F1]/[0.08] to-[#A855F7]/[0.08] border-[#6366F1] shadow-sm -translate-y-[1px]'
                                     : 'bg-transparent border-transparent text-stone-400 hover:text-stone-600'}
