@@ -45,9 +45,9 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     // Notify parent about result open state to hide footer
     React.useEffect(() => {
         if (onMobileResultOpen) {
-            onMobileResultOpen(mobileStep === 'result');
+            onMobileResultOpen(mobileStep === 'result' && isStepDrawerOpen);
         }
-    }, [mobileStep, onMobileResultOpen]);
+    }, [mobileStep, isStepDrawerOpen, onMobileResultOpen]);
 
     // Handle Restore from History
     React.useEffect(() => {
@@ -279,7 +279,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                     <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" onClick={() => setIsStepDrawerOpen(false)} />
 
                     {/* Sliding Panel (Monochrome) */}
-                    <div className={`absolute bottom-0 left-0 right-0 bg-[#FAFAFA] border-t border-[#E5E5E5] rounded-t-[54px] shadow-[0_-20px_60px_rgba(0,0,0,0.1)] animate-nyoki flex flex-col ${mobileStep === 'confirm' || mobileStep === 'result' || (mobileStep === 'input' && isGoogleMaps) ? 'h-[94vh]' : 'h-[72vh]'} pb-24`}>
+                    <div className={`absolute bottom-0 left-0 right-0 bg-[#FAFAFA] border-t border-[#E5E5E5] rounded-t-[54px] shadow-[0_-20px_60px_rgba(0,0,0,0.1)] animate-nyoki flex flex-col ${mobileStep === 'confirm' || mobileStep === 'result' ? 'h-[94vh]' : 'h-[88vh]'} pb-24`}>
                         {/* Drag Handle */}
                         <div className="w-full flex justify-center py-6">
                             <div className="w-16 h-1.5 bg-[#E5E5E5] rounded-full" />
