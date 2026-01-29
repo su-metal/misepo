@@ -75,7 +75,7 @@ w-6 h-3.5 rounded-full relative transition-colors duration-300
                             className={`
                                 relative flex flex-col items-center justify-center gap-3 p-5 rounded-2xl transition-all duration-300 group
                                 ${isSelected
-                                    ? `border-[3px] border-black text-white bg-gradient-to-br from-[#6366F1] to-[#A855F7]`
+                                    ? `border-[3px] border-[#6366F1] bg-gradient-to-br from-[#6366F1]/5 to-[#A855F7]/5 shadow-[0_8px_25px_rgba(99,102,241,0.12)]`
                                     : 'bg-white border-[3px] border-gray-200 hover:border-gray-300 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] text-black/40'
                                 }
 `}
@@ -87,10 +87,16 @@ w-12 h-12 rounded-xl transition-all duration-300 flex items-center justify-cente
                                     : 'bg-gray-50 border-black/10 text-gray-400 group-hover:bg-white group-hover:text-black group-hover:border-black/30 grayscale'
                                 }
 `}>
-                                {getPlatformIcon(p)}
+                                {getPlatformIcon(p, {
+                                    className: "w-6 h-6",
+                                    textFill: p === Platform.Line && isSelected ? "#EFF0FE" : (isSelected ? "#6366F1" : "currentColor")
+                                })}
                             </div>
-                            <span className={`text-[10px] font-black tracking-widest uppercase ${isSelected ? 'inherit' : 'group-hover:text-black'} `}>
-                                {p === Platform.Line ? 'LINE' : p}
+                            <span className={`
+                                text-[13px] font-black uppercase tracking-widest transition-colors
+                                ${isSelected ? 'bg-gradient-to-r from-[#6366F1] to-[#A855F7] bg-clip-text text-transparent' : 'text-black/40'}
+                            `}>
+                                {p === Platform.X ? 'X' : p === Platform.Instagram ? 'Instagram' : p === Platform.Line ? 'LINE' : 'Google Maps'}
                             </span>
 
                             {isMultiGen && isSelected && (

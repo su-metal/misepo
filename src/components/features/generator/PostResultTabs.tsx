@@ -322,12 +322,12 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                                         onShare(res.platform, text);
                                                                     }
                                                                 }}
-                                                                className={`flex items-center justify-center gap-5 py-8 rounded-[40px] font-black text-lg transition-all duration-700 uppercase tracking-[0.4em] group mt-2 relative overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.15)] active:scale-[0.98] ${theme.actionColor}`}
+                                                                className={`flex items-center justify-center gap-4 py-7 rounded-[40px] font-black text-[13px] md:text-sm transition-all duration-700 uppercase tracking-[0.3em] group mt-2 relative overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.15)] active:scale-[0.98] ${theme.actionColor}`}
                                                             >
                                                                 {/* Dynamic Shine Overlay */}
                                                                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
                                                                 <span className="relative z-10">{theme.actionLabel}</span>
-                                                                <ExternalLinkIcon className="w-6 h-6 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform relative z-10" />
+                                                                <ExternalLinkIcon className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform relative z-10" />
                                                             </button>
                                                         </div>
                                                     </div>

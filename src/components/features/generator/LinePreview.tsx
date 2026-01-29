@@ -14,7 +14,7 @@ export const LinePreview: React.FC<LinePreviewProps> = ({ text, storeProfile, on
     const timeStr = `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
 
     return (
-        <div className="bg-[#F5F5F5] rounded-[32px] p-6 sm:p-8 min-h-[300px] flex flex-col gap-5 font-sans shadow-sm relative overflow-hidden border border-[#E5E5E5]">
+        <div className="w-full min-h-[300px] flex flex-col gap-5 font-sans relative overflow-hidden">
             <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black/5 to-transparent pointer-events-none" />
             {/* Date Header */}
             <div className="flex justify-center">

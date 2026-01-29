@@ -50,7 +50,7 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
                 onClick={onClose}
             />
 
-            <div className="relative w-full max-w-lg bg-[#FAFAFA] rounded-[48px] overflow-hidden animate-in zoom-in-95 duration-300 border border-[#E5E5E5] shadow-2xl">
+            <div className="relative w-full max-w-lg h-[90vh] bg-white rounded-[40px] overflow-hidden animate-in zoom-in-95 duration-300 border border-[#E5E5E5] shadow-2xl flex flex-col">
                 <div className="flex items-center justify-between p-10 bg-white border-b border-[#E5E5E5]">
                     <h3 className="text-[12px] font-black text-[#111111] uppercase tracking-[0.4em] flex items-center gap-4">
                         <div className="text-[#111111] scale-110">
@@ -66,13 +66,13 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
                     </button>
                 </div>
 
-                <div className="p-0 bg-[#F5F5F5] max-h-[65vh] overflow-y-auto no-scrollbar">
+                <div className="flex-1 bg-white overflow-y-auto no-scrollbar">
                     {/* Platform Specific Preview */}
                     <div className="flex justify-center px-4 py-10">
 
                         {/* Instagram Preview */}
                         {platform === Platform.Instagram && (
-                            <div className="w-full bg-white border border-[#E5E5E5] rounded-[24px] shadow-sm max-w-[370px] overflow-hidden text-left">
+                            <div className="w-full max-w-[400px] overflow-hidden text-left">
                                 {/* Header */}
                                 <div className="flex items-center justify-between p-4 border-b border-[#F5F5F5]">
                                     <div className="flex items-center gap-3">
@@ -127,7 +127,7 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
 
                         {/* X (Twitter) Preview */}
                         {platform === Platform.X && (
-                            <div className="w-full bg-white border border-[#E5E5E5] rounded-[32px] shadow-sm px-4 py-5 max-w-[475px] text-left">
+                            <div className="w-full px-4 py-5 max-w-[475px] text-left">
                                 <div className="flex gap-3">
                                     <div className="w-9 h-9 rounded-full bg-black flex items-center justify-center text-[12px] font-black text-white flex-shrink-0">
                                         {(storeProfile.name?.[0] || 'U').toUpperCase()}
@@ -174,7 +174,7 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
 
                         {/* Google Maps Preview */}
                         {platform === Platform.GoogleMaps && (
-                            <div className="w-full bg-white p-8 max-w-[500px] border border-[#E5E5E5] rounded-[32px] shadow-sm text-left">
+                            <div className="w-full p-8 max-w-[500px] text-left">
                                 <div className="flex gap-4">
                                     {/* Left Border Line (Thread indicator) */}
                                     <div className="w-1 bg-[#F5F5F5] shrink-0 rounded-full" />
@@ -220,14 +220,14 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
                     </div>
                 </div>
 
-                <div className="p-10 bg-white border-t border-[#E5E5E5]">
+                <div className="p-10 bg-white border-t border-[#E5E5E5] mt-auto">
                     <button
                         onClick={onClose}
-                        className="w-full py-7 rounded-[32px] font-black text-[14px] uppercase tracking-[0.4em] transition-all active:scale-95 shadow-xl bg-[#111111] text-white hover:bg-black"
+                        className="w-full py-7 rounded-[32px] font-black text-[14px] uppercase tracking-[0.4em] transition-all active:scale-95 shadow-[0_15px_30px_rgba(0,0,0,0.15)] bg-[#111111] text-white hover:bg-black"
                     >
                         Save & Close
                     </button>
-                    <p className="mt-5 text-[10px] font-black text-[#999999] text-center leading-relaxed tracking-wider">
+                    <p className="mt-5 text-[10px] font-black text-[#CCCCCC] text-center leading-relaxed tracking-wider">
                         Real-world rendering may vary by device.
                     </p>
                 </div>
