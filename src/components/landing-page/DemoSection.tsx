@@ -53,7 +53,7 @@ export const DemoSection = ({
                     <span className="inline-block px-4 py-1.5 bg-white border border-[#E88BA3]/20 rounded-full text-[#E88BA3] text-sm font-bold tracking-widest shadow-sm mb-6">
                         AI DEMO
                     </span>
-                    <h2 className="text-4xl md:text-5xl font-bold mb-6 text-slate-800 leading-tight">
+                    <h2 className="text-4xl md:text-6xl font-bold mb-6 text-slate-800 leading-tight">
                         <span className="bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700">AIの実力を、</span><br className="md:hidden" />
                         <span className="text-[#E88BA3]">今すぐ体験。</span>
                     </h2>
@@ -80,7 +80,7 @@ export const DemoSection = ({
                 </div>
 
                 <div className="bg-white rounded-[40px] shadow-[0_30px_60px_rgba(0,0,0,0.08)] overflow-hidden max-w-5xl mx-auto flex flex-col md:flex-row min-h-[600px] relative border border-slate-100">
-                    <div className="p-10 md:w-1/2 md:border-r border-slate-100 flex flex-col bg-white">
+                    <div className="p-6 sm:p-10 md:w-1/2 md:border-r border-slate-100 flex flex-col bg-white">
                         <div className="flex items-center justify-between mb-8">
                             <label className="text-xl font-bold text-slate-800">投稿メモを入力</label>
                             <span className="text-xs font-bold text-white bg-slate-800 rounded-full px-3 py-1">{activeScenario.modeBadge}</span>
@@ -122,12 +122,12 @@ export const DemoSection = ({
                         </div>
                     </div>
 
-                    <div className="md:w-1/2 p-10 flex flex-col items-center justify-center relative overflow-hidden bg-slate-50/50">
+                    <div className="md:w-1/2 p-6 sm:p-10 flex flex-col items-center justify-center relative overflow-hidden bg-slate-50/50">
                         <div className="absolute inset-0 bg-[#E88BA3]/5" />
 
                         {/* Abstract Canvas for Result */}
                         <div className="w-full max-w-sm relative z-10 perspective-1000">
-                            <div className="bg-white rounded-3xl shadow-[0_20px_40px_-10px_rgba(0,0,0,0.1)] border border-slate-100 p-6 min-h-[480px] flex flex-col relative transition-transform duration-500 hover:scale-[1.02]">
+                            <div className="bg-white rounded-3xl shadow-[0_20px_40px_-10px_rgba(0,0,0,0.1)] border border-slate-100 py-6 min-h-[480px] flex flex-col relative transition-transform duration-500 hover:scale-[1.02]">
                                 {demoResult && (
                                     <div className="absolute -top-3 -right-3 z-50 pointer-events-none">
                                         <div className="bg-[#4DB39A] text-white px-3 py-1.5 rounded-full font-bold shadow-lg shadow-[#4DB39A]/20 flex items-center gap-1.5 whitespace-nowrap animate-in slide-in-from-bottom-4 fade-in duration-300">
@@ -149,7 +149,7 @@ export const DemoSection = ({
                                             <p className="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3 rounded-xl">「初めて来ましたが、ドーナツがふわふわで最高でした！コーヒーも深みがあって好みです。また来ます！」</p>
                                         </div>
                                         <div ref={scrollRef} className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
-                                            <div className="bg-blue-50/50 p-4 rounded-2xl relative">
+                                            <div className="bg-blue-50/50 p-6 rounded-2xl relative">
                                                 <div className="text-[10px] font-bold text-blue-400 uppercase mb-2 tracking-wider">Owner Response</div>
                                                 <div className={`text-sm text-slate-700 leading-relaxed whitespace-pre-wrap ${demoResult ? 'opacity-100' : 'opacity-40'}`}>
                                                     {isDemoGenerating ? (
@@ -172,7 +172,7 @@ export const DemoSection = ({
                                             <div className="text-[10px] text-slate-400 font-bold uppercase text-center my-2 tracking-wider">Today</div>
                                             <div className="flex gap-3">
                                                 <div className="w-8 h-8 bg-[#06C755] rounded-full flex-shrink-0 shadow-sm" />
-                                                <div className="bg-white border border-slate-100 p-4 rounded-2xl rounded-tl-none shadow-sm max-w-[85%] relative">
+                                                <div className="bg-white border border-slate-100 p-6 rounded-2xl rounded-tl-none shadow-sm max-w-[85%] relative">
                                                     <div className={`text-sm text-slate-700 leading-relaxed whitespace-pre-wrap ${demoResult ? 'opacity-100' : 'opacity-40 italic'}`}>
                                                         {isDemoGenerating ? (
                                                             <span className="animate-pulse">メッセージを作成中...</span>
@@ -185,7 +185,7 @@ export const DemoSection = ({
                                 ) : (
                                     /* Instagram Abstract View */
                                     <div className="flex flex-col h-full">
-                                        <div className="flex items-center justify-between p-4 border-b border-slate-100 shrink-0 z-10">
+                                        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 shrink-0 z-10">
                                             <div className="flex items-center gap-3">
                                                 <div className="w-8 h-8 rounded-full overflow-hidden shadow-sm">
                                                     <img src="https://picsum.photos/id/64/100/100" alt="avatar" className="w-full h-full object-cover" />
@@ -195,13 +195,13 @@ export const DemoSection = ({
                                             <Icons.MoreHorizontal size={18} className="text-slate-400" />
                                         </div>
                                         <div ref={scrollRef} className="overflow-y-auto custom-scrollbar flex-1">
-                                            <div className="aspect-square w-full relative group shrink-0 overflow-hidden rounded-2xl shadow-sm mb-4">
+                                            <div className="aspect-square mx-6 relative group shrink-0 overflow-hidden rounded-2xl shadow-sm mb-4">
                                                 <img src={activeScenario.id === "casual" ? "https://picsum.photos/id/225/600/600" : "https://picsum.photos/id/425/600/600"} alt="post" className="w-full h-full object-cover" />
                                                 {demoResult && (
                                                     <div className="absolute inset-0 bg-white/10 animate-pulse pointer-events-none" />
                                                 )}
                                             </div>
-                                            <div className="px-2">
+                                            <div className="px-6">
                                                 <div className="flex justify-between mb-3">
                                                     <div className="flex gap-4 text-slate-700">
                                                         <Icons.Heart size={22} className={`transition-colors cursor-pointer ${demoResult ? 'text-[#E88BA3] fill-[#E88BA3]' : 'hover:text-[#E88BA3]'}`} />

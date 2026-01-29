@@ -17,7 +17,7 @@ export const CTASection = () => {
                         For Business Owners
                     </div>
                 </div>
-                <h2 className="text-4xl md:text-6xl font-bold mb-10 leading-tight">
+                <h2 className="text-5xl md:text-7xl font-bold mb-10 leading-[1.1] tracking-tight">
                     365日の<br className="md:hidden" />SNSの悩み、<br />
                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#E88BA3] to-[#F5CC6D]">これでおしまい。</span>
                 </h2>

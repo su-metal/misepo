@@ -22,7 +22,7 @@ export const ProblemSection = ({ problems, isMobile }: { problems: Problem[]; is
                     <span className="inline-block py-1.5 px-4 bg-white border border-[#E88BA3]/20 rounded-full text-[#E88BA3] font-bold tracking-widest text-xs uppercase mb-8 shadow-sm">
                         Social Media Challenges
                     </span>
-                    <h2 className="text-3xl md:text-5xl font-bold text-slate-800 leading-tight mb-8">
+                    <h2 className="text-4xl md:text-6xl font-bold text-slate-800 leading-tight mb-8">
                         こんな毎日を、<br />
                         一人で抱えていませんか？
                     </h2>

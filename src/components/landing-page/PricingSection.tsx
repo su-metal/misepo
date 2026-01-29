@@ -15,7 +15,7 @@ export const PricingSection = () => {
                         <span className="inline-block px-4 py-1.5 bg-white border border-[#E88BA3]/20 rounded-full text-[#E88BA3] text-sm font-bold tracking-widest shadow-sm mb-6">
                             COST PERFORMANCE
                         </span>
-                        <h2 className="text-3xl md:text-5xl font-bold text-slate-800 mb-8 leading-tight">
+                        <h2 className="text-4xl md:text-6xl font-bold text-slate-800 mb-8 leading-tight">
                             納得できる「質」と、<br className="hidden md:block" />
                             <span className="relative inline-block px-2">
                                 <span className="absolute inset-0 bg-[#F5CC6D]/30 -skew-y-2 rounded-lg -z-10" />
@@ -78,7 +78,7 @@ export const PricingSection = () => {
                     <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
                         <div className="text-left">
                             <span className="inline-block px-4 py-2 bg-[#F5CC6D]/20 text-[#D4A017] rounded-full text-xs font-bold tracking-widest mb-6 border border-[#F5CC6D]/30">シンプルな料金プラン</span>
-                            <h2 className="text-4xl md:text-5xl font-bold text-slate-800 mb-8 leading-tight">
+                            <h2 className="text-4xl md:text-6xl font-bold text-slate-800 mb-8 leading-tight">
                                 お店の成長に<br />
                                 <span className="text-[#E88BA3]">必要なすべてを。</span>
                             </h2>

@@ -36,12 +36,12 @@ export function removeInstagramFooter(text: string, footer: string): string {
     return text.replace(middleRegex, "\n\n").trim().replace(/\n{3,}/g, "\n\n");
 }
 
-export function getPlatformIcon(p: Platform) {
+export function getPlatformIcon(p: Platform, className: string = "w-4 h-4") {
     switch (p) {
-        case Platform.Instagram: return React.createElement(InstagramIcon, { className: "w-4 h-4" });
-        case Platform.X: return React.createElement(XIcon, { className: "w-4 h-4" });
-        case Platform.GoogleMaps: return React.createElement(GoogleMapsIcon, { className: "w-4 h-4" });
-        case Platform.Line: return React.createElement(LineIcon, { className: "w-4 h-4" });
+        case Platform.Instagram: return React.createElement(InstagramIcon, { className });
+        case Platform.X: return React.createElement(XIcon, { className });
+        case Platform.GoogleMaps: return React.createElement(GoogleMapsIcon, { className });
+        case Platform.Line: return React.createElement(LineIcon, { className });
         default: return null;
     }
 }

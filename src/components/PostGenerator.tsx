@@ -11,6 +11,8 @@ import { PostResultTabs } from './features/generator/PostResultTabs';
 import GuestTour from './GuestTour';
 import PresetModal from './PresetModal';
 import LoadingModal from './LoadingModal';
+import { MobileFooter } from './features/generator/MobileFooter';
+import { PostInputFormProps } from './features/generator/inputConstants';
 
 interface PostGeneratorProps {
   storeProfile: StoreProfile;
@@ -51,6 +53,9 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
 
   const [isPresetModalOpen, setIsPresetModalOpen] = React.useState(false);
   const [isSavingPreset, setIsSavingPreset] = React.useState(false); // Add saving state
+  const [mobileActiveTab, setMobileActiveTab] = React.useState<'home' | 'history' | 'learning' | 'settings'>('home');
+  const [resetTrigger, setResetTrigger] = React.useState(0);
+  const [isMobileResultOpen, setIsMobileResultOpen] = React.useState(false);
   const resultsRef = useRef<HTMLDivElement>(null);
 
   // Refs for GuestTour
@@ -133,7 +138,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
 
       <div className="max-w-[1400px] mx-auto py-4 sm:py-8 relative z-10">
         {/* Header Module */}
-        <div className="mx-3 sm:mx-8 mb-10 transition-all duration-1000 animate-in fade-in slide-in-from-top-4">
+        <div className="hidden sm:block mx-3 sm:mx-8 mb-10 transition-all duration-1000 animate-in fade-in slide-in-from-top-4">
           <GeneratorHeader
             onOpenHistory={onOpenHistory || (() => { })}
             storeProfile={storeProfile}
@@ -148,6 +153,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
           {/* Left Column: Input Form (8 Cols) */}
           <div className="lg:col-span-8">
             <PostInputForm
+              storeProfile={storeProfile}
               platforms={flow.platforms}
               activePlatform={flow.platforms[0] || Platform.Instagram}
               isMultiGen={flow.isMultiGenMode}
@@ -191,11 +197,39 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
               onLanguageChange={flow.setLanguage}
               onOpenGuide={onOpenGuide}
               hasResults={flow.resultGroups.length > 0}
+              onReset={React.useCallback(() => {
+                flow.setInputText('');
+                setResetTrigger(prev => prev + 1);
+              }, [flow.setInputText])}
+              resetTrigger={resetTrigger}
+              // Result props
+              generatedResults={flow.resultGroups}
+              activeResultTab={flow.activeTab}
+              onResultTabChange={flow.setActiveTab}
+              onManualEdit={flow.handleManualEdit}
+              onToggleFooter={flow.handleToggleFooter}
+              onRefine={flow.performRefine}
+              onRegenerateSingle={(platform) => flow.performGeneration([platform], true)}
+              onShare={flow.handleShare}
+              getShareButtonLabel={getShareButtonLabel}
+              refiningKey={flow.refiningKey}
+              onRefineToggle={flow.handleRefineToggle}
+              refineText={flow.refineText}
+              onRefineTextChange={flow.setRefineText}
+              onPerformRefine={flow.performRefine}
+              isRefining={flow.isRefining}
+              includeFooter={flow.includeFooter}
+              onIncludeFooterChange={flow.setIncludeFooter}
+              onAutoFormat={flow.handleAutoFormat}
+              isAutoFormatting={flow.isAutoFormatting}
+              onCopy={flow.handleCopy}
+              onMobileResultOpen={setIsMobileResultOpen}
+              restoreId={restorePost?.id}
             />
           </div>
 
           {/* Right Column: Results (4 Cols) */}
-          <div className="lg:col-span-4">
+          <div className="hidden lg:col-span-4 lg:block">
             <div ref={resultsRef} className="pb-8 md:pb-20 px-4">
               <PostResultTabs
                 results={flow.resultGroups}
@@ -232,7 +266,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
       </div>
 
       {/* Sticky Generation Footer */}
-      <div className="fixed bottom-0 left-0 right-0 z-[90]">
+      <div className="hidden sm:block fixed bottom-0 left-0 right-0 z-[90]">
         <div className="absolute inset-x-0 bottom-0 h-24 md:h-32 bg-gradient-to-t from-[var(--bg-beige)] via-[var(--bg-beige)]/90 to-transparent pointer-events-none" />
         <div className="relative px-4 py-3 pb-8 md:pb-12 safe-area-bottom flex items-center justify-center">
           <button
@@ -313,6 +347,24 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
       }
 
       <LoadingModal isOpen={flow.loading} />
+
+      {/* Mobile Footer Navigation */}
+      {!isMobileResultOpen && (
+        <MobileFooter
+          activeTab={mobileActiveTab}
+          onTabChange={(tab) => {
+            setMobileActiveTab(tab);
+            if (tab === 'history' && onOpenHistory) onOpenHistory();
+            if (tab === 'settings' && onOpenSettings) onOpenSettings();
+            if (tab === 'learning') setIsPresetModalOpen(true);
+          }}
+          onPlusClick={() => {
+            setMobileActiveTab('home');
+            flow.setInputText('');
+            setResetTrigger(prev => prev + 1);
+          }}
+        />
+      )}
     </div>
   );
 };

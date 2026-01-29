@@ -9,7 +9,7 @@ export const PWASection = () => {
                 <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
                     <div className="lg:w-1/2">
                         <span className="inline-block px-4 py-1.5 bg-[#E88BA3]/10 text-[#E88BA3] border border-[#E88BA3]/20 rounded-full text-xs font-bold uppercase tracking-widest mb-6">Multi-Device Support</span>
-                        <h2 className="text-3xl md:text-5xl font-bold text-slate-800 mb-8 leading-tight">
+                        <h2 className="text-4xl md:text-6xl font-bold text-slate-800 mb-8 leading-tight">
                             スマホ、タブレット、PC。<br />
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F5CC6D] to-[#E88BA3]">お好きなデバイスで。</span>
                         </h2>

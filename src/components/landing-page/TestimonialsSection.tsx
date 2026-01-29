@@ -7,7 +7,7 @@ export const TestimonialsSection = () => {
             <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div className="text-center mb-20">
                     <span className="inline-block px-4 py-1.5 bg-white text-[#9B8FD4] border border-[#9B8FD4]/20 rounded-full text-xs font-bold uppercase tracking-widest mb-6 shadow-sm">User Voices</span>
-                    <h2 className="text-3xl md:text-5xl font-bold text-slate-800 mb-8 tracking-tight">
+                    <h2 className="text-4xl md:text-6xl font-bold text-slate-800 mb-8 tracking-tight">
                         ユーザーの声
                     </h2>
                     <p className="text-slate-500 font-medium text-lg max-w-xl mx-auto">
