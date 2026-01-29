@@ -34,6 +34,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     const [mobileStep, setMobileStep] = React.useState<'platform' | 'input' | 'confirm' | 'result'>('platform');
     const [isStepDrawerOpen, setIsStepDrawerOpen] = React.useState(false);
     const [isPromptExpanded, setIsPromptExpanded] = React.useState(false);
+    const [isOmakaseLoading, setIsOmakaseLoading] = React.useState(false);
 
     // Notify parent about step changes
     React.useEffect(() => {
@@ -144,6 +145,26 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
         onSetActivePlatform(p);
         setMobileStep('input');
         setIsStepDrawerOpen(true);
+    };
+
+    const handleOmakaseStart = () => {
+        setIsOmakaseLoading(true);
+        // "Magic" selection: Auto-select Instagram and X as defaults for Omakase
+        if (platforms.length === 0) {
+            onPlatformToggle(Platform.Instagram);
+            onPlatformToggle(Platform.X);
+        }
+
+        // Brief delay for "Thinking" feel
+        setTimeout(() => {
+            setIsOmakaseLoading(false);
+            setMobileStep('input');
+            setIsStepDrawerOpen(true);
+            // Pre-fill with a magic prompt if empty
+            if (!inputText) {
+                onInputTextChange("✨ AIおまかせ：今日のおすすめや雰囲気に合わせて、最高の内容を提案して！");
+            }
+        }, 800);
     };
 
     const handleBackStep = () => {
@@ -330,7 +351,18 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
                     {/* Bottom Section - Promotional Card */}
                     <div className="mt-auto pt-6">
-                        <div className="p-7 px-8 rounded-[36px] bg-white border border-[#EEEEEE] relative overflow-hidden group shadow-md hover:shadow-lg transition-all duration-300">
+                        <div
+                            onClick={handleOmakaseStart}
+                            className={`
+                                p-7 px-8 rounded-[36px] bg-white border relative overflow-hidden group shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer active:scale-95
+                                ${isOmakaseLoading ? 'border-[var(--plexo-yellow)]' : 'border-[#EEEEEE]'}
+                            `}
+                        >
+                            {/* Animated Background for Loading */}
+                            {isOmakaseLoading && (
+                                <div className="absolute inset-0 bg-gradient-to-r from-[var(--plexo-yellow)]/5 via-[var(--plexo-yellow)]/20 to-[var(--plexo-yellow)]/5 animate-shimmer" />
+                            )}
+
                             <div className="absolute -right-6 -top-6 w-32 h-32 bg-[var(--plexo-yellow)]/10 rounded-full blur-3xl opacity-50 group-hover:opacity-100 transition-opacity" />
                             <div className="relative z-10 flex items-center justify-between">
                                 <div>
@@ -338,7 +370,13 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                     <h4 className="text-lg font-black text-[#111111] tracking-tight">AI Omakase Mode</h4>
                                     <p className="text-[11px] font-bold text-[#999999] uppercase tracking-wider mt-0.5">Automated Content Strategy</p>
                                 </div>
-                                <div className="w-12 h-12 rounded-full bg-[#FAFAFA] border border-[#EEEEEE] flex items-center justify-center text-[var(--plexo-med-gray)] shadow-inner group-hover:bg-[var(--plexo-yellow)] group-hover:text-[var(--plexo-black)] group-hover:border-[var(--plexo-yellow)] transition-all">
+                                <div className={`
+                                    w-12 h-12 rounded-full border flex items-center justify-center transition-all duration-500 shadow-inner
+                                    ${isOmakaseLoading
+                                        ? 'bg-[var(--plexo-yellow)] text-black border-[var(--plexo-yellow)] animate-pulse'
+                                        : 'bg-[#FAFAFA] border-[#EEEEEE] text-[var(--plexo-med-gray)] group-hover:bg-[var(--plexo-yellow)] group-hover:text-[var(--plexo-black)] group-hover:border-[var(--plexo-yellow)]'
+                                    }
+                                `}>
                                     <AutoSparklesIcon className="w-6 h-6" />
                                 </div>
                             </div>
