@@ -136,7 +136,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
   };
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-[var(--bg-beige)]">
+    <div className="min-h-screen overflow-x-hidden bg-[var(--bg-primary)]">
 
       <div className="max-w-[1400px] mx-auto sm:pt-8 pb-0 relative z-10">
         {/* Header Module */}
@@ -267,15 +267,15 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
 
       {/* Sticky Generation Footer */}
       <div className="hidden sm:block fixed bottom-0 left-0 right-0 z-[90]">
-        <div className="absolute inset-x-0 bottom-0 h-24 md:h-32 bg-gradient-to-t from-[var(--bg-beige)] via-[var(--bg-beige)]/90 to-transparent pointer-events-none" />
+        <div className="absolute inset-x-0 bottom-0 h-24 md:h-32 bg-gradient-to-t from-[var(--bg-primary)] via-[var(--bg-primary)]/90 to-transparent pointer-events-none" />
         <div className="relative px-4 py-3 pb-4 md:pb-6 safe-area-bottom flex items-center justify-center">
           <button
             onClick={handleGenerate}
             disabled={flow.loading || !flow.inputText.trim()}
-            className={`w-full max-w-xl py-6 md:py-8 rounded-[32px] font-black text-lg md:text-2xl tracking-[0.2em] flex items-center justify-center gap-3 md:gap-5 group transition-all duration-500
+            className={`w-full max-w-xl py-6 md:py-8 rounded-[32px] font-black text-lg md:text-2xl tracking-[0.2em] flex items-center justify-center gap-3 md:gap-5 group transition-all duration-300
                 ${flow.loading || !flow.inputText.trim()
-                ? 'bg-slate-200 text-slate-400 border border-slate-300 cursor-not-allowed'
-                : 'bg-[#F5CC6D] text-black border-2 border-black shadow-[6px_6px_0_0_rgba(0,0,0,1)] active:scale-95'
+                ? 'bg-[#f4f4f5] text-[#a1a1aa] cursor-not-allowed'
+                : 'bg-[var(--plexo-yellow)] text-[var(--plexo-black)] shadow-lg hover:shadow-xl hover:translate-y-[-2px] active:scale-95'
               }`}
           >
             <div className="flex items-center justify-center gap-3 md:gap-5 relative z-10">

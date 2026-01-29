@@ -3,25 +3,30 @@
 @tailwind utilities;
 
 :root {
-  /* Refined Neo Brutalism Saturated Palette */
-  --teal: #4DB39A;
-  --gold: #F5CC6D;
-  --rose: #E88BA3;
-  --lavender: #9B8FD4;
-  --bg-beige: #f9f5f2;
-  --bg-ivory: #FDFCFB; /* Japanese paper white */
+  /* Strict Plexo Palette */
+  --plexo-black: #0d0d0d;
+  --plexo-dark-gray: #666666;
+  --plexo-med-gray: #949594;
+  --plexo-yellow: #f8ea5d;
+  --plexo-white: #ffffff;
 
-  --primary: #000000;     /* Pure Black for Text and Borders */
-  --accent: var(--teal);
-  --accent-secondary: var(--lavender);
+  /* Semantic Mapping */
+  --bg-primary: var(--plexo-white);
+  --bg-secondary: #f9f9f9; /* Very subtle gray for inputs */
   
-  /* Text Colors */
-  --text-main: #000000;
-  --text-muted: #475569;
+  --text-primary: var(--plexo-black);
+  --text-secondary: var(--plexo-dark-gray);
+  --text-placeholder: var(--plexo-med-gray);
 
-  /* Layout Utilities */
-  --card-bg: #ffffff;
-  --border-thick: 3px solid #000000;
+  --accent-primary: var(--plexo-yellow);
+  --border-default: var(--plexo-med-gray);
+  --border-active: var(--plexo-black);
+
+  /* Legacy overrides to ensure compatibility */
+  --primary: var(--plexo-black);
+  --accent: var(--plexo-yellow);
+  --bg-beige: var(--plexo-white); /* Override existing beige */
+  --menu-bg: var(--plexo-white);
 }
 
 body {

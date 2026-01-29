@@ -158,9 +158,9 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     };
 
     return (
-        <div className="flex flex-col h-full min-h-[100dvh] relative overflow-hidden font-inter bg-[#F9F9F9]">
+        <div className="flex flex-col h-full min-h-[100dvh] relative overflow-hidden font-inter bg-[var(--bg-primary)]">
             {/* Minimal Monochrome Background */}
-            <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden bg-[#F9F9F9]">
+            <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden bg-[var(--bg-primary)]">
                 {/* Subtle Monochrome Gradients */}
                 {/* Subtle Monochrome Gradients - Removed top gradient as it looked like a shadow */}
 
@@ -178,12 +178,12 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                 {/* Header Profile Style - Monochrome */}
                 <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-[#111111] flex items-center justify-center text-white font-bold text-sm shadow-sm ring-2 ring-white/80">
+                        <div className="w-10 h-10 rounded-full bg-[var(--plexo-black)] flex items-center justify-center text-white font-bold text-sm shadow-sm ring-2 ring-white/80">
                             {storeProfile.name?.substring(0, 1) || 'S'}
                         </div>
                         <div className="flex flex-col">
-                            <span className="text-[10px] font-black text-[#666666] uppercase tracking-[0.2em] leading-none mb-1">Welcome</span>
-                            <span className="text-sm font-black text-[#111111] tracking-tight">{storeProfile.name || 'Store Admin'}</span>
+                            <span className="text-[10px] font-black text-[var(--plexo-dark-gray)] uppercase tracking-[0.2em] leading-none mb-1">Welcome</span>
+                            <span className="text-sm font-black text-[var(--plexo-black)] tracking-tight">{storeProfile.name || 'Store Admin'}</span>
                         </div>
                     </div>
                     {/* Compact Usage Badge - Monochrome */}
@@ -211,47 +211,53 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                         return (
                             <button
                                 key={p}
-                                onClick={() => handlePlatformSelect(p)}
+                                onClick={() => onPlatformToggle(p)}
                                 className={`
                                     group relative w-full px-6 py-5 rounded-[28px] flex items-center gap-5
                                     transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.98]
-                                    border-2 shadow-sm
+                                    border shadow-sm
                                     ${isActive
-                                        ? 'bg-gradient-to-br from-[#6366F1]/[0.08] to-[#A855F7]/[0.08] border-[#6366F1] shadow-[0_4px_20px_rgba(99,102,241,0.12)]'
-                                        : 'bg-white border-[#E5E5E5] hover:bg-[#F5F5F5] hover:border-[#D4D4D4]'
+                                        ? 'bg-[var(--plexo-black)] border-[var(--plexo-black)] shadow-[0_4px_20px_rgba(0,0,0,0.2)]'
+                                        : 'bg-white border-[var(--plexo-med-gray)] hover:bg-[#F5F5F5] hover:border-[#D4D4D4]'
                                     }
                                 `}
                             >
                                 <div className={`
                                     flex items-center justify-center transition-all duration-300
                                     ${isActive
-                                        ? 'text-[#6366F1]'
-                                        : 'text-[#111111]'
+                                        ? 'text-[var(--plexo-yellow)]'
+                                        : 'text-[var(--plexo-black)]'
                                     }
                                 `}>
                                     {getPlatformIcon(p, {
                                         className: "w-6 h-6",
-                                        textFill: p === Platform.Line && isActive ? "#EFF0FE" : (isActive ? "#6366F1" : "white")
+                                        textFill: p === Platform.Line && isActive ? "var(--plexo-black)" : (isActive ? "var(--plexo-yellow)" : "white")
                                     })}
                                 </div>
                                 <div className="flex flex-col text-left">
-                                    <span className="text-[10px] font-black text-[#999999] uppercase tracking-[0.2em] mb-0.5">Target Channel</span>
+                                    <span className="text-[10px] font-black text-[var(--plexo-med-gray)] uppercase tracking-[0.2em] mb-0.5">Target Channel</span>
                                     <span className={`
                                         text-lg font-black tracking-tight transition-colors
-                                        ${isActive ? 'bg-gradient-to-r from-[#6366F1] to-[#A855F7] bg-clip-text text-transparent' : 'text-[#111111]'}
+                                        ${isActive ? 'text-[var(--plexo-yellow)]' : 'text-[var(--plexo-black)]'}
                                     `}>
                                         {p === Platform.X ? 'X' : p === Platform.Instagram ? 'Instagram' : p === Platform.Line ? 'LINE' : 'Google Maps'}
                                     </span>
                                 </div>
 
-                                {/* Right Aligned Arrow */}
-                                <div className={`
-                                    ml-auto w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300
-                                    ${isActive
-                                        ? 'bg-gradient-to-br from-[#6366F1]/20 to-[#A855F7]/20 text-[#6366F1]'
-                                        : 'bg-[#F5F5F5] text-[#CCCCCC]'
-                                    }
-                                `}>
+                                {/* Right Aligned Arrow - Opens Settings Tray */}
+                                <div
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handlePlatformSelect(p);
+                                    }}
+                                    className={`
+                                        ml-auto w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 active:scale-90
+                                        ${isActive
+                                            ? 'bg-[var(--plexo-yellow)] text-[var(--plexo-black)]'
+                                            : 'bg-[#F5F5F5] text-[var(--plexo-med-gray)]'
+                                        }
+                                    `}
+                                >
                                     <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                                         <path d="M9 18l6-6-6-6" />
                                     </svg>
@@ -265,7 +271,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                 <div className="mt-4 p-6 rounded-[32px] bg-white border border-[#E5E5E5] relative overflow-hidden group shadow-sm hover:shadow-md transition-shadow">
                     <div className="absolute -right-4 -top-4 w-24 h-24 bg-[#F5F5F5] rounded-full blur-2xl opacity-50 group-hover:opacity-100 transition-opacity" />
                     <div className="relative z-10">
-                        <div className="inline-flex px-3 py-1 rounded-full bg-gradient-to-r from-[#6366F1] to-[#A855F7] text-[10px] font-black text-white uppercase tracking-widest mb-2 shadow-[0_5px_15px_rgba(99,102,241,0.3)]">Premium</div>
+                        <div className="inline-flex px-3 py-1 rounded-full bg-[var(--plexo-black)] text-[10px] font-black text-[var(--plexo-yellow)] uppercase tracking-widest mb-2 shadow-sm">Premium</div>
                         <h4 className="text-lg font-black text-[#111111] mb-1">AI Omakase Mode</h4>
                         <p className="text-xs text-[#666666] leading-relaxed font-medium">Let our advanced AI handle the entire strategy and posting for you.</p>
                     </div>
@@ -506,7 +512,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         <div className="flex overflow-x-auto gap-3 pb-2 no-scrollbar px-1">
                                             <button
                                                 onClick={() => onApplyPreset({ id: 'plain-ai' } as any)}
-                                                className={`flex-shrink-0 px-8 py-5 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] transition-all duration-300 shadow-sm ${!activePresetId ? 'bg-[#111111] text-white shadow-xl scale-105 active:scale-95' : 'bg-white border border-[#E5E5E5] text-[#999999]'}`}
+                                                className={`flex-shrink-0 px-8 py-5 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] transition-all duration-300 shadow-sm ${!activePresetId ? 'bg-[var(--plexo-black)] text-[var(--plexo-yellow)] shadow-xl scale-105 active:scale-95' : 'bg-white border border-[#E5E5E5] text-[#999999]'}`}
                                             >
                                                 AI Standard
                                             </button>
@@ -516,7 +522,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                     <button
                                                         key={p.id}
                                                         onClick={() => onApplyPreset(p)}
-                                                        className={`flex-shrink-0 px-8 py-5 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] transition-all duration-300 shadow-sm truncate max-w-[160px] ${isSelected ? 'bg-[#111111] text-white shadow-xl scale-105 active:scale-95' : 'bg-white border border-[#E5E5E5] text-[#999999]'}`}
+                                                        className={`flex-shrink-0 px-8 py-5 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] transition-all duration-300 shadow-sm truncate max-w-[160px] ${isSelected ? 'bg-[var(--plexo-black)] text-[var(--plexo-yellow)] shadow-xl scale-105 active:scale-95' : 'bg-white border border-[#E5E5E5] text-[#999999]'}`}
                                                     >
                                                         {p.name}
                                                     </button>
