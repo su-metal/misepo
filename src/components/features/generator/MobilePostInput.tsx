@@ -32,6 +32,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     const textareaRef = React.useRef<HTMLTextAreaElement>(null);
     const [mobileStep, setMobileStep] = React.useState<'platform' | 'input' | 'confirm' | 'result'>('platform');
     const [isStepDrawerOpen, setIsStepDrawerOpen] = React.useState(false);
+    const [isPromptExpanded, setIsPromptExpanded] = React.useState(false);
 
     // Notify parent about result open state to hide footer
     React.useEffect(() => {
@@ -232,7 +233,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                     <div className="absolute inset-0 bg-white/40 backdrop-blur-md" onClick={() => setIsStepDrawerOpen(false)} />
 
                     {/* Sliding Panel */}
-                    <div className={`absolute bottom-0 left-0 right-0 bg-white/90 backdrop-blur-2xl border-t border-white/60 rounded-t-[48px] shadow-[0_-20px_80px_rgba(0,0,0,0.1)] transition-all duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] flex flex-col ${mobileStep === 'confirm' || mobileStep === 'result' ? 'h-[92vh]' : 'h-[70vh]'} ${mobileStep === 'result' ? 'pb-8' : 'pb-32'}`}>
+                    <div className={`absolute bottom-0 left-0 right-0 bg-white/90 backdrop-blur-2xl border-t border-white/60 rounded-t-[48px] shadow-[0_-20px_80px_rgba(0,0,0,0.1)] transition-all duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] flex flex-col ${mobileStep === 'confirm' || mobileStep === 'result' || (mobileStep === 'input' && isGoogleMaps) ? 'h-[92vh]' : 'h-[70vh]'} ${mobileStep === 'result' ? 'pb-8' : 'pb-32'}`}>
                         {/* Drag Handle */}
                         <div className="w-full flex justify-center py-6">
                             <div className="w-16 h-1.5 bg-[#E2E2E8] rounded-full" />
@@ -269,7 +270,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
                                     {/* Google Maps Specific Layout (Text-First) */}
                                     {isGoogleMaps ? (
-                                        <div className="w-full flex flex-col gap-6 h-full justify-center">
+                                        <div className="w-full flex flex-col gap-6">
                                             <div className="text-center space-y-2">
                                                 <h4 className="text-xl font-bold text-[#1F1F2F]">Review Reply</h4>
                                                 <p className="text-sm text-[#7C7C8C]">Googleマップの口コミを貼り付けてください</p>
@@ -298,6 +299,40 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                         Next
                                                     </button>
                                                 )}
+                                            </div>
+
+                                            {/* Additional Instructions (Optional) - GMap Layout */}
+                                            <div className="flex flex-col gap-3">
+                                                <button
+                                                    onClick={() => setIsPromptExpanded(!isPromptExpanded)}
+                                                    className="flex items-center gap-2 text-[#7C7C8C] active:text-[#1F1F2F] transition-colors px-4 py-2"
+                                                >
+                                                    <AutoSparklesIcon className={`w-4 h-4 ${customPrompt ? 'text-[#9747FF]' : ''}`} />
+                                                    <span className="text-[11px] font-bold uppercase tracking-widest">追加指示（任意）</span>
+                                                </button>
+                                                {isPromptExpanded && (
+                                                    <div className="mx-2 p-4 bg-white/60 border border-[#F0F0F5] rounded-2xl animate-in zoom-in-95 shadow-sm">
+                                                        <input
+                                                            type="text"
+                                                            value={customPrompt}
+                                                            onChange={(e) => onCustomPromptChange(e.target.value)}
+                                                            placeholder="例：テンション高めに..."
+                                                            className="w-full bg-transparent border-none focus:outline-none text-xs font-bold text-[#1F1F2F]"
+                                                            autoFocus
+                                                        />
+                                                    </div>
+                                                )}
+                                            </div>
+
+                                            {/* Google Maps Supplement Field */}
+                                            <div className="p-6 bg-[#F5CC6D]/10 border-[#F5CC6D] border-2 rounded-[32px] animate-in slide-in-from-top-2">
+                                                <h4 className="text-[11px] font-black text-[#C4A052] uppercase mb-3">補足情報 / 当日の事情</h4>
+                                                <AutoResizingTextarea
+                                                    value={storeSupplement}
+                                                    onChange={(e) => onStoreSupplementChange(e.target.value)}
+                                                    placeholder="例：急な欠勤で人手が足りなかった、など"
+                                                    className="w-full bg-transparent text-black text-sm font-bold leading-relaxed placeholder-[#C4A052]/40 focus:outline-none resize-none min-h-[60px]"
+                                                />
                                             </div>
                                         </div>
                                     ) : (
@@ -330,12 +365,12 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                 </div>
                                             </button>
 
-                                            <div className="w-full flex flex-col gap-6">
+                                            <div className="w-full flex flex-col gap-4">
                                                 <div className="relative">
                                                     <AutoResizingTextarea
                                                         value={inputText}
                                                         onChange={(e) => onInputTextChange(e.target.value)}
-                                                        placeholder="Tell AI what to write about..."
+                                                        placeholder={isGoogleMaps ? "口コミ内容を貼り付けてください..." : "Tell AI what to write about..."}
                                                         className="w-full min-h-[160px] p-8 bg-white border border-[#F0F0F5] rounded-[40px] text-lg font-medium leading-relaxed focus:outline-none focus:ring-4 focus:ring-[#9747FF]/5 transition-all shadow-sm placeholder:text-[#AFAFB8]"
                                                     />
                                                     {inputText.trim() && !isListening && (
@@ -345,6 +380,29 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                         >
                                                             Next
                                                         </button>
+                                                    )}
+                                                </div>
+
+                                                {/* Additional Instructions (Optional) - Standard Layout */}
+                                                <div className="flex flex-col gap-3">
+                                                    <button
+                                                        onClick={() => setIsPromptExpanded(!isPromptExpanded)}
+                                                        className="flex items-center gap-2 text-[#7C7C8C] active:text-[#1F1F2F] transition-colors px-4 py-2"
+                                                    >
+                                                        <AutoSparklesIcon className={`w-4 h-4 ${customPrompt ? 'text-[#9747FF]' : ''}`} />
+                                                        <span className="text-[11px] font-bold uppercase tracking-widest">追加指示（任意）</span>
+                                                    </button>
+                                                    {isPromptExpanded && (
+                                                        <div className="p-4 bg-white/60 border border-[#F0F0F5] rounded-2xl animate-in zoom-in-95 shadow-sm">
+                                                            <input
+                                                                type="text"
+                                                                value={customPrompt}
+                                                                onChange={(e) => onCustomPromptChange(e.target.value)}
+                                                                placeholder="例：テンション高めに..."
+                                                                className="w-full bg-transparent border-none focus:outline-none text-xs font-bold text-[#1F1F2F]"
+                                                                autoFocus
+                                                            />
+                                                        </div>
                                                     )}
                                                 </div>
                                             </div>
@@ -369,6 +427,30 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         <div className="text-white/90 text-sm font-medium leading-relaxed">
                                             {inputText.length > 200 ? inputText.substring(0, 200) + '...' : inputText || "Your content will appear here..."}
                                         </div>
+
+                                        {/* Additional Instructions Review */}
+                                        {customPrompt && (
+                                            <div className="mt-4 pt-4 border-t border-white/10">
+                                                <div className="flex items-center gap-1.5 mb-1">
+                                                    <AutoSparklesIcon className="w-3 h-3 text-[#9747FF]" />
+                                                    <span className="text-[9px] font-bold text-white/30 uppercase tracking-widest block">Extra Instructions</span>
+                                                </div>
+                                                <div className="text-white/60 text-xs italic">
+                                                    {customPrompt}
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {/* Supplement Review in Confirm Step */}
+                                        {isGoogleMaps && storeSupplement && (
+                                            <div className="mt-4 pt-4 border-t border-white/10">
+                                                <span className="text-[9px] font-bold text-white/30 uppercase tracking-widest block mb-1">Supplement</span>
+                                                <div className="text-white/60 text-xs italic line-clamp-2">
+                                                    {storeSupplement}
+                                                </div>
+                                            </div>
+                                        )}
+
                                         <button onClick={() => setMobileStep('input')} className="absolute bottom-6 right-8 p-3 bg-white/10 rounded-2xl text-white/60 hover:text-white transition-colors backdrop-blur-md">
                                             <RotateCcwIcon className="w-5 h-5" />
                                         </button>
