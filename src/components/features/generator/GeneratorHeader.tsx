@@ -46,15 +46,18 @@ export const GeneratorHeader: React.FC<GeneratorHeaderProps> = ({
                 <div className="flex items-center">
                     <button
                         onClick={onOpenSettings}
-                        className="flex items-center gap-3 pl-4 md:pl-6 pr-2 md:pr-4 py-2 transition-all active:scale-95 group"
+                        className="flex items-center gap-2 pl-3 md:pl-4 pr-1.5 md:pr-3 py-1.5 transition-all active:scale-95 group bg-stone-50 hover:bg-white border border-stone-100 hover:border-indigo-100 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300"
                     >
-                        <div className="w-8 h-8 md:w-9 md:h-9 rounded-xl bg-[#4DB39A] border-[2px] border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center overflow-hidden transition-transform group-hover:scale-110">
-                            <span className="text-xs md:text-sm font-black text-black">
+                        <div className="w-8 h-8 md:w-9 md:h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center overflow-hidden transition-transform group-hover:scale-105 shadow-sm shadow-indigo-100">
+                            <span className="text-xs md:text-sm font-black text-white">
                                 {(storeProfile?.name?.[0] || 'U').toUpperCase()}
                             </span>
                         </div>
-                        <span className="text-[11px] font-black text-black tracking-[0.2em] hidden md:inline ml-1">MENU</span>
-                        <MenuIcon className="w-4 h-4 text-black transition-colors ml-1" />
+                        <div className="flex flex-col items-start mr-1 md:mr-2">
+                            <span className="text-[10px] font-black text-stone-900 tracking-tight hidden md:inline">{storeProfile?.name || 'MENU'}</span>
+                            <span className="text-[8px] font-bold text-stone-400 uppercase tracking-widest hidden md:inline">{plan?.plan === 'pro' ? 'PRO' : 'FREE'}</span>
+                        </div>
+                        <MenuIcon className="w-4 h-4 text-stone-400 group-hover:text-indigo-500 transition-colors" />
                     </button>
                 </div>
             </div>
