@@ -175,26 +175,31 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
             {/* Step 1: Home (Platform Grid) */}
             <div className={`flex flex-col gap-6 p-6 transition-all duration-500 ${isStepDrawerOpen ? 'blur-md scale-[0.98] opacity-60' : 'opacity-100'}`}>
-                {/* Header Profile Style - Monochrome */}
-                <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-[var(--plexo-black)] flex items-center justify-center text-white font-bold text-sm shadow-sm ring-2 ring-white/80">
-                            {storeProfile.name?.substring(0, 1) || 'S'}
+                {/* Header Profile Style - Premium Refined */}
+                <div className="flex items-center justify-between mb-6 px-1">
+                    <div className="flex items-center gap-4">
+                        <div className="relative group">
+                            <div className="absolute -inset-0.5 bg-[var(--plexo-yellow)] rounded-full opacity-70 blur-[1px] group-hover:opacity-100 transition-opacity" />
+                            <div className="relative w-12 h-12 rounded-full bg-[var(--plexo-black)] flex items-center justify-center text-[var(--plexo-yellow)] font-black text-base shadow-lg ring-2 ring-white">
+                                {storeProfile.name?.substring(0, 1) || 'S'}
+                            </div>
                         </div>
-                        <div className="flex flex-col">
-                            <span className="text-[10px] font-black text-[var(--plexo-dark-gray)] uppercase tracking-[0.2em] leading-none mb-1">Welcome</span>
-                            <span className="text-sm font-black text-[var(--plexo-black)] tracking-tight">{storeProfile.name || 'Store Admin'}</span>
+                        <div className="flex flex-col gap-0.5">
+                            <span className="text-[9px] font-black text-[#999999] uppercase tracking-[0.25em] leading-none">Welcome</span>
+                            <span className="text-xl font-black text-[var(--plexo-black)] tracking-tight leading-none">{storeProfile.name || 'Store Admin'}</span>
                         </div>
                     </div>
-                    {/* Compact Usage Badge - Monochrome */}
+
+                    {/* Compact Usage Badge - Dashboard Style */}
                     {plan && typeof plan.usage !== 'undefined' && typeof plan.limit !== 'undefined' && (
                         <div className="flex flex-col items-end">
-                            <span className="text-[10px] font-bold text-[#666666] tracking-wider mb-0.5 uppercase">Credits</span>
-                            <div className="flex items-center gap-1 bg-white px-3 py-1.5 rounded-xl border border-[#E5E5E5] shadow-sm">
-                                <span className={`text-sm font-black leading-none ${plan.limit - plan.usage <= 0 ? 'text-[#111111]' : 'text-[#111111]'}`}>
+                            <span className="text-[9px] font-black text-[#999999] tracking-[0.2em] mb-1.5 uppercase">Credits</span>
+                            <div className="flex items-center gap-1.5 bg-white pl-4 pr-3 py-1.5 rounded-full border border-[#E5E5E5] shadow-[0_2px_10px_rgba(0,0,0,0.03)]">
+                                <span className={`text-base font-black leading-none ${plan.limit - plan.usage <= 0 ? 'text-red-500' : 'text-[var(--plexo-black)]'}`}>
                                     {Math.max(0, plan.limit - plan.usage)}
                                 </span>
-                                <span className="text-[10px] font-bold text-[#999999] leading-none">/ {plan.limit}</span>
+                                <div className="w-px h-3 bg-[#E5E5E5]" />
+                                <span className="text-[10px] font-bold text-[#999999] leading-none">{plan.limit}</span>
                             </div>
                         </div>
                     )}
