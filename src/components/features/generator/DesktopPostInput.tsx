@@ -3,7 +3,8 @@ import { Platform, PostPurpose, GoogleMapPurpose } from '../../../types';
 import { AutoResizingTextarea } from './AutoResizingTextarea';
 import { getPlatformIcon } from './utils';
 import {
-    AutoSparklesIcon, MagicWandIcon, MicIcon, EraserIcon, InfoIcon
+    AutoSparklesIcon, MagicWandIcon, MicIcon, EraserIcon, InfoIcon,
+    InstagramIcon, LineIcon, GoogleMapsIcon, ChevronRightIcon, SparklesIcon
 } from '../../Icons';
 import {
     PostInputFormProps, renderAvatar, PURPOSES, GMAP_PURPOSES, TONES, LENGTHS
@@ -72,16 +73,72 @@ export const DesktopPostInput: React.FC<PostInputFormProps> = ({
                     </div>
                 </div>
                 <div className="flex flex-row items-center gap-4">
-                    <div className="grid grid-cols-4 flex-1 p-2 gap-2 rounded-2xl bg-white border border-[#E5E5E5] shadow-sm">
-                        {[Platform.X, Platform.Instagram, Platform.Line, Platform.GoogleMaps].map((p) => {
-                            const isSelected = platforms.includes(p);
-                            return (
-                                <button key={p} onClick={() => onSetActivePlatform(p)} className={`flex items-center justify-center gap-2 py-3 rounded-xl text-xs font-black transition-all border ${isSelected ? 'bg-[#111111] text-white border-[#111111] shadow-md -translate-y-[1px]' : 'bg-white text-[#666666] border-transparent hover:bg-[#F5F5F5]'}`}>
-                                    <div className={!isSelected ? 'grayscale opacity-60' : ''}>{getPlatformIcon(p)}</div>
-                                    <span>{p === Platform.Line ? 'LINE' : (p === Platform.GoogleMaps ? 'Google Maps' : (p === Platform.X ? 'X' : p))}</span>
-                                </button>
-                            );
-                        })}
+                    <div className="grid grid-cols-2 flex-1 gap-3 rounded-2xl bg-transparent">
+                        {(() => {
+                            const getPlatformDetails = (platform: Platform) => {
+                                switch (platform) {
+                                    case Platform.Instagram: return {
+                                        name: 'Instagram', tagline: 'Visual Story', sub: '世界観と統一感',
+                                        icon: <InstagramIcon className="w-7 h-7" />,
+                                    };
+                                    case Platform.X: return {
+                                        name: 'X', tagline: 'Real-time', sub: '拡散と交流',
+                                        icon: <span className="font-black text-2xl">𝕏</span>,
+                                    };
+                                    case Platform.Line: return {
+                                        name: 'LINE', tagline: 'Messages', sub: 'リピーター獲得',
+                                        icon: <LineIcon className="w-7 h-7" />,
+                                    };
+                                    case Platform.GoogleMaps: return {
+                                        name: 'Google Maps', tagline: 'Local Search', sub: '店舗集客とMEO対策',
+                                        icon: <GoogleMapsIcon className="w-7 h-7" />,
+                                    };
+                                    default: return { name: '', tagline: '', sub: '', icon: null };
+                                }
+                            };
+
+                            return [Platform.Instagram, Platform.X, Platform.Line, Platform.GoogleMaps].map((p) => {
+                                const isSelected = platforms.includes(p);
+                                const details = getPlatformDetails(p);
+                                return (
+                                    <button
+                                        key={p}
+                                        onClick={() => onSetActivePlatform(p)}
+                                        className={`
+                                            relative h-[140px] rounded-[32px] overflow-hidden cursor-pointer border transition-all duration-500 group text-left
+                                            ${isSelected
+                                                ? 'bg-[var(--plexo-yellow)] border-[var(--plexo-yellow)] shadow-lg scale-[0.98] animate-tactile-pop'
+                                                : `bg-white border-[#EBEBEB] shadow-sm hover:border-[#D0D0D0] hover:shadow-md active:scale-[0.98]`
+                                            }
+                                        `}
+                                    >
+                                        <div className="absolute inset-0 p-5 flex flex-col justify-between">
+                                            <div className="flex justify-between items-start">
+                                                <div className={`transition-all duration-300 ${isSelected ? 'text-black' : 'text-[#BBBBBB]'}`}>
+                                                    {details.icon}
+                                                </div>
+                                                <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 shadow-sm ${isSelected ? 'bg-black text-[var(--plexo-yellow)]' : 'bg-[#F5F5F5] text-[#CCCCCC]'}`}>
+                                                    <ChevronRightIcon className="w-4 h-4" />
+                                                </div>
+                                            </div>
+                                            <div className="flex flex-col">
+                                                <span className={`text-[9px] font-black uppercase tracking-[0.15em] transition-all duration-300 mb-1 ${isSelected ? 'text-black/40' : 'text-[#BBBBBB]'}`}>
+                                                    {details.tagline}
+                                                </span>
+                                                <div className="flex flex-col leading-tight">
+                                                    <h3 className={`font-black tracking-tighter text-lg transition-colors duration-500 ${isSelected ? 'text-black' : 'text-[#111111]'}`}>
+                                                        {details.name}
+                                                    </h3>
+                                                    <p className={`text-[10px] font-medium transition-opacity ${isSelected ? 'text-black/50' : 'text-[#999999]'}`}>
+                                                        {details.sub}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </button>
+                                );
+                            });
+                        })()}
                     </div>
                     <div className="flex items-center gap-3 px-5 py-2.5 rounded-2xl bg-white border border-[#E5E5E5] shadow-sm">
                         <span className="text-[10px] font-black text-[#111111] uppercase tracking-[0.2em] leading-none">同時生成</span>

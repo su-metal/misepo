@@ -180,17 +180,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
     return (
         <div className="flex flex-col h-full min-h-[100dvh] relative overflow-hidden font-inter bg-[var(--bg-primary)]">
-            <style dangerouslySetInnerHTML={{
-                __html: `
-                @keyframes tactile-pop {
-                    0% { transform: scale(0.98); }
-                    40% { transform: scale(1.04); }
-                    100% { transform: scale(0.98); }
-                }
-                .animate-tactile-pop {
-                    animation: tactile-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-                }
-            `}} />
+
             {/* Minimal Monochrome Background */}
             <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden bg-[var(--bg-primary)]">
                 {/* Subtle Monochrome Gradients */}
@@ -208,31 +198,31 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
             {/* Step 1: Home (Platform Grid) */}
             <div className={`flex flex-col h-full overflow-hidden relative transition-all duration-500 ${isStepDrawerOpen ? 'blur-md scale-[0.98] opacity-60' : 'opacity-100'}`}>
                 <div className="flex-1 flex flex-col p-5 pt-10 pb-8 safe-area-bottom">
-                    {/* Header Profile Style - Compact */}
-                    <div className="flex items-center justify-between mb-6 px-1">
-                        <div className="flex items-center gap-4">
-                            <div className="relative group">
-                                <div className="absolute -inset-0.5 bg-[var(--plexo-yellow)] rounded-full opacity-70 blur-[1px] group-hover:opacity-100 transition-opacity" />
-                                <div className="relative w-12 h-12 rounded-full bg-[var(--plexo-black)] flex items-center justify-center text-[var(--plexo-yellow)] font-black text-base shadow-lg ring-2 ring-white">
-                                    {storeProfile.name?.substring(0, 1) || 'S'}
+                    {/* Refined Header - Match Reference Image */}
+                    <div className="flex items-center justify-between mb-8 px-2">
+                        <div className="flex items-center gap-3">
+                            {/* Avatar with logo style */}
+                            <div className="relative">
+                                <div className="w-14 h-14 rounded-full bg-[var(--plexo-black)] border border-[#EEEEEE] shadow-sm flex items-center justify-center overflow-hidden">
+                                    <span className="text-[var(--plexo-yellow)] font-black text-2xl" style={{ transform: 'rotate(-10deg)', marginTop: '2px' }}>ミ</span>
                                 </div>
                             </div>
-                            <div className="flex flex-col gap-0.5">
-                                <span className="text-[9px] font-black text-[#999999] uppercase tracking-[0.25em] leading-none">Welcome</span>
-                                <span className="text-xl font-black text-[var(--plexo-black)] tracking-tight leading-none">{storeProfile.name || 'Store Admin'}</span>
+                            <div className="flex flex-col">
+                                <span className="text-[10px] font-black text-[#AAAAAA] uppercase tracking-[0.2em] leading-none mb-1">Welcome</span>
+                                <span className="text-[20px] font-black text-[var(--plexo-black)] tracking-tight leading-none">{storeProfile.name || 'Store Admin'}</span>
                             </div>
                         </div>
 
-                        {/* Compact Usage Badge - Dashboard Style */}
+                        {/* Minimalist Credit Display */}
                         {plan && typeof plan.usage !== 'undefined' && typeof plan.limit !== 'undefined' && (
                             <div className="flex flex-col items-end">
-                                <span className="text-[9px] font-black text-[#999999] tracking-[0.2em] mb-1.5 uppercase">Credits</span>
-                                <div className="flex items-center gap-1.5 bg-white pl-4 pr-3 py-1.5 rounded-full border border-[#E5E5E5] shadow-[0_2px_10px_rgba(0,0,0,0.03)]">
-                                    <span className={`text-base font-black leading-none ${plan.limit - plan.usage <= 0 ? 'text-red-500' : 'text-[var(--plexo-black)]'}`}>
+                                <span className="text-[10px] font-black text-[#AAAAAA] tracking-[0.2em] mb-1.5 uppercase">Credits</span>
+                                <div className="flex items-center gap-1.5 bg-white px-4 py-2 rounded-full border border-[#EEEEEE] shadow-sm">
+                                    <span className="text-[15px] font-black text-[var(--plexo-black)] leading-none">
                                         {Math.max(0, plan.limit - plan.usage)}
                                     </span>
-                                    <div className="w-px h-3 bg-[#E5E5E5]" />
-                                    <span className="text-[10px] font-bold text-[#999999] leading-none">{plan.limit}</span>
+                                    <div className="w-px h-3 bg-[#EEEEEE]" />
+                                    <span className="text-[11px] font-bold text-[#CCCCCC] leading-none">{plan.limit}</span>
                                 </div>
                             </div>
                         )}
