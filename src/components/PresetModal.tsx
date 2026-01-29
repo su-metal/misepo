@@ -176,7 +176,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
   const [isReordering, setIsReordering] = useState(false);
   const [orderError, setOrderError] = useState<string | null>(null);
   const [mobileView, setMobileView] = useState<'list' | 'edit'>('list');
-  const [activeSubTab, setActiveSubTab] = useState<'profile' | 'learning' | 'rules'>('profile');
+  const [activeSubTab, setActiveSubTab] = useState<'profile' | 'learning' | 'advanced'>('profile');
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [isIconSelectorOpen, setIsIconSelectorOpen] = useState(false);
   const [expandingPlatform, setExpandingPlatform] = useState<Platform | null>(null);
@@ -185,7 +185,9 @@ const PresetModal: React.FC<PresetModalProps> = ({
   const [selectedPlatforms, setSelectedPlatforms] = useState<Platform[]>([Platform.General]);
   const [isTrainingLoading, setIsTrainingLoading] = useState(false);
   const [isSanitizing, setIsSanitizing] = useState(false);
+  const [learningMode, setLearningMode] = useState<'sns' | 'maps'>('sns');
   const [isAnalyzingPersona, setIsAnalyzingPersona] = useState(false);
+  const [isStyleExpanded, setIsStyleExpanded] = useState(false);
 
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -243,6 +245,10 @@ const PresetModal: React.FC<PresetModalProps> = ({
       setCustomPrompts({});
     }
   }, [selectedPresetId, presets]);
+
+  useEffect(() => {
+    setIsStyleExpanded(false);
+  }, [learningMode, selectedPresetId]);
 
   const handleStartNew = () => {
     setSelectedPresetId(null);
@@ -365,39 +371,70 @@ const PresetModal: React.FC<PresetModalProps> = ({
     }
   };
 
-  const performPersonaAnalysis = async (): Promise<string | null> => {
-    const presetSamples = trainingItems
-      .filter(item => item.presetId === (selectedPresetId || 'omakase'))
+  const performPersonaAnalysis = async (overrideSamples?: { content: string, platform: string }[]): Promise<any> => {
+    // Current target platform based on tab mode
+    const targetKey = learningMode === 'maps' ? Platform.GoogleMaps : 'General';
+
+    // Filter samples relevant to the current mode
+    // SNS mode: Includes X, Instagram, Line, General
+    // Maps mode: Includes GoogleMaps
+    const samplesToUse = overrideSamples || trainingItems
+      .filter(item => {
+        const p = item.presetId === (selectedPresetId || 'omakase');
+        const plats = item.platform.split(',').map(s => s.trim());
+        const isMaps = plats.includes(Platform.GoogleMaps);
+        if (learningMode === 'maps') return p && isMaps;
+        return p && !isMaps;
+      })
       .map(item => ({
         content: item.content,
         platform: item.platform
       }));
 
-    if (presetSamples.length === 0) return null;
+    if (samplesToUse.length === 0) return null;
 
     setIsAnalyzingPersona(true);
     try {
       const res = await fetch('/api/ai/analyze-persona', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ samples: presetSamples }),
+        body: JSON.stringify({ samples: samplesToUse }),
       });
       const data = await res.json();
       if (data.instruction) {
         let instruction = data.instruction;
-        try {
-          if (typeof instruction === 'string' && instruction.trim().startsWith('{')) {
-            const parsed = JSON.parse(instruction);
-            setCustomPrompts(prev => ({ ...prev, ...parsed }));
-          } else if (typeof instruction === 'object') {
-            setCustomPrompts(prev => ({ ...prev, ...instruction }));
-          } else {
-            setCustomPrompts(prev => ({ ...prev, [activePromptTab]: instruction }));
+        const newPrompts = { ...customPrompts };
+
+        // Helper to extract string content
+        let contentToApply = '';
+
+        if (typeof instruction === 'string' && !instruction.trim().startsWith('{')) {
+          contentToApply = instruction;
+        } else {
+          try {
+            const parsed = typeof instruction === 'string' ? JSON.parse(instruction) : instruction;
+            if (learningMode === 'sns') {
+              contentToApply = parsed.General || (typeof instruction === 'string' ? instruction : JSON.stringify(instruction));
+            } else {
+              contentToApply = parsed.GoogleMaps || (typeof instruction === 'string' ? instruction : JSON.stringify(instruction));
+            }
+          } catch (e) {
+            contentToApply = typeof instruction === 'string' ? instruction : JSON.stringify(instruction);
           }
-        } catch (e) {
-          setCustomPrompts(prev => ({ ...prev, [activePromptTab]: instruction }));
         }
-        return typeof instruction === 'string' ? instruction : JSON.stringify(instruction);
+
+        // Apply to Targets
+        if (learningMode === 'sns') {
+          newPrompts['General'] = contentToApply;
+          newPrompts[Platform.X] = contentToApply;
+          newPrompts[Platform.Instagram] = contentToApply;
+          newPrompts[Platform.Line] = contentToApply;
+        } else {
+          newPrompts[Platform.GoogleMaps] = contentToApply;
+        }
+
+        setCustomPrompts(newPrompts);
+        return newPrompts;
       } else {
         throw new Error(data.error || 'Failed to analyze persona');
       }
@@ -426,13 +463,51 @@ const PresetModal: React.FC<PresetModalProps> = ({
     setIsTrainingLoading(true);
     try {
       await onToggleTraining(normalizedText, platformString, presetId, replaceId, 'manual');
+
+      // Close overlay immediately for better UX
       setExpandingPlatform(null);
       setEditingSampleId(null);
       setModalText('');
+
+      // Construct optimistic samples for immediate analysis
+      let newSamples = trainingItems
+        .filter(item => item.presetId === presetId)
+        .map(item => ({ content: item.content, platform: item.platform }));
+
+      if (replaceId) {
+        newSamples = newSamples.map(s => {
+          // Identify the item being replaced. Since we don't have IDs in the mapped array,
+          // we should actually map from trainingItems directly but replace the specific index?
+          // Simplest is to filter out the old one by ID from trainingItems first.
+          // Yet, here we only have mapped content.
+          // Let's re-filter trainingItems properly.
+          return s; // placeholder
+        });
+        // Re-do strictly:
+        const baseItems = trainingItems.filter(item => item.presetId === presetId && item.id !== replaceId);
+        newSamples = baseItems.map(i => ({ content: i.content, platform: i.platform }));
+        newSamples.push({ content: normalizedText, platform: platformString });
+      } else {
+        newSamples.push({ content: normalizedText, platform: platformString });
+      }
+
+      // Trigger Auto-Analysis
+      setIsAnalyzingPersona(true); // Show spinner immediately
+      const newStyle = await performPersonaAnalysis(newSamples);
+
+      if (newStyle && name.trim()) {
+        // Auto-save the new style to the preset if we have a name
+        // We pass the newStyle as overridePrompts to handleSave
+        // Note: handleSave expects {[key:string]: string}.
+        // performPersonaAnalysis returns object or string. We normalized it to return object above.
+        await handleSave(newStyle as any);
+      }
+
     } catch (err: any) {
       alert(`保存に失敗しました: ${err.message}`);
     } finally {
       setIsTrainingLoading(false);
+      setIsAnalyzingPersona(false);
     }
   };
 
@@ -495,139 +570,208 @@ const PresetModal: React.FC<PresetModalProps> = ({
           </div>
         )}
       </div>
-
-      <div className="p-8 bg-gradient-to-br from-indigo-500/5 to-purple-500/5 rounded-[2.5rem] border border-indigo-100/50 space-y-4 relative overflow-hidden group">
-        <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform">
-          <SparklesIcon className="w-24 h-24 text-indigo-600" />
-        </div>
-        <div className="relative z-10">
-          <h4 className="text-stone-900 font-black tracking-tight mb-2">Bunshin スタイルについて</h4>
-          <p className="text-sm text-stone-600 leading-relaxed max-w-lg font-medium">
-            名前とアイコンを設定するだけで、AIはそのキャラクターに基づいたトーンを選択します。<br />
-            さらに個別の癖を覚えさせたい場合は、隣の「学習データ」から投稿例を追加してください。
-          </p>
-        </div>
-      </div>
     </div>
   );
 
-  const renderLearningTab = () => (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-2">
-        <div className="space-y-1">
-          <label className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em] block">Training Data</label>
-          <h4 className="font-black text-stone-900 tracking-tighter text-lg">学習データ・ベース</h4>
-        </div>
-        <button
-          onClick={() => { setModalText(''); setExpandingPlatform(Platform.General); }}
-          className="flex items-center gap-2 px-6 py-3 bg-stone-900 text-white rounded-2xl font-black text-[11px] uppercase tracking-widest hover:bg-indigo-600 transition-all shadow-lg shadow-indigo-100 active:scale-95"
-        >
-          <PlusIcon className="w-4 h-4" />
-          <span>新しい文章を学習</span>
-        </button>
-      </div>
+  const renderLearningAndStyleTab = () => {
+    const currentStyleText = learningMode === 'sns'
+      ? (customPrompts['General'] || customPrompts[Platform.X] || '')
+      : (customPrompts[Platform.GoogleMaps] || '');
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {currentPresetSamples.length === 0 ? (
-          <div className="col-span-full py-20 flex flex-col items-center justify-center text-center space-y-4 opacity-40">
-            <div className="w-20 h-20 rounded-[2.5rem] bg-stone-50 border border-stone-100 flex items-center justify-center text-stone-200">
-              <BookOpenIcon className="w-10 h-10" />
+    const filteredSamples = currentPresetSamples.filter(item => {
+      const isMaps = item.platform.includes(Platform.GoogleMaps);
+      return learningMode === 'maps' ? isMaps : !isMaps;
+    });
+
+    return (
+      <div className="space-y-10 animate-in fade-in slide-in-from-bottom-2 duration-500">
+        {/* MODE TOGGLE (Two-Track Identity) */}
+        <div className="flex justify-center">
+          <div className="bg-stone-100 p-1.5 rounded-[1.5rem] flex gap-1 shadow-inner border border-stone-200">
+            <button
+              onClick={() => setLearningMode('sns')}
+              className={`px-8 py-3 rounded-[1.2rem] font-black text-xs tracking-widest transition-all flex items-center gap-2 ${learningMode === 'sns' ? 'bg-white text-indigo-600 shadow-md transform scale-100' : 'text-stone-400 hover:text-stone-600'}`}
+            >
+              <SparklesIcon className="w-4 h-4" />
+              SNS IDENTITY
+            </button>
+            <button
+              onClick={() => setLearningMode('maps')}
+              className={`px-8 py-3 rounded-[1.2rem] font-black text-xs tracking-widest transition-all flex items-center gap-2 ${learningMode === 'maps' ? 'bg-white text-teal-600 shadow-md transform scale-100' : 'text-stone-400 hover:text-stone-600'}`}
+            >
+              <GoogleMapsIcon className="w-4 h-4" />
+              MAPS REPLIES
+            </button>
+          </div>
+        </div>
+
+        <div className="p-8 bg-gradient-to-br from-indigo-500/5 to-purple-500/5 rounded-[2.5rem] border border-indigo-100/50 space-y-4 relative overflow-hidden group">
+
+
+          {/* 1. Style Analysis Section */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between px-2">
+              <div className="space-y-1">
+                <label className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em] block">
+                  {learningMode === 'sns' ? 'Standard Tone & Vibe' : 'Customer Service Tone'}
+                </label>
+                <h4 className="font-black text-stone-900 tracking-tighter text-lg">
+                  {learningMode === 'sns' ? 'いつもの投稿スタイル' : '口コミ返信スタイル'}
+                </h4>
+              </div>
+              {/* Hidden Analyze button (Auto-run only? Or keep as manual fallback?) Keeping generic update button just in case */}
+              {/* If simple mode, minimal UI. Let's keep it clean. */}
             </div>
-            <div className="space-y-1">
-              <p className="font-black text-stone-900 tracking-widest uppercase text-xs">No Learning Data</p>
-              <p className="text-[11px] font-bold text-stone-500">過去の投稿を学習させて「あなたらしさ」を高めましょう</p>
+
+            <div className={`border rounded-[2.5rem] p-8 relative overflow-hidden group min-h-[160px] flex items-center ${learningMode === 'sns' ? 'bg-gradient-to-br from-indigo-50/50 to-purple-50/50 border-indigo-100' : 'bg-gradient-to-br from-teal-50/50 to-emerald-50/50 border-teal-100'}`}>
+              <div className="absolute top-0 right-0 p-10 opacity-5 group-hover:opacity-10 transition-opacity">
+                {learningMode === 'sns' ? <SparklesIcon className="w-32 h-32 text-indigo-600" /> : <GoogleMapsIcon className="w-32 h-32 text-teal-600" />}
+              </div>
+
+              <div className="relative z-10 w-full">
+                {currentStyleText ? (
+                  <div className="space-y-3">
+                    <p className={`text-sm font-bold text-stone-700 leading-relaxed whitespace-pre-wrap ${!isStyleExpanded ? 'line-clamp-3' : ''}`}>
+                      {currentStyleText}
+                    </p>
+                    <button
+                      onClick={() => setIsStyleExpanded(!isStyleExpanded)}
+                      className="text-[10px] font-black text-indigo-500 hover:text-indigo-600 uppercase tracking-widest flex items-center gap-1 transition-all"
+                    >
+                      {isStyleExpanded ? (
+                        <>
+                          <ChevronDownIcon className="w-3 h-3 rotate-180" />
+                          <span>Show Less</span>
+                        </>
+                      ) : (
+                        <>
+                          <ChevronDownIcon className="w-3 h-3" />
+                          <span>Read More</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center gap-3 opacity-40">
+                    <MagicWandIcon className="w-8 h-8 text-stone-300" />
+                    <p className="text-xs font-bold text-stone-400 text-center">
+                      {learningMode === 'sns'
+                        ? 'まだスタイルが学習されていません。\n下の「Add SNS Data」から普段の投稿を追加してください。'
+                        : 'まだ返信スタイルが学習されていません。\n下の「Add Reply Data」から過去の返信履歴を追加してください。'}
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        ) : (
-          currentPresetSamples.map((item, idx) => (
-            <div
-              key={item.id}
-              className="group p-5 bg-white border border-stone-100 rounded-[2rem] shadow-sm hover:shadow-md hover:border-indigo-100 transition-all flex flex-col justify-between min-h-[160px] relative overflow-hidden"
-            >
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex gap-1">
-                    {item.platform.split(',').map(p => {
-                      const plat = p.trim() as Platform;
-                      return (
-                        <div key={plat} className="p-1 rounded-md bg-stone-50 text-stone-400 group-hover:text-indigo-500 transition-colors">
-                          {plat === Platform.X && <XIcon className="w-3 h-3" />}
-                          {plat === Platform.Instagram && <InstagramIcon className="w-3 h-3" />}
-                          {plat === Platform.Line && <LineIcon className="w-3 h-3" />}
-                          {plat === Platform.GoogleMaps && <GoogleMapsIcon className="w-3 h-3" />}
-                          {plat === Platform.General && <SparklesIcon className="w-3 h-3" />}
-                        </div>
-                      );
-                    })}
-                  </div>
-                  <span className="text-[9px] font-black text-stone-300 uppercase tracking-widest">
-                    {item.source || 'manual'}
-                  </span>
-                </div>
-                <p className="text-sm text-stone-600 font-bold leading-relaxed line-clamp-4">
-                  {item.content}
-                </p>
-              </div>
 
-              <div className="mt-4 flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0">
-                <button
-                  onClick={() => {
-                    setModalText(item.content);
-                    setEditingSampleId(item.id);
-                    setExpandingPlatform(item.platform as any);
-                    setSelectedPlatforms(item.platform.split(',').map(p => p.trim()) as any);
-                  }}
-                  className="p-2 text-stone-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
-                >
-                  <MagicWandIcon className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() => onToggleTraining(item.content, item.platform as any, item.presetId, undefined, 'manual')}
-                  className="p-2 text-stone-400 hover:text-rose-500 hover:bg-rose-50 rounded-xl transition-all"
-                >
-                  <TrashIcon className="w-4 h-4" />
-                </button>
+          {/* 2. Training Data Section */}
+          <div className="space-y-6">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-2 pt-4 border-t border-stone-100">
+              <div className="space-y-1">
+                <label className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em] block">Learning Source</label>
+                <h4 className="font-black text-stone-900 tracking-tighter text-lg">
+                  {learningMode === 'sns' ? 'SNS学習データ' : '返信学習データ'}
+                </h4>
               </div>
+              <button
+                onClick={() => {
+                  setModalText('');
+                  // Default platform based on mode
+                  setExpandingPlatform(learningMode === 'sns' ? Platform.General : Platform.GoogleMaps);
+                  setSelectedPlatforms(learningMode === 'sns' ? [Platform.General] : [Platform.GoogleMaps]);
+                }}
+                className={`flex items-center gap-2 px-6 py-3 border text-white rounded-2xl font-black text-[11px] uppercase tracking-widest transition-all shadow-lg active:scale-95 ${learningMode === 'sns' ? 'bg-stone-900 border-stone-900 hover:bg-indigo-600 hover:border-indigo-600 shadow-indigo-100' : 'bg-teal-700 border-teal-700 hover:bg-teal-600 hover:border-teal-600 shadow-teal-100'}`}
+              >
+                <PlusIcon className="w-4 h-4" />
+                <span>{learningMode === 'sns' ? 'Add SNS Data' : 'Add Reply Data'}</span>
+              </button>
             </div>
-          ))
-        )}
-      </div>
-    </div>
-  );
 
-  const renderRulesTab = () => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {filteredSamples.length === 0 ? (
+                <div className="col-span-full py-12 flex flex-col items-center justify-center text-center space-y-4 opacity-40">
+                  <div className="w-16 h-16 rounded-[2rem] bg-stone-50 border border-stone-100 flex items-center justify-center text-stone-200">
+                    <BookOpenIcon className="w-8 h-8" />
+                  </div>
+                  <div className="space-y-1">
+                    <p className="font-black text-stone-900 tracking-widest uppercase text-xs">No Data</p>
+                    <p className="text-[10px] font-bold text-stone-500">データがありません</p>
+                  </div>
+                </div>
+              ) : (
+                filteredSamples.map((item, idx) => (
+                  <div
+                    key={item.id}
+                    className="group p-5 bg-white border border-stone-100 rounded-[2rem] shadow-sm hover:shadow-md hover:border-indigo-100 transition-all flex flex-col justify-between min-h-[140px] relative overflow-hidden"
+                  >
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className={`text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest ${learningMode === 'sns' ? 'bg-indigo-50 text-indigo-400' : 'bg-teal-50 text-teal-500'}`}>
+                          {learningMode === 'sns' ? 'SNS Post' : 'Review Reply'}
+                        </span>
+                        <span className="text-[9px] font-black text-stone-300 uppercase tracking-widest">
+                          {item.source || 'manual'}
+                        </span>
+                      </div>
+                      <p className="text-xs text-stone-600 font-bold leading-relaxed line-clamp-3">
+                        {item.content}
+                      </p>
+                    </div>
+
+                    <div className="mt-4 flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0">
+                      <button
+                        onClick={() => {
+                          setModalText(item.content);
+                          setEditingSampleId(item.id);
+                          setExpandingPlatform(learningMode === 'sns' ? Platform.General : Platform.GoogleMaps); // Use logic to infer? Simplified to current mode.
+                          setSelectedPlatforms(learningMode === 'sns' ? [Platform.General] : [Platform.GoogleMaps]);
+                        }}
+                        className="p-2 text-stone-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
+                      >
+                        <MagicWandIcon className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => onToggleTraining(item.content, item.platform as any, item.presetId, undefined, 'manual')}
+                        className="p-2 text-stone-400 hover:text-rose-500 hover:bg-rose-50 rounded-xl transition-all"
+                      >
+                        <TrashIcon className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderAdvancedTab = () => (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-2">
         <div className="space-y-1">
-          <label className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em] block">Platform Rules</label>
-          <h4 className="font-black text-stone-900 tracking-tighter text-lg">プロンプト詳細指示</h4>
+          <label className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em] block">Advanced Settings</label>
+          <h4 className="font-black text-stone-900 tracking-tighter text-lg">手動オーバーライド設定</h4>
         </div>
 
         <div className="flex items-center gap-2 bg-stone-100 p-1 rounded-2xl border border-stone-200 shadow-inner">
-          <button
-            onClick={async () => {
-              const instruction = await performPersonaAnalysis();
-              if (instruction) handleSave(typeof instruction === 'object' ? instruction : JSON.parse(instruction));
-            }}
-            disabled={isAnalyzingPersona || currentPresetSamples.length === 0}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-black text-[11px] transition-all shadow-sm ${isAnalyzingPersona ? 'bg-white text-indigo-400' : 'bg-indigo-600 text-white hover:bg-indigo-700 active:scale-95 shadow-indigo-200'}`}
-          >
-            {isAnalyzingPersona ? <div className="w-3 h-3 border-2 border-indigo-200 border-t-indigo-600 rounded-full animate-spin" /> : <MagicWandIcon className="w-4 h-4" />}
-            <span>AI自動生成</span>
-          </button>
-          <button
-            onClick={() => {
-              const current = customPrompts[activePromptTab] || '';
-              if (!current.trim()) return;
-              if (!confirm('全プラットフォームに反映しますか？')) return;
-              const next = { ...customPrompts };
-              [Platform.X, Platform.Instagram, Platform.Line, Platform.GoogleMaps].forEach(p => next[p] = current);
-              setCustomPrompts(next);
-            }}
-            className="px-4 py-2.5 font-black text-[11px] text-stone-500 hover:text-stone-900 transition-colors"
-          >
-            一括適用
-          </button>
+          {activePromptTab !== Platform.GoogleMaps && (
+            <button
+              onClick={() => {
+                const current = customPrompts[activePromptTab] || '';
+                if (!current.trim()) return;
+                if (!confirm('SNSプラットフォーム（X, Instagram, LINE）すべてに反映しますか？')) return;
+                const next = { ...customPrompts };
+                [Platform.X, Platform.Instagram, Platform.Line].forEach(p => next[p] = current);
+                setCustomPrompts(next);
+              }}
+              className="px-4 py-2.5 font-black text-[11px] text-stone-500 hover:text-stone-900 transition-colors"
+            >
+              SNSへ一括適用
+            </button>
+          )}
         </div>
       </div>
 
@@ -648,14 +792,14 @@ const PresetModal: React.FC<PresetModalProps> = ({
           <AutoResizingTextarea
             value={customPrompts[activePromptTab] || ''}
             onChange={(val) => setCustomPrompts(prev => ({ ...prev, [activePromptTab]: val }))}
-            placeholder={`${activePromptTab} で投稿を生成する際の「こだわり」を入力してください。例：ハッシュタグを末尾にいれる、絵文字は控えめに、など`}
-            className="w-full min-h-[240px] bg-transparent outline-none text-stone-800 font-bold leading-relaxed placeholder-stone-200 resize-none no-scrollbar text-base"
+            placeholder={`${activePromptTab} で投稿を生成する際の「こだわり」を直接編集できます。\n通常は「Learning & Style」タブの自動生成をお使いください。`}
+            className="w-full min-h-[240px] bg-transparent outline-none text-stone-800 font-bold leading-relaxed placeholder-stone-300 resize-none no-scrollbar text-base"
           />
         </div>
       </div>
 
       <p className="text-[10px] text-stone-400 font-medium px-4 leading-relaxed">
-        ※学習データがある場合、AIはまず過去の書き方を参考にします。この詳細ルールには、学習データだけでは補いきれない「禁止事項」や「必ず入れてほしいキーワード」などを指定するのが効果的です。
+        ※ここでは、AIが生成したスタイル定義を手動で修正できます。専門的なプロンプト調整が必要な場合にご利用ください。
       </p>
     </div>
   );
@@ -728,13 +872,13 @@ const PresetModal: React.FC<PresetModalProps> = ({
               onClick={() => setActiveSubTab('learning')}
               className={`px-4 py-3 text-[10px] md:text-xs font-black transition-all border-b-2 tracking-widest whitespace-nowrap ${activeSubTab === 'learning' ? 'text-indigo-600 border-indigo-600' : 'text-stone-400 border-transparent hover:text-stone-600'}`}
             >
-              LEARNING
+              LEARNING & STYLE
             </button>
             <button
-              onClick={() => setActiveSubTab('rules')}
-              className={`px-4 py-3 text-[10px] md:text-xs font-black transition-all border-b-2 tracking-widest whitespace-nowrap ${activeSubTab === 'rules' ? 'text-indigo-600 border-indigo-600' : 'text-stone-400 border-transparent hover:text-stone-600'}`}
+              onClick={() => setActiveSubTab('advanced')}
+              className={`px-4 py-3 text-[10px] md:text-xs font-black transition-all border-b-2 tracking-widest whitespace-nowrap ${activeSubTab === 'advanced' ? 'text-indigo-600 border-indigo-600' : 'text-stone-400 border-transparent hover:text-stone-600'}`}
             >
-              RULES
+              ADVANCED
             </button>
           </div>
 
@@ -761,8 +905,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
         {/* Tab Content */}
         <div className="flex-1 overflow-y-auto p-8 md:p-12 no-scrollbar pb-32">
           {activeSubTab === 'profile' && renderProfileTab()}
-          {activeSubTab === 'learning' && renderLearningTab()}
-          {activeSubTab === 'rules' && renderRulesTab()}
+          {activeSubTab === 'learning' && renderLearningAndStyleTab()}
+          {activeSubTab === 'advanced' && renderAdvancedTab()}
         </div>
 
         {/* Footer Actions */}
@@ -847,35 +991,25 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
         <div className="flex-1 overflow-y-auto p-10 space-y-8 no-scrollbar">
           <div className="space-y-4">
+            {/* REMOVED: Simple text explanation instead of complex multiselect */}
             <div className="flex items-center justify-between px-2">
-              <span className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em]">Platform Selection</span>
-              <span className="text-[10px] font-bold text-indigo-500 bg-indigo-50 px-3 py-1 rounded-full">複数選択可</span>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {[Platform.General, Platform.Instagram, Platform.X, Platform.Line, Platform.GoogleMaps].map(p => {
-                const isSelected = selectedPlatforms.includes(p);
-                return (
-                  <button
-                    key={p}
-                    onClick={() => {
-                      if (isSelected) {
-                        if (selectedPlatforms.length > 1) setSelectedPlatforms(selectedPlatforms.filter(item => item !== p));
-                      } else {
-                        setSelectedPlatforms([...selectedPlatforms, p]);
-                      }
-                    }}
-                    className={`px-6 py-3 rounded-2xl text-[11px] font-black tracking-widest transition-all ${isSelected ? 'bg-stone-900 text-white shadow-lg' : 'bg-stone-50 text-stone-400 hover:bg-stone-100 border border-stone-100'}`}
-                  >
-                    {p === Platform.General ? '共通スタイル' : p}
-                  </button>
-                );
-              })}
+              <div className="space-y-1">
+                <h4 className="font-black text-stone-900 tracking-tight text-sm">
+                  {learningMode === 'sns' ? '普段の投稿文を入力' : '過去の返信内容を入力'}
+                </h4>
+                <p className="text-[10px] text-stone-500 font-medium">
+                  {learningMode === 'sns' ? 'X, Instagram, LINEなどの投稿をそのまま貼り付けてください。' : 'Googleマップでの口コミへの返信文を貼り付けてください。'}
+                </p>
+              </div>
+              <span className={`text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-widest ${learningMode === 'sns' ? 'bg-indigo-50 text-indigo-500' : 'bg-teal-50 text-teal-600'}`}>
+                {learningMode === 'sns' ? 'For SNS' : 'For Maps'}
+              </span>
             </div>
           </div>
 
-          <div className="space-y-4 pt-4">
+          <div className="space-y-4 pt-2">
             <div className="flex items-center justify-between px-2">
-              <span className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em]">Custom Content</span>
+              <span className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em]"></span>
               <div className="flex gap-2">
                 <button
                   onClick={() => fileInputRef.current?.click()}
@@ -906,7 +1040,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                 autoFocus
                 value={modalText}
                 onChange={setModalText}
-                placeholder="ここに過去の投稿内容を貼り付けるか、AIに学ばせたい文章を入力してください..."
+                placeholder={learningMode === 'sns' ? "例：今日は雨だけど元気に営業中！足元に気をつけて来てね☔️ #カフェ" : "例：高評価ありがとうございます！またのご来店を心よりお待ちしております。"}
                 className="w-full min-h-[300px] bg-transparent outline-none text-stone-800 font-bold leading-relaxed placeholder-stone-200 resize-none no-scrollbar text-lg"
               />
             </div>
