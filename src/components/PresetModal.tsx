@@ -19,6 +19,7 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import {
   CloseIcon,
+  PencilIcon,
   MagicWandIcon,
   SparklesIcon,
   SaveIcon,
@@ -728,8 +729,9 @@ const PresetModal: React.FC<PresetModalProps> = ({
                           setSelectedPlatforms(learningMode === 'sns' ? [Platform.General] : [Platform.GoogleMaps]);
                         }}
                         className="p-2 text-stone-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
+                        title="編集"
                       >
-                        <MagicWandIcon className="w-4 h-4" />
+                        <PencilIcon className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => onToggleTraining(item.content, item.platform as any, item.presetId, undefined, 'manual')}
@@ -808,25 +810,28 @@ const PresetModal: React.FC<PresetModalProps> = ({
     <div className="flex h-full bg-stone-50 overflow-hidden text-stone-900 font-inter">
       {/* SIDEBAR */}
       <div className={`w-full md:w-[320px] lg:w-[380px] shrink-0 bg-stone-50 border-r border-stone-100 flex flex-col ${mobileView === 'list' ? 'flex' : 'hidden md:flex'}`}>
-        <div className="px-6 py-5 md:px-8 md:py-7 flex items-center justify-between bg-white/40">
-          <div className="space-y-0.5">
-            <h2 className="text-xl font-black tracking-tight text-stone-900">Bunshin</h2>
-            <p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">Profile Manager</p>
+        <div className="px-8 py-8 flex items-center justify-between">
+          <div className="space-y-1">
+            <h2 className="text-2xl font-black tracking-tight text-stone-900 leading-none">分身</h2>
+            <p className="text-[10px] font-bold text-stone-400 uppercase tracking-[0.2em]">Profiles</p>
           </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={handleStartNew}
-              className="w-10 h-10 rounded-xl bg-white border border-stone-100 flex items-center justify-center text-stone-900 shadow-sm hover:shadow-md hover:border-indigo-100 transition-all active:scale-95"
-            >
-              <PlusIcon className="w-5 h-5" />
-            </button>
-            <button
-              onClick={onClose}
-              className="md:hidden w-10 h-10 rounded-xl bg-stone-50 border border-stone-100 flex items-center justify-center text-stone-400 hover:text-stone-900 transition-all"
-            >
-              <CloseIcon className="w-5 h-5" />
-            </button>
-          </div>
+          <button
+            onClick={onClose}
+            className="md:hidden w-10 h-10 rounded-xl bg-white border border-stone-100 flex items-center justify-center text-stone-400 hover:text-stone-900 shadow-sm transition-all"
+          >
+            <CloseIcon className="w-5 h-5" />
+          </button>
+        </div>
+
+        <div className="px-8 pb-4 flex items-center justify-between">
+          <label className="text-[10px] font-black text-stone-300 uppercase tracking-widest">Select Profile</label>
+          <button
+            onClick={handleStartNew}
+            className="flex items-center gap-1.5 text-[10px] font-black text-indigo-600 hover:text-indigo-700 transition-colors uppercase tracking-widest"
+          >
+            <PlusIcon className="w-3.5 h-3.5" />
+            <span>Add New</span>
+          </button>
         </div>
 
         <div className="flex-1 overflow-y-auto p-6 pt-0 space-y-3 no-scrollbar">
@@ -859,46 +864,61 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
       {/* MAIN VIEW */}
       <div className={`flex-1 flex flex-col bg-white overflow-hidden shadow-2xl relative z-10 ${mobileView === 'edit' ? 'flex' : 'hidden md:flex'}`}>
-        {/* Sub Header (Tabs) */}
-        <div className="px-6 py-4 md:px-8 md:py-6 border-b border-stone-100 flex items-center justify-between bg-white relative z-10 shrink-0">
-          <div className="flex items-center gap-1 overflow-x-auto no-scrollbar pb-1 -mb-1">
-            <button
-              onClick={() => setActiveSubTab('profile')}
-              className={`px-4 py-3 text-[10px] md:text-xs font-black transition-all border-b-2 tracking-widest whitespace-nowrap ${activeSubTab === 'profile' ? 'text-indigo-600 border-indigo-600' : 'text-stone-400 border-transparent hover:text-stone-600'}`}
-            >
-              PROFILE
-            </button>
-            <button
-              onClick={() => setActiveSubTab('learning')}
-              className={`px-4 py-3 text-[10px] md:text-xs font-black transition-all border-b-2 tracking-widest whitespace-nowrap ${activeSubTab === 'learning' ? 'text-indigo-600 border-indigo-600' : 'text-stone-400 border-transparent hover:text-stone-600'}`}
-            >
-              LEARNING & STYLE
-            </button>
-            <button
-              onClick={() => setActiveSubTab('advanced')}
-              className={`px-4 py-3 text-[10px] md:text-xs font-black transition-all border-b-2 tracking-widest whitespace-nowrap ${activeSubTab === 'advanced' ? 'text-indigo-600 border-indigo-600' : 'text-stone-400 border-transparent hover:text-stone-600'}`}
-            >
-              ADVANCED
-            </button>
-          </div>
+        {/* Header - Multi-row to avoid congestion */}
+        <div className="bg-white/80 backdrop-blur-md relative z-10 shrink-0 border-b border-stone-100 flex flex-col">
+          {/* Top Row: Actions & Status */}
+          <div className="px-6 py-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              {mobileView === 'edit' && (
+                <button
+                  onClick={() => setMobileView('list')}
+                  className="md:hidden w-10 h-10 rounded-xl bg-white border border-stone-100 flex items-center justify-center text-stone-400 hover:text-stone-900 shadow-sm transition-all mr-1"
+                >
+                  <ChevronDownIcon className="w-5 h-5 rotate-90" />
+                </button>
+              )}
 
-          <div className="flex items-center gap-2 ml-4 shrink-0">
-            {mobileView === 'edit' && (
-              <button
-                onClick={() => setMobileView('list')}
-                className="md:hidden w-10 h-10 rounded-xl bg-stone-50 border border-stone-100 flex items-center justify-center text-stone-400 hover:text-stone-950 transition-all"
-                title="一覧に戻る"
-              >
-                <ChevronDownIcon className="w-5 h-5 rotate-90" />
-              </button>
-            )}
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-sm shrink-0">
+                  {renderAvatarIcon(avatar, "w-5 h-5")}
+                </div>
+                <div className="min-w-0">
+                  <span className="text-[9px] font-black text-stone-300 uppercase tracking-[0.2em] block leading-none mb-1">Editing Profile</span>
+                  <h4 className="text-sm font-black text-stone-900 tracking-tight truncate max-w-[120px] md:max-w-[200px] leading-none">{name || 'Unnamed Profile'}</h4>
+                </div>
+              </div>
+            </div>
+
             <button
               onClick={onClose}
-              className="w-10 h-10 rounded-xl bg-stone-50 border border-stone-100 flex items-center justify-center text-stone-400 hover:text-rose-500 hover:bg-rose-50 transition-all"
-              title="閉じる"
+              className="w-10 h-10 rounded-xl bg-stone-50 border border-stone-100 flex items-center justify-center text-stone-400 hover:text-rose-500 hover:bg-rose-50 transition-all font-bold"
             >
               <CloseIcon className="w-5 h-5" />
             </button>
+          </div>
+
+          {/* Bottom Row: Pill Tabs */}
+          <div className="px-6 pb-6 pt-0 flex justify-center">
+            <div className="flex items-center gap-1.5 p-1 bg-stone-100 rounded-2xl border border-stone-200/50 shadow-inner">
+              <button
+                onClick={() => setActiveSubTab('profile')}
+                className={`px-6 py-2.5 text-[10px] font-black transition-all rounded-[1rem] tracking-widest whitespace-nowrap ${activeSubTab === 'profile' ? 'bg-white text-indigo-600 shadow-sm' : 'text-stone-400 hover:text-stone-600'}`}
+              >
+                PROFILE
+              </button>
+              <button
+                onClick={() => setActiveSubTab('learning')}
+                className={`px-6 py-2.5 text-[10px] font-black transition-all rounded-[1rem] tracking-widest whitespace-nowrap ${activeSubTab === 'learning' ? 'bg-white text-indigo-600 shadow-sm' : 'text-stone-400 hover:text-stone-600'}`}
+              >
+                LEARNING & STYLE
+              </button>
+              <button
+                onClick={() => setActiveSubTab('advanced')}
+                className={`px-6 py-2.5 text-[10px] font-black transition-all rounded-[1rem] tracking-widest whitespace-nowrap ${activeSubTab === 'advanced' ? 'bg-white text-indigo-600 shadow-sm' : 'text-stone-400 hover:text-stone-600'}`}
+              >
+                ADVANCED
+              </button>
+            </div>
           </div>
         </div>
 
@@ -984,7 +1004,13 @@ const PresetModal: React.FC<PresetModalProps> = ({
               <p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">Training Focus</p>
             </div>
           </div>
-          <button onClick={() => setExpandingPlatform(null)} className="p-3 text-stone-300 hover:text-stone-900 transition-colors">
+          <button
+            onClick={() => {
+              setExpandingPlatform(null);
+              setEditingSampleId(null);
+            }}
+            className="p-3 text-stone-300 hover:text-stone-900 transition-colors"
+          >
             <CloseIcon className="w-7 h-7" />
           </button>
         </div>
