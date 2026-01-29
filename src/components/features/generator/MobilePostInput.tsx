@@ -217,7 +217,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                     transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.98]
                                     border shadow-sm
                                     ${isActive
-                                        ? 'bg-gradient-to-br from-[#6366F1] to-[#A855F7] text-white border-transparent'
+                                        ? 'bg-gradient-to-br from-[#6366F1]/[0.08] to-[#A855F7]/[0.08] border-[#6366F1] shadow-[0_4px_20px_rgba(99,102,241,0.12)]'
                                         : 'bg-white border-[#E5E5E5] hover:bg-[#F5F5F5] hover:border-[#D4D4D4]'
                                     }
                                 `}
@@ -225,38 +225,35 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                 <div className={`
                                     w-13 h-13 rounded-2xl flex items-center justify-center transition-all duration-300
                                     ${isActive
-                                        ? 'bg-transparent text-white'
+                                        ? 'bg-white text-[#6366F1]'
                                         : 'bg-[#F5F5F5] text-[#111111] group-hover:bg-[#EAEAEA]'
                                     }
                                 `}>
                                     {getPlatformIcon(p, {
                                         className: "w-6 h-6",
-                                        textFill: p === Platform.Line && isActive ? "#111111" : "white"
+                                        textFill: p === Platform.Line && isActive ? "#111111" : (isActive ? "#6366F1" : "white")
                                     })}
                                 </div>
-
-                                <div className="flex flex-col items-start flex-1 gap-0.5">
-                                    <span className={`text-[10px] font-black uppercase tracking-[0.2em] transition-colors duration-300 ${isActive ? 'text-white/60' : 'text-[#999999]'}`}>
-                                        Target Channel
-                                    </span>
-                                    <span className={`text-[18px] font-black tracking-tight transition-colors duration-300 ${isActive ? 'text-white' : 'text-[#111111]'}`}>
-                                        {p === Platform.GoogleMaps ? 'Google Maps' : p === Platform.Instagram ? 'Instagram' : p}
+                                <div className="flex flex-col text-left">
+                                    <span className="text-[10px] font-black text-[#999999] uppercase tracking-[0.2em] mb-0.5">Target Channel</span>
+                                    <span className={`
+                                        text-lg font-black tracking-tight transition-colors
+                                        ${isActive ? 'bg-gradient-to-r from-[#6366F1] to-[#A855F7] bg-clip-text text-transparent' : 'text-[#111111]'}
+                                    `}>
+                                        {p === Platform.X ? 'X' : p === Platform.Instagram ? 'Instagram' : p === Platform.Line ? 'LINE' : 'Google Maps'}
                                     </span>
                                 </div>
 
-                                <div
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        onSetActivePlatform(p);
-                                        setMobileStep('input');
-                                        setIsStepDrawerOpen(true);
-                                    }}
-                                    className={`
-                                    w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 cursor-pointer hover:scale-110 active:scale-95
-                                    ${isActive ? 'bg-white/20 rotate-0 scale-100 text-white' : 'bg-transparent text-[#CCCCCC] opacity-100 scale-100'} 
+                                {/* Right Aligned Arrow */}
+                                <div className={`
+                                    ml-auto w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300
+                                    ${isActive
+                                        ? 'bg-gradient-to-br from-[#6366F1]/20 to-[#A855F7]/20 text-[#6366F1]'
+                                        : 'bg-[#F5F5F5] text-[#CCCCCC]'
+                                    }
                                 `}>
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
-                                        <path d="M5 12h14M12 5l7 7-7 7" />
+                                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M9 18l6-6-6-6" />
                                     </svg>
                                 </div>
                             </button>

@@ -29,16 +29,23 @@ export const CompactPlatformSelector: React.FC<CompactPlatformSelectorProps> = (
                             key={p}
                             onClick={() => isMultiGen ? onPlatformToggle(p) : onSetActivePlatform(p)}
                             className={`
-                                flex-1 flex items-center justify-center gap-2 px-3 py-3 rounded-xl transition-all duration-300
+                                flex-1 flex items-center justify-center gap-2 px-3 py-3 rounded-xl transition-all duration-300 border
                                 ${isSelected
-                                    ? (p === Platform.X ? 'bg-black text-white shadow-[3px_3px_0px_0px_#9B8FD4] -translate-y-[1px]' : p === Platform.Instagram ? 'bg-[#E88BA3] text-black shadow-lg' : p === Platform.Line ? 'bg-[#06C755] text-white shadow-lg' : 'bg-[#4DB39A] text-black shadow-lg')
-                                    : 'text-stone-400 hover:text-stone-600'}
+                                    ? 'bg-gradient-to-r from-[#6366F1]/[0.08] to-[#A855F7]/[0.08] border-[#6366F1] shadow-sm -translate-y-[1px]'
+                                    : 'bg-transparent border-transparent text-stone-400 hover:text-stone-600'}
                             `}
                         >
-                            <div className={`text-lg transition-all duration-300 ${isSelected ? 'text-white' : 'text-stone-400 grayscale opacity-60'}`}>
-                                {getPlatformIcon(p)}
+                            <div className={`text-lg transition-all duration-300 ${isSelected ? 'text-[#6366F1]' : 'text-stone-400 grayscale opacity-60'}`}>
+                                {getPlatformIcon(p, {
+                                    className: "w-5 h-5",
+                                    textFill: p === Platform.Line && isSelected ? "#111111" : (isSelected ? "#6366F1" : "currentColor")
+                                })}
                             </div>
-                            <span className={`text-[11px] font-bold md:inline ${isSelected ? 'text-white' : 'text-stone-500'} ${p === Platform.GoogleMaps ? 'hidden sm:inline' : ''}`}>
+                            <span className={`
+                                text-[11px] font-black tracking-tight md:inline transition-colors
+                                ${isSelected ? 'bg-gradient-to-r from-[#6366F1] to-[#A855F7] bg-clip-text text-transparent' : 'text-stone-500'} 
+                                ${p === Platform.GoogleMaps ? 'hidden sm:inline' : ''}
+                            `}>
                                 {p === Platform.X ? 'X' : p === Platform.Instagram ? 'Instagram' : p === Platform.Line ? 'LINE' : 'Google Maps'}
                             </span>
                         </button>
