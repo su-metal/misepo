@@ -196,7 +196,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             <button
                                 key={p}
                                 onClick={() => handlePlatformSelect(p)}
-                                className={`group relative aspect-square rounded-[32px] flex flex-col items-center justify-center transition-all duration-300 active:scale-95 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.08)] border border-white/40 backdrop-blur-sm ${getStyle(p)} w-full`}
+                                className={`group relative py-6 rounded-[28px] flex flex-col items-center justify-center transition-all duration-300 active:scale-95 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.08)] border border-white/40 backdrop-blur-sm ${getStyle(p)} w-full`}
                             >
                                 <div className="absolute top-4 right-6 opacity-40 group-hover:opacity-100 transition-opacity">
                                     <div className="w-1 h-1 rounded-full bg-current mb-0.5" />
