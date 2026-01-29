@@ -215,7 +215,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                 className={`
                                     group relative w-full px-6 py-5 rounded-[28px] flex items-center gap-5
                                     transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.98]
-                                    border shadow-sm
+                                    border-2 shadow-sm
                                     ${isActive
                                         ? 'bg-gradient-to-br from-[#6366F1]/[0.08] to-[#A855F7]/[0.08] border-[#6366F1] shadow-[0_4px_20px_rgba(99,102,241,0.12)]'
                                         : 'bg-white border-[#E5E5E5] hover:bg-[#F5F5F5] hover:border-[#D4D4D4]'
