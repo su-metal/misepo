@@ -482,7 +482,10 @@ function App() {
                   onToggleFavorite={handleToggleTraining}
                   restorePost={activeHistoryItem}
                   onOpenGuide={() => setShowGuide(true)}
-                  onOpenSettings={() => setShowOnboarding(true)}
+                  onOpenSettings={() => {
+                    setActiveHistoryItem(null);
+                    setShowOnboarding(true);
+                  }}
                   onOpenHistory={() => setIsSidebarOpen(true)}
                   onLogout={logout}
                   plan={plan}
@@ -503,7 +506,10 @@ function App() {
               onToggleFavorite={handleToggleTraining}
               restorePost={activeHistoryItem}
               onOpenGuide={() => setShowGuide(true)}
-              onOpenSettings={() => setShowOnboarding(true)}
+              onOpenSettings={() => {
+                setActiveHistoryItem(null);
+                setShowOnboarding(true);
+              }}
               onOpenHistory={() => setIsSidebarOpen(true)}
               onLogout={logout}
               plan={plan}

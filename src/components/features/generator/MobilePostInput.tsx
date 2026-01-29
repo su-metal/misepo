@@ -45,9 +45,9 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     // Notify parent about result open state to hide footer
     React.useEffect(() => {
         if (onMobileResultOpen) {
-            onMobileResultOpen(mobileStep === 'result');
+            onMobileResultOpen(mobileStep === 'result' && isStepDrawerOpen);
         }
-    }, [mobileStep, onMobileResultOpen]);
+    }, [mobileStep, isStepDrawerOpen, onMobileResultOpen]);
 
     // Handle Restore from History
     React.useEffect(() => {
@@ -211,7 +211,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                         return (
                             <button
                                 key={p}
-                                onClick={() => handlePlatformSelect(p)}
+                                onClick={() => onSetActivePlatform(p)}
                                 className={`
                                     group relative w-full px-6 py-5 rounded-[28px] flex items-center gap-5
                                     transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.98]
@@ -225,11 +225,14 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                 <div className={`
                                     w-13 h-13 rounded-2xl flex items-center justify-center transition-all duration-300
                                     ${isActive
-                                        ? 'bg-white/20 text-white'
+                                        ? 'bg-transparent text-white'
                                         : 'bg-[#F5F5F5] text-[#111111] group-hover:bg-[#EAEAEA]'
                                     }
                                 `}>
-                                    {getPlatformIcon(p, "w-6 h-6")}
+                                    {getPlatformIcon(p, {
+                                        className: "w-6 h-6",
+                                        textFill: p === Platform.Line && isActive ? "#111111" : "white"
+                                    })}
                                 </div>
 
                                 <div className="flex flex-col items-start flex-1 gap-0.5">
@@ -241,9 +244,16 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                     </span>
                                 </div>
 
-                                <div className={`
-                                    w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300
-                                    ${isActive ? 'bg-white/20 rotate-0 scale-100 text-white' : 'bg-transparent text-[#CCCCCC] opacity-0 -translate-x-4 scale-50 group-hover:opacity-100 group-hover:translate-x-0 group-hover:scale-100 group-hover:text-[#111111]'}
+                                <div
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        onSetActivePlatform(p);
+                                        setMobileStep('input');
+                                        setIsStepDrawerOpen(true);
+                                    }}
+                                    className={`
+                                    w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 cursor-pointer hover:scale-110 active:scale-95
+                                    ${isActive ? 'bg-white/20 rotate-0 scale-100 text-white' : 'bg-transparent text-[#CCCCCC] opacity-100 scale-100'} 
                                 `}>
                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
                                         <path d="M5 12h14M12 5l7 7-7 7" />
@@ -272,7 +282,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                     <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" onClick={() => setIsStepDrawerOpen(false)} />
 
                     {/* Sliding Panel (Monochrome) */}
-                    <div className={`absolute bottom-0 left-0 right-0 bg-[#FAFAFA] border-t border-[#E5E5E5] rounded-t-[54px] shadow-[0_-20px_60px_rgba(0,0,0,0.1)] animate-nyoki flex flex-col ${mobileStep === 'confirm' || mobileStep === 'result' || (mobileStep === 'input' && isGoogleMaps) ? 'h-[94vh]' : 'h-[72vh]'} pb-24`}>
+                    <div className={`absolute bottom-0 left-0 right-0 bg-[#FAFAFA] border-t border-[#E5E5E5] rounded-t-[54px] shadow-[0_-20px_60px_rgba(0,0,0,0.1)] animate-nyoki flex flex-col ${mobileStep === 'confirm' || mobileStep === 'result' ? 'h-[94vh]' : 'h-[88vh]'} ${mobileStep === 'result' ? 'pb-8 safe-area-bottom' : 'pb-24'}`}>
                         {/* Drag Handle */}
                         <div className="w-full flex justify-center py-6">
                             <div className="w-16 h-1.5 bg-[#E5E5E5] rounded-full" />
