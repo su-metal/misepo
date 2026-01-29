@@ -55,7 +55,7 @@ export const GeneratorHeader: React.FC<GeneratorHeaderProps> = ({
                         </div>
                         <div className="flex flex-col items-start mr-1 md:mr-2">
                             <span className="text-[10px] font-black text-[var(--plexo-black)] tracking-tight hidden md:inline">{storeProfile?.name || 'MENU'}</span>
-                            <span className={`px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest ${plan?.plan === 'pro' ? 'bg-[var(--plexo-black)] text-[var(--plexo-yellow)]' : 'bg-[var(--bg-secondary)] text-[var(--plexo-med-gray)] border border-[var(--plexo-med-gray)]'}`}>
+                            <span className={`px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest ${plan?.plan === 'pro' ? 'bg-[var(--plexo-dark-gray)] text-[var(--plexo-yellow)] shadow-sm' : 'bg-[var(--bg-secondary)] text-[var(--plexo-med-gray)] border border-[var(--plexo-med-gray)]'}`}>
                                 {plan?.plan === 'pro' ? 'PRO' : 'FREE'}
                             </span>
                         </div>

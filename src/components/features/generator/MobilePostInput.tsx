@@ -217,7 +217,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                     transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.98]
                                     border shadow-sm
                                     ${isActive
-                                        ? 'bg-[var(--plexo-black)] border-[var(--plexo-black)] shadow-[0_4px_20px_rgba(0,0,0,0.2)]'
+                                        ? 'bg-[var(--plexo-dark-gray)] border-[var(--plexo-dark-gray)] shadow-[0_4px_20px_rgba(102,102,102,0.3)]'
                                         : 'bg-white border-[var(--plexo-med-gray)] hover:bg-[#F5F5F5] hover:border-[#D4D4D4]'
                                     }
                                 `}
@@ -253,7 +253,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                     className={`
                                         ml-auto w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 active:scale-90
                                         ${isActive
-                                            ? 'bg-[var(--plexo-yellow)] text-[var(--plexo-black)]'
+                                            ? 'bg-[var(--plexo-black)] text-[var(--plexo-yellow)]'
                                             : 'bg-[#F5F5F5] text-[var(--plexo-med-gray)]'
                                         }
                                     `}
@@ -271,7 +271,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                 <div className="mt-4 p-6 rounded-[32px] bg-white border border-[#E5E5E5] relative overflow-hidden group shadow-sm hover:shadow-md transition-shadow">
                     <div className="absolute -right-4 -top-4 w-24 h-24 bg-[#F5F5F5] rounded-full blur-2xl opacity-50 group-hover:opacity-100 transition-opacity" />
                     <div className="relative z-10">
-                        <div className="inline-flex px-3 py-1 rounded-full bg-[var(--plexo-black)] text-[10px] font-black text-[var(--plexo-yellow)] uppercase tracking-widest mb-2 shadow-sm">Premium</div>
+                        <div className="inline-flex px-3 py-1 rounded-full bg-[var(--plexo-dark-gray)] text-[10px] font-black text-[var(--plexo-yellow)] uppercase tracking-widest mb-2 shadow-sm">Premium</div>
                         <h4 className="text-lg font-black text-[#111111] mb-1">AI Omakase Mode</h4>
                         <p className="text-xs text-[#666666] leading-relaxed font-medium">Let our advanced AI handle the entire strategy and posting for you.</p>
                     </div>
@@ -522,7 +522,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                     <button
                                                         key={p.id}
                                                         onClick={() => onApplyPreset(p)}
-                                                        className={`flex-shrink-0 px-8 py-5 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] transition-all duration-300 shadow-sm truncate max-w-[160px] ${isSelected ? 'bg-[var(--plexo-black)] text-[var(--plexo-yellow)] shadow-xl scale-105 active:scale-95' : 'bg-white border border-[#E5E5E5] text-[#999999]'}`}
+                                                        className={`flex-shrink-0 px-8 py-5 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] transition-all duration-300 shadow-sm truncate max-w-[160px] ${isSelected ? 'bg-[var(--plexo-dark-gray)] text-[var(--plexo-yellow)] shadow-xl scale-105 active:scale-95' : 'bg-white border border-[#E5E5E5] text-[#999999]'}`}
                                                     >
                                                         {p.name}
                                                     </button>
