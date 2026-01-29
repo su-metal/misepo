@@ -20,7 +20,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     onApplyPreset, onOpenPresetModal, customPrompt, onCustomPromptChange,
     storeSupplement, onStoreSupplementChange, language, onLanguageChange,
     onOpenGuide, hasResults = false, isStyleLocked = false,
-    onReset, storeProfile
+    onReset, storeProfile, resetTrigger
 }) => {
     const textareaRef = React.useRef<HTMLTextAreaElement>(null);
     const [mobileStep, setMobileStep] = React.useState<'platform' | 'input' | 'confirm'>('platform');
@@ -28,11 +28,11 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
     // Handle Reset from parent
     React.useEffect(() => {
-        if (onReset) {
+        if (resetTrigger && resetTrigger > 0) {
             setMobileStep('platform');
             setIsStepDrawerOpen(false);
         }
-    }, [onReset]);
+    }, [resetTrigger]);
 
     const [isListening, setIsListening] = React.useState(false);
     const recognitionRef = React.useRef<any>(null);
@@ -205,52 +205,91 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                         {/* Drawer Content */}
                         <div className="flex-1 overflow-y-auto px-8 py-4">
                             {mobileStep === 'input' && (
-                                <div className="flex flex-col items-center justify-center h-full gap-10 animate-in fade-in zoom-in-95 duration-700">
-                                    <button
-                                        onClick={toggleVoiceInput}
-                                        className={`relative w-40 h-40 rounded-full flex items-center justify-center transition-all duration-500 ${isListening ? 'scale-110' : 'hover:scale-105'}`}
-                                    >
-                                        {/* Animated Rings for Listening */}
-                                        {isListening && (
-                                            <>
-                                                <div className="absolute inset-0 rounded-full bg-[#FF5A5F]/20 animate-ping [animation-duration:2s]" />
-                                                <div className="absolute inset-2 rounded-full bg-[#FF5A5F]/30 animate-ping [animation-duration:1.5s]" />
-                                            </>
-                                        )}
-                                        <div className={`w-full h-full rounded-full flex flex-col items-center justify-center transition-all duration-300 shadow-xl ${isListening ? 'bg-[#FF5A5F] text-white shadow-[#FF5A5F]/40' : 'bg-white text-[#1F1F2F] shadow-black/5 border border-[#F0F0F5]'}`}>
-                                            {isListening ? (
-                                                <div className="flex gap-2 h-10 items-center">
-                                                    <div className="w-2 h-8 bg-white rounded-full animate-bounce [animation-delay:0s]" />
-                                                    <div className="w-2 h-10 bg-white rounded-full animate-bounce [animation-delay:0.1s]" />
-                                                    <div className="w-2 h-8 bg-white rounded-full animate-bounce [animation-delay:0.2s]" />
-                                                </div>
-                                            ) : (
-                                                <MicIcon className="w-14 h-14" />
-                                            )}
-                                            <span className={`mt-2 text-[10px] font-bold uppercase tracking-widest ${isListening ? 'text-white' : 'text-[#7C7C8C]'}`}>
-                                                {isListening ? 'Listening' : 'Tap to Speak'}
-                                            </span>
-                                        </div>
-                                    </button>
+                                <div className="flex flex-col items-center justify-center h-full gap-8 animate-in fade-in zoom-in-95 duration-700">
 
-                                    <div className="w-full flex flex-col gap-6">
-                                        <div className="relative">
-                                            <AutoResizingTextarea
-                                                value={inputText}
-                                                onChange={(e) => onInputTextChange(e.target.value)}
-                                                placeholder="Tell AI what to write about..."
-                                                className="w-full min-h-[160px] p-8 bg-white border border-[#F0F0F5] rounded-[40px] text-lg font-medium leading-relaxed focus:outline-none focus:ring-4 focus:ring-[#9747FF]/5 transition-all shadow-sm placeholder:text-[#AFAFB8]"
-                                            />
-                                            {inputText.trim() && !isListening && (
+                                    {/* Google Maps Specific Layout (Text-First) */}
+                                    {isGoogleMaps ? (
+                                        <div className="w-full flex flex-col gap-6 h-full justify-center">
+                                            <div className="text-center space-y-2">
+                                                <h4 className="text-xl font-bold text-[#1F1F2F]">Review Reply</h4>
+                                                <p className="text-sm text-[#7C7C8C]">Googleマップの口コミを貼り付けてください</p>
+                                            </div>
+
+                                            <div className="relative flex-1 max-h-[60vh]">
+                                                <AutoResizingTextarea
+                                                    value={inputText}
+                                                    onChange={(e) => onInputTextChange(e.target.value)}
+                                                    placeholder="ここに口コミをペースト..."
+                                                    className="w-full h-full min-h-[300px] p-8 bg-white border border-[#F0F0F5] rounded-[40px] text-lg font-medium leading-relaxed focus:outline-none focus:ring-4 focus:ring-[#4A90E2]/10 transition-all shadow-[inset_0_2px_10px_rgba(0,0,0,0.02)] placeholder:text-[#AFAFB8]"
+                                                />
+                                                {/* Floating Mic Button for GMap (Secondary) */}
                                                 <button
-                                                    onClick={() => setMobileStep('confirm')}
-                                                    className="absolute bottom-6 right-6 bg-[#1F1F2F] text-white px-8 py-4 rounded-[24px] font-bold text-xs uppercase tracking-[0.2em] shadow-lg active:scale-95 transition-all"
+                                                    onClick={toggleVoiceInput}
+                                                    className={`absolute bottom-6 left-6 w-12 h-12 rounded-full flex items-center justify-center transition-all ${isListening ? 'bg-[#FF5A5F] text-white animate-pulse' : 'bg-[#F0F0F5] text-[#7C7C8C]'}`}
                                                 >
-                                                    Next
+                                                    <MicIcon className="w-6 h-6" />
                                                 </button>
-                                            )}
+
+                                                {inputText.trim() && (
+                                                    <button
+                                                        onClick={() => setMobileStep('confirm')}
+                                                        className="absolute bottom-6 right-6 bg-[#1F1F2F] text-white px-8 py-4 rounded-[24px] font-bold text-xs uppercase tracking-[0.2em] shadow-lg active:scale-95 transition-all"
+                                                    >
+                                                        Next
+                                                    </button>
+                                                )}
+                                            </div>
                                         </div>
-                                    </div>
+                                    ) : (
+                                        /* Standard Layout (Voice-First) */
+                                        <>
+                                            <button
+                                                onClick={toggleVoiceInput}
+                                                className={`relative w-40 h-40 rounded-full flex items-center justify-center transition-all duration-500 ${isListening ? 'scale-110' : 'hover:scale-105'}`}
+                                            >
+                                                {/* Animated Rings for Listening */}
+                                                {isListening && (
+                                                    <>
+                                                        <div className="absolute inset-0 rounded-full bg-[#FF5A5F]/20 animate-ping [animation-duration:2s]" />
+                                                        <div className="absolute inset-2 rounded-full bg-[#FF5A5F]/30 animate-ping [animation-duration:1.5s]" />
+                                                    </>
+                                                )}
+                                                <div className={`w-full h-full rounded-full flex flex-col items-center justify-center transition-all duration-300 shadow-xl ${isListening ? 'bg-[#FF5A5F] text-white shadow-[#FF5A5F]/40' : 'bg-white text-[#1F1F2F] shadow-black/5 border border-[#F0F0F5]'}`}>
+                                                    {isListening ? (
+                                                        <div className="flex gap-2 h-10 items-center">
+                                                            <div className="w-2 h-8 bg-white rounded-full animate-bounce [animation-delay:0s]" />
+                                                            <div className="w-2 h-10 bg-white rounded-full animate-bounce [animation-delay:0.1s]" />
+                                                            <div className="w-2 h-8 bg-white rounded-full animate-bounce [animation-delay:0.2s]" />
+                                                        </div>
+                                                    ) : (
+                                                        <MicIcon className="w-14 h-14" />
+                                                    )}
+                                                    <span className={`mt-2 text-[10px] font-bold uppercase tracking-widest ${isListening ? 'text-white' : 'text-[#7C7C8C]'}`}>
+                                                        {isListening ? 'Listening' : 'Tap to Speak'}
+                                                    </span>
+                                                </div>
+                                            </button>
+
+                                            <div className="w-full flex flex-col gap-6">
+                                                <div className="relative">
+                                                    <AutoResizingTextarea
+                                                        value={inputText}
+                                                        onChange={(e) => onInputTextChange(e.target.value)}
+                                                        placeholder="Tell AI what to write about..."
+                                                        className="w-full min-h-[160px] p-8 bg-white border border-[#F0F0F5] rounded-[40px] text-lg font-medium leading-relaxed focus:outline-none focus:ring-4 focus:ring-[#9747FF]/5 transition-all shadow-sm placeholder:text-[#AFAFB8]"
+                                                    />
+                                                    {inputText.trim() && !isListening && (
+                                                        <button
+                                                            onClick={() => setMobileStep('confirm')}
+                                                            className="absolute bottom-6 right-6 bg-[#1F1F2F] text-white px-8 py-4 rounded-[24px] font-bold text-xs uppercase tracking-[0.2em] shadow-lg active:scale-95 transition-all"
+                                                        >
+                                                            Next
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </>
+                                    )}
                                 </div>
                             )}
 

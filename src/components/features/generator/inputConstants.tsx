@@ -52,6 +52,7 @@ export interface PostInputFormProps {
     hasResults?: boolean;
     isStyleLocked?: boolean;
     onReset?: () => void;
+    resetTrigger?: number;
 }
 
 export const AVATAR_OPTIONS = [

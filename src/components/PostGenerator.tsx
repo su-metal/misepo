@@ -196,10 +196,11 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
               onLanguageChange={flow.setLanguage}
               onOpenGuide={onOpenGuide}
               hasResults={flow.resultGroups.length > 0}
-              onReset={() => {
+              onReset={React.useCallback(() => {
                 flow.setInputText('');
                 setResetTrigger(prev => prev + 1);
-              }}
+              }, [flow.setInputText])}
+              resetTrigger={resetTrigger}
             />
           </div>
 
