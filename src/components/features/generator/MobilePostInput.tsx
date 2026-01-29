@@ -4,7 +4,7 @@ import { AutoResizingTextarea } from './AutoResizingTextarea';
 import { getPlatformIcon } from './utils';
 import {
     AutoSparklesIcon, MagicWandIcon, MicIcon, EraserIcon, InfoIcon,
-    SparklesIcon, RotateCcwIcon
+    SparklesIcon, RotateCcwIcon, InstagramIcon, LineIcon, GoogleMapsIcon, ChevronRightIcon
 } from '../../Icons';
 import {
     PostInputFormProps, renderAvatar, PURPOSES, GMAP_PURPOSES, TONES, LENGTHS
@@ -174,106 +174,175 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
             </div>
 
             {/* Step 1: Home (Platform Grid) */}
-            <div className={`flex flex-col gap-6 p-6 transition-all duration-500 ${isStepDrawerOpen ? 'blur-md scale-[0.98] opacity-60' : 'opacity-100'}`}>
-                {/* Header Profile Style - Monochrome */}
-                <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-[var(--plexo-black)] flex items-center justify-center text-white font-bold text-sm shadow-sm ring-2 ring-white/80">
-                            {storeProfile.name?.substring(0, 1) || 'S'}
-                        </div>
-                        <div className="flex flex-col">
-                            <span className="text-[10px] font-black text-[var(--plexo-dark-gray)] uppercase tracking-[0.2em] leading-none mb-1">Welcome</span>
-                            <span className="text-sm font-black text-[var(--plexo-black)] tracking-tight">{storeProfile.name || 'Store Admin'}</span>
-                        </div>
-                    </div>
-                    {/* Compact Usage Badge - Monochrome */}
-                    {plan && typeof plan.usage !== 'undefined' && typeof plan.limit !== 'undefined' && (
-                        <div className="flex flex-col items-end">
-                            <span className="text-[10px] font-bold text-[#666666] tracking-wider mb-0.5 uppercase">Credits</span>
-                            <div className="flex items-center gap-1 bg-white px-3 py-1.5 rounded-xl border border-[#E5E5E5] shadow-sm">
-                                <span className={`text-sm font-black leading-none ${plan.limit - plan.usage <= 0 ? 'text-[#111111]' : 'text-[#111111]'}`}>
-                                    {Math.max(0, plan.limit - plan.usage)}
-                                </span>
-                                <span className="text-[10px] font-bold text-[#999999] leading-none">/ {plan.limit}</span>
+            <div className={`flex flex-col h-full overflow-hidden relative transition-all duration-500 ${isStepDrawerOpen ? 'blur-md scale-[0.98] opacity-60' : 'opacity-100'}`}>
+                <div className="flex-1 flex flex-col p-5 pt-10 pb-8 safe-area-bottom">
+                    {/* Header Profile Style - Compact */}
+                    <div className="flex items-center justify-between mb-6 px-1">
+                        <div className="flex items-center gap-4">
+                            <div className="relative group">
+                                <div className="absolute -inset-0.5 bg-[var(--plexo-yellow)] rounded-full opacity-70 blur-[1px] group-hover:opacity-100 transition-opacity" />
+                                <div className="relative w-12 h-12 rounded-full bg-[var(--plexo-black)] flex items-center justify-center text-[var(--plexo-yellow)] font-black text-base shadow-lg ring-2 ring-white">
+                                    {storeProfile.name?.substring(0, 1) || 'S'}
+                                </div>
+                            </div>
+                            <div className="flex flex-col gap-0.5">
+                                <span className="text-[9px] font-black text-[#999999] uppercase tracking-[0.25em] leading-none">Welcome</span>
+                                <span className="text-xl font-black text-[var(--plexo-black)] tracking-tight leading-none">{storeProfile.name || 'Store Admin'}</span>
                             </div>
                         </div>
-                    )}
-                </div>
 
-                <div className="flex flex-col gap-0.5 items-start px-2 mb-2">
-                    <h2 className="text-[20px] font-black text-[#111111] tracking-tight">投稿先を選択</h2>
-                    <p className="text-[11px] text-[#666666] font-bold uppercase tracking-[0.2em]">Select your canvas</p>
-                </div>
-
-                <div className="flex flex-col gap-3 px-2">
-                    {[Platform.Instagram, Platform.Line, Platform.X, Platform.GoogleMaps].map((p) => {
-                        const isActive = platforms.includes(p);
-                        return (
-                            <button
-                                key={p}
-                                onClick={() => onPlatformToggle(p)}
-                                className={`
-                                    group relative w-full px-6 py-5 rounded-[28px] flex items-center gap-5
-                                    transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.98]
-                                    border shadow-sm
-                                    ${isActive
-                                        ? 'bg-[var(--plexo-dark-gray)] border-[var(--plexo-dark-gray)] shadow-[0_4px_20px_rgba(102,102,102,0.3)]'
-                                        : 'bg-white border-[var(--plexo-med-gray)] hover:bg-[#F5F5F5] hover:border-[#D4D4D4]'
-                                    }
-                                `}
-                            >
-                                <div className={`
-                                    flex items-center justify-center transition-all duration-300
-                                    ${isActive
-                                        ? 'text-[var(--plexo-yellow)]'
-                                        : 'text-[var(--plexo-black)]'
-                                    }
-                                `}>
-                                    {getPlatformIcon(p, {
-                                        className: "w-6 h-6",
-                                        textFill: p === Platform.Line && isActive ? "var(--plexo-black)" : (isActive ? "var(--plexo-yellow)" : "white")
-                                    })}
-                                </div>
-                                <div className="flex flex-col text-left">
-                                    <span className="text-[10px] font-black text-[var(--plexo-med-gray)] uppercase tracking-[0.2em] mb-0.5">Target Channel</span>
-                                    <span className={`
-                                        text-lg font-black tracking-tight transition-colors
-                                        ${isActive ? 'text-[var(--plexo-yellow)]' : 'text-[var(--plexo-black)]'}
-                                    `}>
-                                        {p === Platform.X ? 'X' : p === Platform.Instagram ? 'Instagram' : p === Platform.Line ? 'LINE' : 'Google Maps'}
+                        {/* Compact Usage Badge - Dashboard Style */}
+                        {plan && typeof plan.usage !== 'undefined' && typeof plan.limit !== 'undefined' && (
+                            <div className="flex flex-col items-end">
+                                <span className="text-[9px] font-black text-[#999999] tracking-[0.2em] mb-1.5 uppercase">Credits</span>
+                                <div className="flex items-center gap-1.5 bg-white pl-4 pr-3 py-1.5 rounded-full border border-[#E5E5E5] shadow-[0_2px_10px_rgba(0,0,0,0.03)]">
+                                    <span className={`text-base font-black leading-none ${plan.limit - plan.usage <= 0 ? 'text-red-500' : 'text-[var(--plexo-black)]'}`}>
+                                        {Math.max(0, plan.limit - plan.usage)}
                                     </span>
+                                    <div className="w-px h-3 bg-[#E5E5E5]" />
+                                    <span className="text-[10px] font-bold text-[#999999] leading-none">{plan.limit}</span>
                                 </div>
+                            </div>
+                        )}
+                    </div>
 
-                                {/* Right Aligned Arrow - Opens Settings Tray */}
-                                <div
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        handlePlatformSelect(p);
-                                    }}
-                                    className={`
-                                        ml-auto w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 active:scale-90
-                                        ${isActive
-                                            ? 'bg-[var(--plexo-black)] text-[var(--plexo-yellow)]'
-                                            : 'bg-[#F5F5F5] text-[var(--plexo-med-gray)]'
-                                        }
-                                    `}
-                                >
-                                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                                        <path d="M9 18l6-6-6-6" />
-                                    </svg>
+                    <div className="flex flex-col gap-0.5 items-start px-2 mb-4">
+                        <h2 className="text-[20px] font-black text-[#111111] tracking-tight">投稿先を選択</h2>
+                        <p className="text-[11px] text-[#666666] font-bold uppercase tracking-[0.2em]">Select your canvas</p>
+                    </div>
+
+                    {/* Refined Bento Grid Platform Selection */}
+                    <div className="grid grid-cols-2 grid-rows-[125px_125px_auto] gap-3 px-1 mb-8 mt-4">
+                        {(() => {
+                            const getPlatformDetails = (platform: Platform) => {
+                                switch (platform) {
+                                    case Platform.Instagram: return {
+                                        name: 'Instagram',
+                                        tagline: 'Visual Story',
+                                        sub: '世界観と統一感',
+                                        icon: <InstagramIcon className="w-7 h-7" />,
+                                        color: 'from-purple-500/10 to-pink-500/10'
+                                    };
+                                    case Platform.X: return {
+                                        name: 'X',
+                                        tagline: 'Real-time',
+                                        sub: '拡散と交流',
+                                        icon: <span className="font-black text-2xl">𝕏</span>,
+                                        color: 'from-gray-500/5 to-black/5'
+                                    };
+                                    case Platform.Line: return {
+                                        name: 'LINE',
+                                        tagline: 'Messages',
+                                        sub: 'リピーター獲得',
+                                        icon: <LineIcon className="w-7 h-7" />,
+                                        color: 'from-green-500/10 to-emerald-500/10'
+                                    };
+                                    case Platform.GoogleMaps: return {
+                                        name: 'Google Maps',
+                                        tagline: 'Local Search',
+                                        sub: '店舗集客とMEO対策',
+                                        icon: <GoogleMapsIcon className="w-7 h-7" />,
+                                        color: 'from-blue-500/10 to-red-500/10'
+                                    };
+                                    default: return { name: '', tagline: '', sub: '', icon: null, color: '' };
+                                }
+                            };
+
+                            return [Platform.Instagram, Platform.X, Platform.Line, Platform.GoogleMaps].map((p, idx) => {
+                                const isActive = platforms.includes(p);
+                                const details = getPlatformDetails(p);
+                                const isInsta = p === Platform.Instagram;
+                                const isGoogle = p === Platform.GoogleMaps;
+                                const bentoClass = isInsta ? 'row-span-2 h-full' :
+                                    isGoogle ? 'col-span-2 h-[110px]' : 'h-full';
+
+                                return (
+                                    <div
+                                        key={p}
+                                        onClick={() => onPlatformToggle(p)}
+                                        className={`
+                                            relative rounded-[32px] overflow-hidden cursor-pointer border transition-all duration-500 group
+                                            ${bentoClass}
+                                            ${isActive
+                                                ? 'bg-[var(--plexo-black)] border-[var(--plexo-black)] shadow-2xl scale-[0.98]'
+                                                : `bg-white border-[#EBEBEB] shadow-sm hover:border-[#D0D0D0] active:scale-[0.97]`
+                                            }
+                                        `}
+                                    >
+                                        {/* Background Decoration to "Fill Gaps" */}
+                                        <div className={`absolute inset-0 bg-gradient-to-br ${details.color} opacity-40 group-hover:opacity-60 transition-opacity`} />
+
+                                        {/* Floating platform icon in background (Watermark feel) */}
+                                        <div className={`absolute -right-2 -bottom-4 opacity-[0.03] scale-[2.5] transition-transform duration-700 group-hover:scale-[2.8] pointer-events-none ${isActive ? 'text-white' : 'text-black'}`}>
+                                            {details.icon}
+                                        </div>
+
+                                        {/* Bento Card Content */}
+                                        <div className="absolute inset-0 p-5 flex flex-col justify-between">
+                                            <div className="flex justify-between items-start">
+                                                <div className={`
+                                                    w-10 h-10 rounded-2xl flex items-center justify-center transition-all duration-300
+                                                    ${isActive ? 'bg-[var(--plexo-yellow)] text-black' : 'bg-white shadow-sm text-[#BBBBBB]'}
+                                                `}>
+                                                    {details.icon}
+                                                </div>
+
+                                                <div
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handlePlatformSelect(p);
+                                                    }}
+                                                    className={`
+                                                        w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 shadow-sm active:scale-90
+                                                        ${isActive ? 'bg-white/10 text-[var(--plexo-yellow)] backdrop-blur-md' : 'bg-[#F4F4F4]/80 text-[#BBBBBB]'}
+                                                    `}
+                                                >
+                                                    <ChevronRightIcon className="w-4 h-4" />
+                                                </div>
+                                            </div>
+
+                                            <div className="flex flex-col">
+                                                <span className={`text-[9px] font-black uppercase tracking-[0.15em] transition-all duration-300 mb-1 ${isActive ? 'text-[var(--plexo-yellow)]' : 'text-[#BBBBBB]'}`}>
+                                                    {details.tagline}
+                                                </span>
+                                                <div className="flex flex-col leading-tight">
+                                                    <h3 className={`font-black tracking-tighter ${isInsta ? 'text-2xl' : 'text-lg'} transition-colors duration-500 ${isActive ? 'text-white' : 'text-[#111111]'}`} style={{ fontFamily: 'Inter, sans-serif' }}>
+                                                        {details.name}
+                                                    </h3>
+                                                    <p className={`text-[10px] font-medium transition-opacity ${isActive ? 'text-white/60' : 'text-[#999999]'}`}>
+                                                        {details.sub}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Interaction Glow */}
+                                        {isActive && (
+                                            <div className="absolute top-0 right-0 p-3">
+                                                <div className="w-1.5 h-1.5 rounded-full bg-[var(--plexo-yellow)] animate-pulse shadow-[0_0_8px_rgba(248,234,93,0.8)]" />
+                                            </div>
+                                        )}
+                                    </div>
+                                );
+                            });
+                        })()}
+                    </div>
+
+                    {/* Bottom Section - Promotional Card */}
+                    <div className="mt-auto pt-6">
+                        <div className="p-7 px-8 rounded-[36px] bg-white border border-[#EEEEEE] relative overflow-hidden group shadow-md hover:shadow-lg transition-all duration-300">
+                            <div className="absolute -right-6 -top-6 w-32 h-32 bg-[var(--plexo-yellow)]/10 rounded-full blur-3xl opacity-50 group-hover:opacity-100 transition-opacity" />
+                            <div className="relative z-10 flex items-center justify-between">
+                                <div>
+                                    <div className="inline-flex px-3 py-1 rounded-full bg-[var(--plexo-dark-gray)] text-[10px] font-black text-[var(--plexo-yellow)] uppercase tracking-[0.2em] mb-2 shadow-sm">Premium</div>
+                                    <h4 className="text-lg font-black text-[#111111] tracking-tight">AI Omakase Mode</h4>
+                                    <p className="text-[11px] font-bold text-[#999999] uppercase tracking-wider mt-0.5">Automated Content Strategy</p>
                                 </div>
-                            </button>
-                        );
-                    })}
-                </div>
-
-                {/* Promotional Style Card (Monochrome) */}
-                <div className="mt-4 p-6 rounded-[32px] bg-white border border-[#E5E5E5] relative overflow-hidden group shadow-sm hover:shadow-md transition-shadow">
-                    <div className="absolute -right-4 -top-4 w-24 h-24 bg-[#F5F5F5] rounded-full blur-2xl opacity-50 group-hover:opacity-100 transition-opacity" />
-                    <div className="relative z-10">
-                        <div className="inline-flex px-3 py-1 rounded-full bg-[var(--plexo-dark-gray)] text-[10px] font-black text-[var(--plexo-yellow)] uppercase tracking-widest mb-2 shadow-sm">Premium</div>
-                        <h4 className="text-lg font-black text-[#111111] mb-1">AI Omakase Mode</h4>
-                        <p className="text-xs text-[#666666] leading-relaxed font-medium">Let our advanced AI handle the entire strategy and posting for you.</p>
+                                <div className="w-12 h-12 rounded-full bg-[#FAFAFA] border border-[#EEEEEE] flex items-center justify-center text-[var(--plexo-med-gray)] shadow-inner group-hover:bg-[var(--plexo-yellow)] group-hover:text-[var(--plexo-black)] group-hover:border-[var(--plexo-yellow)] transition-all">
+                                    <AutoSparklesIcon className="w-6 h-6" />
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
