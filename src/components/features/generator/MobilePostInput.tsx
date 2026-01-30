@@ -634,10 +634,10 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             <span className="text-[11px] font-black text-[#666666] uppercase tracking-[0.2em]">Select Style</span>
                                             <button onClick={onOpenPresetModal} className="text-[10px] font-black text-[#111111] uppercase tracking-widest bg-[#F5F5F5] px-3 py-1 rounded-full border border-[#E5E5E5] hover:bg-[#EAEAEA]">Manage</button>
                                         </div>
-                                        <div className="flex overflow-x-auto gap-3 pb-2 no-scrollbar px-1">
+                                        <div className="flex overflow-x-auto gap-3 pb-4 pt-2 -mx-2 px-3 no-scrollbar scrollbar-hide">
                                             <button
                                                 onClick={() => onApplyPreset({ id: 'plain-ai' } as any)}
-                                                className={`flex-shrink-0 px-8 py-5 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] transition-all duration-300 shadow-sm ${!activePresetId ? 'bg-[var(--plexo-black)] text-[var(--plexo-yellow)] shadow-xl scale-105 active:scale-95' : 'bg-white border border-[#E5E5E5] text-[#999999]'}`}
+                                                className={`flex-shrink-0 px-8 py-5 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] transition-all duration-300 ${!activePresetId ? 'bg-[var(--plexo-black)] text-[var(--plexo-yellow)] scale-105 active:scale-95' : 'bg-white border border-[#E5E5E5] text-[#999999]'}`}
                                             >
                                                 AI Standard
                                             </button>
@@ -647,7 +647,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                     <button
                                                         key={p.id}
                                                         onClick={() => onApplyPreset(p)}
-                                                        className={`flex-shrink-0 px-8 py-5 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] transition-all duration-300 shadow-sm truncate max-w-[160px] ${isSelected ? 'bg-[var(--plexo-dark-gray)] text-[var(--plexo-yellow)] shadow-xl scale-105 active:scale-95' : 'bg-white border border-[#E5E5E5] text-[#999999]'}`}
+                                                        className={`flex-shrink-0 px-8 py-5 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] transition-all duration-300 truncate max-w-[160px] ${isSelected ? 'bg-[var(--plexo-dark-gray)] text-[var(--plexo-yellow)] scale-105 active:scale-95' : 'bg-white border border-[#E5E5E5] text-[#999999]'}`}
                                                     >
                                                         {p.name}
                                                     </button>

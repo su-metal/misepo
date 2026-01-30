@@ -62,11 +62,11 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
 
     return (
         <div className="sm:hidden fixed bottom-0 left-0 right-0 z-[150] px-6 pb-8 bg-transparent pointer-events-none">
-            {/* The Floating Bar Background - Smart Contrast */}
+            {/* The Floating Bar Background - Enhanced Visual Hierarchy */}
             <div className={`relative h-20 w-full flex items-center justify-between px-7 rounded-[40px] overflow-visible pointer-events-auto border transition-all duration-300
                 ${isDrawerOpen
-                    ? 'bg-white/80 backdrop-blur-xl border-[#E5E5E5] shadow-[0_20px_40px_rgba(0,0,0,0.1)]' // Light mode (on drawer)
-                    : 'bg-white/10 backdrop-blur-2xl border-white/10 shadow-[0_20px_40px_rgba(0,0,0,0.2)]' // Dark mode (on colorful bg)
+                    ? 'bg-[#Fcfcfc] border-[#E0E0E0] shadow-[0_8px_24px_rgba(0,0,0,0.08)]' // Light Mode: Solid "Porcelain" Look (Distinct from sheet)
+                    : 'bg-[#0f0f13]/60 backdrop-blur-3xl border-white/20 shadow-[0_12px_32px_rgba(0,0,0,0.4)]' // Dark Mode: "Obsidian Glass" (Distinct from violet)
                 }
             `}>
                 {/* SVG Gradients Definition */}
@@ -93,7 +93,8 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
                         </>
                     )}
                     <svg viewBox="0 0 88 88" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full relative z-10">
-                        <circle cx="44" cy="34" r="32" fill={isDrawerOpen ? "white" : "#6339f9"} fillOpacity={isDrawerOpen ? 0.9 : 0.8} />
+                        {/* Notch Circle: Matches the footer background perfectly to create the 'cutout' illusion */}
+                        <circle cx="44" cy="34" r="32" fill={isDrawerOpen ? "#Fcfcfc" : "#1A1A24"} fillOpacity={isDrawerOpen ? 1 : 0.8} />
                     </svg>
                 </div>
 
