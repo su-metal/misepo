@@ -46,7 +46,7 @@ export const DemoSection = ({
     }, [demoResult]);
 
     return (
-        <section id="demo" className="py-24 bg-[#F9F7F2] text-slate-800 relative overflow-hidden">
+        <section id="demo" className="py-24 bg-white text-slate-800 relative overflow-hidden">
             <div className="absolute inset-0 bg-white/40 skew-y-3 transform origin-top-left z-0 h-full" />
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div className="text-center mb-16">

@@ -105,11 +105,14 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
                 <svg width="100%" height={footerHeight} viewBox={`0 0 ${width} ${footerHeight}`} className="absolute inset-0 w-full h-full overflow-visible">
                     <defs>
                         <linearGradient id="navGradient" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#0F172A" stopOpacity="0.95" />
-                            <stop offset="100%" stopColor="#020617" stopOpacity="0.98" />
+                            <stop offset="0%" stopColor="#FFFFFF" stopOpacity="1" />
+                            <stop offset="100%" stopColor="#FFFFFF" stopOpacity="1" />
                         </linearGradient>
+                        <filter id="navShadow" x="-20%" y="-20%" width="140%" height="140%">
+                            <feDropShadow dx="0" dy="4" stdDeviation="15" floodOpacity="0.08" />
+                        </filter>
                     </defs>
-                    <path d={path} fill="url(#navGradient)" stroke="rgba(255,255,255,0.1)" strokeWidth="1" />
+                    <path d={path} fill="url(#navGradient)" stroke="rgba(0,0,0,0.04)" strokeWidth="1.5" filter="url(#navShadow)" />
                 </svg>
 
                 {/* Generate Label Tooltip */}
@@ -128,8 +131,8 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
                         absolute -top-[36px] left-1/2 -translate-x-1/2 w-[68px] h-[68px] rounded-full flex items-center justify-center z-20 
                         transition-all duration-300 border-[4px]
                         ${isConfirmStep
-                            ? 'bg-[#7F5AF0] border-white/40 text-white rotate-0 scale-110'
-                            : 'bg-white border-slate-200 text-[#7F5AF0] rotate-180 scale-100 hover:scale-105'
+                            ? 'bg-[#f3ff5f] border-white text-black rotate-0 scale-110'
+                            : 'bg-[#f3ff5f] border-white text-black rotate-180 scale-100 hover:scale-105'
                         }
                     `}
                     aria-label={isConfirmStep ? "Generate Post" : "New Post"}
@@ -139,14 +142,14 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
                             width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
                             className={`absolute transition-all duration-300 ease-out ${isConfirmStep ? 'opacity-0 scale-50 rotate-90' : 'opacity-100 scale-100 rotate-0'}`}
                         >
-                            <path d="M12 5V19M5 12H19" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                            <path d="M12 5V19M5 12H19" stroke="black" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
 
                         <div className={`absolute transition-all duration-300 ease-out ${isConfirmStep ? 'opacity-100 scale-100 rotate-0' : 'opacity-0 scale-50 -rotate-90'}`}>
                             {isGenerating ? (
-                                <div className="w-7 h-7 border-3 border-white/30 border-t-white rounded-full animate-spin" />
+                                <div className="w-7 h-7 border-3 border-black/30 border-t-black rounded-full animate-spin" />
                             ) : (
-                                <SparklesIcon className="w-7 h-7 text-white" />
+                                <SparklesIcon className="w-7 h-7 text-black" />
                             )}
                         </div>
                     </div>

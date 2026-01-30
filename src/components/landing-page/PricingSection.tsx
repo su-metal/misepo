@@ -9,7 +9,7 @@ export const PricingSection = () => {
         <>
             {/* Comparison (Cost Performance) */}
             <section className="py-20 md:py-32 bg-white relative overflow-hidden">
-                <div className="absolute inset-0 bg-[#F9F7F2] rounded-b-[60px] md:rounded-b-[100px] -z-10 h-[90%]" />
+                {/* Background Decor Removed */}
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-20">
                         <span className="inline-block px-4 py-1.5 bg-white border border-[#E88BA3]/20 rounded-full text-[#E88BA3] text-sm font-bold tracking-widest shadow-sm mb-6">
@@ -62,7 +62,7 @@ export const PricingSection = () => {
                                 <span className="text-5xl md:text-6xl font-bold text-slate-800 tracking-tight">¥1,980</span>
                             </div>
                             <p className="text-sm text-[#E88BA3] font-bold tracking-widest mb-10">1ヶ月 300クレジット</p>
-                            <ul className="space-y-4 text-sm font-bold text-slate-600 text-left bg-[#F9F7F2] rounded-2xl p-6 mt-auto">
+                            <ul className="space-y-4 text-sm font-bold text-slate-600 text-left bg-slate-50 rounded-2xl p-6 mt-auto">
                                 <li className="flex gap-3 items-start"><Icons.CheckCircle size={20} className="text-[#4DB39A] shrink-0" /> <span>圧倒的なコスパ</span></li>
                                 <li className="flex gap-3 items-start"><Icons.CheckCircle size={20} className="text-[#4DB39A] shrink-0" /> <span>爆速生成・自由編集</span></li>
                                 <li className="flex gap-3 items-start"><Icons.CheckCircle size={20} className="text-[#4DB39A] shrink-0" /> <span>あなたの「書き癖」を学習</span></li>
@@ -119,7 +119,7 @@ export const PricingSection = () => {
                         </div>
 
                         <div className="relative rounded-[40px] p-8 md:p-12 flex flex-col bg-slate-900 text-white shadow-2xl shadow-slate-900/20 overflow-hidden group border border-slate-800">
-                            <div className="absolute top-0 right-0 p-32 bg-[#E88BA3] opacity-10 blur-[100px] rounded-full pointer-events-none" />
+                            <div className="absolute top-0 right-0 p-32 bg-white opacity-0 blur-[100px] rounded-full pointer-events-none" />
                             <div className="relative z-10 text-center mb-12">
                                 <div className="flex justify-center items-center gap-6 mb-10 bg-white/5 inline-flex mx-auto p-1.5 rounded-full border border-white/10">
                                     <button

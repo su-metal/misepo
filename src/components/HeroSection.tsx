@@ -76,11 +76,9 @@ export default function HeroSection() {
 
     return (
         <div className="relative z-10 h-auto overflow-hidden">
-            <div className="absolute inset-0 bg-[#F9F7F2] -z-20" />
+            <div className="absolute inset-0 bg-white -z-20" />
 
-            {/* Soft Background Gradients */}
-            <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-[#E88BA3]/10 rounded-full blur-[120px] -z-10" />
-            <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-[#4DB39A]/10 rounded-full blur-[120px] -z-10" />
+            {/* Soft Background Gradients Removed */}
 
             <div
                 className="relative min-h-screen h-auto md:h-screen w-full flex flex-col md:block pb-32 md:pb-0"

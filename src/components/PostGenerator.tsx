@@ -139,13 +139,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
   };
 
   return (
-    <div className="min-h-screen overflow-x-hidden relative bg-[#F9F9FB]">
-      {/* Airy Gradient Background Blobs for Glassmorphism Context */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-[#7F5AF0]/5 rounded-full blur-[120px] animate-float-slow" />
-        <div className="absolute top-[20%] right-[-20%] w-[60%] h-[60%] bg-[#2cb67d]/5 rounded-full blur-[100px] animate-float-slow" style={{ animationDelay: '2s' }} />
-        <div className="absolute bottom-[-10%] left-[20%] w-[40%] h-[40%] bg-[#7F5AF0]/10 rounded-full blur-[140px] animate-float-slow" style={{ animationDelay: '4s' }} />
-      </div>
+    <div className="min-h-screen overflow-x-hidden relative bg-white">
 
       <div className="max-w-[1400px] mx-auto sm:pt-8 pb-0 relative z-10">
         {/* Global Styles for Animations */}

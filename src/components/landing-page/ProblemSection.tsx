@@ -13,9 +13,7 @@ interface Problem {
 export const ProblemSection = ({ problems, isMobile }: { problems: Problem[]; isMobile: boolean }) => {
     return (
         <section id="problem" className="py-20 md:py-32 relative overflow-hidden">
-            {/* Background Decor (Soft Blobs) */}
-            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#E88BA3]/10 rounded-full blur-[100px] -z-10 pointer-events-none" />
-            <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#4DB39A]/10 rounded-full blur-[100px] -z-10 pointer-events-none" />
+            {/* Background Decor Removed */}
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div className="max-w-3xl mx-auto text-center mb-20">
