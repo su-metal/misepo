@@ -246,7 +246,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                     <div className="flex items-start justify-between mb-4 px-1">
                         {/* Typography Date Display - Interactive Trigger */}
                         <div className="flex flex-col cursor-pointer active:scale-95 transition-transform" onClick={() => setIsCalendarOpen(true)}>
-                            <span className="text-[9px] font-black text-[var(--plexo-yellow)] uppercase tracking-[0.4em] ml-1 mb-1 z-10 relative flex items-center gap-1">
+                            <span className="text-[9px] font-black text-[#7F5AF0] uppercase tracking-[0.4em] ml-1 mb-1 z-10 relative flex items-center gap-1">
                                 misepo <span className="bg-slate-900/10 px-1 rounded text-[8px] tracking-normal text-slate-500">HUB</span>
                             </span>
                             <div className="flex items-center gap-3 select-none">
@@ -264,7 +264,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                         <div className="flex flex-col items-end gap-3">
                             {/* Decorative Avatar (No Name) */}
                             <div className="relative group">
-                                <div className="absolute inset-0 bg-[var(--plexo-yellow)] rounded-full blur-[10px] opacity-20 group-hover:opacity-40 transition-opacity" />
+                                <div className="absolute inset-0 bg-[#7F5AF0] rounded-full blur-[10px] opacity-20 group-hover:opacity-40 transition-opacity" />
                                 <div className="relative w-10 h-10 rounded-full bg-white flex items-center justify-center overflow-hidden shadow-md border-[2px] border-slate-100">
                                     <span className="text-[var(--plexo-black)] font-black text-lg" style={{ transform: 'rotate(-10deg)', marginTop: '2px' }}>ミ</span>
                                 </div>
@@ -275,7 +275,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                 <div className="flex flex-col items-end gap-1 scale-90 origin-right">
                                     <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900 text-white backdrop-blur-xl border border-white/20 shadow-xl overflow-hidden relative">
                                         <span className="text-[8px] font-black text-white/40 uppercase tracking-widest mr-1">CREDITS</span>
-                                        <span className="text-sm font-black text-[var(--plexo-yellow)] leading-none">
+                                        <span className="text-sm font-black text-[#7F5AF0] leading-none">
                                             {Math.max(0, plan.limit - plan.usage)}
                                         </span>
                                         <span className="text-[10px] font-bold text-white/30 leading-none">/ {plan.limit}</span>
@@ -284,7 +284,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         <div className="absolute bottom-0 left-0 h-[2px] bg-white/10 w-full" />
                                         {/* Active Gauge Fill */}
                                         <div
-                                            className="absolute bottom-0 left-0 h-[2px] bg-[var(--plexo-yellow)] shadow-[0_0_10px_rgba(255,193,7,0.5)] transition-all duration-1000"
+                                            className="absolute bottom-0 left-0 h-[2px] bg-[#7F5AF0] shadow-[0_0_10px_rgba(127,90,240,0.5)] transition-all duration-1000"
                                             style={{ width: `${(Math.max(0, plan.limit - plan.usage) / plan.limit) * 100}%` }}
                                         />
                                     </div>
@@ -293,7 +293,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             <div
                                                 key={i}
                                                 className={`h-[3px] w-6 rounded-full transition-colors duration-500 ${((plan.limit - plan.usage) / plan.limit) * 5 > i
-                                                    ? 'bg-[var(--plexo-yellow)]'
+                                                    ? 'bg-[#7F5AF0]'
                                                     : 'bg-slate-200'
                                                     }`}
                                             />
@@ -332,7 +332,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         name: 'LINE',
                                         tagline: 'Messages',
                                         sub: 'リピーター獲得',
-                                        icon: <LineIcon className="w-7 h-7" />,
+                                        icon: <LineIcon className="w-7 h-7" isActive={platforms.includes(Platform.Line)} />,
                                         color: 'from-green-500/10 to-emerald-500/10'
                                     };
                                     case Platform.GoogleMaps: return {
@@ -359,7 +359,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             relative rounded-[40px] overflow-hidden cursor-pointer border transition-all duration-500 group
                                             ${bentoClass}
                                             ${isActive
-                                                ? 'bg-[var(--plexo-yellow)] border-[var(--plexo-yellow)] shadow-lg scale-[0.98] animate-tactile-pop'
+                                                ? 'bg-[#7F5AF0] border-[#7F5AF0] shadow-xl scale-[0.98] animate-tactile-pop'
                                                 : `bg-white border-slate-200 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:border-slate-300 hover:shadow-md active:scale-[0.98]`
                                             }
                                         `}
@@ -369,7 +369,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             <div className="flex justify-between items-start">
                                                 <div className={`
                                                     transition-all duration-300
-                                                    ${isActive ? 'text-black' : 'text-slate-400 group-hover:text-slate-600'}
+                                                    ${isActive ? 'text-white' : 'text-slate-400 group-hover:text-slate-600'}
                                                 `}>
                                                     {details.icon}
                                                 </div>
@@ -379,9 +379,9 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                         e.stopPropagation();
                                                         handlePlatformSelect(p);
                                                     }}
-                                                    className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 active:scale-90 shadow-lg ${isActive ? 'bg-black' : 'bg-white shadow-[0_4px_10px_rgba(0,0,0,0.05)]'}`}
+                                                    className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 active:scale-90 shadow-lg ${isActive ? 'bg-white' : 'bg-white shadow-[0_4px_10px_rgba(0,0,0,0.05)]'}`}
                                                 >
-                                                    <ChevronRightIcon className={`w-5 h-5 ${isActive ? 'text-[var(--plexo-yellow)]' : 'text-slate-300'}`} />
+                                                    <ChevronRightIcon className={`w-5 h-5 ${isActive ? 'text-[#7F5AF0]' : 'text-slate-300'}`} />
                                                 </div>
                                             </div>
 
@@ -392,10 +392,10 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                 </span>
                                                 */}
                                                 <div className="flex flex-col leading-tight">
-                                                    <h3 className={`font-black tracking-tighter text-xl transition-colors duration-500 ${isActive ? 'text-black' : 'text-slate-800'}`} style={{ fontFamily: 'Inter, sans-serif' }}>
+                                                    <h3 className={`font-black tracking-tighter text-xl transition-colors duration-500 ${isActive ? 'text-white' : 'text-slate-800'}`} style={{ fontFamily: 'Inter, sans-serif' }}>
                                                         {details.name}
                                                     </h3>
-                                                    <p className={`text-[11px] font-medium transition-opacity ${isActive ? 'text-black/50' : 'text-slate-400'}`}>
+                                                    <p className={`text-[11px] font-medium transition-opacity ${isActive ? 'text-white/70' : 'text-slate-400'}`}>
                                                         {details.sub}
                                                     </p>
                                                 </div>
