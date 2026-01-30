@@ -177,18 +177,17 @@ const PresetModal: React.FC<PresetModalProps> = ({
   const [isReordering, setIsReordering] = useState(false);
   const [orderError, setOrderError] = useState<string | null>(null);
   const [mobileView, setMobileView] = useState<'list' | 'edit'>('list');
-  const [activeSubTab, setActiveSubTab] = useState<'profile' | 'learning' | 'advanced'>('profile');
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [isIconSelectorOpen, setIsIconSelectorOpen] = useState(false);
   const [expandingPlatform, setExpandingPlatform] = useState<Platform | null>(null);
-  const [editingSampleId, setEditingSampleId] = useState<string | null>(null);
   const [modalText, setModalText] = useState('');
   const [selectedPlatforms, setSelectedPlatforms] = useState<Platform[]>([Platform.General]);
   const [isTrainingLoading, setIsTrainingLoading] = useState(false);
   const [isSanitizing, setIsSanitizing] = useState(false);
   const [learningMode, setLearningMode] = useState<'sns' | 'maps'>('sns');
   const [isAnalyzingPersona, setIsAnalyzingPersona] = useState(false);
-  const [isStyleExpanded, setIsStyleExpanded] = useState(false);
+  const [isResetting, setIsResetting] = useState(false);
+  const [viewingSampleId, setViewingSampleId] = useState<string | null>(null);
 
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -248,13 +247,12 @@ const PresetModal: React.FC<PresetModalProps> = ({
   }, [selectedPresetId, presets]);
 
   useEffect(() => {
-    setIsStyleExpanded(false);
+    // setIsStyleExpanded(false); // Removed
   }, [learningMode, selectedPresetId]);
 
   const handleStartNew = () => {
     setSelectedPresetId(null);
     setMobileView('edit');
-    setActiveSubTab('profile');
   };
 
   const handleSave = async (overridePrompts?: { [key: string]: string }) => {
@@ -458,16 +456,14 @@ const PresetModal: React.FC<PresetModalProps> = ({
     const normalizedText = text.trim();
     if (!normalizedText || platforms.length === 0) return;
 
-    const replaceId = editingSampleId || undefined;
     const platformString = platforms.join(', ') as any;
 
     setIsTrainingLoading(true);
     try {
-      await onToggleTraining(normalizedText, platformString, presetId, replaceId, 'manual');
+      await onToggleTraining(normalizedText, platformString, presetId, undefined, 'manual');
 
       // Close overlay immediately for better UX
       setExpandingPlatform(null);
-      setEditingSampleId(null);
       setModalText('');
 
       // Construct optimistic samples for immediate analysis
@@ -475,22 +471,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
         .filter(item => item.presetId === presetId)
         .map(item => ({ content: item.content, platform: item.platform }));
 
-      if (replaceId) {
-        newSamples = newSamples.map(s => {
-          // Identify the item being replaced. Since we don't have IDs in the mapped array,
-          // we should actually map from trainingItems directly but replace the specific index?
-          // Simplest is to filter out the old one by ID from trainingItems first.
-          // Yet, here we only have mapped content.
-          // Let's re-filter trainingItems properly.
-          return s; // placeholder
-        });
-        // Re-do strictly:
-        const baseItems = trainingItems.filter(item => item.presetId === presetId && item.id !== replaceId);
-        newSamples = baseItems.map(i => ({ content: i.content, platform: i.platform }));
-        newSamples.push({ content: normalizedText, platform: platformString });
-      } else {
-        newSamples.push({ content: normalizedText, platform: platformString });
-      }
+      newSamples.push({ content: normalizedText, platform: platformString });
 
       // Trigger Auto-Analysis
       setIsAnalyzingPersona(true); // Show spinner immediately
@@ -512,6 +493,27 @@ const PresetModal: React.FC<PresetModalProps> = ({
     }
   };
 
+  const handleResetLearningForMode = async (mode: 'sns' | 'maps') => {
+    const presetId = selectedPresetId || 'omakase';
+    if (!confirm(`${mode === 'sns' ? 'SNS投稿' : 'マップ返信'}の全学習データを削除してもよろしいですか？この操作は取り消せません。`)) return;
+
+    setIsResetting(true);
+    try {
+      const platform = mode === 'sns' ? 'sns_all' : Platform.GoogleMaps;
+      const res = await fetch(`/api/me/learning?presetId=${presetId}&platform=${platform}`, {
+        method: 'DELETE',
+      });
+      if (!res.ok) throw new Error('Failed to reset learning');
+
+      window.location.reload();
+    } catch (err) {
+      console.error('Failed to reset learning:', err);
+      alert('リセットに失敗しました。');
+    } finally {
+      setIsResetting(false);
+    }
+  };
+
   const currentPresetSamples = useMemo(() => {
     return trainingItems.filter(item => item.presetId === (selectedPresetId || 'omakase'));
   }, [trainingItems, selectedPresetId]);
@@ -520,7 +522,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
   const renderProfileTab = () => (
     <div className="space-y-10 animate-in fade-in slide-in-from-bottom-2 duration-500">
       <div className="space-y-6">
-        <label className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em] mb-4 block">Basic Information</label>
+        <label className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em] mb-4 block">1. Identity & Profile</label>
 
         <div className="flex flex-col md:flex-row gap-8 items-start">
           <div className="flex flex-col items-center gap-4">
@@ -575,176 +577,123 @@ const PresetModal: React.FC<PresetModalProps> = ({
   );
 
   const renderLearningAndStyleTab = () => {
-    const currentStyleText = learningMode === 'sns'
-      ? (customPrompts['General'] || customPrompts[Platform.X] || '')
-      : (customPrompts[Platform.GoogleMaps] || '');
+    const snsSamples = currentPresetSamples.filter(item => !item.platform.includes(Platform.GoogleMaps));
+    const mapsSamples = currentPresetSamples.filter(item => item.platform.includes(Platform.GoogleMaps));
 
-    const filteredSamples = currentPresetSamples.filter(item => {
-      const isMaps = item.platform.includes(Platform.GoogleMaps);
-      return learningMode === 'maps' ? isMaps : !isMaps;
-    });
-
-    return (
-      <div className="space-y-10 animate-in fade-in slide-in-from-bottom-2 duration-500">
-        {/* MODE TOGGLE (Two-Track Identity) */}
-        <div className="flex justify-center">
-          <div className="bg-stone-100 p-1.5 rounded-[1.5rem] flex gap-1 shadow-inner border border-stone-200">
-            <button
-              onClick={() => setLearningMode('sns')}
-              className={`px-8 py-3 rounded-[1.2rem] font-black text-xs tracking-widest transition-all flex items-center gap-2 ${learningMode === 'sns' ? 'bg-white text-indigo-600 shadow-md transform scale-100' : 'text-stone-400 hover:text-stone-600'}`}
-            >
-              <SparklesIcon className="w-4 h-4" />
-              SNS IDENTITY
-            </button>
-            <button
-              onClick={() => setLearningMode('maps')}
-              className={`px-8 py-3 rounded-[1.2rem] font-black text-xs tracking-widest transition-all flex items-center gap-2 ${learningMode === 'maps' ? 'bg-white text-teal-600 shadow-md transform scale-100' : 'text-stone-400 hover:text-stone-600'}`}
-            >
-              <GoogleMapsIcon className="w-4 h-4" />
-              MAPS REPLIES
-            </button>
+    const renderSampleSection = (title: string, samples: TrainingItem[], mode: 'sns' | 'maps', icon: React.ReactNode, accentClass: string, bgClass: string) => (
+      <div className={`p-8 ${bgClass} rounded-[2.5rem] border ${accentClass} space-y-6 relative overflow-hidden group`}>
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-2">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <div className="text-stone-400">{icon}</div>
+              <label className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em] block">Learning Category</label>
+            </div>
+            <h4 className="font-black text-stone-900 tracking-tighter text-lg">{title}</h4>
           </div>
+          <button
+            onClick={() => {
+              setModalText('');
+              setLearningMode(mode);
+              setExpandingPlatform(mode === 'sns' ? Platform.General : Platform.GoogleMaps);
+              setSelectedPlatforms(mode === 'sns' ? [Platform.General] : [Platform.GoogleMaps]);
+            }}
+            className={`flex items-center gap-2 px-6 py-3 border text-white rounded-2xl font-black text-[11px] uppercase tracking-widest transition-all shadow-lg active:scale-95 ${mode === 'sns' ? 'bg-stone-900 border-stone-900 hover:bg-indigo-600 hover:border-indigo-600 shadow-indigo-100' : 'bg-teal-700 border-teal-700 hover:bg-teal-600 hover:border-teal-600 shadow-teal-100'}`}
+          >
+            <PlusIcon className="w-4 h-4" />
+            <span>Add Data</span>
+          </button>
         </div>
 
-        <div className="p-8 bg-gradient-to-br from-indigo-500/5 to-purple-500/5 rounded-[2.5rem] border border-indigo-100/50 space-y-4 relative overflow-hidden group">
-
-
-          {/* 1. Style Analysis Section */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between px-2">
-              <div className="space-y-1">
-                <label className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em] block">
-                  {learningMode === 'sns' ? 'Standard Tone & Vibe' : 'Customer Service Tone'}
-                </label>
-                <h4 className="font-black text-stone-900 tracking-tighter text-lg">
-                  {learningMode === 'sns' ? 'いつもの投稿スタイル' : '口コミ返信スタイル'}
-                </h4>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {samples.length === 0 ? (
+            <div className="col-span-full py-12 flex flex-col items-center justify-center text-center space-y-4 opacity-40">
+              <div className="w-16 h-16 rounded-[2rem] bg-stone-50 border border-stone-100 flex items-center justify-center text-stone-200">
+                <BookOpenIcon className="w-8 h-8" />
               </div>
-              {/* Hidden Analyze button (Auto-run only? Or keep as manual fallback?) Keeping generic update button just in case */}
-              {/* If simple mode, minimal UI. Let's keep it clean. */}
+              <p className="text-[10px] font-bold text-stone-500 uppercase tracking-widest">No Data</p>
             </div>
-
-            <div className={`border rounded-[2.5rem] p-8 relative overflow-hidden group min-h-[160px] flex items-center ${learningMode === 'sns' ? 'bg-gradient-to-br from-indigo-50/50 to-purple-50/50 border-indigo-100' : 'bg-gradient-to-br from-teal-50/50 to-emerald-50/50 border-teal-100'}`}>
-              <div className="absolute top-0 right-0 p-10 opacity-5 group-hover:opacity-10 transition-opacity">
-                {learningMode === 'sns' ? <SparklesIcon className="w-32 h-32 text-indigo-600" /> : <GoogleMapsIcon className="w-32 h-32 text-teal-600" />}
-              </div>
-
-              <div className="relative z-10 w-full">
-                {currentStyleText ? (
-                  <div className="space-y-3">
-                    <p className={`text-sm font-bold text-stone-700 leading-relaxed whitespace-pre-wrap ${!isStyleExpanded ? 'line-clamp-3' : ''}`}>
-                      {currentStyleText}
-                    </p>
-                    <button
-                      onClick={() => setIsStyleExpanded(!isStyleExpanded)}
-                      className="text-[10px] font-black text-indigo-500 hover:text-indigo-600 uppercase tracking-widest flex items-center gap-1 transition-all"
-                    >
-                      {isStyleExpanded ? (
-                        <>
-                          <ChevronDownIcon className="w-3 h-3 rotate-180" />
-                          <span>Show Less</span>
-                        </>
-                      ) : (
-                        <>
-                          <ChevronDownIcon className="w-3 h-3" />
-                          <span>Read More</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex flex-col items-center justify-center gap-3 opacity-40">
-                    <MagicWandIcon className="w-8 h-8 text-stone-300" />
-                    <p className="text-xs font-bold text-stone-400 text-center">
-                      {learningMode === 'sns'
-                        ? 'まだスタイルが学習されていません。\n下の「Add SNS Data」から普段の投稿を追加してください。'
-                        : 'まだ返信スタイルが学習されていません。\n下の「Add Reply Data」から過去の返信履歴を追加してください。'}
-                    </p>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* 2. Training Data Section */}
-          <div className="space-y-6">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-2 pt-4 border-t border-stone-100">
-              <div className="space-y-1">
-                <label className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em] block">Learning Source</label>
-                <h4 className="font-black text-stone-900 tracking-tighter text-lg">
-                  {learningMode === 'sns' ? 'SNS学習データ' : '返信学習データ'}
-                </h4>
-              </div>
-              <button
-                onClick={() => {
-                  setModalText('');
-                  // Default platform based on mode
-                  setExpandingPlatform(learningMode === 'sns' ? Platform.General : Platform.GoogleMaps);
-                  setSelectedPlatforms(learningMode === 'sns' ? [Platform.General] : [Platform.GoogleMaps]);
-                }}
-                className={`flex items-center gap-2 px-6 py-3 border text-white rounded-2xl font-black text-[11px] uppercase tracking-widest transition-all shadow-lg active:scale-95 ${learningMode === 'sns' ? 'bg-stone-900 border-stone-900 hover:bg-indigo-600 hover:border-indigo-600 shadow-indigo-100' : 'bg-teal-700 border-teal-700 hover:bg-teal-600 hover:border-teal-600 shadow-teal-100'}`}
+          ) : (
+            samples.map((item) => (
+              <div
+                key={item.id}
+                className="group p-5 bg-white border border-stone-100 rounded-[2rem] shadow-sm hover:shadow-md hover:border-indigo-100 transition-all flex flex-col justify-between min-h-[140px] relative overflow-hidden"
               >
-                <PlusIcon className="w-4 h-4" />
-                <span>{learningMode === 'sns' ? 'Add SNS Data' : 'Add Reply Data'}</span>
-              </button>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {filteredSamples.length === 0 ? (
-                <div className="col-span-full py-12 flex flex-col items-center justify-center text-center space-y-4 opacity-40">
-                  <div className="w-16 h-16 rounded-[2rem] bg-stone-50 border border-stone-100 flex items-center justify-center text-stone-200">
-                    <BookOpenIcon className="w-8 h-8" />
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className={`text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest ${mode === 'sns' ? 'bg-indigo-50 text-indigo-400' : 'bg-teal-50 text-teal-500'}`}>
+                      {mode === 'sns' ? 'SNS Post' : 'Review Reply'}
+                    </span>
+                    <span className="text-[9px] font-black text-stone-300 uppercase tracking-widest">
+                      {item.source || 'manual'}
+                    </span>
                   </div>
-                  <div className="space-y-1">
-                    <p className="font-black text-stone-900 tracking-widest uppercase text-xs">No Data</p>
-                    <p className="text-[10px] font-bold text-stone-500">データがありません</p>
-                  </div>
+                  <p className="text-xs text-stone-600 font-bold leading-relaxed line-clamp-3">
+                    {item.content}
+                  </p>
                 </div>
-              ) : (
-                filteredSamples.map((item, idx) => (
-                  <div
-                    key={item.id}
-                    className="group p-5 bg-white border border-stone-100 rounded-[2rem] shadow-sm hover:shadow-md hover:border-indigo-100 transition-all flex flex-col justify-between min-h-[140px] relative overflow-hidden"
-                  >
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <span className={`text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest ${learningMode === 'sns' ? 'bg-indigo-50 text-indigo-400' : 'bg-teal-50 text-teal-500'}`}>
-                          {learningMode === 'sns' ? 'SNS Post' : 'Review Reply'}
-                        </span>
-                        <span className="text-[9px] font-black text-stone-300 uppercase tracking-widest">
-                          {item.source || 'manual'}
-                        </span>
-                      </div>
-                      <p className="text-xs text-stone-600 font-bold leading-relaxed line-clamp-3">
-                        {item.content}
-                      </p>
-                    </div>
 
-                    <div className="mt-4 flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0">
-                      <button
-                        onClick={() => {
-                          setModalText(item.content);
-                          setEditingSampleId(item.id);
-                          setExpandingPlatform(learningMode === 'sns' ? Platform.General : Platform.GoogleMaps); // Use logic to infer? Simplified to current mode.
-                          setSelectedPlatforms(learningMode === 'sns' ? [Platform.General] : [Platform.GoogleMaps]);
-                        }}
-                        className="p-2 text-stone-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
-                        title="編集"
-                      >
-                        <PencilIcon className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => onToggleTraining(item.content, item.platform as any, item.presetId, undefined, 'manual')}
-                        className="p-2 text-stone-400 hover:text-rose-500 hover:bg-rose-50 rounded-xl transition-all"
-                      >
-                        <TrashIcon className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
+                <div className="mt-4 flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0">
+                  <button
+                    onClick={() => {
+                      setModalText(item.content);
+                      setLearningMode(mode);
+                      setViewingSampleId(item.id);
+                      setExpandingPlatform(item.platform as any);
+                    }}
+                    className="p-2 text-indigo-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
+                    title="詳細を表示"
+                  >
+                    <BookOpenIcon className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => onToggleTraining(item.content, item.platform as any, item.presetId, undefined, 'manual')}
+                    className="p-2 text-stone-400 hover:text-rose-500 hover:bg-rose-50 rounded-xl transition-all"
+                    title="削除"
+                  >
+                    <TrashIcon className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {samples.length > 0 && (
+          <div className="flex justify-center pt-2">
+            <button
+              onClick={() => handleResetLearningForMode(mode)}
+              className="flex items-center gap-2 px-6 py-3 text-stone-400 hover:text-rose-500 hover:bg-rose-50 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] transition-all active:scale-95"
+            >
+              <RotateCcwIcon className="w-3.5 h-3.5" />
+              <span>Reset {mode.toUpperCase()} Data</span>
+            </button>
           </div>
+        )}
+      </div>
+    );
+
+    return (
+      <div className="space-y-12">
+        <label className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em] block px-1">2. Learning & Style</label>
+
+        <div className="space-y-8">
+          {renderSampleSection(
+            'SNS Identity',
+            snsSamples,
+            'sns',
+            <SparklesIcon className="w-4 h-4" />,
+            'border-indigo-100/50',
+            'bg-gradient-to-br from-indigo-500/5 to-purple-500/5'
+          )}
+
+          {renderSampleSection(
+            'Maps Replies',
+            mapsSamples,
+            'maps',
+            <GoogleMapsIcon className="w-4 h-4" />,
+            'border-teal-100/50',
+            'bg-gradient-to-br from-teal-500/5 to-emerald-500/5'
+          )}
         </div>
       </div>
     );
@@ -864,69 +813,45 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
       {/* MAIN VIEW */}
       <div className={`flex-1 flex flex-col bg-white overflow-hidden shadow-2xl relative z-10 ${mobileView === 'edit' ? 'flex' : 'hidden md:flex'}`}>
-        {/* Header - Multi-row to avoid congestion */}
-        <div className="bg-white/80 backdrop-blur-md relative z-10 shrink-0 border-b border-stone-100 flex flex-col">
-          {/* Top Row: Actions & Status */}
-          <div className="px-6 py-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              {mobileView === 'edit' && (
-                <button
-                  onClick={() => setMobileView('list')}
-                  className="md:hidden w-10 h-10 rounded-xl bg-white border border-stone-100 flex items-center justify-center text-stone-400 hover:text-stone-900 shadow-sm transition-all mr-1"
-                >
-                  <ChevronDownIcon className="w-5 h-5 rotate-90" />
-                </button>
-              )}
+        {/* Header */}
+        <div className="bg-white/80 backdrop-blur-md relative z-10 shrink-0 border-b border-stone-100 flex items-center justify-between px-6 py-4">
+          <div className="flex items-center gap-3">
+            {mobileView === 'edit' && (
+              <button
+                onClick={() => setMobileView('list')}
+                className="md:hidden w-10 h-10 rounded-xl bg-white border border-stone-100 flex items-center justify-center text-stone-400 hover:text-stone-900 shadow-sm transition-all mr-1"
+              >
+                <ChevronDownIcon className="w-5 h-5 rotate-90" />
+              </button>
+            )}
 
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-sm shrink-0">
-                  {renderAvatarIcon(avatar, "w-5 h-5")}
-                </div>
-                <div className="min-w-0">
-                  <span className="text-[9px] font-black text-stone-300 uppercase tracking-[0.2em] block leading-none mb-1">Editing Profile</span>
-                  <h4 className="text-sm font-black text-stone-900 tracking-tight truncate max-w-[120px] md:max-w-[200px] leading-none">{name || 'Unnamed Profile'}</h4>
-                </div>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-sm shrink-0">
+                {renderAvatarIcon(avatar, "w-5 h-5")}
+              </div>
+              <div className="min-w-0">
+                <span className="text-[9px] font-black text-stone-300 uppercase tracking-[0.2em] block leading-none mb-1">Editing Profile</span>
+                <h4 className="text-sm font-black text-stone-900 tracking-tight truncate max-w-[120px] md:max-w-[200px] leading-none">{name || 'Unnamed Profile'}</h4>
               </div>
             </div>
-
-            <button
-              onClick={onClose}
-              className="w-10 h-10 rounded-xl bg-stone-50 border border-stone-100 flex items-center justify-center text-stone-400 hover:text-rose-500 hover:bg-rose-50 transition-all font-bold"
-            >
-              <CloseIcon className="w-5 h-5" />
-            </button>
           </div>
 
-          {/* Bottom Row: Pill Tabs */}
-          <div className="px-6 pb-6 pt-0 flex justify-center">
-            <div className="flex items-center gap-1.5 p-1 bg-stone-100 rounded-2xl border border-stone-200/50 shadow-inner">
-              <button
-                onClick={() => setActiveSubTab('profile')}
-                className={`px-6 py-2.5 text-[10px] font-black transition-all rounded-[1rem] tracking-widest whitespace-nowrap ${activeSubTab === 'profile' ? 'bg-white text-indigo-600 shadow-sm' : 'text-stone-400 hover:text-stone-600'}`}
-              >
-                PROFILE
-              </button>
-              <button
-                onClick={() => setActiveSubTab('learning')}
-                className={`px-6 py-2.5 text-[10px] font-black transition-all rounded-[1rem] tracking-widest whitespace-nowrap ${activeSubTab === 'learning' ? 'bg-white text-indigo-600 shadow-sm' : 'text-stone-400 hover:text-stone-600'}`}
-              >
-                LEARNING & STYLE
-              </button>
-              <button
-                onClick={() => setActiveSubTab('advanced')}
-                className={`px-6 py-2.5 text-[10px] font-black transition-all rounded-[1rem] tracking-widest whitespace-nowrap ${activeSubTab === 'advanced' ? 'bg-white text-indigo-600 shadow-sm' : 'text-stone-400 hover:text-stone-600'}`}
-              >
-                ADVANCED
-              </button>
-            </div>
-          </div>
+          <button
+            onClick={onClose}
+            className="w-10 h-10 rounded-xl bg-stone-50 border border-stone-100 flex items-center justify-center text-stone-400 hover:text-rose-500 hover:bg-rose-50 transition-all font-bold"
+          >
+            <CloseIcon className="w-5 h-5" />
+          </button>
         </div>
 
-        {/* Tab Content */}
-        <div className="flex-1 overflow-y-auto p-8 md:p-12 no-scrollbar pb-32">
-          {activeSubTab === 'profile' && renderProfileTab()}
-          {activeSubTab === 'learning' && renderLearningAndStyleTab()}
-          {activeSubTab === 'advanced' && renderAdvancedTab()}
+        {/* Combined Scrollable Content View */}
+        <div className="flex-1 overflow-y-auto p-8 md:p-12 no-scrollbar pb-32 bg-stone-50/30">
+          <div className="max-w-4xl mx-auto space-y-16">
+            <div className="h-4" />
+            {renderProfileTab()}
+            <div className="h-px bg-stone-100 max-w-[200px] mx-auto" />
+            {renderLearningAndStyleTab()}
+          </div>
         </div>
 
         {/* Footer Actions */}
@@ -962,16 +887,16 @@ const PresetModal: React.FC<PresetModalProps> = ({
             )}
           </div>
         </div>
-      </div>
 
-      {showSuccessToast && (
-        <div className="fixed top-12 left-1/2 -translate-x-1/2 z-[300] animate-in slide-in-from-top-4 duration-500">
-          <div className="bg-stone-900 text-white px-8 py-3 rounded-full font-black text-xs tracking-widest uppercase shadow-2xl flex items-center gap-3">
-            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-            SAVED SUCCESSFULLY
+        {showSuccessToast && (
+          <div className="fixed top-12 left-1/2 -translate-x-1/2 z-[300] animate-in slide-in-from-top-4 duration-500">
+            <div className="bg-stone-900 text-white px-8 py-3 rounded-full font-black text-xs tracking-widest uppercase shadow-2xl flex items-center gap-3">
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+              SAVED SUCCESSFULLY
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 
@@ -997,17 +922,19 @@ const PresetModal: React.FC<PresetModalProps> = ({
         <div className="p-8 md:p-10 border-b border-stone-100 flex items-center justify-between bg-stone-50/50">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shadow-lg shadow-indigo-100">
-              <MagicWandIcon className="w-6 h-6" />
+              {viewingSampleId ? <BookOpenIcon className="w-6 h-6" /> : <MagicWandIcon className="w-6 h-6" />}
             </div>
             <div>
-              <h3 className="font-black text-xl text-stone-900 tracking-tight">{editingSampleId ? '学習データの編集' : '新しい学習データ'}</h3>
+              <h3 className="font-black text-xl text-stone-900 tracking-tight">
+                {viewingSampleId ? '学習データの詳細' : '新しい学習データ'}
+              </h3>
               <p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">Training Focus</p>
             </div>
           </div>
           <button
             onClick={() => {
               setExpandingPlatform(null);
-              setEditingSampleId(null);
+              setViewingSampleId(null);
             }}
             className="p-3 text-stone-300 hover:text-stone-900 transition-colors"
           >
@@ -1017,7 +944,6 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
         <div className="flex-1 overflow-y-auto p-10 space-y-8 no-scrollbar">
           <div className="space-y-4">
-            {/* REMOVED: Simple text explanation instead of complex multiselect */}
             <div className="flex items-center justify-between px-2">
               <div className="space-y-1">
                 <h4 className="font-black text-stone-900 tracking-tight text-sm">
@@ -1036,34 +962,37 @@ const PresetModal: React.FC<PresetModalProps> = ({
           <div className="space-y-4 pt-2">
             <div className="flex items-center justify-between px-2">
               <span className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em]"></span>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => fileInputRef.current?.click()}
-                  className="flex items-center gap-2 text-[10px] font-black text-indigo-600 hover:opacity-70"
-                >
-                  <TieIcon className="w-3.5 h-3.5" />
-                  スクショ解析
-                </button>
-                <button
-                  onClick={async () => {
-                    setIsSanitizing(true);
-                    const res = await fetch('/api/ai/sanitize', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: modalText }) });
-                    const data = await res.json();
-                    if (data.ok) setModalText(data.sanitized);
-                    setIsSanitizing(false);
-                  }}
-                  disabled={isSanitizing || !modalText.trim()}
-                  className="flex items-center gap-2 text-[10px] font-black text-indigo-600 hover:opacity-70 disabled:opacity-30"
-                >
-                  <SparklesIcon className="w-3.5 h-3.5" />
-                  AI伏せ字
-                </button>
-              </div>
+              {!viewingSampleId && (
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex items-center gap-2 text-[10px] font-black text-indigo-600 hover:opacity-70"
+                  >
+                    <TieIcon className="w-3.5 h-3.5" />
+                    スクショ解析
+                  </button>
+                  <button
+                    onClick={async () => {
+                      setIsSanitizing(true);
+                      const res = await fetch('/api/ai/sanitize', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: modalText }) });
+                      const data = await res.json();
+                      if (data.ok) setModalText(data.sanitized);
+                      setIsSanitizing(false);
+                    }}
+                    disabled={isSanitizing || !modalText.trim()}
+                    className="flex items-center gap-2 text-[10px] font-black text-indigo-600 hover:opacity-70 disabled:opacity-30"
+                  >
+                    <SparklesIcon className="w-3.5 h-3.5" />
+                    AI伏せ字
+                  </button>
+                </div>
+              )}
             </div>
 
             <div className="bg-stone-50 border border-stone-100 rounded-[2.5rem] p-8">
               <AutoResizingTextarea
-                autoFocus
+                autoFocus={!viewingSampleId}
+                readOnly={!!viewingSampleId}
                 value={modalText}
                 onChange={setModalText}
                 placeholder={learningMode === 'sns' ? "例：今日は雨だけど元気に営業中！足元に気をつけて来てね☔️ #カフェ" : "例：高評価ありがとうございます！またのご来店を心よりお待ちしております。"}
@@ -1074,14 +1003,27 @@ const PresetModal: React.FC<PresetModalProps> = ({
         </div>
 
         <div className="p-8 border-t border-stone-100 flex justify-end">
-          <button
-            onClick={() => handleToggleTrainingInternal(modalText, selectedPlatforms)}
-            disabled={isTrainingLoading || !modalText.trim()}
-            className="w-full md:w-auto px-12 py-5 bg-stone-900 text-white rounded-[2rem] font-black text-sm tracking-[0.2em] shadow-xl hover:bg-indigo-600 active:scale-95 transition-all disabled:opacity-30 flex items-center justify-center gap-3"
-          >
-            {isTrainingLoading ? <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <SaveIcon className="w-5 h-5" />}
-            <span>SAVE TRAINING DATA</span>
-          </button>
+          {viewingSampleId ? (
+            <button
+              onClick={() => {
+                setExpandingPlatform(null);
+                setViewingSampleId(null);
+              }}
+              className="w-full md:w-auto px-12 py-5 bg-stone-900 text-white rounded-[2rem] font-black text-sm tracking-[0.2em] shadow-xl hover:bg-stone-800 active:scale-95 transition-all flex items-center justify-center gap-3"
+            >
+              <CloseIcon className="w-5 h-5" />
+              <span>CLOSE</span>
+            </button>
+          ) : (
+            <button
+              onClick={() => handleToggleTrainingInternal(modalText, selectedPlatforms)}
+              disabled={isTrainingLoading || !modalText.trim()}
+              className="w-full md:w-auto px-12 py-5 bg-stone-900 text-white rounded-[2rem] font-black text-sm tracking-[0.2em] shadow-xl hover:bg-indigo-600 active:scale-95 transition-all disabled:opacity-30 flex items-center justify-center gap-3"
+            >
+              {isTrainingLoading ? <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <SaveIcon className="w-5 h-5" />}
+              <span>SAVE TRAINING DATA</span>
+            </button>
+          )}
         </div>
 
         <input
@@ -1115,9 +1057,3 @@ const PresetModal: React.FC<PresetModalProps> = ({
 };
 
 export default PresetModal;
-
-declare global {
-  interface Window {
-    google: any;
-  }
-}

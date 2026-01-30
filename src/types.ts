@@ -1,3 +1,8 @@
+declare global {
+  interface Window {
+    google: any;
+  }
+}
 
 export enum Platform {
   X = 'X (Twitter)',
