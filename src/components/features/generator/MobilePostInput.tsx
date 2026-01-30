@@ -338,7 +338,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             ${bentoClass}
                                              ${isActive
                                                 ? 'bg-[#f3ff5f] border-[#f3ff5f] shadow-xl scale-[0.98] animate-tactile-pop'
-                                                : `bg-white border-slate-200 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:border-slate-300 hover:shadow-md active:scale-[0.98]`
+                                                : `bg-[#f5f7fa] border-slate-200 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:border-slate-300 hover:shadow-md active:scale-[0.98]`
                                             }
                                         `}
                                     >
@@ -406,7 +406,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         PREMIUM FEATURE
                                     </div>
                                     <div className="space-y-1">
-                                        <h4 className="text-[28px] font-black text-white tracking-tight leading-none">
+                                        <h4 className="text-[28px] font-black text-white tracking-tight leading-none whitespace-nowrap">
                                             AI Omakase Mode
                                         </h4>
                                         <p className="text-[11px] font-bold text-white/50 uppercase tracking-[0.05em]">
