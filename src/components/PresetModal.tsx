@@ -43,7 +43,10 @@ import {
   RotateCcwIcon,
   PlusIcon,
   ClockIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
 } from './Icons';
+
 import { Platform, Preset, PostPurpose, Tone, Length, TrainingItem } from '../types';
 import { AutoResizingTextarea } from './ResizableTextarea';
 
@@ -150,6 +153,126 @@ const SortablePresetRow = ({
           <TrashIcon className="w-3.5 h-3.5" />
         )}
       </button>
+    </div>
+  );
+};
+
+const SampleSlider = ({
+  samples,
+  mode,
+  onEdit,
+  onDelete
+}: {
+  samples: TrainingItem[],
+  mode: 'sns' | 'maps',
+  onEdit: (item: TrainingItem) => void,
+  onDelete: (item: TrainingItem) => void
+}) => {
+  const scrollRef = React.useRef<HTMLDivElement>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const handleScroll = () => {
+    if (!scrollRef.current) return;
+    const scrollLeft = scrollRef.current.scrollLeft;
+    const width = scrollRef.current.clientWidth;
+    if (width === 0) return;
+    const newIndex = Math.round(scrollLeft / width);
+    if (newIndex !== currentIndex && newIndex >= 0 && newIndex < samples.length) {
+      setCurrentIndex(newIndex);
+    }
+  };
+
+  const scrollToIndex = (index: number) => {
+    if (!scrollRef.current || index < 0 || index >= samples.length) return;
+    const width = scrollRef.current.clientWidth;
+    scrollRef.current.scrollTo({ left: index * width, behavior: 'smooth' });
+  };
+
+  if (samples.length === 0) {
+    return (
+      <div className="py-12 flex flex-col items-center justify-center text-center space-y-4 opacity-40">
+        <div className="w-16 h-16 rounded-[2rem] bg-stone-50 border border-stone-100 flex items-center justify-center text-stone-200">
+          <BookOpenIcon className="w-8 h-8" />
+        </div>
+        <p className="text-[10px] font-bold text-stone-500 uppercase tracking-widest">No Data</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative group/slider mt-4">
+      {/* Pagination Guide */}
+      <div className="absolute -top-10 right-2 flex items-center gap-2">
+        <span className="text-[10px] font-black text-stone-400 tracking-[0.2em] font-mono bg-stone-50 px-3 py-1.5 rounded-full border border-stone-100">
+          {currentIndex + 1}<span className="text-stone-300 mx-1">/</span>{samples.length}
+        </span>
+      </div>
+
+      <div className="relative flex items-center overflow-hidden rounded-[2.5rem]">
+        {/* Left Arrow Overlay - High Contrast */}
+        <button
+          onClick={() => scrollToIndex(currentIndex - 1)}
+          disabled={currentIndex === 0}
+          className={`absolute left-2 w-11 h-11 rounded-full bg-stone-900 text-white flex items-center justify-center transition-all shadow-xl active:scale-95 disabled:opacity-0 disabled:pointer-events-none z-30 ring-4 ring-white/10`}
+        >
+          <ChevronLeftIcon className="w-5 h-5" />
+        </button>
+
+        {/* Scroll Container */}
+        <div
+          ref={scrollRef}
+          onScroll={handleScroll}
+          className="w-full overflow-x-auto snap-x snap-mandatory no-scrollbar flex pb-1"
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        >
+          {samples.map((item) => (
+            <div
+              key={item.id}
+              className="snap-center shrink-0 w-full group p-8 md:p-12 bg-white border border-stone-50 rounded-[2.5rem] shadow-sm hover:shadow-md hover:border-indigo-100 transition-all flex flex-col justify-between min-h-[180px] relative overflow-hidden"
+            >
+              <div className="space-y-5">
+                <div className="flex items-center justify-between">
+                  <span className={`text-[9px] font-black px-2.5 py-1 rounded-lg uppercase tracking-widest ${mode === 'sns' ? 'bg-indigo-50 text-indigo-400' : 'bg-teal-50 text-teal-500'}`}>
+                    {mode === 'sns' ? 'SNS Post' : 'Review Reply'}
+                  </span>
+                  <span className="text-[10px] font-black text-stone-300 uppercase tracking-widest">
+                    {item.source || 'manual'}
+                  </span>
+                </div>
+                <p className="text-base text-stone-600 font-bold leading-relaxed line-clamp-4 px-2">
+                  {item.content}
+                </p>
+              </div>
+
+              <div className="mt-8 flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0">
+                <button
+                  onClick={() => onEdit(item)}
+                  className="p-3 text-indigo-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-2xl transition-all border border-transparent hover:border-indigo-100"
+                  title="詳細を表示"
+                >
+                  <BookOpenIcon className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={() => onDelete(item)}
+                  className="p-3 text-stone-400 hover:text-rose-500 hover:bg-rose-50 rounded-2xl transition-all border border-transparent hover:border-rose-100"
+                  title="削除"
+                >
+                  <TrashIcon className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Right Arrow Overlay - High Contrast */}
+        <button
+          onClick={() => scrollToIndex(currentIndex + 1)}
+          disabled={currentIndex === samples.length - 1}
+          className={`absolute right-2 w-11 h-11 rounded-full bg-stone-900 text-white flex items-center justify-center transition-all shadow-xl active:scale-95 disabled:opacity-0 disabled:pointer-events-none z-30 ring-4 ring-white/10`}
+        >
+          <ChevronRightIcon className="w-5 h-5" />
+        </button>
+      </div>
     </div>
   );
 };
@@ -597,59 +720,17 @@ const PresetModal: React.FC<PresetModalProps> = ({
           </button>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {samples.length === 0 ? (
-            <div className="col-span-full py-12 flex flex-col items-center justify-center text-center space-y-4 opacity-40">
-              <div className="w-16 h-16 rounded-[2rem] bg-stone-50 border border-stone-100 flex items-center justify-center text-stone-200">
-                <BookOpenIcon className="w-8 h-8" />
-              </div>
-              <p className="text-[10px] font-bold text-stone-500 uppercase tracking-widest">No Data</p>
-            </div>
-          ) : (
-            samples.map((item) => (
-              <div
-                key={item.id}
-                className="group p-5 bg-white border border-stone-100 rounded-[2rem] shadow-sm hover:shadow-md hover:border-indigo-100 transition-all flex flex-col justify-between min-h-[140px] relative overflow-hidden"
-              >
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className={`text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest ${mode === 'sns' ? 'bg-indigo-50 text-indigo-400' : 'bg-teal-50 text-teal-500'}`}>
-                      {mode === 'sns' ? 'SNS Post' : 'Review Reply'}
-                    </span>
-                    <span className="text-[9px] font-black text-stone-300 uppercase tracking-widest">
-                      {item.source || 'manual'}
-                    </span>
-                  </div>
-                  <p className="text-xs text-stone-600 font-bold leading-relaxed line-clamp-3">
-                    {item.content}
-                  </p>
-                </div>
-
-                <div className="mt-4 flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0">
-                  <button
-                    onClick={() => {
-                      setModalText(item.content);
-                      setLearningMode(mode);
-                      setViewingSampleId(item.id);
-                      setExpandingPlatform(item.platform as any);
-                    }}
-                    className="p-2 text-indigo-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
-                    title="詳細を表示"
-                  >
-                    <BookOpenIcon className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => onToggleTraining(item.content, item.platform as any, item.presetId, undefined, 'manual')}
-                    className="p-2 text-stone-400 hover:text-rose-500 hover:bg-rose-50 rounded-xl transition-all"
-                    title="削除"
-                  >
-                    <TrashIcon className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
+        <SampleSlider
+          samples={samples}
+          mode={mode}
+          onEdit={(item) => {
+            setModalText(item.content);
+            setLearningMode(mode);
+            setViewingSampleId(item.id);
+            setExpandingPlatform(item.platform as any);
+          }}
+          onDelete={(item) => onToggleTraining(item.content, item.platform as any, item.presetId, undefined, 'manual')}
+        />
 
         {samples.length > 0 && (
           <div className="flex justify-center pt-2">
