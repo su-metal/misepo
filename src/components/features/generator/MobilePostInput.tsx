@@ -40,7 +40,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     const [mobileStep, setMobileStep] = React.useState<'platform' | 'input' | 'confirm' | 'result'>('platform');
     const [isStepDrawerOpen, setIsStepDrawerOpen] = React.useState(false);
 
-    const [isPromptExpanded, setIsPromptExpanded] = React.useState(false);
+    const [isPromptExpanded, setIsPromptExpanded] = React.useState(true);
     const [isOmakaseLoading, setIsOmakaseLoading] = React.useState(false);
     const [isCalendarOpen, setIsCalendarOpen] = React.useState(false);
 
@@ -641,10 +641,14 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             )}
                                         </div>
 
-                                        {inputText.trim() && !isListening && (
+                                        {!isListening && (
                                             <button
                                                 onClick={() => setMobileStep('confirm')}
-                                                className="w-full bg-[#111111] text-white py-5 rounded-[28px] font-black text-sm uppercase tracking-[0.2em] shadow-xl active:scale-95 transition-all flex items-center justify-center gap-2"
+                                                disabled={!inputText.trim()}
+                                                className={`w-full py-5 rounded-[28px] font-black text-sm uppercase tracking-[0.2em] shadow-xl active:scale-95 transition-all flex items-center justify-center gap-2 ${inputText.trim()
+                                                        ? 'bg-[#111111] text-white'
+                                                        : 'bg-[#999999] text-white/50 cursor-not-allowed opacity-50 shadow-none'
+                                                    }`}
                                             >
                                                 Next
                                                 <ChevronRightIcon className="w-5 h-5" />
