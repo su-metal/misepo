@@ -203,7 +203,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
             <div className={`flex flex-col h-full overflow-hidden relative transition-all duration-500 ${isStepDrawerOpen ? 'blur-md scale-[0.98] opacity-60' : 'opacity-100'}`}>
                 <div className="flex-1 flex flex-col p-5 pt-10 pb-8 safe-area-bottom">
                     {/* High-Design Header - Magazine Style Date & Minimal Avatar */}
-                    <div className="flex items-start justify-between mb-10 px-1">
+                    <div className="flex items-start justify-between mb-4 px-1">
                         {/* Typography Date Display */}
                         <div className="flex flex-col">
                             <span className="text-[9px] font-black text-[var(--plexo-yellow)] uppercase tracking-[0.4em] ml-1 mb-1 z-10 relative">misepo</span>
