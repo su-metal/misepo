@@ -181,6 +181,7 @@ button, input, textarea, select {
 /* Smooth Scrolling */
 html {
   scroll-behavior: smooth;
+  overscroll-behavior-y: none;
 }
 
 
