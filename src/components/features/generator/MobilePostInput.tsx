@@ -224,7 +224,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                     <div className="flex items-start justify-between mb-4 px-1">
                         {/* Typography Date Display - Interactive Trigger */}
                         <div className="flex flex-col cursor-pointer active:scale-95 transition-transform" onClick={() => setIsCalendarOpen(true)}>
-                            <span className="text-[9px] font-black text-[#7F5AF0] uppercase tracking-[0.4em] ml-1 mb-1 z-10 relative flex items-center gap-1">
+                            <span className="text-[9px] font-black text-[#0071b9] uppercase tracking-[0.4em] ml-1 mb-1 z-10 relative flex items-center gap-1">
                                 misepo <span className="bg-slate-900/10 px-1 rounded text-[8px] tracking-normal text-slate-500">HUB</span>
                             </span>
                             <div className="flex items-center gap-3 select-none">
@@ -334,7 +334,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         key={p}
                                         onClick={() => onPlatformToggle(p)}
                                         className={`
-                                            relative rounded-[40px] overflow-hidden cursor-pointer border transition-all duration-500 group
+                                            relative rounded-[20px] overflow-hidden cursor-pointer border transition-all duration-500 group
                                             ${bentoClass}
                                              ${isActive
                                                 ? 'bg-[#0071b9] border-[#0071b9] shadow-xl scale-[0.98] animate-tactile-pop'
@@ -402,7 +402,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             <div className="relative p-7 px-8 flex items-center justify-between">
                                 {/* Left Content */}
                                 <div className="relative z-10 flex flex-col gap-5">
-                                    <div className="self-start inline-flex px-5 py-2.5 rounded-full bg-[#f2e018] text-[10px] font-black text-black uppercase tracking-[0.1em] shadow-lg">
+                                    <div className="self-start inline-flex px-5 py-2.5 rounded-full bg-[#fafafa] text-[10px] font-black text-black uppercase tracking-[0.1em] shadow-lg">
                                         PREMIUM FEATURE
                                     </div>
                                     <div className="space-y-1">
