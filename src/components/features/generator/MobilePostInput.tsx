@@ -6,6 +6,8 @@ import {
     AutoSparklesIcon, MagicWandIcon, MicIcon, EraserIcon, InfoIcon,
     SparklesIcon, RotateCcwIcon, InstagramIcon, LineIcon, GoogleMapsIcon, ChevronRightIcon, CloseIcon
 } from '../../Icons';
+import { MobileCalendarOverlay } from './MobileCalendarOverlay';
+import { TrendEvent } from './TrendData';
 import {
     PostInputFormProps, renderAvatar, PURPOSES, GMAP_PURPOSES, TONES, LENGTHS
 } from './inputConstants';
@@ -37,8 +39,29 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     const weekday = dateObj.toLocaleString('en-US', { weekday: 'short' }).toUpperCase();
     const [mobileStep, setMobileStep] = React.useState<'platform' | 'input' | 'confirm' | 'result'>('platform');
     const [isStepDrawerOpen, setIsStepDrawerOpen] = React.useState(false);
+
     const [isPromptExpanded, setIsPromptExpanded] = React.useState(false);
     const [isOmakaseLoading, setIsOmakaseLoading] = React.useState(false);
+    const [isCalendarOpen, setIsCalendarOpen] = React.useState(false);
+
+    // Handle Calendar Strategy Launch
+    const handleTrendStrategy = (event: TrendEvent) => {
+        setIsCalendarOpen(false);
+        // Start Omakase-like flow but with context
+        setIsOmakaseLoading(true);
+        if (platforms.length === 0) {
+            onPlatformToggle(Platform.Instagram);
+            onPlatformToggle(Platform.X);
+        }
+        setTimeout(() => {
+            setIsOmakaseLoading(false);
+            setMobileStep('input');
+            setIsStepDrawerOpen(true);
+            // Pre-fill context
+            const strategyPrompt = `✨ ${event.title} (${event.date}) の投稿戦略：\n${event.description}\n\nおすすめハッシュタグ: ${event.hashtags.join(' ')}\n\nこのイベントに合わせて、集客効果の高い投稿を作ってください。`;
+            onInputTextChange(strategyPrompt);
+        }, 800);
+    };
 
     // Notify parent about step changes
     React.useEffect(() => {
@@ -206,9 +229,11 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                 <div className="flex-1 flex flex-col p-5 pt-6 pb-8 safe-area-bottom">
                     {/* High-Design Header - Magazine Style Date & Minimal Avatar */}
                     <div className="flex items-start justify-between mb-4 px-1">
-                        {/* Typography Date Display */}
-                        <div className="flex flex-col">
-                            <span className="text-[9px] font-black text-[var(--plexo-yellow)] uppercase tracking-[0.4em] ml-1 mb-1 z-10 relative">misepo</span>
+                        {/* Typography Date Display - Interactive Trigger */}
+                        <div className="flex flex-col cursor-pointer active:scale-95 transition-transform" onClick={() => setIsCalendarOpen(true)}>
+                            <span className="text-[9px] font-black text-[var(--plexo-yellow)] uppercase tracking-[0.4em] ml-1 mb-1 z-10 relative flex items-center gap-1">
+                                misepo <span className="bg-white/20 px-1 rounded text-[8px] tracking-normal text-white">HUB</span>
+                            </span>
                             <div className="flex items-center gap-3 select-none">
                                 <span className="text-[3.5rem] font-black text-white tracking-tighter leading-[0.8]">{day}</span>
                                 <div className="flex flex-col justify-center gap-0.5 pt-1">
@@ -216,8 +241,8 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                     <span className="text-[10px] font-bold text-white/50 uppercase tracking-[0.2em] leading-none">{weekday}</span>
                                 </div>
                             </div>
-                            <p className="text-[9px] font-medium text-white/60 tracking-tighter mt-1.5 ml-1 opacity-80 select-none italic">
-                                あなたの言葉が、最高のおもてなしに。
+                            <p className="text-[9px] font-medium text-white/60 tracking-tighter mt-1.5 ml-1 opacity-80 select-none italic flex items-center gap-1">
+                                Tap to view Trend Calendar <ChevronRightIcon className="w-3 h-3 opacity-50" />
                             </p>
                         </div>
 
@@ -397,6 +422,13 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                     </div>
                 </div>
             </div>
+
+            {/* Trend Calendar Overlay */}
+            <MobileCalendarOverlay
+                isOpen={isCalendarOpen}
+                onClose={() => setIsCalendarOpen(false)}
+                onSelectEvent={handleTrendStrategy}
+            />
 
             {/* Bottom Sheet Drawer - Monochrome Style */}
             {isStepDrawerOpen && (
