@@ -18,37 +18,37 @@ interface MobileFooterProps {
 const CustomHome = ({ active, dark }: { active: boolean, dark?: boolean }) => (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M3 10L12 3L21 10V20C21 20.5523 20.5523 21 20 21H15V14H9V21H4C3.44772 21 3 20.5523 3 20V10Z"
-            stroke={active ? "#7F5AF0" : (dark ? "var(--plexo-med-gray)" : "white")} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+            stroke={active ? "#f8ea5d" : (dark ? "#949594" : "white")} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
             style={{ opacity: active ? 1 : (dark ? 1 : 0.4) }}
-            fill={active ? "#7F5AF0" : "none"} fillOpacity={active ? (dark ? 1 : 0.2) : 0} />
+            fill={active ? "#f8ea5d" : "none"} fillOpacity={active ? (dark ? 1 : 0.2) : 0} />
     </svg>
 );
 
 const CustomHistory = ({ active, dark }: { active: boolean, dark?: boolean }) => (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M3 12C3 16.9706 7.02944 21 12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C9.5 3 7.25 4.01 5.6 5.6"
-            stroke={active ? "#7F5AF0" : (dark ? "var(--plexo-med-gray)" : "white")} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: active ? 1 : (dark ? 1 : 0.4) }} />
-        <path d="M5.6 1.6V5.6H1.6" stroke={active ? "#7F5AF0" : (dark ? "var(--plexo-med-gray)" : "white")} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: active ? 1 : (dark ? 1 : 0.4) }} />
-        <path d="M12 7V12L15 15" stroke={active ? "#7F5AF0" : (dark ? "var(--plexo-med-gray)" : "white")} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: active ? 1 : (dark ? 1 : 0.4) }} />
+            stroke={active ? "#f8ea5d" : "#949594"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: active ? 1 : 1 }} />
+        <path d="M5.6 1.6V5.6H1.6" stroke={active ? "#f8ea5d" : "#949594"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: active ? 1 : 1 }} />
+        <path d="M12 7V12L15 15" stroke={active ? "#f8ea5d" : "#949594"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: active ? 1 : 1 }} />
     </svg>
 );
 
 const CustomAvatar = ({ active, dark }: { active: boolean, dark?: boolean }) => (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="12" cy="7" r="4" stroke={active ? "#7F5AF0" : (dark ? "var(--plexo-med-gray)" : "white")} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: active ? 1 : (dark ? 1 : 0.4) }} />
+        <circle cx="12" cy="7" r="4" stroke={active ? "#f8ea5d" : "#949594"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: active ? 1 : 1 }} />
         <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21"
-            stroke={active ? "#7F5AF0" : (dark ? "var(--plexo-med-gray)" : "white")} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: active ? 1 : (dark ? 1 : 0.4) }} />
+            stroke={active ? "#f8ea5d" : "#949594"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: active ? 1 : 1 }} />
     </svg>
 );
 
 const CustomSettings = ({ active, dark }: { active: boolean, dark?: boolean }) => (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.1a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.1a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"
-            stroke={active ? "#7F5AF0" : "#949594"}
+            stroke={active ? "#f8ea5d" : "#949594"}
             strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
             style={{ opacity: active ? 1 : 1 }} />
         <circle cx="12" cy="12" r="3"
-            stroke={active ? "#7F5AF0" : "#949594"}
+            stroke={active ? "#f8ea5d" : "#949594"}
             strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
             style={{ opacity: active ? 1 : 1 }} />
     </svg>
@@ -66,17 +66,15 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
     const isDrawerOpen = currentStep !== 'platform'; // Drawer is open for input, confirm, result steps
 
     return (
-        <div className="sm:hidden fixed bottom-0 left-0 right-0 z-[150] px-6 pb-8 bg-transparent pointer-events-none">
+        <div className={`sm:hidden fixed bottom-0 left-0 right-0 z-[150] px-6 pb-8 bg-transparent transition-all duration-500 ${isDrawerOpen ? 'opacity-0 translate-y-20 pointer-events-none' : 'opacity-100 translate-y-0 pointer-events-auto'}`}>
             {/* The Floating Bar Background - Ultra-Premium Glassmorphism (VisionOS Style) */}
             {/* The Floating Bar Background - Hyper-Glass (Prism Effect) */}
-            {/* The Floating Bar Background - High Contrast Dark Glass */}
+            {/* The Floating Bar Background - High Contrast Solid Dark (Matching Result UI) */}
             <div className={`relative h-20 w-full flex items-center justify-between px-7 rounded-[40px] overflow-visible pointer-events-auto transition-all duration-300
-                backdrop-blur-xl backdrop-saturate-150 border border-white/10
-                bg-[#1A1A1A]/90
-                shadow-[0_12px_40px_rgba(0,0,0,0.4)]
+                bg-[#606060] border border-white/10
+                shadow-[0_12px_40px_rgba(0,0,0,0.3)]
             `}>
-                {/* Subtle top gloss for the dark bar */}
-                <div className="absolute inset-0 rounded-[40px] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15)] pointer-events-none" />
+                <div className="absolute inset-0 rounded-[40px] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)] pointer-events-none" />
                 {/* Visual Base for the notch/plus area */}
                 {/* Visual Base for the notch/plus area */}
                 <div className="absolute top-[-30px] left-1/2 -translate-x-1/2 w-[88px] h-[88px] z-10 pointer-events-none">
@@ -153,8 +151,8 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
                         <span className={`
                             text-[9px] font-black uppercase tracking-[0.1em] transition-all
                             ${activeTab === 'home'
-                                ? 'text-[#7F5AF0]'
-                                : 'text-slate-400'
+                                ? 'text-[#f8ea5d]'
+                                : 'text-[#949594]'
                             }
                         `}>Home</span>
                     </button>
@@ -166,8 +164,8 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
                         <span className={`
                             text-[9px] font-black uppercase tracking-[0.1em] transition-all
                             ${activeTab === 'history'
-                                ? 'text-[#7F5AF0]'
-                                : 'text-slate-400'
+                                ? 'text-[#f8ea5d]'
+                                : 'text-[#949594]'
                             }
                         `}>History</span>
                     </button>
@@ -183,8 +181,8 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
                         <span className={`
                             text-[9px] font-black uppercase tracking-[0.1em] transition-all
                             ${activeTab === 'learning'
-                                ? 'text-[#7F5AF0]'
-                                : 'text-slate-400'
+                                ? 'text-[#f8ea5d]'
+                                : 'text-[#949594]'
                             }
                         `}>分身</span>
                     </button>
@@ -196,8 +194,8 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
                         <span className={`
                             text-[9px] font-black uppercase tracking-[0.1em] transition-all
                             ${activeTab === 'settings'
-                                ? 'text-[#7F5AF0]'
-                                : 'text-slate-400'
+                                ? 'text-[#f8ea5d]'
+                                : 'text-[#949594]'
                             }
                         `}>Setting</span>
                     </button>

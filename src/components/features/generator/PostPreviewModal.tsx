@@ -50,19 +50,24 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
                 onClick={onClose}
             />
 
-            <div className="relative w-full max-w-lg h-[90vh] bg-white rounded-[40px] overflow-hidden animate-in zoom-in-95 duration-300 border border-[#E5E5E5] shadow-2xl flex flex-col">
-                <div className="flex items-center justify-between p-10 bg-white border-b border-[#E5E5E5]">
-                    <h3 className="text-[12px] font-black text-[#111111] uppercase tracking-[0.4em] flex items-center gap-4">
-                        <div className="text-[#111111] scale-110">
+            <div className="relative w-full max-w-lg h-[90vh] bg-white rounded-[48px] overflow-hidden animate-in zoom-in-95 duration-300 border border-[#F0F0F0] shadow-[0_30px_80px_rgba(0,0,0,0.15)] flex flex-col">
+                <div className="flex items-center justify-between p-7 sm:p-9 bg-white border-b border-[#F0F0F0] sticky top-0 z-10">
+                    <div className="flex items-center gap-4 text-left">
+                        <div className="w-10 h-10 rounded-2xl bg-[#F9F9FB] flex items-center justify-center">
                             {getPlatformIcon(platform)}
                         </div>
-                        <span>Preview & Adjust</span>
-                    </h3>
+                        <div>
+                            <h3 className="text-[14px] font-bold text-[#111111] leading-tight">
+                                プレビュー表示
+                            </h3>
+                            <p className="text-[10px] text-[#949594] font-medium mt-1">Platform Preview</p>
+                        </div>
+                    </div>
                     <button
                         onClick={onClose}
-                        className="w-12 h-12 flex items-center justify-center rounded-full transition-all active:scale-90 bg-white border border-[#E5E5E5] text-[#111111] shadow-sm hover:bg-[#F5F5F5]"
+                        className="w-10 h-10 flex items-center justify-center rounded-full bg-[#F9F9FB] hover:bg-[#F0F0F0] text-[#111111] transition-all active:scale-90"
                     >
-                        <CloseIcon className="w-5 h-5" />
+                        <CloseIcon className="w-5 h-5 opacity-40 group-hover:opacity-100 transition-opacity" />
                     </button>
                 </div>
 
@@ -220,15 +225,15 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
                     </div>
                 </div>
 
-                <div className="p-10 bg-white border-t border-[#E5E5E5] mt-auto">
+                <div className="p-8 bg-white border-t border-[#F0F0F0] mt-auto">
                     <button
                         onClick={onClose}
-                        className="w-full py-7 rounded-[32px] font-black text-[14px] uppercase tracking-[0.4em] transition-all active:scale-95 shadow-[0_15px_30px_rgba(0,0,0,0.15)] bg-[#111111] text-white hover:bg-black"
+                        className="w-full py-5 rounded-full font-bold text-[14px] transition-all active:scale-[0.98] shadow-sm bg-[#7F5AF0] text-white hover:opacity-90 relative overflow-hidden group"
                     >
-                        Save & Close
+                        <div className="relative z-10">保存して閉じる</div>
                     </button>
-                    <p className="mt-5 text-[10px] font-black text-[#CCCCCC] text-center leading-relaxed tracking-wider">
-                        Real-world rendering may vary by device.
+                    <p className="mt-4 text-[10px] font-bold text-[#949594] text-center leading-relaxed opacity-60">
+                        プレビュー画面は実際の見え方と異なる場合があります。
                     </p>
                 </div>
             </div>

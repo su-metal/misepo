@@ -408,25 +408,33 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                     </div>
 
                     {/* Bottom Section - Promotional Card (Prism Artifact Style) */}
-                    <div className="mt-auto pt-0">
+                    <div className="mt-auto pt-2">
                         <div
                             onClick={handleOmakaseStart}
                             className={`
-                                relative rounded-[36px] overflow-hidden group transition-all duration-500 cursor-pointer active:scale-95
+                                relative group transition-all duration-500 cursor-pointer active:scale-95
                                 ${isOmakaseLoading ? 'scale-[0.98]' : 'hover:scale-[1.02] hover:-translate-y-1'}
                             `}
                         >
-                            {/* 1. Radiant Aura Border (Behind) - Bright Rainbow */}
-                            <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 via-yellow-400 to-pink-500 animate-spin-slow opacity-100 blur-sm transition-all duration-700" />
+                            {/* 1. Radiant Aura Container (Clipped Background) */}
+                            <div className="absolute inset-0 rounded-[36px] overflow-hidden pointer-events-none">
+                                {/* Radiant Aura Border - Magical Spinning Beam */}
+                                <div
+                                    className="absolute inset-[-150%] animate-spin-slow opacity-100 blur-md transition-all duration-700"
+                                    style={{
+                                        background: 'conic-gradient(from 0deg, transparent 0deg, #22D3EE 60deg, #FACC15 120deg, #F472B6 180deg, transparent 240deg)'
+                                    }}
+                                />
+                            </div>
 
                             {/* 2. Pearlescent Content Layer (Front) - White/Bright */}
                             <div className={`
-                                relative m-[2px] rounded-[35px] p-7 px-8 h-full
+                                relative m-[2px] rounded-[35px] p-7 px-8
                                 bg-white/95 backdrop-blur-xl transition-colors duration-500
                                 flex items-center justify-between
                             `}>
                                 {/* Inner Subtle Iridescence */}
-                                <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-white to-pink-500/10 opacity-100 pointer-events-none" />
+                                <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-white to-pink-500/10 rounded-[35px] opacity-100 pointer-events-none" />
 
                                 {/* Text Content - High Contrast Dark */}
                                 <div className="relative z-10">
@@ -481,7 +489,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                     }} />
 
                     {/* Sliding Panel (Monochrome) */}
-                    <div className={`absolute bottom-0 left-0 right-0 bg-[#FAFAFA] border-t border-[#E5E5E5] rounded-t-[54px] shadow-[0_-20px_60px_rgba(0,0,0,0.1)] animate-nyoki flex flex-col ${mobileStep === 'confirm' || mobileStep === 'result' ? 'h-[94vh]' : 'h-[88vh]'} ${mobileStep === 'result' ? 'pb-8 safe-area-bottom' : 'pb-24'}`}>
+                    <div className={`absolute bottom-0 left-0 right-0 bg-[#FAFAFA] border-t border-[#E5E5E5] rounded-t-[54px] shadow-[0_-20px_60px_rgba(0,0,0,0.1)] animate-nyoki flex flex-col ${mobileStep === 'platform' ? 'h-[88vh]' : 'h-[96vh]'} ${mobileStep === 'result' ? 'pb-8 safe-area-bottom' : 'pb-0'}`}>
                         {/* Drag Handle */}
                         <div className="w-full flex justify-center py-6">
                             <div className="w-16 h-1.5 bg-[#E5E5E5] rounded-full" />
@@ -524,84 +532,17 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             </div>
                         </div>
 
-                        {/* Drawer Content */}
-                        <div className="flex-1 overflow-y-auto px-8 py-4">
+                        {/* Drawer Content - Redesigned for Sticky Actions */}
+                        <div className="flex-1 flex flex-col min-h-0 overflow-hidden relative">
                             {mobileStep === 'input' && (
-                                <div className="flex flex-col items-center gap-8 animate-in fade-in zoom-in-95 duration-700">
+                                <div className="flex-1 flex flex-col min-h-0 animate-in fade-in zoom-in-95 duration-700">
 
-                                    {/* Google Maps Specific Layout (Text-First) */}
-                                    {isGoogleMaps ? (
-                                        <div className="w-full flex flex-col gap-6">
-                                            <div className="text-center space-y-2">
-                                                <h4 className="text-xl font-bold text-[#111111]">Review Reply</h4>
-                                                <p className="text-sm text-[#666666]">Googleマップの口コミを貼り付けてください</p>
-                                            </div>
-
-                                            <div className="relative flex-1 max-h-[35vh]">
-                                                <AutoResizingTextarea
-                                                    value={inputText}
-                                                    onChange={(e) => onInputTextChange(e.target.value)}
-                                                    placeholder="ここに口コミをペースト..."
-                                                    className="w-full h-full min-h-[160px] p-8 bg-white border border-[#E5E5E5] rounded-[40px] text-lg font-bold leading-relaxed focus:outline-none focus:border-[#111111] transition-all placeholder:text-[#CCCCCC] text-[#111111]"
-                                                />
-                                                {/* Floating Mic Button for GMap (Secondary) */}
-                                                <button
-                                                    onClick={toggleVoiceInput}
-                                                    className={`absolute bottom-6 left-6 w-12 h-12 rounded-full flex items-center justify-center transition-all ${isListening ? 'bg-[#111111] text-white animate-pulse' : 'bg-[#F5F5F5] text-[#111111]'}`}
-                                                >
-                                                    <MicIcon className="w-6 h-6" />
-                                                </button>
-
-                                                {inputText.trim() && (
-                                                    <button
-                                                        onClick={() => setMobileStep('confirm')}
-                                                        className="absolute bottom-6 right-6 bg-[#111111] text-white px-8 py-4 rounded-[24px] font-bold text-xs uppercase tracking-[0.2em] shadow-lg active:scale-95 transition-all"
-                                                    >
-                                                        Next
-                                                    </button>
-                                                )}
-                                            </div>
-
-                                            {/* Additional Instructions (Optional) - GMap Layout */}
-                                            <div className="flex flex-col gap-3">
-                                                <button
-                                                    onClick={() => setIsPromptExpanded(!isPromptExpanded)}
-                                                    className="flex items-center gap-2 text-[#666666] active:text-[#111111] transition-colors px-4 py-2"
-                                                >
-                                                    <AutoSparklesIcon className={`w-4 h-4 ${customPrompt ? 'text-[#111111]' : ''}`} />
-                                                    <span className="text-[11px] font-bold uppercase tracking-widest">追加指示（任意）</span>
-                                                </button>
-                                                {isPromptExpanded && (
-                                                    <div className="mx-2 p-4 bg-white/60 border border-[#F0F0F5] rounded-2xl animate-in zoom-in-95 shadow-sm">
-                                                        <input
-                                                            type="text"
-                                                            value={customPrompt}
-                                                            onChange={(e) => onCustomPromptChange(e.target.value)}
-                                                            placeholder="例：テンション高めに..."
-                                                            className="w-full bg-transparent border-none focus:outline-none text-xs font-bold text-[#1F1F2F]"
-                                                            autoFocus
-                                                        />
-                                                    </div>
-                                                )}
-                                            </div>
-
-                                            {/* Google Maps Supplement Field */}
-                                            <div className="p-6 bg-[#C4A052]/10 border-[#C4A052]/20 border rounded-[32px] backdrop-blur-md relative overflow-hidden group">
-                                                <h4 className="relative z-10 text-[10px] font-black text-[#8B7340] uppercase tracking-[0.2em] mb-3">補足情報 / 当日の事情</h4>
-                                                <AutoResizingTextarea
-                                                    value={storeSupplement}
-                                                    onChange={(e) => onStoreSupplementChange(e.target.value)}
-                                                    placeholder="例：急な欠勤で人手が足りなかった、など"
-                                                    className="relative z-10 w-full bg-transparent text-[#2F3E46] text-sm font-bold leading-relaxed placeholder-[#8B7340]/30 focus:outline-none resize-none min-h-[60px]"
-                                                />
-                                            </div>
-                                        </div>
-                                    ) : (
-                                        /* Standard Layout (Voice-First) */
-                                        <>
+                                    {/* 1. Top Fixed Header Section (Standard context labels or Microphone) */}
+                                    {!isGoogleMaps && (
+                                        <div className="flex-shrink-0 flex justify-center py-4 bg-gradient-to-b from-[#FAFAFA] to-transparent z-10">
                                             <button
                                                 onClick={toggleVoiceInput}
-                                                className={`relative w-40 h-40 rounded-full flex items-center justify-center transition-all duration-700 ${isListening ? 'scale-110' : 'hover:scale-105'}`}
+                                                className={`relative w-28 h-28 rounded-full flex-shrink-0 flex items-center justify-center transition-all duration-700 ${isListening ? 'scale-110' : 'hover:scale-105'}`}
                                             >
                                                 {/* Animated Rings for Listening - Monochrome */}
                                                 {isListening && (
@@ -612,162 +553,249 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                 )}
                                                 <div className={`w-full h-full rounded-full flex flex-col items-center justify-center transition-all duration-500 shadow-xl border border-white/40 ${isListening ? 'bg-[#111111] text-white' : 'bg-white text-[#111111] border-[#E5E5E5]'}`}>
                                                     {isListening ? (
-                                                        <div className="flex gap-2 h-10 items-center">
-                                                            <div className="w-1.5 h-8 bg-white rounded-full animate-bounce [animation-delay:0s]" />
-                                                            <div className="w-1.5 h-10 bg-white rounded-full animate-bounce [animation-delay:0.1s]" />
-                                                            <div className="w-1.5 h-8 bg-white rounded-full animate-bounce [animation-delay:0.2s]" />
+                                                        <div className="flex gap-1.5 h-6 items-center">
+                                                            <div className="w-1 h-5 bg-white rounded-full animate-bounce [animation-delay:0s]" />
+                                                            <div className="w-1 h-7 bg-white rounded-full animate-bounce [animation-delay:0.1s]" />
+                                                            <div className="w-1 h-5 bg-white rounded-full animate-bounce [animation-delay:0.2s]" />
                                                         </div>
                                                     ) : (
-                                                        <MicIcon className="w-14 h-14 text-[#111111]" />
+                                                        <MicIcon className="w-10 h-10 text-[#111111]" />
                                                     )}
-                                                    <span className={`mt-2 text-[10px] font-black uppercase tracking-[0.2em] ${isListening ? 'text-white' : 'text-[#999999]'}`}>
-                                                        {isListening ? 'Listening' : 'Tap to Speak'}
+                                                    <span className={`mt-1.5 text-[8px] font-black uppercase tracking-[0.2em] ${isListening ? 'text-white' : 'text-[#999999]'}`}>
+                                                        {isListening ? 'Listening' : 'Voice Input'}
                                                     </span>
                                                 </div>
                                             </button>
+                                        </div>
+                                    )}
 
-                                            <div className="w-full flex flex-col gap-4">
+                                    {/* 2. Middle Scrollable Area (Main Text inputs) */}
+                                    <div className="flex-1 overflow-y-auto px-8 py-2">
+                                        {isGoogleMaps ? (
+                                            <div className="w-full flex flex-col gap-6 py-2">
+                                                <div className="text-center space-y-2">
+                                                    <h4 className="text-xl font-bold text-[#111111]">Review Reply</h4>
+                                                    <p className="text-sm text-[#666666]">Googleマップの口コミを貼り付けてください</p>
+                                                </div>
+
                                                 <div className="relative">
                                                     <AutoResizingTextarea
                                                         value={inputText}
                                                         onChange={(e) => onInputTextChange(e.target.value)}
-                                                        placeholder={isGoogleMaps ? "口コミ内容を貼り付けてください..." : "Tell AI what to write about..."}
-                                                        className="w-full min-h-[160px] p-8 bg-white border border-[#E5E5E5] rounded-[40px] text-lg font-bold leading-relaxed focus:outline-none focus:border-[#111111] transition-all  placeholder:text-[#CCCCCC] text-[#111111]"
+                                                        placeholder="ここに口コミをペースト..."
+                                                        className="w-full min-h-[160px] max-h-[400px] overflow-y-auto p-8 bg-white border border-[#E5E5E5] rounded-[40px] text-lg font-bold leading-relaxed focus:outline-none focus:border-[#111111] transition-all placeholder:text-[#CCCCCC] text-[#111111]"
                                                     />
-                                                    {inputText.trim() && !isListening && (
-                                                        <button
-                                                            onClick={() => setMobileStep('confirm')}
-                                                            className="absolute bottom-6 right-6 bg-[#111111] text-white px-8 py-4 rounded-[24px] font-bold text-xs uppercase tracking-[0.2em] shadow-lg active:scale-95 transition-all"
-                                                        >
-                                                            Next
-                                                        </button>
-                                                    )}
+                                                    {/* Floating Mic for GMap remains relatively positioned or absolute within scroll */}
+                                                    <button
+                                                        onClick={toggleVoiceInput}
+                                                        className={`absolute bottom-6 left-6 w-12 h-12 rounded-full flex items-center justify-center transition-all shadow-md ${isListening ? 'bg-[#111111] text-white animate-pulse' : 'bg-[#F5F5F5] text-[#111111]'}`}
+                                                    >
+                                                        <MicIcon className="w-6 h-6" />
+                                                    </button>
                                                 </div>
 
-                                                {/* Additional Instructions (Optional) - Standard Layout */}
-                                                <div className="flex flex-col gap-3">
-                                                    <button
-                                                        onClick={() => setIsPromptExpanded(!isPromptExpanded)}
-                                                        className="flex items-center gap-2 text-[#666666] active:text-[#111111] transition-colors px-4 py-2"
-                                                    >
-                                                        <AutoSparklesIcon className={`w-4 h-4 ${customPrompt ? 'text-[#111111]' : ''}`} />
-                                                        <span className="text-[11px] font-bold uppercase tracking-widest">追加指示（任意）</span>
-                                                    </button>
-                                                    {isPromptExpanded && (
-                                                        <div className="p-4 bg-white border border-[#E5E5E5] rounded-2xl animate-in zoom-in-95 shadow-sm">
-                                                            <input
-                                                                type="text"
-                                                                value={customPrompt}
-                                                                onChange={(e) => onCustomPromptChange(e.target.value)}
-                                                                placeholder="例：テンション高めに..."
-                                                                className="w-full bg-transparent border-none focus:outline-none text-xs font-bold text-[#111111]"
-                                                                autoFocus
-                                                            />
-                                                        </div>
-                                                    )}
+                                                <div className="p-6 bg-[#C4A052]/10 border-[#C4A052]/20 border rounded-[32px] backdrop-blur-md relative overflow-hidden group">
+                                                    <h4 className="relative z-10 text-[10px] font-black text-[#8B7340] uppercase tracking-[0.2em] mb-3">補足情報 / 当日の事情</h4>
+                                                    <AutoResizingTextarea
+                                                        value={storeSupplement}
+                                                        onChange={(e) => onStoreSupplementChange(e.target.value)}
+                                                        placeholder="例：急な欠勤で人手が足りなかった、など"
+                                                        className="relative z-10 w-full bg-transparent text-[#2F3E46] text-sm font-bold leading-relaxed placeholder-[#8B7340]/30 focus:outline-none resize-none min-h-[60px]"
+                                                    />
                                                 </div>
                                             </div>
-                                        </>
-                                    )}
+                                        ) : (
+                                            <div className="w-full relative py-2">
+                                                <AutoResizingTextarea
+                                                    value={inputText}
+                                                    onChange={(e) => onInputTextChange(e.target.value)}
+                                                    placeholder="Tell AI what to write about..."
+                                                    className="w-full min-h-[160px] max-h-[500px] overflow-y-auto p-8 bg-white border border-[#E5E5E5] rounded-[40px] text-lg font-bold leading-relaxed focus:outline-none focus:border-[#111111] transition-all placeholder:text-[#CCCCCC] text-[#111111]"
+                                                />
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* 3. Sticky Action Footer */}
+                                    <div className="p-6 pb-12 safe-area-bottom border-t border-[#E5E5E5]/50 flex-shrink-0 bg-[#FAFAFA] flex flex-col gap-4 shadow-[0_-10px_30px_rgba(0,0,0,0.02)] z-20">
+                                        {/* Additional Instructions */}
+                                        <div className="flex flex-col gap-3">
+                                            <button
+                                                onClick={() => setIsPromptExpanded(!isPromptExpanded)}
+                                                className="flex items-center gap-2 text-[#666666] active:text-[#111111] transition-colors px-4 py-2"
+                                            >
+                                                <AutoSparklesIcon className={`w-4 h-4 ${customPrompt ? 'text-[#111111]' : ''}`} />
+                                                <span className="text-[11px] font-bold uppercase tracking-widest">追加指示（任意）</span>
+                                            </button>
+                                            {isPromptExpanded && (
+                                                <div className="p-4 bg-white border border-[#E5E5E5] rounded-2xl animate-in zoom-in-95 shadow-sm">
+                                                    <input
+                                                        type="text"
+                                                        value={customPrompt}
+                                                        onChange={(e) => onCustomPromptChange(e.target.value)}
+                                                        placeholder="例：テンション高めに..."
+                                                        className="w-full bg-transparent border-none focus:outline-none text-[13px] font-bold text-[#111111]"
+                                                        autoFocus
+                                                    />
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {inputText.trim() && !isListening && (
+                                            <button
+                                                onClick={() => setMobileStep('confirm')}
+                                                className="w-full bg-[#111111] text-white py-5 rounded-[28px] font-black text-sm uppercase tracking-[0.2em] shadow-xl active:scale-95 transition-all flex items-center justify-center gap-2"
+                                            >
+                                                Next
+                                                <ChevronRightIcon className="w-5 h-5" />
+                                            </button>
+                                        )}
+                                    </div>
                                 </div>
                             )}
 
                             {mobileStep === 'confirm' && (
-                                <div className="flex flex-col gap-8 animate-in fade-in slide-in-from-bottom-10 duration-700">
-                                    {/* Preview Box - Monochrome */}
-                                    <div className="bg-white border border-[#E5E5E5] rounded-[40px] p-8 min-h-[180px] relative shadow-sm overflow-hidden group">
-                                        <div className="absolute top-0 right-0 w-32 h-32 bg-[#F5F5F5] rounded-full blur-3xl -mr-16 -mt-16" />
-                                        <div className="flex items-center justify-between mb-6">
-                                            <div className="flex gap-1.5">
-                                                <div className="w-1.5 h-1.5 rounded-full bg-[#111111]/20" />
-                                                <div className="w-1.5 h-1.5 rounded-full bg-[#111111]/20" />
-                                            </div>
-                                            <span className="text-[10px] font-black text-[#999999] uppercase tracking-[0.2em]">Source Content</span>
-                                        </div>
-                                        <div className="text-[#111111] text-[15px] font-bold leading-relaxed">
-                                            {inputText.length > 200 ? inputText.substring(0, 200) + '...' : inputText || "Your content will appear here..."}
-                                        </div>
-
-                                        {/* Additional Instructions Review */}
-                                        {customPrompt && (
-                                            <div className="mt-4 pt-4 border-t border-[#E5E5E5]">
-                                                <div className="flex items-center gap-1.5 mb-1">
-                                                    <AutoSparklesIcon className="w-3 h-3 text-[#111111]" />
-                                                    <span className="text-[9px] font-black text-[#666666] uppercase tracking-widest block">Extra Instructions</span>
+                                <div className="flex-1 flex flex-col min-h-0 animate-in fade-in slide-in-from-bottom-10 duration-700">
+                                    {/* Scrollable Preview and Settings */}
+                                    <div className="flex-1 overflow-y-auto px-8 py-4 space-y-8">
+                                        <div className="flex flex-col gap-8">
+                                            {/* Preview Box - Monochrome */}
+                                            <div className="bg-white border border-[#E5E5E5] rounded-[40px] p-8 min-h-[180px] relative shadow-sm overflow-hidden group">
+                                                <div className="absolute top-0 right-0 w-32 h-32 bg-[#F5F5F5] rounded-full blur-3xl -mr-16 -mt-16" />
+                                                <div className="flex items-center justify-between mb-6">
+                                                    <div className="flex gap-1.5">
+                                                        <div className="w-1.5 h-1.5 rounded-full bg-[#111111]/20" />
+                                                        <div className="w-1.5 h-1.5 rounded-full bg-[#111111]/20" />
+                                                    </div>
+                                                    <span className="text-[10px] font-black text-[#999999] uppercase tracking-[0.2em]">Source Content</span>
                                                 </div>
-                                                <div className="text-[#666666] text-xs italic font-medium">
-                                                    {customPrompt}
+                                                <div className="text-[#111111] text-[15px] font-bold leading-relaxed">
+                                                    {inputText.length > 200 ? inputText.substring(0, 200) + '...' : inputText || "Your content will appear here..."}
                                                 </div>
+
+                                                {/* Additional Instructions Review */}
+                                                {customPrompt && (
+                                                    <div className="mt-4 pt-4 border-t border-[#E5E5E5]">
+                                                        <div className="flex items-center gap-1.5 mb-1">
+                                                            <AutoSparklesIcon className="w-3 h-3 text-[#111111]" />
+                                                            <span className="text-[9px] font-black text-[#666666] uppercase tracking-widest block">Extra Instructions</span>
+                                                        </div>
+                                                        <div className="text-[#666666] text-xs italic font-medium">
+                                                            {customPrompt}
+                                                        </div>
+                                                    </div>
+                                                )}
+
+                                                <button onClick={() => setMobileStep('input')} className="absolute bottom-6 right-8 w-11 h-11 bg-white border border-[#E5E5E5] rounded-2xl text-[#999999] hover:text-[#111111] transition-all flex items-center justify-center active:scale-95 shadow-sm">
+                                                    <RotateCcwIcon className="w-5 h-5" />
+                                                </button>
                                             </div>
-                                        )}
 
-                                        <button onClick={() => setMobileStep('input')} className="absolute bottom-6 right-8 w-11 h-11 bg-white border border-[#E5E5E5] rounded-2xl text-[#999999] hover:text-[#111111] transition-all flex items-center justify-center active:scale-95 shadow-sm">
-                                            <RotateCcwIcon className="w-5 h-5" />
-                                        </button>
-                                    </div>
-
-                                    {/* Style Selection - Horizontal Pill Style (Monochrome) */}
-                                    <div className="flex flex-col gap-4">
-                                        <div className="flex items-center justify-between px-2">
-                                            <span className="text-[11px] font-black text-[#666666] uppercase tracking-[0.2em]">Select Style</span>
-                                            <button onClick={onOpenPresetModal} className="text-[10px] font-black text-[#111111] uppercase tracking-widest bg-[#F5F5F5] px-3 py-1 rounded-full border border-[#E5E5E5] hover:bg-[#EAEAEA]">Manage</button>
-                                        </div>
-                                        <div className="flex overflow-x-auto gap-3 pb-4 pt-2 -mx-2 px-3 no-scrollbar scrollbar-hide">
-                                            <button
-                                                onClick={() => onApplyPreset({ id: 'plain-ai' } as any)}
-                                                className={`flex-shrink-0 px-8 py-5 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] transition-all duration-300 ${!activePresetId ? 'bg-[var(--plexo-black)] text-[var(--plexo-yellow)] scale-105 active:scale-95' : 'bg-white border border-[#E5E5E5] text-[#999999]'}`}
-                                            >
-                                                AI Standard
-                                            </button>
-                                            {presets.map((p) => {
-                                                const isSelected = activePresetId === p.id;
-                                                return (
+                                            {/* Style Selection - Horizontal Pill Style (Monochrome) */}
+                                            <div className="flex flex-col gap-4">
+                                                <div className="flex items-center justify-between px-2">
+                                                    <span className="text-[11px] font-black text-[#666666] uppercase tracking-[0.2em]">Select Style</span>
+                                                    <button onClick={onOpenPresetModal} className="text-[10px] font-black text-[#111111] uppercase tracking-widest bg-[#F5F5F5] px-3 py-1 rounded-full border border-[#E5E5E5] hover:bg-[#EAEAEA]">Manage</button>
+                                                </div>
+                                                <div className="flex overflow-x-auto gap-3 pb-4 pt-2 -mx-2 px-3 no-scrollbar scrollbar-hide">
                                                     <button
-                                                        key={p.id}
-                                                        onClick={() => onApplyPreset(p)}
-                                                        className={`flex-shrink-0 px-8 py-5 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] transition-all duration-300 truncate max-w-[160px] ${isSelected ? 'bg-[var(--plexo-dark-gray)] text-[var(--plexo-yellow)] scale-105 active:scale-95' : 'bg-white border border-[#E5E5E5] text-[#999999]'}`}
+                                                        onClick={() => onApplyPreset({ id: 'plain-ai' } as any)}
+                                                        className={`flex-shrink-0 px-8 py-5 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] transition-all duration-300 ${!activePresetId ? 'bg-[var(--plexo-black)] text-[var(--plexo-yellow)] scale-105 active:scale-95' : 'bg-white border border-[#E5E5E5] text-[#999999]'}`}
                                                     >
-                                                        {p.name}
+                                                        AI Standard
                                                     </button>
-                                                );
-                                            })}
+                                                    {presets.map((p) => {
+                                                        const isSelected = activePresetId === p.id;
+                                                        return (
+                                                            <button
+                                                                key={p.id}
+                                                                onClick={() => onApplyPreset(p)}
+                                                                className={`flex-shrink-0 px-8 py-5 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] transition-all duration-300 truncate max-w-[160px] ${isSelected ? 'bg-[var(--plexo-dark-gray)] text-[var(--plexo-yellow)] scale-105 active:scale-95' : 'bg-white border border-[#E5E5E5] text-[#999999]'}`}
+                                                            >
+                                                                {p.name}
+                                                            </button>
+                                                        );
+                                                    })}
+                                                </div>
+                                            </div>
+
+                                            {/* Settings Grid - Monochrome */}
+                                            <div className="grid grid-cols-2 gap-4 pb-8">
+                                                <div className={`bg-white p-6 rounded-[32px] border border-[#E5E5E5] flex flex-col gap-2.5 transition-opacity ${isStyleLocked ? 'opacity-50 relative' : ''}`}>
+                                                    <div className="flex items-center justify-between">
+                                                        <span className="text-[9px] font-black text-[#666666] uppercase tracking-[0.2em]">Tone</span>
+                                                        {isStyleLocked && <div className="text-[8px] bg-[#F5F5F5] px-1.5 py-0.5 rounded text-[#111111] font-bold">LOCKED</div>}
+                                                    </div>
+                                                    <select
+                                                        value={tone}
+                                                        disabled={isStyleLocked}
+                                                        onChange={(e) => onToneChange(e.target.value as any)}
+                                                        className="bg-transparent text-[15px] font-black text-[#111111] focus:outline-none disabled:cursor-not-allowed appearance-none"
+                                                    >
+                                                        {TONES.map(t => <option key={t.id} value={t.id}>{t.label}</option>)}
+                                                    </select>
+                                                </div>
+                                                {!isX && (
+                                                    <div className="bg-white p-6 rounded-[32px] border border-[#E5E5E5] flex flex-col gap-2.5">
+                                                        <span className="text-[9px] font-black text-[#666666] uppercase tracking-[0.2em]">Length</span>
+                                                        <select
+                                                            value={length}
+                                                            onChange={(e) => onLengthChange(e.target.value as any)}
+                                                            className="bg-transparent text-[15px] font-black text-[#111111] focus:outline-none appearance-none"
+                                                        >
+                                                            {LENGTHS.map(l => <option key={l.id} value={l.id}>{l.label}</option>)}
+                                                        </select>
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
 
-                                    {/* Settings Grid - Monochrome */}
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className={`bg-white p-6 rounded-[32px] border border-[#E5E5E5] flex flex-col gap-2.5 transition-opacity ${isStyleLocked ? 'opacity-50 relative' : ''}`}>
-                                            <div className="flex items-center justify-between">
-                                                <span className="text-[9px] font-black text-[#666666] uppercase tracking-[0.2em]">Tone</span>
-                                                {isStyleLocked && <div className="text-[8px] bg-[#F5F5F5] px-1.5 py-0.5 rounded text-[#111111] font-bold">LOCKED</div>}
+                                    {/* Sticky Generate Footer - Magical Animation */}
+                                    <div className="p-8 pb-12 safe-area-bottom border-t border-[#E5E5E5]/50 flex-shrink-0 bg-white/50 backdrop-blur-md flex flex-col items-center gap-4 shadow-[0_-20px_40px_rgba(0,0,0,0.03)] z-50">
+                                        <button
+                                            onClick={onGenerate}
+                                            disabled={isGenerating}
+                                            className={`
+                                                group relative w-full overflow-hidden rounded-[32px] py-6
+                                                transition-all duration-500 active:scale-95
+                                                ${isGenerating ? 'bg-[#949594] cursor-not-allowed' : 'bg-gradient-to-r from-[#111111] via-[#333333] to-[#111111] shadow-[0_10px_30px_rgba(0,0,0,0.2)]'}
+                                            `}
+                                        >
+                                            {/* Animated Glow Overlay */}
+                                            {!isGenerating && (
+                                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#7F5AF0]/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                                            )}
+
+                                            <div className="relative flex items-center justify-center gap-3">
+                                                {isGenerating ? (
+                                                    <div className="w-6 h-6 border-3 border-white/20 border-t-white rounded-full animate-spin" />
+                                                ) : (
+                                                    <div className="flex items-center gap-3">
+                                                        <SparklesIcon className="w-6 h-6 text-[#7F5AF0] animate-pulse" />
+                                                        <span className="text-white text-base font-black uppercase tracking-[0.3em]">
+                                                            Generate Magic
+                                                        </span>
+                                                        <SparklesIcon className="w-6 h-6 text-[#7F5AF0] animate-pulse [animation-delay:0.5s]" />
+                                                    </div>
+                                                )}
                                             </div>
-                                            <select
-                                                value={tone}
-                                                disabled={isStyleLocked}
-                                                onChange={(e) => onToneChange(e.target.value as any)}
-                                                className="bg-transparent text-[15px] font-black text-[#111111] focus:outline-none disabled:cursor-not-allowed appearance-none"
-                                            >
-                                                {TONES.map(t => <option key={t.id} value={t.id}>{t.label}</option>)}
-                                            </select>
-                                        </div>
-                                        {!isX && (
-                                            <div className="bg-white p-6 rounded-[32px] border border-[#E5E5E5] flex flex-col gap-2.5">
-                                                <span className="text-[9px] font-black text-[#666666] uppercase tracking-[0.2em]">Length</span>
-                                                <select
-                                                    value={length}
-                                                    onChange={(e) => onLengthChange(e.target.value as any)}
-                                                    className="bg-transparent text-[15px] font-black text-[#111111] focus:outline-none appearance-none"
-                                                >
-                                                    {LENGTHS.map(l => <option key={l.id} value={l.id}>{l.label}</option>)}
-                                                </select>
-                                            </div>
-                                        )}
+
+                                            {/* Decorative Sparkle dots */}
+                                            {!isGenerating && (
+                                                <>
+                                                    <div className="absolute top-2 left-1/4 w-1 h-1 bg-[#7F5AF0] rounded-full animate-ping [animation-duration:3s]" />
+                                                    <div className="absolute bottom-3 right-1/3 w-1.5 h-1.5 bg-[#f8ea5d] rounded-full animate-ping [animation-duration:2.5s]" />
+                                                </>
+                                            )}
+                                        </button>
+                                        <p className="text-[10px] font-bold text-[#999999] uppercase tracking-widest">AI will transform your ideas into quality posts</p>
                                     </div>
                                 </div>
                             )}
 
                             {mobileStep === 'result' && (
-                                <div className="h-full animate-in fade-in slide-in-from-bottom-10 duration-700 pb-20">
+                                <div className="flex-1 overflow-y-auto pb-20 animate-in fade-in slide-in-from-bottom-10 duration-700 px-8">
                                     <PostResultTabs
                                         results={generatedResults}
                                         activeTab={activeResultTab}
