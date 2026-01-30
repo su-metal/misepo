@@ -79,5 +79,45 @@ export const MOCK_TRENDS: TrendEvent[] = [
         description: "お返しの日。クッキーやマシュマロ、感謝を伝えるディナーコースの紹介に。",
         hashtags: ["#ホワイトデー", "#お返しギフト"],
         isRecommended: true
+    },
+    {
+        date: "2026-04-01",
+        title: "エイプリルフール",
+        icon: "🃏",
+        description: "クスッと笑える「嘘」やユーモアのある投稿で、親近感をアップさせるチャンス。",
+        hashtags: ["#エイプリルフール", "#嘘のような本当の話"],
+        isRecommended: false
+    },
+    {
+        date: "2026-04-06",
+        title: "新生活スタート",
+        icon: "🌸",
+        description: "入学・入社シーズン。歓迎会プランや「初めまして」の挨拶投稿で新規客を取り込みましょう。",
+        hashtags: ["#新生活", "#歓迎会", "#春の新メニュー"],
+        isRecommended: true
+    },
+    {
+        date: "2026-04-29",
+        title: "昭和の日（GW開始）",
+        icon: "🎌",
+        description: "ゴールデンウィーク突入。連休中の営業時間や、観光・帰省客向けの特別メニューを告知。",
+        hashtags: ["#GW", "#ゴールデンウィーク", "#昭和の日"],
+        isRecommended: true
+    },
+    {
+        date: "2026-05-05",
+        title: "こどもの日",
+        icon: "🎏",
+        description: "端午の節句。お子様ランチの紹介や、家族連れ大歓迎のメッセージを。",
+        hashtags: ["#こどもの日", "#家族ランチ", "#鯉のぼり"],
+        isRecommended: true
+    },
+    {
+        date: "2026-05-10",
+        title: "母の日",
+        icon: "🌹",
+        description: "感謝を伝える日。特別コースやテイクアウトのお弁当、ギフト券の販促に最適。",
+        hashtags: ["#母の日", "#母の日ランチ", "#ありがとう"],
+        isRecommended: true
     }
 ];

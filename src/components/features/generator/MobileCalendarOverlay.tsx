@@ -12,10 +12,38 @@ export const MobileCalendarOverlay: React.FC<MobileCalendarOverlayProps> = ({
     isOpen, onClose, onSelectEvent
 }) => {
     // Basic calendar logic (Static Feb 2026 for Mock)
-    const year = 2026;
-    const month = 1; // Feb (0-indexed)
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const startDay = new Date(year, month, 1).getDay(); // Sunday = 0
+    // Calendar State
+    const [currentYear, setCurrentYear] = React.useState(2026);
+    const [currentMonth, setCurrentMonth] = React.useState(1); // Start at Feb (0-indexed 1)
+
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    const startDay = new Date(currentYear, currentMonth, 1).getDay(); // Sunday = 0
+    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+    // Handlers
+    const handlePrevMonth = () => {
+        let newMonth = currentMonth - 1;
+        let newYear = currentYear;
+        if (newMonth < 0) {
+            newMonth = 11;
+            newYear -= 1;
+        }
+        setCurrentMonth(newMonth);
+        setCurrentYear(newYear);
+        setSelectedDate(null);
+    };
+
+    const handleNextMonth = () => {
+        let newMonth = currentMonth + 1;
+        let newYear = currentYear;
+        if (newMonth > 11) {
+            newMonth = 0;
+            newYear += 1;
+        }
+        setCurrentMonth(newMonth);
+        setCurrentYear(newYear);
+        setSelectedDate(null);
+    };
 
     const [selectedDate, setSelectedDate] = React.useState<string | null>(null);
 
@@ -41,10 +69,19 @@ export const MobileCalendarOverlay: React.FC<MobileCalendarOverlayProps> = ({
             {/* Calendar Card */}
             <div className="relative w-[90%] max-w-sm bg-white/10 backdrop-blur-2xl border border-white/20 rounded-[40px] shadow-2xl p-6 overflow-hidden animate-in zoom-in-95 duration-300">
                 {/* Header */}
+                {/* Header with Navigation */}
                 <div className="flex items-center justify-between mb-6">
-                    <div>
-                        <h2 className="text-2xl font-black text-white tracking-tight">February</h2>
-                        <span className="text-xs font-bold text-white/50 uppercase tracking-widest">2026 トレンド予報</span>
+                    <div className="flex flex-col">
+                        <div className="flex items-center gap-2">
+                            <button onClick={handlePrevMonth} className="p-1 -ml-1 hover:bg-white/10 rounded-full transition-colors active:scale-95">
+                                <ChevronRightIcon className="w-4 h-4 text-white rotate-180" />
+                            </button>
+                            <h2 className="text-2xl font-black text-white tracking-tight w-32 text-center">{monthNames[currentMonth]}</h2>
+                            <button onClick={handleNextMonth} className="p-1 hover:bg-white/10 rounded-full transition-colors active:scale-95">
+                                <ChevronRightIcon className="w-4 h-4 text-white" />
+                            </button>
+                        </div>
+                        <span className="text-xs font-bold text-white/50 uppercase tracking-widest ml-1">{currentYear} トレンド予報</span>
                     </div>
                     <button
                         onClick={onClose}
@@ -64,7 +101,7 @@ export const MobileCalendarOverlay: React.FC<MobileCalendarOverlayProps> = ({
                     ))}
                     {Array.from({ length: daysInMonth }).map((_, i) => {
                         const day = i + 1;
-                        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                        const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
                         const event = MOCK_TRENDS.find(e => e.date === dateStr);
                         const isSelected = selectedDate === dateStr;
 
