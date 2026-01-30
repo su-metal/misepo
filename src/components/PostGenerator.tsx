@@ -389,27 +389,12 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
             }
           }}
           onPlusClick={mobileStep === 'confirm' ? handleGenerate : () => {
-            // If already on input, do nothing or reset?
-            // User requested that clicking plus opens the bottom sheet.
-            // If it's closed (platform), we open it.
-            // If it's open (input), maybe we keep it open.
-
-            // We want to force open the drawer to 'input' step
+            // New Post behavior: Reset all inputs and open drawer
             setMobileActiveTab('home');
             setOpenDrawerTrigger(prev => prev + 1);
 
-            // Should we reset text? Maybe not if just opening.
-            // But previous behavior was full reset.
-            // Let's assume opening means "New Post" -> Reset?
-            // "フッターナビの＋ボタンをタップしたら、ボトムシートが開くようにして"
-            // If I have typed something, close drawer, then tap +, do I want to see my draft?
-            // Or new?
-            // Usually + means New.
-            // Let's keep reset behavior but OPEN drawer.
             if (mobileStep !== 'result') {
-              // Only reset if not viewing result? 
-              // Actually mobileStep 'platform' means closed.
-              flow.setInputText('');
+              flow.handleResetAll();
             }
           }}
           onGenerate={handleGenerate}

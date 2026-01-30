@@ -624,6 +624,16 @@ export function useGeneratorFlow(props: {
     });
   }, [includeFooter, storeProfile.instagramFooter]);
 
+  const handleResetAll = useCallback(() => {
+    setInputText('');
+    setCustomPrompt('');
+    setStoreSupplement('');
+    setStarRating(null);
+    setResultGroups([]);
+    setRefiningKey(null);
+    setRefineText("");
+  }, []);
+
   return {
     platforms, setPlatforms,
     isMultiGenMode, setIsMultiGenMode,
@@ -663,5 +673,6 @@ export function useGeneratorFlow(props: {
     favorites,
     onToggleFavorite,
     isStyleLocked,
+    handleResetAll,
   };
 }
