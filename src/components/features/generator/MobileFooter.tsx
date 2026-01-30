@@ -77,7 +77,7 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
     // Curve parameters
     const footerHeight = 84;
     const notchDepth = 41;
-    const notchWidth = 140; // Balanced width to follow the ~72px button 
+    const notchWidth = 138; // Balanced width to follow the ~72px button 
     const cornerRadius = 42;
 
     const center = width / 2;
@@ -128,8 +128,8 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
                         absolute -top-[36px] left-1/2 -translate-x-1/2 w-[68px] h-[68px] rounded-full flex items-center justify-center z-20 
                         transition-all duration-300 border-[4px]
                         ${isConfirmStep
-                            ? 'bg-[#7F5AF0] border-[#c4b5fd] text-white rotate-0 scale-110'
-                            : 'bg-white border-[#f1f5f9] text-[#7F5AF0] rotate-180 scale-100 hover:scale-105'
+                            ? 'bg-[#7F5AF0] border-white/40 text-white rotate-0 scale-110'
+                            : 'bg-white border-slate-200 text-[#7F5AF0] rotate-180 scale-100 hover:scale-105'
                         }
                     `}
                     aria-label={isConfirmStep ? "Generate Post" : "New Post"}
