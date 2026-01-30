@@ -24,9 +24,27 @@ export function usePlan(user: any) {
 
     setLoading(true);
     try {
-      const res = await fetch(`/api/me/plan?t=${Date.now()}`, { cache: 'no-store' });
+      let res;
+      let lastError;
+      
+      // Simple retry logic: try up to 2 times
+      for (let i = 0; i < 2; i++) {
+        try {
+          res = await fetch(`/api/me/plan?t=${Date.now()}`, { cache: 'no-store' });
+          if (res.ok) break; // Success
+        } catch (e) {
+          lastError = e;
+          // Wait 1s before retry if it's the first attempt
+          if (i === 0) await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+      }
+
+      if (!res || !res.ok) {
+        throw lastError || new Error(`Fetch failed: ${res?.status}`);
+      }
+
       const data = await res.json();
-      if (res.ok && data.ok) {
+      if (data.ok) {
         setPlan({
           isPro: !!data.isPro,
           canUseApp: !!data.canUseApp,
@@ -40,7 +58,8 @@ export function usePlan(user: any) {
         });
       }
     } catch (err) {
-      console.error('Failed to fetch plan:', err);
+      // Downgrade to warn to avoid cluttering error monitoring for network flakes
+      console.warn('Failed to fetch plan:', err);
     } finally {
       setLoading(false);
     }

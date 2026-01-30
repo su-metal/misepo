@@ -89,7 +89,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
   const isEditMode = !!initialProfile;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-0 sm:p-4 animate-in fade-in duration-500">
+    <div className="fixed inset-0 z-[300] flex items-center justify-center p-0 sm:p-4 animate-in fade-in duration-500">
       {/* VisionOS Style Backdrop */}
       <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-md" />
 

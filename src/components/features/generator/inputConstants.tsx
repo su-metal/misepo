@@ -79,6 +79,7 @@ export interface PostInputFormProps {
     onMobileResultOpen?: (isOpen: boolean) => void;
     onStepChange?: (step: 'platform' | 'input' | 'confirm' | 'result') => void;
     restoreId?: string;
+    onOpenOnboarding?: () => void;
 }
 
 export const AVATAR_OPTIONS = [

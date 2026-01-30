@@ -11,6 +11,7 @@ import { PostResultTabs } from './features/generator/PostResultTabs';
 import GuestTour from './GuestTour';
 import PresetModal from './PresetModal';
 import LoadingModal from './LoadingModal';
+import Onboarding from './Onboarding';
 import { MobileFooter } from './features/generator/MobileFooter';
 import { PostInputFormProps } from './features/generator/inputConstants';
 
@@ -59,6 +60,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
   const [openDrawerTrigger, setOpenDrawerTrigger] = React.useState(0);
   const [resetTrigger, setResetTrigger] = React.useState(0);
   const [isMobileResultOpen, setIsMobileResultOpen] = React.useState(false);
+  const [showOnboarding, setShowOnboarding] = React.useState(false);
   const resultsRef = useRef<HTMLDivElement>(null);
 
   // Refs for GuestTour
@@ -163,6 +165,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
         <div className="hidden sm:block mx-3 sm:mx-8 mb-10 transition-all duration-1000 animate-in fade-in slide-in-from-top-4">
           <GeneratorHeader
             onOpenSettings={onOpenSettings || (() => { })}
+            onOpenOnboarding={() => setShowOnboarding(true)}
             storeProfile={storeProfile}
             plan={plan}
           />
@@ -250,6 +253,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
               restoreId={restorePost?.id}
               closeDrawerTrigger={closeDrawerTrigger}
               openDrawerTrigger={openDrawerTrigger}
+              onOpenOnboarding={() => setShowOnboarding(true)}
             />
           </div>
 
@@ -398,6 +402,17 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
             }
           }}
           onGenerate={handleGenerate}
+        />
+      )}
+
+      {showOnboarding && (
+        <Onboarding
+          initialProfile={storeProfile}
+          onSave={async (profile) => {
+            setShowOnboarding(false);
+            if (onTaskComplete) onTaskComplete();
+          }}
+          onCancel={() => setShowOnboarding(false)}
         />
       )}
     </div>

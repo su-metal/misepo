@@ -30,7 +30,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     refineText, onRefineTextChange, onPerformRefine, isRefining,
     includeFooter, onIncludeFooterChange, onAutoFormat,
     isAutoFormatting, onCopy, onMobileResultOpen, restoreId,
-    onStepChange, closeDrawerTrigger, openDrawerTrigger
+    onStepChange, closeDrawerTrigger, openDrawerTrigger, onOpenOnboarding
 }) => {
     const textareaRef = React.useRef<HTMLTextAreaElement>(null);
     const dateObj = new Date();
@@ -264,7 +264,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
                         <div className="flex flex-col items-end gap-3">
                             {/* Decorative Avatar (No Name) */}
-                            <div className="relative group">
+                            <div className="relative group cursor-pointer" onClick={onOpenOnboarding}>
                                 <div className="absolute inset-0 bg-[#7F5AF0] rounded-full blur-[10px] opacity-20 group-hover:opacity-40 transition-opacity" />
                                 <div className="relative w-10 h-10 rounded-full bg-white flex items-center justify-center overflow-hidden shadow-md border-[2px] border-slate-100">
                                     <span className="text-[var(--plexo-black)] font-black text-lg" style={{ transform: 'rotate(-10deg)', marginTop: '2px' }}>ミ</span>

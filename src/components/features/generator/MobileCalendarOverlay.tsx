@@ -159,8 +159,8 @@ export const MobileCalendarOverlay: React.FC<MobileCalendarOverlayProps> = ({
 
                 {/* Calendar Grid */}
                 <div className="grid grid-cols-7 gap-1 mb-6 min-h-[240px]">
-                    {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(d => (
-                        <div key={d} className="text-center text-[10px] font-bold text-white/30 py-2">{d}</div>
+                    {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => (
+                        <div key={`${d}-${i}`} className="text-center text-[10px] font-bold text-white/30 py-2">{d}</div>
                     ))}
                     {Array.from({ length: startDay }).map((_, i) => (
                         <div key={`empty-${i}`} />
