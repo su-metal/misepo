@@ -28,7 +28,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     refineText, onRefineTextChange, onPerformRefine, isRefining,
     includeFooter, onIncludeFooterChange, onAutoFormat,
     isAutoFormatting, onCopy, onMobileResultOpen, restoreId,
-    onStepChange, closeDrawerTrigger
+    onStepChange, closeDrawerTrigger, openDrawerTrigger
 }) => {
     const textareaRef = React.useRef<HTMLTextAreaElement>(null);
     const dateObj = new Date();
@@ -74,12 +74,19 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     React.useEffect(() => {
         if (closeDrawerTrigger && closeDrawerTrigger > 0) {
             setIsStepDrawerOpen(false);
-            // We just close the drawer, leaving 'mobileStep' as is (or reset it to 'platform' if desired, 
-            // but user asked to keep content. 'mobileStep' defines which drawer STEP is open.
-            // If we close the drawer, effectively we are back to 'platform' VIEW, but the STATE is preserved.
-            // Actually, if we close the drawer, we just close the overlay.
+            // Also reset step to 'platform' so that footer contrast updates correctly (Dark Mode)
+            // Content is preserved in 'inputText' prop from parent, so state is safe.
+            setMobileStep('platform');
         }
     }, [closeDrawerTrigger]);
+
+    // Handle Open Drawer Explicitly (Footer Plus Tap when at Home)
+    React.useEffect(() => {
+        if (openDrawerTrigger && openDrawerTrigger > 0) {
+            setMobileStep('input');
+            setIsStepDrawerOpen(true);
+        }
+    }, [openDrawerTrigger]);
 
     // Auto-expand and switch to result step solely when generation completes
     const prevIsGenerating = React.useRef(isGenerating);
@@ -342,30 +349,40 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                         <div
                             onClick={handleOmakaseStart}
                             className={`
-                                p-7 px-8 rounded-[36px] bg-white border relative overflow-hidden group shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer active:scale-95
-                                ${isOmakaseLoading ? 'border-[var(--plexo-yellow)]' : 'border-[#EEEEEE]'}
+                                p-7 px-8 rounded-[36px] relative overflow-hidden group shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer active:scale-95
+                                ${isOmakaseLoading ? 'border-[var(--plexo-yellow)] bg-black/40' : 'border-white/20 bg-white/5 backdrop-blur-xl hover:bg-white/10 hover:border-white/30'}
+                                border
                             `}
                         >
-                            {/* Animated Background for Loading */}
+                            {/* Holographic/Iridescent Gradient Background Effect (Subtle) */}
+                            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 via-transparent to-cyan-500/20 opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
+
+                            {/* Animated Shimmer - Always active but subtle */}
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-12 translate-x-[-150%] animate-shimmer" />
+
+                            {/* Loading State Shimmer override */}
                             {isOmakaseLoading && (
                                 <div className="absolute inset-0 bg-gradient-to-r from-[var(--plexo-yellow)]/5 via-[var(--plexo-yellow)]/20 to-[var(--plexo-yellow)]/5 animate-shimmer" />
                             )}
 
-                            <div className="absolute -right-6 -top-6 w-32 h-32 bg-[var(--plexo-yellow)]/10 rounded-full blur-3xl opacity-50 group-hover:opacity-100 transition-opacity" />
+                            <div className="absolute -right-6 -top-6 w-32 h-32 bg-[var(--plexo-yellow)]/20 rounded-full blur-3xl opacity-50 group-hover:opacity-100 transition-opacity" />
+
                             <div className="relative z-10 flex items-center justify-between">
                                 <div>
-                                    <div className="inline-flex px-3 py-1 rounded-full bg-[var(--plexo-dark-gray)] text-[10px] font-black text-[var(--plexo-yellow)] uppercase tracking-[0.2em] mb-2 shadow-sm">Premium</div>
-                                    <h4 className="text-lg font-black text-[#111111] tracking-tight">AI Omakase Mode</h4>
-                                    <p className="text-[11px] font-bold text-[#999999] uppercase tracking-wider mt-0.5">Automated Content Strategy</p>
+                                    <div className="inline-flex px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[10px] font-black text-[var(--plexo-yellow)] uppercase tracking-[0.2em] mb-2 shadow-sm">Premium</div>
+                                    <h4 className="text-lg font-black text-white tracking-tight">AI Omakase Mode</h4>
+                                    <p className="text-[11px] font-bold text-white/60 uppercase tracking-wider mt-0.5">Automated Content Strategy</p>
                                 </div>
                                 <div className={`
-                                    w-12 h-12 rounded-full border flex items-center justify-center transition-all duration-500 shadow-inner
+                                    w-12 h-12 rounded-full border flex items-center justify-center transition-all duration-500 shadow-inner overflow-hidden relative
                                     ${isOmakaseLoading
                                         ? 'bg-[var(--plexo-yellow)] text-black border-[var(--plexo-yellow)] animate-pulse'
-                                        : 'bg-[#FAFAFA] border-[#EEEEEE] text-[var(--plexo-med-gray)] group-hover:bg-[var(--plexo-yellow)] group-hover:text-[var(--plexo-black)] group-hover:border-[var(--plexo-yellow)]'
+                                        : 'bg-white/10 border-white/20 text-white group-hover:bg-[var(--plexo-yellow)] group-hover:text-[var(--plexo-black)] group-hover:border-[var(--plexo-yellow)]'
                                     }
                                 `}>
-                                    <AutoSparklesIcon className="w-6 h-6" />
+                                    <AutoSparklesIcon className="w-6 h-6 relative z-10" />
+                                    {/* Icon Shine */}
+                                    <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform rotate-45" />
                                 </div>
                             </div>
                         </div>
@@ -416,9 +433,11 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                 <button
                                     onClick={() => {
                                         setIsStepDrawerOpen(false);
-                                        if (mobileStep !== 'result') {
-                                            setMobileStep('platform');
-                                        }
+                                        setIsStepDrawerOpen(false);
+                                        // ALWAYS reset to platform to ensure footer contrast resets (Dark Mode)
+                                        // If we want to preserve 'result' state, we'd need another way to signal "Drawer Hidden but Result Active" 
+                                        // but for now, closing the drawer should visually return to platform mode completely.
+                                        setMobileStep('platform');
                                     }}
                                     className="w-10 h-10 rounded-full bg-white border border-[#E5E5E5] flex items-center justify-center shadow-sm active:scale-90 transition-all ml-2 z-20"
                                 >
