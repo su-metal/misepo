@@ -109,7 +109,7 @@ export const UnifiedFlowSection = () => {
     ];
 
     return (
-        <section id="flow" className="py-24 md:py-32 bg-[#F9F7F2] overflow-hidden scroll-mt-20">
+        <section id="flow" className="py-24 md:py-32 bg-white overflow-hidden scroll-mt-20">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Section Header */}
                 <div className="text-center max-w-3xl mx-auto mb-20 md:mb-32">

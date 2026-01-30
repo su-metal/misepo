@@ -215,30 +215,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
     return (
         // <div className="flex flex-col h-full min-h-[100dvh] relative overflow-hidden font-inter bg-[#6339f9]">
-        <div className="flex flex-col h-full min-h-[100dvh] relative overflow-hidden font-inter bg-slate-50">
-
-            {/* Vibrant Background Blurs (OLD - Solid Deep Violet) */}
-            {/* 
-            <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden bg-[#6339f9]">
-                <div className="absolute top-[-10%] right-[-10%] w-[80%] h-[80%] bg-[#F472B6] rounded-full blur-[140px] opacity-20" />
-                <div className="absolute bottom-[-10%] left-[-10%] w-[70%] h-[70%] bg-[#22D3EE] rounded-full blur-[120px] opacity-15" />
-                <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-multiply bg-[url('https://www.transparenttextures.com/patterns/p6.png')]" />
-            </div>
-            */}
-
-            {/* Light airy Gradient Background (NEW) */}
-            <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden">
-                {/* Base airy gradient */}
-                <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 via-white to-purple-50" />
-
-                {/* Random floating blobs - High Visibility */}
-                <div className="absolute top-[-20%] right-[-10%] w-[70%] h-[70%] bg-purple-300 rounded-full blur-[100px] opacity-60 animate-pulse" style={{ animationDuration: '8s' }} />
-                <div className="absolute top-[40%] left-[-20%] w-[60%] h-[60%] bg-cyan-300 rounded-full blur-[100px] opacity-50 animate-pulse" style={{ animationDuration: '10s', animationDelay: '1s' }} />
-                <div className="absolute bottom-[-20%] right-[10%] w-[50%] h-[50%] bg-pink-300 rounded-full blur-[100px] opacity-50 animate-pulse" style={{ animationDuration: '12s', animationDelay: '2s' }} />
-
-                {/* Texture */}
-                <div className="absolute inset-0 opacity-[0.4] mix-blend-overlay bg-[url('https://www.transparenttextures.com/patterns/p6.png')]" />
-            </div>
+        <div className="flex flex-col h-full min-h-[100dvh] relative overflow-hidden font-inter bg-white">
 
             {/* Step 1: Home (Platform Grid) */}
             <div className={`flex flex-col h-full overflow-hidden relative transition-all duration-500 ${isStepDrawerOpen ? 'blur-md scale-[0.98] opacity-60' : 'opacity-100'}`}>
@@ -333,7 +310,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         name: 'LINE',
                                         tagline: 'Messages',
                                         sub: 'リピーター獲得',
-                                        icon: <LineIcon className="w-7 h-7" isActive={platforms.includes(Platform.Line)} />,
+                                        icon: <LineIcon className="w-7 h-7" isActive={platforms.includes(Platform.Line)} activeTextFill="white" />,
                                         color: 'from-green-500/10 to-emerald-500/10'
                                     };
                                     case Platform.GoogleMaps: return {
@@ -359,8 +336,8 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         className={`
                                             relative rounded-[40px] overflow-hidden cursor-pointer border transition-all duration-500 group
                                             ${bentoClass}
-                                            ${isActive
-                                                ? 'bg-[#7F5AF0] border-[#7F5AF0] shadow-xl scale-[0.98] animate-tactile-pop'
+                                             ${isActive
+                                                ? 'bg-[#f3ff5f] border-[#f3ff5f] shadow-xl scale-[0.98] animate-tactile-pop'
                                                 : `bg-white border-slate-200 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:border-slate-300 hover:shadow-md active:scale-[0.98]`
                                             }
                                         `}
@@ -370,7 +347,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             <div className="flex justify-between items-start">
                                                 <div className={`
                                                     transition-all duration-300
-                                                    ${isActive ? 'text-white' : 'text-slate-400 group-hover:text-slate-600'}
+                                                     ${isActive ? 'text-black' : 'text-slate-400 group-hover:text-slate-600'}
                                                 `}>
                                                     {details.icon}
                                                 </div>
@@ -382,7 +359,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                     }}
                                                     className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 active:scale-90 shadow-lg ${isActive ? 'bg-white' : 'bg-white shadow-[0_4px_10px_rgba(0,0,0,0.05)]'}`}
                                                 >
-                                                    <ChevronRightIcon className={`w-5 h-5 ${isActive ? 'text-[#7F5AF0]' : 'text-slate-300'}`} />
+                                                    <ChevronRightIcon className={`w-5 h-5 ${isActive ? 'text-black' : 'text-slate-300'}`} />
                                                 </div>
                                             </div>
 
@@ -393,10 +370,10 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                 </span>
                                                 */}
                                                 <div className="flex flex-col leading-tight">
-                                                    <h3 className={`font-black tracking-tighter text-xl transition-colors duration-500 ${isActive ? 'text-white' : 'text-slate-800'}`} style={{ fontFamily: 'Inter, sans-serif' }}>
+                                                    <h3 className={`font-black tracking-tighter text-xl transition-colors duration-500 ${isActive ? 'text-black' : 'text-slate-800'}`} style={{ fontFamily: 'Inter, sans-serif' }}>
                                                         {details.name}
                                                     </h3>
-                                                    <p className={`text-[11px] font-medium transition-opacity ${isActive ? 'text-white/70' : 'text-slate-400'}`}>
+                                                    <p className={`text-[11px] font-medium transition-opacity ${isActive ? 'text-black/60' : 'text-slate-400'}`}>
                                                         {details.sub}
                                                     </p>
                                                 </div>
@@ -408,61 +385,52 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                         })()}
                     </div>
 
-                    {/* Bottom Section - Promotional Card (Prism Artifact Style) */}
+                    {/* Bottom Section - Promotional Card (AI Omakase Mode Redesign) */}
                     <div className="mt-auto pt-2">
                         <div
                             onClick={handleOmakaseStart}
                             className={`
                                 relative group transition-all duration-500 cursor-pointer active:scale-95 my-1
-                                p-[2px] rounded-[36px]
+                                rounded-[40px] overflow-hidden
                                 ${isOmakaseLoading ? 'scale-[0.98]' : 'hover:scale-[1.02] hover:-translate-y-1'}
                             `}
+                            style={{ backgroundColor: '#4e29ce' }}
                         >
-                            {/* 1. Radiant Aura Container (Clipped Background) */}
-                            <div className="absolute inset-0 rounded-[36px] overflow-hidden pointer-events-none">
-                                {/* Radiant Aura Border - Magical Spinning Beam */}
-                                <div
-                                    className="absolute inset-[-150%] animate-spin-slow opacity-100 blur-md transition-all duration-700"
-                                    style={{
-                                        background: 'conic-gradient(from 0deg, transparent 0deg, #22D3EE 60deg, #FACC15 120deg, #F472B6 180deg, transparent 240deg)'
-                                    }}
-                                />
-                            </div>
+                            {/* Decorative Background Elements */}
+                            <div className="absolute top-1/2 right-[5%] -translate-y-1/2 w-48 h-48 bg-white/5 rounded-full blur-[60px] pointer-events-none" />
 
-                            {/* 2. Pearlescent Content Layer (Front) - White/Bright */}
-                            <div className={`
-                                relative rounded-[34px] p-7 px-8
-                                bg-white/95 backdrop-blur-xl transition-colors duration-500
-                                flex items-center justify-between
-                            `}>
-                                {/* Inner Subtle Iridescence */}
-                                <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-white to-pink-500/10 rounded-[33px] opacity-100 pointer-events-none" />
-
-                                {/* Text Content - High Contrast Dark */}
-                                <div className="relative z-10">
-                                    <div className="inline-flex px-3 py-1 rounded-full bg-gradient-to-r from-[#FFD700] to-[#FFA500] text-[10px] font-black text-white uppercase tracking-[0.2em] mb-2 shadow-md animate-bounce-slow">
-                                        Premium
+                            <div className="relative p-7 px-8 flex items-center justify-between">
+                                {/* Left Content */}
+                                <div className="relative z-10 flex flex-col gap-5">
+                                    <div className="self-start inline-flex px-5 py-2.5 rounded-full bg-[#f3ff5f] text-[10px] font-black text-black uppercase tracking-[0.1em] shadow-lg">
+                                        PREMIUM FEATURE
                                     </div>
-                                    <h4 className="text-xl font-black text-gray-900 tracking-tight drop-shadow-sm">
-                                        AI Omakase Mode
-                                    </h4>
-                                    <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider mt-0.5 group-hover:text-gray-800 transition-colors">
-                                        Automated Content Strategy
-                                    </p>
+                                    <div className="space-y-1">
+                                        <h4 className="text-[28px] font-black text-white tracking-tight leading-none">
+                                            AI Omakase Mode
+                                        </h4>
+                                        <p className="text-[11px] font-bold text-white/50 uppercase tracking-[0.05em]">
+                                            AUTOMATED CONTENT STRATEGY
+                                        </p>
+                                    </div>
                                 </div>
 
-                                {/* Icon Container (Bright Orb) */}
-                                <div className={`
-                                    w-14 h-14 rounded-full flex items-center justify-center transition-all duration-500 relative z-10 shadow-md
-                                    ${isOmakaseLoading
-                                        ? 'bg-[var(--plexo-yellow)] text-black shadow-[0_0_20px_var(--plexo-yellow)]'
-                                        : 'bg-gradient-to-tr from-gray-100 to-white text-gray-900 border border-gray-200 group-hover:from-cyan-400 group-hover:to-blue-500 group-hover:text-white group-hover:shadow-[0_4px_15px_rgba(6,182,212,0.4)]'
-                                    }
-                                `}>
-                                    {isOmakaseLoading ? (
-                                        <div className="w-6 h-6 border-2 border-black border-t-transparent rounded-full animate-spin" />
-                                    ) : (
-                                        <AutoSparklesIcon className="w-6 h-6" />
+                                {/* Right Decoration (Sparkles) */}
+                                <div className="relative">
+                                    {/* Glass Morphism Base */}
+                                    <div className="w-20 h-20 bg-white/10 backdrop-blur-md rounded-[32px] flex items-center justify-center border border-white/20 relative overflow-visible">
+                                        <div className="relative">
+                                            {/* Primary Sparkle */}
+                                            <SparklesIcon className="w-9 h-9 text-[#f3ff5f] drop-shadow-[0_0_8px_rgba(243,255,95,0.4)]" />
+                                            {/* Accent Sparkles */}
+                                            <SparklesIcon className="absolute -top-1 -right-3 w-3 h-3 text-[#f3ff5f]" />
+                                            <SparklesIcon className="absolute -bottom-1 -right-4 w-5 h-5 text-[#f3ff5f]" />
+                                        </div>
+                                    </div>
+
+                                    {/* Pulse effect if loading */}
+                                    {isOmakaseLoading && (
+                                        <div className="absolute inset-0 bg-[#f3ff5f] rounded-[32px] animate-ping opacity-20" />
                                     )}
                                 </div>
                             </div>

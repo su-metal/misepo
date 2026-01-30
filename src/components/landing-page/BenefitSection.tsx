@@ -7,7 +7,7 @@ export const BenefitSection = () => {
     return (
         <>
             {/* Why MisePo Now */}
-            <section className="py-20 md:py-32 bg-[#F9F7F2] relative overflow-hidden">
+            <section className="py-20 md:py-32 bg-white relative overflow-hidden">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     <div className="text-center mb-20">
                         <span className="bg-white text-[#E88BA3] font-bold tracking-widest text-xs uppercase mb-6 px-4 py-1.5 border border-[#E88BA3]/20 rounded-full shadow-sm inline-block">Why MisePo?</span>
@@ -86,8 +86,6 @@ export const BenefitSection = () => {
             {/* Solution */}
             <section id="solution" className="py-20 md:py-32 bg-slate-900 text-white overflow-hidden relative">
                 <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-30">
-                    <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-[#E88BA3] rounded-full blur-[100px]" />
-                    <div className="absolute bottom-[-10%] left-[-5%] w-[600px] h-[600px] bg-[#4DB39A] rounded-full blur-[100px]" />
                 </div>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     <div className="text-center mb-24">

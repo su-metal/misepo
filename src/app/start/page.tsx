@@ -28,7 +28,7 @@ function StartPageContent() {
   // 2. Intent is trial and user is logged in (about to redirect)
   if (isRedirecting || (intent === "trial" && isLoggedIn)) {
     return (
-      <main className="min-h-screen bg-[#f9f5f2] flex items-center justify-center relative overflow-hidden">
+      <main className="min-h-screen bg-white flex items-center justify-center relative overflow-hidden">
         <div className="relative z-10 animate-in fade-in zoom-in duration-700">
           <div className="bg-white border-[6px] border-black shadow-[16px_16px_0px_0px_rgba(0,0,0,0.1)] rounded-[32px] p-12 flex flex-col items-center gap-8">
             <div className="relative">
@@ -48,7 +48,7 @@ function StartPageContent() {
   }
 
   return (
-    <main className="min-h-screen sm:max-h-screen bg-[#f9f5f2] text-black flex items-center justify-center px-4 py-4 relative overflow-hidden selection:bg-[#F5CC6D]">
+    <main className="min-h-screen sm:max-h-screen bg-white text-black flex items-center justify-center px-4 py-4 relative overflow-hidden selection:bg-[#F5CC6D]">
       {/* Decorative Elements */}
       <div className="fixed inset-0 pointer-events-none z-0">
         <div className="absolute top-[10%] left-[10%] w-32 h-32 border-[4px] border-black/5 rounded-full rotate-12"></div>
@@ -190,7 +190,7 @@ function StartPageContent() {
 
 export default function StartPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#f9f5f2] flex items-center justify-center font-black italic">Loading...</div>}>
+    <Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center font-black italic">Loading...</div>}>
       <StartPageContent />
     </Suspense>
   );

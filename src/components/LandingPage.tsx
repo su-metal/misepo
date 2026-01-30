@@ -171,7 +171,7 @@ open11:00-close 17:00
   ];
 
   return (
-    <div className="min-h-screen bg-[#f9f5f2] text-slate-900 font-sans selection:bg-[#F5CC6D]">
+    <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-[#F5CC6D]">
       <Header scrolled={scrolled} isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} loginWithGoogle={loginWithGoogle} />
       <HeroSection />
       <ProblemSection problems={problems} isMobile={isMobile} />
