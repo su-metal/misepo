@@ -5,12 +5,14 @@ import { UI, TOKENS } from '../../../constants';
 
 interface GeneratorHeaderProps {
     onOpenSettings: () => void;
+    onOpenOnboarding: () => void;
     storeProfile: StoreProfile;
     plan: UserPlan;
 }
 
 export const GeneratorHeader: React.FC<GeneratorHeaderProps> = ({
     onOpenSettings,
+    onOpenOnboarding,
     storeProfile,
     plan,
 }) => {
@@ -18,24 +20,27 @@ export const GeneratorHeader: React.FC<GeneratorHeaderProps> = ({
         <header className="sticky top-0 sm:top-4 z-[100] w-full sm:px-0">
             <div className={`py-4 px-6 sm:px-8 flex items-center justify-between gap-4 transition-all duration-300 ${TOKENS.container} bg-white/80 backdrop-blur-md border border-white/50 shadow-sm sm:rounded-[32px]`}>
 
-                {/* Left: Brand & Store Info */}
-                <div className="flex items-center gap-4">
+                {/* Left: Brand & Store Info - Interactive Trigger for Onboarding */}
+                <button
+                    onClick={onOpenOnboarding}
+                    className="flex items-center gap-4 text-left group hover:opacity-80 transition-all active:scale-95 cursor-pointer"
+                >
                     {/* Stylized Logo Avatar */}
-                    <div className="w-12 h-12 rounded-full bg-[var(--plexo-black)] border border-[#EEEEEE] shadow-sm flex items-center justify-center overflow-hidden flex-shrink-0">
+                    <div className="w-12 h-12 rounded-full bg-[var(--plexo-black)] border border-[#EEEEEE] shadow-sm flex items-center justify-center overflow-hidden flex-shrink-0 group-hover:shadow-md group-hover:-translate-y-0.5 transition-all">
                         <span className="text-[var(--plexo-yellow)] font-black text-xl" style={{ transform: 'rotate(-10deg)', marginTop: '2px' }}>ミ</span>
                     </div>
 
                     {/* Typography */}
                     <div className="flex flex-col">
-                        <span className="text-[10px] font-black text-[#AAAAAA] uppercase tracking-[0.2em] leading-none mb-1">Welcome</span>
+                        <span className="text-[10px] font-black text-[#AAAAAA] uppercase tracking-[0.2em] leading-none mb-1 group-hover:text-[#7F5AF0] transition-colors">Business Profile</span>
                         <div className="flex items-end gap-2">
-                            <span className="text-xl font-black text-[var(--plexo-black)] tracking-tight leading-none">{storeProfile?.name || 'Store Admin'}</span>
+                            <span className="text-xl font-black text-[var(--plexo-black)] tracking-tight leading-none truncate max-w-[120px] sm:max-w-none">{storeProfile?.name || 'Store Admin'}</span>
                             {plan?.plan === 'pro' && (
                                 <span className="mb-0.5 px-1.5 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider bg-[var(--plexo-black)] text-[var(--plexo-yellow)] leading-none">PRO</span>
                             )}
                         </div>
                     </div>
-                </div>
+                </button>
 
                 {/* Right: Credits & Menu */}
                 <div className="flex items-center gap-6">

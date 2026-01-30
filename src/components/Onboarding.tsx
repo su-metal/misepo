@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { StoreProfile } from '../types';
 import { INDUSTRIES } from '../constants';
+import { AutoResizingTextarea } from './features/generator/AutoResizingTextarea';
 
 interface OnboardingProps {
   onSave: (profile: StoreProfile) => void;
@@ -88,7 +89,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
   const isEditMode = !!initialProfile;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-0 sm:p-4 animate-in fade-in duration-500">
+    <div className="fixed inset-0 z-[300] flex items-center justify-center p-0 sm:p-4 animate-in fade-in duration-500">
       {/* VisionOS Style Backdrop */}
       <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-md" />
 
@@ -153,7 +154,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
 
         {/* RIGHT PANEL: Modern Form */}
         <div className="flex-1 bg-white overflow-y-auto overscroll-contain animate-in slide-in-from-right-8 duration-700">
-          <form onSubmit={handleSubmit} className="p-8 md:p-14 space-y-12">
+          <form onSubmit={handleSubmit} className="p-5 md:p-14 space-y-12">
 
             {/* Industry Selection */}
             <div className="space-y-6">
@@ -193,7 +194,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
                     value={name}
                     onChange={(e) => handleNameChange(e.target.value)}
                     placeholder="例：焼きたてパンの店 アン"
-                    className="w-full px-6 py-5 rounded-[20px] transition-all text-lg text-slate-800 font-bold tracking-tight placeholder:text-slate-300 outline-none bg-slate-50 focus:bg-white focus:shadow-lg focus:shadow-slate-100/50 focus:ring-2 focus:ring-[#7F5AF0]/10"
+                    className="w-full px-6 py-5 rounded-[20px] transition-all text-lg text-slate-800 font-bold tracking-tight placeholder:text-slate-300 outline-none bg-slate-50 border border-slate-200 focus:bg-white focus:shadow-lg focus:shadow-slate-100/50 focus:ring-2 focus:ring-[#7F5AF0]/10"
                     required
                   />
                   <div className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#7F5AF0] transition-colors">
@@ -248,7 +249,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
                     value={region}
                     onChange={(e) => setRegion(e.target.value)}
                     placeholder="地名を入れるとより親しみやすい文章になります"
-                    className="w-full px-6 py-5 rounded-[20px] transition-all text-lg text-slate-800 font-bold tracking-tight placeholder:text-slate-300 outline-none bg-slate-50 focus:bg-white focus:shadow-lg focus:shadow-slate-100/50 focus:ring-2 focus:ring-[#7F5AF0]/10"
+                    className="w-full px-6 py-5 rounded-[20px] transition-all text-lg text-slate-800 font-bold tracking-tight placeholder:text-slate-300 outline-none bg-slate-50 border border-slate-200 focus:bg-white focus:shadow-lg focus:shadow-slate-100/50 focus:ring-2 focus:ring-[#7F5AF0]/10"
                   />
                   <div className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#7F5AF0] transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
@@ -262,17 +263,16 @@ const Onboarding: React.FC<OnboardingProps> = ({
               <div className="flex items-center justify-between">
                 <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">施設の特徴・こだわり</h3>
               </div>
-              <textarea
+              <AutoResizingTextarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="例：創業100年の老舗です。全客室から海が見渡せます。地元の新鮮な魚介類を使った料理が自慢です..."
-                rows={5}
-                className="w-full px-6 py-5 rounded-[24px] transition-all resize-none text-base text-slate-800 font-medium leading-relaxed placeholder:text-slate-300 outline-none bg-slate-50 focus:bg-white focus:shadow-lg focus:shadow-slate-100/50 focus:ring-2 focus:ring-[#7F5AF0]/10"
+                className="w-full px-6 py-5 rounded-[24px] transition-all resize-none text-base text-slate-800 font-medium leading-relaxed placeholder:text-slate-300 outline-none bg-slate-50 border border-slate-200 focus:bg-white focus:shadow-lg focus:shadow-slate-100/50 focus:ring-2 focus:ring-[#7F5AF0]/10 min-h-[120px]"
               />
             </div>
 
             {/* Instagram Footer: Info Card */}
-            <div className="bg-slate-50/50 rounded-[24px] p-6 space-y-4 border border-slate-100 transition-all hover:bg-white hover:shadow-md group">
+            <div className="bg-slate-50/50 rounded-[24px] p-4 md:p-6 space-y-4 border border-slate-100 transition-all hover:bg-white hover:shadow-md group">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 flex items-center justify-center text-white shadow-sm">
@@ -284,12 +284,11 @@ const Onboarding: React.FC<OnboardingProps> = ({
                 </div>
                 <span className="text-[9px] font-black text-slate-400 bg-white border border-slate-200 px-3 py-1 rounded-full uppercase tracking-widest">Option</span>
               </div>
-              <textarea
+              <AutoResizingTextarea
                 value={instagramFooter}
                 onChange={(e) => setInstagramFooter(e.target.value)}
                 placeholder="📍 アクセス情報や営業時間をセット..."
-                rows={4}
-                className="w-full px-5 py-4 rounded-xl transition-all resize-none text-sm text-slate-700 leading-relaxed placeholder-slate-300 font-medium min-h-[100px] outline-none bg-white border border-slate-200 focus:border-[#E1306C]/50 focus:ring-2 focus:ring-[#E1306C]/10"
+                className="w-full px-4 md:px-5 py-4 rounded-xl transition-all resize-none text-sm text-slate-700 leading-relaxed placeholder-slate-300 font-medium min-h-[100px] outline-none bg-white border border-slate-200 focus:border-[#E1306C]/50 focus:ring-2 focus:ring-[#E1306C]/10"
               />
             </div>
 

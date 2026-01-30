@@ -129,20 +129,23 @@ export async function DELETE(req: NextRequest) {
 
   try {
     let content: string | null = null;
-    let id: string|null = null;
+    let id: string | null = null;
+    let presetId: string | null = null;
     
     try {
       const body = await req.json();
       content = body.content;
       id = body.id;
+      presetId = body.presetId;
     } catch {
       const { searchParams } = new URL(req.url);
       content = searchParams.get('content');
       id = searchParams.get('id');
+      presetId = searchParams.get('presetId');
     }
 
-    if (!content && !id) {
-       return NextResponse.json({ error: 'Missing content or id' }, { status: 400 });
+    if (!content && !id && !presetId) {
+       return NextResponse.json({ error: 'Missing content, id, or presetId' }, { status: 400 });
     }
 
     const query = supabase
@@ -150,15 +153,29 @@ export async function DELETE(req: NextRequest) {
       .delete()
       .eq('user_id', user.id);
     
-    if (id) query.eq('id', id);
-    else query.eq('content', content);
+    if (id) {
+      query.eq('id', id);
+    } else {
+      if (presetId) query.eq('preset_id', presetId);
+      if (content) query.eq('content', content);
+      
+      const { searchParams } = new URL(req.url);
+      const platform = searchParams.get('platform') || (await req.clone().json().catch(() => ({}))).platform;
+      if (platform) {
+        if (platform === 'sns_all') {
+          query.neq('platform', 'Google Maps');
+        } else {
+          query.eq('platform', platform);
+        }
+      }
+    }
 
     const { error } = await query;
     if (error) throw error;
 
     return NextResponse.json({ ok: true, message: 'Removed' });
   } catch (error: any) {
-    console.error('Error removing favorite:', error);
+    console.error('Error removing learning source:', error);
     return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
   }
 }
