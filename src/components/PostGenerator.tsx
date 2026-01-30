@@ -56,6 +56,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
   const [mobileActiveTab, setMobileActiveTab] = React.useState<'home' | 'history' | 'learning' | 'settings'>('home');
   const [mobileStep, setMobileStep] = React.useState<'platform' | 'input' | 'confirm' | 'result'>('platform');
   const [closeDrawerTrigger, setCloseDrawerTrigger] = React.useState(0);
+  const [openDrawerTrigger, setOpenDrawerTrigger] = React.useState(0);
   const [resetTrigger, setResetTrigger] = React.useState(0);
   const [isMobileResultOpen, setIsMobileResultOpen] = React.useState(false);
   const resultsRef = useRef<HTMLDivElement>(null);
@@ -242,6 +243,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
               onStepChange={setMobileStep}
               restoreId={restorePost?.id}
               closeDrawerTrigger={closeDrawerTrigger}
+              openDrawerTrigger={openDrawerTrigger}
             />
           </div>
 
@@ -381,9 +383,28 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
             }
           }}
           onPlusClick={mobileStep === 'confirm' ? handleGenerate : () => {
+            // If already on input, do nothing or reset?
+            // User requested that clicking plus opens the bottom sheet.
+            // If it's closed (platform), we open it.
+            // If it's open (input), maybe we keep it open.
+
+            // We want to force open the drawer to 'input' step
             setMobileActiveTab('home');
-            flow.setInputText('');
-            setResetTrigger(prev => prev + 1);
+            setOpenDrawerTrigger(prev => prev + 1);
+
+            // Should we reset text? Maybe not if just opening.
+            // But previous behavior was full reset.
+            // Let's assume opening means "New Post" -> Reset?
+            // "フッターナビの＋ボタンをタップしたら、ボトムシートが開くようにして"
+            // If I have typed something, close drawer, then tap +, do I want to see my draft?
+            // Or new?
+            // Usually + means New.
+            // Let's keep reset behavior but OPEN drawer.
+            if (mobileStep !== 'result') {
+              // Only reset if not viewing result? 
+              // Actually mobileStep 'platform' means closed.
+              flow.setInputText('');
+            }
           }}
           onGenerate={handleGenerate}
         />
