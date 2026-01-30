@@ -344,45 +344,53 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                         })()}
                     </div>
 
-                    {/* Bottom Section - Promotional Card */}
+                    {/* Bottom Section - Promotional Card (Prism Artifact Style) */}
                     <div className="mt-auto pt-0">
                         <div
                             onClick={handleOmakaseStart}
                             className={`
-                                p-7 px-8 rounded-[36px] relative overflow-hidden group shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer active:scale-95
-                                ${isOmakaseLoading ? 'border-[var(--plexo-yellow)] bg-black/40' : 'border-white/20 bg-white/5 backdrop-blur-xl hover:bg-white/10 hover:border-white/30'}
-                                border
+                                relative rounded-[36px] overflow-hidden group transition-all duration-500 cursor-pointer active:scale-95
+                                ${isOmakaseLoading ? 'scale-[0.98]' : 'hover:scale-[1.02] hover:-translate-y-1'}
                             `}
                         >
-                            {/* Holographic/Iridescent Gradient Background Effect (Subtle) */}
-                            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 via-transparent to-cyan-500/20 opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
+                            {/* 1. Radiant Aura Border (Behind) - Bright Rainbow */}
+                            <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 via-yellow-400 to-pink-500 animate-spin-slow opacity-100 blur-sm transition-all duration-700" />
 
-                            {/* Animated Shimmer - Always active but subtle */}
-                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-12 translate-x-[-150%] animate-shimmer" />
+                            {/* 2. Pearlescent Content Layer (Front) - White/Bright */}
+                            <div className={`
+                                relative m-[2px] rounded-[35px] p-7 px-8 h-full
+                                bg-white/95 backdrop-blur-xl transition-colors duration-500
+                                flex items-center justify-between
+                            `}>
+                                {/* Inner Subtle Iridescence */}
+                                <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-white to-pink-500/10 opacity-100 pointer-events-none" />
 
-                            {/* Loading State Shimmer override */}
-                            {isOmakaseLoading && (
-                                <div className="absolute inset-0 bg-gradient-to-r from-[var(--plexo-yellow)]/5 via-[var(--plexo-yellow)]/20 to-[var(--plexo-yellow)]/5 animate-shimmer" />
-                            )}
-
-                            <div className="absolute -right-6 -top-6 w-32 h-32 bg-[var(--plexo-yellow)]/20 rounded-full blur-3xl opacity-50 group-hover:opacity-100 transition-opacity" />
-
-                            <div className="relative z-10 flex items-center justify-between">
-                                <div>
-                                    <div className="inline-flex px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[10px] font-black text-[var(--plexo-yellow)] uppercase tracking-[0.2em] mb-2 shadow-sm">Premium</div>
-                                    <h4 className="text-lg font-black text-white tracking-tight">AI Omakase Mode</h4>
-                                    <p className="text-[11px] font-bold text-white/60 uppercase tracking-wider mt-0.5">Automated Content Strategy</p>
+                                {/* Text Content - High Contrast Dark */}
+                                <div className="relative z-10">
+                                    <div className="inline-flex px-3 py-1 rounded-full bg-gradient-to-r from-[#FFD700] to-[#FFA500] text-[10px] font-black text-white uppercase tracking-[0.2em] mb-2 shadow-md animate-bounce-slow">
+                                        Premium
+                                    </div>
+                                    <h4 className="text-xl font-black text-gray-900 tracking-tight drop-shadow-sm">
+                                        AI Omakase Mode
+                                    </h4>
+                                    <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider mt-0.5 group-hover:text-gray-800 transition-colors">
+                                        Automated Content Strategy
+                                    </p>
                                 </div>
+
+                                {/* Icon Container (Bright Orb) */}
                                 <div className={`
-                                    w-12 h-12 rounded-full border flex items-center justify-center transition-all duration-500 shadow-inner overflow-hidden relative
+                                    w-14 h-14 rounded-full flex items-center justify-center transition-all duration-500 relative z-10 shadow-md
                                     ${isOmakaseLoading
-                                        ? 'bg-[var(--plexo-yellow)] text-black border-[var(--plexo-yellow)] animate-pulse'
-                                        : 'bg-white/10 border-white/20 text-white group-hover:bg-[var(--plexo-yellow)] group-hover:text-[var(--plexo-black)] group-hover:border-[var(--plexo-yellow)]'
+                                        ? 'bg-[var(--plexo-yellow)] text-black shadow-[0_0_20px_var(--plexo-yellow)]'
+                                        : 'bg-gradient-to-tr from-gray-100 to-white text-gray-900 border border-gray-200 group-hover:from-cyan-400 group-hover:to-blue-500 group-hover:text-white group-hover:shadow-[0_4px_15px_rgba(6,182,212,0.4)]'
                                     }
                                 `}>
-                                    <AutoSparklesIcon className="w-6 h-6 relative z-10" />
-                                    {/* Icon Shine */}
-                                    <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform rotate-45" />
+                                    {isOmakaseLoading ? (
+                                        <div className="w-6 h-6 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                                    ) : (
+                                        <AutoSparklesIcon className="w-6 h-6" />
+                                    )}
                                 </div>
                             </div>
                         </div>
