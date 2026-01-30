@@ -413,7 +413,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                         <div
                             onClick={handleOmakaseStart}
                             className={`
-                                relative group transition-all duration-500 cursor-pointer active:scale-95
+                                relative group transition-all duration-500 cursor-pointer active:scale-95 pb-1
                                 ${isOmakaseLoading ? 'scale-[0.98]' : 'hover:scale-[1.02] hover:-translate-y-1'}
                             `}
                         >
@@ -430,12 +430,12 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
                             {/* 2. Pearlescent Content Layer (Front) - White/Bright */}
                             <div className={`
-                                relative m-[2px] rounded-[35px] p-7 px-8
+                                relative m-[2px] rounded-[34px] p-7 px-8
                                 bg-white/95 backdrop-blur-xl transition-colors duration-500
                                 flex items-center justify-between
                             `}>
                                 {/* Inner Subtle Iridescence */}
-                                <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-white to-pink-500/10 rounded-[35px] opacity-100 pointer-events-none" />
+                                <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-white to-pink-500/10 rounded-[34px] opacity-100 pointer-events-none" />
 
                                 {/* Text Content - High Contrast Dark */}
                                 <div className="relative z-10">
