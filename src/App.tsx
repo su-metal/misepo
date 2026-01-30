@@ -190,45 +190,6 @@ function App() {
       setInitDone(true);
       console.log('[App] Initialization complete.');
 
-      // Automated Migration of legacy post_samples to learning_sources
-      if (isLoggedIn && Array.isArray(presetsData) && Array.isArray(trainingData)) {
-        let hasMigrated = false;
-        for (const preset of presetsData) {
-          const legacySamples = preset.post_samples || {};
-          for (const [platform, content] of Object.entries(legacySamples)) {
-            if (!content) continue;
-
-            // Strict Check: ONLY migrate if NO data exists for this platform/preset combination.
-            // This prevents re-migrating old legacy data if the user has edited the learning data 
-            // but not synced it back to the preset's legacy 'post_samples' field.
-            const alreadyExists = trainingData.some(item =>
-              item.presetId === preset.id &&
-              item.platform === platform
-            );
-
-            if (!alreadyExists) {
-              console.log(`[MIGRATION] Migrating legacy sample for ${preset.name} (${platform})`);
-              try {
-                const res = await fetch('/api/me/learning', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({
-                    content,
-                    platform,
-                    presetId: preset.id
-                  })
-                });
-                if (res.ok) hasMigrated = true;
-              } catch (migrateErr) {
-                console.warn('[MIGRATION] Failed to migrate sample:', migrateErr);
-              }
-            }
-          }
-        }
-        if (hasMigrated) {
-          await fetchTrainingItems(); // Refresh items to show in UI
-        }
-      }
     };
     init();
   }, [authLoading, user?.id, fetchProfile, fetchHistory, fetchPresets, fetchTrainingItems]);
@@ -492,6 +453,7 @@ function App() {
                 <PostGenerator
                   storeProfile={storeProfile!}
                   onSaveProfile={handleOnboardingSave}
+                  onRefreshTraining={fetchTrainingItems}
                   isLoggedIn={isLoggedIn}
                   onOpenLogin={() => router.push('/start')}
                   presets={presets}
@@ -517,6 +479,7 @@ function App() {
             <PostGenerator
               storeProfile={storeProfile!}
               onSaveProfile={handleOnboardingSave}
+              onRefreshTraining={fetchTrainingItems}
               isLoggedIn={isLoggedIn}
               onOpenLogin={() => router.push('/start')}
               presets={presets}
