@@ -311,7 +311,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                     </div>
 
                     {/* Standard 2x2 Grid Platform Selection */}
-                    <div className="grid grid-cols-2 gap-3 px-1 mb-4 mt-4">
+                    <div className="grid grid-cols-2 gap-3 px-1 mb-4 mt-2">
                         {(() => {
                             const getPlatformDetails = (platform: Platform) => {
                                 switch (platform) {
@@ -350,7 +350,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             return [Platform.Instagram, Platform.X, Platform.Line, Platform.GoogleMaps].map((p, idx) => {
                                 const isActive = platforms.includes(p);
                                 const details = getPlatformDetails(p);
-                                const bentoClass = 'h-[140px]';
+                                const bentoClass = 'h-[124px]';
 
                                 return (
                                     <div
@@ -366,7 +366,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         `}
                                     >
                                         {/* Bento Card Content */}
-                                        <div className="absolute inset-0 p-6 flex flex-col justify-between">
+                                        <div className="absolute inset-0 p-5 flex flex-col justify-between">
                                             <div className="flex justify-between items-start">
                                                 <div className={`
                                                     transition-all duration-300
