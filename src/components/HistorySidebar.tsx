@@ -80,6 +80,92 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
     }
   };
 
+  const renderHistoryItem = (item: GeneratedPost, idx: number) => {
+    const firstResult = pickFirstText(item);
+    const previewText = (firstResult && firstResult.trim()) || item.config.inputText || "...";
+    const dateLabel = new Date(item.timestamp).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+
+    return (
+      <div
+        key={item.id}
+        className="group relative animate-in fade-in slide-in-from-right-8 duration-500"
+        style={{ animationDelay: `${idx * 40}ms` }}
+      >
+        <button
+          onClick={() => {
+            onSelect(item);
+            toggleOpen();
+          }}
+          className={`w-full text-left rounded-[28px] transition-all duration-300 relative overflow-hidden flex flex-col gap-4 hover:shadow-xl hover:shadow-indigo-100/40 hover:-translate-y-1 ${item.isPinned
+            ? 'bg-white p-[1.5px] shadow-md ring-0'
+            : 'bg-white p-6 ring-1 ring-slate-100 shadow-sm hover:ring-indigo-100'
+            }`}
+        >
+          {/* Prism Radiant Aura for Pinned */}
+          {item.isPinned && (
+            <div className="absolute inset-0 rounded-[28px] overflow-hidden pointer-events-none">
+              <div
+                className="absolute inset-0 opacity-100 blur-sm transition-all duration-700"
+                style={{
+                  background: 'linear-gradient(45deg, #22D3EE, #FACC15, #F472B6)'
+                }}
+              />
+            </div>
+          )}
+
+          <div className={`relative w-full h-full flex flex-col gap-4 ${item.isPinned ? 'bg-white rounded-[27px] p-6' : ''}`}>
+            <div className="flex items-center justify-between">
+              <div className="flex -space-x-2">
+                {item.config.platforms.map((p, pIdx) => (
+                  <div key={`${p}-${pIdx}`} className="w-8 h-8 rounded-full flex items-center justify-center bg-slate-50 border-2 border-white shadow-sm ring-1 ring-slate-100/20">
+                    {getPlatformIcon(p, "w-4 h-4 text-slate-400 group-hover:text-[#7F5AF0] transition-colors")}
+                  </div>
+                ))}
+              </div>
+              <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">
+                {dateLabel}
+              </span>
+            </div>
+
+            <p className="text-sm text-slate-600 font-bold line-clamp-2 leading-relaxed transition-colors group-hover:text-slate-900 pr-12">
+              {previewText}
+            </p>
+          </div>
+        </button>
+
+        {/* Floating Actions */}
+        <div className={`absolute bottom-6 right-6 flex flex-row md:flex-col gap-2 transition-all duration-300 z-30 ${item.isPinned ? 'opacity-100' : 'opacity-100 md:opacity-0 md:group-hover:opacity-100 md:translate-x-2 md:group-hover:translate-x-0'}`}>
+          <button
+            onClick={(e) => { e.stopPropagation(); onTogglePin(item.id, !item.isPinned); }}
+            className={`w-9 h-9 rounded-full flex items-center justify-center transition-all ${item.isPinned
+              ? 'bg-indigo-50 text-[#7F5AF0] shadow-sm'
+              : 'bg-white shadow-md text-slate-300 hover:text-indigo-500 hover:scale-110'
+              }`}
+            title={item.isPinned ? "ピン留めを解除" : "ピン留めして保護"}
+          >
+            <PinIcon className="w-4 h-4" fill={item.isPinned ? "currentColor" : "none"} />
+          </button>
+
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete(item.id);
+            }}
+            className="w-9 h-9 rounded-full bg-white shadow-md flex items-center justify-center text-slate-300 hover:text-rose-500 hover:scale-110 hover:bg-rose-50 transition-all"
+            title="履歴を削除"
+          >
+            <TrashIcon className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* Pinned Badge */}
+        {item.isPinned && (
+          <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-1 h-8 bg-[#7F5AF0] rounded-r-full shadow-[2px_0_8px_rgba(127,90,240,0.4)] z-20"></div>
+        )}
+      </div>
+    );
+  };
+
   return (
     <>
       {/* Overlay */}
@@ -127,9 +213,9 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
             </div>
           </div>
 
-          <div className="space-y-5 pb-10">
+          <div className="space-y-10 pb-10">
             {isLoggedIn ? (
-              displayHistory.length === 0 ? (
+              history.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-24 text-center">
                   <div className="w-24 h-24 mb-6 bg-white rounded-[32px] flex items-center justify-center text-slate-100 shadow-sm ring-1 ring-slate-100/50">
                     <HistoryIcon className="w-10 h-10" />
@@ -139,92 +225,30 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                   </p>
                 </div>
               ) : (
-                displayHistory.map((item, idx) => {
-                  const firstResult = pickFirstText(item);
-                  const previewText = (firstResult && firstResult.trim()) || item.config.inputText || "...";
-                  const dateLabel = new Date(item.timestamp).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-
-                  return (
-                    <div
-                      key={item.id}
-                      className="group relative animate-in fade-in slide-in-from-right-8 duration-500"
-                      style={{ animationDelay: `${idx * 40}ms` }}
-                    >
-                      <button
-                        onClick={() => {
-                          onSelect(item);
-                          toggleOpen();
-                        }}
-                        className={`w-full text-left p-6 rounded-[28px] transition-all duration-300 relative overflow-hidden flex flex-col gap-4 hover:shadow-xl hover:shadow-indigo-100/40 hover:-translate-y-1 ${item.isPinned
-                          ? 'bg-white p-[1.5px] shadow-md ring-0'
-                          : 'bg-white ring-1 ring-slate-100 shadow-sm hover:ring-indigo-100'
-                          }`}
-                      >
-                        {/* Prism Radiant Aura for Pinned */}
-                        {item.isPinned && (
-                          <div className="absolute inset-0 rounded-[28px] overflow-hidden pointer-events-none">
-                            <div
-                              className="absolute inset-0 opacity-100 blur-sm transition-all duration-700"
-                              style={{
-                                background: 'linear-gradient(45deg, #22D3EE, #FACC15, #F472B6)'
-                              }}
-                            />
-                          </div>
-                        )}
-
-                        <div className={`relative w-full h-full flex flex-col gap-4 ${item.isPinned ? 'bg-white rounded-[27px] p-6' : ''}`}>
-                          <div className="flex items-center justify-between">
-                            <div className="flex -space-x-2">
-                              {item.config.platforms.map((p, pIdx) => (
-                                <div key={`${p}-${pIdx}`} className="w-8 h-8 rounded-full flex items-center justify-center bg-slate-50 border-2 border-white shadow-sm ring-1 ring-slate-100/20">
-                                  {getPlatformIcon(p, "w-4 h-4 text-slate-400 group-hover:text-[#7F5AF0] transition-colors")}
-                                </div>
-                              ))}
-                            </div>
-                            <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">
-                              {dateLabel}
-                            </span>
-                          </div>
-
-                          <p className="text-sm text-slate-600 font-bold line-clamp-2 leading-relaxed transition-colors group-hover:text-slate-900 pr-12">
-                            {previewText}
-                          </p>
-                        </div>
-                      </button>
-
-                      {/* Floating Actions */}
-                      <div className="absolute top-6 right-6 flex flex-col gap-2 opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 transition-all duration-300">
-                        {/* Pin Button */}
-                        <button
-                          onClick={(e) => { e.stopPropagation(); onTogglePin(item.id, !item.isPinned); }}
-                          className={`w-9 h-9 rounded-full flex items-center justify-center transition-all ${item.isPinned
-                            ? 'bg-indigo-50 text-[#7F5AF0] shadow-sm'
-                            : 'bg-white shadow-md text-slate-300 hover:text-indigo-500 hover:scale-110'
-                            }`}
-                          title={item.isPinned ? "ピン留めを解除" : "ピン留めして保護"}
-                        >
-                          <PinIcon className="w-4 h-4" fill={item.isPinned ? "currentColor" : "none"} />
-                        </button>
-
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onDelete(item.id);
-                          }}
-                          className="w-9 h-9 rounded-full bg-white shadow-md flex items-center justify-center text-slate-300 hover:text-rose-500 hover:scale-110 hover:bg-rose-50 transition-all"
-                          title="履歴を削除"
-                        >
-                          <TrashIcon className="w-4 h-4" />
-                        </button>
+                <>
+                  {/* Pinned Section */}
+                  {displayHistory.some(i => i.isPinned) && (
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-2 px-2">
+                        <PinIcon className="w-3 h-3 text-[#7F5AF0]" fill="currentColor" />
+                        <span className="text-[10px] font-black text-[#7F5AF0] uppercase tracking-[0.2em]">Pinned</span>
                       </div>
-
-                      {/* Pinned Badge */}
-                      {item.isPinned && (
-                        <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-1 h-8 bg-[#7F5AF0] rounded-r-full shadow-[2px_0_8px_rgba(127,90,240,0.4)]"></div>
-                      )}
+                      <div className="space-y-4">
+                        {displayHistory.filter(i => i.isPinned).map((item, idx) => renderHistoryItem(item, idx))}
+                      </div>
                     </div>
-                  );
-                })
+                  )}
+
+                  {/* Recent Section */}
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2 px-2">
+                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Recent</span>
+                    </div>
+                    <div className="space-y-4">
+                      {displayHistory.filter(i => !i.isPinned).map((item, idx) => renderHistoryItem(item, idx))}
+                    </div>
+                  </div>
+                </>
               )
             ) : (
               <div className="flex flex-col items-center justify-center py-20 px-4 text-center">
