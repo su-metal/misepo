@@ -313,7 +313,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             return [Platform.Instagram, Platform.X, Platform.Line, Platform.GoogleMaps].map((p, idx) => {
                                 const isActive = platforms.includes(p);
                                 const details = getPlatformDetails(p);
-                                const bentoClass = 'h-[160px]';
+                                const bentoClass = 'h-[140px]';
 
                                 return (
                                     <div
@@ -350,9 +350,11 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             </div>
 
                                             <div className="flex flex-col">
+                                                {/* 
                                                 <span className={`text-[9px] font-black uppercase tracking-[0.15em] transition-all duration-300 mb-1 ${isActive ? 'text-black/40' : 'text-white/40'}`}>
                                                     {details.tagline}
                                                 </span>
+                                                */}
                                                 <div className="flex flex-col leading-tight">
                                                     <h3 className={`font-black tracking-tighter text-xl transition-colors duration-500 ${isActive ? 'text-black' : 'text-white'}`} style={{ fontFamily: 'Inter, sans-serif' }}>
                                                         {details.name}
