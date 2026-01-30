@@ -637,7 +637,6 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                         onChange={(e) => onCustomPromptChange(e.target.value)}
                                                         placeholder="例：テンション高めに..."
                                                         className="w-full bg-transparent border-none focus:outline-none text-[13px] font-bold text-[#111111]"
-                                                        autoFocus
                                                     />
                                                 </div>
                                             )}
