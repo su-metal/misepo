@@ -31,6 +31,10 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     onStepChange, closeDrawerTrigger
 }) => {
     const textareaRef = React.useRef<HTMLTextAreaElement>(null);
+    const dateObj = new Date();
+    const day = dateObj.getDate();
+    const month = dateObj.toLocaleString('en-US', { month: 'short' }).toUpperCase();
+    const weekday = dateObj.toLocaleString('en-US', { weekday: 'short' }).toUpperCase();
     const [mobileStep, setMobileStep] = React.useState<'platform' | 'input' | 'confirm' | 'result'>('platform');
     const [isStepDrawerOpen, setIsStepDrawerOpen] = React.useState(false);
     const [isPromptExpanded, setIsPromptExpanded] = React.useState(false);
@@ -198,34 +202,43 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
             {/* Step 1: Home (Platform Grid) */}
             <div className={`flex flex-col h-full overflow-hidden relative transition-all duration-500 ${isStepDrawerOpen ? 'blur-md scale-[0.98] opacity-60' : 'opacity-100'}`}>
                 <div className="flex-1 flex flex-col p-5 pt-10 pb-8 safe-area-bottom">
-                    {/* Refined Header - Match Reference Image */}
-                    <div className="flex items-center justify-between mb-8 px-2">
-                        <div className="flex items-center gap-3">
-                            {/* Avatar with logo style */}
-                            <div className="relative">
-                                <div className="w-14 h-14 rounded-full bg-[var(--plexo-black)] border border-[#EEEEEE] shadow-sm flex items-center justify-center overflow-hidden">
-                                    <span className="text-[var(--plexo-yellow)] font-black text-2xl" style={{ transform: 'rotate(-10deg)', marginTop: '2px' }}>ミ</span>
+                    {/* High-Design Header - Magazine Style Date & Minimal Avatar */}
+                    <div className="flex items-start justify-between mb-10 px-1">
+                        {/* Typography Date Display */}
+                        <div className="flex flex-col">
+                            <span className="text-[9px] font-black text-[var(--plexo-yellow)] uppercase tracking-[0.4em] ml-1 mb-1 z-10 relative">misepo</span>
+                            <div className="flex items-center gap-3 select-none">
+                                <span className="text-[3.5rem] font-black text-[var(--plexo-black)] tracking-tighter leading-[0.8]">{day}</span>
+                                <div className="flex flex-col justify-center gap-0.5 pt-1">
+                                    <span className="text-sm font-black text-[var(--plexo-black)] uppercase tracking-widest leading-none">{month}</span>
+                                    <span className="text-[10px] font-bold text-[#AAAAAA] uppercase tracking-[0.2em] leading-none">{weekday}</span>
                                 </div>
                             </div>
-                            <div className="flex flex-col">
-                                <span className="text-[10px] font-black text-[#AAAAAA] uppercase tracking-[0.2em] leading-none mb-1">Welcome</span>
-                                <span className="text-[20px] font-black text-[var(--plexo-black)] tracking-tight leading-none">{storeProfile.name || 'Store Admin'}</span>
-                            </div>
+                            <p className="text-[9px] font-medium text-[#AAAAAA] tracking-tighter mt-1.5 ml-1 opacity-80 select-none italic">
+                                あなたの言葉が、最高のおもてなしに。
+                            </p>
                         </div>
 
-                        {/* Minimalist Credit Display */}
-                        {plan && typeof plan.usage !== 'undefined' && typeof plan.limit !== 'undefined' && (
-                            <div className="flex flex-col items-end">
-                                <span className="text-[10px] font-black text-[#AAAAAA] tracking-[0.2em] mb-1.5 uppercase">Credits</span>
-                                <div className="flex items-center gap-1.5 bg-white px-4 py-2 rounded-full border border-[#EEEEEE] shadow-sm">
-                                    <span className="text-[15px] font-black text-[var(--plexo-black)] leading-none">
-                                        {Math.max(0, plan.limit - plan.usage)}
-                                    </span>
-                                    <div className="w-px h-3 bg-[#EEEEEE]" />
-                                    <span className="text-[11px] font-bold text-[#CCCCCC] leading-none">{plan.limit}</span>
+                        <div className="flex flex-col items-end gap-3">
+                            {/* Decorative Avatar (No Name) */}
+                            <div className="relative group">
+                                <div className="absolute inset-0 bg-[var(--plexo-yellow)] rounded-full blur-[10px] opacity-20 group-hover:opacity-40 transition-opacity" />
+                                <div className="relative w-10 h-10 rounded-full bg-[var(--plexo-black)] flex items-center justify-center overflow-hidden shadow-md border-[2px] border-white/20">
+                                    <span className="text-[var(--plexo-yellow)] font-black text-lg" style={{ transform: 'rotate(-10deg)', marginTop: '2px' }}>ミ</span>
                                 </div>
                             </div>
-                        )}
+
+                            {/* Glass Credit Pill */}
+                            {plan && typeof plan.usage !== 'undefined' && typeof plan.limit !== 'undefined' && (
+                                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/60 backdrop-blur-md border border-white/60 shadow-[0_4px_10px_rgba(0,0,0,0.03)] scale-90 origin-right">
+                                    <span className="text-[8px] font-black text-[#999999] uppercase tracking-widest mr-1">CREDITS</span>
+                                    <span className="text-sm font-black text-[var(--plexo-black)] leading-none">
+                                        {Math.max(0, plan.limit - plan.usage)}
+                                    </span>
+                                    <span className="text-[10px] font-bold text-[#CCCCCC] leading-none">/ {plan.limit}</span>
+                                </div>
+                            )}
+                        </div>
                     </div>
 
                     <div className="flex flex-col gap-0.5 items-start px-2 mt-6 mb-0">
