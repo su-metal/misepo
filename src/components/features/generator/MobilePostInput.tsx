@@ -183,10 +183,10 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     };
 
     return (
-        <div className="flex flex-col h-full min-h-[100dvh] relative overflow-hidden font-inter bg-[#dbdbdb]">
+        <div className="flex flex-col h-full min-h-[100dvh] relative overflow-hidden font-inter bg-[#f0f0f0]">
 
             {/* Minimal Monochrome Background */}
-            <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden bg-[#dbdbdb]">
+            <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden bg-[#f0f0f0]">
                 {/* Subtle Monochrome Gradients */}
                 {/* Subtle Monochrome Gradients - Removed top gradient as it looked like a shadow */}
 
@@ -201,7 +201,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
             {/* Step 1: Home (Platform Grid) */}
             <div className={`flex flex-col h-full overflow-hidden relative transition-all duration-500 ${isStepDrawerOpen ? 'blur-md scale-[0.98] opacity-60' : 'opacity-100'}`}>
-                <div className="flex-1 flex flex-col p-5 pt-10 pb-8 safe-area-bottom">
+                <div className="flex-1 flex flex-col p-5 pt-6 pb-8 safe-area-bottom">
                     {/* High-Design Header - Magazine Style Date & Minimal Avatar */}
                     <div className="flex items-start justify-between mb-4 px-1">
                         {/* Typography Date Display */}
