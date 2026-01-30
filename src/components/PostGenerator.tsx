@@ -17,6 +17,7 @@ import { PostInputFormProps } from './features/generator/inputConstants';
 
 interface PostGeneratorProps {
   storeProfile: StoreProfile;
+  onSaveProfile: (profile: StoreProfile) => Promise<void>;
   isLoggedIn: boolean;
   onOpenLogin: () => void;
   presets: Preset[];
@@ -38,7 +39,7 @@ interface PostGeneratorProps {
 
 const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
   const {
-    storeProfile, isLoggedIn, onOpenLogin, presets,
+    storeProfile, onSaveProfile, isLoggedIn, onOpenLogin, presets,
     onGenerateSuccess, onTaskComplete, trainingItems, onToggleFavorite, restorePost,
     onOpenGuide, onOpenSettings, onOpenHistory, onLogout,
     plan, refreshPlan, resetResultsTrigger, shouldShowTour
@@ -403,6 +404,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
         <Onboarding
           initialProfile={storeProfile}
           onSave={async (profile) => {
+            await onSaveProfile(profile);
             setShowOnboarding(false);
             if (onTaskComplete) onTaskComplete();
           }}

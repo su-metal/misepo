@@ -491,6 +491,7 @@ function App() {
               <div className="opacity-10 pointer-events-none blur-sm h-full">
                 <PostGenerator
                   storeProfile={storeProfile!}
+                  onSaveProfile={handleOnboardingSave}
                   isLoggedIn={isLoggedIn}
                   onOpenLogin={() => router.push('/start')}
                   presets={presets}
@@ -515,6 +516,7 @@ function App() {
           ) : (
             <PostGenerator
               storeProfile={storeProfile!}
+              onSaveProfile={handleOnboardingSave}
               isLoggedIn={isLoggedIn}
               onOpenLogin={() => router.push('/start')}
               presets={presets}
