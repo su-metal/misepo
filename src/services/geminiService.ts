@@ -797,6 +797,108 @@ export const analyzeRisk = async (
   return scoreRisk(starRating, reviewText);
 };
 
+export interface TrendEvent {
+  date: string;
+  title: string;
+  icon: string;
+  description: string;
+  hashtags: string[];
+  isRecommended: boolean;
+}
+
+const trendSchema = {
+    type: Type.OBJECT,
+    properties: {
+        trends: {
+            type: Type.ARRAY,
+            items: {
+                type: Type.OBJECT,
+                properties: {
+                    date: { type: Type.STRING },
+                    title: { type: Type.STRING },
+                    icon: { type: Type.STRING },
+                    description: { type: Type.STRING },
+                    hashtags: { type: Type.ARRAY, items: { type: Type.STRING } },
+                    isRecommended: { type: Type.BOOLEAN }
+                },
+                required: ["date", "title", "icon", "description", "hashtags", "isRecommended"]
+            }
+        }
+    },
+    required: ["trends"]
+};
+
+export const generateTrendCalendar = async (
+    year: number, 
+    startMonth: number, 
+    durationMonths: number = 3
+): Promise<TrendEvent[]> => {
+    const modelName = getModelName(true);
+    const ai = getServerAI();
+
+    // Construct target range description
+    const endDate = new Date(year, startMonth - 1 + durationMonths, 0); // Last day of end month
+    const targetPeriod = `${year}年${startMonth}月から${durationMonths}ヶ月間`;
+
+    const systemInstruction = `
+<instruction>
+You are an expert Social Media Strategist for the Japanese market.
+Your task is to predict/generate a calendar of "Social Media Trends & Events" for the specified period in Japan.
+Target Period: ${targetPeriod}
+
+<rules>
+1. **Focus**: Identify ACTIONABLE topics for restaurants, cafes, and retail stores to post about.
+2. **Variety**: Include a mix of:
+   - **Major Events**: (e.g., Valentine's, Golden Week, Obon)
+   - **Micro-Seasons (24 Sekki)**: (e.g., Risshun, Geshi)
+   - **Niche Commemorative Days**: (e.g., Meat Day, Cat Day, Good Couple Day)
+   - **Pop Culture/Food Trends**: (e.g., seasonal ingredients, viral food themes)
+3. **Volume**: Generate at least 4-5 key events PER MONTH.
+4. **IsRecommended**: Mark highly effective marketing opportunities as 'true'.
+5. **Description**: Brief, actionable advice on *how* to post about it (e.g., "Promote limited sakura sweets").
+</rules>
+
+<output_format>
+JSON with a "trends" array.
+Date format: "YYYY-MM-DD"
+</output_format>
+</instruction>
+`;
+
+    const requestConfig: any = {
+        systemInstruction,
+        responseMimeType: "application/json",
+        responseSchema: trendSchema,
+        temperature: 0.4, 
+        safetySettings: [
+            { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_NONE' },
+            { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_NONE' },
+            { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
+            { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE' },
+        ],
+    };
+
+    try {
+        const response = await ai.models.generateContent({
+            model: modelName,
+            contents: [{ role: "user", parts: [{ text: "Generate trend calendar." }] }],
+            config: requestConfig,
+        });
+
+        const result = await response;
+        if (!result.text) throw new Error("No text returned from AI");
+
+        const parsed = JSON.parse(result.text);
+        if (!parsed.trends || !Array.isArray(parsed.trends)) return [];
+        
+        return parsed.trends as TrendEvent[];
+
+    } catch (e: any) {
+        console.error("[GEMINI TREND ERROR]", e);
+        return []; // Fail gracefully with empty array
+    }
+};
+
 export const extractPostFromImage = async (
   base64Image: string,
   mimeType: string,

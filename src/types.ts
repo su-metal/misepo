@@ -135,3 +135,12 @@ export interface AppState {
   presets: Preset[];
   plan: UserPlan | null;
 }
+
+export interface TrendEvent {
+    date: string; // "YYYY-MM-DD"
+    title: string;
+    icon: string; // Emoji
+    description: string;
+    hashtags: string[];
+    isRecommended: boolean;
+}
