@@ -242,7 +242,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
             {/* Step 1: Home (Platform Grid) */}
             <div className={`flex flex-col h-full overflow-hidden relative transition-all duration-500 ${isStepDrawerOpen ? 'blur-md scale-[0.98] opacity-60' : 'opacity-100'}`}>
-                <div className="flex-1 flex flex-col p-5 pt-6 pb-8 safe-area-bottom">
+                <div className="flex-1 flex flex-col p-4 pt-6 pb-8 safe-area-bottom">
                     {/* High-Design Header - Magazine Style Date & Minimal Avatar */}
                     <div className="flex items-start justify-between mb-4 px-1">
                         {/* Typography Date Display - Interactive Trigger */}
@@ -311,7 +311,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                     </div>
 
                     {/* Standard 2x2 Grid Platform Selection */}
-                    <div className="grid grid-cols-2 gap-3 px-1 mb-4 mt-4">
+                    <div className="grid grid-cols-2 gap-3 px-1 mb-4 mt-2">
                         {(() => {
                             const getPlatformDetails = (platform: Platform) => {
                                 switch (platform) {
@@ -350,7 +350,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             return [Platform.Instagram, Platform.X, Platform.Line, Platform.GoogleMaps].map((p, idx) => {
                                 const isActive = platforms.includes(p);
                                 const details = getPlatformDetails(p);
-                                const bentoClass = 'h-[140px]';
+                                const bentoClass = 'h-[124px]';
 
                                 return (
                                     <div
@@ -366,7 +366,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         `}
                                     >
                                         {/* Bento Card Content */}
-                                        <div className="absolute inset-0 p-6 flex flex-col justify-between">
+                                        <div className="absolute inset-0 p-5 flex flex-col justify-between">
                                             <div className="flex justify-between items-start">
                                                 <div className={`
                                                     transition-all duration-300
