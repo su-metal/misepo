@@ -128,24 +128,16 @@ export async function DELETE(req: NextRequest) {
   }
 
   try {
-    let content: string | null = null;
-    let id: string | null = null;
-    let presetId: string | null = null;
+    const { searchParams } = new URL(req.url);
+    const body = await req.json().catch(() => ({}));
     
-    try {
-      const body = await req.json();
-      content = body.content;
-      id = body.id;
-      presetId = body.presetId;
-    } catch {
-      const { searchParams } = new URL(req.url);
-      content = searchParams.get('content');
-      id = searchParams.get('id');
-      presetId = searchParams.get('presetId');
-    }
+    const id = body.id || searchParams.get('id');
+    const content = body.content || searchParams.get('content');
+    const presetId = body.presetId || searchParams.get('presetId');
+    const platform = body.platform || searchParams.get('platform');
 
     if (!content && !id && !presetId) {
-       return NextResponse.json({ error: 'Missing content, id, or presetId' }, { status: 400 });
+      return NextResponse.json({ error: 'Missing content, id, or presetId' }, { status: 400 });
     }
 
     const query = supabase
@@ -159,8 +151,6 @@ export async function DELETE(req: NextRequest) {
       if (presetId) query.eq('preset_id', presetId);
       if (content) query.eq('content', content);
       
-      const { searchParams } = new URL(req.url);
-      const platform = searchParams.get('platform') || (await req.clone().json().catch(() => ({}))).platform;
       if (platform) {
         if (platform === 'sns_all') {
           query.neq('platform', 'Google Maps');

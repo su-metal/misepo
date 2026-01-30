@@ -55,7 +55,9 @@ interface PresetModalProps {
   onSave: (preset: Partial<Preset>) => Promise<Preset | null | void>;
   onDelete: (id: string) => Promise<void>;
   onApply: (preset: Preset) => void;
+  onRefreshTraining?: () => Promise<any>;
   onClose: () => void;
+  onLogout: () => void;
   initialPresetId?: string;
   isSaving?: boolean;
   onReorder?: () => Promise<Preset[] | void>;
@@ -283,6 +285,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
   onDelete,
   onApply,
   onClose,
+  onRefreshTraining,
+  onLogout,
   initialPresetId,
   isSaving: isExternalSaving,
   onReorder,
@@ -627,7 +631,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
       });
       if (!res.ok) throw new Error('Failed to reset learning');
 
-      window.location.reload();
+      if (onRefreshTraining) await onRefreshTraining();
     } catch (err) {
       console.error('Failed to reset learning:', err);
       alert('リセットに失敗しました。');
