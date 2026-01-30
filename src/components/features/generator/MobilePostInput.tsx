@@ -251,9 +251,9 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             {/* High-Contrast Credit Design with Gauge */}
                             {plan && typeof plan.usage !== 'undefined' && typeof plan.limit !== 'undefined' && (
                                 <div className="flex flex-col items-end gap-1 scale-90 origin-right">
-                                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900 text-white backdrop-blur-xl border border-white/20 shadow-xl overflow-hidden relative">
+                                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#0071b9] text-white backdrop-blur-xl border border-white/20 shadow-xl overflow-hidden relative">
                                         <span className="text-[8px] font-black text-white/40 uppercase tracking-widest mr-1">CREDITS</span>
-                                        <span className="text-sm font-black text-[#7F5AF0] leading-none">
+                                        <span className="text-sm font-black text-[#f2e018] leading-none">
                                             {Math.max(0, plan.limit - plan.usage)}
                                         </span>
                                         <span className="text-[10px] font-bold text-white/30 leading-none">/ {plan.limit}</span>
@@ -262,7 +262,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         <div className="absolute bottom-0 left-0 h-[2px] bg-white/10 w-full" />
                                         {/* Active Gauge Fill */}
                                         <div
-                                            className="absolute bottom-0 left-0 h-[2px] bg-[#7F5AF0] shadow-[0_0_10px_rgba(127,90,240,0.5)] transition-all duration-1000"
+                                            className="absolute bottom-0 left-0 h-[2px] bg-[#0071b9] shadow-[0_0_10px_rgba(127,90,240,0.5)] transition-all duration-1000"
                                             style={{ width: `${(Math.max(0, plan.limit - plan.usage) / plan.limit) * 100}%` }}
                                         />
                                     </div>
@@ -271,7 +271,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             <div
                                                 key={i}
                                                 className={`h-[3px] w-6 rounded-full transition-colors duration-500 ${((plan.limit - plan.usage) / plan.limit) * 5 > i
-                                                    ? 'bg-[#7F5AF0]'
+                                                    ? 'bg-[#0071b9]'
                                                     : 'bg-slate-200'
                                                     }`}
                                             />
@@ -337,7 +337,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             relative rounded-[40px] overflow-hidden cursor-pointer border transition-all duration-500 group
                                             ${bentoClass}
                                              ${isActive
-                                                ? 'bg-[#f3ff5f] border-[#f3ff5f] shadow-xl scale-[0.98] animate-tactile-pop'
+                                                ? 'bg-[#0071b9] border-[#0071b9] shadow-xl scale-[0.98] animate-tactile-pop'
                                                 : `bg-[#f5f7fa] border-slate-200 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:border-slate-300 hover:shadow-md active:scale-[0.98]`
                                             }
                                         `}
@@ -347,7 +347,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             <div className="flex justify-between items-start">
                                                 <div className={`
                                                     transition-all duration-300
-                                                     ${isActive ? 'text-black' : 'text-slate-400 group-hover:text-slate-600'}
+                                                     ${isActive ? 'text-white' : 'text-slate-400 group-hover:text-slate-600'}
                                                 `}>
                                                     {details.icon}
                                                 </div>
@@ -370,10 +370,10 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                 </span>
                                                 */}
                                                 <div className="flex flex-col leading-tight">
-                                                    <h3 className={`font-black tracking-tighter text-xl transition-colors duration-500 ${isActive ? 'text-black' : 'text-slate-800'}`} style={{ fontFamily: 'Inter, sans-serif' }}>
+                                                    <h3 className={`font-black tracking-tighter text-xl transition-colors duration-500 ${isActive ? 'text-white' : 'text-slate-800'}`} style={{ fontFamily: 'Inter, sans-serif' }}>
                                                         {details.name}
                                                     </h3>
-                                                    <p className={`text-[11px] font-medium transition-opacity ${isActive ? 'text-black/60' : 'text-slate-400'}`}>
+                                                    <p className={`text-[11px] font-medium transition-opacity ${isActive ? 'text-white/60' : 'text-slate-400'}`}>
                                                         {details.sub}
                                                     </p>
                                                 </div>
@@ -394,7 +394,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                 rounded-[40px] overflow-hidden
                                 ${isOmakaseLoading ? 'scale-[0.98]' : 'hover:scale-[1.02] hover:-translate-y-1'}
                             `}
-                            style={{ backgroundColor: '#4e29ce' }}
+                            style={{ backgroundColor: '#d8e9f4' }}
                         >
                             {/* Decorative Background Elements */}
                             <div className="absolute top-1/2 right-[5%] -translate-y-1/2 w-48 h-48 bg-white/5 rounded-full blur-[60px] pointer-events-none" />
@@ -402,14 +402,14 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             <div className="relative p-7 px-8 flex items-center justify-between">
                                 {/* Left Content */}
                                 <div className="relative z-10 flex flex-col gap-5">
-                                    <div className="self-start inline-flex px-5 py-2.5 rounded-full bg-[#f3ff5f] text-[10px] font-black text-black uppercase tracking-[0.1em] shadow-lg">
+                                    <div className="self-start inline-flex px-5 py-2.5 rounded-full bg-[#f2e018] text-[10px] font-black text-black uppercase tracking-[0.1em] shadow-lg">
                                         PREMIUM FEATURE
                                     </div>
                                     <div className="space-y-1">
-                                        <h4 className="text-[28px] font-black text-white tracking-tight leading-none whitespace-nowrap">
+                                        <h4 className="text-[28px] font-black text-[#0071b9] tracking-tight leading-none whitespace-nowrap">
                                             AI Omakase Mode
                                         </h4>
-                                        <p className="text-[11px] font-bold text-white/50 uppercase tracking-[0.05em]">
+                                        <p className="text-[11px] font-bold text-black/20 uppercase tracking-[0.05em]">
                                             AUTOMATED CONTENT STRATEGY
                                         </p>
                                     </div>
@@ -421,10 +421,10 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                     <div className="w-20 h-20 bg-white/10 backdrop-blur-md rounded-[32px] flex items-center justify-center border border-white/20 relative overflow-visible">
                                         <div className="relative">
                                             {/* Primary Sparkle */}
-                                            <SparklesIcon className="w-9 h-9 text-[#f3ff5f] drop-shadow-[0_0_8px_rgba(243,255,95,0.4)]" />
+                                            <SparklesIcon className="w-9 h-9 text-[#f2e018] drop-shadow-[0_0_8px_rgba(243,255,95,0.4)]" />
                                             {/* Accent Sparkles */}
-                                            <SparklesIcon className="absolute -top-1 -right-3 w-3 h-3 text-[#f3ff5f]" />
-                                            <SparklesIcon className="absolute -bottom-1 -right-4 w-5 h-5 text-[#f3ff5f]" />
+                                            <SparklesIcon className="absolute -top-1 -right-3 w-3 h-3 text-[#f2e018]" />
+                                            <SparklesIcon className="absolute -bottom-1 -right-4 w-5 h-5 text-[#f2e018]" />
                                         </div>
                                     </div>
 
