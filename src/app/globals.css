@@ -34,6 +34,7 @@ body {
   background-color: #f9f5f2;
   color: var(--text-main);
   min-height: 100vh;
+  overscroll-behavior-y: none;
 }
 
 /* Glass Utility Classes */
