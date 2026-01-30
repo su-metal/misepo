@@ -311,7 +311,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                     </div>
 
                     {/* Standard 2x2 Grid Platform Selection */}
-                    <div className="grid grid-cols-2 gap-3 px-1 mb-6 mt-4">
+                    <div className="grid grid-cols-2 gap-3 px-1 mb-4 mt-4">
                         {(() => {
                             const getPlatformDetails = (platform: Platform) => {
                                 switch (platform) {
