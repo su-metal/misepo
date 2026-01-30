@@ -76,7 +76,7 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
 
     // Curve parameters
     const footerHeight = 84;
-    const notchDepth = 41;
+    const notchDepth = 40;
     const notchWidth = 138; // Balanced width to follow the ~72px button 
     const cornerRadius = 42;
 
@@ -153,7 +153,7 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
                 </button>
 
                 {/* Navigation Items Container */}
-                <div className="absolute inset-0 flex items-center justify-between px-6 pb-2">
+                <div className="absolute inset-0 flex items-center justify-between px-6 pt-1">
                     {/* Left Side Items */}
                     <div className="flex items-center justify-center gap-8 w-[120px]">
                         <button
