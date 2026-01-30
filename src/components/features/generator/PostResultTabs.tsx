@@ -63,13 +63,14 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                 return {
                     icon: <div className="w-10 h-10 bg-[var(--plexo-dark-gray)] rounded-xl flex items-center justify-center text-[var(--plexo-yellow)] text-xl font-black shadow-sm border border-[var(--plexo-dark-gray)]">𝕏</div>,
                     label: 'X',
-                    actionColor: "bg-[var(--plexo-dark-gray)] text-[var(--plexo-yellow)] shadow-[0_10px_30px_rgba(102,102,102,0.3)]",
+                    actionColor: "bg-[#7F5AF0] text-white shadow-[0_8px_20px_rgba(127,90,240,0.15)]",
                     actionLabel: "Xで投稿する",
                     contentClasses: "text-[16px] text-[var(--plexo-black)] font-bold leading-relaxed tracking-tight",
                     wrapperClass: "max-w-[375px]",
-                    brandTextColor: "text-[var(--plexo-black)]",
-                    brandBgColor: "bg-[var(--plexo-white)]",
-                    brandBorderColor: "border-[var(--plexo-med-gray)]",
+                    brandTextColor: "text-black",
+                    brandBgColor: "bg-black/5",
+                    brandBorderColor: "border-black/10",
+                    activeColor: "#000000"
                 };
             case Platform.Instagram:
                 return {
@@ -91,16 +92,17 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                 }`}
                         >
                             <span className={`w-1.5 h-1.5 rounded-full transition-colors ${includeFooter ? 'bg-[var(--plexo-yellow)] shadow-[0_0_8px_var(--plexo-yellow)]' : 'bg-[var(--plexo-med-gray)]'}`} />
-                            <span className="tracking-[0.2em] uppercase">Footer</span>
+                            <span className="font-bold">フッター</span>
                         </button>
                     ),
-                    actionColor: "bg-[var(--plexo-dark-gray)] text-[var(--plexo-yellow)] shadow-[0_10px_30px_rgba(102,102,102,0.3)]",
+                    actionColor: "bg-[#7F5AF0] text-white shadow-[0_8px_25px_rgba(127,90,240,0.15)]",
                     actionLabel: "Instagramを起動",
-                    contentClasses: "text-[15px] text-[var(--plexo-black)] font-bold leading-relaxed tracking-tight",
+                    contentClasses: "text-[15px] text-[#111111] font-medium leading-relaxed",
                     wrapperClass: "max-w-[340px]",
-                    brandTextColor: "text-[var(--plexo-black)]",
-                    brandBgColor: "bg-[var(--plexo-white)]",
-                    brandBorderColor: "border-[var(--plexo-med-gray)]",
+                    brandTextColor: "text-[#E1306C]",
+                    brandBgColor: "bg-[#E1306C]/5",
+                    brandBorderColor: "border-[#E1306C]/10",
+                    activeColor: "#E1306C"
                 };
             case Platform.GoogleMaps:
                 return {
@@ -112,70 +114,75 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                         </div>
                     ),
                     label: 'Google Maps',
-                    actionColor: 'bg-[var(--plexo-dark-gray)] text-[var(--plexo-yellow)] hover:opacity-90 shadow-lg border border-[var(--plexo-dark-gray)]',
+                    actionColor: 'bg-[#7F5AF0] text-white hover:opacity-90 shadow-[0_8px_20px_rgba(127,90,240,0.15)] border-none',
                     actionLabel: "Googleマップで返信する",
-                    contentClasses: "text-[15px] text-[var(--plexo-black)] font-bold leading-relaxed tracking-tight",
+                    contentClasses: "text-[15px] text-[#111111] font-medium leading-relaxed",
                     wrapperClass: "max-w-[325px]",
-                    brandTextColor: "text-[var(--plexo-black)]",
-                    brandBgColor: "bg-[var(--plexo-white)]",
-                    brandBorderColor: "border-[var(--plexo-med-gray)]",
+                    brandTextColor: "text-[#4285F4]",
+                    brandBgColor: "bg-[#4285F4]/5",
+                    brandBorderColor: "border-[#4285F4]/20",
+                    activeColor: "#4285F4"
                 };
             case Platform.Line:
                 return {
                     icon: (
-                        <div className="w-10 h-10 bg-[var(--plexo-dark-gray)] rounded-2xl flex items-center justify-center text-[var(--plexo-yellow)] shadow-sm border border-[var(--plexo-dark-gray)]">
+                        <div className="w-10 h-10 bg-[#06C755] rounded-2xl flex items-center justify-center text-white shadow-sm border border-[#06C755]/10">
                             <LineIcon className="w-6 h-6" />
                         </div>
                     ),
                     label: 'LINE',
-                    actionColor: "bg-[var(--plexo-dark-gray)] text-[var(--plexo-yellow)] shadow-[0\_10px_30px_rgba(102,102,102,0.3)]",
+                    actionColor: "bg-[#7F5AF0] text-white shadow-[0_8px_20px_rgba(127,90,240,0.15)]",
                     actionLabel: "LINEで送る",
-                    contentClasses: "text-[15px] text-[var(--plexo-black)] font-bold leading-relaxed tracking-tight",
+                    contentClasses: "text-[15px] text-[#111111] font-medium leading-relaxed",
                     wrapperClass: "max-w-[400px]",
-                    brandTextColor: "text-[var(--plexo-black)]",
-                    brandBgColor: "bg-[var(--plexo-white)]",
-                    brandBorderColor: "border-[var(--plexo-med-gray)]",
+                    brandTextColor: "text-[#06C755]",
+                    brandBgColor: "bg-[#06C755]/5",
+                    brandBorderColor: "border-[#06C755]/20",
+                    activeColor: "#06C755",
                     shine: true,
                 };
             default:
                 return {
                     icon: null,
                     label: platform,
-                    actionColor: "bg-gradient-to-r from-[#111111] to-[#2D2D2D] text-white shadow-[0_10px_30px_rgba(0,0,0,0.15)]",
+                    actionColor: "bg-[#7F5AF0] text-white shadow-[0_8px_20px_rgba(127,90,240,0.15)]",
                     actionLabel: "投稿する",
                     contentClasses: "text-base text-[#111111] font-black",
                     brandTextColor: "text-[#111111]",
                     brandBgColor: "bg-[#FAFAFA]",
                     brandBorderColor: "border-[#E5E5E5]",
+                    activeColor: "#111111",
                     shine: true,
                 };
         }
     };
 
     const getTabIcon = (p: Platform, isSelected: boolean) => {
-        const iconClass = `w-4 h-4 transition-transform duration-300 ${isSelected ? "scale-110" : "opacity-30"}`;
+        const iconClass = `w-5 h-5 transition-transform duration-300 ${isSelected ? "scale-110" : "opacity-30"}`;
+        const theme = getPlatformTheme(p);
+        const activeColor = (theme as any).activeColor || "currentColor";
 
         switch (p) {
             case Platform.Instagram:
                 return (
-                    <svg className={`${iconClass} ${isSelected ? 'text-[var(--plexo-yellow)]' : 'text-[var(--plexo-med-gray)]'}`} viewBox="0 0 24 24" fill="currentColor">
+                    <svg className={iconClass} viewBox="0 0 24 24" fill={isSelected ? activeColor : "currentColor"}>
                         <path d="M12 2c2.717 0 3.056.01 4.122.06 1.065.05 1.79.217 2.428.465.66.254 1.216.598 1.772 1.153a4.908 4.908 0 0 1 1.153 1.772c.247.637.415 1.363.465 2.428.047 1.066.06 1.405.06 4.122 0 2.717-.01 3.056-.06 4.122-.05 1.065-.218 1.79-.465 2.428a4.883 4.883 0 0 1-1.153 1.772 4.915 4.915 0 0 1-1.772 1.153c-.637.247-1.363.415-2.428.465-1.066.047-1.405.06-4.122.06-2.717 0-3.056-.01-4.122-.06-1.065-.05-1.79-.218-2.428-.465a4.89 4.89 0 0 1-1.772-1.153 4.904 4.904 0 0 1-1.153-1.772c-.248-.637-.415-1.363-.465-2.428C2.013 15.056 2 14.717 2 12c0-2.717.01-3.056.06-4.122.05-1.066.217-1.79.465-2.428a4.88 4.88 0 0 1 1.153-1.772A4.897 4.897 0 0 1 5.45 2.525c.638-.248 1.362-.415 2.428-.465C8.944 2.013 9.283 2 12 2zm0 5a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm6.5-.25a1.25 1.25 0 1 0-2.5 0 1.25 1.25 0 0 0 2.5 0zM12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6z" />
                     </svg>
                 );
             case Platform.X:
                 return (
-                    <svg className={`${iconClass} ${isSelected ? 'text-[var(--plexo-yellow)]' : 'text-[var(--plexo-med-gray)]'}`} viewBox="0 0 24 24" fill="currentColor">
+                    <svg className={iconClass} viewBox="0 0 24 24" fill={isSelected ? "#000000" : "currentColor"}>
                         <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                     </svg>
                 );
             case Platform.GoogleMaps:
                 return (
-                    <svg className={`${iconClass} ${isSelected ? 'text-[var(--plexo-yellow)]' : 'text-[var(--plexo-med-gray)]'}`} viewBox="0 0 24 24" fill="currentColor">
+                    <svg className={iconClass} viewBox="0 0 24 24" fill={isSelected ? "#4285F4" : "currentColor"}>
                         <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
                     </svg>
                 );
             case Platform.Line:
-                return <LineIcon className={`${iconClass} ${isSelected ? 'text-[var(--plexo-yellow)]' : 'text-[var(--plexo-med-gray)]'}`} />;
+                return <LineIcon className={iconClass} isActive={isSelected} color={isSelected ? "#06C755" : "currentColor"} />;
             default:
                 return null;
         }
@@ -185,31 +192,32 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
         <>
             <div className={`space-y-8 animate-in fade-in duration-700 ${results.length === 0 ? 'hidden md:block' : ''}`}>
 
-                {/* Main Results Container - Monochrome */}
-                <div className="text-primary flex flex-col min-h-[600px] overflow-hidden group/main transition-all duration-700 w-full max-w-6xl mx-auto bg-white rounded-[48px] border border-[#E5E5E5] shadow-sm">
+                {/* Main Results Container - Premium Layout */}
+                <div className="text-primary flex flex-col min-h-[600px] overflow-hidden group/main transition-all duration-700 w-full max-w-6xl mx-auto bg-white rounded-[48px] border border-[#F0F0F0] shadow-[0_20px_50px_rgba(0,0,0,0.04)]">
 
-                    {/* Integrated Tab Navigation Header (Monochrome) */}
+                    {/* Integrated Tab Navigation Header (Premium Light) */}
                     {results.length > 0 && (
-                        <div className="flex items-center w-full border-b border-[#E5E5E5] bg-white">
+                        <div className="flex items-center w-full border-b border-[#F0F0F0] bg-white py-2 px-2 overflow-x-auto no-scrollbar">
                             {results.map((res, idx) => {
                                 const isSelected = activeTab === idx;
                                 const theme = getPlatformTheme(res.platform);
+                                const activeColor = (theme as any).activeColor || "#111111";
+
                                 return (
                                     <div
                                         key={res.platform}
                                         onClick={() => onTabChange(idx)}
-                                        className={`flex-1 py-5 flex items-center justify-center gap-1.5 md:gap-3 cursor-pointer transition-all duration-500 border-r border-[#E5E5E5] px-2 group
-                                            ${isSelected
-                                                ? 'bg-[var(--plexo-dark-gray)]'
-                                                : 'hover:bg-[var(--bg-secondary)]'
-                                            }`}
+                                        className={`flex-1 min-w-[100px] py-4 flex flex-col items-center justify-center gap-2 cursor-pointer transition-all duration-300 relative mx-1
+                                            ${isSelected ? 'opacity-100' : 'opacity-40 hover:opacity-60'}`}
                                     >
-                                        <div className={`transition-transform duration-500 ${isSelected ? 'scale-110' : 'scale-100 opacity-40 group-hover:opacity-70'}`}>
+                                        <div className={`transition-transform duration-300 ${isSelected ? 'scale-110' : 'scale-100'}`}>
                                             {getTabIcon(res.platform, isSelected)}
                                         </div>
-                                        <span className={`text-[10px] md:text-[11px] font-black tracking-[0.2em] uppercase transition-all duration-500 truncate ${isSelected ? 'text-[var(--plexo-yellow)] translate-y-0' : 'text-[var(--plexo-med-gray)] translate-y-0.5'}`}>
-                                            {theme.label}
-                                        </span>
+
+                                        {/* Premium Indicator Bar */}
+                                        <div className={`absolute bottom-0 left-1/2 -translate-x-1/2 h-1 rounded-full bg-current transition-all duration-500
+                                            ${isSelected ? 'w-8 opacity-100' : 'w-0 opacity-0'}
+                                        `} style={{ color: activeColor }} />
                                     </div>
                                 );
                             })}
@@ -238,7 +246,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                 const theme = getPlatformTheme(res.platform);
                                 return (
                                     <div key={res.platform} className={activeTab === gIdx ? 'block animate-in fade-in duration-700' : 'hidden'}>
-                                        <div className={`divide-y border-[#E5E5E5]`}>
+                                        <div className={`divide-y border-[#F0F0F0]`}>
                                             {res.data.map((text, iIdx) => (
                                                 <div key={iIdx} className={`py-12 px-8 lg:px-16 flex flex-col relative text-left transition-colors duration-700`}>
 
@@ -268,7 +276,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                     </div>
 
                                                     {/* Unified Action Layout */}
-                                                    <div className="mt-auto pt-10 border-t border-[#E5E5E5]">
+                                                    <div className="mt-auto pt-10 border-t border-[#F0F0F0]">
                                                         {/* Utility Row: Settings & Tools */}
                                                         <div className="flex items-center justify-between mb-8 gap-3">
                                                             {/* Left: Platform Specifics */}
@@ -280,16 +288,14 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                             <div className="flex items-center gap-2">
                                                                 <button
                                                                     onClick={() => onCopy(text)}
-                                                                    className="flex items-center justify-center w-12 h-12 rounded-2xl bg-[#FAFAFA] text-[#999999] border border-[#E5E5E5] hover:bg-[#F5F5F5] hover:text-[#111111] transition-all active:scale-95"
+                                                                    className="flex items-center justify-center w-12 h-12 rounded-2xl bg-white text-[#949594] border border-[#F0F0F0] hover:bg-[#F9F9FB] hover:text-[#111111] transition-all active:scale-95 shadow-sm"
                                                                     title="コピー"
                                                                 >
                                                                     <CopyIcon className="w-5 h-5" />
                                                                 </button>
-
-                                                                {/* Refined Secondary Preview Button */}
                                                                 <button
                                                                     onClick={() => setPreviewState({ isOpen: true, platform: res.platform, text, gIdx, iIdx })}
-                                                                    className="flex items-center justify-center w-12 h-12 rounded-2xl bg-[#FAFAFA] text-[#999999] border border-[#E5E5E5] hover:bg-[#F5F5F5] hover:text-[#111111] transition-all active:scale-95"
+                                                                    className="flex items-center justify-center w-12 h-12 rounded-2xl bg-white text-[#949594] border border-[#F0F0F0] hover:bg-[#F9F9FB] hover:text-[#111111] transition-all active:scale-95 shadow-sm"
                                                                     title="プレビュー"
                                                                 >
                                                                     <EyeIcon className="w-5 h-5" />
@@ -298,17 +304,17 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                         </div>
 
                                                         {/* Primary Tier Actions */}
-                                                        <div className="flex flex-col gap-5">
+                                                        <div className="flex flex-col gap-4">
                                                             {/* Prominent Refine Button */}
                                                             <button
                                                                 onClick={() => onRefineToggle(gIdx, iIdx)}
-                                                                className={`flex items-center justify-center gap-4 py-6 rounded-[28px] text-[12px] font-black transition-all duration-500 uppercase tracking-[0.3em] overflow-hidden relative group
+                                                                className={`flex items-center justify-center gap-3 py-5 rounded-full text-[13px] font-bold transition-all duration-300 relative group
                                                                     ${refiningKey === `${gIdx}-${iIdx}`
-                                                                        ? 'bg-gradient-to-r from-[#6366F1] to-[#A855F7] text-white shadow-[0_10px_25px_rgba(168,85,247,0.4)]'
-                                                                        : 'bg-[#FAFAFA] text-[#999999] border border-[#E5E5E5] hover:bg-[#F5F5F5] hover:text-[#111111]'
+                                                                        ? 'bg-[#7F5AF0] text-white shadow-[0_8px_20px_rgba(127,90,240,0.2)]'
+                                                                        : 'bg-white text-[#949594] border border-[#F0F0F0] active:scale-[0.98] shadow-sm'
                                                                     }`}
                                                             >
-                                                                <MagicWandIcon className="w-5 h-5" />
+                                                                <MagicWandIcon className="w-5 h-5 transition-transform" />
                                                                 <span>AIで内容を微調整する</span>
                                                             </button>
 
@@ -322,19 +328,17 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                                         onShare(res.platform, text);
                                                                     }
                                                                 }}
-                                                                className={`flex items-center justify-center gap-4 py-7 rounded-[40px] font-black text-[13px] md:text-sm transition-all duration-700 uppercase tracking-[0.3em] group mt-2 relative overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.15)] active:scale-[0.98] ${theme.actionColor}`}
+                                                                className={`flex items-center justify-center gap-3 py-5 rounded-full font-bold text-[14px] transition-all duration-300 group mt-1 relative overflow-hidden active:scale-[0.98] ${theme.actionColor}`}
                                                             >
-                                                                {/* Dynamic Shine Overlay */}
-                                                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
                                                                 <span className="relative z-10">{theme.actionLabel}</span>
-                                                                <ExternalLinkIcon className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform relative z-10" />
+                                                                <ExternalLinkIcon className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform relative z-10" />
                                                             </button>
                                                         </div>
                                                     </div>
 
                                                     {/* Refinement Overlay (per variant) - Monochrome */}
                                                     {refiningKey === `${gIdx}-${iIdx}` && (
-                                                        <div className="absolute inset-0 bg-white/90 backdrop-blur-xl z-20 flex flex-col p-12 animate-in fade-in zoom-in duration-500 rounded-[54px] border border-[#E5E5E5] shadow-2xl">
+                                                        <div className="absolute inset-0 bg-white/95 backdrop-blur-xl z-20 flex flex-col p-12 animate-in fade-in zoom-in duration-500 rounded-[54px] border border-[#F0F0F0] shadow-2xl">
                                                             <div className="flex-1 flex flex-col items-center justify-center max-w-lg mx-auto w-full">
                                                                 <div className="mb-10 text-center space-y-5">
                                                                     <div className="w-20 h-20 bg-[#111111] text-white rounded-[28px] flex items-center justify-center shadow-xl border border-white/10 mx-auto">

@@ -86,66 +86,70 @@ export const Feedback = ({ mode = 'floating' }: { mode?: 'floating' | 'sidebar' 
 
     return (
         <>
-            {/* Floating Button */}
             {/* Trigger Button */}
             {mode === 'sidebar' ? (
                 <button
                     onClick={() => setIsOpen(true)}
-                    className="flex flex-col items-center gap-1.5 p-3 rounded-xl transition-all group w-full h-full bg-white border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:bg-[#E88BA3] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] active:translate-x-[0px] active:translate-y-[0px] active:shadow-[2px_2px_0_0_rgba(0,0,0,1)]"
+                    className="flex flex-col items-center gap-1.5 p-3 rounded-2xl transition-all group w-full h-full bg-white shadow-sm ring-1 ring-slate-100 hover:shadow-md hover:bg-slate-50 active:scale-95"
                     title="フィードバック"
                 >
-                    <MessageCircleIcon className="w-4 h-4 text-black group-hover:scale-110 transition-transform" />
-                    <span className="text-[8px] font-black text-black tracking-widest uppercase">Feedback</span>
+                    <MessageCircleIcon className="w-4 h-4 text-slate-400 group-hover:text-[#7F5AF0] group-hover:scale-110 transition-all" />
+                    <span className="text-[8px] font-black text-slate-400 tracking-widest uppercase group-hover:text-slate-600">Feedback</span>
                 </button>
             ) : (
                 <button
                     onClick={() => setIsOpen(true)}
-                    className="hidden md:flex fixed bottom-8 right-8 z-[100] items-center gap-2 transition-all group px-3 py-3 sm:px-6 sm:py-4 bg-[#E88BA3] text-black rounded-2xl border-[3px] border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] active:scale-95"
+                    className="hidden md:flex fixed bottom-8 right-8 z-[100] items-center gap-3 transition-all group px-6 py-4 bg-[#7F5AF0] text-white rounded-full shadow-lg shadow-indigo-200 hover:shadow-xl hover:shadow-indigo-300 hover:-translate-y-1 active:scale-95 active:translate-y-0"
                 >
-                    <MessageCircleIcon className="w-6 h-6 sm:w-5 sm:h-5 group-hover:rotate-12 transition-transform" />
-                    <span className="font-black text-sm tracking-tight hidden sm:inline-block">フィードバック</span>
+                    <MessageCircleIcon className="w-5 h-5 group-hover:rotate-12 transition-transform" />
+                    <span className="font-extrabold text-sm tracking-tight">フィードバック</span>
                 </button>
             )}
 
             {/* Modal Overlay */}
             {(isOpen && mounted) && createPortal(
                 <div
-                    className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-300"
-                    onClick={() => setIsOpen(false)}
+                    className="fixed inset-0 z-[10000] flex items-center justify-center p-4"
                 >
+                    {/* VisionOS Style Backdrop */}
                     <div
-                        className="w-full max-w-lg rounded-[32px] overflow-hidden flex flex-col relative animate-in zoom-in-95 duration-300 bg-[var(--bg-beige)] border-[3px] border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)]"
+                        className="absolute inset-0 bg-slate-900/40 backdrop-blur-md animate-in fade-in duration-300"
+                        onClick={() => setIsOpen(false)}
+                    />
+
+                    <div
+                        className="relative w-full max-w-lg overflow-hidden flex flex-col animate-in zoom-in-95 duration-300 bg-white rounded-[40px] shadow-2xl ring-1 ring-black/5"
                         onClick={e => e.stopPropagation()}
                     >
                         {/* Header */}
-                        <div className="px-8 py-5 border-b-[3px] flex items-center justify-between sticky top-0 z-20 bg-white border-black">
-                            <h2 className="text-xl font-black text-black tracking-tight uppercase">Send Feedback</h2>
+                        <div className="px-8 py-6 flex items-center justify-between border-b border-slate-50 sticky top-0 z-20 bg-white/80 backdrop-blur-md">
+                            <h2 className="text-xl font-black text-slate-800 tracking-tight">FEEDBACK</h2>
                             <button
                                 onClick={() => setIsOpen(false)}
-                                className="w-10 h-10 flex items-center justify-center rounded-xl transition-all active:scale-95 bg-white border-2 border-black text-black hover:bg-slate-100 shadow-[2px_2px_0_0_rgba(0,0,0,1)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none"
+                                className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all active:scale-90"
                             >
                                 <CloseIcon className="w-5 h-5" />
                             </button>
                         </div>
 
                         {/* Content */}
-                        <div className="p-6 md:p-8 bg-[var(--bg-beige)]">
+                        <div className="p-8 md:p-10">
                             {isSuccess ? (
                                 <div className="py-12 text-center animate-in zoom-in duration-500">
-                                    <div className="w-24 h-24 border-[4px] border-white text-black rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl bg-[#4DB39A] shadow-[8px_8px_0px_0px_rgba(0,0,0,0.1)]">
+                                    <div className="w-24 h-24 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-indigo-100 shadow-xl">
                                         <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="4" d="M5 13l4 4L19 7"></path>
                                         </svg>
                                     </div>
-                                    <h3 className="text-3xl font-black text-black mb-2 italic">送信完了！</h3>
-                                    <p className="text-black/60 font-bold">貴重なご意見ありがとうございます。</p>
+                                    <h3 className="text-2xl font-black text-slate-800 mb-2">送信完了！</h3>
+                                    <p className="text-slate-400 font-medium text-sm">貴重なご意見ありがとうございます。</p>
                                 </div>
                             ) : (
                                 <form onSubmit={handleSubmit} className="space-y-10">
                                     {/* Star Rating */}
                                     <div className="text-center">
-                                        <p className="text-base font-black text-black mb-6 tracking-tight">満足度を教えてください <span className="text-rose-500">*</span></p>
-                                        <div className="flex justify-center gap-4">
+                                        <p className="text-sm font-black text-slate-600 mb-8 tracking-tight capitalize">どのくらい満足されましたか？ <span className="text-rose-500 ml-1">*</span></p>
+                                        <div className="flex justify-center gap-5">
                                             {[1, 2, 3, 4, 5].map((num) => (
                                                 <button
                                                     key={num}
@@ -156,7 +160,7 @@ export const Feedback = ({ mode = 'floating' }: { mode?: 'floating' | 'sidebar' 
                                                     className="focus:outline-none transition-all hover:scale-125 active:scale-90"
                                                 >
                                                     <StarIcon
-                                                        className={`w-12 h-12 ${(hoverRating || rating) >= num ? 'text-[#F5CC6D] fill-[#F5CC6D]' : 'text-black/10'}`}
+                                                        className={`w-12 h-12 transition-colors duration-300 ${(hoverRating || rating) >= num ? 'text-[#FFD700] fill-[#FFD700]' : 'text-slate-100'}`}
                                                     />
                                                 </button>
                                             ))}
@@ -165,38 +169,53 @@ export const Feedback = ({ mode = 'floating' }: { mode?: 'floating' | 'sidebar' 
 
                                     {/* Comment */}
                                     <div className="space-y-4">
-                                        <label className="text-base font-black text-black tracking-tight flex justify-between">
-                                            詳細なご意見・ご要望 <span className="text-[10px] text-black/30 uppercase tracking-widest leading-none mt-1">Optional</span>
+                                        <label className="text-xs font-black text-slate-400 tracking-widest uppercase flex justify-between px-1">
+                                            詳細なご意見・ご要望 <span>Optional</span>
                                         </label>
-                                        <textarea
-                                            value={content}
-                                            onChange={(e) => setContent(e.target.value)}
-                                            placeholder="アプリの使い心地はいかがですか？改善点やご要望など、どんなことでもお気軽にお聞かせください..."
-                                            className="w-full h-40 p-5 rounded-2xl transition-all outline-none text-base font-bold text-black resize-none placeholder:text-black/20 bg-white border-[4px] border-black focus:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]"
-                                            maxLength={500}
-                                        />
-                                        <div className="flex justify-end">
-                                            <span className="text-xs font-black text-black/20 tracking-widest">{content.length} / 500</span>
+                                        <div className="relative group">
+                                            <textarea
+                                                value={content}
+                                                onChange={(e) => setContent(e.target.value)}
+                                                placeholder="アプリの使い心地はいかがですか？改善点やご要望など..."
+                                                className="w-full h-44 p-6 rounded-[28px] transition-all outline-none text-base font-medium text-slate-700 resize-none placeholder:text-slate-300 bg-slate-50 focus:bg-white focus:shadow-lg focus:shadow-slate-100 group-hover:bg-slate-100 focus:group-hover:bg-white ring-1 ring-transparent focus:ring-[#7F5AF0]/10"
+                                                maxLength={500}
+                                            />
+                                            <div className="absolute bottom-4 right-6">
+                                                <span className="text-[10px] font-bold text-slate-300 tracking-widest">{content.length} / 500</span>
+                                            </div>
                                         </div>
                                     </div>
 
                                     {error && (
-                                        <p className="text-sm font-black text-rose-500 text-center animate-bounce">{error}</p>
+                                        <p className="text-xs font-bold text-rose-500 text-center animate-bounce">{error}</p>
                                     )}
 
                                     <button
                                         type="submit"
                                         disabled={isSubmitting || rating === 0}
-                                        className="w-full py-6 rounded-2xl font-black text-xl italic transition-all flex items-center justify-center gap-3 active:scale-95 disabled:opacity-50 disabled:shadow-none bg-[#F5CC6D] text-black border-[4px] border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px]"
+                                        className="w-full relative group rounded-[20px] transition-all duration-300 disabled:opacity-30 disabled:pointer-events-none hover:-translate-y-1 active:scale-95 active:translate-y-0 p-[1.5px] overflow-hidden"
                                     >
-                                        {isSubmitting ? (
-                                            <div className="w-8 h-8 border-4 border-black/30 border-t-black rounded-full animate-spin"></div>
-                                        ) : (
-                                            <>
-                                                <SendIcon className="w-6 h-6" />
-                                                送信する
-                                            </>
-                                        )}
+                                        {/* 1. Radiant Aura Container (Clipped Background) */}
+                                        <div className="absolute inset-0 rounded-[20px] overflow-hidden">
+                                            <div
+                                                className="absolute inset-0 opacity-0 group-hover:opacity-100 blur-sm transition-opacity duration-500"
+                                                style={{
+                                                    background: 'linear-gradient(45deg, #22D3EE, #FACC15, #F472B6)'
+                                                }}
+                                            />
+                                        </div>
+
+                                        {/* 2. Content Layer */}
+                                        <div className="relative z-10 w-full h-full bg-[#111111] text-white rounded-[19px] py-5 flex items-center justify-center gap-3 shadow-xl shadow-slate-200 group-hover:shadow-2xl">
+                                            {isSubmitting ? (
+                                                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                                            ) : (
+                                                <>
+                                                    <SendIcon className="w-4 h-4" />
+                                                    フィードバックを送信
+                                                </>
+                                            )}
+                                        </div>
                                     </button>
                                 </form>
                             )}
@@ -206,31 +225,28 @@ export const Feedback = ({ mode = 'floating' }: { mode?: 'floating' | 'sidebar' 
                 , document.body)}
 
             <style jsx>{`
-        .animate-in { 
-          animation-duration: 300ms;
-          animation-fill-mode: both;
-        }
-        .fade-in {
-          animation-name: fadeIn;
-        }
-        .zoom-in-95 {
-          animation-name: zoomIn95;
-        }
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        @keyframes zoomIn95 {
-          from { opacity: 0; transform: scale(0.95); }
-          to { opacity: 1; transform: scale(1); }
-        }
-      `}</style>
+                .animate-in { 
+                    animation-duration: 400ms;
+                    animation-fill-mode: both;
+                }
+                .fade-in {
+                    animation-name: fadeIn;
+                }
+                .zoom-in-95 {
+                    animation-name: zoomIn95;
+                }
+                @keyframes fadeIn {
+                    from { opacity: 0; }
+                    to { opacity: 1; }
+                }
+                @keyframes zoomIn95 {
+                    from { opacity: 0; transform: scale(0.95); }
+                    to { opacity: 1; transform: scale(1); }
+                }
+                .no-scrollbar::-webkit-scrollbar {
+                    display: none;
+                }
+            `}</style>
         </>
     );
 };
-
-const HeartIconContainer = () => (
-    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
-    </svg>
-);

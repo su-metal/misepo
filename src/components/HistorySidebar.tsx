@@ -1,5 +1,5 @@
 import React from 'react';
-import { GeneratedPost, Platform, GeneratedResult, StoreProfile, Preset } from '../types';
+import { GeneratedPost, Platform, Preset } from '../types';
 import {
   CloseIcon,
   XIcon,
@@ -33,7 +33,6 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
   toggleOpen,
   onOpenLogin,
   onDelete,
-  presets = [],
   onTogglePin
 }) => {
   React.useEffect(() => {
@@ -47,7 +46,6 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
     };
   }, [isOpen]);
 
-  // Helper to pick representative text
   const pickFirstText = (item: GeneratedPost): string => {
     if (Array.isArray(item.results) && item.results.length > 0) {
       const group = item.results.find(
@@ -72,7 +70,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
   }, [history]);
 
   const getPlatformIcon = (p: Platform, className?: string) => {
-    const iconClass = className || "w-3 h-3 text-stone-500";
+    const iconClass = className || "w-3 h-3 text-slate-400";
     switch (p) {
       case Platform.X: return <XIcon className={iconClass} />;
       case Platform.Instagram: return <InstagramIcon className={iconClass} />;
@@ -82,14 +80,90 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
     }
   };
 
-  const getPlatformColor = (p: Platform) => {
-    switch (p) {
-      case Platform.X: return 'bg-stone-900';
-      case Platform.Instagram: return 'bg-rose-500';
-      case Platform.GoogleMaps: return 'bg-green-600';
-      case Platform.Line: return 'bg-green-500';
-      default: return 'bg-stone-500';
-    }
+  const renderHistoryItem = (item: GeneratedPost, idx: number) => {
+    const firstResult = pickFirstText(item);
+    const previewText = (firstResult && firstResult.trim()) || item.config.inputText || "...";
+    const dateLabel = new Date(item.timestamp).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+
+    return (
+      <div
+        key={item.id}
+        className="group relative animate-in fade-in slide-in-from-right-8 duration-500"
+        style={{ animationDelay: `${idx * 40}ms` }}
+      >
+        <button
+          onClick={() => {
+            onSelect(item);
+            toggleOpen();
+          }}
+          className={`w-full text-left rounded-[28px] transition-all duration-300 relative overflow-hidden flex flex-col gap-4 hover:shadow-xl hover:shadow-indigo-100/40 hover:-translate-y-1 ${item.isPinned
+            ? 'bg-white p-[1.5px] shadow-md ring-0'
+            : 'bg-white p-6 ring-1 ring-slate-100 shadow-sm hover:ring-indigo-100'
+            }`}
+        >
+          {/* Prism Radiant Aura for Pinned */}
+          {item.isPinned && (
+            <div className="absolute inset-0 rounded-[28px] overflow-hidden pointer-events-none">
+              <div
+                className="absolute inset-0 opacity-100 blur-sm transition-all duration-700"
+                style={{
+                  background: 'linear-gradient(45deg, #22D3EE, #FACC15, #F472B6)'
+                }}
+              />
+            </div>
+          )}
+
+          <div className={`relative w-full h-full flex flex-col gap-4 ${item.isPinned ? 'bg-white rounded-[27px] p-6' : ''}`}>
+            <div className="flex items-center justify-between">
+              <div className="flex -space-x-2">
+                {item.config.platforms.map((p, pIdx) => (
+                  <div key={`${p}-${pIdx}`} className="w-8 h-8 rounded-full flex items-center justify-center bg-slate-50 border-2 border-white shadow-sm ring-1 ring-slate-100/20">
+                    {getPlatformIcon(p, "w-4 h-4 text-slate-400 group-hover:text-[#7F5AF0] transition-colors")}
+                  </div>
+                ))}
+              </div>
+              <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">
+                {dateLabel}
+              </span>
+            </div>
+
+            <p className="text-sm text-slate-600 font-bold line-clamp-2 leading-relaxed transition-colors group-hover:text-slate-900 pr-12">
+              {previewText}
+            </p>
+          </div>
+        </button>
+
+        {/* Floating Actions */}
+        <div className={`absolute bottom-6 right-6 flex flex-row md:flex-col gap-2 transition-all duration-300 z-30 ${item.isPinned ? 'opacity-100' : 'opacity-100 md:opacity-0 md:group-hover:opacity-100 md:translate-x-2 md:group-hover:translate-x-0'}`}>
+          <button
+            onClick={(e) => { e.stopPropagation(); onTogglePin(item.id, !item.isPinned); }}
+            className={`w-9 h-9 rounded-full flex items-center justify-center transition-all ${item.isPinned
+              ? 'bg-indigo-50 text-[#7F5AF0] shadow-sm'
+              : 'bg-white shadow-md text-slate-300 hover:text-indigo-500 hover:scale-110'
+              }`}
+            title={item.isPinned ? "ピン留めを解除" : "ピン留めして保護"}
+          >
+            <PinIcon className="w-4 h-4" fill={item.isPinned ? "currentColor" : "none"} />
+          </button>
+
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete(item.id);
+            }}
+            className="w-9 h-9 rounded-full bg-white shadow-md flex items-center justify-center text-slate-300 hover:text-rose-500 hover:scale-110 hover:bg-rose-50 transition-all"
+            title="履歴を削除"
+          >
+            <TrashIcon className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* Pinned Badge */}
+        {item.isPinned && (
+          <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-1 h-8 bg-[#7F5AF0] rounded-r-full shadow-[2px_0_8px_rgba(127,90,240,0.4)] z-20"></div>
+        )}
+      </div>
+    );
   };
 
   return (
@@ -97,24 +171,24 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
       {/* Overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-stone-900/20 backdrop-blur-[2px] z-[9990] transition-opacity duration-300"
+          className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[9990] animate-in fade-in duration-300"
           onClick={toggleOpen}
         />
       )}
 
       {/* Sidebar Panel */}
       <div
-        className={`fixed top-0 right-0 h-full w-[85vw] sm:w-[400px] md:w-[440px] transform transition-all duration-500 cubic-bezier(0.2, 0.8, 0.2, 1) z-[9999] flex flex-col overflow-hidden bg-stone-50 ${isOpen ? 'translate-x-0 shadow-2xl' : 'translate-x-full shadow-none'}`}
+        className={`fixed top-0 right-0 h-full w-[85vw] sm:w-[400px] md:w-[440px] transform transition-all duration-500 cubic-bezier(0.2, 0.8, 0.2, 1) z-[9999] flex flex-col overflow-hidden bg-white shadow-2xl ring-1 ring-black/5 ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
       >
         {/* Header */}
-        <div className="p-6 md:p-8 flex items-center justify-between border-b border-stone-100 bg-white">
+        <div className="px-8 py-6 md:py-8 flex items-center justify-between border-b border-slate-50 bg-white/80 backdrop-blur-md sticky top-0 z-10">
           <div>
-            <h2 className="font-black text-stone-900 text-2xl tracking-tight">History</h2>
-            <p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest mt-0.5">Your Past Generations</p>
+            <h2 className="font-black text-slate-800 text-2xl tracking-tight uppercase">History</h2>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1.5">Your Past Generations</p>
           </div>
           <button
             onClick={toggleOpen}
-            className="w-10 h-10 flex items-center justify-center rounded-xl transition-all active:scale-95 bg-stone-50 text-stone-400 hover:bg-stone-100 hover:text-stone-600"
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all active:scale-90"
             aria-label="Close menu"
           >
             <CloseIcon className="w-5 h-5" />
@@ -122,125 +196,83 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
         </div>
 
         {/* Content Segment: History */}
-        <div className="flex-1 overflow-y-auto overscroll-contain p-6 md:p-8 space-y-6 no-scrollbar bg-stone-50">
-          <div className="flex items-center justify-between px-1">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 border border-indigo-100/50">
-                <HistoryIcon className="w-5 h-5" />
+        <div className="flex-1 overflow-y-auto overscroll-contain p-6 md:p-8 space-y-8 no-scrollbar bg-slate-50/50">
+          <div className="flex items-center justify-between px-2">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-[#7F5AF0] shadow-sm">
+                <HistoryIcon className="w-6 h-6" />
               </div>
               <div className="flex flex-col">
-                <span className="text-[10px] font-black text-stone-400 uppercase tracking-widest">History</span>
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Saved Results</span>
                 {isLoggedIn && (
-                  <span className="text-[11px] font-bold text-stone-800 tracking-tight">
-                    {history.filter(h => !h.isPinned).length} items
+                  <span className="text-xs font-black text-slate-800">
+                    {history.length} ITEMS
                   </span>
                 )}
               </div>
             </div>
           </div>
 
-          <div className="space-y-4 pb-12">
+          <div className="space-y-10 pb-10">
             {isLoggedIn ? (
-              displayHistory.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-20 text-center opacity-60">
-                  <div className="w-20 h-20 mb-6 bg-white border border-stone-100 rounded-[2.5rem] flex items-center justify-center text-stone-200 shadow-sm">
+              history.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-24 text-center">
+                  <div className="w-24 h-24 mb-6 bg-white rounded-[32px] flex items-center justify-center text-slate-100 shadow-sm ring-1 ring-slate-100/50">
                     <HistoryIcon className="w-10 h-10" />
                   </div>
-                  <p className="text-sm font-bold text-stone-400 uppercase tracking-widest">
+                  <p className="text-xs font-black text-slate-300 uppercase tracking-[0.2em]">
                     履歴はありません
                   </p>
                 </div>
               ) : (
-                displayHistory.map((item, idx) => {
-                  const firstResult = pickFirstText(item);
-                  const previewText = (firstResult && firstResult.trim()) || item.config.inputText || "...";
-                  const dateLabel = new Date(item.timestamp).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-
-                  return (
-                    <div
-                      key={item.id}
-                      className="group relative animate-in fade-in slide-in-from-right-4 duration-300"
-                      style={{ animationDelay: `${idx * 50}ms` }}
-                    >
-                      <button
-                        onClick={() => {
-                          onSelect(item);
-                          toggleOpen();
-                        }}
-                        className="w-full text-left p-5 rounded-2xl bg-white border border-stone-100 shadow-sm hover:shadow-md hover:border-indigo-100 transition-all duration-300 relative overflow-hidden"
-                      >
-                        <div className="flex items-start gap-4">
-                          <div className="flex flex-col gap-1.5">
-                            {item.config.platforms.map((p, pIdx) => (
-                              <div key={`${p}-${pIdx}`} className="w-8 h-8 rounded-lg flex items-center justify-center bg-stone-50 border border-stone-100 shadow-sm">
-                                {getPlatformIcon(p, "w-4 h-4 text-stone-400")}
-                              </div>
-                            ))}
-                          </div>
-                          <div className="flex-1 min-w-0 pr-2">
-                            <div className="flex items-center justify-between mb-2">
-                              <span className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">
-                                {dateLabel}
-                              </span>
-                            </div>
-                            <p className="text-sm text-stone-700 font-bold line-clamp-2 leading-relaxed transition-colors group-hover:text-indigo-600">
-                              {previewText}
-                            </p>
-                          </div>
-                        </div>
-                      </button>
-
-                      <div className="absolute top-3 right-3 flex items-center gap-1">
-                        {/* Pin Button */}
-                        <button
-                          onClick={(e) => { e.stopPropagation(); onTogglePin(item.id, !item.isPinned); }}
-                          className={`p-2 rounded-lg transition-all ${item.isPinned
-                            ? 'text-indigo-600 bg-indigo-50'
-                            : 'text-stone-300 hover:text-indigo-400 hover:bg-stone-100 opacity-0 group-hover:opacity-100'
-                            }`}
-                          title={item.isPinned ? "ピン留めを解除" : "ピン留めして保護"}
-                        >
-                          <PinIcon className="w-3.5 h-3.5" fill={item.isPinned ? "currentColor" : "none"} />
-                        </button>
-
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onDelete(item.id);
-                          }}
-                          className="p-2 rounded-lg text-stone-300 hover:text-rose-500 hover:bg-rose-50 transition-all opacity-0 group-hover:opacity-100"
-                          title="履歴を削除"
-                        >
-                          <TrashIcon className="w-3.5 h-3.5" />
-                        </button>
+                <>
+                  {/* Pinned Section */}
+                  {displayHistory.some(i => i.isPinned) && (
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-2 px-2">
+                        <PinIcon className="w-3 h-3 text-[#7F5AF0]" fill="currentColor" />
+                        <span className="text-[10px] font-black text-[#7F5AF0] uppercase tracking-[0.2em]">Pinned</span>
+                      </div>
+                      <div className="space-y-4">
+                        {displayHistory.filter(i => i.isPinned).map((item, idx) => renderHistoryItem(item, idx))}
                       </div>
                     </div>
-                  );
-                })
+                  )}
+
+                  {/* Recent Section */}
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2 px-2">
+                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Recent</span>
+                    </div>
+                    <div className="space-y-4">
+                      {displayHistory.filter(i => !i.isPinned).map((item, idx) => renderHistoryItem(item, idx))}
+                    </div>
+                  </div>
+                </>
               )
             ) : (
-              <div className="flex flex-col items-center justify-center py-12 text-center">
-                <div className="w-20 h-20 bg-white border border-stone-100 rounded-[2.5rem] flex items-center justify-center mb-6 shadow-sm">
-                  <LockIcon className="w-10 h-10 text-stone-200" />
+              <div className="flex flex-col items-center justify-center py-20 px-4 text-center">
+                <div className="w-24 h-24 bg-white rounded-[40px] shadow-sm flex items-center justify-center mb-10 ring-1 ring-slate-100">
+                  <LockIcon className="w-10 h-10 text-slate-100" />
                 </div>
-                <h3 className="font-bold text-stone-900 text-xl mb-2">ログインが必要です</h3>
-                <p className="text-xs font-medium text-stone-400 mb-8 max-w-[200px]">
-                  履歴を保存・閲覧するにはログインを行ってください。
+                <h3 className="font-black text-slate-800 text-2xl mb-3 tracking-tight">LOGIN REQUIRED</h3>
+                <p className="text-sm font-bold text-slate-400 mb-10 max-w-[240px] leading-relaxed">
+                  履歴を安全に保存・同期するには、アカウントへのログインが必要です。
                 </p>
                 <button
                   onClick={() => { onOpenLogin(); toggleOpen(); }}
-                  className="w-full py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-2xl shadow-lg shadow-indigo-100 font-bold uppercase tracking-widest hover:opacity-90 transition-all"
+                  className="w-full py-5 bg-gradient-to-r from-[#7F5AF0] to-[#22D3EE] text-white rounded-[20px] shadow-xl shadow-indigo-100 font-black text-xs uppercase tracking-[0.2em] hover:shadow-2xl hover:-translate-y-1 active:scale-95 active:translate-y-0 transition-all"
                 >
-                  Login / Register
+                  Join / Sign In
                 </button>
               </div>
             )}
           </div>
         </div>
 
-        {/* Footer: Legal Notice (Simple) */}
-        <div className="p-8 border-t border-stone-100 bg-stone-50/50">
-          <p className="text-[9px] font-bold text-stone-300 text-center uppercase tracking-[0.4em]">© 2026 {UI.name}</p>
+        {/* Footer */}
+        <div className="p-8 border-t border-slate-50 bg-white">
+          <p className="text-[9px] font-black text-slate-300 text-center uppercase tracking-[0.4em]">© 2026 {UI.name}</p>
         </div>
       </div>
     </>

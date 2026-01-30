@@ -190,7 +190,7 @@ export const MobileCalendarOverlay: React.FC<MobileCalendarOverlayProps> = ({
                                 >
                                     <span className="text-sm z-10 relative">{day}</span>
                                     {event && !isLoading && (
-                                        <span className="absolute -bottom-1 text-[10px] transform scale-75">{event.icon}</span>
+                                        <span className="absolute -bottom-4 text-lg">{event.icon}</span>
                                     )}
                                     {event?.isRecommended && !isSelected && (
                                         <div className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-[#FF4081] animate-pulse" />
@@ -206,7 +206,7 @@ export const MobileCalendarOverlay: React.FC<MobileCalendarOverlayProps> = ({
                     {currentEvent ? (
                         <div className="bg-white/5 rounded-[24px] p-5 border border-white/10">
                             <div className="flex items-start gap-4 mb-4">
-                                <div className="text-4xl">{currentEvent.icon}</div>
+                                <div className="text-5xl drop-shadow-sm">{currentEvent.icon}</div>
                                 <div>
                                     <div className="flex items-center gap-2 mb-1">
                                         <h3 className="text-lg font-bold text-white leading-tight">{currentEvent.title}</h3>
