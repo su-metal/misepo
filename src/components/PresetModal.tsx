@@ -170,7 +170,6 @@ const PresetModal: React.FC<PresetModalProps> = ({
   const [name, setName] = useState('');
   const [avatar, setAvatar] = useState('shop');
   const [customPrompts, setCustomPrompts] = useState<{ [key: string]: string }>({});
-  const [activePromptTab, setActivePromptTab] = useState<Platform>(Platform.X);
   const [isInternalSaving, setIsInternalSaving] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [orderedPresets, setOrderedPresets] = useState<Preset[]>([]);
@@ -520,59 +519,53 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
   // Tabbed Content Renders
   const renderProfileTab = () => (
-    <div className="space-y-10 animate-in fade-in slide-in-from-bottom-2 duration-500">
-      <div className="space-y-6">
-        <label className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em] mb-4 block">1. Identity & Profile</label>
-
-        <div className="flex flex-col md:flex-row gap-8 items-start">
-          <div className="flex flex-col items-center gap-4">
-            <button
-              onClick={() => setIsIconSelectorOpen(!isIconSelectorOpen)}
-              className="w-24 h-24 rounded-[2rem] bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-sm hover:shadow-md transition-all active:scale-95 group relative overflow-hidden"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/0 to-indigo-500/5 group-hover:to-indigo-500/10 transition-all" />
-              <div className="relative transform group-hover:scale-110 transition-transform">
-                {renderAvatarIcon(avatar, "w-10 h-10")}
-              </div>
-              <div className="absolute bottom-1 right-1 w-6 h-6 bg-white rounded-full border border-stone-100 flex items-center justify-center text-stone-400 shadow-sm">
-                <ChevronDownIcon className={`w-3 h-3 transition-transform ${isIconSelectorOpen ? 'rotate-180' : ''}`} />
-              </div>
-            </button>
-            <span className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">Icon Selection</span>
-          </div>
-
-          <div className="flex-1 w-full space-y-2">
-            <h4 className="text-[13px] font-bold text-stone-900 tracking-tight ml-1">プロフィール名</h4>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="例: 店長（公式）, SNS担当者"
-              className="w-full px-6 py-5 bg-stone-50 border border-stone-100 focus:bg-white focus:border-indigo-300 focus:ring-4 focus:ring-indigo-500/5 outline-none rounded-3xl text-stone-800 font-bold placeholder-stone-300 transition-all shadow-sm"
-            />
-            <p className="text-[10px] text-stone-400 font-medium ml-1">
-              AIが「誰になりきって」投稿するかを決める最も基本的な設定です。
-            </p>
-          </div>
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
+      <div className="flex items-center gap-6">
+        <div className="shrink-0">
+          <button
+            onClick={() => setIsIconSelectorOpen(!isIconSelectorOpen)}
+            className="w-16 h-16 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-sm hover:shadow-md transition-all active:scale-95 group relative overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/0 to-indigo-500/5 group-hover:to-indigo-500/10 transition-all" />
+            <div className="relative transform group-hover:scale-110 transition-transform">
+              {renderAvatarIcon(avatar, "w-8 h-8")}
+            </div>
+            <div className="absolute bottom-0 right-0 w-5 h-5 bg-white rounded-full border border-stone-100 flex items-center justify-center text-stone-400 shadow-sm translate-x-1/4 translate-y-1/4">
+              <ChevronDownIcon className={`w-2.5 h-2.5 transition-transform ${isIconSelectorOpen ? 'rotate-180' : ''}`} />
+            </div>
+          </button>
         </div>
 
-        {isIconSelectorOpen && (
-          <div className="p-6 bg-stone-50/50 rounded-[2.5rem] border border-stone-100 animate-in zoom-in-95 duration-300 overflow-hidden">
-            <div className="grid grid-cols-4 sm:grid-cols-6 gap-3">
-              {AVATAR_OPTIONS.map(opt => (
-                <button
-                  key={opt.id}
-                  onClick={() => { setAvatar(opt.id); setIsIconSelectorOpen(false); }}
-                  className={`aspect-square rounded-2xl flex items-center justify-center transition-all ${avatar === opt.id ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200' : 'bg-white border border-stone-100 text-stone-400 hover:text-stone-600 hover:border-stone-200'}`}
-                  title={opt.label}
-                >
-                  {React.createElement(opt.icon, { className: "w-6 h-6" })}
-                </button>
-              ))}
-            </div>
+        <div className="flex-1 min-w-0 space-y-1">
+          <div className="flex items-center justify-between">
+            <h4 className="text-[11px] font-black text-stone-400 uppercase tracking-[0.2em] ml-1">Profile Name</h4>
           </div>
-        )}
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="例: 店長（公式）, SNS担当者"
+            className="w-full px-5 py-4 bg-stone-50 border border-stone-100 focus:bg-white focus:border-indigo-300 focus:ring-4 focus:ring-indigo-500/5 outline-none rounded-2xl text-stone-800 font-bold placeholder-stone-300 transition-all shadow-sm text-sm"
+          />
+        </div>
       </div>
+
+      {isIconSelectorOpen && (
+        <div className="p-5 bg-stone-50/50 rounded-[2rem] border border-stone-100 animate-in zoom-in-95 duration-300">
+          <div className="grid grid-cols-6 sm:grid-cols-8 gap-2">
+            {AVATAR_OPTIONS.map(opt => (
+              <button
+                key={opt.id}
+                onClick={() => { setAvatar(opt.id); setIsIconSelectorOpen(false); }}
+                className={`aspect-square rounded-xl flex items-center justify-center transition-all ${avatar === opt.id ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200' : 'bg-white border border-stone-100 text-stone-400 hover:text-stone-600 hover:border-stone-200'}`}
+                title={opt.label}
+              >
+                {React.createElement(opt.icon, { className: "w-5 h-5" })}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 
@@ -674,86 +667,50 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
     return (
       <div className="space-y-12">
-        <label className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em] block px-1">2. Learning & Style</label>
+        <div className="flex items-center justify-between px-1">
+          <label className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em] block">2. Learning & Style</label>
 
-        <div className="space-y-8">
-          {renderSampleSection(
-            'SNS Identity',
-            snsSamples,
-            'sns',
-            <SparklesIcon className="w-4 h-4" />,
-            'border-indigo-100/50',
-            'bg-gradient-to-br from-indigo-500/5 to-purple-500/5'
-          )}
+          <div className="flex p-1 bg-stone-100 rounded-2xl border border-stone-200 shadow-inner overflow-hidden">
+            <button
+              onClick={() => setLearningMode('sns')}
+              className={`px-6 py-2 rounded-xl text-[10px] font-black tracking-widest transition-all ${learningMode === 'sns' ? 'bg-white text-indigo-600 shadow-sm' : 'text-stone-400 hover:text-stone-600'}`}
+            >
+              SNS
+            </button>
+            <button
+              onClick={() => setLearningMode('maps')}
+              className={`px-6 py-2 rounded-xl text-[10px] font-black tracking-widest transition-all ${learningMode === 'maps' ? 'bg-white text-teal-600 shadow-sm' : 'text-stone-400 hover:text-stone-600'}`}
+            >
+              G-MAPS
+            </button>
+          </div>
+        </div>
 
-          {renderSampleSection(
-            'Maps Replies',
-            mapsSamples,
-            'maps',
-            <GoogleMapsIcon className="w-4 h-4" />,
-            'border-teal-100/50',
-            'bg-gradient-to-br from-teal-500/5 to-emerald-500/5'
+        <div className="animate-in fade-in duration-500">
+          {learningMode === 'sns' ? (
+            renderSampleSection(
+              'SNS Identity',
+              snsSamples,
+              'sns',
+              <SparklesIcon className="w-4 h-4" />,
+              'border-indigo-100/50',
+              'bg-gradient-to-br from-indigo-500/5 to-purple-500/5'
+            )
+          ) : (
+            renderSampleSection(
+              'Maps Replies',
+              mapsSamples,
+              'maps',
+              <GoogleMapsIcon className="w-4 h-4" />,
+              'border-teal-100/50',
+              'bg-gradient-to-br from-teal-500/5 to-emerald-500/5'
+            )
           )}
         </div>
       </div>
     );
   };
 
-  const renderAdvancedTab = () => (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-2">
-        <div className="space-y-1">
-          <label className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em] block">Advanced Settings</label>
-          <h4 className="font-black text-stone-900 tracking-tighter text-lg">手動オーバーライド設定</h4>
-        </div>
-
-        <div className="flex items-center gap-2 bg-stone-100 p-1 rounded-2xl border border-stone-200 shadow-inner">
-          {activePromptTab !== Platform.GoogleMaps && (
-            <button
-              onClick={() => {
-                const current = customPrompts[activePromptTab] || '';
-                if (!current.trim()) return;
-                if (!confirm('SNSプラットフォーム（X, Instagram, LINE）すべてに反映しますか？')) return;
-                const next = { ...customPrompts };
-                [Platform.X, Platform.Instagram, Platform.Line].forEach(p => next[p] = current);
-                setCustomPrompts(next);
-              }}
-              className="px-4 py-2.5 font-black text-[11px] text-stone-500 hover:text-stone-900 transition-colors"
-            >
-              SNSへ一括適用
-            </button>
-          )}
-        </div>
-      </div>
-
-      <div className="bg-stone-50 border border-stone-100 rounded-[2.5rem] overflow-hidden">
-        <div className="flex border-b border-stone-100 bg-white/50">
-          {[Platform.X, Platform.Instagram, Platform.Line, Platform.GoogleMaps].map(p => (
-            <button
-              key={p}
-              onClick={() => setActivePromptTab(p)}
-              className={`flex-1 py-4 text-[11px] font-black transition-all border-b-2 ${activePromptTab === p ? 'text-indigo-600 border-indigo-600 bg-white' : 'text-stone-400 border-transparent hover:text-stone-600'}`}
-            >
-              {p === Platform.GoogleMaps ? 'G-Maps' : p}
-            </button>
-          ))}
-        </div>
-
-        <div className="p-8">
-          <AutoResizingTextarea
-            value={customPrompts[activePromptTab] || ''}
-            onChange={(val) => setCustomPrompts(prev => ({ ...prev, [activePromptTab]: val }))}
-            placeholder={`${activePromptTab} で投稿を生成する際の「こだわり」を直接編集できます。\n通常は「Learning & Style」タブの自動生成をお使いください。`}
-            className="w-full min-h-[240px] bg-transparent outline-none text-stone-800 font-bold leading-relaxed placeholder-stone-300 resize-none no-scrollbar text-base"
-          />
-        </div>
-      </div>
-
-      <p className="text-[10px] text-stone-400 font-medium px-4 leading-relaxed">
-        ※ここでは、AIが生成したスタイル定義を手動で修正できます。専門的なプロンプト調整が必要な場合にご利用ください。
-      </p>
-    </div>
-  );
 
   const modalBody = (
     <div className="flex h-full bg-stone-50 overflow-hidden text-stone-900 font-inter">
@@ -845,11 +802,10 @@ const PresetModal: React.FC<PresetModalProps> = ({
         </div>
 
         {/* Combined Scrollable Content View */}
-        <div className="flex-1 overflow-y-auto p-8 md:p-12 no-scrollbar pb-32 bg-stone-50/30">
-          <div className="max-w-4xl mx-auto space-y-16">
-            <div className="h-4" />
+        <div className="flex-1 overflow-y-auto p-8 md:p-10 no-scrollbar pb-32 bg-stone-50/30">
+          <div className="max-w-4xl mx-auto space-y-8">
             {renderProfileTab()}
-            <div className="h-px bg-stone-100 max-w-[200px] mx-auto" />
+            <div className="h-px bg-stone-100/30 w-full" />
             {renderLearningAndStyleTab()}
           </div>
         </div>
