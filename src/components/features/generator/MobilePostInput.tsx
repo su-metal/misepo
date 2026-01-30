@@ -70,12 +70,13 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
         }
     }, [mobileStep, onStepChange]);
 
-    // Notify parent about result open state to hide footer
+    // Notify parent about result or calendar open state to hide footer
     React.useEffect(() => {
         if (onMobileResultOpen) {
-            onMobileResultOpen(mobileStep === 'result' && isStepDrawerOpen);
+            const shouldHideFooter = (mobileStep === 'result' && isStepDrawerOpen) || isCalendarOpen;
+            onMobileResultOpen(shouldHideFooter);
         }
-    }, [mobileStep, isStepDrawerOpen, onMobileResultOpen]);
+    }, [mobileStep, isStepDrawerOpen, isCalendarOpen, onMobileResultOpen]);
 
     // Handle Restore from History
     React.useEffect(() => {
@@ -646,8 +647,8 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                 onClick={() => setMobileStep('confirm')}
                                                 disabled={!inputText.trim()}
                                                 className={`w-full py-5 rounded-[28px] font-black text-sm uppercase tracking-[0.2em] shadow-xl active:scale-95 transition-all flex items-center justify-center gap-2 ${inputText.trim()
-                                                        ? 'bg-[#111111] text-white'
-                                                        : 'bg-[#999999] text-white/50 cursor-not-allowed opacity-50 shadow-none'
+                                                    ? 'bg-[#111111] text-white'
+                                                    : 'bg-[#999999] text-white/50 cursor-not-allowed opacity-50 shadow-none'
                                                     }`}
                                             >
                                                 Next
