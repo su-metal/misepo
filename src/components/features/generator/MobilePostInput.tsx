@@ -213,15 +213,30 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     };
 
     return (
-        <div className="flex flex-col h-full min-h-[100dvh] relative overflow-hidden font-inter bg-[#6339f9]">
+        // <div className="flex flex-col h-full min-h-[100dvh] relative overflow-hidden font-inter bg-[#6339f9]">
+        <div className="flex flex-col h-full min-h-[100dvh] relative overflow-hidden font-inter bg-slate-50">
 
-            {/* Vibrant Background Blurs */}
+            {/* Vibrant Background Blurs (OLD - Solid Deep Violet) */}
+            {/* 
             <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden bg-[#6339f9]">
                 <div className="absolute top-[-10%] right-[-10%] w-[80%] h-[80%] bg-[#F472B6] rounded-full blur-[140px] opacity-20" />
                 <div className="absolute bottom-[-10%] left-[-10%] w-[70%] h-[70%] bg-[#22D3EE] rounded-full blur-[120px] opacity-15" />
-
-                {/* Paper Texture */}
                 <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-multiply bg-[url('https://www.transparenttextures.com/patterns/p6.png')]" />
+            </div>
+            */}
+
+            {/* Light airy Gradient Background (NEW) */}
+            <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden">
+                {/* Base airy gradient */}
+                <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 via-white to-purple-50" />
+
+                {/* Random floating blobs - High Visibility */}
+                <div className="absolute top-[-20%] right-[-10%] w-[70%] h-[70%] bg-purple-300 rounded-full blur-[100px] opacity-60 animate-pulse" style={{ animationDuration: '8s' }} />
+                <div className="absolute top-[40%] left-[-20%] w-[60%] h-[60%] bg-cyan-300 rounded-full blur-[100px] opacity-50 animate-pulse" style={{ animationDuration: '10s', animationDelay: '1s' }} />
+                <div className="absolute bottom-[-20%] right-[10%] w-[50%] h-[50%] bg-pink-300 rounded-full blur-[100px] opacity-50 animate-pulse" style={{ animationDuration: '12s', animationDelay: '2s' }} />
+
+                {/* Texture */}
+                <div className="absolute inset-0 opacity-[0.4] mix-blend-overlay bg-[url('https://www.transparenttextures.com/patterns/p6.png')]" />
             </div>
 
             {/* Step 1: Home (Platform Grid) */}
@@ -232,16 +247,16 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                         {/* Typography Date Display - Interactive Trigger */}
                         <div className="flex flex-col cursor-pointer active:scale-95 transition-transform" onClick={() => setIsCalendarOpen(true)}>
                             <span className="text-[9px] font-black text-[var(--plexo-yellow)] uppercase tracking-[0.4em] ml-1 mb-1 z-10 relative flex items-center gap-1">
-                                misepo <span className="bg-white/20 px-1 rounded text-[8px] tracking-normal text-white">HUB</span>
+                                misepo <span className="bg-slate-900/10 px-1 rounded text-[8px] tracking-normal text-slate-500">HUB</span>
                             </span>
                             <div className="flex items-center gap-3 select-none">
-                                <span className="text-[3.5rem] font-black text-white tracking-tighter leading-[0.8]">{day}</span>
+                                <span className="text-[3.5rem] font-black text-slate-900 tracking-tighter leading-[0.8]">{day}</span>
                                 <div className="flex flex-col justify-center gap-0.5 pt-1">
-                                    <span className="text-sm font-black text-white uppercase tracking-widest leading-none">{month}</span>
-                                    <span className="text-[10px] font-bold text-white/50 uppercase tracking-[0.2em] leading-none">{weekday}</span>
+                                    <span className="text-sm font-black text-slate-900 uppercase tracking-widest leading-none">{month}</span>
+                                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] leading-none">{weekday}</span>
                                 </div>
                             </div>
-                            <p className="text-[9px] font-medium text-white/60 tracking-tighter mt-1.5 ml-1 opacity-80 select-none italic flex items-center gap-1">
+                            <p className="text-[9px] font-medium text-slate-400 tracking-tighter mt-1.5 ml-1 opacity-80 select-none italic flex items-center gap-1">
                                 Tap to view Trend Calendar <ChevronRightIcon className="w-3 h-3 opacity-50" />
                             </p>
                         </div>
@@ -250,27 +265,48 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             {/* Decorative Avatar (No Name) */}
                             <div className="relative group">
                                 <div className="absolute inset-0 bg-[var(--plexo-yellow)] rounded-full blur-[10px] opacity-20 group-hover:opacity-40 transition-opacity" />
-                                <div className="relative w-10 h-10 rounded-full bg-[var(--plexo-black)] flex items-center justify-center overflow-hidden shadow-md border-[2px] border-white/20">
-                                    <span className="text-[var(--plexo-yellow)] font-black text-lg" style={{ transform: 'rotate(-10deg)', marginTop: '2px' }}>ミ</span>
+                                <div className="relative w-10 h-10 rounded-full bg-white flex items-center justify-center overflow-hidden shadow-md border-[2px] border-slate-100">
+                                    <span className="text-[var(--plexo-black)] font-black text-lg" style={{ transform: 'rotate(-10deg)', marginTop: '2px' }}>ミ</span>
                                 </div>
                             </div>
 
-                            {/* Glass Credit Pill */}
+                            {/* High-Contrast Credit Design with Gauge */}
                             {plan && typeof plan.usage !== 'undefined' && typeof plan.limit !== 'undefined' && (
-                                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/60 backdrop-blur-md border border-white/60 shadow-[0_4px_10px_rgba(0,0,0,0.03)] scale-90 origin-right">
-                                    <span className="text-[8px] font-black text-[#999999] uppercase tracking-widest mr-1">CREDITS</span>
-                                    <span className="text-sm font-black text-[var(--plexo-black)] leading-none">
-                                        {Math.max(0, plan.limit - plan.usage)}
-                                    </span>
-                                    <span className="text-[10px] font-bold text-[#CCCCCC] leading-none">/ {plan.limit}</span>
+                                <div className="flex flex-col items-end gap-1 scale-90 origin-right">
+                                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900 text-white backdrop-blur-xl border border-white/20 shadow-xl overflow-hidden relative">
+                                        <span className="text-[8px] font-black text-white/40 uppercase tracking-widest mr-1">CREDITS</span>
+                                        <span className="text-sm font-black text-[var(--plexo-yellow)] leading-none">
+                                            {Math.max(0, plan.limit - plan.usage)}
+                                        </span>
+                                        <span className="text-[10px] font-bold text-white/30 leading-none">/ {plan.limit}</span>
+
+                                        {/* Subtle Gauge Background */}
+                                        <div className="absolute bottom-0 left-0 h-[2px] bg-white/10 w-full" />
+                                        {/* Active Gauge Fill */}
+                                        <div
+                                            className="absolute bottom-0 left-0 h-[2px] bg-[var(--plexo-yellow)] shadow-[0_0_10px_rgba(255,193,7,0.5)] transition-all duration-1000"
+                                            style={{ width: `${(Math.max(0, plan.limit - plan.usage) / plan.limit) * 100}%` }}
+                                        />
+                                    </div>
+                                    <div className="flex gap-1 pr-1">
+                                        {Array.from({ length: 5 }).map((_, i) => (
+                                            <div
+                                                key={i}
+                                                className={`h-[3px] w-6 rounded-full transition-colors duration-500 ${((plan.limit - plan.usage) / plan.limit) * 5 > i
+                                                    ? 'bg-[var(--plexo-yellow)]'
+                                                    : 'bg-slate-200'
+                                                    }`}
+                                            />
+                                        ))}
+                                    </div>
                                 </div>
                             )}
                         </div>
                     </div>
 
                     <div className="flex flex-col gap-0.5 items-start px-2 mt-2 mb-0">
-                        <h2 className="text-[12px] font-black text-white tracking-tight">投稿先を選択</h2>
-                        <p className="text-[11px] text-white/50 font-bold uppercase tracking-[0.2em]">Select your canvas</p>
+                        <h2 className="text-[12px] font-black text-slate-800 tracking-tight">投稿先を選択</h2>
+                        <p className="text-[11px] text-slate-400 font-bold uppercase tracking-[0.2em]">Select your canvas</p>
                     </div>
 
                     {/* Standard 2x2 Grid Platform Selection */}
@@ -313,7 +349,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             return [Platform.Instagram, Platform.X, Platform.Line, Platform.GoogleMaps].map((p, idx) => {
                                 const isActive = platforms.includes(p);
                                 const details = getPlatformDetails(p);
-                                const bentoClass = 'h-[160px]';
+                                const bentoClass = 'h-[140px]';
 
                                 return (
                                     <div
@@ -324,7 +360,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             ${bentoClass}
                                             ${isActive
                                                 ? 'bg-[var(--plexo-yellow)] border-[var(--plexo-yellow)] shadow-lg scale-[0.98] animate-tactile-pop'
-                                                : `bg-white/5 backdrop-blur-md border-white/10 shadow-sm hover:bg-white/10 hover:border-white/20 active:scale-[0.95]`
+                                                : `bg-white border-slate-200 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:border-slate-300 hover:shadow-md active:scale-[0.98]`
                                             }
                                         `}
                                     >
@@ -333,7 +369,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             <div className="flex justify-between items-start">
                                                 <div className={`
                                                     transition-all duration-300
-                                                    ${isActive ? 'text-black' : 'text-white/40 group-hover:text-white/80'}
+                                                    ${isActive ? 'text-black' : 'text-slate-400 group-hover:text-slate-600'}
                                                 `}>
                                                     {details.icon}
                                                 </div>
@@ -343,21 +379,23 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                         e.stopPropagation();
                                                         handlePlatformSelect(p);
                                                     }}
-                                                    className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 active:scale-90 shadow-lg ${isActive ? 'bg-black' : 'bg-white/10'}`}
+                                                    className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 active:scale-90 shadow-lg ${isActive ? 'bg-black' : 'bg-white shadow-[0_4px_10px_rgba(0,0,0,0.05)]'}`}
                                                 >
-                                                    <ChevronRightIcon className={`w-5 h-5 ${isActive ? 'text-[var(--plexo-yellow)]' : 'text-white/30'}`} />
+                                                    <ChevronRightIcon className={`w-5 h-5 ${isActive ? 'text-[var(--plexo-yellow)]' : 'text-slate-300'}`} />
                                                 </div>
                                             </div>
 
                                             <div className="flex flex-col">
+                                                {/* 
                                                 <span className={`text-[9px] font-black uppercase tracking-[0.15em] transition-all duration-300 mb-1 ${isActive ? 'text-black/40' : 'text-white/40'}`}>
                                                     {details.tagline}
                                                 </span>
+                                                */}
                                                 <div className="flex flex-col leading-tight">
-                                                    <h3 className={`font-black tracking-tighter text-xl transition-colors duration-500 ${isActive ? 'text-black' : 'text-white'}`} style={{ fontFamily: 'Inter, sans-serif' }}>
+                                                    <h3 className={`font-black tracking-tighter text-xl transition-colors duration-500 ${isActive ? 'text-black' : 'text-slate-800'}`} style={{ fontFamily: 'Inter, sans-serif' }}>
                                                         {details.name}
                                                     </h3>
-                                                    <p className={`text-[11px] font-medium transition-opacity ${isActive ? 'text-black/50' : 'text-white/50'}`}>
+                                                    <p className={`text-[11px] font-medium transition-opacity ${isActive ? 'text-black/50' : 'text-slate-400'}`}>
                                                         {details.sub}
                                                     </p>
                                                 </div>
