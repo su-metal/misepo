@@ -183,10 +183,10 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     };
 
     return (
-        <div className="flex flex-col h-full min-h-[100dvh] relative overflow-hidden font-inter bg-[var(--bg-primary)]">
+        <div className="flex flex-col h-full min-h-[100dvh] relative overflow-hidden font-inter bg-[#dbdbdb]">
 
             {/* Minimal Monochrome Background */}
-            <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden bg-[var(--bg-primary)]">
+            <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden bg-[#dbdbdb]">
                 {/* Subtle Monochrome Gradients */}
                 {/* Subtle Monochrome Gradients - Removed top gradient as it looked like a shadow */}
 
@@ -203,7 +203,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
             <div className={`flex flex-col h-full overflow-hidden relative transition-all duration-500 ${isStepDrawerOpen ? 'blur-md scale-[0.98] opacity-60' : 'opacity-100'}`}>
                 <div className="flex-1 flex flex-col p-5 pt-10 pb-8 safe-area-bottom">
                     {/* High-Design Header - Magazine Style Date & Minimal Avatar */}
-                    <div className="flex items-start justify-between mb-10 px-1">
+                    <div className="flex items-start justify-between mb-4 px-1">
                         {/* Typography Date Display */}
                         <div className="flex flex-col">
                             <span className="text-[9px] font-black text-[var(--plexo-yellow)] uppercase tracking-[0.4em] ml-1 mb-1 z-10 relative">misepo</span>
@@ -241,7 +241,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                         </div>
                     </div>
 
-                    <div className="flex flex-col gap-0.5 items-start px-2 mt-6 mb-0">
+                    <div className="flex flex-col gap-0.5 items-start px-2 mt-2 mb-0">
                         <h2 className="text-[12px] font-black text-[#111111] tracking-tight">投稿先を選択</h2>
                         <p className="text-[11px] text-[#666666] font-bold uppercase tracking-[0.2em]">Select your canvas</p>
                     </div>
