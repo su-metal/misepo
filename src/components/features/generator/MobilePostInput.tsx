@@ -4,7 +4,7 @@ import { AutoResizingTextarea } from './AutoResizingTextarea';
 import { getPlatformIcon } from './utils';
 import {
     AutoSparklesIcon, MagicWandIcon, MicIcon, EraserIcon, InfoIcon,
-    SparklesIcon, RotateCcwIcon, InstagramIcon, LineIcon, GoogleMapsIcon, ChevronRightIcon
+    SparklesIcon, RotateCcwIcon, InstagramIcon, LineIcon, GoogleMapsIcon, ChevronRightIcon, CloseIcon
 } from '../../Icons';
 import {
     PostInputFormProps, renderAvatar, PURPOSES, GMAP_PURPOSES, TONES, LENGTHS
@@ -31,6 +31,10 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     onStepChange, closeDrawerTrigger
 }) => {
     const textareaRef = React.useRef<HTMLTextAreaElement>(null);
+    const dateObj = new Date();
+    const day = dateObj.getDate();
+    const month = dateObj.toLocaleString('en-US', { month: 'short' }).toUpperCase();
+    const weekday = dateObj.toLocaleString('en-US', { weekday: 'short' }).toUpperCase();
     const [mobileStep, setMobileStep] = React.useState<'platform' | 'input' | 'confirm' | 'result'>('platform');
     const [isStepDrawerOpen, setIsStepDrawerOpen] = React.useState(false);
     const [isPromptExpanded, setIsPromptExpanded] = React.useState(false);
@@ -180,6 +184,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
     return (
         <div className="flex flex-col h-full min-h-[100dvh] relative overflow-hidden font-inter bg-[var(--bg-primary)]">
+
             {/* Minimal Monochrome Background */}
             <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden bg-[var(--bg-primary)]">
                 {/* Subtle Monochrome Gradients */}
@@ -197,43 +202,52 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
             {/* Step 1: Home (Platform Grid) */}
             <div className={`flex flex-col h-full overflow-hidden relative transition-all duration-500 ${isStepDrawerOpen ? 'blur-md scale-[0.98] opacity-60' : 'opacity-100'}`}>
                 <div className="flex-1 flex flex-col p-5 pt-10 pb-8 safe-area-bottom">
-                    {/* Header Profile Style - Compact */}
-                    <div className="flex items-center justify-between mb-6 px-1">
-                        <div className="flex items-center gap-4">
-                            <div className="relative group">
-                                <div className="absolute -inset-0.5 bg-[var(--plexo-yellow)] rounded-full opacity-70 blur-[1px] group-hover:opacity-100 transition-opacity" />
-                                <div className="relative w-12 h-12 rounded-full bg-[var(--plexo-black)] flex items-center justify-center text-[var(--plexo-yellow)] font-black text-base shadow-lg ring-2 ring-white">
-                                    {storeProfile.name?.substring(0, 1) || 'S'}
+                    {/* High-Design Header - Magazine Style Date & Minimal Avatar */}
+                    <div className="flex items-start justify-between mb-10 px-1">
+                        {/* Typography Date Display */}
+                        <div className="flex flex-col">
+                            <span className="text-[9px] font-black text-[var(--plexo-yellow)] uppercase tracking-[0.4em] ml-1 mb-1 z-10 relative">misepo</span>
+                            <div className="flex items-center gap-3 select-none">
+                                <span className="text-[3.5rem] font-black text-[var(--plexo-black)] tracking-tighter leading-[0.8]">{day}</span>
+                                <div className="flex flex-col justify-center gap-0.5 pt-1">
+                                    <span className="text-sm font-black text-[var(--plexo-black)] uppercase tracking-widest leading-none">{month}</span>
+                                    <span className="text-[10px] font-bold text-[#AAAAAA] uppercase tracking-[0.2em] leading-none">{weekday}</span>
                                 </div>
                             </div>
-                            <div className="flex flex-col gap-0.5">
-                                <span className="text-[9px] font-black text-[#999999] uppercase tracking-[0.25em] leading-none">Welcome</span>
-                                <span className="text-xl font-black text-[var(--plexo-black)] tracking-tight leading-none">{storeProfile.name || 'Store Admin'}</span>
-                            </div>
+                            <p className="text-[9px] font-medium text-[#AAAAAA] tracking-tighter mt-1.5 ml-1 opacity-80 select-none italic">
+                                あなたの言葉が、最高のおもてなしに。
+                            </p>
                         </div>
 
-                        {/* Compact Usage Badge - Dashboard Style */}
-                        {plan && typeof plan.usage !== 'undefined' && typeof plan.limit !== 'undefined' && (
-                            <div className="flex flex-col items-end">
-                                <span className="text-[9px] font-black text-[#999999] tracking-[0.2em] mb-1.5 uppercase">Credits</span>
-                                <div className="flex items-center gap-1.5 bg-white pl-4 pr-3 py-1.5 rounded-full border border-[#E5E5E5] shadow-[0_2px_10px_rgba(0,0,0,0.03)]">
-                                    <span className={`text-base font-black leading-none ${plan.limit - plan.usage <= 0 ? 'text-red-500' : 'text-[var(--plexo-black)]'}`}>
-                                        {Math.max(0, plan.limit - plan.usage)}
-                                    </span>
-                                    <div className="w-px h-3 bg-[#E5E5E5]" />
-                                    <span className="text-[10px] font-bold text-[#999999] leading-none">{plan.limit}</span>
+                        <div className="flex flex-col items-end gap-3">
+                            {/* Decorative Avatar (No Name) */}
+                            <div className="relative group">
+                                <div className="absolute inset-0 bg-[var(--plexo-yellow)] rounded-full blur-[10px] opacity-20 group-hover:opacity-40 transition-opacity" />
+                                <div className="relative w-10 h-10 rounded-full bg-[var(--plexo-black)] flex items-center justify-center overflow-hidden shadow-md border-[2px] border-white/20">
+                                    <span className="text-[var(--plexo-yellow)] font-black text-lg" style={{ transform: 'rotate(-10deg)', marginTop: '2px' }}>ミ</span>
                                 </div>
                             </div>
-                        )}
+
+                            {/* Glass Credit Pill */}
+                            {plan && typeof plan.usage !== 'undefined' && typeof plan.limit !== 'undefined' && (
+                                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/60 backdrop-blur-md border border-white/60 shadow-[0_4px_10px_rgba(0,0,0,0.03)] scale-90 origin-right">
+                                    <span className="text-[8px] font-black text-[#999999] uppercase tracking-widest mr-1">CREDITS</span>
+                                    <span className="text-sm font-black text-[var(--plexo-black)] leading-none">
+                                        {Math.max(0, plan.limit - plan.usage)}
+                                    </span>
+                                    <span className="text-[10px] font-bold text-[#CCCCCC] leading-none">/ {plan.limit}</span>
+                                </div>
+                            )}
+                        </div>
                     </div>
 
-                    <div className="flex flex-col gap-0.5 items-start px-2 mb-0">
+                    <div className="flex flex-col gap-0.5 items-start px-2 mt-6 mb-0">
                         <h2 className="text-[12px] font-black text-[#111111] tracking-tight">投稿先を選択</h2>
                         <p className="text-[11px] text-[#666666] font-bold uppercase tracking-[0.2em]">Select your canvas</p>
                     </div>
 
                     {/* Standard 2x2 Grid Platform Selection */}
-                    <div className="grid grid-cols-2 gap-3 px-1 mb-8 mt-4">
+                    <div className="grid grid-cols-2 gap-3 px-1 mb-6 mt-4">
                         {(() => {
                             const getPlatformDetails = (platform: Platform) => {
                                 switch (platform) {
@@ -282,8 +296,8 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             relative rounded-[40px] overflow-hidden cursor-pointer border transition-all duration-500 group
                                             ${bentoClass}
                                             ${isActive
-                                                ? 'bg-[var(--plexo-yellow)] border-[var(--plexo-yellow)] shadow-lg scale-[0.98]'
-                                                : `bg-white border-[#EBEBEB] shadow-sm hover:border-[#D0D0D0] active:scale-[0.97]`
+                                                ? 'bg-[var(--plexo-yellow)] border-[var(--plexo-yellow)] shadow-lg scale-[0.98] animate-tactile-pop'
+                                                : `bg-white border-[#EBEBEB] shadow-sm hover:border-[#D0D0D0] active:scale-[0.95]`
                                             }
                                         `}
                                     >
@@ -302,12 +316,9 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                         e.stopPropagation();
                                                         handlePlatformSelect(p);
                                                     }}
-                                                    className={`
-                                                        w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 active:scale-90
-                                                        ${isActive ? 'text-black/20' : 'text-[#EEEEEE]'}
-                                                    `}
+                                                    className="w-9 h-9 rounded-full bg-black flex items-center justify-center transition-all duration-300 active:scale-90 shadow-lg"
                                                 >
-                                                    <ChevronRightIcon className="w-5 h-5" />
+                                                    <ChevronRightIcon className="w-5 h-5 text-[var(--plexo-yellow)]" />
                                                 </div>
                                             </div>
 
@@ -332,7 +343,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                     </div>
 
                     {/* Bottom Section - Promotional Card */}
-                    <div className="mt-auto pt-3">
+                    <div className="mt-auto pt-0">
                         <div
                             onClick={handleOmakaseStart}
                             className={`
@@ -407,6 +418,17 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         {getPlatformIcon(p, "w-5 h-5")}
                                     </div>
                                 ))}
+                                <button
+                                    onClick={() => {
+                                        setIsStepDrawerOpen(false);
+                                        if (mobileStep !== 'result') {
+                                            setMobileStep('platform');
+                                        }
+                                    }}
+                                    className="w-10 h-10 rounded-full bg-white border border-[#E5E5E5] flex items-center justify-center shadow-sm active:scale-90 transition-all ml-2 z-20"
+                                >
+                                    <CloseIcon className="w-5 h-5 text-[#111111]" />
+                                </button>
                             </div>
                         </div>
 

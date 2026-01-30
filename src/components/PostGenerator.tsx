@@ -139,6 +139,19 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
     <div className="min-h-screen overflow-x-hidden bg-[var(--bg-primary)]">
 
       <div className="max-w-[1400px] mx-auto sm:pt-8 pb-0 relative z-10">
+        {/* Global Styles for Animations */}
+        <style dangerouslySetInnerHTML={{
+          __html: `
+            @keyframes tactile-pop {
+                0% { transform: scale(0.98); }
+                40% { transform: scale(1.04); }
+                100% { transform: scale(0.98); }
+            }
+            .animate-tactile-pop {
+                animation: tactile-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            }
+        `}} />
+
         {/* Header Module */}
         <div className="hidden sm:block mx-3 sm:mx-8 mb-10 transition-all duration-1000 animate-in fade-in slide-in-from-top-4">
           <GeneratorHeader
