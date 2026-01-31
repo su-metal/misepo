@@ -13,7 +13,8 @@ interface InspirationDeckProps {
 
 export const InspirationDeck: React.FC<InspirationDeckProps> = ({ storeProfile, onSelect, isVisible, cachedCards, onCardsLoaded }) => {
     const [localCards, setLocalCards] = useState<InspirationCard[]>([]);
-    const cards = cachedCards || localCards; // Use cached if available, else local
+    // Prioritize localCards if populated (new fetch), otherwise use cachedCards
+    const cards = localCards.length > 0 ? localCards : (cachedCards || []);
 
     const [loading, setLoading] = useState(false);
     const [fetched, setFetched] = useState(false);
