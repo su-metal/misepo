@@ -357,7 +357,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                     }}
                                                     className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 active:scale-90 shadow-lg ${isActive ? 'bg-white' : 'bg-white shadow-[0_4px_10px_rgba(0,0,0,0.05)]'}`}
                                                 >
-                                                    <ChevronRightIcon className={`w-5 h-5 ${isActive ? 'text-black' : 'text-slate-300'}`} />
+                                                    <ChevronRightIcon className={`w-5 h-5 ${isActive ? 'text-[#0071b9]' : 'text-slate-300'}`} />
                                                 </div>
                                             </div>
 
@@ -408,7 +408,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             <div className="relative p-7 pl-10 pr-6 flex items-center justify-between">
                                 {/* Left Content */}
                                 <div className="relative z-10 flex flex-col gap-6">
-                                    <div className="self-start inline-flex px-4 py-1.5 rounded-full bg-[#00b900] text-[9px] font-black text-[#0071b9] uppercase tracking-[0.2em] shadow-sm border border-[#0071b9]/5">
+                                    <div className="self-start inline-flex px-4 py-1.5 rounded-full bg-[#00b900] text-[9px] font-black text-white/90 uppercase tracking-[0.2em] shadow-sm border border-[#0071b9]/5">
                                         AIが自動提案
                                     </div>
                                     <div className="space-y-1">
