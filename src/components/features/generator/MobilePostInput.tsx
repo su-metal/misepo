@@ -196,7 +196,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
             setMobileStep('input');
             setIsStepDrawerOpen(true);
             // Always reset and pre-fill with a magic prompt for Omakase Mode
-            onInputTextChange("✨ AIおまかせ：今日のおすすめや雰囲気に合わせて、最高の内容を提案して！");
+            onInputTextChange("✨ AIおまかせ生成：今日のおすすめやお店の雰囲気に合わせて、魅力的な文章を考えて！");
         }, 800);
     };
 
@@ -405,21 +405,22 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/30 rounded-full blur-[40px] pointer-events-none group-hover:bg-white/50 transition-colors duration-700" />
                             <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-[#0071b9]/5 rounded-full blur-[30px] pointer-events-none" />
 
-                            <div className="relative p-7 pl-10 pr-6 flex items-center justify-between">
+                            <div className="relative p-5 pl-10 pr-6 flex items-center justify-between">
                                 {/* Left Content */}
                                 <div className="relative z-10 flex flex-col gap-6">
-                                    <div className="self-start inline-flex px-4 py-1.5 rounded-full bg-[#00b900] text-[9px] font-black text-white/90 uppercase tracking-[0.2em] shadow-sm border border-[#0071b9]/5">
+                                    <div className="self-start inline-flex px-4 py-1.5 rounded-full bg-[#0071b9] text-[9px] font-black text-white uppercase tracking-[0.2em] shadow-sm border border-[#0071b9]/5">
                                         AIが自動提案
                                     </div>
                                     <div className="space-y-1">
                                         <div className="flex items-center gap-2">
-                                            <h4 className="text-[26px] font-black text-[#0071b9] tracking-tighter leading-none whitespace-nowrap">
+                                            <h4 className="text-[24px] font-black text-[#0071b9] tracking-tighter leading-none whitespace-nowrap">
                                                 AIおまかせ生成
                                             </h4>
-                                            <SparklesIcon className="w-5 h-5 text-[#0071b9] animate-pulse" />
+                                            {/* <SparklesIcon className="w-5 h-5 text-[#0071b9] animate-pulse" /> */}
                                         </div>
-                                        <p className="text-[10px] font-bold text-black/40 uppercase tracking-[0.1em] pl-1">
-                                            文章を考えずに、丸ごとおまかせ
+                                        <p className="text-[11px] text-stone-500 font-bold leading-relaxed">
+                                            今日のおすすめやお店の様子を入力するだけで、<br />
+                                            AIが魅力的な投稿に仕上げます。
                                         </p>
                                     </div>
                                 </div>
@@ -582,7 +583,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                     <AutoResizingTextarea
                                                         value={inputText}
                                                         onChange={(e) => onInputTextChange(e.target.value)}
-                                                        placeholder="ここに口コミをペースト..."
+                                                        placeholder="こちらにお客様からの口コミを貼り付けてください。丁寧な返信案をいくつか作成します。"
                                                         className="w-full min-h-[160px] max-h-[400px] overflow-y-auto p-8 bg-white border border-[#E5E5E5] rounded-[40px] text-lg font-bold leading-relaxed focus:outline-none focus:border-[#111111] transition-all placeholder:text-[#CCCCCC] text-[#111111]"
                                                     />
                                                     {/* Floating Mic for GMap remains relatively positioned or absolute within scroll */}
@@ -599,8 +600,8 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                     <AutoResizingTextarea
                                                         value={storeSupplement}
                                                         onChange={(e) => onStoreSupplementChange(e.target.value)}
-                                                        placeholder="例：急な欠勤で人手が足りなかった、など"
-                                                        className="relative z-10 w-full bg-transparent text-[#2F3E46] text-sm font-bold leading-relaxed placeholder-[#8B7340]/30 focus:outline-none resize-none min-h-[60px]"
+                                                        placeholder="例：急な欠勤で人手が足りなかった、などのお詫びや、感謝の気持ちを伝えたいなど"
+                                                        className="relative z-10 w-full bg-transparent text-[#2F3E46] text-sm font-bold leading-relaxed placeholder-[#8B7340]/40 focus:outline-none resize-none min-h-[60px]"
                                                     />
                                                 </div>
                                             </div>
@@ -609,7 +610,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                 <AutoResizingTextarea
                                                     value={inputText}
                                                     onChange={(e) => onInputTextChange(e.target.value)}
-                                                    placeholder="Tell AI what to write about..."
+                                                    placeholder="今日はどんなことを伝えますか？&#10;「旬の食材が入荷した」「雨の日限定の割引をする」など、短いメモ書きでも大丈夫ですよ。"
                                                     className="w-full min-h-[160px] max-h-[500px] overflow-y-auto p-8 bg-white border border-[#E5E5E5] rounded-[40px] text-lg font-bold leading-relaxed focus:outline-none focus:border-[#111111] transition-all placeholder:text-[#CCCCCC] text-[#111111]"
                                                 />
                                             </div>
@@ -633,7 +634,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                         type="text"
                                                         value={customPrompt}
                                                         onChange={(e) => onCustomPromptChange(e.target.value)}
-                                                        placeholder="例：テンション高めに..."
+                                                        placeholder="例：少し明るいトーンで、顔文字を多めにしてほしい、など"
                                                         className="w-full bg-transparent border-none focus:outline-none text-[13px] font-bold text-[#111111]"
                                                     />
                                                 </div>
@@ -642,14 +643,16 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
                                         {!isListening && (
                                             <button
-                                                onClick={() => setMobileStep('confirm')}
+                                                onClick={() => {
+                                                    setMobileStep('confirm');
+                                                }}
                                                 disabled={!inputText.trim()}
                                                 className={`w-full py-5 rounded-[28px] font-black text-sm uppercase tracking-[0.2em] shadow-xl active:scale-95 transition-all flex items-center justify-center gap-2 ${inputText.trim()
                                                     ? 'bg-[#0071b9] text-white'
-                                                    : 'bg-[#999999] text-white/50 cursor-not-allowed opacity-50 shadow-none'
+                                                    : 'bg-stone-200 text-stone-400 cursor-not-allowed shadow-none'
                                                     }`}
                                             >
-                                                Next
+                                                確認画面へ
                                                 <ChevronRightIcon className="w-5 h-5" />
                                             </button>
                                         )}
@@ -658,32 +661,32 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             )}
 
                             {mobileStep === 'confirm' && (
-                                <div className="flex-1 flex flex-col min-h-0 animate-in fade-in slide-in-from-bottom-10 duration-700">
+                                <div className="flex-1 relative min-h-0 animate-in fade-in slide-in-from-bottom-10 duration-700">
                                     {/* Scrollable Preview and Settings */}
-                                    <div className="flex-1 overflow-y-auto px-8 py-4 space-y-8">
+                                    <div className="absolute inset-0 overflow-y-auto px-8 py-4 pb-[240px] space-y-8 no-scrollbar scrollbar-hide">
                                         <div className="flex flex-col gap-8">
-                                            {/* Preview Box - Monochrome */}
-                                            <div className="bg-white border border-[#E5E5E5] rounded-[40px] p-8 min-h-[180px] relative shadow-sm overflow-hidden group">
-                                                <div className="absolute top-0 right-0 w-32 h-32 bg-[#F5F5F5] rounded-full blur-3xl -mr-16 -mt-16" />
+                                            {/* Preview Box - Brand Style */}
+                                            <div className="bg-white/95 backdrop-blur-sm border border-stone-100 rounded-[40px] p-8 min-h-[180px] relative shadow-sm overflow-hidden group">
+                                                <div className="absolute top-0 right-0 w-32 h-32 bg-[#d8e9f4]/30 rounded-full blur-3xl -mr-16 -mt-16" />
                                                 <div className="flex items-center justify-between mb-6">
                                                     <div className="flex gap-1.5">
-                                                        <div className="w-1.5 h-1.5 rounded-full bg-[#111111]/20" />
-                                                        <div className="w-1.5 h-1.5 rounded-full bg-[#111111]/20" />
+                                                        <div className="w-1.5 h-1.5 rounded-full bg-[#0071b9]/30" />
+                                                        <div className="w-1.5 h-1.5 rounded-full bg-[#0071b9]/30" />
                                                     </div>
-                                                    <span className="text-[10px] font-black text-[#999999] uppercase tracking-[0.2em]">Source Content</span>
+                                                    <span className="text-[10px] font-black text-[#122646] uppercase tracking-[0.2em]">入力内容の確認</span>
                                                 </div>
-                                                <div className="text-[#111111] text-[15px] font-bold leading-relaxed">
-                                                    {inputText.length > 200 ? inputText.substring(0, 200) + '...' : inputText || "Your content will appear here..."}
+                                                <div className="text-[#122646] text-[15px] font-bold leading-relaxed">
+                                                    {inputText.length > 200 ? inputText.substring(0, 200) + '...' : inputText || "ここに内容が表示されます..."}
                                                 </div>
 
                                                 {/* Additional Instructions Review */}
                                                 {customPrompt && (
-                                                    <div className="mt-4 pt-4 border-t border-[#E5E5E5]">
+                                                    <div className="mt-4 pt-4 border-t border-[#122646]/5">
                                                         <div className="flex items-center gap-1.5 mb-1">
-                                                            <AutoSparklesIcon className="w-3 h-3 text-[#111111]" />
-                                                            <span className="text-[9px] font-black text-[#666666] uppercase tracking-widest block">Extra Instructions</span>
+                                                            <AutoSparklesIcon className="w-3 h-3 text-[#0071b9]" />
+                                                            <span className="text-[9px] font-black text-stone-400 uppercase tracking-widest block">追加指示</span>
                                                         </div>
-                                                        <div className="text-[#666666] text-xs italic font-medium">
+                                                        <div className="text-stone-600 text-xs italic font-medium">
                                                             {customPrompt}
                                                         </div>
                                                     </div>
@@ -697,15 +700,15 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             {/* Style Selection - Horizontal Pill Style (Monochrome) */}
                                             <div className="flex flex-col gap-4">
                                                 <div className="flex items-center justify-between px-2">
-                                                    <span className="text-[11px] font-black text-[#666666] uppercase tracking-[0.2em]">Select Style</span>
-                                                    <button onClick={onOpenPresetModal} className="text-[10px] font-black text-[#111111] uppercase tracking-widest bg-[#F5F5F5] px-3 py-1 rounded-full border border-[#E5E5E5] hover:bg-[#EAEAEA]">Manage</button>
+                                                    <span className="text-[11px] font-black text-[#122646] uppercase tracking-[0.2em]">スタイルを選ぶ</span>
+                                                    <button onClick={onOpenPresetModal} className="text-[10px] font-black text-[#0071b9] uppercase tracking-widest bg-[#d8e9f4]/30 px-3 py-1 rounded-full border border-[#0071b9]/20 hover:bg-[#d8e9f4]/50 transition-all">編集</button>
                                                 </div>
                                                 <div className="flex overflow-x-auto gap-3 pb-4 pt-2 -mx-2 px-3 no-scrollbar scrollbar-hide">
                                                     <button
                                                         onClick={() => onApplyPreset({ id: 'plain-ai' } as any)}
-                                                        className={`flex-shrink-0 px-8 py-5 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] transition-all duration-300 ${!activePresetId ? 'bg-[var(--plexo-black)] text-[var(--plexo-yellow)] scale-105 active:scale-95' : 'bg-white border border-[#E5E5E5] text-[#999999]'}`}
+                                                        className={`flex-shrink-0 px-8 py-5 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] transition-all duration-500 shadow-sm border ${!activePresetId ? 'bg-[#0071b9] text-white border-[#0071b9] scale-105 active:scale-95' : 'bg-white/95 backdrop-blur-sm border-stone-100 text-stone-400'}`}
                                                     >
-                                                        AI Standard
+                                                        AI標準
                                                     </button>
                                                     {presets.map((p) => {
                                                         const isSelected = activePresetId === p.id;
@@ -713,7 +716,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                             <button
                                                                 key={p.id}
                                                                 onClick={() => onApplyPreset(p)}
-                                                                className={`flex-shrink-0 px-8 py-5 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] transition-all duration-300 truncate max-w-[160px] ${isSelected ? 'bg-[var(--plexo-dark-gray)] text-[var(--plexo-yellow)] scale-105 active:scale-95' : 'bg-white border border-[#E5E5E5] text-[#999999]'}`}
+                                                                className={`flex-shrink-0 px-8 py-5 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] transition-all duration-500 shadow-sm border truncate max-w-[160px] ${isSelected ? 'bg-[#0071b9] text-white border-[#0071b9] scale-105 active:scale-95' : 'bg-white/95 backdrop-blur-sm border-stone-100 text-stone-400'}`}
                                                             >
                                                                 {p.name}
                                                             </button>
@@ -724,27 +727,27 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
                                             {/* Settings Grid - Monochrome */}
                                             <div className="grid grid-cols-2 gap-4 pb-8">
-                                                <div className={`bg-white p-6 rounded-[32px] border border-[#E5E5E5] flex flex-col gap-2.5 transition-opacity ${isStyleLocked ? 'opacity-50 relative' : ''}`}>
+                                                <div className={`bg-white/95 backdrop-blur-sm p-6 rounded-[32px] border border-stone-100 flex flex-col gap-2.5 transition-opacity shadow-sm ${isStyleLocked ? 'opacity-50 relative' : ''}`}>
                                                     <div className="flex items-center justify-between">
-                                                        <span className="text-[9px] font-black text-[#666666] uppercase tracking-[0.2em]">Tone</span>
-                                                        {isStyleLocked && <div className="text-[8px] bg-[#F5F5F5] px-1.5 py-0.5 rounded text-[#111111] font-bold">LOCKED</div>}
+                                                        <span className="text-[9px] font-black text-stone-400 uppercase tracking-[0.2em]">文章のトーン</span>
+                                                        {isStyleLocked && <div className="text-[8px] bg-stone-50 px-1.5 py-0.5 rounded text-[#122646] font-bold">LOCKED</div>}
                                                     </div>
                                                     <select
                                                         value={tone}
                                                         disabled={isStyleLocked}
                                                         onChange={(e) => onToneChange(e.target.value as any)}
-                                                        className="bg-transparent text-[15px] font-black text-[#111111] focus:outline-none disabled:cursor-not-allowed appearance-none"
+                                                        className="bg-transparent text-[15px] font-black text-[#122646] focus:outline-none disabled:cursor-not-allowed appearance-none"
                                                     >
                                                         {TONES.map(t => <option key={t.id} value={t.id}>{t.label}</option>)}
                                                     </select>
                                                 </div>
                                                 {!isX && (
-                                                    <div className="bg-white p-6 rounded-[32px] border border-[#E5E5E5] flex flex-col gap-2.5">
-                                                        <span className="text-[9px] font-black text-[#666666] uppercase tracking-[0.2em]">Length</span>
+                                                    <div className="bg-white/95 backdrop-blur-sm p-6 rounded-[32px] border border-stone-100 flex flex-col gap-2.5 shadow-sm">
+                                                        <span className="text-[9px] font-black text-stone-400 uppercase tracking-[0.2em]">文章の長さ</span>
                                                         <select
                                                             value={length}
                                                             onChange={(e) => onLengthChange(e.target.value as any)}
-                                                            className="bg-transparent text-[15px] font-black text-[#111111] focus:outline-none appearance-none"
+                                                            className="bg-transparent text-[15px] font-black text-[#122646] focus:outline-none appearance-none"
                                                         >
                                                             {LENGTHS.map(l => <option key={l.id} value={l.id}>{l.label}</option>)}
                                                         </select>
@@ -752,47 +755,6 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                 )}
                                             </div>
                                         </div>
-                                    </div>
-
-                                    {/* Sticky Generate Footer - Magical Animation */}
-                                    <div className="p-8 pb-12 safe-area-bottom border-t border-[#E5E5E5]/50 flex-shrink-0 bg-white/50 backdrop-blur-md flex flex-col items-center gap-4 shadow-[0_-20px_40px_rgba(0,0,0,0.03)] z-50">
-                                        <button
-                                            onClick={onGenerate}
-                                            disabled={isGenerating}
-                                            className={`
-                                                group relative w-full overflow-hidden rounded-[32px] py-6
-                                                transition-all duration-500 active:scale-95
-                                                ${isGenerating ? 'bg-[#949594] cursor-not-allowed' : 'bg-gradient-to-r from-[#111111] via-[#333333] to-[#111111] shadow-[0_10px_30px_rgba(0,0,0,0.2)]'}
-                                            `}
-                                        >
-                                            {/* Animated Glow Overlay */}
-                                            {!isGenerating && (
-                                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#7F5AF0]/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-                                            )}
-
-                                            <div className="relative flex items-center justify-center gap-3">
-                                                {isGenerating ? (
-                                                    <div className="w-6 h-6 border-3 border-white/20 border-t-white rounded-full animate-spin" />
-                                                ) : (
-                                                    <div className="flex items-center gap-3">
-                                                        <SparklesIcon className="w-6 h-6 text-[#7F5AF0] animate-pulse" />
-                                                        <span className="text-white text-base font-black uppercase tracking-[0.3em]">
-                                                            Generate Magic
-                                                        </span>
-                                                        <SparklesIcon className="w-6 h-6 text-[#7F5AF0] animate-pulse [animation-delay:0.5s]" />
-                                                    </div>
-                                                )}
-                                            </div>
-
-                                            {/* Decorative Sparkle dots */}
-                                            {!isGenerating && (
-                                                <>
-                                                    <div className="absolute top-2 left-1/4 w-1 h-1 bg-[#7F5AF0] rounded-full animate-ping [animation-duration:3s]" />
-                                                    <div className="absolute bottom-3 right-1/3 w-1.5 h-1.5 bg-[#f8ea5d] rounded-full animate-ping [animation-duration:2.5s]" />
-                                                </>
-                                            )}
-                                        </button>
-                                        <p className="text-[10px] font-bold text-[#999999] uppercase tracking-widest">AI will transform your ideas into quality posts</p>
                                     </div>
                                 </div>
                             )}
@@ -825,6 +787,37 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                 </div>
                             )}
                         </div>
+
+                        {/* Step 3 Sticky Button - Absolute positioned within Drawer Panel */}
+                        {mobileStep === 'confirm' && (
+                            <>
+                                <button
+                                    onClick={onGenerate}
+                                    disabled={isGenerating}
+                                    className={`
+                                        absolute bottom-[80px] left-1/2 -translate-x-1/2 w-[calc(100%-4rem)] z-[100]
+                                        group relative overflow-hidden rounded-[32px] py-6
+                                        transition-all duration-500 active:scale-95
+                                        ${isGenerating ? 'bg-stone-300 cursor-not-allowed' : 'bg-[#f2e018] shadow-[0_10px_30px_rgba(0,113,185,0.2)]'}
+                                    `}
+                                >
+                                    <div className="relative flex items-center justify-center gap-3">
+                                        {isGenerating ? (
+                                            <div className="w-6 h-6 border-3 border-white/20 border-t-[#122646] rounded-full animate-spin" />
+                                        ) : (
+                                            <div className="flex items-center gap-3">
+                                                <span className="text-[#122646] text-base font-black uppercase tracking-[0.3em]">
+                                                    投稿案を作成する
+                                                </span>
+                                            </div>
+                                        )}
+                                    </div>
+                                </button>
+                                <p className="absolute bottom-[50px] left-0 right-0 text-center text-[10px] font-bold text-[#999999] uppercase tracking-widest z-[100] pointer-events-none">
+                                    あなたの想いを、AIが最高の文章に仕上げます
+                                </p>
+                            </>
+                        )}
                     </div>
                 </div>
             )

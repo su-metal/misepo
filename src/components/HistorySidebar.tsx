@@ -176,8 +176,8 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
         {/* Header */}
         <div className="px-8 py-6 md:py-8 flex items-center justify-between border-b border-[#122646]/5 bg-white/80 backdrop-blur-md sticky top-0 z-10">
           <div>
-            <h2 className="font-black text-[#122646] text-xl md:text-2xl tracking-tight uppercase leading-none">History</h2>
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-2 opacity-60">Your Past Generations</p>
+            <h2 className="font-black text-[#122646] text-xl md:text-2xl tracking-tight uppercase leading-none">生成履歴</h2>
+            <p className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em] mt-2 opacity-60">過去に作成した全ての投稿案</p>
           </div>
           <button
             onClick={toggleOpen}
@@ -199,7 +199,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Saved Results</span>
                 {isLoggedIn && (
                   <span className="text-sm font-black text-[#122646] tracking-tighter">
-                    {history.length} <span className="text-[10px] opacity-40 ml-1">COLLECTED</span>
+                    {history.length} <span className="text-[10px] opacity-40 ml-1">件の履歴</span>
                   </span>
                 )}
               </div>
@@ -209,12 +209,14 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
           <div className="space-y-10 pb-10">
             {isLoggedIn ? (
               history.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-24 text-center">
+                <div className="flex flex-col items-center justify-center py-24 px-6 text-center">
                   <div className="w-24 h-24 mb-6 bg-white rounded-[32px] flex items-center justify-center text-slate-100 shadow-sm ring-1 ring-slate-100/50">
                     <HistoryIcon className="w-10 h-10" />
                   </div>
-                  <p className="text-xs font-black text-slate-300 uppercase tracking-[0.2em]">
-                    履歴はありません
+                  <h5 className="text-sm font-black text-[#122646] mb-2">まだ履歴がありません</h5>
+                  <p className="text-[11px] text-stone-500 font-medium leading-relaxed">
+                    作成した投稿案は、ここに自動で保存されます。<br />
+                    いつでも見返したり、再編集したりできますよ。
                   </p>
                 </div>
               ) : (
@@ -224,7 +226,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                     <div className="space-y-5">
                       <div className="flex items-center gap-3 px-3">
                         <div className="w-1.5 h-1.5 rounded-full bg-[#0071b9]"></div>
-                        <span className="text-[11px] font-black text-[#0071b9] uppercase tracking-[0.25em]">Pinned Collective</span>
+                        <span className="text-[11px] font-black text-[#0071b9] uppercase tracking-[0.25em]">お気に入り</span>
                       </div>
                       <div className="space-y-4">
                         {displayHistory.filter(i => i.isPinned).map((item, idx) => renderHistoryItem(item, idx))}
@@ -236,7 +238,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                   <div className="space-y-5">
                     <div className="flex items-center gap-3 px-3">
                       <div className="w-1.5 h-1.5 rounded-full bg-slate-300"></div>
-                      <span className="text-[11px] font-black text-slate-400 uppercase tracking-[0.25em]">Recent Items</span>
+                      <span className="text-[11px] font-black text-slate-400 uppercase tracking-[0.25em]">最近の履歴</span>
                     </div>
                     <div className="space-y-4">
                       {displayHistory.filter(i => !i.isPinned).map((item, idx) => renderHistoryItem(item, idx))}
@@ -249,15 +251,15 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                 <div className="w-24 h-24 bg-white rounded-[40px] shadow-sm flex items-center justify-center mb-10 ring-1 ring-slate-100">
                   <LockIcon className="w-10 h-10 text-slate-100" />
                 </div>
-                <h3 className="font-black text-slate-800 text-2xl mb-3 tracking-tight">LOGIN REQUIRED</h3>
+                <h3 className="font-black text-slate-800 text-xl md:text-2xl mb-3 tracking-tight">ログインが必要です</h3>
                 <p className="text-sm font-bold text-slate-400 mb-10 max-w-[240px] leading-relaxed">
                   履歴を安全に保存・同期するには、アカウントへのログインが必要です。
                 </p>
                 <button
                   onClick={() => { onOpenLogin(); toggleOpen(); }}
-                  className="w-full py-5 bg-gradient-to-r from-[#7F5AF0] to-[#22D3EE] text-white rounded-[20px] shadow-xl shadow-indigo-100 font-black text-xs uppercase tracking-[0.2em] hover:shadow-2xl hover:-translate-y-1 active:scale-95 active:translate-y-0 transition-all"
+                  className="w-full py-5 bg-[#122646] text-white rounded-[20px] shadow-xl shadow-slate-100 font-black text-xs uppercase tracking-[0.2em] hover:bg-[#0071b9] active:scale-95 transition-all"
                 >
-                  Join / Sign In
+                  ログイン / 新規登録
                 </button>
               </div>
             )}
