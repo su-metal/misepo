@@ -9,6 +9,7 @@ import {
 } from '../../Icons';
 import { MobileCalendarOverlay } from './MobileCalendarOverlay';
 import { TrendEvent } from './TrendData';
+import { InspirationDeck } from './InspirationDeck';
 import {
     PostInputFormProps, renderAvatar, PURPOSES, GMAP_PURPOSES, TONES, LENGTHS
 } from './inputConstants';
@@ -213,6 +214,8 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
     const handleOmakaseStart = () => {
         setIsOmakaseLoading(true);
+        onApplyPreset({ id: 'plain-ai' } as any); // Force AI Standard preset
+
         // "Magic" selection: Auto-select Instagram and X as defaults for Omakase
         if (platforms.length === 0) {
             onPlatformToggle(Platform.Instagram);
@@ -239,6 +242,9 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
             setMobileStep('platform');
         }
     };
+
+    // State for Inspiration Deck Caching
+    const [cachedInspirationCards, setCachedInspirationCards] = React.useState<any[]>([]);
 
     return (
         // <div className="flex flex-col h-full min-h-[100dvh] relative overflow-hidden font-inter bg-[#6339f9]">
@@ -513,10 +519,10 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                 </button>
                                 <div className="flex flex-col">
                                     <h3 className="text-[17px] font-black text-[#0071b9] tracking-tight leading-none mb-1">
-                                        {mobileStep === 'input' ? 'Describe Content' : mobileStep === 'confirm' ? 'Final Review' : 'Generated Posts'}
+                                        {mobileStep === 'input' ? '投稿内容を入力' : mobileStep === 'confirm' ? '投稿内容の確認' : '生成完了'}
                                     </h3>
                                     <span className="text-[10px] font-black text-[#666666] uppercase tracking-[0.2em] leading-none">
-                                        {mobileStep === 'input' ? 'Step 2 of 3' : mobileStep === 'confirm' ? 'Step 3 of 3' : 'Success!'}
+                                        {mobileStep === 'input' ? 'STEP 2 / 3' : mobileStep === 'confirm' ? 'STEP 3 / 3' : 'SUCCESS!'}
                                     </span>
                                 </div>
                             </div>
@@ -531,8 +537,6 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         setIsStepDrawerOpen(false);
                                         setIsStepDrawerOpen(false);
                                         // ALWAYS reset to platform to ensure footer contrast resets (Dark Mode)
-                                        // If we want to preserve 'result' state, we'd need another way to signal "Drawer Hidden but Result Active" 
-                                        // but for now, closing the drawer should visually return to platform mode completely.
                                         setMobileStep('platform');
                                     }}
                                     className="w-10 h-10 rounded-full bg-white border border-[#E5E5E5] flex items-center justify-center shadow-sm active:scale-90 transition-all ml-2 z-20"
@@ -547,7 +551,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             {mobileStep === 'input' && (
                                 <div className="flex-1 flex flex-col min-h-0 animate-in fade-in zoom-in-95 duration-700">
 
-                                    {/* 1. Top Fixed Header Section (Standard context labels or Microphone) */}
+                                    {/* 1. Top Fixed Header Section */}
                                     {!isGoogleMaps && (
                                         <div className="flex-shrink-0 flex justify-center py-4 bg-gradient-to-b from-[#FAFAFA] to-transparent z-10">
                                             <button
@@ -572,7 +576,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                         <MicIcon className="w-10 h-10 text-[#111111]" />
                                                     )}
                                                     <span className={`mt-1.5 text-[8px] font-black uppercase tracking-[0.2em] ${isListening ? 'text-white' : 'text-[#999999]'}`}>
-                                                        {isListening ? 'Listening' : 'Voice Input'}
+                                                        {isListening ? '聞き取り中...' : '音声入力'}
                                                     </span>
                                                 </div>
                                             </button>
@@ -582,6 +586,23 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                     {/* 2. Middle Scrollable Area (Main Text inputs) */}
                                     <div className="flex-1 overflow-y-auto px-8 py-2">
                                         <div className="w-full relative py-2 mb-4">
+                                            {/* AI Inspiration Deck for "AI Standard" */}
+                                            <InspirationDeck
+                                                storeProfile={storeProfile}
+                                                // Show if plain-ai AND (empty input OR default omakase prompt)
+                                                isVisible={
+                                                    activePresetId === 'plain-ai' &&
+                                                    (!inputText || inputText.startsWith("✨ AIおまかせ生成")) &&
+                                                    !isGoogleMaps
+                                                }
+                                                cachedCards={cachedInspirationCards}
+                                                onCardsLoaded={setCachedInspirationCards}
+                                                onSelect={(prompt) => {
+                                                    onInputTextChange(prompt);
+                                                    // Optional: auto-focus or scroll?
+                                                }}
+                                            />
+
                                             <div className="text-center space-y-2 mb-6">
                                                 <h4 className="text-xl font-bold text-[#111111]">{isGoogleMaps ? 'Review Reply' : 'New Post'}</h4>
                                                 <p className="text-sm text-[#666666]">
@@ -879,7 +900,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             </div>
                         )}
                     </div>
-                </div>
+                </div >
             )
             }
         </div >

@@ -220,5 +220,93 @@
       }
     ],
     "timestamp": 1769744907730
+  },
+  "2026-01": {
+    "data": [
+      {
+        "date": "2026-01-01",
+        "title": "新年 (New Year)",
+        "icon": "🎍",
+        "description": "Offer special New Year's menus (Osechi Ryori), Fukubukuro (lucky bags) for retail, or start the year with special promotions to welcome customers.",
+        "hashtags": [
+          "#新年",
+          "#お正月",
+          "#2026年",
+          "#初売り",
+          "#福袋"
+        ],
+        "isRecommended": true
+      },
+      {
+        "date": "2026-01-01",
+        "title": "初詣 (First Shrine Visit)",
+        "icon": "⛩️",
+        "description": "Encourage customers visiting nearby shrines/temples for Hatsumode to stop by for a warm drink, a meal, or a special New Year's treat. Promote convenience and comfort.",
+        "hashtags": [
+          "#初詣",
+          "#お正月",
+          "#新年のご挨拶",
+          "#お参り"
+        ],
+        "isRecommended": true
+      },
+      {
+        "date": "2026-01-12",
+        "title": "成人の日 (Coming of Age Day)",
+        "icon": "👘",
+        "description": "Congratulate new adults. Offer special celebratory menus, discounts for groups, or gift ideas suitable for those celebrating their coming of age.",
+        "hashtags": [
+          "#成人の日",
+          "#新成人",
+          "#お祝い",
+          "#振袖",
+          "#はたち"
+        ],
+        "isRecommended": true
+      },
+      {
+        "date": "2026-01-15",
+        "title": "いちごシーズン (Strawberry Season)",
+        "icon": "🍓",
+        "description": "Highlight limited-time strawberry desserts, drinks, parfaits, or fresh strawberry retail products. Emphasize the freshness, sweetness, and vibrant color of seasonal strawberries.",
+        "hashtags": [
+          "#いちご",
+          "#いちごスイーツ",
+          "#いちごパフェ",
+          "#旬のいちご",
+          "#いちごフェア"
+        ],
+        "isRecommended": true
+      },
+      {
+        "date": "2026-01-20",
+        "title": "大寒 (Great Cold)",
+        "icon": "🥶",
+        "description": "Promote warming dishes, hot beverages, and seasonal ingredients that are best during the coldest period of winter. Emphasize comfort, health, and hearty meals.",
+        "hashtags": [
+          "#大寒",
+          "#冬の味覚",
+          "#温活",
+          "#あったかメニュー",
+          "#旬の食材"
+        ],
+        "isRecommended": true
+      },
+      {
+        "date": "2026-01-29",
+        "title": "肉の日 (Meat Day)",
+        "icon": "🥩",
+        "description": "Offer special meat dishes, limited-time discounts on meat items, or promote your signature meat menu. Encourage customers to indulge in delicious meat.",
+        "hashtags": [
+          "#肉の日",
+          "#毎月29日",
+          "#肉スタグラム",
+          "#お肉大好き",
+          "#肉料理"
+        ],
+        "isRecommended": true
+      }
+    ],
+    "timestamp": 1769849727423
   }
 }

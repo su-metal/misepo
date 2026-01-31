@@ -1300,3 +1300,119 @@ Values must be the style guide string (plain text with bullet points).
 // Deprecated alias for backward compatibility updates
 export const analyzePersona = generateStyleInstruction;
 
+
+// Inspiration Deck Generation
+export interface InspirationCard {
+  id: string;
+  type: 'review' | 'trend' | 'variety';
+  title: string;
+  description: string;
+  prompt: string; // The instruction for the AI when this card is selected
+  icon?: string; // Emoji
+}
+
+export const generateInspirationCards = async (
+  date: string,
+  storeProfile: StoreProfile,
+  inputReviews?: { text: string }[],
+  currentTrend?: any
+): Promise<InspirationCard[]> => {
+  const modelName = 'models/gemini-2.5-flash-lite';
+  
+  // Prepare inputs for the prompt
+  const trendInfo = currentTrend ? JSON.stringify(currentTrend) : 'None';
+  const reviewTexts = inputReviews ? inputReviews.map(r => r.text) : [];
+
+  // Main system instruction focused on ROLE and FORMAT
+  const systemInstruction = `
+  あなたはプロのSNS運用担当者です。
+  精神論やポエムは一切禁止です。
+  提供された店舗情報とデータに基づき、実益のある具体的な投稿案のみを作成してください。
+  出力は厳格にJSON形式(Array)で、指定されたスキーマに従ってください。
+  `;
+
+  // Construct a detailed User Message with all constraints and data
+  const userPrompt = `
+  【対象店舗】
+  店舗名: ${storeProfile.name || '不明'}
+  業種: ${storeProfile.industry || '小売・サービス'}
+  地域: ${storeProfile.region || '日本'}
+  説明: ${storeProfile.description || 'なし'}
+
+  【本日のデータ】
+  日付: ${date}
+  トレンド: ${trendInfo !== 'None' ? trendInfo : '特になし'}
+  口コミ: ${reviewTexts.length > 0 ? reviewTexts.slice(0, 3).join('\n') : 'なし'}
+
+  【厳守事項】
+  1. 上記の「業種: ${storeProfile.industry || 'このお店'}」に全く関係のない話題（例: 飲食店なのにガジェットやファッションの話など）は絶対禁止。
+  2. トレンドは無理やりにでもお店のメニューやサービスと結びつけること。
+  3. 口コミがある場合は、その具体的な内容（"駐車場"や"接客"など）に触れた投稿案を作ること。
+  4. 「勇気」「希望」などの精神論は禁止。
+
+  【作成する3つのカード】
+  1. **customer_voice**: 口コミへの具体的な返答や感謝（口コミがない場合はスタッフの裏側紹介）
+  2. **trend_topic**: トレンド「${trendInfo !== 'None' ? JSON.parse(trendInfo).title || '季節の話題' : '季節の話題'}」をお店に絡めた紹介
+  3. **store_pr**: お店の商品やサービスの魅力紹介
+
+  出力してください。
+  `;
+
+  const ai = getServerAI();
+  try {
+    const result = await ai.models.generateContent({
+      model: modelName,
+      // @ts-ignore
+      systemInstruction: systemInstruction,
+      contents: [{ role: "user", parts: [{ text: userPrompt }] }],
+      config: {
+        responseMimeType: "application/json",
+        // @ts-ignore
+        responseSchema: {
+          type: "ARRAY",
+          items: {
+            type: "OBJECT",
+            properties: {
+              id: { type: "STRING" },
+              type: { type: "STRING", enum: ["review", "trend", "variety"] },
+              title: { type: "STRING" },
+              description: { type: "STRING" },
+              prompt: { type: "STRING" },
+              icon: { type: "STRING" }
+            },
+            required: ["id", "type", "title", "description", "prompt", "icon"]
+          }
+        }
+      }
+    });
+
+    console.log('[generateInspirationCards] Raw AI response:', result.text?.substring(0, 500));
+
+    let jsonText = "";
+    if (result.text) {
+        jsonText = result.text;
+    } else if (result.candidates && result.candidates[0]?.content?.parts?.[0]?.text) {
+         jsonText = result.candidates[0].content.parts[0].text;
+    }
+
+    if (!jsonText) throw new Error("No response from AI");
+
+    // Clean markdown code blocks if present
+    jsonText = jsonText.replace(/^```json\s*/, "").replace(/\s*```$/, "");
+
+    return JSON.parse(jsonText) as InspirationCard[];
+  } catch (error) {
+    console.error("Inspiration Gen Error:", error);
+    // Fallback if AI fails
+    return [
+      {
+        id: "fallback-variety",
+        type: "variety",
+        title: "お店のこだわり",
+        description: "創業の思いや、普段語らないこだわりを発信してみませんか？",
+        prompt: "お店のこだわりや、お客様への想いについて情熱的な投稿を作成してください。",
+        icon: "✨"
+      }
+    ];
+  }
+};
