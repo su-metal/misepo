@@ -663,8 +663,8 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             {mobileStep === 'confirm' && (
                                 <div className="flex-1 relative min-h-0 animate-in fade-in slide-in-from-bottom-10 duration-700">
                                     {/* Scrollable Preview and Settings */}
-                                    <div className="absolute inset-0 overflow-y-auto px-8 py-4 pb-[240px] space-y-8 no-scrollbar scrollbar-hide">
-                                        <div className="flex flex-col gap-8">
+                                    <div className="absolute inset-0 overflow-y-auto px-8 py-4 pb-[240px] space-y-4 no-scrollbar scrollbar-hide">
+                                        <div className="flex flex-col gap-4">
                                             {/* Preview Box - Brand Style */}
                                             <div className="bg-white/95 backdrop-blur-sm border border-stone-100 rounded-[40px] p-8 min-h-[180px] relative shadow-sm overflow-hidden group">
                                                 <div className="absolute top-0 right-0 w-32 h-32 bg-[#d8e9f4]/30 rounded-full blur-3xl -mr-16 -mt-16" />
@@ -703,10 +703,10 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                     <span className="text-[11px] font-black text-[#122646] uppercase tracking-[0.2em]">スタイルを選ぶ</span>
                                                     <button onClick={onOpenPresetModal} className="text-[10px] font-black text-[#0071b9] uppercase tracking-widest bg-[#d8e9f4]/30 px-3 py-1 rounded-full border border-[#0071b9]/20 hover:bg-[#d8e9f4]/50 transition-all">編集</button>
                                                 </div>
-                                                <div className="flex overflow-x-auto gap-3 pb-4 pt-2 -mx-2 px-3 no-scrollbar scrollbar-hide">
+                                                <div className="flex overflow-x-auto gap-3 pb-2 pt-2 -mx-2 px-3 no-scrollbar scrollbar-hide">
                                                     <button
                                                         onClick={() => onApplyPreset({ id: 'plain-ai' } as any)}
-                                                        className={`flex-shrink-0 px-8 py-5 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] transition-all duration-500 shadow-sm border ${!activePresetId ? 'bg-[#0071b9] text-white border-[#0071b9] scale-105 active:scale-95' : 'bg-white/95 backdrop-blur-sm border-stone-100 text-stone-400'}`}
+                                                        className={`flex-shrink-0 px-8 py-3 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] transition-all duration-500 shadow-sm border ${!activePresetId ? 'bg-[#0071b9] text-white border-[#0071b9] scale-105 active:scale-95' : 'bg-white/95 backdrop-blur-sm border-stone-100 text-stone-400'}`}
                                                     >
                                                         AI標準
                                                     </button>
@@ -716,7 +716,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                             <button
                                                                 key={p.id}
                                                                 onClick={() => onApplyPreset(p)}
-                                                                className={`flex-shrink-0 px-8 py-5 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] transition-all duration-500 shadow-sm border truncate max-w-[160px] ${isSelected ? 'bg-[#0071b9] text-white border-[#0071b9] scale-105 active:scale-95' : 'bg-white/95 backdrop-blur-sm border-stone-100 text-stone-400'}`}
+                                                                className={`flex-shrink-0 px-8 py-3 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] transition-all duration-500 shadow-sm border truncate max-w-[160px] ${isSelected ? 'bg-[#0071b9] text-white border-[#0071b9] scale-105 active:scale-95' : 'bg-white/95 backdrop-blur-sm border-stone-100 text-stone-400'}`}
                                                             >
                                                                 {p.name}
                                                             </button>
@@ -727,27 +727,27 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
                                             {/* Settings Grid - Monochrome */}
                                             <div className="grid grid-cols-2 gap-4 pb-8">
-                                                <div className={`bg-white/95 backdrop-blur-sm p-6 rounded-[32px] border border-stone-100 flex flex-col gap-2.5 transition-opacity shadow-sm ${isStyleLocked ? 'opacity-50 relative' : ''}`}>
+                                                <div className={`bg-[#f5f7fa] px-5 py-3.5 rounded-[28px] border border-stone-200 flex flex-col gap-0.5 transition-opacity shadow-sm ${isStyleLocked ? 'opacity-50 relative' : ''}`}>
                                                     <div className="flex items-center justify-between">
-                                                        <span className="text-[9px] font-black text-stone-400 uppercase tracking-[0.2em]">文章のトーン</span>
-                                                        {isStyleLocked && <div className="text-[8px] bg-stone-50 px-1.5 py-0.5 rounded text-[#122646] font-bold">LOCKED</div>}
+                                                        <span className="text-[8px] font-black text-stone-500 uppercase tracking-[0.2em]">文章のトーン</span>
+                                                        {isStyleLocked && <div className="text-[8px] bg-stone-100 px-1.5 py-0.5 rounded text-[#122646] font-bold">LOCKED</div>}
                                                     </div>
                                                     <select
                                                         value={tone}
                                                         disabled={isStyleLocked}
                                                         onChange={(e) => onToneChange(e.target.value as any)}
-                                                        className="bg-transparent text-[15px] font-black text-[#122646] focus:outline-none disabled:cursor-not-allowed appearance-none"
+                                                        className="bg-transparent text-[14px] font-black text-[#122646] focus:outline-none disabled:cursor-not-allowed appearance-none"
                                                     >
                                                         {TONES.map(t => <option key={t.id} value={t.id}>{t.label}</option>)}
                                                     </select>
                                                 </div>
                                                 {!isX && (
-                                                    <div className="bg-white/95 backdrop-blur-sm p-6 rounded-[32px] border border-stone-100 flex flex-col gap-2.5 shadow-sm">
-                                                        <span className="text-[9px] font-black text-stone-400 uppercase tracking-[0.2em]">文章の長さ</span>
+                                                    <div className="bg-[#f5f7fa] px-5 py-3.5 rounded-[28px] border border-stone-200 flex flex-col gap-0.5 shadow-sm">
+                                                        <span className="text-[8px] font-black text-stone-500 uppercase tracking-[0.2em]">文章の長さ</span>
                                                         <select
                                                             value={length}
                                                             onChange={(e) => onLengthChange(e.target.value as any)}
-                                                            className="bg-transparent text-[15px] font-black text-[#122646] focus:outline-none appearance-none"
+                                                            className="bg-transparent text-[14px] font-black text-[#122646] focus:outline-none appearance-none"
                                                         >
                                                             {LENGTHS.map(l => <option key={l.id} value={l.id}>{l.label}</option>)}
                                                         </select>
