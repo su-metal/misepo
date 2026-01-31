@@ -719,31 +719,65 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
                                             {/* Settings Grid - Monochrome */}
                                             <div className="flex flex-col gap-4 pb-8">
-                                                <div className="grid grid-cols-2 gap-4">
-                                                    <div className={`bg-[#f5f7fa] px-5 py-3.5 rounded-[28px] border border-stone-200 flex flex-col gap-0.5 transition-opacity shadow-sm ${isStyleLocked ? 'opacity-50 relative' : ''}`}>
-                                                        <div className="flex items-center justify-between">
-                                                            <span className="text-[8px] font-black text-stone-500 uppercase tracking-[0.2em]">文章のトーン</span>
-                                                            {isStyleLocked && <div className="text-[8px] bg-stone-100 px-1.5 py-0.5 rounded text-[#122646] font-bold">LOCKED</div>}
+                                                <div className="grid grid-cols-2 gap-8 px-2">
+                                                    {/* Tone Slider */}
+                                                    <div className={`flex flex-col gap-3 transition-opacity ${isStyleLocked ? 'opacity-50 relative' : ''}`}>
+                                                        <div className="flex items-center justify-between px-1">
+                                                            <span className="text-[8px] font-black text-stone-400 uppercase tracking-[0.2em]">トーン</span>
+                                                            {isStyleLocked && <div className="text-[7px] bg-stone-100 px-1 py-0.5 rounded text-[#122646] font-bold uppercase">Lock</div>}
                                                         </div>
-                                                        <select
-                                                            value={tone}
-                                                            disabled={isStyleLocked}
-                                                            onChange={(e) => onToneChange(e.target.value as any)}
-                                                            className="bg-transparent text-[14px] font-black text-[#122646] focus:outline-none disabled:cursor-not-allowed appearance-none"
-                                                        >
-                                                            {TONES.map(t => <option key={t.id} value={t.id}>{t.label}</option>)}
-                                                        </select>
+                                                        <div className="relative px-1 pt-1 pb-2">
+                                                            {/* Track */}
+                                                            <div className="absolute top-[6px] left-1 right-1 h-[1.5px] bg-stone-200" />
+                                                            {/* Points */}
+                                                            <div className="relative flex justify-between items-center h-3">
+                                                                {TONES.map((t) => {
+                                                                    const isActive = tone === t.id;
+                                                                    return (
+                                                                        <button
+                                                                            key={t.id}
+                                                                            onClick={() => !isStyleLocked && onToneChange(t.id)}
+                                                                            className="relative z-10 flex flex-col items-center group w-full first:items-start last:items-end"
+                                                                        >
+                                                                            <div className={`w-3 h-3 rounded-full border-2 transition-all duration-300 ${isActive ? 'bg-[#0071b9] border-[#0071b9] scale-110' : 'bg-white border-stone-300'}`} />
+                                                                            <span className={`absolute -bottom-4 text-[8px] font-black transition-colors duration-300 whitespace-nowrap ${isActive ? 'text-[#0071b9]' : 'text-stone-400'}`}>
+                                                                                {t.label}
+                                                                            </span>
+                                                                        </button>
+                                                                    );
+                                                                })}
+                                                            </div>
+                                                        </div>
                                                     </div>
+
+                                                    {/* Length Slider */}
                                                     {!isX && (
-                                                        <div className="bg-[#f5f7fa] px-5 py-3.5 rounded-[28px] border border-stone-200 flex flex-col gap-0.5 shadow-sm">
-                                                            <span className="text-[8px] font-black text-stone-500 uppercase tracking-[0.2em]">文章の長さ</span>
-                                                            <select
-                                                                value={length}
-                                                                onChange={(e) => onLengthChange(e.target.value as any)}
-                                                                className="bg-transparent text-[14px] font-black text-[#122646] focus:outline-none appearance-none"
-                                                            >
-                                                                {LENGTHS.map(l => <option key={l.id} value={l.id}>{l.label}</option>)}
-                                                            </select>
+                                                        <div className="flex flex-col gap-3">
+                                                            <div className="flex items-center justify-between px-1">
+                                                                <span className="text-[8px] font-black text-stone-400 uppercase tracking-[0.2em]">長さ</span>
+                                                            </div>
+                                                            <div className="relative px-1 pt-1 pb-2">
+                                                                {/* Track */}
+                                                                <div className="absolute top-[6px] left-1 right-1 h-[1.5px] bg-stone-200" />
+                                                                {/* Points */}
+                                                                <div className="relative flex justify-between items-center h-3">
+                                                                    {LENGTHS.map((l) => {
+                                                                        const isActive = length === l.id;
+                                                                        return (
+                                                                            <button
+                                                                                key={l.id}
+                                                                                onClick={() => onLengthChange(l.id)}
+                                                                                className="relative z-10 flex flex-col items-center group w-full first:items-start last:items-end"
+                                                                            >
+                                                                                <div className={`w-3 h-3 rounded-full border-2 transition-all duration-300 ${isActive ? 'bg-[#0071b9] border-[#0071b9] scale-110' : 'bg-white border-stone-300'}`} />
+                                                                                <span className={`absolute -bottom-4 text-[8px] font-black transition-colors duration-300 whitespace-nowrap ${isActive ? 'text-[#0071b9]' : 'text-stone-400'}`}>
+                                                                                    {l.label}
+                                                                                </span>
+                                                                            </button>
+                                                                        );
+                                                                    })}
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     )}
                                                 </div>
