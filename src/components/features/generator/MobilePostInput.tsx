@@ -416,7 +416,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             <h4 className="text-[24px] font-black text-[#0071b9] tracking-tighter leading-none whitespace-nowrap">
                                                 AIおまかせ生成
                                             </h4>
-                                            <SparklesIcon className="w-5 h-5 text-[#0071b9] animate-pulse" />
+                                            {/* <SparklesIcon className="w-5 h-5 text-[#0071b9] animate-pulse" /> */}
                                         </div>
                                         <p className="text-[11px] text-stone-500 font-bold leading-relaxed">
                                             今日のおすすめやお店の様子を入力するだけで、<br />
@@ -661,12 +661,12 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             )}
 
                             {mobileStep === 'confirm' && (
-                                <div className="flex-1 flex flex-col min-h-0 animate-in fade-in slide-in-from-bottom-10 duration-700">
+                                <div className="flex-1 relative min-h-0 animate-in fade-in slide-in-from-bottom-10 duration-700">
                                     {/* Scrollable Preview and Settings */}
-                                    <div className="flex-1 overflow-y-auto px-8 py-4 space-y-8">
+                                    <div className="absolute inset-0 overflow-y-auto px-8 py-4 pb-[240px] space-y-8 no-scrollbar scrollbar-hide">
                                         <div className="flex flex-col gap-8">
                                             {/* Preview Box - Brand Style */}
-                                            <div className="bg-white border border-stone-100 rounded-[40px] p-8 min-h-[180px] relative shadow-sm overflow-hidden group">
+                                            <div className="bg-white/95 backdrop-blur-sm border border-stone-100 rounded-[40px] p-8 min-h-[180px] relative shadow-sm overflow-hidden group">
                                                 <div className="absolute top-0 right-0 w-32 h-32 bg-[#d8e9f4]/30 rounded-full blur-3xl -mr-16 -mt-16" />
                                                 <div className="flex items-center justify-between mb-6">
                                                     <div className="flex gap-1.5">
@@ -706,7 +706,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                 <div className="flex overflow-x-auto gap-3 pb-4 pt-2 -mx-2 px-3 no-scrollbar scrollbar-hide">
                                                     <button
                                                         onClick={() => onApplyPreset({ id: 'plain-ai' } as any)}
-                                                        className={`flex-shrink-0 px-8 py-5 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] transition-all duration-500 shadow-sm border ${!activePresetId ? 'bg-[#0071b9] text-white border-[#0071b9] scale-105 active:scale-95' : 'bg-white border-stone-100 text-stone-400'}`}
+                                                        className={`flex-shrink-0 px-8 py-5 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] transition-all duration-500 shadow-sm border ${!activePresetId ? 'bg-[#0071b9] text-white border-[#0071b9] scale-105 active:scale-95' : 'bg-white/95 backdrop-blur-sm border-stone-100 text-stone-400'}`}
                                                     >
                                                         AI標準
                                                     </button>
@@ -716,7 +716,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                             <button
                                                                 key={p.id}
                                                                 onClick={() => onApplyPreset(p)}
-                                                                className={`flex-shrink-0 px-8 py-5 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] transition-all duration-500 shadow-sm border truncate max-w-[160px] ${isSelected ? 'bg-[#0071b9] text-white border-[#0071b9] scale-105 active:scale-95' : 'bg-white border-stone-100 text-stone-400'}`}
+                                                                className={`flex-shrink-0 px-8 py-5 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] transition-all duration-500 shadow-sm border truncate max-w-[160px] ${isSelected ? 'bg-[#0071b9] text-white border-[#0071b9] scale-105 active:scale-95' : 'bg-white/95 backdrop-blur-sm border-stone-100 text-stone-400'}`}
                                                             >
                                                                 {p.name}
                                                             </button>
@@ -727,7 +727,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
                                             {/* Settings Grid - Monochrome */}
                                             <div className="grid grid-cols-2 gap-4 pb-8">
-                                                <div className={`bg-white p-6 rounded-[32px] border border-stone-100 flex flex-col gap-2.5 transition-opacity shadow-sm ${isStyleLocked ? 'opacity-50 relative' : ''}`}>
+                                                <div className={`bg-white/95 backdrop-blur-sm p-6 rounded-[32px] border border-stone-100 flex flex-col gap-2.5 transition-opacity shadow-sm ${isStyleLocked ? 'opacity-50 relative' : ''}`}>
                                                     <div className="flex items-center justify-between">
                                                         <span className="text-[9px] font-black text-stone-400 uppercase tracking-[0.2em]">文章のトーン</span>
                                                         {isStyleLocked && <div className="text-[8px] bg-stone-50 px-1.5 py-0.5 rounded text-[#122646] font-bold">LOCKED</div>}
@@ -742,7 +742,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                     </select>
                                                 </div>
                                                 {!isX && (
-                                                    <div className="bg-white p-6 rounded-[32px] border border-stone-100 flex flex-col gap-2.5 shadow-sm">
+                                                    <div className="bg-white/95 backdrop-blur-sm p-6 rounded-[32px] border border-stone-100 flex flex-col gap-2.5 shadow-sm">
                                                         <span className="text-[9px] font-black text-stone-400 uppercase tracking-[0.2em]">文章の長さ</span>
                                                         <select
                                                             value={length}
@@ -755,45 +755,6 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                 )}
                                             </div>
                                         </div>
-                                    </div>
-
-                                    {/* Sticky Generate Footer - Magical Animation */}
-                                    <div className="p-8 pb-12 safe-area-bottom border-t border-[#E5E5E5]/50 flex-shrink-0 bg-white/50 backdrop-blur-md flex flex-col items-center gap-4 shadow-[0_-20px_40px_rgba(0,0,0,0.03)] z-50">
-                                        <button
-                                            onClick={onGenerate}
-                                            disabled={isGenerating}
-                                            className={`
-                                                group relative w-full overflow-hidden rounded-[32px] py-6
-                                                transition-all duration-500 active:scale-95
-                                                ${isGenerating ? 'bg-stone-300 cursor-not-allowed' : 'bg-[#f2e018] shadow-[0_10px_30px_rgba(0,113,185,0.25)]'}
-                                            `}
-                                        >
-                                            {/* Animated Glow Overlay */}
-                                            {!isGenerating && (
-                                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-                                            )}
-
-                                            <div className="relative flex items-center justify-center gap-3">
-                                                {isGenerating ? (
-                                                    <div className="w-6 h-6 border-3 border-white/20 border-t-[#122646] rounded-full animate-spin" />
-                                                ) : (
-                                                    <div className="flex items-center gap-3">
-                                                        <span className="text-[#122646] text-base font-black uppercase tracking-[0.3em]">
-                                                            投稿案を作成する
-                                                        </span>
-                                                    </div>
-                                                )}
-                                            </div>
-
-                                            {/* Decorative Sparkle dots - Simplified to single color white */}
-                                            {!isGenerating && (
-                                                <>
-                                                    <div className="absolute top-2 left-1/4 w-1 h-1 bg-white/40 rounded-full animate-ping [animation-duration:3s]" />
-                                                    <div className="absolute bottom-3 right-1/3 w-1.5 h-1.5 bg-white/20 rounded-full animate-ping [animation-duration:2.5s]" />
-                                                </>
-                                            )}
-                                        </button>
-                                        <p className="text-[10px] font-bold text-[#999999] uppercase tracking-widest">あなたの想いを、AIが最高の文章に仕上げます</p>
                                     </div>
                                 </div>
                             )}
@@ -826,6 +787,37 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                 </div>
                             )}
                         </div>
+
+                        {/* Step 3 Sticky Button - Absolute positioned within Drawer Panel */}
+                        {mobileStep === 'confirm' && (
+                            <>
+                                <button
+                                    onClick={onGenerate}
+                                    disabled={isGenerating}
+                                    className={`
+                                        absolute bottom-[80px] left-1/2 -translate-x-1/2 w-[calc(100%-4rem)] z-[100]
+                                        group relative overflow-hidden rounded-[32px] py-6
+                                        transition-all duration-500 active:scale-95
+                                        ${isGenerating ? 'bg-stone-300 cursor-not-allowed' : 'bg-[#f2e018] shadow-[0_10px_30px_rgba(0,113,185,0.2)]'}
+                                    `}
+                                >
+                                    <div className="relative flex items-center justify-center gap-3">
+                                        {isGenerating ? (
+                                            <div className="w-6 h-6 border-3 border-white/20 border-t-[#122646] rounded-full animate-spin" />
+                                        ) : (
+                                            <div className="flex items-center gap-3">
+                                                <span className="text-[#122646] text-base font-black uppercase tracking-[0.3em]">
+                                                    投稿案を作成する
+                                                </span>
+                                            </div>
+                                        )}
+                                    </div>
+                                </button>
+                                <p className="absolute bottom-[50px] left-0 right-0 text-center text-[10px] font-bold text-[#999999] uppercase tracking-widest z-[100] pointer-events-none">
+                                    あなたの想いを、AIが最高の文章に仕上げます
+                                </p>
+                            </>
+                        )}
                     </div>
                 </div>
             )
