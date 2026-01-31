@@ -195,10 +195,8 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
             setIsOmakaseLoading(false);
             setMobileStep('input');
             setIsStepDrawerOpen(true);
-            // Pre-fill with a magic prompt if empty
-            if (!inputText) {
-                onInputTextChange("✨ AIおまかせ：今日のおすすめや雰囲気に合わせて、最高の内容を提案して！");
-            }
+            // Always reset and pre-fill with a magic prompt for Omakase Mode
+            onInputTextChange("✨ AIおまかせ：今日のおすすめや雰囲気に合わせて、最高の内容を提案して！");
         }, 800);
     };
 
@@ -283,7 +281,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                     </div>
 
                     <div className="flex flex-col gap-0.5 items-start px-2 mt-2 mb-0">
-                        <h2 className="text-[12px] font-black text-slate-800 tracking-tight">投稿先を選択</h2>
+                        <h2 className="text-[12px] font-black text-[#0071b9] tracking-tight">投稿先を選択</h2>
                         <p className="text-[11px] text-slate-400 font-bold uppercase tracking-[0.2em]">Select your canvas</p>
                     </div>
 
@@ -390,31 +388,62 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                         <div
                             onClick={handleOmakaseStart}
                             className={`
-                                relative group transition-all duration-500 cursor-pointer active:scale-95 my-1
-                                rounded-[40px] overflow-hidden
-                                ${isOmakaseLoading ? 'scale-[0.98]' : 'hover:scale-[1.02] hover:-translate-y-1'}
+                                relative group transition-all duration-700 cursor-pointer active:scale-95 my-1
+                                rounded-[32px] overflow-hidden
+                                ${isOmakaseLoading ? 'scale-[0.98]' : 'hover:scale-[1.02] hover:-translate-y-1.5'}
+                                shadow-[0_4px_20px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_40px_rgba(0,113,185,0.15)]
                             `}
-                            style={{ backgroundColor: '#d8e9f4' }}
+                            style={{
+                                backgroundColor: '#d8e9f4',
+                                clipPath: 'polygon(0% 0%, 100% 0%, 100% 35%, 98% 40%, 98% 60%, 100% 65%, 100% 100%, 0% 100%, 0% 65%, 2% 60%, 2% 40%, 0% 35%)'
+                            }}
                         >
-                            {/* Decorative Background Elements */}
-                            <div className="absolute top-1/2 right-[5%] -translate-y-1/2 w-48 h-48 bg-white/5 rounded-full blur-[60px] pointer-events-none" />
+                            {/* Texture & Glass Layer */}
+                            <div className="absolute inset-0 bg-white/10 backdrop-blur-[2px] opacity-50 pointer-events-none" />
 
-                            <div className="relative p-7 px-8 flex items-center justify-between">
+                            {/* Decorative Background Glows */}
+                            <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/30 rounded-full blur-[40px] pointer-events-none group-hover:bg-white/50 transition-colors duration-700" />
+                            <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-[#0071b9]/5 rounded-full blur-[30px] pointer-events-none" />
+
+                            <div className="relative p-7 pl-10 pr-6 flex items-center justify-between">
                                 {/* Left Content */}
-                                <div className="relative z-10 flex flex-col gap-5">
-                                    <div className="self-start inline-flex px-5 py-2.5 rounded-full bg-[#fafafa] text-[10px] font-black text-black uppercase tracking-[0.1em] shadow-lg">
-                                        PREMIUM FEATURE
+                                <div className="relative z-10 flex flex-col gap-6">
+                                    <div className="self-start inline-flex px-4 py-1.5 rounded-full bg-white text-[9px] font-black text-[#0071b9] uppercase tracking-[0.2em] shadow-sm border border-[#0071b9]/5">
+                                        AIが自動提案
                                     </div>
                                     <div className="space-y-1">
-                                        <h4 className="text-[28px] font-black text-[#0071b9] tracking-tight leading-none whitespace-nowrap">
-                                            AI Omakase Mode
-                                        </h4>
-                                        <p className="text-[11px] font-bold text-black/20 uppercase tracking-[0.05em]">
-                                            AUTOMATED CONTENT STRATEGY
+                                        <div className="flex items-center gap-2">
+                                            <h4 className="text-[26px] font-black text-[#0071b9] tracking-tighter leading-none whitespace-nowrap">
+                                                AIおまかせ生成
+                                            </h4>
+                                            <SparklesIcon className="w-5 h-5 text-[#0071b9] animate-pulse" />
+                                        </div>
+                                        <p className="text-[10px] font-bold text-[#0071b9]/40 uppercase tracking-[0.1em] pl-1">
+                                            文章を考えずに、丸ごとおまかせ
                                         </p>
                                     </div>
                                 </div>
+
+                                {/* Right Action "Ticket" Button */}
+                                <div className="relative z-10 flex items-center justify-center">
+                                    <div className={`
+                                        w-14 h-14 rounded-2xl flex items-center justify-center shadow-xl transition-all duration-500
+                                        ${isOmakaseLoading ? 'bg-white scale-90' : 'bg-white group-hover:bg-[#0071b9] group-hover:scale-110 group-active:scale-95 group-hover:rotate-6'}
+                                    `}>
+                                        {isOmakaseLoading ? (
+                                            <div className="w-5 h-5 border-2 border-[#0071b9]/20 border-t-[#0071b9] rounded-full animate-spin" />
+                                        ) : (
+                                            <ChevronRightIcon className="w-6 h-6 text-[#0071b9] group-hover:text-white transition-colors duration-500" />
+                                        )}
+                                    </div>
+
+                                    {/* Pulse Effect */}
+                                    <div className="absolute inset-0 rounded-2xl bg-white/40 animate-ping opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+                                </div>
                             </div>
+
+                            {/* Ticket Perforation Line (Visual Only) */}
+                            <div className="absolute top-0 bottom-0 right-[25%] w-px border-r-2 border-dashed border-[#0071b9]/10 pointer-events-none" />
                         </div>
                     </div>
                 </div>
