@@ -43,6 +43,9 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     const [isPromptExpanded, setIsPromptExpanded] = React.useState(true);
     const [isOmakaseLoading, setIsOmakaseLoading] = React.useState(false);
     const [isCalendarOpen, setIsCalendarOpen] = React.useState(false);
+    const [isDefaultStyleEnabled, setIsDefaultStyleEnabled] = React.useState(() => {
+        return localStorage.getItem('misepo_use_default_preset') === 'true';
+    });
 
     // Handle Calendar Strategy Launch
     const handleTrendStrategy = (event: TrendEvent) => {
@@ -139,6 +142,31 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
     const isGoogleMaps = platform === Platform.GoogleMaps;
     const isX = platform === Platform.X;
+
+    // Handle Default Style Persistence
+    React.useEffect(() => {
+        localStorage.setItem('misepo_use_default_preset', String(isDefaultStyleEnabled));
+        if (isDefaultStyleEnabled) {
+            localStorage.setItem('misepo_preferred_preset_id', activePresetId || 'plain-ai');
+        }
+    }, [isDefaultStyleEnabled, activePresetId]);
+
+    // Apply Default Style on Entry
+    React.useEffect(() => {
+        if (isStepDrawerOpen && mobileStep === 'confirm' && isDefaultStyleEnabled && !activePresetId) {
+            const preferredId = localStorage.getItem('misepo_preferred_preset_id');
+            if (preferredId) {
+                if (preferredId === 'plain-ai') {
+                    onApplyPreset({ id: 'plain-ai' } as any);
+                } else {
+                    const found = presets.find(p => p.id === preferredId);
+                    if (found) {
+                        onApplyPreset(found);
+                    }
+                }
+            }
+        }
+    }, [isStepDrawerOpen, mobileStep, isDefaultStyleEnabled, activePresetId, presets, onApplyPreset]);
 
     const toggleVoiceInput = React.useCallback(() => {
         if (isListening) {
@@ -648,7 +676,23 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             {/* Style Selection - Horizontal Pill Style (Monochrome) */}
                                             <div className="flex flex-col gap-4">
                                                 <div className="flex items-center justify-between px-2">
-                                                    <span className="text-[11px] font-black text-[#122646] uppercase tracking-[0.2em]">スタイルを選ぶ</span>
+                                                    <div className="flex items-center gap-3">
+                                                        <span className="text-[11px] font-black text-[#122646] uppercase tracking-[0.2em]">スタイルを選ぶ</span>
+                                                        <label className="flex items-center gap-1.5 cursor-pointer group/label">
+                                                            <div className="relative flex items-center justify-center">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    checked={isDefaultStyleEnabled}
+                                                                    onChange={(e) => setIsDefaultStyleEnabled(e.target.checked)}
+                                                                    className="peer appearance-none w-3.5 h-3.5 rounded border border-stone-300 checked:bg-[#0071b9] checked:border-[#0071b9] transition-all"
+                                                                />
+                                                                <svg className="absolute w-2.5 h-2.5 text-white opacity-0 peer-checked:opacity-100 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="4">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                                                </svg>
+                                                            </div>
+                                                            <span className="text-[9px] font-bold text-stone-400 group-hover/label:text-stone-600 transition-colors">デフォルトに設定</span>
+                                                        </label>
+                                                    </div>
                                                     <button onClick={onOpenPresetModal} className="text-[10px] font-black text-[#0071b9] uppercase tracking-widest bg-[#d8e9f4]/30 px-3 py-1 rounded-full border border-[#0071b9]/20 hover:bg-[#d8e9f4]/50 transition-all">編集</button>
                                                 </div>
                                                 <div className="flex overflow-x-auto gap-3 pb-2 pt-2 -mx-2 px-3 no-scrollbar scrollbar-hide">
