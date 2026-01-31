@@ -4,7 +4,8 @@ import { AutoResizingTextarea } from './AutoResizingTextarea';
 import { getPlatformIcon } from './utils';
 import {
     AutoSparklesIcon, MagicWandIcon, MicIcon, EraserIcon, InfoIcon,
-    SparklesIcon, RotateCcwIcon, InstagramIcon, LineIcon, GoogleMapsIcon, ChevronRightIcon, CloseIcon, StarIcon
+    SparklesIcon, RotateCcwIcon, InstagramIcon, LineIcon, GoogleMapsIcon, ChevronRightIcon, CloseIcon, StarIcon,
+    LockIcon
 } from '../../Icons';
 import { MobileCalendarOverlay } from './MobileCalendarOverlay';
 import { TrendEvent } from './TrendData';
@@ -721,10 +722,13 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             <div className="flex flex-col gap-6 pb-8">
                                                 <div className="grid grid-cols-2 gap-8 px-2 mb-4">
                                                     {/* Tone Slider */}
-                                                    <div className={`flex flex-col gap-3 transition-opacity ${isStyleLocked ? 'opacity-50 relative' : ''}`}>
+                                                    <div className={`flex flex-col gap-3 transition-opacity ${isStyleLocked ? 'opacity-70 relative' : ''}`}>
                                                         <div className="flex items-center justify-between px-1">
-                                                            <span className="text-[8px] font-black text-stone-400 uppercase tracking-[0.2em]">トーン</span>
-                                                            {isStyleLocked && <div className="text-[7px] bg-stone-100 px-1 py-0.5 rounded text-[#122646] font-bold uppercase">Lock</div>}
+                                                            <div className="flex items-center gap-1.5">
+                                                                <span className="text-[8px] font-black text-stone-400 uppercase tracking-[0.2em]">トーン</span>
+                                                                {isStyleLocked && <LockIcon className="w-2.5 h-2.5 text-[#0071b9]" />}
+                                                            </div>
+                                                            {isStyleLocked && <div className="text-[7px] bg-[#d8e9f4] px-1.5 py-0.5 rounded text-[#0071b9] font-black uppercase tracking-widest">学習データ適用中</div>}
                                                         </div>
                                                         <div className="relative px-1 pt-1 pb-2">
                                                             {/* Track */}
@@ -736,8 +740,9 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                                     return (
                                                                         <button
                                                                             key={t.id}
+                                                                            disabled={isStyleLocked}
                                                                             onClick={() => !isStyleLocked && onToneChange(t.id)}
-                                                                            className="relative z-10 flex flex-col items-center group w-full first:items-start last:items-end"
+                                                                            className={`relative z-10 flex flex-col items-center group w-full first:items-start last:items-end ${isStyleLocked ? 'cursor-not-allowed' : ''}`}
                                                                         >
                                                                             <div className={`w-3 h-3 rounded-full border-2 transition-all duration-300 ${isActive ? 'bg-[#0071b9] border-[#0071b9] scale-110' : 'bg-white border-stone-300'}`} />
                                                                             <span className={`absolute -bottom-4 text-[8px] font-black transition-colors duration-300 whitespace-nowrap ${isActive ? 'text-[#0071b9]' : 'text-stone-400'}`}>
