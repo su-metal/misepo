@@ -313,6 +313,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
   const [isResetting, setIsResetting] = useState(false);
   const [viewingSampleId, setViewingSampleId] = useState<string | null>(null);
   const [lastAnalyzedState, setLastAnalyzedState] = useState<{ [key: string]: string }>({});
+  const [tempNewSamples, setTempNewSamples] = useState<TrainingItem[]>([]);
 
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -364,11 +365,14 @@ const PresetModal: React.FC<PresetModalProps> = ({
           setCustomPrompts(initialPrompts);
         }
       }
+      setCustomPrompts({});
+      setLastAnalyzedState({});
     } else {
       setName('');
       setAvatar('shop');
       setCustomPrompts({});
       setLastAnalyzedState({});
+      setTempNewSamples([]);
     }
   }, [selectedPresetId, presets]);
 
@@ -482,7 +486,11 @@ const PresetModal: React.FC<PresetModalProps> = ({
         }
       }
       const currentPresetId = selectedPresetId || 'omakase';
-      const relatedItems = trainingItems.filter(item => item.presetId === currentPresetId);
+      // For new profiles (null ID), use tempNewSamples. For existing, use trainingItems.
+      const relatedItems = selectedPresetId
+        ? trainingItems.filter(item => item.presetId === selectedPresetId)
+        : tempNewSamples;
+
       const newPostSamples: { [key in Platform]?: string } = {};
 
       relatedItems.forEach(item => {
@@ -587,7 +595,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
   };
 
   const handleToggleTrainingInternal = async (text: string, platforms: Platform[]) => {
-    const presetId = selectedPresetId || 'omakase';
+    const presetId = selectedPresetId; // Can be null for new profiles
     const normalizedText = text.trim();
     if (!normalizedText || platforms.length === 0) return;
 
@@ -595,16 +603,30 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
     setIsTrainingLoading(true);
     try {
-      await onToggleTraining(normalizedText, platformString, presetId, undefined, 'manual');
+      if (presetId) {
+        await onToggleTraining(normalizedText, platformString, presetId, undefined, 'manual');
+      } else {
+        // Local state update for new profile
+        const newItem: TrainingItem = {
+          id: `temp-${Date.now()}`,
+          presetId: 'temp-new',
+          content: normalizedText,
+          platform: platformString,
+          source: 'manual',
+          createdAt: new Date().toISOString()
+        };
+        setTempNewSamples(prev => [...prev, newItem]);
+        // Also simulate optimistic update in parent if needed, but here we just use tempNewSamples
+      }
 
       // Close overlay immediately for better UX
       setExpandingPlatform(null);
       setModalText('');
 
       // Construct optimistic samples for immediate analysis
-      let newSamples = trainingItems
-        .filter(item => item.presetId === presetId)
-        .map(item => ({ content: item.content, platform: item.platform }));
+      let newSamples = presetId
+        ? trainingItems.filter(item => item.presetId === presetId).map(item => ({ content: item.content, platform: item.platform }))
+        : tempNewSamples.map(item => ({ content: item.content, platform: item.platform }));
 
       newSamples.push({ content: normalizedText, platform: platformString });
 
@@ -650,8 +672,9 @@ const PresetModal: React.FC<PresetModalProps> = ({
   };
 
   const currentPresetSamples = useMemo(() => {
-    return trainingItems.filter(item => item.presetId === (selectedPresetId || 'omakase'));
-  }, [trainingItems, selectedPresetId]);
+    if (!selectedPresetId) return tempNewSamples;
+    return trainingItems.filter(item => item.presetId === selectedPresetId);
+  }, [trainingItems, selectedPresetId, tempNewSamples]);
 
   // Tabbed Content Renders
   const renderProfileTab = () => (

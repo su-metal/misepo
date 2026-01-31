@@ -252,11 +252,11 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             {plan && typeof plan.usage !== 'undefined' && typeof plan.limit !== 'undefined' && (
                                 <div className="flex flex-col items-end gap-1 scale-90 origin-right">
                                     <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#0071b9] text-white backdrop-blur-xl border border-white/20 shadow-xl overflow-hidden relative">
-                                        <span className="text-[8px] font-black text-white/40 uppercase tracking-widest mr-1">CREDITS</span>
+                                        <span className="text-[8px] font-black text-white/60 uppercase tracking-widest mr-1">CREDITS</span>
                                         <span className="text-sm font-black text-[#f2e018] leading-none">
                                             {Math.max(0, plan.limit - plan.usage)}
                                         </span>
-                                        <span className="text-[10px] font-bold text-white/30 leading-none">/ {plan.limit}</span>
+                                        <span className="text-[10px] font-bold text-white/60 leading-none">/ {plan.limit}</span>
 
                                         {/* Subtle Gauge Background */}
                                         <div className="absolute bottom-0 left-0 h-[2px] bg-white/10 w-full" />
