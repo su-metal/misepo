@@ -946,7 +946,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                 <button
                   onClick={() => handleSave()}
                   disabled={isSaving || !name.trim()}
-                  className="flex-1 py-5 bg-stone-900 text-white rounded-[2rem] font-black text-sm tracking-[0.2em] shadow-xl shadow-stone-100 hover:bg-indigo-600 active:scale-95 transition-all disabled:opacity-30 flex items-center justify-center gap-3"
+                  className="flex-1 py-5 bg-[#122646] text-white rounded-[2rem] font-black text-sm tracking-[0.2em] shadow-xl shadow-stone-100 hover:bg-indigo-600 active:scale-95 transition-all disabled:opacity-30 flex items-center justify-center gap-3"
                 >
                   {isSaving ? <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <SaveIcon className="w-5 h-5" />}
                   <span>保存（AI再解析）</span>

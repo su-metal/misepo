@@ -170,7 +170,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
                     onClick={() => setIndustry(ind)}
                     className={`px-5 py-2.5 rounded-full text-[11px] font-black transition-all duration-200 border border-transparent
                         ${industry === ind
-                        ? 'bg-[#0071b9] text-white shadow-lg shadow-indigo-200 scale-105'
+                        ? 'bg-[#0071b9] text-white shadow-lg shadow-stone-200 scale-105'
                         : 'bg-slate-50 text-slate-500 hover:bg-slate-100'
                       }`}
                   >
@@ -319,7 +319,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
                 </div>
 
                 {/* 2. Content Layer */}
-                <div className="relative z-10 w-full h-full bg-[#111111] text-white rounded-[19px] py-4 flex items-center justify-center gap-3 shadow-xl">
+                <div className="relative z-10 w-full h-full bg-[#122646] text-white rounded-[19px] py-4 flex items-center justify-center gap-3 shadow-xl">
                   <span className="text-xs font-black tracking-[0.2em]">{isEditMode ? '設定を保存する' : '設定を完了してはじめる'}</span>
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-1 transition-transform"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
                 </div>

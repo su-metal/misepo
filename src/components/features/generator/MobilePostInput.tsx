@@ -368,7 +368,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                 </span>
                                                 */}
                                                 <div className="flex flex-col leading-tight">
-                                                    <h3 className={`font-black tracking-tighter text-xl transition-colors duration-500 ${isActive ? 'text-white' : 'text-slate-800'}`} style={{ fontFamily: 'Inter, sans-serif' }}>
+                                                    <h3 className={`font-black tracking-tighter text-xl transition-colors duration-500 ${isActive ? 'text-white' : 'text-[#122646]'}`} style={{ fontFamily: 'Inter, sans-serif' }}>
                                                         {details.name}
                                                     </h3>
                                                     <p className={`text-[11px] font-medium transition-opacity ${isActive ? 'text-white/60' : 'text-slate-400'}`}>
@@ -645,7 +645,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                 onClick={() => setMobileStep('confirm')}
                                                 disabled={!inputText.trim()}
                                                 className={`w-full py-5 rounded-[28px] font-black text-sm uppercase tracking-[0.2em] shadow-xl active:scale-95 transition-all flex items-center justify-center gap-2 ${inputText.trim()
-                                                    ? 'bg-[#111111] text-white'
+                                                    ? 'bg-[#0071b9] text-white'
                                                     : 'bg-[#999999] text-white/50 cursor-not-allowed opacity-50 shadow-none'
                                                     }`}
                                             >
