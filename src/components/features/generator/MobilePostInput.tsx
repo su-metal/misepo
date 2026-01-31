@@ -718,8 +718,8 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             </div>
 
                                             {/* Settings Grid - Monochrome */}
-                                            <div className="flex flex-col gap-4 pb-8">
-                                                <div className="grid grid-cols-2 gap-8 px-2">
+                                            <div className="flex flex-col gap-6 pb-8">
+                                                <div className="grid grid-cols-2 gap-8 px-2 mb-4">
                                                     {/* Tone Slider */}
                                                     <div className={`flex flex-col gap-3 transition-opacity ${isStyleLocked ? 'opacity-50 relative' : ''}`}>
                                                         <div className="flex items-center justify-between px-1">
