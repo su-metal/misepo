@@ -777,7 +777,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                 setExpandingPlatform(mode === 'sns' ? Platform.General : Platform.GoogleMaps);
                 setSelectedPlatforms(mode === 'sns' ? [Platform.General] : [Platform.GoogleMaps]);
               }}
-              className={`flex items-center gap-2 px-6 py-3 border text-white rounded-2xl font-black text-[11px] uppercase tracking-widest transition-all shadow-lg active:scale-95 ${mode === 'sns' ? 'bg-[#122646] border-[#122646] hover:bg-[#0071b9] hover:border-[#0071b9] shadow-[#d8e9f4]' : 'bg-[#00b900] border-[#00b900] hover:bg-[#00b900]/80 hover:border-[#00b900]/80 shadow-[#d8e9f4]'}`}
+              className={`flex items-center gap-2 px-6 py-3 border text-white rounded-2xl font-black text-[11px] uppercase tracking-widest transition-all shadow-lg active:scale-95 ${mode === 'sns' ? 'bg-[#eb714f] border-[#eb714f] hover:bg-[#eb714f]/80 hover:border-[#eb714f]/80 shadow-[#d8e9f4]' : 'bg-[#00b900] border-[#00b900] hover:bg-[#00b900]/80 hover:border-[#00b900]/80 shadow-[#d8e9f4]'}`}
             >
               <PlusIcon className="w-4 h-4" />
               <span>データを追加</span>
@@ -1014,7 +1014,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
       <div className="w-full max-w-4xl h-full md:max-h-[700px] bg-white md:rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-500 relative z-10 flex flex-col">
         <div className="p-8 md:p-10 border-b border-stone-100 flex items-center justify-between bg-stone-50/50">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shadow-lg shadow-indigo-100">
+            <div className="w-12 h-12 rounded-2xl bg-[#d8e9f4] text-white flex items-center justify-center shadow-lg shadow-indigo-100">
               {viewingSampleId ? <BookOpenIcon className="w-6 h-6" /> : <MagicWandIcon className="w-6 h-6" />}
             </div>
             <div>
@@ -1046,7 +1046,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                   {learningMode === 'sns' ? 'X, Instagram, LINEなどの投稿をそのまま貼り付けてください。' : 'Googleマップでの口コミへの返信文を貼り付けてください。'}
                 </p>
               </div>
-              <span className={`text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-widest ${learningMode === 'sns' ? 'bg-indigo-50 text-indigo-500' : 'bg-teal-50 text-teal-600'}`}>
+              <span className={`text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-widest ${learningMode === 'sns' ? 'bg-[#0071b9]-50 text-[#0071b9]-500' : 'bg-teal-50 text-teal-600'}`}>
                 {learningMode === 'sns' ? 'SNS用' : 'マップ返信用'}
               </span>
             </div>
@@ -1059,7 +1059,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                 <div className="flex gap-2">
                   <button
                     onClick={() => fileInputRef.current?.click()}
-                    className="flex items-center gap-2 text-[10px] font-black text-indigo-600 hover:opacity-70"
+                    className="flex items-center gap-2 text-[10px] font-black text-[#0071b9] hover:opacity-70"
                   >
                     <TieIcon className="w-3.5 h-3.5" />
                     スクショ解析
@@ -1073,7 +1073,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                       setIsSanitizing(false);
                     }}
                     disabled={isSanitizing || !modalText.trim()}
-                    className="flex items-center gap-2 text-[10px] font-black text-indigo-600 hover:opacity-70 disabled:opacity-30"
+                    className="flex items-center gap-2 text-[10px] font-black text-[#0071b9] hover:opacity-70 disabled:opacity-30"
                   >
                     <SparklesIcon className="w-3.5 h-3.5" />
                     AI伏せ字

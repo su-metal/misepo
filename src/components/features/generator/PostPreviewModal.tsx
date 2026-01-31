@@ -228,7 +228,7 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
                 <div className="p-8 bg-white border-t border-[#F0F0F0] mt-auto">
                     <button
                         onClick={onClose}
-                        className="w-full py-5 rounded-full font-bold text-[14px] transition-all active:scale-[0.98] shadow-sm bg-[#7F5AF0] text-white hover:opacity-90 relative overflow-hidden group"
+                        className="w-full py-5 rounded-full font-bold text-[14px] transition-all active:scale-[0.98] shadow-sm bg-[#122646] text-white hover:opacity-90 relative overflow-hidden group"
                     >
                         <div className="relative z-10">保存して閉じる</div>
                     </button>
