@@ -4,7 +4,7 @@ import { AutoResizingTextarea } from './AutoResizingTextarea';
 import { getPlatformIcon } from './utils';
 import {
     AutoSparklesIcon, MagicWandIcon, MicIcon, EraserIcon, InfoIcon,
-    InstagramIcon, LineIcon, GoogleMapsIcon, ChevronRightIcon, SparklesIcon, StarIcon
+    InstagramIcon, LineIcon, GoogleMapsIcon, ChevronRightIcon, SparklesIcon, StarIcon, LockIcon
 } from '../../Icons';
 import {
     PostInputFormProps, renderAvatar, PURPOSES, GMAP_PURPOSES, TONES, LENGTHS
@@ -184,10 +184,25 @@ export const DesktopPostInput: React.FC<PostInputFormProps> = ({
                             <h3 className="text-xs font-black uppercase tracking-widest text-[#666666]">詳細設定</h3>
                         </div>
                         <section>
-                            <h3 className="text-[10px] font-black text-[#999999] mb-1.5 px-1">トーン</h3>
-                            <div className={`flex flex-row gap-1.5 bg-[#FAFAFA] p-1 rounded-[16px] border border-[#E5E5E5] ${isStyleLocked ? 'opacity-50' : ''}`}>
+                            <div className="flex items-center gap-2 mb-1.5 px-1">
+                                <h3 className="text-[10px] font-black text-[#999999]">トーン</h3>
+                                {isStyleLocked && (
+                                    <div className="flex items-center gap-1 bg-[#d8e9f4] px-1.5 py-0.5 rounded text-[8px] font-black text-[#0071b9] uppercase tracking-wider">
+                                        <LockIcon className="w-2.5 h-2.5" />
+                                        <span>AI学習適用中</span>
+                                    </div>
+                                )}
+                            </div>
+                            <div className={`flex flex-row gap-1.5 bg-[#FAFAFA] p-1 rounded-[16px] border border-[#E5E5E5] transition-opacity ${isStyleLocked ? 'opacity-50 cursor-not-allowed' : ''}`}>
                                 {TONES.map(t => (
-                                    <button key={t.id} onClick={() => onToneChange(t.id)} className={`flex-1 py-1.5 rounded-[12px] text-[12px] font-black border transition-all ${tone === t.id ? 'bg-white border-[#E5E5E5] text-[#111111] shadow-sm' : 'text-[#999999] border-transparent'}`}>{t.label}</button>
+                                    <button
+                                        key={t.id}
+                                        disabled={isStyleLocked}
+                                        onClick={() => onToneChange(t.id)}
+                                        className={`flex-1 py-1.5 rounded-[12px] text-[12px] font-black border transition-all ${tone === t.id ? 'bg-white border-[#E5E5E5] text-[#111111] shadow-sm' : 'text-[#999999] border-transparent'} ${isStyleLocked ? 'pointer-events-none' : ''}`}
+                                    >
+                                        {t.label}
+                                    </button>
                                 ))}
                             </div>
                         </section>
