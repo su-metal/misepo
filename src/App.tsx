@@ -11,6 +11,7 @@ import { GUEST_PROFILE } from './constants';
 
 import PostGenerator from './components/PostGenerator';
 import OnboardingFlow from './components/Onboarding'; // Corrected
+import FeatureWalkthrough from './components/FeatureWalkthrough';
 import HistorySidebar from './components/HistorySidebar'; // Corrected
 import SettingsSidebar from './components/SettingsSidebar';
 import AccountSettingsModal from './components/AccountSettingsModal';
@@ -25,7 +26,7 @@ const UpgradeBanner = ({ plan, onUpgrade }: { plan: string, onUpgrade: () => voi
   <div className="bg-primary p-4 flex items-center justify-between text-white text-sm border-b border-accent/20 shadow-2xl shadow-navy-900/40 relative overflow-hidden group">
     <div className="absolute inset-0 bg-gradient-to-r from-accent/10 to-transparent pointer-events-none"></div>
     <div className="flex items-center gap-3 relative z-10">
-      <span className="bg-accent px-3 py-1 rounded-full text-[10px] font-black uppercase text-white shadow-lg shadow-accent/30 tracking-widest">Trial (トライアル)</span>
+      <span className="bg-accent px-3 py-1 rounded-full text-[10px] font-black uppercase text-black shadow-lg shadow-accent/30 tracking-widest">Trial (トライアル)</span>
       <span className="font-black tracking-tight hidden sm:inline">現在はトライアル期間です。終了するとプランのご契約が必要になります。</span>
       <span className="font-black tracking-tight sm:hidden text-xs">トライアル期間中。</span>
     </div>
@@ -67,6 +68,7 @@ function App() {
   const [trainingItems, setTrainingItems] = useState<TrainingItem[]>([]);
 
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showFeatureIntro, setShowFeatureIntro] = useState(false);
   const [showGuide, setShowGuide] = useState(false);
   const [showGuestDemo, setShowGuestDemo] = useState(false);
 
@@ -156,13 +158,13 @@ function App() {
       if (data.ok && data.profile) {
         setStoreProfile(normalizeStoreProfile(data.profile));
       } else {
-        setShowOnboarding(true);
+        setShowFeatureIntro(true);
       }
     } catch (err) {
       console.error('Failed to fetch profile:', err);
       // Fallback to guest profile if error occurs while logged in? 
       // Usually we want them to re-onboard if profile is really missing
-      setShowOnboarding(true);
+      setShowFeatureIntro(true);
     }
   }, [isLoggedIn]);
 
@@ -181,6 +183,8 @@ function App() {
 
     const init = async () => {
       console.log('[App] Fetching data for user:', user?.id || 'Guest');
+
+
       const [_, __, presetsData, trainingData] = await Promise.all([
         fetchProfile(),
         fetchHistory(),
@@ -393,6 +397,21 @@ function App() {
       <div className="flex items-center justify-center min-h-screen bg-white">
         <div className="w-10 h-10 border-4 border-slate-100 border-t-accent rounded-full animate-spin shadow-2xl shadow-accent/10"></div>
       </div>
+    );
+  }
+
+  if (showFeatureIntro) {
+    return (
+      <FeatureWalkthrough
+        onComplete={() => {
+          setShowFeatureIntro(false);
+          setShowOnboarding(true);
+        }}
+        onSkip={() => {
+          setShowFeatureIntro(false);
+          setShowOnboarding(true);
+        }}
+      />
     );
   }
 

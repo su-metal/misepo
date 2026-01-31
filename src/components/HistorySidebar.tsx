@@ -96,50 +96,43 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
             onSelect(item);
             toggleOpen();
           }}
-          className={`w-full text-left rounded-[28px] transition-all duration-300 relative overflow-hidden flex flex-col gap-4 hover:shadow-xl hover:shadow-indigo-100/40 hover:-translate-y-1 ${item.isPinned
-            ? 'bg-white p-[1.5px] shadow-md ring-0'
-            : 'bg-white p-6 ring-1 ring-slate-100 shadow-sm hover:ring-indigo-100'
+          className={`w-full text-left rounded-[28px] transition-all duration-500 relative overflow-hidden flex flex-col gap-3 hover:-translate-y-1 active:scale-[0.98] ${item.isPinned
+            ? 'bg-[#d8e9f4]/50 p-[1.5px] shadow-md shadow-blue-900/5 ring-1 ring-[#0071b9]/20'
+            : 'bg-white p-6 border border-[#122646]/5 shadow-sm hover:shadow-xl hover:shadow-blue-900/5 hover:border-[#0071b9]/20'
             }`}
         >
-          {/* Prism Radiant Aura for Pinned */}
+          {/* Subtle Inner Glow for Pinned */}
           {item.isPinned && (
-            <div className="absolute inset-0 rounded-[28px] overflow-hidden pointer-events-none">
-              <div
-                className="absolute inset-0 opacity-100 blur-sm transition-all duration-700"
-                style={{
-                  background: 'linear-gradient(45deg, #22D3EE, #FACC15, #F472B6)'
-                }}
-              />
-            </div>
+            <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-white/40 to-transparent pointer-events-none" />
           )}
 
           <div className={`relative w-full h-full flex flex-col gap-4 ${item.isPinned ? 'bg-white rounded-[27px] p-6' : ''}`}>
             <div className="flex items-center justify-between">
               <div className="flex -space-x-2">
                 {item.config.platforms.map((p, pIdx) => (
-                  <div key={`${p}-${pIdx}`} className="w-8 h-8 rounded-full flex items-center justify-center bg-slate-50 border-2 border-white shadow-sm ring-1 ring-slate-100/20">
-                    {getPlatformIcon(p, "w-4 h-4 text-slate-400 group-hover:text-[#7F5AF0] transition-colors")}
+                  <div key={`${p}-${pIdx}`} className="w-8 h-8 rounded-full flex items-center justify-center bg-white border border-[#122646]/5 shadow-sm group-hover:border-[#0071b9]/20 transition-colors">
+                    {getPlatformIcon(p, "w-3.5 h-3.5 text-slate-400 group-hover:text-[#0071b9] transition-colors")}
                   </div>
                 ))}
               </div>
-              <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">
+              <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em]">
                 {dateLabel}
               </span>
             </div>
 
-            <p className="text-sm text-slate-600 font-bold line-clamp-2 leading-relaxed transition-colors group-hover:text-slate-900 pr-12">
+            <p className="text-sm text-[#122646] font-bold tracking-tight line-clamp-2 leading-relaxed transition-colors group-hover:text-[#0071b9] pr-12">
               {previewText}
             </p>
           </div>
         </button>
 
         {/* Floating Actions */}
-        <div className={`absolute bottom-6 right-6 flex flex-row md:flex-col gap-2 transition-all duration-300 z-30 ${item.isPinned ? 'opacity-100' : 'opacity-100 md:opacity-0 md:group-hover:opacity-100 md:translate-x-2 md:group-hover:translate-x-0'}`}>
+        <div className={`absolute bottom-6 right-6 flex flex-row md:flex-col gap-2 transition-all duration-500 z-30 ${item.isPinned ? 'opacity-100' : 'opacity-100 md:opacity-0 md:group-hover:opacity-100 md:translate-x-2 md:group-hover:translate-x-0'}`}>
           <button
             onClick={(e) => { e.stopPropagation(); onTogglePin(item.id, !item.isPinned); }}
-            className={`w-9 h-9 rounded-full flex items-center justify-center transition-all ${item.isPinned
-              ? 'bg-indigo-50 text-[#7F5AF0] shadow-sm'
-              : 'bg-white shadow-md text-slate-300 hover:text-indigo-500 hover:scale-110'
+            className={`w-8.5 h-8.5 flex items-center justify-center transition-all ${item.isPinned
+              ? 'text-[#00b900]'
+              : 'text-slate-200 hover:text-[#0071b9] hover:scale-110'
               }`}
             title={item.isPinned ? "ピン留めを解除" : "ピン留めして保護"}
           >
@@ -151,16 +144,16 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
               e.stopPropagation();
               onDelete(item.id);
             }}
-            className="w-9 h-9 rounded-full bg-white shadow-md flex items-center justify-center text-slate-300 hover:text-rose-500 hover:scale-110 hover:bg-rose-50 transition-all"
+            className="w-8.5 h-8.5 flex items-center justify-center text-slate-200 hover:text-rose-500 hover:scale-110 transition-all font-black"
             title="履歴を削除"
           >
             <TrashIcon className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Pinned Badge */}
+        {/* Pinned Accent Bar */}
         {item.isPinned && (
-          <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-1 h-8 bg-[#7F5AF0] rounded-r-full shadow-[2px_0_8px_rgba(127,90,240,0.4)] z-20"></div>
+          <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-1 h-8 bg-[#0071b9] rounded-r-full shadow-[2px_0_10px_rgba(235,113,79,0.3)] z-20" />
         )}
       </div>
     );
@@ -181,10 +174,10 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
         className={`fixed top-0 right-0 h-full w-[85vw] sm:w-[400px] md:w-[440px] transform transition-all duration-500 cubic-bezier(0.2, 0.8, 0.2, 1) z-[9999] flex flex-col overflow-hidden bg-white shadow-2xl ring-1 ring-black/5 ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
       >
         {/* Header */}
-        <div className="px-8 py-6 md:py-8 flex items-center justify-between border-b border-slate-50 bg-white/80 backdrop-blur-md sticky top-0 z-10">
+        <div className="px-8 py-6 md:py-8 flex items-center justify-between border-b border-[#122646]/5 bg-white/80 backdrop-blur-md sticky top-0 z-10">
           <div>
-            <h2 className="font-black text-slate-800 text-2xl tracking-tight uppercase">History</h2>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1.5">Your Past Generations</p>
+            <h2 className="font-black text-[#122646] text-xl md:text-2xl tracking-tight uppercase leading-none">History</h2>
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-2 opacity-60">Your Past Generations</p>
           </div>
           <button
             onClick={toggleOpen}
@@ -196,17 +189,17 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
         </div>
 
         {/* Content Segment: History */}
-        <div className="flex-1 overflow-y-auto overscroll-contain p-6 md:p-8 space-y-8 no-scrollbar bg-slate-50/50">
+        <div className="flex-1 overflow-y-auto overscroll-contain p-6 md:p-8 space-y-8 no-scrollbar bg-slate-50/20">
           <div className="flex items-center justify-between px-2">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-[#7F5AF0] shadow-sm">
-                <HistoryIcon className="w-6 h-6" />
+              <div className="w-12 h-12 rounded-2xl bg-white border border-[#122646]/5 flex items-center justify-center text-[#122646] shadow-sm">
+                <HistoryIcon className="w-6 h-6 opacity-80" />
               </div>
               <div className="flex flex-col">
-                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Saved Results</span>
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Saved Results</span>
                 {isLoggedIn && (
-                  <span className="text-xs font-black text-slate-800">
-                    {history.length} ITEMS
+                  <span className="text-sm font-black text-[#122646] tracking-tighter">
+                    {history.length} <span className="text-[10px] opacity-40 ml-1">COLLECTED</span>
                   </span>
                 )}
               </div>
@@ -228,10 +221,10 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                 <>
                   {/* Pinned Section */}
                   {displayHistory.some(i => i.isPinned) && (
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-2 px-2">
-                        <PinIcon className="w-3 h-3 text-[#7F5AF0]" fill="currentColor" />
-                        <span className="text-[10px] font-black text-[#7F5AF0] uppercase tracking-[0.2em]">Pinned</span>
+                    <div className="space-y-5">
+                      <div className="flex items-center gap-3 px-3">
+                        <div className="w-1.5 h-1.5 rounded-full bg-[#0071b9]"></div>
+                        <span className="text-[11px] font-black text-[#0071b9] uppercase tracking-[0.25em]">Pinned Collective</span>
                       </div>
                       <div className="space-y-4">
                         {displayHistory.filter(i => i.isPinned).map((item, idx) => renderHistoryItem(item, idx))}
@@ -240,9 +233,10 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                   )}
 
                   {/* Recent Section */}
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-2 px-2">
-                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Recent</span>
+                  <div className="space-y-5">
+                    <div className="flex items-center gap-3 px-3">
+                      <div className="w-1.5 h-1.5 rounded-full bg-slate-300"></div>
+                      <span className="text-[11px] font-black text-slate-400 uppercase tracking-[0.25em]">Recent Items</span>
                     </div>
                     <div className="space-y-4">
                       {displayHistory.filter(i => !i.isPinned).map((item, idx) => renderHistoryItem(item, idx))}
@@ -272,7 +266,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
 
         {/* Footer */}
         <div className="p-8 border-t border-slate-50 bg-white">
-          <p className="text-[9px] font-black text-slate-300 text-center uppercase tracking-[0.4em]">© 2026 {UI.name}</p>
+          <p className="text-[9px] font-black text-[#122646]/30 text-center uppercase tracking-[0.4em]">© 2026 {UI.name}</p>
         </div>
       </div>
     </>

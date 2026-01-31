@@ -357,7 +357,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                     }}
                                                     className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 active:scale-90 shadow-lg ${isActive ? 'bg-white' : 'bg-white shadow-[0_4px_10px_rgba(0,0,0,0.05)]'}`}
                                                 >
-                                                    <ChevronRightIcon className={`w-5 h-5 ${isActive ? 'text-black' : 'text-slate-300'}`} />
+                                                    <ChevronRightIcon className={`w-5 h-5 ${isActive ? 'text-[#0071b9]' : 'text-slate-300'}`} />
                                                 </div>
                                             </div>
 
@@ -408,7 +408,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             <div className="relative p-7 pl-10 pr-6 flex items-center justify-between">
                                 {/* Left Content */}
                                 <div className="relative z-10 flex flex-col gap-6">
-                                    <div className="self-start inline-flex px-4 py-1.5 rounded-full bg-white text-[9px] font-black text-[#0071b9] uppercase tracking-[0.2em] shadow-sm border border-[#0071b9]/5">
+                                    <div className="self-start inline-flex px-4 py-1.5 rounded-full bg-[#00b900] text-[9px] font-black text-white/90 uppercase tracking-[0.2em] shadow-sm border border-[#0071b9]/5">
                                         AIが自動提案
                                     </div>
                                     <div className="space-y-1">
@@ -418,7 +418,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             </h4>
                                             <SparklesIcon className="w-5 h-5 text-[#0071b9] animate-pulse" />
                                         </div>
-                                        <p className="text-[10px] font-bold text-[#0071b9]/40 uppercase tracking-[0.1em] pl-1">
+                                        <p className="text-[10px] font-bold text-black/40 uppercase tracking-[0.1em] pl-1">
                                             文章を考えずに、丸ごとおまかせ
                                         </p>
                                     </div>
@@ -482,7 +482,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#111111" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
                                 </button>
                                 <div className="flex flex-col">
-                                    <h3 className="text-[17px] font-black text-[#111111] tracking-tight leading-none mb-1">
+                                    <h3 className="text-[17px] font-black text-[#0071b9] tracking-tight leading-none mb-1">
                                         {mobileStep === 'input' ? 'Describe Content' : mobileStep === 'confirm' ? 'Final Review' : 'Generated Posts'}
                                     </h3>
                                     <span className="text-[10px] font-black text-[#666666] uppercase tracking-[0.2em] leading-none">
