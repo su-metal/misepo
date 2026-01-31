@@ -22,7 +22,7 @@ export default function RootLayout({
         {/* Tailwind via CDN for compatibility with existing styling approach without build setup */}
         <script src="https://cdn.tailwindcss.com"></script>
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@400;500;600;700&display=swap" rel="stylesheet" />
-        <meta name="theme-color" content="#7f5af0" />
+        <meta name="theme-color" content="#0071b9" />
 
         {/* Import Map for external dependencies if not using package.json dependencies */}
         <script type="importmap" dangerouslySetInnerHTML={{

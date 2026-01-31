@@ -4,7 +4,7 @@ import { AutoResizingTextarea } from './AutoResizingTextarea';
 import { getPlatformIcon } from './utils';
 import {
     AutoSparklesIcon, MagicWandIcon, MicIcon, EraserIcon, InfoIcon,
-    InstagramIcon, LineIcon, GoogleMapsIcon, ChevronRightIcon, SparklesIcon
+    InstagramIcon, LineIcon, GoogleMapsIcon, ChevronRightIcon, SparklesIcon, StarIcon
 } from '../../Icons';
 import {
     PostInputFormProps, renderAvatar, PURPOSES, GMAP_PURPOSES, TONES, LENGTHS
@@ -240,6 +240,27 @@ export const DesktopPostInput: React.FC<PostInputFormProps> = ({
                         <div className="w-8 h-8 rounded-lg flex items-center justify-center font-black text-sm shadow-sm border bg-[#111111] text-white border-[#111111] shadow-[4px_4px_0_0_rgba(170,170,170,0.25)]">4</div>
                         <h3 className="text-xs font-black uppercase tracking-widest text-[#666666]">伝えたい内容</h3>
                     </div>
+                    {isGoogleMaps && (
+                        <div className="flex items-center gap-4 px-4 mb-2">
+                            <span className="text-[10px] font-bold text-[#666666] uppercase tracking-[0.2em]">Target Rating</span>
+                            <div className="flex gap-1.5">
+                                {[1, 2, 3, 4, 5].map((star) => (
+                                    <button
+                                        key={star}
+                                        onClick={() => onStarRatingChange(star)}
+                                        className="transition-transform active:scale-95 focus:outline-none"
+                                    >
+                                        <StarIcon
+                                            className={`w-6 h-6 transition-all ${star <= (starRating || 0)
+                                                ? 'text-[#f2e018] fill-[#f2e018] drop-shadow-sm'
+                                                : 'text-[#E5E5E5]'
+                                                }`}
+                                        />
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                     <div className="rounded-[40px] p-14 flex flex-col bg-white border border-[#E5E5E5] shadow-sm min-h-[400px]">
                         <AutoResizingTextarea
                             ref={textareaRef}

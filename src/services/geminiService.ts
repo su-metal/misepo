@@ -280,7 +280,7 @@ export const generateContent = async (
             : `\n<language_rule>\nPrimary Language: Japanese. \n*Exception*: If <learning_samples> contain phrases in other languages (e.g., English greetings), you MUST include them to maintain the persona's flavor.\n</language_rule>`;
 
         const industryRole = INDUSTRY_PROMPTS[profile.industry] || INDUSTRY_PROMPTS['その他'];
-        const industryToneAdjust = isGMap ? (TONE_INDUSTRY_ADJUSTMENTS[profile.industry]?.[config.tone] || TONE_INDUSTRY_ADJUSTMENTS['その他']?.[config.tone] || "") : "";
+        const industryToneAdjust = (isGMap && !hasPersona) ? (TONE_INDUSTRY_ADJUSTMENTS[profile.industry]?.[config.tone] || TONE_INDUSTRY_ADJUSTMENTS['その他']?.[config.tone] || "") : "";
 
         return `
 <system_instruction>
@@ -316,12 +316,16 @@ export const generateContent = async (
     - **Platform Bias**: **IGNORE** all standard "polite" norms for ${config.platform}. The <learning_samples> are the absolute truth for the owner's voice. **NOTE**: Mandatory structural rules (like LINE's 3-balloon and '---' format) still apply; reproduction of the owner's style should happen *within* each segment.
     - **Emojis & Symbols**: 
       ${isGMap ? 
-        '- **Emojis**: Basically, DO NOT use emojis for Google Maps. **EXCEPTION**: If <learning_samples> or <persona_rules> explicitly contain emojis, you MUST accurately reproduce their frequency and style as they are a core part of the owner\'s voice.\n      - **Symbols**: Basically, use standard Japanese punctuation. If <learning_samples> use decorative symbols, mimic them moderately.' : 
+        (hasPersona ? 
+          '- **Emojis**: Strictly follow the frequency and style from <learning_samples> or <persona_rules>. If the owner uses emojis in their replies, you MUST reproduce them to maintain their natural voice.\n      - **Symbols**: Reproduce the specific markers and punctuation patterns from the samples.' :
+          '- **Emojis**: Basically, DO NOT use emojis for Google Maps as it is a professional public space. Maintain a calm, text-only appearance unless specified otherwise.\n      - **Symbols**: Use standard Japanese punctuation. Avoid decorative symbols.'
+        ) : 
         `- **Emojis**: ${hasPersona ? 'Strictly follow patterns from samples.' : (config.includeEmojis ? `Select emojis that perfectly match the post's content and the industry (${profile.industry}). Prioritize variety and situational relevance (e.g., seasonal items, specific products, or relevant activities) over generic symbols to ensure a natural and engaging selection.` : 'DO NOT use any emojis.')}
     - **Symbols**: ${hasPersona && !config.includeSymbols ? 'Strictly follow patterns from samples.' : (config.includeSymbols ? `From the **Aesthetic Palette**:
         - **Headers/Accents**: ＼ ✧ TITLE ✧ ／, 𓍯 𓇢 TITLE 𓇢 𓍯, 【 TITLE 】, ✧, ꕤ, ⚘, ☼, 𖥧, 𖠚
         - **Dividers**: ${isX ? '**DISABLED for X**. Do NOT use line dividers on X.' : '𓂃𓂃𓂃, ⋆┈┈┈┈┈┈┈┈┈┈⋆, ──────────── (Use 1-2 sets to separate sections)'} 
-        - **Rule**: ${isX ? 'On X, use symbols/accents for headers (sandwiches) and sentence endings. No line dividers.' : 'Actively use "sandwich" patterns for headers (e.g. ＼ ✧ Title ✧ ／). Use symbols (𓍯, ✧) for bullet points. Add 1-2 symbols (✧, ꕤ) at the end of impactful sentences.'}` : 'DO NOT use decorative symbols or flashy brackets.')}`}
+        - **Rule**: ${isX ? 'On X, use symbols/accents for headers (sandwiches) and sentence endings. No line dividers.' : 'Actively use "sandwich" patterns for headers (e.g. ＼ ✧ Title ✧ ／). Use symbols (𓍯, ✧) for bullet points. Add 1-2 symbols (✧, ꕤ) at the end of impactful sentences.'}` : 'DO NOT use decorative symbols or flashy brackets.')}`
+      }
     - **Line Breaks**: **NEVER** insert line breaks in the middle of a grammatical phrase or word (e.g., don't split "ご来店いただき" across lines). Maintain natural reading flow. Avoid "auto-formatting for mobile" unless the <learning_samples> explicitly use that specific rhythm.
     - **Platform Rules**:
       - Platform: ${config.platform}
@@ -337,8 +341,8 @@ export const generateContent = async (
   
   <style_reminder>
     IMPORTANT: You must strict adherence to the **Emojis** and **Special Characters** rules defined in <style_guidelines>.
-    - Emojis: **${config.includeEmojis ? 'active ON' : 'OFF'}** (Priority: High)
-    - Special Characters: **${config.includeSymbols ? 'active ON' : 'OFF'}**
+    - Emojis: **${hasPersona ? 'FOLLOW SAMPLES' : (config.includeEmojis ? 'active ON' : 'OFF')}** (Priority: High)
+    - Special Characters: **${hasPersona ? 'FOLLOW SAMPLES' : (config.includeSymbols ? 'active ON' : 'OFF')}**
     ${config.includeEmojis ? 'You MUST use emojis if they are enabled, even if the custom instructions are serious.' : ''}
   </style_reminder>
   </custom_instructions>` : ""}
@@ -394,7 +398,8 @@ export const generateContent = async (
         const minVal = t.min;
         const lengthWarning = `**CRITICAL**: The body text MUST be **${lengthStr} chars**. Minimum length: ${minVal} characters.`;
         const styleInstruction = isGMap 
-          ? `**CORE VOICE REPRODUCTION**: You MUST prioritize the owner's idiosyncratic voice (sentence endings like "〜やで", specific slang like "ワイ", and tone) found in <learning_samples> or <persona_rules> ABOVE all other rules. DO NOT switch to standard formal Japanese even if the task is an apology.`
+          ? `**CORE VOICE REPRODUCTION**: You MUST prioritize the owner's idiosyncratic voice (sentence endings, specific slang, and emotional tone) found in <learning_samples> or <persona_rules> ABOVE all other rules. 
+DO NOT use stiff business boilerplate like "誠にありがとうございます" if the owner uses friendlier forms like "ありがとうございます😊" in the samples. DO NOT switch to standard formal Japanese just because it is Google Maps.`
           : `**STRICT STYLE REPRODUCTION**: You MUST prioritize the sentence endings and decorative patterns from <learning_samples> above all else, while following the purpose below.`;
 
         if (isGMap) {
@@ -411,12 +416,11 @@ export const generateContent = async (
     Output a JSON object with:
     - "analysis": Brief context analysis.
     - "posts": An array of generated post strings. 
-    **CRITICAL RULES FOR "posts" ARRAY:**
-    1. **ONE MESSAGE = ONE STRING**. Do not split a single post (e.g. Title + Body + Footer) into multiple strings.
-    2. Even if the post has line breaks or multiple paragraphs, it must be contained within a SINGLE string element.
-    3. If multiple variations are requested, return [ "Variation 1 full text", "Variation 2 full text" ].
-    4. **NEVER** return [ "Title", "Body", "Footer" ]. This is wrong.
-    5. **NEVER** split the post based on empty lines.
+    **VOICE_PRIORITY**:
+    If <learning_samples> are present, the owner's voice in those samples MUST be reproduced 100%. 
+    - Prioritize friendlier/casual tones found in samples over industry standard formal etiquette.
+    - If the owner uses emojis (😊, ♪, etc.) in the samples, YOU MUST USE THEM.
+    - **Anti-Boilerplate**: NEVER use stiff phrases like "心より感謝申し上げます" or "ご不便をおかけしました" if the owner uses softer, natural language in the samples.
   </task>
 
   ${activePersonaYaml ? `
@@ -444,14 +448,14 @@ export const generateContent = async (
     - Language: ${config.language || 'Japanese'}
     - Length: ${config.length} (Target: ${t.target} chars. Min: ${t.min} chars)
     - Tone: ${config.tone} (${TONE_RULES[config.tone] || TONE_RULES[Tone.Standard]})
-    ${isGMap ? `- Industry Specific Tone: ${TONE_INDUSTRY_ADJUSTMENTS[profile.industry]?.[config.tone] || TONE_INDUSTRY_ADJUSTMENTS['その他']?.[config.tone] || ""}` : ""}
+    ${(isGMap && !hasPersona) ? `- Industry Specific Tone: ${TONE_INDUSTRY_ADJUSTMENTS[profile.industry]?.[config.tone] || TONE_INDUSTRY_ADJUSTMENTS['その他']?.[config.tone] || ""}` : ""}
     - Features: ${isInstagram ? 'Visual focus.' : ''}${isX ? 'Under 140 chars.' : ''}${isGMap ? 'NO hashtags. Focus on maintaining the owner\'s personality in the reply.' : ''}${isLine ? 'Direct marketing style. NO hashtags. Focus on clear messaging.' : ''}
-    - Emojis: ${isGMap ? 'Prohibited by default. HOWEVER, if <learning_samples> contain emojis, prioritize matching their frequency to preserve the owner\'s style.' : (config.includeEmojis ? `Select emojis that are highly relevant to the industry (${profile.industry}) and current topic. Prioritize contextual variety (e.g., specific items, seasonal symbols, or mood-appropriate faces) and avoid repetition or over-reliance on specific characters.` : "DO NOT use any emojis (emoticons, icons, pictograms) under any circumstances. Keep it plain text only regarding emojis.")}
+    - Emojis: ${isGMap ? (hasPersona ? 'Strictly prioritize mimicking the samples\' frequency.' : 'Prohibited by default to maintain a formal public tone.') : (config.includeEmojis ? `Select emojis that are highly relevant to the industry (${profile.industry}) and current topic. Prioritize contextual variety (e.g., specific items, seasonal symbols, or mood-appropriate faces) and avoid repetition or over-reliance on specific characters.` : "DO NOT use any emojis (emoticons, icons, pictograms) under any circumstances. Keep it plain text only regarding emojis.")}
     - Special Characters: ${config.includeSymbols ? `From the **Aesthetic Palette**:
         - **Headers/Accents**: ＼ ✧ TITLE ✧ ／, 𓍯 𓇢 TITLE 𓇢 𓍯, 【 TITLE 】, ✧, ꕤ, ⚘, ☼, 𖥧, 𖠚
         - **Dividers**: ${isX ? '**DISABLED for X**. Do NOT use line dividers on X.' : '𓂃𓂃𓂃, ⋆┈┈┈┈┈┈┈┈┈┈⋆, ──────────── (Use to separate Body and CTA)'}
         - **Rule**: ${isX ? 'On X, use symbols/accents for headers (sandwiches), bullet points, and sentence endings. No line dividers.' : 'Actively use "sandwich" patterns (e.g. ＼ ✧ Title ✧ ／). Use symbols (𓍯, ✧) as bullet points for lists. Append symbols (✧, ꕤ) to the end of key sentences.'}
-        - **Note**: Use these symbols frequently for visual appeal ${!config.includeEmojis ? 'INSTEAD of emojis' : 'in addition to emojis'}.` : "Do NOT use decorative symbols or flashy brackets. Use standard punctuation only."}
+        - **Note**: Use these symbols frequently for visual appeal ${!config.includeEmojis ? 'INSTEAD of emojis' : 'in addition to emojis'}.` : (isGMap && hasPersona) ? "Strictly follow the symbol patterns from the samples." : "Do NOT use decorative symbols or flashy brackets. Use standard punctuation only."}
     - **Layout**: ${config.length === 'short' ? "Concise. Group related sentences." : "Natural Reading Flow. Group semantically related sentences into small blocks (2-3 lines). Insert empty lines ONLY between distinct topics or after a strong hook. Avoid robotic 'one sentence per line' formatting."}
   </rules>
 
@@ -472,7 +476,16 @@ export const generateContent = async (
         const lengthWarning = `**CRITICAL**: The body text MUST be **${lengthStr} chars**. DO NOT be too short. Minimum length: ${minVal} characters.`;
         const factInstruction = config.storeSupplement ? `\n- **FACTUAL CORE**: You MUST incorporate the specific details provided in <owner_explanation>. These facts are key to the reply.` : '';
 
-        if (isGMap) return `The <user_input> is a customer review. Generate a REPLY from the owner. ${factInstruction} ${lengthWarning}`;
+        if (isGMap) {
+            let ratingInstruction = "";
+            if (config.starRating) {
+                const r = config.starRating;
+                if (r <= 2) ratingInstruction = `\n- **RATING CONTEXT**: The user gave a **LOW RATING (${r}/5)**. Your tone MUST be apologetic, humble, and sincere. Prioritize addressing their dissatisfaction over self-promotion.`;
+                else if (r === 3) ratingInstruction = `\n- **RATING CONTEXT**: The user gave an **AVERAGE RATING (3/5)**. Be polite, professional, and thank them for the feedback while addressing any mixed feelings.`;
+                else ratingInstruction = `\n- **RATING CONTEXT**: The user gave a **HIGH RATING (${r}/5)**. Express warmth, gratitude, and joy. Thank them for the high praise.`;
+            }
+            return `The <user_input> is a customer review. ${ratingInstruction} Generate a REPLY from the owner. ${factInstruction} ${lengthWarning}`;
+        }
         
         if (isLine) return `Generate a LINE message with a clear flow: 1. Hook, 2. Details, 3. Action. ${lengthWarning} **VISUAL**: Use a header for the hook. **STRICT EMOJI RULE**: ${config.includeEmojis ? 'Use emojis naturally.' : 'DO NOT use any emojis.'} **LAYOUT**: Clean vertical flow.`;
 
@@ -1060,6 +1073,8 @@ Values must be the style guide string (plain text with bullet points).
 - Content MUST be **Natural Japanese**.
 - Start each value with 【文体指示書】.
 - Use bullet points for readability.
+- **Formality Capture**: Accurately capture the level of formality. If the samples are casual/friendly (e.g., using '〜だね', '〜です♪', or specific emojis), the guide MUST explicitly instruct to maintain that casualness. DO NOT default to business formal unless indicated.
+- **Emoji Patterns**: Note the frequency and specific types of emojis used.
 - **CRITICAL:** If samples are provided for a platform, you **MUST** generate a guide for it. Do not skip it.
 - **CRITICAL:** The value for "X (Twitter)" must ONLY reflect the X samples. Do NOT mix styles.
 - **CRITICAL:** Do NOT use headers like "【Google Maps】" inside the value strings.

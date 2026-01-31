@@ -331,10 +331,6 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
             presets={presets}
             onSave={handleSavePreset}
             onDelete={handleDeletePreset}
-            onApply={(p) => {
-              flow.handleApplyPreset(p);
-              setIsPresetModalOpen(false);
-            }}
             initialPresetId={flow.activePresetId || undefined}
             isSaving={isSavingPreset}
             onReorder={props.refreshPresets}

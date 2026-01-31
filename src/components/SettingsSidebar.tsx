@@ -126,7 +126,7 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
                                     className="group w-full p-1 bg-white border border-stone-100 rounded-[2rem] shadow-sm hover:shadow-md hover:border-indigo-100 transition-all duration-300 text-left"
                                 >
                                     <div className="p-5 flex items-center gap-4">
-                                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-2xl font-black text-white shadow-lg shadow-indigo-200">
+                                        <div className="w-16 h-16 rounded-2xl bg-[#0071b9] flex items-center justify-center text-2xl font-black text-white shadow-lg shadow-indigo-200">
                                             {(storeProfile?.name?.[0] || 'U').toUpperCase()}
                                         </div>
                                         <div className="flex-1 min-w-0">
