@@ -810,15 +810,14 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             )}
                         </div>
 
-                        {/* Step 3 Sticky Button - Absolute positioned within Drawer Panel */}
+                        {/* Step 3 Sticky Action Area - Fixed for Hitbox and Layout accuracy */}
                         {mobileStep === 'confirm' && (
-                            <>
+                            <div className="absolute bottom-[60px] left-0 right-0 px-8 z-[120] flex flex-col items-center gap-4">
                                 <button
                                     onClick={onGenerate}
                                     disabled={isGenerating}
                                     className={`
-                                        absolute bottom-[80px] left-1/2 -translate-x-1/2 w-[calc(100%-4rem)] z-[100]
-                                        group relative overflow-hidden rounded-[32px] py-6
+                                        w-full group relative overflow-hidden rounded-[32px] py-6
                                         transition-all duration-500 active:scale-95
                                         ${isGenerating ? 'bg-stone-300 cursor-not-allowed' : 'bg-[#f2e018] shadow-[0_10px_30px_rgba(0,113,185,0.2)]'}
                                     `}
@@ -835,10 +834,10 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         )}
                                     </div>
                                 </button>
-                                <p className="absolute bottom-[50px] left-0 right-0 text-center text-[10px] font-bold text-[#999999] uppercase tracking-widest z-[100] pointer-events-none">
+                                <p className="text-center text-[10px] font-bold text-[#999999] uppercase tracking-widest pointer-events-none">
                                     あなたの想いを、AIが最高の文章に仕上げます
                                 </p>
-                            </>
+                            </div>
                         )}
                     </div>
                 </div>
