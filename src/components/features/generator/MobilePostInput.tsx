@@ -4,7 +4,7 @@ import { AutoResizingTextarea } from './AutoResizingTextarea';
 import { getPlatformIcon } from './utils';
 import {
     AutoSparklesIcon, MagicWandIcon, MicIcon, EraserIcon, InfoIcon,
-    SparklesIcon, RotateCcwIcon, InstagramIcon, LineIcon, GoogleMapsIcon, ChevronRightIcon, CloseIcon
+    SparklesIcon, RotateCcwIcon, InstagramIcon, LineIcon, GoogleMapsIcon, ChevronRightIcon, CloseIcon, StarIcon
 } from '../../Icons';
 import { MobileCalendarOverlay } from './MobileCalendarOverlay';
 import { TrendEvent } from './TrendData';
@@ -529,6 +529,26 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                     <p className="text-sm text-[#666666]">Googleマップの口コミを貼り付けてください</p>
                                                 </div>
 
+                                                <div className="flex flex-col items-center gap-2 mb-2">
+                                                    <span className="text-[10px] font-bold text-[#666666] uppercase tracking-[0.2em] mb-1">Reply Target Rating</span>
+                                                    <div className="flex gap-2">
+                                                        {[1, 2, 3, 4, 5].map((star) => (
+                                                            <button
+                                                                key={star}
+                                                                onClick={() => onStarRatingChange(star)}
+                                                                className="transition-transform active:scale-95"
+                                                            >
+                                                                <StarIcon
+                                                                    className={`w-8 h-8 transition-all ${star <= (starRating || 0)
+                                                                        ? 'text-[#f2e018] fill-[#f2e018] drop-shadow-sm'
+                                                                        : 'text-[#E5E5E5]'
+                                                                        }`}
+                                                                />
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                </div>
+
                                                 <div className="relative">
                                                     <AutoResizingTextarea
                                                         value={inputText}
@@ -778,7 +798,8 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                         </div>
                     </div>
                 </div>
-            )}
-        </div>
+            )
+            }
+        </div >
     );
 };

@@ -476,7 +476,16 @@ DO NOT use stiff business boilerplate like "誠にありがとうございます
         const lengthWarning = `**CRITICAL**: The body text MUST be **${lengthStr} chars**. DO NOT be too short. Minimum length: ${minVal} characters.`;
         const factInstruction = config.storeSupplement ? `\n- **FACTUAL CORE**: You MUST incorporate the specific details provided in <owner_explanation>. These facts are key to the reply.` : '';
 
-        if (isGMap) return `The <user_input> is a customer review. Generate a REPLY from the owner. ${factInstruction} ${lengthWarning}`;
+        if (isGMap) {
+            let ratingInstruction = "";
+            if (config.starRating) {
+                const r = config.starRating;
+                if (r <= 2) ratingInstruction = `\n- **RATING CONTEXT**: The user gave a **LOW RATING (${r}/5)**. Your tone MUST be apologetic, humble, and sincere. Prioritize addressing their dissatisfaction over self-promotion.`;
+                else if (r === 3) ratingInstruction = `\n- **RATING CONTEXT**: The user gave an **AVERAGE RATING (3/5)**. Be polite, professional, and thank them for the feedback while addressing any mixed feelings.`;
+                else ratingInstruction = `\n- **RATING CONTEXT**: The user gave a **HIGH RATING (${r}/5)**. Express warmth, gratitude, and joy. Thank them for the high praise.`;
+            }
+            return `The <user_input> is a customer review. ${ratingInstruction} Generate a REPLY from the owner. ${factInstruction} ${lengthWarning}`;
+        }
         
         if (isLine) return `Generate a LINE message with a clear flow: 1. Hook, 2. Details, 3. Action. ${lengthWarning} **VISUAL**: Use a header for the hook. **STRICT EMOJI RULE**: ${config.includeEmojis ? 'Use emojis naturally.' : 'DO NOT use any emojis.'} **LAYOUT**: Clean vertical flow.`;
 
