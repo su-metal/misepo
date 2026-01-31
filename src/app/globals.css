@@ -233,6 +233,41 @@ html {
     animation: float-slow 6s ease-in-out infinite;
 }
 
+@keyframes float-ticket {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    25% { transform: translateY(-4px) rotate(0.5deg); }
+    75% { transform: translateY(2px) rotate(-0.5deg); }
+}
+.animate-float-ticket {
+    animation: float-ticket 4s ease-in-out infinite;
+}
+
+@keyframes ticket-shine {
+    0% { transform: translateX(-100%) skewX(-15deg); }
+    100% { transform: translateX(200%) skewX(-15deg); }
+}
+.animate-ticket-shine {
+    animation: ticket-shine 3s ease-in-out infinite;
+}
+
+@keyframes pulse-gentle {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+.animate-pulse-gentle {
+    animation: pulse-gentle 2s ease-in-out infinite;
+}
+
+@keyframes arrow-flow {
+    0%, 70% { transform: translateX(0); opacity: 1; }
+    80% { transform: translateX(10px); opacity: 0; }
+    81% { transform: translateX(-10px); opacity: 0; }
+    90%, 100% { transform: translateX(0); opacity: 1; }
+}
+.animate-arrow-flow {
+    animation: arrow-flow 4s ease-in-out infinite;
+}
+
 /* Confetti Animations */
 @keyframes fall {
     0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }

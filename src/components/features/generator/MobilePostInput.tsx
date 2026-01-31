@@ -426,7 +426,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                 relative group transition-all duration-700 cursor-pointer active:scale-95 my-1
                                 rounded-[32px] overflow-hidden
                                 ${isOmakaseLoading ? 'scale-[0.98]' : 'hover:scale-[1.02] hover:-translate-y-1.5'}
-                                shadow-[0_4px_20px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_40px_rgba(0,113,185,0.15)]
+                                shadow-[0_10px_30px_rgba(0,113,185,0.08)] hover:shadow-[0_25px_50px_rgba(0,113,185,0.18)]
                             `}
                             style={{
                                 backgroundColor: '#d8e9f4',
@@ -435,6 +435,11 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                         >
                             {/* Texture & Glass Layer */}
                             <div className="absolute inset-0 bg-white/10 backdrop-blur-[2px] opacity-50 pointer-events-none" />
+
+                            {/* Shine Effect */}
+                            <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent w-1/2 animate-ticket-shine" />
+                            </div>
 
                             {/* Decorative Background Glows */}
                             <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/30 rounded-full blur-[40px] pointer-events-none group-hover:bg-white/50 transition-colors duration-700" />
@@ -451,7 +456,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             <h4 className="text-[24px] font-black text-[#0071b9] tracking-tighter leading-none whitespace-nowrap">
                                                 AIおまかせ生成
                                             </h4>
-                                            {/* <SparklesIcon className="w-5 h-5 text-[#0071b9] animate-pulse" /> */}
+                                            <SparklesIcon className="w-5 h-5 text-[#0071b9] animate-pulse" />
                                         </div>
                                         <p className="text-[11px] text-stone-500 font-bold leading-relaxed">
                                             今日のおすすめやお店の様子を入力するだけで、<br />
@@ -464,22 +469,24 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                 <div className="relative z-10 flex items-center justify-center">
                                     <div className={`
                                         w-14 h-14 rounded-2xl flex items-center justify-center shadow-xl transition-all duration-500
-                                        ${isOmakaseLoading ? 'bg-white scale-90' : 'bg-white group-hover:bg-[#0071b9] group-hover:scale-110 group-active:scale-95 group-hover:rotate-6'}
+                                        ${isOmakaseLoading ? 'bg-white scale-90' : 'bg-white group-hover:bg-[#0071b9] group-hover:scale-110 group-active:scale-95 group-hover:rotate-6 animate-pulse-gentle'}
                                     `}>
                                         {isOmakaseLoading ? (
                                             <div className="w-5 h-5 border-2 border-[#0071b9]/20 border-t-[#0071b9] rounded-full animate-spin" />
                                         ) : (
-                                            <ChevronRightIcon className="w-6 h-6 text-[#0071b9] group-hover:text-white transition-colors duration-500" />
+                                            <ChevronRightIcon className="w-6 h-6 text-[#0071b9] group-hover:text-white transition-colors duration-500 animate-arrow-flow" />
                                         )}
                                     </div>
 
-                                    {/* Pulse Effect */}
-                                    <div className="absolute inset-0 rounded-2xl bg-white/40 animate-ping opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+                                    {/* Pulse Effect Rings */}
+                                    {!isOmakaseLoading && (
+                                        <div className="absolute inset-0 rounded-2xl bg-[#0071b9]/20 animate-ping opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+                                    )}
                                 </div>
                             </div>
 
                             {/* Ticket Perforation Line (Visual Only) */}
-                            <div className="absolute top-0 bottom-0 right-[25%] w-px border-r-2 border-dashed border-[#0071b9]/10 pointer-events-none" />
+                            <div className="absolute top-[8%] bottom-[8%] right-[25%] w-px border-r-2 border-dotted border-[#0071b9]/20 pointer-events-none" />
                         </div>
                     </div>
                 </div>
