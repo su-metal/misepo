@@ -852,7 +852,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
           <label className="text-[10px] font-black text-stone-300 uppercase tracking-widest">プロフィールを選択</label>
           <button
             onClick={handleStartNew}
-            className="flex items-center gap-1.5 text-[10px] font-black text-indigo-600 hover:text-indigo-700 transition-colors uppercase tracking-widest"
+            className="flex items-center gap-1.5 text-[10px] font-black text-[#122646] hover:text-indigo-700 transition-colors uppercase tracking-widest"
           >
             <PlusIcon className="w-3.5 h-3.5" />
             <span>新規作成</span>

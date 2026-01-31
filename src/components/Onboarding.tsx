@@ -107,7 +107,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
           <div className="relative z-10 flex flex-col h-auto md:h-full">
             <div className="mb-6 md:mb-10 animate-in slide-in-from-top-4 duration-700">
               <div className="flex items-center gap-2 mb-2 md:mb-3">
-                <div className="w-2 h-2 rounded-full bg-[#7F5AF0] shadow-[0_0_10px_rgba(127,90,240,0.5)] animate-pulse"></div>
+                <div className="w-2 h-2 rounded-full bg-[#eb714f] shadow-[0_0_10px_rgba(127,90,240,0.5)] animate-pulse"></div>
                 <span className="text-[9px] md:text-[10px] font-black tracking-[0.3em] text-slate-400 uppercase">Hospitality Assistant</span>
               </div>
               <h1 className="text-2xl md:text-5xl tracking-tighter leading-none font-black text-slate-800">
@@ -132,22 +132,45 @@ const Onboarding: React.FC<OnboardingProps> = ({
               </div>
             </div>
 
-            {/* Feature Cards */}
-            <div className="space-y-3 hidden md:block animate-in slide-in-from-bottom-8 duration-1000 delay-500">
-              {[
-                { title: '個性学習エンジン', desc: '業種やコンセプトを深く理解し、常に「らしい」表現を維持。', icon: 'M13 2L3 14h9l-1 8 10-12h-9l1-8z', color: 'text-yellow-500', bg: 'bg-yellow-50' },
-                { title: 'マルチプラットフォーム', desc: '投稿先ごとの特性を考慮し、一貫性のある発信を自動化。', icon: 'M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z', color: 'text-purple-500', bg: 'bg-purple-50' }
-              ].map((feat, i) => (
-                <div key={i} className="flex items-start gap-4 p-5 rounded-[24px] transition-all cursor-default bg-white/60 backdrop-blur-sm border border-white/50 shadow-sm hover:shadow-md hover:bg-white hover:-translate-y-0.5">
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-all duration-300 ${feat.bg} ${feat.color}`}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d={feat.icon} /></svg>
+            {/* Feature Cards & Characters */}
+            <div className="space-y-6 hidden md:block animate-in slide-in-from-bottom-8 duration-1000 delay-500">
+              {/* Generated Characters Display */}
+              <div className="flex items-center justify-center -space-x-4 pb-4">
+                {[1, 2, 3, 4].map((num, i) => (
+                  <div
+                    key={num}
+                    className="relative w-16 h-16 rounded-full border-4 border-slate-50 overflow-hidden shadow-lg transform transition-transform hover:scale-110 hover:-translate-y-2 z-0 hover:z-10 bg-white"
+                    style={{ transitionDelay: `${i * 100}ms` }}
+                  >
+                    <img
+                      src={`/assets/avatar_0${num}.png`}
+                      alt={`Assistant ${num}`}
+                      className="w-full h-full object-cover"
+                    />
                   </div>
-                  <div>
-                    <h3 className="font-extrabold text-xs text-slate-800 uppercase tracking-widest">{feat.title}</h3>
-                    <p className="text-[10px] text-slate-500 mt-1.5 leading-relaxed font-medium">{feat.desc}</p>
-                  </div>
+                ))}
+                <div className="pl-6 text-xs font-bold text-slate-400">
+                  <span className="block text-[#7F5AF0]">4,000+</span>
+                  Owners
                 </div>
-              ))}
+              </div>
+
+              <div className="space-y-3">
+                {[
+                  { title: '個性学習エンジン', desc: '業種やコンセプトを深く理解し、常に「らしい」表現を維持。', icon: 'M13 2L3 14h9l-1 8 10-12h-9l1-8z', color: 'text-yellow-500', bg: 'bg-yellow-50' },
+                  { title: 'マルチプラットフォーム', desc: '投稿先ごとの特性を考慮し、一貫性のある発信を自動化。', icon: 'M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z', color: 'text-purple-500', bg: 'bg-purple-50' }
+                ].map((feat, i) => (
+                  <div key={i} className="flex items-start gap-4 p-5 rounded-[24px] transition-all cursor-default bg-white/60 backdrop-blur-sm border border-white/50 shadow-sm hover:shadow-md hover:bg-white hover:-translate-y-0.5">
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-all duration-300 ${feat.bg} ${feat.color}`}>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d={feat.icon} /></svg>
+                    </div>
+                    <div>
+                      <h3 className="font-extrabold text-xs text-slate-800 uppercase tracking-widest">{feat.title}</h3>
+                      <p className="text-[10px] text-slate-500 mt-1.5 leading-relaxed font-medium">{feat.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
