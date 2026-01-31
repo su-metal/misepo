@@ -84,6 +84,7 @@ const SortablePresetRow = ({
   deletingId,
   isReordering,
   onSelect,
+  onEdit,
   onDelete,
   isSelected,
 }: {
@@ -91,6 +92,7 @@ const SortablePresetRow = ({
   deletingId: string | null;
   isReordering: boolean;
   onSelect: (id: string) => void;
+  onEdit: (id: string) => void;
   onDelete: (id: string) => void;
   isSelected: boolean;
 }) => {
@@ -114,9 +116,9 @@ const SortablePresetRow = ({
       ref={setNodeRef}
       style={style}
       className={`
-        group flex items-center gap-3 p-3.5 rounded-2xl transition-all duration-300 border
+        group flex items-center gap-3 p-4 rounded-2xl transition-all duration-300 border
         ${isSelected
-          ? 'bg-white border-[#0071b9]/30 shadow-[0_8px_30px_rgb(0,113,185,0.06)] ring-1 ring-[#0071b9]/20'
+          ? 'bg-[#0071b9] border-[#0071b9] shadow-[0_8px_30px_rgb(0,113,185,0.2)]'
           : 'bg-white/40 border-stone-100 hover:bg-white hover:border-[#0071b9]/10 hover:shadow-sm'
         }
         ${isDragging ? 'opacity-50 ring-2 ring-[#0071b9]' : ''}
@@ -125,7 +127,7 @@ const SortablePresetRow = ({
       <div
         {...attributes}
         {...listeners}
-        className={`cursor-grab active:cursor-grabbing p-1 transition-colors touch-none ${isSelected ? 'text-[#0071b9]' : 'text-stone-300 hover:text-stone-500'}`}
+        className={`cursor-grab active:cursor-grabbing p-1 transition-colors touch-none ${isSelected ? 'text-white/50 hover:text-white' : 'text-stone-300 hover:text-stone-500'}`}
       >
         <MenuIcon className="w-4 h-4" />
       </div>
@@ -133,27 +135,43 @@ const SortablePresetRow = ({
         onClick={() => onSelect(preset.id)}
         className="flex-1 text-left min-w-0"
       >
-        <div className={`font-black text-[13px] truncate mb-0.5 ${isSelected ? 'text-[#122646]' : 'text-stone-700'}`}>
+        <div className={`font-black text-[15px] truncate mb-0.5 ${isSelected ? 'text-white' : 'text-[#122646]'}`}>
           {preset.name}
         </div>
-        <div className={`text-[10px] font-black uppercase tracking-widest truncate ${isSelected ? 'text-[#0071b9]' : 'text-stone-400'}`}>
+        <div className={`text-[11px] font-black uppercase tracking-widest truncate ${isSelected ? 'text-white/70' : 'text-[#0071b9]'}`}>
           分身プロフィール
         </div>
       </button>
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          onDelete(preset.id);
-        }}
-        disabled={deletingId === preset.id}
-        className={`p-2 rounded-xl transition-all opacity-0 group-hover:opacity-100 ${isSelected ? 'text-stone-300 hover:text-stone-900 hover:bg-stone-50' : 'text-stone-200 hover:text-rose-500 hover:bg-rose-50'}`}
-      >
-        {deletingId === preset.id ? (
-          <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-        ) : (
-          <TrashIcon className="w-3.5 h-3.5" />
-        )}
-      </button>
+
+      {isSelected && (
+        <div className="flex items-center gap-1.5 animate-in fade-in zoom-in-95 duration-200">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onEdit(preset.id);
+            }}
+            className="p-2 rounded-xl text-white/50 hover:text-white hover:bg-white/10 transition-all"
+            title="編集"
+          >
+            <PencilIcon className="w-3.5 h-3.5" />
+          </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete(preset.id);
+            }}
+            disabled={deletingId === preset.id}
+            className="p-2 rounded-xl text-white/50 hover:text-white hover:bg-white/10 transition-all"
+            title="削除"
+          >
+            {deletingId === preset.id ? (
+              <div className="w-3.5 h-3.5 border-2 border-current border-t-transparent rounded-full animate-spin" />
+            ) : (
+              <TrashIcon className="w-3.5 h-3.5" />
+            )}
+          </button>
+        </div>
+      )}
     </div>
   );
 };
@@ -709,9 +727,12 @@ const PresetModal: React.FC<PresetModalProps> = ({
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="例: 店長（公式）, SNS担当者"
+            placeholder="例: 店長（公式）, SNS担当スタッフ"
             className="w-full px-5 py-4 bg-stone-50 border border-stone-100 focus:bg-white focus:border-[#0071b9]/30 focus:ring-4 focus:ring-[#0071b9]/5 outline-none rounded-2xl text-[#122646] font-bold placeholder-stone-300 transition-all shadow-sm text-sm"
           />
+          <p className="text-[10px] text-stone-400 pl-1">
+            ※誰が投稿しているか分かりやすい名前をつけましょう
+          </p>
         </div>
       </div>
 
@@ -855,10 +876,10 @@ const PresetModal: React.FC<PresetModalProps> = ({
         </div>
 
         <div className="px-8 pb-4 flex items-center justify-between">
-          <label className="text-[10px] font-black text-stone-300 uppercase tracking-widest">プロフィールを選択</label>
+          <label className="text-[11px] font-black text-stone-400 uppercase tracking-widest">プロフィールを選択</label>
           <button
             onClick={handleStartNew}
-            className="flex items-center gap-1.5 text-[10px] font-black text-[#122646] hover:text-indigo-700 transition-colors uppercase tracking-widest"
+            className="flex items-center gap-1.5 text-[11px] font-black text-[#122646] hover:text-[#0071b9] transition-colors uppercase tracking-widest"
           >
             <PlusIcon className="w-3.5 h-3.5" />
             <span>新規作成</span>
@@ -875,7 +896,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
                     preset={p}
                     deletingId={deletingId}
                     isReordering={isReordering}
-                    onSelect={(id) => { setSelectedPresetId(id); setMobileView('edit'); }}
+                    onSelect={(id) => { setSelectedPresetId(id); }}
+                    onEdit={(id) => { setSelectedPresetId(id); setMobileView('edit'); }}
                     onDelete={handleDeletePreset}
                     isSelected={selectedPresetId === p.id}
                   />
@@ -885,9 +907,15 @@ const PresetModal: React.FC<PresetModalProps> = ({
           </DndContext>
 
           {orderedPresets.length === 0 && (
-            <div className="py-20 text-center opacity-40">
-              <ClockIcon className="w-10 h-10 mx-auto mb-4 text-stone-200" />
-              <p className="text-xs font-bold text-stone-500">プロフィールがありません</p>
+            <div className="py-20 px-6 text-center">
+              <div className="w-16 h-16 bg-[#d8e9f4]/30 rounded-full flex items-center justify-center mx-auto mb-6 text-[#0071b9]">
+                <PlusIcon className="w-8 h-8" />
+              </div>
+              <h5 className="text-sm font-black text-[#122646] mb-2">まだプロフィールがありません</h5>
+              <p className="text-[11px] text-stone-500 font-medium leading-relaxed">
+                まずは「新規作成」から、あなたのお店専用の<br />
+                「分身」プロフィールを作ってみましょう。
+              </p>
             </div>
           )}
         </div>
@@ -908,13 +936,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
             )}
 
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#d8e9f4] border border-[#d8e9f4] flex items-center justify-center text-[#0071b9] shadow-sm shrink-0">
-                {renderAvatarIcon(avatar, "w-5 h-5")}
-              </div>
-              <div className="min-w-0">
-                <span className="text-[9px] font-black text-stone-300 uppercase tracking-[0.2em] block leading-none mb-1">プロフィールの編集</span>
-                <h4 className="text-sm font-black text-stone-900 tracking-tight truncate max-w-[120px] md:max-w-[200px] leading-none">{name || '名前なし'}</h4>
-              </div>
+              <span className="text-[11px] font-black text-[#0071b9] uppercase tracking-[0.2em] block leading-none">プロフィールの編集</span>
             </div>
           </div>
 
@@ -1066,8 +1088,10 @@ const PresetModal: React.FC<PresetModalProps> = ({
                 readOnly={!!viewingSampleId}
                 value={modalText}
                 onChange={setModalText}
-                placeholder={learningMode === 'sns' ? "例：今日は雨だけど元気に営業中！足元に気をつけて来てね☔️ #カフェ" : "例：高評価ありがとうございます！またのご来店を心よりお待ちしております。"}
-                className="w-full min-h-[300px] bg-transparent outline-none text-stone-800 font-bold leading-relaxed placeholder-stone-200 resize-none no-scrollbar text-lg"
+                placeholder={learningMode === 'sns'
+                  ? "ここに過去のInstagramやXの投稿文を貼り付けてください。\n\nAIがあなたの言葉遣いや「お店らしさ」を学習し、より自然な提案ができるようになります。"
+                  : "過去にGoogleマップで返信した文章を貼り付けてください。\n\nお客様への丁寧な言葉遣いや、大切にしている想いをAIが学習します。"}
+                className="w-full min-h-[300px] bg-transparent outline-none text-stone-800 font-bold leading-relaxed placeholder-stone-300 resize-none no-scrollbar text-lg"
               />
             </div>
           </div>
