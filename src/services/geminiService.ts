@@ -1341,19 +1341,28 @@ export const generateInspirationCards = async (
 
   【本日のデータ】
   日付: ${date}
-  トレンド: ${trendInfo !== 'None' ? trendInfo : '特になし'}
+  トレンド: ${trendInfo !== 'None' ? trendInfo : '特になし'} (※データのdescriptionに含まれるビジネス提案は無視して構いません)
   口コミ: ${reviewTexts.length > 0 ? reviewTexts.slice(0, 3).join('\n') : 'なし'}
 
-  【厳守事項】
-  1. 上記の「業種: ${storeProfile.industry || 'このお店'}」に全く関係のない話題（例: 飲食店なのにガジェットやファッションの話など）は絶対禁止。
-  2. トレンドは無理やりにでもお店のメニューやサービスと結びつけること。
-  3. 口コミがある場合は、その具体的な内容（"駐車場"や"接客"など）に触れた投稿案を作ること。
-  4. 「勇気」「希望」などの精神論は禁止。
+  【目指すべき投稿スタイル】
+  ✅ Friendly: 店員さんが話しかけるような、親しみやすく柔らかい口調。
+  ✅ Empathy: 「売り込み」よりも「共感」を重視。「それわかる！」「懐かしい！」と思わせる内容。
+  ✅ Chatty: 業種と関係ない話題（天気、記念日、ニュース）も積極的に採用し、お客様との雑談のきっかけを作る。
 
-  【作成する3つのカード】
-  1. **customer_voice**: 口コミへの具体的な返答や感謝（口コミがない場合はスタッフの裏側紹介）
-  2. **trend_topic**: トレンド「${trendInfo !== 'None' ? JSON.parse(trendInfo).title || '季節の話題' : '季節の話題'}」をお店に絡めた紹介
-  3. **store_pr**: お店の商品やサービスの魅力紹介
+  【厳守事項】
+  1. 「業種」に関係のない話題でも、**「お客様との雑談」として成立するなら積極的に採用する**こと。無理に商品に繋げなくて良い。
+  2. Outputの 'prompt' フィールドは、AIに対する「〜する記事を書いて」という**命令形**の指示にすること。(「〜はいかがですか？」は禁止)
+
+  【作成する5つのカード】(以下の5つのタイプをこの順序で出力)
+  1. type: **"review"** (お客様の声): 口コミへの感謝返信。なければ「お客様とのほっこりエピソード」。
+  2. type: **"trend"** (トレンド): 「${trendInfo !== 'None' ? JSON.parse(trendInfo).title : '季節の話題'}」についての雑談。**無理に店の商品に繋げず、「もうこんな季節ですね」といった共感トークのみでもOK。**
+  3. type: **"variety"** (PR): お店の商品やサービスの魅力紹介（ここだけはしっかり宣伝）。
+  4. type: **"local"** (地域/挨拶): 「急に寒くなりましたね」「近くでお祭りがありますね」など、地域の人と共有できる挨拶やニュース。
+  5. type: **"quiz"** (参加型): 「どっちが好き？（A or B）」や「クイズ」など、コメント欄で盛り上がれる問いかけ。
+
+  【具体的な出力イメージ(トーン)】
+  - 良い例: "今日は本当に寒いですね⛄️ 皆様、風邪など引かれてませんか？お店では温かい○○を用意して..." (気遣いがある)
+  - 悪い例: "寒いです。当店のスープは美味しいです。来てください。" (事務的で売り込みが強い)
 
   出力してください。
   `;
@@ -1374,7 +1383,7 @@ export const generateInspirationCards = async (
             type: "OBJECT",
             properties: {
               id: { type: "STRING" },
-              type: { type: "STRING", enum: ["review", "trend", "variety"] },
+              type: { type: "STRING", enum: ["review", "trend", "variety", "local", "quiz"] },
               title: { type: "STRING" },
               description: { type: "STRING" },
               prompt: { type: "STRING" },
