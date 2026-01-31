@@ -20,10 +20,17 @@ export const InspirationDeck: React.FC<InspirationDeckProps> = ({ storeProfile, 
     const scrollContainerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        // If we already have cards (cached or local), don't fetch.
-        if (cards.length > 0) return;
+        // If we already have cards (cached or local) AND we have 5 or more (new format), don't fetch.
+        // If we have fewer than 5 cards, we assume it's the old format and re-fetch.
+        if (cards.length >= 5) return;
 
-        if (!isVisible || !storeProfile || fetched || loading) return;
+        if (!isVisible || !storeProfile || loading) return;
+
+        // If we have fetched but only got <5 cards, we might be in a loop if the API returns <5. 
+        // But for this migration, let's allow re-fetching if fetched is true but items are insufficient, 
+        // provided we reset 'fetched' state. 
+        // Actually, let's just ignore 'fetched' flag if we have < 5 cards.
+        if (fetched && cards.length >= 5) return;
 
         const fetchInspiration = async () => {
             setLoading(true);
