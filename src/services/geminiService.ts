@@ -1323,53 +1323,48 @@ export const generateInspirationCards = async (
   const trendInfo = currentTrend ? JSON.stringify(currentTrend) : 'None';
   const reviewTexts = inputReviews ? inputReviews.map(r => r.text) : [];
 
-  /* 
-   * SYSTEM INSTRUCTION: STRICT SOCIAL MANAGER MODE
-   * Forces concrete, business-focused posts. No abstract poetry.
-   * Enforces specific JSON structure with 'responseSchema'.
-   */
+  // Main system instruction focused on ROLE and FORMAT
   const systemInstruction = `
-  役割: あなたは「${storeProfile.name || 'このお店'}」（業種: ${storeProfile.industry || '小売店'}）のSNS運用担当者です。
+  あなたはプロのSNS運用担当者です。
+  精神論やポエムは一切禁止です。
+  提供された店舗情報とデータに基づき、実益のある具体的な投稿案のみを作成してください。
+  出力は厳格にJSON形式(Array)で、指定されたスキーマに従ってください。
+  `;
+
+  // Construct a detailed User Message with all constraints and data
+  const userPrompt = `
+  【対象店舗】
+  店舗名: ${storeProfile.name || '不明'}
+  業種: ${storeProfile.industry || '小売・サービス'}
   地域: ${storeProfile.region || '日本'}
+  説明: ${storeProfile.description || 'なし'}
 
-  【厳命：絶対的な禁止事項】
-  1. ❌ 「勇気」「希望」「自分を信じる」などの抽象的な精神論は一切禁止。明日使える具体的なネタのみ。
-  2. ❌ URLは絶対に出力しないこと。
+  【本日のデータ】
+  日付: ${date}
+  トレンド: ${trendInfo !== 'None' ? trendInfo : '特になし'}
+  口コミ: ${reviewTexts.length > 0 ? reviewTexts.slice(0, 3).join('\n') : 'なし'}
 
-  【タスク】
-  提供されたデータを元に、以下のJSONフォーマットで3つの「投稿ネタ」を作成してください。
-  各項目は以下の通り：
-  - title: 短い見出し (10文字以内)
-  - description: どんな投稿をするかの短い説明 (40文字以内)
-  - prompt: 具体的な投稿本文を作成するための詳細な指示 (重要)
-  - icon: 絵文字1文字
-
-  【良い出力の例（正解）】
-  title: "春の新ランチ"
-  description: "旬の春キャベツを使ったパスタの紹介"
-  prompt: "「春キャベツのパスタ」の写真を載せ、甘みと食感を強調する文章を作成してください。ランチ限定であることを強調して。"
-  icon: "🍝"
-
-  【使用するデータ】
-  ・日付: ${date}
-  ・トレンド: ${trendInfo !== 'None' ? trendInfo : '特になし'}
-  ・口コミ: ${reviewTexts.length > 0 ? reviewTexts[0].substring(0, 50) + '...' : 'なし'}
+  【厳守事項】
+  1. 上記の「業種: ${storeProfile.industry || 'このお店'}」に全く関係のない話題（例: 飲食店なのにガジェットやファッションの話など）は絶対禁止。
+  2. トレンドは無理やりにでもお店のメニューやサービスと結びつけること。
+  3. 口コミがある場合は、その具体的な内容（"駐車場"や"接客"など）に触れた投稿案を作ること。
+  4. 「勇気」「希望」などの精神論は禁止。
 
   【作成する3つのカード】
-  1. **customer_voice**: 口コミへの感謝や返信（口コミがない場合はスタッフ紹介）
-  2. **trend_topic**: 季節やトレンドとお店の結合
-  3. **store_pr**: お店の魅力や商品の紹介
+  1. **customer_voice**: 口コミへの具体的な返答や感謝（口コミがない場合はスタッフの裏側紹介）
+  2. **trend_topic**: トレンド「${trendInfo !== 'None' ? JSON.parse(trendInfo).title || '季節の話題' : '季節の話題'}」をお店に絡めた紹介
+  3. **store_pr**: お店の商品やサービスの魅力紹介
 
-  出力は必ずJSON形式で行ってください。
+  出力してください。
   `;
 
   const ai = getServerAI();
   try {
     const result = await ai.models.generateContent({
       model: modelName,
-      // @ts-ignore - systemInstruction is supported but not in type definitions
+      // @ts-ignore
       systemInstruction: systemInstruction,
-      contents: [{ role: "user", parts: [{ text: "Generate 3 inspiration cards in Japanese JSON format." }] }],
+      contents: [{ role: "user", parts: [{ text: userPrompt }] }],
       config: {
         responseMimeType: "application/json",
         // @ts-ignore
