@@ -680,19 +680,25 @@ const PresetModal: React.FC<PresetModalProps> = ({
   const renderProfileTab = () => (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
       <div className="flex items-center gap-6">
-        <div className="shrink-0">
+        <div className="shrink-0 flex flex-col items-center gap-2">
           <button
             onClick={() => setIsIconSelectorOpen(!isIconSelectorOpen)}
-            className="w-16 h-16 rounded-2xl bg-[#d8e9f4]/30 border border-[#0071b9]/10 flex items-center justify-center text-[#0071b9] shadow-sm hover:shadow-md transition-all active:scale-95 group relative overflow-hidden"
+            className="w-16 h-16 rounded-2xl bg-[#d8e9f4]/30 border border-[#0071b9]/10 flex items-center justify-center text-[#0071b9] shadow-sm hover:shadow-md transition-all active:scale-95 group relative"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-[#0071b9]/0 to-[#0071b9]/5 group-hover:to-[#0071b9]/10 transition-all" />
+            <div className="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#0071b9]/0 to-[#0071b9]/5 group-hover:to-[#0071b9]/10 transition-all" />
+            </div>
             <div className="relative transform group-hover:scale-110 transition-transform">
               {renderAvatarIcon(avatar, "w-8 h-8")}
             </div>
-            <div className="absolute bottom-0 right-0 w-5 h-5 bg-white rounded-full border border-stone-100 flex items-center justify-center text-stone-400 shadow-sm translate-x-1/4 translate-y-1/4">
-              <ChevronDownIcon className={`w-2.5 h-2.5 transition-transform ${isIconSelectorOpen ? 'rotate-180' : ''}`} />
-            </div>
           </button>
+
+          <div
+            onClick={() => setIsIconSelectorOpen(!isIconSelectorOpen)}
+            className="flex items-center justify-center p-1 bg-white rounded-full border border-stone-100 text-stone-300 shadow-sm cursor-pointer hover:text-[#0071b9] hover:border-[#0071b9]/20 transition-all"
+          >
+            <ChevronDownIcon className={`w-3 h-3 transition-transform duration-300 ${isIconSelectorOpen ? 'rotate-180' : ''}`} />
+          </div>
         </div>
 
         <div className="flex-1 min-w-0 space-y-1">
@@ -710,7 +716,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
       </div>
 
       {isIconSelectorOpen && (
-        <div className="p-5 bg-stone-50/50 rounded-[2rem] border border-stone-100 animate-in zoom-in-95 duration-300">
+        <div className="p-5 bg-[#d8e9f4]/20 rounded-[2.5rem] border border-[#0071b9]/10 animate-in zoom-in-95 duration-300">
           <div className="grid grid-cols-6 sm:grid-cols-8 gap-2">
             {AVATAR_OPTIONS.map(opt => (
               <button
@@ -786,19 +792,19 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
     return (
       <div className="space-y-12">
-        <div className="flex items-center justify-between px-1">
+        <div className="flex flex-col items-start gap-4 px-1">
           <label className="text-[10px] font-black text-[#0071b9] uppercase tracking-[0.2em] block">2. 学習とスタイル設定</label>
 
-          <div className="flex p-1 bg-stone-100 rounded-2xl border border-stone-200 shadow-inner overflow-hidden">
+          <div className="flex p-1.5 bg-stone-100 rounded-full border border-stone-200 shadow-inner overflow-hidden self-start">
             <button
               onClick={() => setLearningMode('sns')}
-              className={`px-6 py-2 rounded-xl text-[10px] font-black tracking-widest transition-all ${learningMode === 'sns' ? 'bg-white text-[#0071b9] shadow-sm' : 'text-stone-400 hover:text-stone-600'}`}
+              className={`px-8 py-2.5 rounded-full text-[11px] font-black tracking-widest transition-all ${learningMode === 'sns' ? 'bg-[#0071b9] text-white shadow-sm ring-2 ring-[#0071b9]' : 'text-stone-400 hover:text-stone-600'}`}
             >
               SNS
             </button>
             <button
               onClick={() => setLearningMode('maps')}
-              className={`px-6 py-2 rounded-xl text-[10px] font-black tracking-widest transition-all ${learningMode === 'maps' ? 'bg-[#0071b9] text-white shadow-sm' : 'text-stone-400 hover:text-stone-600'}`}
+              className={`px-8 py-2.5 rounded-full text-[11px] font-black tracking-widest transition-all ${learningMode === 'maps' ? 'bg-[#0071b9] text-white shadow-sm ring-2 ring-[#0071b9]' : 'text-stone-400 hover:text-stone-600'}`}
             >
               G-MAPS
             </button>
@@ -924,7 +930,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
         <div className="flex-1 overflow-y-auto p-8 md:p-10 no-scrollbar pb-32 bg-stone-50/30">
           <div className="max-w-4xl mx-auto space-y-8">
             {renderProfileTab()}
-            <div className="h-px bg-stone-100/30 w-full" />
+
             {renderLearningAndStyleTab()}
           </div>
         </div>
