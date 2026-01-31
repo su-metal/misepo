@@ -149,13 +149,13 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
                                 <div className="space-y-3">
                                     <MenuItem
                                         icon={ShieldCheckIcon}
-                                        label="Account Settings"
+                                        label="アカウント"
                                         subLabel="Email, Subscription & Plan"
                                         onClick={onOpenAccount}
                                     />
                                     <MenuItem
                                         icon={BookOpenIcon}
-                                        label="Guide & Documentation"
+                                        label="使い方ガイド"
                                         subLabel="How to use MisePo"
                                         onClick={onOpenGuide}
                                     />

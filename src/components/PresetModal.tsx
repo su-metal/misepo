@@ -116,16 +116,16 @@ const SortablePresetRow = ({
       className={`
         group flex items-center gap-3 p-3.5 rounded-2xl transition-all duration-300 border
         ${isSelected
-          ? 'bg-white border-indigo-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] ring-1 ring-indigo-500/20'
-          : 'bg-white/40 border-stone-100 hover:bg-white hover:border-stone-200 hover:shadow-sm'
+          ? 'bg-white border-[#0071b9]/30 shadow-[0_8px_30px_rgb(0,113,185,0.06)] ring-1 ring-[#0071b9]/20'
+          : 'bg-white/40 border-stone-100 hover:bg-white hover:border-[#0071b9]/10 hover:shadow-sm'
         }
-        ${isDragging ? 'opacity-50 ring-2 ring-indigo-500' : ''}
+        ${isDragging ? 'opacity-50 ring-2 ring-[#0071b9]' : ''}
       `}
     >
       <div
         {...attributes}
         {...listeners}
-        className={`cursor-grab active:cursor-grabbing p-1 transition-colors touch-none ${isSelected ? 'text-indigo-400' : 'text-stone-300 hover:text-stone-500'}`}
+        className={`cursor-grab active:cursor-grabbing p-1 transition-colors touch-none ${isSelected ? 'text-[#0071b9]' : 'text-stone-300 hover:text-stone-500'}`}
       >
         <MenuIcon className="w-4 h-4" />
       </div>
@@ -133,10 +133,10 @@ const SortablePresetRow = ({
         onClick={() => onSelect(preset.id)}
         className="flex-1 text-left min-w-0"
       >
-        <div className={`font-black text-[13px] truncate mb-0.5 ${isSelected ? 'text-indigo-950' : 'text-stone-700'}`}>
+        <div className={`font-black text-[13px] truncate mb-0.5 ${isSelected ? 'text-[#122646]' : 'text-stone-700'}`}>
           {preset.name}
         </div>
-        <div className={`text-[10px] font-bold uppercase tracking-widest truncate ${isSelected ? 'text-indigo-400' : 'text-stone-400'}`}>
+        <div className={`text-[10px] font-black uppercase tracking-widest truncate ${isSelected ? 'text-[#0071b9]' : 'text-stone-400'}`}>
           分身プロフィール
         </div>
       </button>
@@ -204,8 +204,8 @@ const SampleSlider = ({
     <div className="relative group/slider mt-4">
       {/* Pagination Guide */}
       <div className="absolute -top-10 right-2 flex items-center gap-2">
-        <span className="text-[10px] font-black text-stone-400 tracking-[0.2em] font-mono bg-stone-50 px-3 py-1.5 rounded-full border border-stone-100">
-          {currentIndex + 1}<span className="text-stone-300 mx-1">/</span>{samples.length}
+        <span className="text-[10px] font-black text-[#122646]/40 tracking-[0.2em] font-mono bg-white px-3 py-1.5 rounded-full border border-[#122646]/5">
+          {currentIndex + 1}<span className="text-[#122646]/20 mx-1">/</span>{samples.length}
         </span>
       </div>
 
@@ -229,18 +229,18 @@ const SampleSlider = ({
           {samples.map((item) => (
             <div
               key={item.id}
-              className="snap-center shrink-0 w-full group p-8 md:p-12 bg-white border border-stone-50 rounded-[2.5rem] shadow-sm hover:shadow-md hover:border-indigo-100 transition-all flex flex-col justify-between min-h-[180px] relative overflow-hidden"
+              className="snap-center shrink-0 w-full group p-8 md:p-12 bg-white border border-[#122646]/5 rounded-[2rem] shadow-sm hover:shadow-md hover:border-[#0071b9]/10 transition-all flex flex-col justify-between min-h-[180px] relative overflow-hidden"
             >
               <div className="space-y-5">
                 <div className="flex items-center justify-between">
-                  <span className={`text-[9px] font-black px-2.5 py-1 rounded-lg uppercase tracking-widest ${mode === 'sns' ? 'bg-indigo-50 text-indigo-400' : 'bg-teal-50 text-teal-500'}`}>
+                  <span className={`text-[9px] font-black px-2.5 py-1 rounded-lg uppercase tracking-widest ${mode === 'sns' ? 'bg-[#d8e9f4] text-[#0071b9]' : 'bg-[#00b900]/10 text-[#00b900]'}`}>
                     {mode === 'sns' ? 'SNS投稿例' : 'マップ返信例'}
                   </span>
                   <span className="text-[10px] font-black text-stone-300 uppercase tracking-widest">
                     {item.source || 'manual'}
                   </span>
                 </div>
-                <p className="text-base text-stone-600 font-bold leading-relaxed line-clamp-4 px-2">
+                <p className="text-base text-[#122646]/80 font-bold leading-relaxed line-clamp-4 px-2">
                   {item.content}
                 </p>
               </div>
@@ -248,14 +248,14 @@ const SampleSlider = ({
               <div className="mt-8 flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0">
                 <button
                   onClick={() => onEdit(item)}
-                  className="p-3 text-indigo-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-2xl transition-all border border-transparent hover:border-indigo-100"
+                  className="p-3 text-[#0071b9]/50 hover:text-[#0071b9] hover:bg-[#d8e9f4]/50 rounded-2xl transition-all border border-transparent hover:border-[#0071b9]/10"
                   title="詳細を表示"
                 >
                   <BookOpenIcon className="w-5 h-5" />
                 </button>
                 <button
                   onClick={() => onDelete(item)}
-                  className="p-3 text-stone-400 hover:text-rose-500 hover:bg-rose-50 rounded-2xl transition-all border border-transparent hover:border-rose-100"
+                  className="p-3 text-stone-300 hover:text-rose-500 hover:bg-rose-50 rounded-2xl transition-all border border-transparent hover:border-rose-100"
                   title="削除"
                 >
                   <TrashIcon className="w-5 h-5" />
@@ -683,9 +683,9 @@ const PresetModal: React.FC<PresetModalProps> = ({
         <div className="shrink-0">
           <button
             onClick={() => setIsIconSelectorOpen(!isIconSelectorOpen)}
-            className="w-16 h-16 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-sm hover:shadow-md transition-all active:scale-95 group relative overflow-hidden"
+            className="w-16 h-16 rounded-2xl bg-[#d8e9f4]/30 border border-[#0071b9]/10 flex items-center justify-center text-[#0071b9] shadow-sm hover:shadow-md transition-all active:scale-95 group relative overflow-hidden"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/0 to-indigo-500/5 group-hover:to-indigo-500/10 transition-all" />
+            <div className="absolute inset-0 bg-gradient-to-br from-[#0071b9]/0 to-[#0071b9]/5 group-hover:to-[#0071b9]/10 transition-all" />
             <div className="relative transform group-hover:scale-110 transition-transform">
               {renderAvatarIcon(avatar, "w-8 h-8")}
             </div>
@@ -704,7 +704,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="例: 店長（公式）, SNS担当者"
-            className="w-full px-5 py-4 bg-stone-50 border border-stone-100 focus:bg-white focus:border-indigo-300 focus:ring-4 focus:ring-indigo-500/5 outline-none rounded-2xl text-stone-800 font-bold placeholder-stone-300 transition-all shadow-sm text-sm"
+            className="w-full px-5 py-4 bg-stone-50 border border-stone-100 focus:bg-white focus:border-[#0071b9]/30 focus:ring-4 focus:ring-[#0071b9]/5 outline-none rounded-2xl text-[#122646] font-bold placeholder-stone-300 transition-all shadow-sm text-sm"
           />
         </div>
       </div>
@@ -716,7 +716,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
               <button
                 key={opt.id}
                 onClick={() => { setAvatar(opt.id); setIsIconSelectorOpen(false); }}
-                className={`aspect-square rounded-xl flex items-center justify-center transition-all ${avatar === opt.id ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200' : 'bg-white border border-stone-100 text-stone-400 hover:text-stone-600 hover:border-stone-200'}`}
+                className={`aspect-square rounded-xl flex items-center justify-center transition-all ${avatar === opt.id ? 'bg-[#122646] text-white shadow-lg shadow-[#122646]/10' : 'bg-white border border-stone-100 text-stone-400 hover:text-[#0071b9] hover:border-[#0071b9]/20'}`}
                 title={opt.label}
               >
                 {React.createElement(opt.icon, { className: "w-5 h-5" })}
@@ -737,8 +737,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-2">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <div className="text-stone-400">{icon}</div>
-              <label className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em] block">学習カテゴリ</label>
+              <div className="text-[#0071b9]">{icon}</div>
+              <label className="text-[10px] font-black text-[#0071b9] uppercase tracking-[0.2em] block">学習カテゴリ</label>
             </div>
             <h4 className="font-black text-stone-900 tracking-tighter text-lg">{title}</h4>
           </div>
@@ -750,7 +750,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                 setExpandingPlatform(mode === 'sns' ? Platform.General : Platform.GoogleMaps);
                 setSelectedPlatforms(mode === 'sns' ? [Platform.General] : [Platform.GoogleMaps]);
               }}
-              className={`flex items-center gap-2 px-6 py-3 border text-white rounded-2xl font-black text-[11px] uppercase tracking-widest transition-all shadow-lg active:scale-95 ${mode === 'sns' ? 'bg-stone-900 border-stone-900 hover:bg-indigo-600 hover:border-indigo-600 shadow-indigo-100' : 'bg-teal-700 border-teal-700 hover:bg-teal-600 hover:border-teal-600 shadow-teal-100'}`}
+              className={`flex items-center gap-2 px-6 py-3 border text-white rounded-2xl font-black text-[11px] uppercase tracking-widest transition-all shadow-lg active:scale-95 ${mode === 'sns' ? 'bg-[#122646] border-[#122646] hover:bg-[#0071b9] hover:border-[#0071b9] shadow-[#d8e9f4]' : 'bg-[#00b900] border-[#00b900] hover:bg-[#00b900]/80 hover:border-[#00b900]/80 shadow-[#d8e9f4]'}`}
             >
               <PlusIcon className="w-4 h-4" />
               <span>データを追加</span>
@@ -787,18 +787,18 @@ const PresetModal: React.FC<PresetModalProps> = ({
     return (
       <div className="space-y-12">
         <div className="flex items-center justify-between px-1">
-          <label className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em] block">2. 学習とスタイル設定</label>
+          <label className="text-[10px] font-black text-[#0071b9] uppercase tracking-[0.2em] block">2. 学習とスタイル設定</label>
 
           <div className="flex p-1 bg-stone-100 rounded-2xl border border-stone-200 shadow-inner overflow-hidden">
             <button
               onClick={() => setLearningMode('sns')}
-              className={`px-6 py-2 rounded-xl text-[10px] font-black tracking-widest transition-all ${learningMode === 'sns' ? 'bg-white text-indigo-600 shadow-sm' : 'text-stone-400 hover:text-stone-600'}`}
+              className={`px-6 py-2 rounded-xl text-[10px] font-black tracking-widest transition-all ${learningMode === 'sns' ? 'bg-white text-[#0071b9] shadow-sm' : 'text-stone-400 hover:text-stone-600'}`}
             >
               SNS
             </button>
             <button
               onClick={() => setLearningMode('maps')}
-              className={`px-6 py-2 rounded-xl text-[10px] font-black tracking-widest transition-all ${learningMode === 'maps' ? 'bg-white text-teal-600 shadow-sm' : 'text-stone-400 hover:text-stone-600'}`}
+              className={`px-6 py-2 rounded-xl text-[10px] font-black tracking-widest transition-all ${learningMode === 'maps' ? 'bg-[#0071b9] text-white shadow-sm' : 'text-stone-400 hover:text-stone-600'}`}
             >
               G-MAPS
             </button>
@@ -813,7 +813,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
               'sns',
               <SparklesIcon className="w-4 h-4" />,
               'border-indigo-100/50',
-              'bg-gradient-to-br from-indigo-500/5 to-purple-500/5'
+              'bg-[#d8e9f4]'
             )
           ) : (
             renderSampleSection(
@@ -822,7 +822,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
               'maps',
               <GoogleMapsIcon className="w-4 h-4" />,
               'border-teal-100/50',
-              'bg-gradient-to-br from-teal-500/5 to-emerald-500/5'
+              'bg-[#d8e9f4]'
             )
           )}
         </div>
@@ -902,7 +902,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
             )}
 
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-sm shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-[#d8e9f4] border border-[#d8e9f4] flex items-center justify-center text-[#0071b9] shadow-sm shrink-0">
                 {renderAvatarIcon(avatar, "w-5 h-5")}
               </div>
               <div className="min-w-0">
@@ -929,31 +929,28 @@ const PresetModal: React.FC<PresetModalProps> = ({
           </div>
         </div>
 
-        {/* Footer Actions */}
-        <div className="absolute bottom-0 left-0 right-0 p-8 pt-4 bg-gradient-to-t from-white via-white to-white/0 pointer-events-none">
-          <div className="max-w-4xl mx-auto flex gap-4 pointer-events-auto">
-            {!selectedPresetId ? (
-              <button
-                onClick={() => handleSave()}
-                disabled={isSaving || !name.trim()}
-                className="flex-1 py-5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-[2rem] font-black text-sm tracking-[0.2em] shadow-xl shadow-indigo-100 hover:opacity-90 active:scale-95 transition-all disabled:opacity-30 flex items-center justify-center gap-3"
-              >
-                {isSaving ? <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <SaveIcon className="w-5 h-5" />}
-                <span>プロフィール作成</span>
-              </button>
+        {/* Modal Footer / Save Action */}
+        <div className="p-8 md:p-10 bg-white border-t border-[#122646]/5 flex flex-col gap-4">
+          <button
+            onClick={() => handleSave()}
+            disabled={isSaving || !name.trim()}
+            className={`
+              w-full py-5 rounded-2xl flex items-center justify-center gap-4 transition-all duration-500
+              ${isSaving || !name.trim()
+                ? 'bg-stone-100 text-stone-300 cursor-not-allowed'
+                : 'bg-[#122646] text-white shadow-xl shadow-[#122646]/20 hover:bg-[#0071b9] hover:shadow-[#0071b9]/20 hover:-translate-y-1 active:scale-95'
+              }
+            `}
+          >
+            {isInternalSaving ? (
+              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
             ) : (
-              <div className="flex-1 flex gap-3">
-                <button
-                  onClick={() => handleSave()}
-                  disabled={isSaving || !name.trim()}
-                  className="flex-1 py-5 bg-[#122646] text-white rounded-[2rem] font-black text-sm tracking-[0.2em] shadow-xl shadow-stone-100 hover:bg-indigo-600 active:scale-95 transition-all disabled:opacity-30 flex items-center justify-center gap-3"
-                >
-                  {isSaving ? <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <SaveIcon className="w-5 h-5" />}
-                  <span>保存（AI再解析）</span>
-                </button>
-              </div>
+              <SaveIcon className="w-5 h-5" />
             )}
-          </div>
+            <span className="text-[13px] font-black uppercase tracking-[0.2em]">
+              {isInternalSaving ? '解析中...' : '保存（AI再解析）'}
+            </span>
+          </button>
         </div>
 
         {showSuccessToast && (

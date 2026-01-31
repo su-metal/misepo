@@ -52,18 +52,16 @@ const FeatureWalkthrough: React.FC<FeatureWalkthroughProps> = ({ onComplete, onS
 
     return (
         <div className="fixed inset-0 z-[400] bg-white flex flex-col animate-in fade-in duration-500">
-            {/* Background Decorations */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <div className={`absolute top-[-20%] right-[-20%] w-[80%] h-[80%] rounded-full blur-[100px] transition-colors duration-700 ease-in-out ${steps[step].accent}`} />
-                <div className="absolute bottom-[-10%] left-[-10%] w-[60%] h-[60%] bg-slate-50 rounded-full blur-[80px]" />
-            </div>
+            {/* Background Decorations - Flat Color Accents */}
+            <div className="absolute inset-x-0 top-0 h-[40vh] bg-[#d8e9f4]/30 pointer-events-none" />
+            <div className="absolute top-[35vh] left-0 right-0 h-px bg-[#0071b9]/5 pointer-events-none" />
 
             {/* Header / Skip */}
             <div className="relative z-10 px-6 py-6 flex justify-end">
                 {!isLastStep && (
                     <button
                         onClick={onComplete}
-                        className="text-xs font-bold text-slate-400 hover:text-slate-600 transition-colors tracking-widest uppercase"
+                        className="text-xs font-black text-[#122646]/30 hover:text-[#0071b9] transition-colors tracking-[0.3em] uppercase"
                     >
                         SKIP
                     </button>
@@ -75,11 +73,10 @@ const FeatureWalkthrough: React.FC<FeatureWalkthroughProps> = ({ onComplete, onS
 
                 {/* Image / Avatar */}
                 <div className="relative mb-12">
-                    <div className="absolute inset-0 bg-white/50 rounded-full blur-xl transform scale-110" />
                     {steps.map((s, i) => (
                         <div
                             key={i}
-                            className={`w-48 h-48 sm:w-64 sm:h-64 rounded-full border-[6px] border-white shadow-2xl overflow-hidden bg-white transition-all duration-500 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+                            className={`w-48 h-48 sm:w-64 sm:h-64 rounded-full border-[6px] border-white shadow-[0_20px_40px_rgba(0,113,185,0.15)] overflow-hidden bg-white transition-all duration-500 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
                                 ${i === step ? 'opacity-100 scale-100 rotate-0' :
                                     i < step ? 'opacity-0 scale-90 -rotate-12 translate-x-[-100%]' :
                                         'opacity-0 scale-90 rotate-12 translate-x-[100%]'}
@@ -94,10 +91,10 @@ const FeatureWalkthrough: React.FC<FeatureWalkthroughProps> = ({ onComplete, onS
 
                 {/* Text Content */}
                 <div className="text-center space-y-4 min-h-[160px]">
-                    <h2 className={`text-2xl sm:text-3xl font-black tracking-tight transition-colors duration-500 ${steps[step].textColor}`} key={`title-${step}`}>
+                    <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-[#122646] transition-colors duration-500" key={`title-${step}`}>
                         {steps[step].title}
                     </h2>
-                    <p className="text-slate-500 font-medium leading-relaxed whitespace-pre-line animate-in slide-in-from-bottom-2 fade-in duration-500" key={`desc-${step}`}>
+                    <p className="text-[#122646]/60 font-bold leading-relaxed whitespace-pre-line animate-in slide-in-from-bottom-2 fade-in duration-500" key={`desc-${step}`}>
                         {steps[step].desc}
                     </p>
                 </div>
@@ -107,7 +104,7 @@ const FeatureWalkthrough: React.FC<FeatureWalkthroughProps> = ({ onComplete, onS
                     {steps.map((_, i) => (
                         <div
                             key={i}
-                            className={`h-1.5 rounded-full transition-all duration-300 ${i === step ? `w-8 ${steps[step].textColor.replace('text-', 'bg-')}` : 'w-1.5 bg-slate-200'
+                            className={`h-1.5 rounded-full transition-all duration-300 ${i === step ? 'w-8 bg-[#0071b9]' : 'w-1.5 bg-[#d8e9f4]'
                                 }`}
                         />
                     ))}
@@ -121,13 +118,13 @@ const FeatureWalkthrough: React.FC<FeatureWalkthroughProps> = ({ onComplete, onS
                     onClick={handleNext}
                     className={`w-full py-5 rounded-full font-black text-sm uppercase tracking-[0.2em] shadow-xl active:scale-95 transition-all flex items-center justify-center gap-2 group
                         ${isLastStep
-                            ? 'bg-[#122646] text-white hover:bg-[#0071b9]'
-                            : 'bg-white text-[#122646] hover:bg-slate-50 border border-slate-100'
+                            ? 'bg-[#122646] text-white hover:bg-[#0071b9] shadow-[#d8e9f4]'
+                            : 'bg-white text-[#122646] hover:bg-slate-50 border border-[#122646]/10'
                         }
                     `}
                 >
                     {isLastStep ? '設定をはじめる' : '次へ'}
-                    <ChevronRightIcon className={`w-4 h-4 transition-transform group-hover:translate-x-1 ${!isLastStep && 'text-slate-400'}`} />
+                    <ChevronRightIcon className={`w-4 h-4 transition-transform group-hover:translate-x-1 ${!isLastStep && 'text-[#0071b9]/40'}`} />
                 </button>
             </div>
         </div>

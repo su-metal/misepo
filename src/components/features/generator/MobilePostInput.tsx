@@ -405,10 +405,10 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/30 rounded-full blur-[40px] pointer-events-none group-hover:bg-white/50 transition-colors duration-700" />
                             <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-[#0071b9]/5 rounded-full blur-[30px] pointer-events-none" />
 
-                            <div className="relative p-7 pl-10 pr-6 flex items-center justify-between">
+                            <div className="relative p-5 pl-10 pr-6 flex items-center justify-between">
                                 {/* Left Content */}
                                 <div className="relative z-10 flex flex-col gap-6">
-                                    <div className="self-start inline-flex px-4 py-1.5 rounded-full bg-[#00b900] text-[9px] font-black text-white/90 uppercase tracking-[0.2em] shadow-sm border border-[#0071b9]/5">
+                                    <div className="self-start inline-flex px-4 py-1.5 rounded-full bg-[#0071b9] text-[9px] font-black text-white uppercase tracking-[0.2em] shadow-sm border border-[#0071b9]/5">
                                         AIが自動提案
                                     </div>
                                     <div className="space-y-1">
