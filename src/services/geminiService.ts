@@ -1300,3 +1300,124 @@ Values must be the style guide string (plain text with bullet points).
 // Deprecated alias for backward compatibility updates
 export const analyzePersona = generateStyleInstruction;
 
+
+// Inspiration Deck Generation
+export interface InspirationCard {
+  id: string;
+  type: 'review' | 'trend' | 'variety';
+  title: string;
+  description: string;
+  prompt: string; // The instruction for the AI when this card is selected
+  icon?: string; // Emoji
+}
+
+export const generateInspirationCards = async (
+  date: string,
+  storeProfile: StoreProfile,
+  inputReviews?: { text: string }[],
+  currentTrend?: any
+): Promise<InspirationCard[]> => {
+  const modelName = 'models/gemini-2.5-flash-lite';
+  
+  // Prepare inputs for the prompt
+  const trendInfo = currentTrend ? JSON.stringify(currentTrend) : 'None';
+  const reviewTexts = inputReviews ? inputReviews.map(r => r.text) : [];
+
+  /* 
+   * SYSTEM INSTRUCTION: STRICT SOCIAL MANAGER MODE
+   * Forces concrete, business-focused posts. No abstract poetry.
+   * Enforces specific JSON structure with 'responseSchema'.
+   */
+  const systemInstruction = `
+  役割: あなたは「${storeProfile.name || 'このお店'}」（業種: ${storeProfile.industry || '小売店'}）のSNS運用担当者です。
+  地域: ${storeProfile.region || '日本'}
+
+  【厳命：絶対的な禁止事項】
+  1. ❌ 「勇気」「希望」「自分を信じる」などの抽象的な精神論は一切禁止。明日使える具体的なネタのみ。
+  2. ❌ URLは絶対に出力しないこと。
+
+  【タスク】
+  提供されたデータを元に、以下のJSONフォーマットで3つの「投稿ネタ」を作成してください。
+  各項目は以下の通り：
+  - title: 短い見出し (10文字以内)
+  - description: どんな投稿をするかの短い説明 (40文字以内)
+  - prompt: 具体的な投稿本文を作成するための詳細な指示 (重要)
+  - icon: 絵文字1文字
+
+  【良い出力の例（正解）】
+  title: "春の新ランチ"
+  description: "旬の春キャベツを使ったパスタの紹介"
+  prompt: "「春キャベツのパスタ」の写真を載せ、甘みと食感を強調する文章を作成してください。ランチ限定であることを強調して。"
+  icon: "🍝"
+
+  【使用するデータ】
+  ・日付: ${date}
+  ・トレンド: ${trendInfo !== 'None' ? trendInfo : '特になし'}
+  ・口コミ: ${reviewTexts.length > 0 ? reviewTexts[0].substring(0, 50) + '...' : 'なし'}
+
+  【作成する3つのカード】
+  1. **customer_voice**: 口コミへの感謝や返信（口コミがない場合はスタッフ紹介）
+  2. **trend_topic**: 季節やトレンドとお店の結合
+  3. **store_pr**: お店の魅力や商品の紹介
+
+  出力は必ずJSON形式で行ってください。
+  `;
+
+  const ai = getServerAI();
+  try {
+    const result = await ai.models.generateContent({
+      model: modelName,
+      // @ts-ignore - systemInstruction is supported but not in type definitions
+      systemInstruction: systemInstruction,
+      contents: [{ role: "user", parts: [{ text: "Generate 3 inspiration cards in Japanese JSON format." }] }],
+      config: {
+        responseMimeType: "application/json",
+        // @ts-ignore
+        responseSchema: {
+          type: "ARRAY",
+          items: {
+            type: "OBJECT",
+            properties: {
+              id: { type: "STRING" },
+              type: { type: "STRING", enum: ["review", "trend", "variety"] },
+              title: { type: "STRING" },
+              description: { type: "STRING" },
+              prompt: { type: "STRING" },
+              icon: { type: "STRING" }
+            },
+            required: ["id", "type", "title", "description", "prompt", "icon"]
+          }
+        }
+      }
+    });
+
+    console.log('[generateInspirationCards] Raw AI response:', result.text?.substring(0, 500));
+
+    let jsonText = "";
+    if (result.text) {
+        jsonText = result.text;
+    } else if (result.candidates && result.candidates[0]?.content?.parts?.[0]?.text) {
+         jsonText = result.candidates[0].content.parts[0].text;
+    }
+
+    if (!jsonText) throw new Error("No response from AI");
+
+    // Clean markdown code blocks if present
+    jsonText = jsonText.replace(/^```json\s*/, "").replace(/\s*```$/, "");
+
+    return JSON.parse(jsonText) as InspirationCard[];
+  } catch (error) {
+    console.error("Inspiration Gen Error:", error);
+    // Fallback if AI fails
+    return [
+      {
+        id: "fallback-variety",
+        type: "variety",
+        title: "お店のこだわり",
+        description: "創業の思いや、普段語らないこだわりを発信してみませんか？",
+        prompt: "お店のこだわりや、お客様への想いについて情熱的な投稿を作成してください。",
+        icon: "✨"
+      }
+    ];
+  }
+};
