@@ -21,8 +21,11 @@ const Onboarding: React.FC<OnboardingProps> = ({
   const [description, setDescription] = useState<string>('');
   const [instagramFooter, setInstagramFooter] = useState<string>('');
   const [googlePlaceId, setGooglePlaceId] = useState<string>('');
+  const [aiAnalysis, setAiAnalysis] = useState<string>('');
+  const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const autocompleteService = useRef<any>(null);
+  const placesService = useRef<any>(null);
 
   // Lock body scroll when modal is open
   useEffect(() => {
@@ -41,6 +44,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
       setDescription(initialProfile.description || '');
       setInstagramFooter(initialProfile.instagramFooter || '');
       setGooglePlaceId(initialProfile.googlePlaceId || '');
+      setAiAnalysis(initialProfile.aiAnalysis || '');
     }
   }, [initialProfile]);
 
@@ -55,7 +59,8 @@ const Onboarding: React.FC<OnboardingProps> = ({
       region: region.trim(),
       description: description.trim(),
       instagramFooter: instagramFooter.trim(),
-      googlePlaceId: googlePlaceId
+      googlePlaceId: googlePlaceId,
+      aiAnalysis: aiAnalysis
     });
   };
 
@@ -81,6 +86,100 @@ const Onboarding: React.FC<OnboardingProps> = ({
           } else {
             setSuggestions([]);
           }
+        }
+      );
+    }
+  };
+
+  const handlePlaceSelect = async (place: any) => {
+    setName(place.structured_formatting.main_text);
+    setGooglePlaceId(place.place_id);
+    setSuggestions([]);
+
+    if (typeof window !== 'undefined' && window.google) {
+      if (!placesService.current) {
+        // Dummy element for PlacesService
+        const dummy = document.createElement('div');
+        placesService.current = new window.google.maps.places.PlacesService(dummy);
+      }
+
+      setIsAnalyzing(true);
+      placesService.current.getDetails(
+        {
+          placeId: place.place_id,
+          fields: [
+            'address_components',
+            'formatted_address',
+            'formatted_phone_number',
+            'opening_hours',
+            'website',
+            'editorial_summary',
+            'reviews',
+            'types'
+          ]
+        },
+        async (details: any, status: any) => {
+          if (status === 'OK' && details) {
+            // 1. Auto-fill Instagram Footer
+            const address = details.address_components
+              ?.filter((c: any) => c.types.includes('locality') || c.types.includes('sublocality') || c.types.includes('street_number'))
+              .map((c: any) => c.long_name)
+              .reverse()
+              .join(' ');
+
+            const phone = details.formatted_phone_number || '';
+            const hours = details.opening_hours?.weekday_text?.[new Date().getDay() === 0 ? 6 : new Date().getDay() - 1]?.split(': ')[1] || '';
+            const website = details.website || '';
+
+            let footer = '';
+            if (address) footer += `📍 ${address}\n`;
+            if (phone) footer += `📞 ${phone}\n`;
+            if (hours) footer += `🕒 ${hours}\n`;
+            if (website) footer += `🔗 ${website}`;
+
+            setInstagramFooter(footer.trim());
+
+            // 1.5. Auto-fill Description (Facility Specialties)
+            if (details.editorial_summary?.overview) {
+              setDescription(details.editorial_summary.overview);
+            } else {
+              // Fallback: Combine types and address for a basic description
+              const types = details.types
+                ?.slice(0, 3)
+                .map((t: string) => t.replace(/_/g, ' '))
+                .join(', ');
+              const fallbackDesc = `${details.formatted_address || ''}${types ? ` (${types})` : ''}`;
+              if (fallbackDesc.trim()) {
+                setDescription(fallbackDesc.trim());
+              }
+            }
+
+            // 2. Trigger AI Analysis
+            try {
+              const res = await fetch('/api/me/analyze-store', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  placeData: {
+                    name: place.structured_formatting.main_text,
+                    editorial_summary: details.editorial_summary?.overview,
+                    reviews: details.reviews?.slice(0, 5).map((r: any) => ({ text: r.text })),
+                    types: details.types
+                  }
+                })
+              });
+              const data = await res.json();
+              if (data.ok) {
+                setAiAnalysis(data.aiAnalysis);
+                if (data.description) {
+                  setDescription(data.description);
+                }
+              }
+            } catch (err) {
+              console.error("AI analysis trigger failed:", err);
+            }
+          }
+          setIsAnalyzing(false);
         }
       );
     }
@@ -241,11 +340,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
                           <button
                             key={s.place_id}
                             type="button"
-                            onClick={() => {
-                              setName(s.structured_formatting.main_text);
-                              setGooglePlaceId(s.place_id);
-                              setSuggestions([]);
-                            }}
+                            onClick={() => handlePlaceSelect(s)}
                             className="w-full text-left px-5 py-3 rounded-xl hover:bg-slate-50 transition-all flex items-center justify-between group"
                           >
                             <div className="flex flex-col gap-0.5">
@@ -285,6 +380,12 @@ const Onboarding: React.FC<OnboardingProps> = ({
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">施設の特徴・こだわり</h3>
+                {isAnalyzing && (
+                  <div className="flex items-center gap-1.5 px-2 py-1 bg-blue-50 rounded-full animate-in fade-in zoom-in duration-300">
+                    <div className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
+                    <span className="text-[8px] font-black text-blue-500 uppercase tracking-widest">AI Generating...</span>
+                  </div>
+                )}
               </div>
               <AutoResizingTextarea
                 value={description}
@@ -299,13 +400,27 @@ const Onboarding: React.FC<OnboardingProps> = ({
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 flex items-center justify-center text-white shadow-sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5" /><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" /><line x1="17.5" x2="17.51" y1="6.5" y2="6.5" /></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5" /><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" /><line x1="17.5" x2="17.51" y2="6.5" y1="6.5" /></svg>
                   </div>
-                  <div>
+                  <div className="flex flex-col">
                     <h4 className="text-[10px] font-black text-slate-700 uppercase tracking-widest">Instagram 定型文</h4>
+                    {aiAnalysis && (
+                      <span className="text-[8px] font-bold text-emerald-500 flex items-center gap-1">
+                        <svg className="w-2.5 h-2.5" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" /></svg>
+                        AIによる店舗背景の解析が完了しました
+                      </span>
+                    )}
                   </div>
                 </div>
-                <span className="text-[9px] font-black text-slate-400 bg-white border border-slate-200 px-3 py-1 rounded-full uppercase tracking-widest">Option</span>
+                <div className="flex items-center gap-2">
+                  {isAnalyzing && (
+                    <div className="flex items-center gap-1.5 px-2 py-1 bg-blue-50 rounded-full">
+                      <div className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
+                      <span className="text-[8px] font-black text-blue-500 uppercase tracking-widest">AI Analyzing...</span>
+                    </div>
+                  )}
+                  <span className="text-[9px] font-black text-slate-400 bg-white border border-slate-200 px-3 py-1 rounded-full uppercase tracking-widest">Option</span>
+                </div>
               </div>
               <AutoResizingTextarea
                 value={instagramFooter}

@@ -55,6 +55,7 @@ export interface StoreProfile {
   description?: string;
   instagramFooter?: string;
   googlePlaceId?: string;
+  aiAnalysis?: string; // AI generated context for the store
 }
 
 // Configuration for a single API generation call

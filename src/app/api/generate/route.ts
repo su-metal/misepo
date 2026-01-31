@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { env } from "@/lib/env";
 import { computeCanUseApp } from "@/lib/entitlements/canUseApp";
+import { getJSTDateRange } from "@/lib/dateUtils";
 
 const APP_ID = env.APP_ID;
 
@@ -117,21 +118,8 @@ export async function POST(req: Request) {
 
   // --- Usage Limit Check ---
   if (userId) {
-    // Calculate JST Date (UTC+9)
-    // Server is likely UTC. 
-    // To get "Today 0:00 JST", we shift UTC+9, zero out time, then shift back to UTC.
-    const nowUTC = new Date();
-    const jstOffset = 9 * 60 * 60 * 1000;
-    const nowJST = new Date(nowUTC.getTime() + jstOffset);
-
-    // Start of the day in JST
-    const startOfTodayJST = new Date(nowJST.getFullYear(), nowJST.getMonth(), nowJST.getDate());
-    // Start of the month in JST
-    const startOfMonthJST = new Date(nowJST.getFullYear(), nowJST.getMonth(), 1);
-
-    // Convert back to UTC string for DB comparison
-    const startOfToday = new Date(startOfTodayJST.getTime() - jstOffset).toISOString();
-    const startOfMonth = new Date(startOfMonthJST.getTime() - jstOffset).toISOString();
+    // Calculate JST Date (UTC+9) using shared utility
+    const { startOfToday, startOfMonth } = getJSTDateRange();
 
     // Sum costs of runs for this user since today/month
     // Note: older runs without weighting are counted as 1 by default

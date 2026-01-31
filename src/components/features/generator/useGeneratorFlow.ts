@@ -61,22 +61,16 @@ export function useGeneratorFlow(props: {
   const [isRefining, setIsRefining] = useState(false);
   const [isAutoFormatting, setIsAutoFormatting] = useState<{ [key: string]: boolean }>({});
 
-  const [activePresetId, setActivePresetId] = useState<string | null>(null);
+  const [activePresetId, setActivePresetId] = useState<string | null>('plain-ai');
 
   // Calculate if style controls should be locked
   // Locked ONLY if:
-  // 1. A preset is active
+  // 1. A preset is active (NOT 'plain-ai' or null)
   // 2. AND that preset has matching learning data (Platform specific OR General)
-  // If no learning data exists, we allow manual overrides (Tone/Emojis, etc.) even with a preset.
-  const isStyleLocked = !!activePresetId && (() => {
-      if (!props.trainingItems) return false;
-      
-      // In multi-gen, strictly speaking we might lock if ANY platform has data, 
-      // but for simplicity/user-freedom, let's look at the "primary" or "first" platform logic.
-      // Or simply: if we are in multi-gen, we usually lock everything anyway or treat it as general.
-      // Let's iterate the active platforms.
+  const isStyleLocked = !!activePresetId && activePresetId !== 'plain-ai' && (() => {
+      const items = props.trainingItems || [];
       return platforms.some(p => 
-          props.trainingItems.some(t => 
+          items.some(t => 
               t.presetId === activePresetId && 
               (t.platform === p || t.platform === Platform.General)
           )
@@ -139,7 +133,7 @@ export function useGeneratorFlow(props: {
       setIncludeEmojis(true);
       setIncludeSymbols(false);
       setXConstraint140(true);
-      setActivePresetId(null);
+      setActivePresetId('plain-ai');
     } else {
       // Apply preset (even if it's the same one - keep it applied)
       let initialPrompts: { [key: string]: string } = {};
@@ -632,6 +626,7 @@ export function useGeneratorFlow(props: {
     setResultGroups([]);
     setRefiningKey(null);
     setRefineText("");
+    setActivePresetId(null);
   }, []);
 
   return {

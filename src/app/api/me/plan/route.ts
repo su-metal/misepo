@@ -11,6 +11,8 @@ const NO_STORE_HEADERS = { "Cache-Control": "no-store" };
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
+import { getJSTDateRange } from "@/lib/dateUtils";
+
 export async function GET() {
   const cookieStore = await cookies();
   const supabase = createServerClient(
@@ -159,16 +161,8 @@ export async function GET() {
   let limit = 0;
   let usage_period: 'daily' | 'monthly' = 'daily';
 
-  // JST Calculation (Same as generate/route.ts)
-  const jstOffset = 9 * 60 * 60 * 1000;
-  const nowUTC = new Date();
-  const nowJST = new Date(nowUTC.getTime() + jstOffset);
-
-  const startOfTodayJST = new Date(nowJST.getFullYear(), nowJST.getMonth(), nowJST.getDate());
-  const startOfMonthJST = new Date(nowJST.getFullYear(), nowJST.getMonth(), 1);
-
-  const startOfToday = new Date(startOfTodayJST.getTime() - jstOffset).toISOString();
-  const startOfMonth = new Date(startOfMonthJST.getTime() - jstOffset).toISOString();
+  // JST Calculation (Using shared utility)
+  const { startOfToday, startOfMonth } = getJSTDateRange();
 
   if (isPro) {
     // Paid Pro: Monthly Limit (300)

@@ -154,9 +154,9 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
     // Apply Default Style on Entry
     React.useEffect(() => {
-        if (isStepDrawerOpen && mobileStep === 'confirm' && isDefaultStyleEnabled && !activePresetId) {
+        if (isStepDrawerOpen && mobileStep === 'confirm' && isDefaultStyleEnabled) {
             const preferredId = localStorage.getItem('misepo_preferred_preset_id');
-            if (preferredId) {
+            if (preferredId && preferredId !== activePresetId) {
                 if (preferredId === 'plain-ai') {
                     onApplyPreset({ id: 'plain-ai' } as any);
                 } else {
@@ -699,7 +699,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                 <div className="flex overflow-x-auto gap-3 pb-2 pt-2 -mx-2 px-3 no-scrollbar scrollbar-hide">
                                                     <button
                                                         onClick={() => onApplyPreset({ id: 'plain-ai' } as any)}
-                                                        className={`flex-shrink-0 px-8 py-3 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] transition-all duration-500 shadow-sm border ${!activePresetId ? 'bg-[#0071b9] text-white border-[#0071b9] scale-105 active:scale-95' : 'bg-white/95 backdrop-blur-sm border-stone-100 text-stone-400'}`}
+                                                        className={`flex-shrink-0 px-8 py-3 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] transition-all duration-500 shadow-sm border ${activePresetId === 'plain-ai' ? 'bg-[#0071b9] text-white border-[#0071b9] scale-105 active:scale-95' : 'bg-white/95 backdrop-blur-sm border-stone-100 text-stone-400'}`}
                                                     >
                                                         AI標準
                                                     </button>
