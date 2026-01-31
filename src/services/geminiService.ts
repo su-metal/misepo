@@ -368,6 +368,7 @@ export const generateContent = async (
 </system_instruction>
 
 <context_data>
+  ${profile.aiAnalysis ? `<store_background>\n${profile.aiAnalysis}\n</store_background>` : ""}
   ${(hasLearningSamples) ? (() => { 
     if (activePersonaYaml) {
         // Hybrid Mode: Inject top 3 samples for better stability (Layout/Rhythm)
@@ -445,6 +446,7 @@ DO NOT use stiff business boilerplate like "誠にありがとうございます
   </role>
 
   <rules>
+    ${profile.aiAnalysis ? `- **Store Context**: Use the information in <store_background> as the underlying persona and setting. Do not state these facts explicitly as a list, but let them influence the "flavor" and "expertise" of the writing.` : ""}
     - Language: ${config.language || 'Japanese'}
     - Length: ${config.length} (Target: ${t.target} chars. Min: ${t.min} chars)
     - Tone: ${config.tone} (${TONE_RULES[config.tone] || TONE_RULES[Tone.Standard]})
@@ -458,6 +460,8 @@ DO NOT use stiff business boilerplate like "誠にありがとうございます
         - **Note**: Use these symbols frequently for visual appeal ${!config.includeEmojis ? 'INSTEAD of emojis' : 'in addition to emojis'}.` : (isGMap && hasPersona) ? "Strictly follow the symbol patterns from the samples." : "Do NOT use decorative symbols or flashy brackets. Use standard punctuation only."}
     - **Layout**: ${config.length === 'short' ? "Concise. Group related sentences." : "Natural Reading Flow. Group semantically related sentences into small blocks (2-3 lines). Insert empty lines ONLY between distinct topics or after a strong hook. Avoid robotic 'one sentence per line' formatting."}
   </rules>
+
+  ${profile.aiAnalysis ? `<store_background>\n${profile.aiAnalysis}\n</store_background>` : ""}
 
   ${config.customPrompt ? `<custom_instructions>\n${config.customPrompt}\n</custom_instructions>` : ""}
 
@@ -546,7 +550,7 @@ DO NOT use stiff business boilerplate like "誠にありがとうございます
     }
 
     // Dynamic Thinking Budget Calculation
-    let budget = 512;
+    let budget = 256;
     if (config.platform === Platform.X) {
         budget = attempt === 0 ? 128 : 0; 
     } else if (config.platform === Platform.GoogleMaps && profile.industry === '旅館・ホテル') {

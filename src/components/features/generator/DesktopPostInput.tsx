@@ -163,7 +163,7 @@ export const DesktopPostInput: React.FC<PostInputFormProps> = ({
                             </button>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
-                            <button onClick={() => onApplyPreset({ id: 'plain-ai' } as any)} className={`group h-[80px] px-3 rounded-[20px] transition-all flex flex-col items-center justify-center gap-1 border ${!activePresetId ? 'bg-[#111111] text-white border-[#111111] shadow-md -translate-y-[1px]' : 'bg-[#FAFAFA] text-[#999999] border-[#E5E5E5] hover:bg-[#F0F0F0]'}`}>
+                            <button onClick={() => onApplyPreset({ id: 'plain-ai' } as any)} className={`group h-[80px] px-3 rounded-[20px] transition-all flex flex-col items-center justify-center gap-1 border ${activePresetId === 'plain-ai' ? 'bg-[#111111] text-white border-[#111111] shadow-md -translate-y-[1px]' : 'bg-[#FAFAFA] text-[#999999] border-[#E5E5E5] hover:bg-[#F0F0F0]'}`}>
                                 <AutoSparklesIcon className="w-5 h-5" /><span className="text-[12px] font-black tracking-wide">おまかせ</span>
                             </button>
                             {presets.slice(0, 3).map((p, idx) => {

@@ -61,7 +61,7 @@ export function useGeneratorFlow(props: {
   const [isRefining, setIsRefining] = useState(false);
   const [isAutoFormatting, setIsAutoFormatting] = useState<{ [key: string]: boolean }>({});
 
-  const [activePresetId, setActivePresetId] = useState<string | null>(null);
+  const [activePresetId, setActivePresetId] = useState<string | null>('plain-ai');
 
   // Calculate if style controls should be locked
   // Locked ONLY if:
@@ -133,7 +133,7 @@ export function useGeneratorFlow(props: {
       setIncludeEmojis(true);
       setIncludeSymbols(false);
       setXConstraint140(true);
-      setActivePresetId(null);
+      setActivePresetId('plain-ai');
     } else {
       // Apply preset (even if it's the same one - keep it applied)
       let initialPrompts: { [key: string]: string } = {};
