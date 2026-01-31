@@ -584,7 +584,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                         value={inputText}
                                                         onChange={(e) => onInputTextChange(e.target.value)}
                                                         placeholder="こちらにお客様からの口コミを貼り付けてください。丁寧な返信案をいくつか作成します。"
-                                                        className="w-full min-h-[160px] max-h-[400px] overflow-y-auto p-8 bg-white border border-[#E5E5E5] rounded-[40px] text-lg font-bold leading-relaxed focus:outline-none focus:border-[#111111] transition-all placeholder:text-[#CCCCCC] text-[#111111]"
+                                                        className="w-full min-h-[160px] p-8 bg-white border border-[#E5E5E5] rounded-[40px] text-lg font-bold leading-relaxed focus:outline-none focus:border-[#111111] transition-all placeholder:text-[#CCCCCC] text-[#111111] resize-none overflow-hidden"
                                                     />
                                                     {/* Floating Mic for GMap remains relatively positioned or absolute within scroll */}
                                                     <button
@@ -611,7 +611,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                     value={inputText}
                                                     onChange={(e) => onInputTextChange(e.target.value)}
                                                     placeholder="今日はどんなことを伝えますか？&#10;「旬の食材が入荷した」「雨の日限定の割引をする」など、短いメモ書きでも大丈夫ですよ。"
-                                                    className="w-full min-h-[160px] max-h-[500px] overflow-y-auto p-8 bg-white border border-[#E5E5E5] rounded-[40px] text-lg font-bold leading-relaxed focus:outline-none focus:border-[#111111] transition-all placeholder:text-[#CCCCCC] text-[#111111]"
+                                                    className="w-full min-h-[160px] p-8 bg-white border border-[#E5E5E5] rounded-[40px] text-lg font-bold leading-relaxed focus:outline-none focus:border-[#111111] transition-all placeholder:text-[#CCCCCC] text-[#111111] resize-none overflow-hidden"
                                                 />
                                             </div>
                                         )}
