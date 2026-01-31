@@ -414,25 +414,6 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         </p>
                                     </div>
                                 </div>
-
-                                {/* Right Decoration (Sparkles) */}
-                                <div className="relative">
-                                    {/* Glass Morphism Base */}
-                                    <div className="w-20 h-20 bg-white/10 backdrop-blur-md rounded-[32px] flex items-center justify-center border border-white/20 relative overflow-visible">
-                                        <div className="relative">
-                                            {/* Primary Sparkle */}
-                                            <SparklesIcon className="w-9 h-9 text-[#f2e018] drop-shadow-[0_0_8px_rgba(243,255,95,0.4)]" />
-                                            {/* Accent Sparkles */}
-                                            <SparklesIcon className="absolute -top-1 -right-3 w-3 h-3 text-[#f2e018]" />
-                                            <SparklesIcon className="absolute -bottom-1 -right-4 w-5 h-5 text-[#f2e018]" />
-                                        </div>
-                                    </div>
-
-                                    {/* Pulse effect if loading */}
-                                    {isOmakaseLoading && (
-                                        <div className="absolute inset-0 bg-[#f3ff5f] rounded-[32px] animate-ping opacity-20" />
-                                    )}
-                                </div>
                             </div>
                         </div>
                     </div>

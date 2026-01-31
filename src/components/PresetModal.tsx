@@ -28,6 +28,8 @@ import {
   InstagramIcon,
   XIcon,
   GoogleMapsIcon,
+  RotateCcwIcon,
+  LineIcon,
   BookmarkIcon,
   ChevronDownIcon,
   CoffeeIcon,
@@ -38,9 +40,7 @@ import {
   BuildingIcon,
   LeafIcon,
   GemIcon,
-  LineIcon,
   BookOpenIcon,
-  RotateCcwIcon,
   PlusIcon,
   ClockIcon,
   ChevronLeftIcon,
@@ -54,7 +54,6 @@ interface PresetModalProps {
   presets: Preset[];
   onSave: (preset: Partial<Preset>) => Promise<Preset | null | void>;
   onDelete: (id: string) => Promise<void>;
-  onApply: (preset: Preset) => void;
   onRefreshTraining?: () => Promise<any>;
   onClose: () => void;
   onLogout: () => void;
@@ -138,7 +137,7 @@ const SortablePresetRow = ({
           {preset.name}
         </div>
         <div className={`text-[10px] font-bold uppercase tracking-widest truncate ${isSelected ? 'text-indigo-400' : 'text-stone-400'}`}>
-          Bunshin Profile
+          分身プロフィール
         </div>
       </button>
       <button
@@ -196,7 +195,7 @@ const SampleSlider = ({
         <div className="w-16 h-16 rounded-[2rem] bg-stone-50 border border-stone-100 flex items-center justify-center text-stone-200">
           <BookOpenIcon className="w-8 h-8" />
         </div>
-        <p className="text-[10px] font-bold text-stone-500 uppercase tracking-widest">No Data</p>
+        <p className="text-[10px] font-bold text-stone-500 uppercase tracking-widest">データがありません</p>
       </div>
     );
   }
@@ -235,7 +234,7 @@ const SampleSlider = ({
               <div className="space-y-5">
                 <div className="flex items-center justify-between">
                   <span className={`text-[9px] font-black px-2.5 py-1 rounded-lg uppercase tracking-widest ${mode === 'sns' ? 'bg-indigo-50 text-indigo-400' : 'bg-teal-50 text-teal-500'}`}>
-                    {mode === 'sns' ? 'SNS Post' : 'Review Reply'}
+                    {mode === 'sns' ? 'SNS投稿例' : 'マップ返信例'}
                   </span>
                   <span className="text-[10px] font-black text-stone-300 uppercase tracking-widest">
                     {item.source || 'manual'}
@@ -283,7 +282,6 @@ const PresetModal: React.FC<PresetModalProps> = ({
   presets,
   onSave,
   onDelete,
-  onApply,
   onClose,
   onRefreshTraining,
   onLogout,
@@ -314,6 +312,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
   const [isAnalyzingPersona, setIsAnalyzingPersona] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
   const [viewingSampleId, setViewingSampleId] = useState<string | null>(null);
+  const [lastAnalyzedState, setLastAnalyzedState] = useState<{ [key: string]: string }>({});
 
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -369,6 +368,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
       setName('');
       setAvatar('shop');
       setCustomPrompts({});
+      setLastAnalyzedState({});
     }
   }, [selectedPresetId, presets]);
 
@@ -381,11 +381,106 @@ const PresetModal: React.FC<PresetModalProps> = ({
     setMobileView('edit');
   };
 
+
+  const performPersonaAnalysis = async (overrideSamples?: { content: string, platform: string }[]): Promise<any> => {
+    // Current target platform based on tab mode
+    const targetKey = learningMode === 'maps' ? Platform.GoogleMaps : 'General';
+
+    // Filter samples relevant to the current mode
+    // SNS mode: Includes X, Instagram, Line, General
+    // Maps mode: Includes GoogleMaps
+    const samplesToUse = overrideSamples || trainingItems
+      .filter(item => {
+        const p = item.presetId === (selectedPresetId || 'omakase');
+        const plats = item.platform.split(',').map(s => s.trim());
+        const isMaps = plats.includes(Platform.GoogleMaps);
+        if (learningMode === 'maps') return p && isMaps;
+        return p && !isMaps;
+      })
+      .map(item => ({
+        content: item.content,
+        platform: item.platform
+      }));
+
+    if (samplesToUse.length === 0) return null;
+
+    // Skip if samples haven't changed for this mode
+    const samplesKey = JSON.stringify(samplesToUse);
+    if (lastAnalyzedState[learningMode] === samplesKey) {
+      console.log(`Skipping analysis for ${learningMode}: samples unchanged.`);
+      return null;
+    }
+
+    setIsAnalyzingPersona(true);
+    try {
+      const res = await fetch('/api/ai/analyze-persona', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ samples: samplesToUse }),
+      });
+      const data = await res.json();
+      if (data.instruction) {
+        let instruction = data.instruction;
+        const newPrompts = { ...customPrompts };
+
+        // Helper to extract string content
+        let contentToApply = '';
+
+        if (typeof instruction === 'string' && !instruction.trim().startsWith('{')) {
+          contentToApply = instruction;
+        } else {
+          try {
+            const parsed = typeof instruction === 'string' ? JSON.parse(instruction) : instruction;
+            if (learningMode === 'sns') {
+              contentToApply = parsed.General || (typeof instruction === 'string' ? instruction : JSON.stringify(instruction));
+            } else {
+              contentToApply = parsed.GoogleMaps || (typeof instruction === 'string' ? instruction : JSON.stringify(instruction));
+            }
+          } catch (e) {
+            contentToApply = typeof instruction === 'string' ? instruction : JSON.stringify(instruction);
+          }
+        }
+
+        // Apply to Targets
+        if (learningMode === 'sns') {
+          newPrompts['General'] = contentToApply;
+          newPrompts[Platform.X] = contentToApply;
+          newPrompts[Platform.Instagram] = contentToApply;
+          newPrompts[Platform.Line] = contentToApply;
+        } else {
+          newPrompts[Platform.GoogleMaps] = contentToApply;
+        }
+
+        setCustomPrompts(newPrompts);
+
+        // Update cache
+        setLastAnalyzedState(prev => ({ ...prev, [learningMode]: samplesKey }));
+
+        return newPrompts;
+      } else {
+        throw new Error(data.error || 'Failed to analyze persona');
+      }
+    } catch (err) {
+      console.error('Failed to analyze persona:', err);
+      return null;
+    } finally {
+      setIsAnalyzingPersona(false);
+    }
+  };
+
   const handleSave = async (overridePrompts?: { [key: string]: string }) => {
     if (!name.trim()) return;
     setIsInternalSaving(true);
     try {
       let finalCustomPrompts = overridePrompts ? { ...customPrompts, ...overridePrompts } : { ...customPrompts };
+
+      // Auto-analyze during save if manual update
+      if (!overridePrompts) {
+        const newStyle = await performPersonaAnalysis();
+        if (newStyle) {
+          finalCustomPrompts = { ...finalCustomPrompts, ...newStyle };
+        }
+      }
       const currentPresetId = selectedPresetId || 'omakase';
       const relatedItems = trainingItems.filter(item => item.presetId === currentPresetId);
       const newPostSamples: { [key in Platform]?: string } = {};
@@ -447,20 +542,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
         handleStartNew();
         setMobileView('list');
       }
-    } catch (err) {
-      console.error('Failed to delete preset:', err);
     } finally {
       setDeletingId(null);
-    }
-  };
-
-  const handleApplyCurrent = () => {
-    if (selectedPresetId) {
-      const preset = presets.find(p => p.id === selectedPresetId);
-      if (preset) {
-        onApply(preset);
-        onClose();
-      }
     }
   };
 
@@ -496,80 +579,6 @@ const PresetModal: React.FC<PresetModalProps> = ({
     }
   };
 
-  const performPersonaAnalysis = async (overrideSamples?: { content: string, platform: string }[]): Promise<any> => {
-    // Current target platform based on tab mode
-    const targetKey = learningMode === 'maps' ? Platform.GoogleMaps : 'General';
-
-    // Filter samples relevant to the current mode
-    // SNS mode: Includes X, Instagram, Line, General
-    // Maps mode: Includes GoogleMaps
-    const samplesToUse = overrideSamples || trainingItems
-      .filter(item => {
-        const p = item.presetId === (selectedPresetId || 'omakase');
-        const plats = item.platform.split(',').map(s => s.trim());
-        const isMaps = plats.includes(Platform.GoogleMaps);
-        if (learningMode === 'maps') return p && isMaps;
-        return p && !isMaps;
-      })
-      .map(item => ({
-        content: item.content,
-        platform: item.platform
-      }));
-
-    if (samplesToUse.length === 0) return null;
-
-    setIsAnalyzingPersona(true);
-    try {
-      const res = await fetch('/api/ai/analyze-persona', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ samples: samplesToUse }),
-      });
-      const data = await res.json();
-      if (data.instruction) {
-        let instruction = data.instruction;
-        const newPrompts = { ...customPrompts };
-
-        // Helper to extract string content
-        let contentToApply = '';
-
-        if (typeof instruction === 'string' && !instruction.trim().startsWith('{')) {
-          contentToApply = instruction;
-        } else {
-          try {
-            const parsed = typeof instruction === 'string' ? JSON.parse(instruction) : instruction;
-            if (learningMode === 'sns') {
-              contentToApply = parsed.General || (typeof instruction === 'string' ? instruction : JSON.stringify(instruction));
-            } else {
-              contentToApply = parsed.GoogleMaps || (typeof instruction === 'string' ? instruction : JSON.stringify(instruction));
-            }
-          } catch (e) {
-            contentToApply = typeof instruction === 'string' ? instruction : JSON.stringify(instruction);
-          }
-        }
-
-        // Apply to Targets
-        if (learningMode === 'sns') {
-          newPrompts['General'] = contentToApply;
-          newPrompts[Platform.X] = contentToApply;
-          newPrompts[Platform.Instagram] = contentToApply;
-          newPrompts[Platform.Line] = contentToApply;
-        } else {
-          newPrompts[Platform.GoogleMaps] = contentToApply;
-        }
-
-        setCustomPrompts(newPrompts);
-        return newPrompts;
-      } else {
-        throw new Error(data.error || 'Failed to analyze persona');
-      }
-    } catch (err) {
-      console.error('Failed to analyze persona:', err);
-      return null;
-    } finally {
-      setIsAnalyzingPersona(false);
-    }
-  };
 
   const renderAvatarIcon = (id: string, className = "w-5 h-5") => {
     const opt = AVATAR_OPTIONS.find(o => o.id === id) || AVATAR_OPTIONS[0];
@@ -706,22 +715,24 @@ const PresetModal: React.FC<PresetModalProps> = ({
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <div className="text-stone-400">{icon}</div>
-              <label className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em] block">Learning Category</label>
+              <label className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em] block">学習カテゴリ</label>
             </div>
             <h4 className="font-black text-stone-900 tracking-tighter text-lg">{title}</h4>
           </div>
-          <button
-            onClick={() => {
-              setModalText('');
-              setLearningMode(mode);
-              setExpandingPlatform(mode === 'sns' ? Platform.General : Platform.GoogleMaps);
-              setSelectedPlatforms(mode === 'sns' ? [Platform.General] : [Platform.GoogleMaps]);
-            }}
-            className={`flex items-center gap-2 px-6 py-3 border text-white rounded-2xl font-black text-[11px] uppercase tracking-widest transition-all shadow-lg active:scale-95 ${mode === 'sns' ? 'bg-stone-900 border-stone-900 hover:bg-indigo-600 hover:border-indigo-600 shadow-indigo-100' : 'bg-teal-700 border-teal-700 hover:bg-teal-600 hover:border-teal-600 shadow-teal-100'}`}
-          >
-            <PlusIcon className="w-4 h-4" />
-            <span>Add Data</span>
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => {
+                setModalText('');
+                setLearningMode(mode);
+                setExpandingPlatform(mode === 'sns' ? Platform.General : Platform.GoogleMaps);
+                setSelectedPlatforms(mode === 'sns' ? [Platform.General] : [Platform.GoogleMaps]);
+              }}
+              className={`flex items-center gap-2 px-6 py-3 border text-white rounded-2xl font-black text-[11px] uppercase tracking-widest transition-all shadow-lg active:scale-95 ${mode === 'sns' ? 'bg-stone-900 border-stone-900 hover:bg-indigo-600 hover:border-indigo-600 shadow-indigo-100' : 'bg-teal-700 border-teal-700 hover:bg-teal-600 hover:border-teal-600 shadow-teal-100'}`}
+            >
+              <PlusIcon className="w-4 h-4" />
+              <span>データを追加</span>
+            </button>
+          </div>
         </div>
 
         <SampleSlider
@@ -753,7 +764,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
     return (
       <div className="space-y-12">
         <div className="flex items-center justify-between px-1">
-          <label className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em] block">2. Learning & Style</label>
+          <label className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em] block">2. 学習とスタイル設定</label>
 
           <div className="flex p-1 bg-stone-100 rounded-2xl border border-stone-200 shadow-inner overflow-hidden">
             <button
@@ -815,13 +826,13 @@ const PresetModal: React.FC<PresetModalProps> = ({
         </div>
 
         <div className="px-8 pb-4 flex items-center justify-between">
-          <label className="text-[10px] font-black text-stone-300 uppercase tracking-widest">Select Profile</label>
+          <label className="text-[10px] font-black text-stone-300 uppercase tracking-widest">プロフィールを選択</label>
           <button
             onClick={handleStartNew}
             className="flex items-center gap-1.5 text-[10px] font-black text-indigo-600 hover:text-indigo-700 transition-colors uppercase tracking-widest"
           >
             <PlusIcon className="w-3.5 h-3.5" />
-            <span>Add New</span>
+            <span>新規作成</span>
           </button>
         </div>
 
@@ -872,8 +883,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
                 {renderAvatarIcon(avatar, "w-5 h-5")}
               </div>
               <div className="min-w-0">
-                <span className="text-[9px] font-black text-stone-300 uppercase tracking-[0.2em] block leading-none mb-1">Editing Profile</span>
-                <h4 className="text-sm font-black text-stone-900 tracking-tight truncate max-w-[120px] md:max-w-[200px] leading-none">{name || 'Unnamed Profile'}</h4>
+                <span className="text-[9px] font-black text-stone-300 uppercase tracking-[0.2em] block leading-none mb-1">プロフィールの編集</span>
+                <h4 className="text-sm font-black text-stone-900 tracking-tight truncate max-w-[120px] md:max-w-[200px] leading-none">{name || '名前なし'}</h4>
               </div>
             </div>
           </div>
@@ -905,7 +916,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                 className="flex-1 py-5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-[2rem] font-black text-sm tracking-[0.2em] shadow-xl shadow-indigo-100 hover:opacity-90 active:scale-95 transition-all disabled:opacity-30 flex items-center justify-center gap-3"
               >
                 {isSaving ? <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <SaveIcon className="w-5 h-5" />}
-                <span>CREATE PROFILE</span>
+                <span>プロフィール作成</span>
               </button>
             ) : (
               <div className="flex-1 flex gap-3">
@@ -915,14 +926,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                   className="flex-1 py-5 bg-stone-900 text-white rounded-[2rem] font-black text-sm tracking-[0.2em] shadow-xl shadow-stone-100 hover:bg-indigo-600 active:scale-95 transition-all disabled:opacity-30 flex items-center justify-center gap-3"
                 >
                   {isSaving ? <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <SaveIcon className="w-5 h-5" />}
-                  <span>UPDATE</span>
-                </button>
-                <button
-                  onClick={handleApplyCurrent}
-                  className="px-10 py-5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-[2rem] font-black text-sm tracking-[0.2em] shadow-xl shadow-indigo-100 hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-3"
-                >
-                  <MagicWandIcon className="w-5 h-5" />
-                  <span>APPLY</span>
+                  <span>保存（AI再解析）</span>
                 </button>
               </div>
             )}
@@ -933,7 +937,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
           <div className="fixed top-12 left-1/2 -translate-x-1/2 z-[300] animate-in slide-in-from-top-4 duration-500">
             <div className="bg-stone-900 text-white px-8 py-3 rounded-full font-black text-xs tracking-widest uppercase shadow-2xl flex items-center gap-3">
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-              SAVED SUCCESSFULLY
+              保存完了
             </div>
           </div>
         )}
@@ -969,7 +973,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
               <h3 className="font-black text-xl text-stone-900 tracking-tight">
                 {viewingSampleId ? '学習データの詳細' : '新しい学習データ'}
               </h3>
-              <p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">Training Focus</p>
+              <p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">スタイルの学習</p>
             </div>
           </div>
           <button
@@ -995,7 +999,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                 </p>
               </div>
               <span className={`text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-widest ${learningMode === 'sns' ? 'bg-indigo-50 text-indigo-500' : 'bg-teal-50 text-teal-600'}`}>
-                {learningMode === 'sns' ? 'For SNS' : 'For Maps'}
+                {learningMode === 'sns' ? 'SNS用' : 'マップ返信用'}
               </span>
             </div>
           </div>
@@ -1053,7 +1057,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
               className="w-full md:w-auto px-12 py-5 bg-stone-900 text-white rounded-[2rem] font-black text-sm tracking-[0.2em] shadow-xl hover:bg-stone-800 active:scale-95 transition-all flex items-center justify-center gap-3"
             >
               <CloseIcon className="w-5 h-5" />
-              <span>CLOSE</span>
+              <span>閉じる</span>
             </button>
           ) : (
             <button
@@ -1062,7 +1066,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
               className="w-full md:w-auto px-12 py-5 bg-stone-900 text-white rounded-[2rem] font-black text-sm tracking-[0.2em] shadow-xl hover:bg-indigo-600 active:scale-95 transition-all disabled:opacity-30 flex items-center justify-center gap-3"
             >
               {isTrainingLoading ? <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <SaveIcon className="w-5 h-5" />}
-              <span>SAVE TRAINING DATA</span>
+              <span>学習データを保存</span>
             </button>
           )}
         </div>

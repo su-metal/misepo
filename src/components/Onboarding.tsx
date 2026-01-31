@@ -170,7 +170,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
                     onClick={() => setIndustry(ind)}
                     className={`px-5 py-2.5 rounded-full text-[11px] font-black transition-all duration-200 border border-transparent
                         ${industry === ind
-                        ? 'bg-[#7F5AF0] text-white shadow-lg shadow-indigo-200 scale-105'
+                        ? 'bg-[#0071b9] text-white shadow-lg shadow-indigo-200 scale-105'
                         : 'bg-slate-50 text-slate-500 hover:bg-slate-100'
                       }`}
                   >
