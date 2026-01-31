@@ -552,94 +552,32 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
                                     {/* 2. Middle Scrollable Area (Main Text inputs) */}
                                     <div className="flex-1 overflow-y-auto px-8 py-2">
-                                        {isGoogleMaps ? (
-                                            <div className="w-full flex flex-col gap-6 py-2">
-                                                <div className="text-center space-y-2">
-                                                    <h4 className="text-xl font-bold text-[#111111]">Review Reply</h4>
-                                                    <p className="text-sm text-[#666666]">Googleマップの口コミを貼り付けてください</p>
-                                                </div>
-
-                                                <div className="flex flex-col items-center gap-2 mb-2">
-                                                    <span className="text-[10px] font-bold text-[#666666] uppercase tracking-[0.2em] mb-1">Reply Target Rating</span>
-                                                    <div className="flex gap-2">
-                                                        {[1, 2, 3, 4, 5].map((star) => (
-                                                            <button
-                                                                key={star}
-                                                                onClick={() => onStarRatingChange(star)}
-                                                                className="transition-transform active:scale-95"
-                                                            >
-                                                                <StarIcon
-                                                                    className={`w-8 h-8 transition-all ${star <= (starRating || 0)
-                                                                        ? 'text-[#f2e018] fill-[#f2e018] drop-shadow-sm'
-                                                                        : 'text-[#E5E5E5]'
-                                                                        }`}
-                                                                />
-                                                            </button>
-                                                        ))}
-                                                    </div>
-                                                </div>
-
-                                                <div className="relative">
-                                                    <AutoResizingTextarea
-                                                        value={inputText}
-                                                        onChange={(e) => onInputTextChange(e.target.value)}
-                                                        placeholder="こちらにお客様からの口コミを貼り付けてください。丁寧な返信案をいくつか作成します。"
-                                                        className="w-full min-h-[160px] p-8 bg-white border border-[#E5E5E5] rounded-[40px] text-lg font-bold leading-relaxed focus:outline-none focus:border-[#111111] transition-all placeholder:text-[#CCCCCC] text-[#111111] resize-none overflow-hidden"
-                                                    />
-                                                    {/* Floating Mic for GMap remains relatively positioned or absolute within scroll */}
-                                                    <button
-                                                        onClick={toggleVoiceInput}
-                                                        className={`absolute bottom-6 left-6 w-12 h-12 rounded-full flex items-center justify-center transition-all shadow-md ${isListening ? 'bg-[#111111] text-white animate-pulse' : 'bg-[#F5F5F5] text-[#111111]'}`}
-                                                    >
-                                                        <MicIcon className="w-6 h-6" />
-                                                    </button>
-                                                </div>
-
-                                                <div className="p-6 bg-[#C4A052]/10 border-[#C4A052]/20 border rounded-[32px] backdrop-blur-md relative overflow-hidden group">
-                                                    <h4 className="relative z-10 text-[10px] font-black text-[#8B7340] uppercase tracking-[0.2em] mb-3">補足情報 / 当日の事情</h4>
-                                                    <AutoResizingTextarea
-                                                        value={storeSupplement}
-                                                        onChange={(e) => onStoreSupplementChange(e.target.value)}
-                                                        placeholder="例：急な欠勤で人手が足りなかった、などのお詫びや、感謝の気持ちを伝えたいなど"
-                                                        className="relative z-10 w-full bg-transparent text-[#2F3E46] text-sm font-bold leading-relaxed placeholder-[#8B7340]/40 focus:outline-none resize-none min-h-[60px]"
-                                                    />
-                                                </div>
+                                        <div className="w-full relative py-2 mb-4">
+                                            <div className="text-center space-y-2 mb-6">
+                                                <h4 className="text-xl font-bold text-[#111111]">{isGoogleMaps ? 'Review Reply' : 'New Post'}</h4>
+                                                <p className="text-sm text-[#666666]">
+                                                    {isGoogleMaps ? 'Googleマップの口コミを貼り付けてください' : '今日はどんなことを伝えますか？'}
+                                                </p>
                                             </div>
-                                        ) : (
-                                            <div className="w-full relative py-2">
-                                                <AutoResizingTextarea
-                                                    value={inputText}
-                                                    onChange={(e) => onInputTextChange(e.target.value)}
-                                                    placeholder="今日はどんなことを伝えますか？&#10;「旬の食材が入荷した」「雨の日限定の割引をする」など、短いメモ書きでも大丈夫ですよ。"
-                                                    className="w-full min-h-[160px] p-8 bg-white border border-[#E5E5E5] rounded-[40px] text-lg font-bold leading-relaxed focus:outline-none focus:border-[#111111] transition-all placeholder:text-[#CCCCCC] text-[#111111] resize-none overflow-hidden"
-                                                />
-                                            </div>
-                                        )}
+                                            <AutoResizingTextarea
+                                                value={inputText}
+                                                onChange={(e) => onInputTextChange(e.target.value)}
+                                                placeholder={isGoogleMaps ? "こちらにお客様からの口コミを貼り付けてください。丁寧な返信案をいくつか作成します。" : "「旬の食材が入荷した」「雨の日限定の割引をする」など、短いメモ書きでも大丈夫ですよ。"}
+                                                className="w-full min-h-[220px] p-8 bg-white border border-[#E5E5E5] rounded-[40px] text-lg font-bold leading-relaxed focus:outline-none focus:border-[#111111] transition-all placeholder:text-[#CCCCCC] text-[#111111] resize-none overflow-hidden"
+                                            />
+                                            {isGoogleMaps && (
+                                                <button
+                                                    onClick={toggleVoiceInput}
+                                                    className={`absolute bottom-6 left-6 w-12 h-12 rounded-full flex items-center justify-center transition-all shadow-md ${isListening ? 'bg-[#111111] text-white animate-pulse' : 'bg-[#F5F5F5] text-[#111111]'}`}
+                                                >
+                                                    <MicIcon className="w-6 h-6" />
+                                                </button>
+                                            )}
+                                        </div>
                                     </div>
 
                                     {/* 3. Sticky Action Footer */}
                                     <div className="p-6 pb-12 safe-area-bottom border-t border-[#E5E5E5]/50 flex-shrink-0 bg-[#FAFAFA] flex flex-col gap-4 shadow-[0_-10px_30px_rgba(0,0,0,0.02)] z-20">
-                                        {/* Additional Instructions */}
-                                        <div className="flex flex-col gap-3">
-                                            <button
-                                                onClick={() => setIsPromptExpanded(!isPromptExpanded)}
-                                                className="flex items-center gap-2 text-[#666666] active:text-[#111111] transition-colors px-4 py-2"
-                                            >
-                                                <AutoSparklesIcon className={`w-4 h-4 ${customPrompt ? 'text-[#111111]' : ''}`} />
-                                                <span className="text-[11px] font-bold uppercase tracking-widest">追加指示（任意）</span>
-                                            </button>
-                                            {isPromptExpanded && (
-                                                <div className="p-4 bg-white border border-[#E5E5E5] rounded-2xl animate-in zoom-in-95 shadow-sm">
-                                                    <input
-                                                        type="text"
-                                                        value={customPrompt}
-                                                        onChange={(e) => onCustomPromptChange(e.target.value)}
-                                                        placeholder="例：少し明るいトーンで、顔文字を多めにしてほしい、など"
-                                                        className="w-full bg-transparent border-none focus:outline-none text-[13px] font-bold text-[#111111]"
-                                                    />
-                                                </div>
-                                            )}
-                                        </div>
 
                                         {!isListening && (
                                             <button
@@ -679,15 +617,25 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                     {inputText.length > 200 ? inputText.substring(0, 200) + '...' : inputText || "ここに内容が表示されます..."}
                                                 </div>
 
-                                                {/* Additional Instructions Review */}
-                                                {customPrompt && (
-                                                    <div className="mt-4 pt-4 border-t border-[#122646]/5">
-                                                        <div className="flex items-center gap-1.5 mb-1">
-                                                            <AutoSparklesIcon className="w-3 h-3 text-[#0071b9]" />
-                                                            <span className="text-[9px] font-black text-stone-400 uppercase tracking-widest block">追加指示</span>
-                                                        </div>
-                                                        <div className="text-stone-600 text-xs italic font-medium">
-                                                            {customPrompt}
+                                                {/* GMap Star Rating */}
+                                                {isGoogleMaps && (
+                                                    <div className="mt-4 pt-4 border-t border-[#122646]/5 flex flex-col items-center gap-2">
+                                                        <span className="text-[10px] font-black text-stone-400 uppercase tracking-widest">口コミの評価</span>
+                                                        <div className="flex gap-2">
+                                                            {[1, 2, 3, 4, 5].map((star) => (
+                                                                <button
+                                                                    key={star}
+                                                                    onClick={() => onStarRatingChange(star)}
+                                                                    className="transition-transform active:scale-95"
+                                                                >
+                                                                    <StarIcon
+                                                                        className={`w-7 h-7 transition-all ${star <= (starRating || 0)
+                                                                            ? 'text-[#f2e018] fill-[#f2e018] drop-shadow-sm'
+                                                                            : 'text-[#E5E5E5]'
+                                                                            }`}
+                                                                    />
+                                                                </button>
+                                                            ))}
                                                         </div>
                                                     </div>
                                                 )}
@@ -726,33 +674,63 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             </div>
 
                                             {/* Settings Grid - Monochrome */}
-                                            <div className="grid grid-cols-2 gap-4 pb-8">
-                                                <div className={`bg-[#f5f7fa] px-5 py-3.5 rounded-[28px] border border-stone-200 flex flex-col gap-0.5 transition-opacity shadow-sm ${isStyleLocked ? 'opacity-50 relative' : ''}`}>
-                                                    <div className="flex items-center justify-between">
-                                                        <span className="text-[8px] font-black text-stone-500 uppercase tracking-[0.2em]">文章のトーン</span>
-                                                        {isStyleLocked && <div className="text-[8px] bg-stone-100 px-1.5 py-0.5 rounded text-[#122646] font-bold">LOCKED</div>}
-                                                    </div>
-                                                    <select
-                                                        value={tone}
-                                                        disabled={isStyleLocked}
-                                                        onChange={(e) => onToneChange(e.target.value as any)}
-                                                        className="bg-transparent text-[14px] font-black text-[#122646] focus:outline-none disabled:cursor-not-allowed appearance-none"
-                                                    >
-                                                        {TONES.map(t => <option key={t.id} value={t.id}>{t.label}</option>)}
-                                                    </select>
-                                                </div>
-                                                {!isX && (
-                                                    <div className="bg-[#f5f7fa] px-5 py-3.5 rounded-[28px] border border-stone-200 flex flex-col gap-0.5 shadow-sm">
-                                                        <span className="text-[8px] font-black text-stone-500 uppercase tracking-[0.2em]">文章の長さ</span>
+                                            <div className="flex flex-col gap-4 pb-8">
+                                                <div className="grid grid-cols-2 gap-4">
+                                                    <div className={`bg-[#f5f7fa] px-5 py-3.5 rounded-[28px] border border-stone-200 flex flex-col gap-0.5 transition-opacity shadow-sm ${isStyleLocked ? 'opacity-50 relative' : ''}`}>
+                                                        <div className="flex items-center justify-between">
+                                                            <span className="text-[8px] font-black text-stone-500 uppercase tracking-[0.2em]">文章のトーン</span>
+                                                            {isStyleLocked && <div className="text-[8px] bg-stone-100 px-1.5 py-0.5 rounded text-[#122646] font-bold">LOCKED</div>}
+                                                        </div>
                                                         <select
-                                                            value={length}
-                                                            onChange={(e) => onLengthChange(e.target.value as any)}
-                                                            className="bg-transparent text-[14px] font-black text-[#122646] focus:outline-none appearance-none"
+                                                            value={tone}
+                                                            disabled={isStyleLocked}
+                                                            onChange={(e) => onToneChange(e.target.value as any)}
+                                                            className="bg-transparent text-[14px] font-black text-[#122646] focus:outline-none disabled:cursor-not-allowed appearance-none"
                                                         >
-                                                            {LENGTHS.map(l => <option key={l.id} value={l.id}>{l.label}</option>)}
+                                                            {TONES.map(t => <option key={t.id} value={t.id}>{t.label}</option>)}
                                                         </select>
                                                     </div>
+                                                    {!isX && (
+                                                        <div className="bg-[#f5f7fa] px-5 py-3.5 rounded-[28px] border border-stone-200 flex flex-col gap-0.5 shadow-sm">
+                                                            <span className="text-[8px] font-black text-stone-500 uppercase tracking-[0.2em]">文章の長さ</span>
+                                                            <select
+                                                                value={length}
+                                                                onChange={(e) => onLengthChange(e.target.value as any)}
+                                                                className="bg-transparent text-[14px] font-black text-[#122646] focus:outline-none appearance-none"
+                                                            >
+                                                                {LENGTHS.map(l => <option key={l.id} value={l.id}>{l.label}</option>)}
+                                                            </select>
+                                                        </div>
+                                                    )}
+                                                </div>
+
+                                                {/* Store Supplement (GMap) */}
+                                                {isGoogleMaps && (
+                                                    <div className="bg-[#f5f7fa] px-6 py-4 rounded-[28px] border border-stone-200 flex flex-col gap-2 shadow-sm">
+                                                        <span className="text-[8px] font-black text-stone-500 uppercase tracking-[0.2em]">補足情報 / 当日の事情</span>
+                                                        <AutoResizingTextarea
+                                                            value={storeSupplement}
+                                                            onChange={(e) => onStoreSupplementChange(e.target.value)}
+                                                            placeholder="例：急な欠勤でお待たせした、感謝を伝えたい等"
+                                                            className="bg-transparent text-sm font-bold text-[#122646] focus:outline-none resize-none min-h-[40px] placeholder:text-stone-300"
+                                                        />
+                                                    </div>
                                                 )}
+
+                                                {/* Custom Prompt */}
+                                                <div className="bg-[#f5f7fa] px-6 py-4 rounded-[28px] border border-stone-200 flex flex-col gap-2 shadow-sm">
+                                                    <div className="flex items-center gap-1.5">
+                                                        <AutoSparklesIcon className="w-3 h-3 text-[#0071b9]" />
+                                                        <span className="text-[8px] font-black text-stone-500 uppercase tracking-[0.2em]">追加指示（任意）</span>
+                                                    </div>
+                                                    <input
+                                                        type="text"
+                                                        value={customPrompt}
+                                                        onChange={(e) => onCustomPromptChange(e.target.value)}
+                                                        placeholder="例：絵文字多め、明るいトーンで、等"
+                                                        className="bg-transparent text-sm font-bold text-[#122646] focus:outline-none placeholder:text-stone-300"
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
