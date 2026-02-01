@@ -53,6 +53,7 @@ export interface StoreProfile {
   name: string;
   region: string;
   description?: string;
+  targetAudience?: string;
   instagramFooter?: string;
   googlePlaceId?: string;
   aiAnalysis?: string; // AI generated context for the store
