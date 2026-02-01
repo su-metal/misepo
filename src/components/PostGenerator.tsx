@@ -233,8 +233,8 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
             currentStep={mobileStep}
             isGenerating={flow.loading}
             onTabChange={(tab) => {
+              setMobileActiveTab(tab);
               if (tab === 'home') {
-                setMobileActiveTab('home');
                 setCloseDrawerTrigger(prev => prev + 1);
               } else if (tab === 'history') {
                 if (onOpenHistory) onOpenHistory();
