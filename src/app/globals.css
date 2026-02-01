@@ -3,26 +3,32 @@
 @tailwind utilities;
 
 :root {
-  /* Reference Design (1-365.me) Color System */
-  --ichizen-blue: #1f29fc;
-  --ichizen-blue-light: #d8e4ff;
-  --ichizen-green: #00de7a;
-  --ichizen-beige: #E8E3D5;
-  --ichizen-white: #ffffff;
-  --ichizen-text: #1a1a1a;
+  /* 新しいカラーパレット (1-365.me / ADAY 参考) */
+  --ichizen-blue: #1823ff;         /* Electric Blue */
+  --ichizen-blue-light: #e0e4ff;   /* 薄い青 */
+  --ichizen-green: #00b900;        
+  --ichizen-green-light: #e6f6e6;  
+  --ichizen-beige: #F4F6F9;        /* ベース背景色 (Cool White) */
+  --ichizen-navy: #282d32;         /* テキストカラー (Dark Gray) */
+  --ichizen-orange: #eb714f;       
+  --ichizen-yellow: #f2e018;       
   
-  /* Semantic Mapping for App Shell */
+  --ichizen-white: #ffffff;
+  
+  /* セマンティックマッピング */
   --brand-primary: var(--ichizen-blue);
   --brand-secondary: var(--ichizen-blue-light);
   --brand-accent: var(--ichizen-green);
-  --brand-bg: var(--ichizen-white);
-  --brand-text: var(--ichizen-text);
+  --brand-bg: var(--ichizen-beige);
+  --brand-text: var(--ichizen-navy);
+  --brand-warning: var(--ichizen-orange);
+  --brand-highlight: var(--ichizen-yellow);
 
-  /* Legacy / Compatibility Overrides */
-  --plexo-black: #1a1a1a; /* Softer black */
+  /* レガシー / 互換性用オーバーライド */
+  --plexo-black: var(--ichizen-navy);
   --plexo-dark-gray: #4a5568;
   --plexo-med-gray: #a0aec0;
-  --plexo-yellow: var(--ichizen-green); /* Mapping yellow to green accent */
+  --plexo-yellow: var(--ichizen-yellow);
   --plexo-white: #ffffff;
 
   --bg-primary: var(--brand-bg);
@@ -33,21 +39,25 @@
   --text-placeholder: var(--plexo-med-gray);
 
   --accent-primary: var(--brand-primary);
-  --border-default: #e2e8f0;
+  --border-default: rgba(18, 38, 70, 0.1); /* ネイビーの低透明度 */
   --border-active: var(--brand-primary);
 
   --primary: var(--brand-primary);
   --accent: var(--brand-accent);
-  --bg-beige: var(--brand-secondary);
-  --menu-bg: var(--brand-bg);
+  --bg-beige: var(--brand-bg);
+  --menu-bg: var(--ichizen-white);
 }
 
 body {
-  font-family: 'Outfit', 'Inter', 'Noto Sans JP', sans-serif;
-  background-color: #ffffff;
-  color: var(--text-main);
+  font-family: 'Inter', 'Noto Sans JP', sans-serif;
+  background-color: var(--ichizen-beige);
+  color: var(--ichizen-navy);
   min-height: 100vh;
   overscroll-behavior-y: none;
+}
+
+.font-montserrat {
+  font-family: 'Montserrat', sans-serif;
 }
 
 /* Glass Utility Classes */

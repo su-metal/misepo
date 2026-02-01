@@ -13,7 +13,7 @@ export const MobileFAQ = () => {
 
     return (
         <section className="bg-white rounded-3xl p-6 shadow-sm mb-6">
-            <h3 className="font-bold text-slate-800 text-lg mb-6 text-center">よくある質問</h3>
+            <h3 className="font-bold text-[#122646] text-lg mb-6 text-center">よくある質問</h3>
             <div className="space-y-3">
                 {faqs.map((item, idx) => (
                     <div key={idx} className="border border-slate-100 rounded-xl overflow-hidden">
@@ -21,8 +21,8 @@ export const MobileFAQ = () => {
                             onClick={() => setOpen(open === idx ? null : idx)}
                             className="w-full flex items-center justify-between p-4 bg-slate-50 text-left"
                         >
-                            <span className="text-xs font-bold text-slate-700">{item.q}</span>
-                            <Icons.ChevronDown size={14} className={`text-slate-400 transition-transform ${open === idx ? 'rotate-180' : ''}`} />
+                            <span className={`text-xs font-bold transition-colors ${open === idx ? 'text-[#0071b9]' : 'text-[#122646]'}`}>{item.q}</span>
+                            <Icons.ChevronDown size={14} className={`text-slate-400 transition-transform ${open === idx ? 'rotate-180 text-[#0071b9]' : ''}`} />
                         </button>
                         <div className={`bg-white text-xs text-slate-500 leading-relaxed px-4 transition-all duration-300 ${open === idx ? 'py-4 max-h-40' : 'py-0 max-h-0 overflow-hidden'}`}>
                             {item.a}

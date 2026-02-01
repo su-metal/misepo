@@ -12,35 +12,39 @@ interface Problem {
 
 export const ProblemSection = ({ problems, isMobile = false }: { problems: Problem[]; isMobile?: boolean }) => {
     return (
-        <section id="problem" className={`${isMobile ? 'py-12' : 'py-20 md:py-32'} relative overflow-hidden`}>
-            {/* Background Decor Removed */}
+        <section id="problem" className="py-24 md:py-48 bg-white relative overflow-hidden">
+            {/* Background Text Decor */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-[0.02] select-none">
+                <div className="text-[20rem] md:text-[40rem] font-black leading-none tracking-tighter">OVERWHELMED?</div>
+            </div>
 
-            <div className={`${isMobile ? 'w-full px-4' : 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'} relative z-10`}>
-                <div className={`max-w-3xl mx-auto text-center ${isMobile ? 'mb-12' : 'mb-20'}`}>
-                    <span className="inline-block py-1.5 px-4 bg-white border border-[var(--ichizen-blue)]/20 rounded-full text-[var(--ichizen-blue)] font-bold tracking-widest text-[10px] uppercase mb-8 shadow-sm">
-                        Social Media Challenges
-                    </span>
-                    <h2 className={`font-bold text-slate-800 leading-tight ${isMobile ? 'text-2xl mb-4' : 'text-4xl md:text-6xl mb-8'}`}>
-                        こんな毎日を、<br />
-                        一人で抱えていませんか？
+            <div className="max-w-7xl mx-auto px-6 relative z-10">
+                <div className="flex flex-col items-start mb-24">
+                    <span className="text-[10px] font-black text-[#1823ff] uppercase tracking-[0.2em] mb-8 px-4 py-2 bg-[#1823ff]/5 rounded-full border border-[#1823ff]/10">The Struggle</span>
+                    <h2 className={`font-black text-[#282d32] tracking-tighter leading-[0.9] ${isMobile ? 'text-5xl' : 'text-7xl md:text-8xl lg:text-[7.5rem]'}`}>
+                        一人で抱えて<br />
+                        <span className="text-[#1823ff]">いませんか。</span>
                     </h2>
-                    <p className={`text-slate-500 leading-relaxed max-w-2xl mx-auto font-medium ${isMobile ? 'text-xs' : 'text-lg'}`}>
-                        閉店後の疲れた体でスマホを見つめる夜。<br className={isMobile ? '' : 'hidden md:block'} />
-                        MisePoは、そんな「心の重荷」に寄り添います。
+                    <p className="text-xl md:text-3xl font-bold text-slate-400 mt-12 max-w-2xl leading-tight">
+                        閉店後の疲れた体でスマホを見つめる夜。
+                        そんな夜は、もう終わりにしませんか。
                     </p>
                 </div>
 
-                <div className={`grid gap-6 ${isMobile ? 'grid-cols-1' : 'md:grid-cols-2 lg:grid-cols-4'}`}>
+                <div className={`grid gap-4 ${isMobile ? 'grid-cols-1' : 'md:grid-cols-2'}`}>
                     {problems.map((prob, index) => (
-                        <div key={index} className={`group relative bg-white border border-slate-100 rounded-[32px] shadow-lg shadow-slate-200/50 transition-all duration-300 ${isMobile ? 'p-6' : 'p-8 hover:-translate-y-2 hover:shadow-xl'}`}>
-                            <div className={`flex flex-col items-center text-center ${isMobile ? 'gap-4' : 'gap-6'}`}>
-                                <div className={`rounded-2xl ${prob.bg} flex items-center justify-center text-slate-700 shadow-inner group-hover:scale-110 transition-transform duration-300 shrink-0 ${isMobile ? 'w-12 h-12' : 'w-16 h-16'}`}>
-                                    {React.cloneElement(prob.icon as any, { size: isMobile ? 24 : 32, className: "opacity-80" })}
+                        <div key={index} className="bg-slate-50 rounded-[48px] p-10 md:p-16 border border-slate-100 flex flex-col items-start text-left group">
+                            <div className="text-[10px] font-black text-slate-300 mb-8 uppercase tracking-widest">Case 0{index + 1}</div>
+                            <h3 className="text-3xl md:text-4xl font-black text-[#282d32] mb-6 leading-tight whitespace-pre-line">{prob.title}</h3>
+                            <p className="text-lg font-bold text-slate-400 leading-tight">
+                                {prob.desc.replace(/\\n/g, '')}
+                            </p>
+                            <div className="mt-12 flex items-center gap-4">
+                                <div className="w-12 h-12 rounded-full bg-white border border-slate-200 flex items-center justify-center text-[#1823ff] group-hover:scale-110 transition-all">
+                                    {React.cloneElement(prob.icon as any, { size: 24 })}
                                 </div>
-                                <h3 className={`font-bold text-slate-800 whitespace-pre-line leading-tight ${isMobile ? 'text-base' : 'text-lg md:text-xl'}`}>{prob.title}</h3>
+                                <span className="text-xs font-black text-[#1823ff] uppercase tracking-widest">Solve it with MisePo</span>
                             </div>
-                            <div className="h-px w-full bg-slate-100 my-6" />
-                            <p className={`text-slate-500 font-medium leading-relaxed text-center ${isMobile ? 'text-[11px]' : 'text-sm'}`}>{prob.desc}</p>
                         </div>
                     ))}
                 </div>

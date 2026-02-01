@@ -5,13 +5,13 @@ import { Icons } from '../LandingPageIcons';
 export const MobileHero = () => {
     return (
         <section className="bg-white rounded-3xl p-8 shadow-sm mb-6 text-center overflow-hidden relative">
-            <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[var(--ichizen-blue)] via-purple-500 to-[var(--ichizen-green)]"></div>
+            <div className="absolute top-0 left-0 w-full h-1.5 bg-[#0071b9]"></div>
 
             <div className="py-8">
-                <h2 className="text-3xl font-bold text-slate-800 tracking-tight leading-tight mb-4">
-                    <span className="block text-sm font-medium text-[var(--ichizen-blue)] mb-2 tracking-widest uppercase">For Restaurant Owners</span>
+                <h2 className="text-3xl font-bold text-[#122646] tracking-tight leading-tight mb-4">
+                    <span className="block text-sm font-medium text-[#0071b9] mb-2 tracking-widest uppercase">For Restaurant Owners</span>
                     もう、SNS投稿で<br />
-                    <span className="text-[var(--ichizen-blue)]">悩まない。</span>
+                    <span className="text-[#0071b9]">悩まない。</span>
                 </h2>
 
                 <p className="text-slate-500 text-sm leading-relaxed mb-8">
@@ -24,7 +24,7 @@ export const MobileHero = () => {
                 <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100 text-left relative overflow-hidden">
                     <div className="flex items-center gap-2 mb-3 border-b border-slate-200/50 pb-2">
                         <div className="bg-white p-1 rounded-lg shadow-sm">
-                            <Icons.Sparkles size={14} className="text-[var(--ichizen-blue)]" />
+                            <Icons.Sparkles size={14} className="text-[#0071b9]" />
                         </div>
                         <span className="text-xs font-bold text-slate-600">AI Generating...</span>
                     </div>

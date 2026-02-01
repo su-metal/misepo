@@ -157,10 +157,10 @@ open11:00-close 17:00
   };
 
   const problems = [
-    { icon: <Icons.Moon />, title: "閉店後の\nSNS作業がツラい", desc: "疲れた体でスマホを見つめて、\n手が止まる。\nそんな夜はもう終わりにしませんか。", bg: "bg-[#9B8FD4]", delay: 0 },
-    { icon: <Icons.Bot />, title: "AI文章に\n違和感がある", desc: "丁寧すぎて『自分らしくない』。\nMisePoなら、あなたの口癖や\n話し方を再現します。", bg: "bg-[#E88BA3]", delay: 0.1 },
-    { icon: <Icons.MessageCircle />, title: "クチコミ返信が\n放置気味…", desc: "言葉が見つからず、\n気づけば数週間。お客様との絆を\n30秒で紡ぎ直せます。", bg: "bg-[#F5CC6D]", delay: 0.2 },
-    { icon: <Icons.Users />, title: "任せたいけど\n任せられない", desc: "スタッフに頼みたいけど、\n店の雰囲気が壊れないか心配…\n『店の人格』を設定すれば解決。", bg: "bg-[#4DB39A]", delay: 0.3 },
+    { icon: <Icons.Moon />, title: "閉店後の\nSNS作業がツラい", desc: "疲れた体でスマホを見つめて、\n手が止まる。\nそんな夜はもう終わりにしませんか。", bg: "bg-[#eb714f]", delay: 0 },
+    { icon: <Icons.Bot />, title: "AI文章に\n違和感がある", desc: "丁寧すぎて『自分らしくない』。\nMisePoなら、あなたの口癖や\n話し方を再現します。", bg: "bg-[#0071b9]", delay: 0.1 },
+    { icon: <Icons.MessageCircle />, title: "クチコミ返信が\n放置気味…", desc: "言葉が見つからず、\n気づけば数週間。お客様との絆を\n30秒で紡ぎ直せます。", bg: "bg-[#f2e018]", delay: 0.2 },
+    { icon: <Icons.Users />, title: "任せたいけど\n任せられない", desc: "スタッフに頼みたいけど、\n店の雰囲気が壊れないか心配…\n『店の人格』を設定すれば解決。", bg: "bg-[#00b900]", delay: 0.3 },
   ];
 
   const faqs = [
@@ -171,7 +171,7 @@ open11:00-close 17:00
   ];
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-[#F5CC6D]">
+    <div className="min-h-screen bg-white text-[#282d32] font-inter selection:bg-[#1823ff] selection:text-white">
       <Header scrolled={scrolled} isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} loginWithGoogle={loginWithGoogle} />
       <HeroSection />
       <ProblemSection problems={problems} isMobile={isMobile} />
@@ -186,23 +186,18 @@ open11:00-close 17:00
       />
       <BenefitSection />
       <FeaturesSection isMobile={isMobile} />
-      <PWASection />
-      <TestimonialsSection />
-      <PricingSection />
-      <FAQSection faqs={faqs} openFaq={openFaq} setOpenFaq={setOpenFaq} />
-      <CTASection />
+      <PWASection isMobile={isMobile} />
+      <TestimonialsSection isMobile={isMobile} />
+      <PricingSection isMobile={isMobile} />
+      <FAQSection faqs={faqs} openFaq={openFaq} setOpenFaq={setOpenFaq} isMobile={isMobile} />
+      <CTASection isMobile={isMobile} />
       <Footer />
 
       <style jsx global>{`
-                :root {
-                  --border-bold: 1px solid rgba(0,0,0,0.05);
-                  --shadow-soft: 0 10px 40px -10px rgba(0,0,0,0.05);
-                }
                 html { scroll-behavior: smooth; scroll-padding-top: 80px; }
-                @keyframes float { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-10px) rotate(1deg); } }
-                .animate-float { animation: float 4s ease-in-out infinite; }
-                .no-scrollbar::-webkit-scrollbar { display: none; }
-                .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+                .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+                .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+                .custom-scrollbar::-webkit-scrollbar-thumb { background: #1823ff; border-radius: 10px; }
             `}</style>
     </div>
   );

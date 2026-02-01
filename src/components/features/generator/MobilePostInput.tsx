@@ -536,12 +536,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             {/* Texture & Glass Layer */}
                             {!isGoogleMaps && <div className="absolute inset-0 bg-white/10 backdrop-blur-[2px] opacity-50 pointer-events-none" />}
 
-                            {/* Shine Effect */}
-                            {!isGoogleMaps && (
-                                <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-                                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent w-1/2 animate-ticket-shine" />
-                                </div>
-                            )}
+                            {/* Shine Effect removed */}
 
                             {/* Decorative Background Glows */}
                             {!isGoogleMaps && (
@@ -672,7 +667,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
                                     {/* 1. Top Fixed Header Section */}
                                     {!isGoogleMaps && (
-                                        <div className="flex-shrink-0 flex justify-center py-4 bg-gradient-to-b from-[#FAFAFA] to-transparent z-10">
+                                        <div className="flex-shrink-0 flex justify-center py-4 bg-[#FAFAFA] z-10 border-b border-stone-100">
                                             <button
                                                 onClick={toggleVoiceInput}
                                                 className={`relative w-28 h-28 rounded-full flex-shrink-0 flex items-center justify-center transition-all duration-700 ${isListening ? 'scale-110' : 'hover:scale-105'}`}
@@ -1061,7 +1056,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                         {mobileStep === 'confirm' && (
                             <div className="absolute bottom-0 left-0 right-0 z-[120] flex flex-col items-center">
                                 {/* Gradient Fade Border */}
-                                <div className="w-full h-16 bg-gradient-to-b from-transparent to-[#FAFAFA] pointer-events-none" />
+                                {/* Gradient fade removed */}
 
                                 {/* Opaque Background with Content */}
                                 <div className="w-full bg-[#FAFAFA] px-8 pt-4 pb-[24px] flex flex-col items-center gap-4">

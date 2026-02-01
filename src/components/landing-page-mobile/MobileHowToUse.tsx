@@ -30,7 +30,7 @@ export const MobileHowToUse = () => {
                 <svg width="100%" height="100%" viewBox="0 0 400 1200" fill="none" className="opacity-10">
                     <path
                         d="M350,50 Q450,250 150,450 T350,850"
-                        stroke="var(--ichizen-blue)"
+                        stroke="#0071b9"
                         strokeWidth="5"
                         strokeDasharray="8 15"
                         strokeLinecap="round"
@@ -39,10 +39,10 @@ export const MobileHowToUse = () => {
             </div>
 
             <div className="relative z-10 mb-16">
-                <p className="text-[var(--ichizen-blue)] font-black text-sm mb-2 tracking-tight">
+                <p className="text-[#0071b9] font-black text-sm mb-2 tracking-tight">
                     MisePoのつかいかた
                 </p>
-                <h2 className="text-[var(--ichizen-blue)] text-7xl font-black tracking-tighter italic leading-[0.8]">
+                <h2 className="text-[#0071b9] text-7xl font-black tracking-tighter italic leading-[0.8]">
                     HOW TO<br />USE
                 </h2>
             </div>

@@ -12,7 +12,7 @@ export const MobileSiteFooter = () => {
 
             {/* Support Menu */}
             <div className="mb-12">
-                <h3 className="text-xs font-bold mb-4 text-slate-800">サポートメニュー</h3>
+                <h3 className="text-xs font-bold mb-4 text-[#122646]">サポートメニュー</h3>
                 <div className="border-t border-slate-200">
                     {[
                         { label: "初めての方へ", href: "#" },
@@ -30,7 +30,7 @@ export const MobileSiteFooter = () => {
 
             {/* Page Top */}
             <div className="flex justify-end mb-8 border-b border-slate-200 pb-2">
-                <button onClick={scrollToTop} className="flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-[var(--ichizen-blue)] transition-colors">
+                <button onClick={scrollToTop} className="flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-[#0071b9] transition-colors">
                     <span>ページのトップに戻る</span>
                     <div className="bg-slate-200 rounded-full p-0.5">
                         <Icons.ChevronUp size={12} className="text-slate-500" />
@@ -54,7 +54,7 @@ export const MobileSiteFooter = () => {
             {/* Logo & Copyright */}
             <div className="text-center">
                 <div className="mb-4 inline-block">
-                    <span className="font-bold text-2xl tracking-tight italic text-slate-800" style={{ fontFamily: 'cursive' }}>
+                    <span className="font-bold text-2xl tracking-tight italic text-[#122646]" style={{ fontFamily: 'cursive' }}>
                         misepo
                     </span>
                 </div>
