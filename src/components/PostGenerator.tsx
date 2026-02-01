@@ -285,6 +285,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
             }}
             industry={storeProfile.industry}
             description={storeProfile.description}
+            isGoogleMaps={(flow.platforms[0] || Platform.Instagram) === Platform.GoogleMaps}
           />
         </div>
       </div>

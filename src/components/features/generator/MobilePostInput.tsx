@@ -520,46 +520,59 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                     {/* Bottom Section - Promotional Card (AI Omakase Mode Redesign) */}
                     <div className="mt-4 md:mt-6">
                         <div
-                            onClick={handleOmakaseStart}
+                            onClick={!isGoogleMaps ? handleOmakaseStart : undefined}
                             className={`
-                                relative group transition-all duration-700 cursor-pointer active:scale-95 my-1
+                                relative group transition-all duration-700 my-1
                                 rounded-[32px] overflow-hidden
-                                ${isOmakaseLoading ? 'scale-[0.98]' : 'hover:scale-[1.02] hover:-translate-y-1.5'}
-                                shadow-[0_10px_30px_rgba(0,113,185,0.08)] hover:shadow-[0_25px_50px_rgba(0,113,185,0.18)]
+                                ${!isGoogleMaps ? 'cursor-pointer active:scale-95' : 'cursor-not-allowed opacity-60 grayscale'}
+                                ${isOmakaseLoading ? 'scale-[0.98]' : (!isGoogleMaps ? 'hover:scale-[1.02] hover:-translate-y-1.5' : '')}
+                                ${!isGoogleMaps ? 'shadow-[0_10px_30px_rgba(0,113,185,0.08)] hover:shadow-[0_25px_50px_rgba(0,113,185,0.18)]' : 'shadow-sm border border-stone-200'}
                             `}
                             style={{
-                                backgroundColor: '#d8e9f4',
+                                backgroundColor: !isGoogleMaps ? '#d8e9f4' : '#f3f4f6',
                                 clipPath: 'polygon(0% 0%, 100% 0%, 100% 35%, 98% 40%, 98% 60%, 100% 65%, 100% 100%, 0% 100%, 0% 65%, 2% 60%, 2% 40%, 0% 35%)'
                             }}
                         >
                             {/* Texture & Glass Layer */}
-                            <div className="absolute inset-0 bg-white/10 backdrop-blur-[2px] opacity-50 pointer-events-none" />
+                            {!isGoogleMaps && <div className="absolute inset-0 bg-white/10 backdrop-blur-[2px] opacity-50 pointer-events-none" />}
 
                             {/* Shine Effect */}
-                            <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent w-1/2 animate-ticket-shine" />
-                            </div>
+                            {!isGoogleMaps && (
+                                <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+                                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent w-1/2 animate-ticket-shine" />
+                                </div>
+                            )}
 
                             {/* Decorative Background Glows */}
-                            <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/30 rounded-full blur-[40px] pointer-events-none group-hover:bg-white/50 transition-colors duration-700" />
-                            <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-[#0071b9]/5 rounded-full blur-[30px] pointer-events-none" />
+                            {!isGoogleMaps && (
+                                <>
+                                    <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/30 rounded-full blur-[40px] pointer-events-none group-hover:bg-white/50 transition-colors duration-700" />
+                                    <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-[#0071b9]/5 rounded-full blur-[30px] pointer-events-none" />
+                                </>
+                            )}
 
                             <div className="relative p-5 pl-10 pr-6 flex items-center justify-between">
                                 {/* Left Content */}
                                 <div className="relative z-10 flex flex-col gap-6">
-                                    <div className="self-start inline-flex px-4 py-1.5 rounded-full bg-[#0071b9] text-[9px] font-black text-white uppercase tracking-[0.2em] shadow-sm border border-[#0071b9]/5">
-                                        AIが自動提案
+                                    <div className={`self-start inline-flex px-4 py-1.5 rounded-full ${!isGoogleMaps ? 'bg-[#0071b9]' : 'bg-stone-400'} text-[9px] font-black text-white uppercase tracking-[0.2em] shadow-sm`}>
+                                        {isGoogleMaps ? '利用不可' : 'AIが自動提案'}
                                     </div>
                                     <div className="space-y-1">
                                         <div className="flex items-center gap-2">
-                                            <h4 className="text-[24px] font-black text-[#0071b9] tracking-tighter leading-none whitespace-nowrap">
+                                            <h4 className={`text-[24px] font-black tracking-tighter leading-none whitespace-nowrap ${!isGoogleMaps ? 'text-[#0071b9]' : 'text-stone-400'}`}>
                                                 AIおまかせ生成
                                             </h4>
-                                            <SparklesIcon className="w-5 h-5 text-[#0071b9] animate-pulse" />
+                                            {!isGoogleMaps && <SparklesIcon className="w-5 h-5 text-[#0071b9] animate-pulse" />}
                                         </div>
                                         <p className="text-[11px] text-stone-500 font-bold leading-relaxed">
-                                            今日のおすすめやお店の様子を入力するだけで、<br />
-                                            AIが魅力的な投稿に仕上げます。
+                                            {isGoogleMaps ? (
+                                                'Googleマップ選択時は利用できません'
+                                            ) : (
+                                                <>
+                                                    今日のおすすめやお店の様子を入力するだけで、<br />
+                                                    AIが魅力的な投稿に仕上げます。
+                                                </>
+                                            )}
                                         </p>
                                     </div>
                                 </div>
@@ -568,12 +581,12 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                 <div className="relative z-10 flex items-center justify-center">
                                     <div className={`
                                         w-14 h-14 rounded-2xl flex items-center justify-center shadow-xl transition-all duration-500
-                                        ${isOmakaseLoading ? 'bg-white scale-90' : 'bg-white group-hover:bg-[#0071b9] group-hover:scale-110 group-active:scale-95 group-hover:rotate-6'}
+                                        ${isOmakaseLoading ? 'bg-white scale-90' : (!isGoogleMaps ? 'bg-white group-hover:bg-[#0071b9] group-hover:scale-110 group-active:scale-95 group-hover:rotate-6' : 'bg-stone-200 shadow-none')}
                                     `}>
                                         {isOmakaseLoading ? (
                                             <div className="w-5 h-5 border-2 border-[#0071b9]/20 border-t-[#0071b9] rounded-full animate-spin" />
                                         ) : (
-                                            <ChevronRightIcon className="w-6 h-6 text-[#0071b9] group-hover:text-white transition-colors duration-500 animate-arrow-flow" />
+                                            <ChevronRightIcon className={`w-6 h-6 ${!isGoogleMaps ? 'text-[#0071b9] group-hover:text-white' : 'text-stone-400'} transition-colors duration-500 ${!isGoogleMaps ? 'animate-arrow-flow' : ''}`} />
                                         )}
                                     </div>
 
@@ -581,7 +594,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             </div>
 
                             {/* Ticket Perforation Line (Visual Only) */}
-                            <div className="absolute top-[8%] bottom-[8%] right-[25%] w-px border-r-2 border-dotted border-[#0071b9]/20 pointer-events-none" />
+                            <div className={`absolute top-[8%] bottom-[8%] right-[25%] w-px border-r-2 border-dotted ${!isGoogleMaps ? 'border-[#0071b9]/20' : 'border-stone-300'} pointer-events-none`} />
                         </div>
                     </div>
                 </div>
@@ -594,6 +607,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                 onSelectEvent={handleTrendStrategy}
                 industry={storeProfile?.industry}
                 description={storeProfile?.description}
+                isGoogleMaps={isGoogleMaps}
             />
 
             {/* Bottom Sheet Drawer - Monochrome Style */}
@@ -1045,36 +1059,41 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
                         {/* Step 3 Sticky Action Area - Fixed for Hitbox and Layout accuracy */}
                         {mobileStep === 'confirm' && (
-                            <div className="absolute bottom-[60px] left-0 right-0 px-8 z-[120] flex flex-col items-center gap-4">
-                                <button
-                                    onClick={onGenerate}
-                                    disabled={isGenerating}
-                                    className={`
-                                        w-full group relative overflow-hidden rounded-[32px] py-6
-                                        flex items-center justify-center
-                                        transition-all duration-500 active:scale-95
-                                        ${isGenerating ? 'bg-stone-300 cursor-not-allowed' : 'bg-[#f2e018] shadow-[0_10px_30px_rgba(0,113,185,0.2)]'}
-                                    `}
-                                >
-                                    <div className="relative flex items-center justify-center gap-3">
-                                        {isGenerating ? (
-                                            <div className="w-6 h-6 border-3 border-white/20 border-t-[#122646] rounded-full animate-spin" />
-                                        ) : (
-                                            <span className="text-[#122646] text-base font-black uppercase tracking-[0.3em]">
-                                                投稿案を作成する
-                                            </span>
-                                        )}
-                                    </div>
-                                </button>
-                                <p className="text-center text-[10px] font-bold text-[#999999] uppercase tracking-widest pointer-events-none">
-                                    あなたの想いを、AIが最高の文章に仕上げます
-                                </p>
+                            <div className="absolute bottom-0 left-0 right-0 z-[120] flex flex-col items-center">
+                                {/* Gradient Fade Border */}
+                                <div className="w-full h-16 bg-gradient-to-b from-transparent to-[#FAFAFA] pointer-events-none" />
+
+                                {/* Opaque Background with Content */}
+                                <div className="w-full bg-[#FAFAFA] px-8 pt-4 pb-[24px] flex flex-col items-center gap-4">
+                                    <button
+                                        onClick={onGenerate}
+                                        disabled={isGenerating}
+                                        className={`
+                                            w-full group relative overflow-hidden rounded-[32px] py-6
+                                            flex items-center justify-center
+                                            transition-all duration-500 active:scale-95
+                                            ${isGenerating ? 'bg-stone-300 cursor-not-allowed' : 'bg-[#f2e018] shadow-[0_10px_30px_rgba(0,113,185,0.2)]'}
+                                        `}
+                                    >
+                                        <div className="relative flex items-center justify-center gap-3">
+                                            {isGenerating ? (
+                                                <div className="w-6 h-6 border-3 border-white/20 border-t-[#122646] rounded-full animate-spin" />
+                                            ) : (
+                                                <span className="text-[#122646] text-base font-black uppercase tracking-[0.3em]">
+                                                    投稿案を作成する
+                                                </span>
+                                            )}
+                                        </div>
+                                    </button>
+                                    <p className="text-center text-[10px] font-bold text-[#999999] uppercase tracking-widest pointer-events-none">
+                                        あなたの想いを、AIが最高の文章に仕上げます
+                                    </p>
+                                </div>
                             </div>
                         )}
                     </div>
-                </div >
-            )
-            }
-        </div >
+                </div>
+            )}
+        </div>
     );
 };

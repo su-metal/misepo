@@ -8,10 +8,11 @@ interface TrendSidebarProps {
     onSelectEvent: (event: TrendEvent) => void;
     industry?: string;
     description?: string;
+    isGoogleMaps?: boolean;
 }
 
 export const TrendSidebar: React.FC<TrendSidebarProps> = ({
-    onSelectEvent, industry, description
+    onSelectEvent, industry, description, isGoogleMaps
 }) => {
     // Calendar State
     const [currentYear, setCurrentYear] = React.useState(2026);
@@ -205,11 +206,24 @@ export const TrendSidebar: React.FC<TrendSidebarProps> = ({
                             </div>
 
                             <button
-                                onClick={() => onSelectEvent(currentEvent)}
-                                className="w-full py-3 rounded-xl bg-white text-[#0071b9] text-[11px] font-black uppercase tracking-widest hover:bg-[#fafafa] hover:shadow-md hover:-translate-y-0.5 transition-all shadow-sm active:scale-95 active:translate-y-0 flex items-center justify-center gap-2 border border-[#122646]/5"
+                                onClick={() => !isGoogleMaps && onSelectEvent(currentEvent)}
+                                disabled={isGoogleMaps}
+                                className={`
+                                    w-full py-3 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all shadow-sm flex items-center justify-center gap-2 border border-[#122646]/5
+                                    ${isGoogleMaps
+                                        ? 'bg-stone-200 text-stone-400 cursor-not-allowed shadow-none'
+                                        : 'bg-white text-[#0071b9] hover:bg-[#fafafa] hover:shadow-md hover:-translate-y-0.5 active:scale-95 active:translate-y-0'
+                                    }
+                                `}
                             >
-                                <SparklesIcon className="w-4 h-4" />
-                                Use this Trend
+                                {isGoogleMaps ? (
+                                    <span>GMapでは利用不可</span>
+                                ) : (
+                                    <>
+                                        <SparklesIcon className="w-4 h-4" />
+                                        Use this Trend
+                                    </>
+                                )}
                             </button>
                         </div>
                     )}
