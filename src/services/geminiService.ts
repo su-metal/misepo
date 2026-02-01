@@ -1451,7 +1451,7 @@ export const generateInspirationCards = async (
   inputReviews?: { text: string }[],
   currentTrend?: any
 ): Promise<InspirationCard[]> => {
-  const modelName = 'models/gemini-2.5-flash';
+  const modelName = 'models/gemini-2.5-flash-lite';
   
   // Prepare inputs for the prompt
   const trendInfo = currentTrend ? JSON.stringify(currentTrend) : 'None';
