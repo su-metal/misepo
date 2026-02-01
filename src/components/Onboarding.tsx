@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { StoreProfile } from '../types';
-import { INDUSTRIES } from '../constants';
+import { INDUSTRIES, TARGET_AUDIENCES } from '../constants';
 import { AutoResizingTextarea } from './features/generator/AutoResizingTextarea';
 
 interface OnboardingProps {
@@ -38,6 +38,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
   };
 
   const [industry, setIndustry] = useState<string>(INDUSTRIES[0]);
+  const [targetAudiences, setTargetAudiences] = useState<string[]>([]);
   const [name, setName] = useState<string>('');
   const [region, setRegion] = useState<string>('');
   const [description, setDescription] = useState<string>('');
@@ -68,6 +69,10 @@ const Onboarding: React.FC<OnboardingProps> = ({
       setInstagramFooter(initialProfile.instagramFooter || '');
       setGooglePlaceId(initialProfile.googlePlaceId || '');
       setAiAnalysis(initialProfile.aiAnalysis || '');
+      setAiAnalysis(initialProfile.aiAnalysis || '');
+      if (initialProfile.targetAudience) {
+        setTargetAudiences(initialProfile.targetAudience.split(',').map(s => s.trim()));
+      }
       setShowDetails(true);
     }
   }, [initialProfile]);
@@ -84,7 +89,8 @@ const Onboarding: React.FC<OnboardingProps> = ({
       description: description.trim(),
       instagramFooter: instagramFooter.trim(),
       googlePlaceId: googlePlaceId,
-      aiAnalysis: aiAnalysis
+      aiAnalysis: aiAnalysis,
+      targetAudience: targetAudiences.join(', ')
     });
   };
 
@@ -395,6 +401,39 @@ const Onboarding: React.FC<OnboardingProps> = ({
                           {ind}
                         </button>
                       ))}
+                    </div>
+                  </div>
+
+                  {/* Target Audience Selection */}
+                  <div className="space-y-6">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">主な客層（複数選択可）</h3>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {TARGET_AUDIENCES.map((target) => {
+                        const isSelected = targetAudiences.includes(target);
+                        return (
+                          <button
+                            key={target}
+                            type="button"
+                            onClick={() => {
+                              if (isSelected) {
+                                setTargetAudiences(prev => prev.filter(t => t !== target));
+                              } else {
+                                setTargetAudiences(prev => [...prev, target]);
+                              }
+                            }}
+                            className={`px-4 py-2 rounded-full text-[11px] font-bold transition-all duration-200 border
+                                ${isSelected
+                                ? 'bg-[#122646] text-[#f2e018] border-[#122646] shadow-md scale-105'
+                                : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                              }`}
+                          >
+                            {isSelected && <span className="mr-1">✓</span>}
+                            {target}
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
 

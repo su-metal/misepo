@@ -87,6 +87,7 @@ export interface GenerationConfig {
   post_samples?: { [key in Platform]?: string }; // Passed from active preset
   persona_yaml?: string | null; // Can be a monolithic YAML string (Legacy) OR a serialized JSON string `{ [key in Platform]: string }`
   presetId?: string; // ID of the preset used for this generation
+  targetAudience?: string; // Target audience override for this specific post
 }
 
 export interface GeneratedResult {

@@ -234,6 +234,8 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
               closeDrawerTrigger={closeDrawerTrigger}
               openDrawerTrigger={openDrawerTrigger}
               onOpenOnboarding={() => setShowOnboarding(true)}
+              targetAudiences={flow.targetAudiences}
+              onTargetAudiencesChange={flow.setTargetAudiences}
             />
           </div>
 

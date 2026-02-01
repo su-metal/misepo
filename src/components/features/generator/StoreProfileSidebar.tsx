@@ -89,9 +89,11 @@ export const StoreProfileSidebar: React.FC<StoreProfileSidebarProps> = ({ storeP
                         <h4 className="text-[10px] font-bold text-[#122646]/60 uppercase tracking-wider">ターゲット層</h4>
                         <div className="flex flex-wrap gap-2">
                             {storeProfile.targetAudience ? (
-                                <span className="text-xs font-bold text-[#122646] bg-white px-3 py-1.5 rounded-lg border border-[#122646]/10 shadow-sm">
-                                    {storeProfile.targetAudience}
-                                </span>
+                                storeProfile.targetAudience.split(',').map((tag, i) => (
+                                    <span key={i} className="text-xs font-bold text-[#122646] bg-white px-3 py-1.5 rounded-lg border border-[#122646]/10 shadow-sm">
+                                        {tag.trim()}
+                                    </span>
+                                ))
                             ) : (
                                 <span className="text-[10px] text-[#122646]/40 italic">未設定</span>
                             )}

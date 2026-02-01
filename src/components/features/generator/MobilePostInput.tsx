@@ -13,6 +13,7 @@ import { InspirationDeck } from './InspirationDeck';
 import {
     PostInputFormProps, renderAvatar, PURPOSES, GMAP_PURPOSES, TONES, LENGTHS
 } from './inputConstants';
+import { TARGET_AUDIENCES } from '../../../constants';
 import { PostResultTabs } from './PostResultTabs';
 
 export const MobilePostInput: React.FC<PostInputFormProps> = ({
@@ -32,7 +33,8 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     refineText, onRefineTextChange, onPerformRefine, isRefining,
     includeFooter, onIncludeFooterChange, onAutoFormat,
     isAutoFormatting, onCopy, onMobileResultOpen, restoreId,
-    onStepChange, closeDrawerTrigger, openDrawerTrigger, onOpenOnboarding
+    onStepChange, closeDrawerTrigger, openDrawerTrigger, onOpenOnboarding,
+    targetAudiences, onTargetAudiencesChange
 }) => {
     const textareaRef = React.useRef<HTMLTextAreaElement>(null);
     const dateObj = new Date();
@@ -212,6 +214,17 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
         setIsStepDrawerOpen(true);
     };
 
+    const handleTargetAudienceToggle = (target: string) => {
+        if (!targetAudiences || !onTargetAudiencesChange) return;
+
+        const current = targetAudiences;
+        if (current.includes(target)) {
+            onTargetAudiencesChange(current.filter(t => t !== target));
+        } else {
+            onTargetAudiencesChange([...current, target]);
+        }
+    };
+
     const handleOmakaseStart = () => {
         setIsOmakaseLoading(true);
         onApplyPreset({ id: 'plain-ai' } as any); // Force AI Standard preset
@@ -245,6 +258,23 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
     // State for Inspiration Deck Caching
     const [cachedInspirationCards, setCachedInspirationCards] = React.useState<any[]>([]);
+
+    // --- Audience Logic (Moved to Top Level) ---
+    const [isAudienceExpanded, setIsAudienceExpanded] = React.useState(false);
+
+    const profileTargets = React.useMemo(() => {
+        return storeProfile?.targetAudience
+            ? storeProfile.targetAudience.split(',').map(s => s.trim())
+            : [];
+    }, [storeProfile?.targetAudience]);
+
+    // Primary: In Profile OR Selected
+    const primaryAudienceList = TARGET_AUDIENCES.filter(t =>
+        profileTargets.includes(t) || targetAudiences?.includes(t)
+    );
+
+    // Secondary: The rest
+    const secondaryAudienceList = TARGET_AUDIENCES.filter(t => !primaryAudienceList.includes(t));
 
     return (
         <div className="flex flex-col h-full relative overflow-hidden font-inter bg-white">
@@ -698,6 +728,58 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                     <RotateCcwIcon className="w-5 h-5" />
                                                 </button>
                                             </div>
+
+                                            {targetAudiences && (
+                                                <div className="flex flex-col gap-3">
+                                                    <div className="flex items-center justify-between px-2">
+                                                        <span className="text-[11px] font-black text-[#122646] uppercase tracking-[0.2em]">ターゲット設定</span>
+                                                        <span className="text-[9px] font-bold text-stone-400">※複数選択可</span>
+                                                    </div>
+                                                    <div className="flex flex-wrap gap-2 px-2">
+                                                        {primaryAudienceList.map(target => (
+                                                            <button
+                                                                key={target}
+                                                                onClick={() => handleTargetAudienceToggle(target)}
+                                                                className={`
+                                                                    flex-shrink-0 px-4 py-2 rounded-xl font-bold text-[11px] transition-all active:scale-95 border
+                                                                    ${targetAudiences?.includes(target)
+                                                                        ? 'bg-[#122646] text-white border-[#122646] shadow-md'
+                                                                        : 'bg-white text-stone-500 border-stone-200 hover:border-stone-300'
+                                                                    }
+                                                                `}
+                                                            >
+                                                                {target}
+                                                            </button>
+                                                        ))}
+
+                                                        {/* Show All Toggle or Secondary List */}
+                                                        {secondaryAudienceList.length > 0 && (
+                                                            <>
+                                                                {!isAudienceExpanded ? (
+                                                                    <button
+                                                                        onClick={() => setIsAudienceExpanded(true)}
+                                                                        className="px-3 py-2 rounded-xl font-bold text-[10px] bg-stone-100 text-stone-400 border border-stone-100 hover:bg-stone-200 transition-colors flex items-center gap-1"
+                                                                    >
+                                                                        <span>＋ 他のターゲット</span>
+                                                                    </button>
+                                                                ) : (
+                                                                    secondaryAudienceList.map(target => (
+                                                                        <button
+                                                                            key={target}
+                                                                            onClick={() => handleTargetAudienceToggle(target)}
+                                                                            className={`
+                                                                                flex-shrink-0 px-4 py-2 rounded-xl font-bold text-[11px] transition-all active:scale-95 border bg-white text-stone-500 border-stone-200 hover:border-stone-300 opacity-80
+                                                                            `}
+                                                                        >
+                                                                            {target}
+                                                                        </button>
+                                                                    ))
+                                                                )}
+                                                            </>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            )}
 
                                             {/* Style Selection - Horizontal Pill Style (Monochrome) */}
                                             <div className="flex flex-col gap-4">

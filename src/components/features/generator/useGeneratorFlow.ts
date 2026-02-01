@@ -47,6 +47,16 @@ export function useGeneratorFlow(props: {
   const [loadedPresetPrompts, setLoadedPresetPrompts] = useState<{ [key: string]: string }>({});
   const [includeSymbols, setIncludeSymbols] = useState<boolean>(false);
   const [includeEmojis, setIncludeEmojis] = useState<boolean>(true);
+  const [targetAudiences, setTargetAudiences] = useState<string[]>([]);
+  
+  // Initialize target audiences from store profile
+  useEffect(() => {
+      if (storeProfile?.targetAudience) {
+          setTargetAudiences(storeProfile.targetAudience.split(',').map(s => s.trim()));
+      } else {
+          setTargetAudiences([]);
+      }
+  }, [storeProfile.targetAudience]);
   
   const [currentPostSamples, setCurrentPostSamples] = useState<{ [key in Platform]?: string }>({});
   
@@ -339,7 +349,8 @@ export function useGeneratorFlow(props: {
         instagramFooter: (p === Platform.Instagram && includeFooter) ? storeProfile.instagramFooter : undefined,
         post_samples: currentPostSamples,
         presetId: activePresetId || undefined,
-        gmapPurpose: (p === Platform.GoogleMaps) ? gmapPurpose : undefined
+        gmapPurpose: (p === Platform.GoogleMaps) ? gmapPurpose : undefined,
+        targetAudience: targetAudiences.length > 0 ? targetAudiences.join(', ') : undefined
       };
       return config;
     });
@@ -658,6 +669,7 @@ export function useGeneratorFlow(props: {
     includeEmojis, setIncludeEmojis: handleEmojiToggle,
     language, setLanguage,
     storeSupplement, setStoreSupplement,
+    targetAudiences, setTargetAudiences,
     handlePlatformToggle,
     handleSetActivePlatform,
     handleToggleMultiGen,

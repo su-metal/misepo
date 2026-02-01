@@ -147,6 +147,18 @@ const KEYWORDS = {
   commonNeg: /(態度(が|も)?悪|不快|失礼|待たされた|高い|冷めて|まずい|美味しくない|遅い)/,
 };
 
+const TARGET_AUDIENCE_STRATEGIES: Record<string, string> = {
+  'お一人様': '「自分へのご褒美」「カウンター席で安心」「誰にも邪魔されない贅沢な時間」を強調。孤独感ではなく、自立した大人の楽しみとして肯定的に描く。',
+  '働く人': '「仕事帰りの癒やし」「明日への活力」「自分をお疲れ様」と労うトーン。疲れていても立ち寄りたくなる気軽さと、リフレッシュ効果をアピール。',
+  'ファミリー': '「お子様連れ大歓迎」「シェアして楽しい」「広い席で安心」を強調。親御さんが気兼ねなく過ごせる安心感と、子供の笑顔を想起させる描写を入れる。',
+  '学生': '「学割・コスパ」「映える見た目」「友達とシェア」をアピール。テンションは少し高めで、トレンド感やワクワク感を出す。「テストお疲れ様！」などの共感も有効。',
+  'カップル・夫婦': '「記念日」「特別なデート」「サプライズ」を演出。ロマンチックまたは落ち着いた雰囲気で、二人の時間がより素敵になることを約束する。',
+  '女子会・ママ友': '「おしゃべりが弾む」「時間を忘れて」「ヘルシーかつ贅沢」をアピール。共感を重視し、「久しぶりの再会に」など会話のきっかけになる要素を入れる。',
+  'シニア': '「量より質」「落ち着いた空間」「健康への配慮」「素材そのものの味」を丁寧に伝える。流行言葉は避け、信頼感のある落ち着いた言葉選びをする。',
+  '地元の方・ご近所': '「いつもの場所」「おかえりなさい」「地域密着」で親近感を出す。「散歩がてらに」「今日の夕飯に」など、日常の延長線上にある提案をする。',
+  '観光客・インバウンド': '「日本/この土地ならではの特別な体験」「旅の最高の思い出」「お土産・持ち帰り」を強調。ウェルカム感を最大化し、文末には "Welcome to Japan! 🇯🇵" や "Enjoy your trip!" などの簡単な英語フレーズを添えて歓迎の意を示す。',
+};
+
 interface RiskAnalysisResult {
   score: number;
   tier: RiskTier;
@@ -314,6 +326,18 @@ export const generateContent = async (
         - **Medium**: Standard (Target: ${targets.medium.target} chars. Max ${targets.medium.max}).
         - **Long**: Detailed (Target: ${targets.long.target} chars. Max ${targets.long.max}).
     - **Platform Bias**: **IGNORE** all standard "polite" norms for ${config.platform}. The <learning_samples> are the absolute truth for the owner's voice. **NOTE**: Mandatory structural rules (like LINE's 3-balloon and '---' format) still apply; reproduction of the owner's style should happen *within* each segment.
+    - **Target Audience**: ${(() => {
+        const targetAudienceStr = config.targetAudience || profile.targetAudience;
+        if (!targetAudienceStr) return 'General Audience';
+        
+        const targets = targetAudienceStr.split(',').map(s => s.trim());
+        const strategies = targets.map(t => TARGET_AUDIENCE_STRATEGIES[t]).filter(Boolean);
+        const combinedStrategy = strategies.length > 0 ? strategies.join(' ') : '';
+        
+        return combinedStrategy 
+            ? `**${targetAudienceStr}** — ${combinedStrategy}`
+            : `**${targetAudienceStr}**`;
+    })()} You MUST adjust the vocabulary and topic selection to resonate with this specific audience.
     - **Emojis & Symbols**: 
       ${isGMap ? 
         (hasPersona ? 
@@ -392,6 +416,7 @@ export const generateContent = async (
   1. If this instruction asks for a specific tone (e.g. "Excited", "Sad"), IGNORE the standard tone settings.
   2. If it asks for specific emojis or formatting, FOLLOW IT exactly.
   3. This instruction is the FINAL command.
+  4. **CRITICAL EXCEPTION**: You MUST still respect and write for the **Target Audience** defined in <rules>. Do not lose the audience focus.
   </execution_rule>
   </important_user_instruction>` : ""}
 
@@ -405,16 +430,28 @@ export const generateContent = async (
 DO NOT use stiff business boilerplate like "誠にありがとうございます" if the owner uses friendlier forms like "ありがとうございます😊" in the samples. DO NOT switch to standard formal Japanese just because it is Google Maps.`
           : `**STRICT STYLE REPRODUCTION**: You MUST prioritize the sentence endings and decorative patterns from <learning_samples> above all else, while following the purpose below.`;
 
+        const targetAudienceStr = config.targetAudience || profile.targetAudience;
+        let targetInstruction = "";
+        
+        if (targetAudienceStr) {
+            // Split defaults (comma separated) to find matching strategies
+            const targets = targetAudienceStr.split(',').map(s => s.trim());
+            const strategies = targets.map(t => TARGET_AUDIENCE_STRATEGIES[t]).filter(Boolean);
+            const combinedStrategy = strategies.length > 0 ? strategies.join(' ') : "Focus on this specific demographic.";
+            
+            targetInstruction = `\n- **AUDIENCE LOCK**: The content MUST be written specifically for **${targetAudienceStr}**.\n  - **STRATEGY**: ${combinedStrategy}\n  - **RULE**: Keep this demographic and strategy in mind for every sentence.`;
+        }
+
         if (isGMap) {
             const purposeStr = GMAP_PURPOSE_PROMPTS[config.gmapPurpose || config.purpose as GoogleMapPurpose] || GMAP_PURPOSE_PROMPTS[GoogleMapPurpose.Auto];
             const factInstruction = config.storeSupplement ? `\n- **FACTUAL CORE**: You MUST incorporate the specific details provided in <owner_explanation>. These facts are the most important content of the reply.` : '';
-            return `${styleInstruction}${factInstruction}\n\nTask: The <user_input> is a customer review. Generate a REPLY from the owner based on this purpose: "${purposeStr}". ${lengthWarning}`;
+            return `${styleInstruction}${factInstruction}${targetInstruction}\n\nTask: The <user_input> is a customer review. Generate a REPLY from the owner based on this purpose: "${purposeStr}". ${lengthWarning}`;
         }
         
         const postPurposeStr = POST_PURPOSE_PROMPTS[config.purpose as PostPurpose] || POST_PURPOSE_PROMPTS[PostPurpose.Auto];
-        if (config.platform === Platform.Line) return `${styleInstruction}\n\nTask: Generate a LINE message. Purpose: "${postPurposeStr}". Flow: 1. Hook, 2. Details, 3. Action. ${lengthWarning} **VISUAL**: Use emoji-sandwiched headers. **LAYOUT**: Prioritize a clean vertical flow with frequent line breaks.`;
+        if (config.platform === Platform.Line) return `${styleInstruction}${targetInstruction}\n\nTask: Generate a LINE message. Purpose: "${postPurposeStr}". Flow: 1. Hook, 2. Details, 3. Action. ${lengthWarning} **VISUAL**: Use emoji-sandwiched headers. **LAYOUT**: Prioritize a clean vertical flow with frequent line breaks.`;
 
-        return `${styleInstruction}\n\nTask: Generate an attractive post for ${config.platform}. Purpose: "${postPurposeStr}". ${lengthWarning}`;
+        return `${styleInstruction}${targetInstruction}\n\nTask: Generate an attractive post for ${config.platform}. Purpose: "${postPurposeStr}". ${lengthWarning}`;
     })()}
     Output a JSON object with:
     - "analysis": Brief context analysis.
@@ -454,6 +491,7 @@ DO NOT use stiff business boilerplate like "誠にありがとうございます
     - Tone: ${config.tone} (${TONE_RULES[config.tone] || TONE_RULES[Tone.Standard]})
     ${(isGMap && !hasPersona) ? `- Industry Specific Tone: ${TONE_INDUSTRY_ADJUSTMENTS[profile.industry]?.[config.tone] || TONE_INDUSTRY_ADJUSTMENTS['その他']?.[config.tone] || ""}` : ""}
     - Features: ${isInstagram ? 'Visual focus.' : ''}${isX ? 'Under 140 chars.' : ''}${isGMap ? 'NO hashtags. Focus on maintaining the owner\'s personality in the reply.' : ''}${isLine ? 'Direct marketing style. NO hashtags. Focus on clear messaging.' : ''}
+    - Target Audience: ${config.targetAudience || profile.targetAudience || 'General Audience'}
     - Emojis: ${isGMap ? (hasPersona ? 'Strictly prioritize mimicking the samples\' frequency.' : 'Prohibited by default to maintain a formal public tone.') : (config.includeEmojis ? `Select emojis that are highly relevant to the industry (${profile.industry}) and current topic. Prioritize contextual variety (e.g., specific items, seasonal symbols, or mood-appropriate faces) and avoid repetition or over-reliance on specific characters.` : "DO NOT use any emojis (emoticons, icons, pictograms) under any circumstances. Keep it plain text only regarding emojis.")}
     - Special Characters: ${config.includeSymbols ? `From the **Aesthetic Palette**:
         - **Headers/Accents**: ＼ ✧ TITLE ✧ ／, 𓍯 𓇢 TITLE 𓇢 𓍯, 【 TITLE 】, ✧, ꕤ, ⚘, ☼, 𖥧, 𖠚
