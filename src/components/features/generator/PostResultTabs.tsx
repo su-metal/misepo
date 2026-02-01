@@ -248,7 +248,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                     <div key={res.platform} className={activeTab === gIdx ? 'block animate-in fade-in duration-700' : 'hidden'}>
                                         <div className={`divide-y border-[#F0F0F0]`}>
                                             {res.data.map((text, iIdx) => (
-                                                <div key={iIdx} className={`py-12 px-8 lg:px-16 flex flex-col relative text-left transition-colors duration-700`}>
+                                                <div key={iIdx} className={`py-12 px-8 lg:px-8 flex flex-col relative text-left transition-colors duration-700`}>
 
                                                     {/* Text Area Content Wrapper */}
                                                     <div className={`mb-2 relative group/textarea ${theme.wrapperClass || ''}`}>

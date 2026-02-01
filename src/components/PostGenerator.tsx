@@ -141,263 +141,148 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
   };
 
   return (
-    <div className="min-h-screen overflow-x-hidden relative bg-white">
+    <div className="min-h-screen w-full relative bg-[#F5F5F7] flex flex-col items-center justify-center overflow-hidden">
 
-      <div className="max-w-[1400px] mx-auto sm:pt-8 pb-0 relative z-10">
-        {/* Global Styles for Animations */}
-        <style dangerouslySetInnerHTML={{
-          __html: `
-            @keyframes tactile-pop {
-                0% { transform: scale(0.98); }
-                40% { transform: scale(1.04); }
-                100% { transform: scale(0.98); }
-            }
-            .animate-tactile-pop {
-                animation: tactile-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-            }
-        `}} />
+      {/* App Shell Container */}
+      <div className="relative w-full h-[100dvh] sm:h-[90vh] sm:max-h-[900px] sm:w-[414px] bg-white sm:rounded-[40px] shadow-2xl overflow-hidden border-0 sm:border-[8px] sm:border-white ring-1 ring-black/5 flex flex-col isolate">
 
-        {/* Header Module */}
-        <div className="hidden sm:block mx-3 sm:mx-8 mb-10 transition-all duration-1000 animate-in fade-in slide-in-from-top-4">
-          <GeneratorHeader
-            onOpenSettings={onOpenSettings || (() => { })}
-            onOpenOnboarding={() => setShowOnboarding(true)}
+        {/* Mobile Content Area */}
+        <div className="flex-1 w-full relative overflow-hidden bg-white">
+          <PostInputForm
             storeProfile={storeProfile}
+            platforms={flow.platforms}
+            activePlatform={flow.platforms[0] || Platform.Instagram}
+            isMultiGen={flow.isMultiGenMode}
+            isStyleLocked={flow.isStyleLocked}
+            onPlatformToggle={flow.handlePlatformToggle}
+            onToggleMultiGen={flow.handleToggleMultiGen}
+            onSetActivePlatform={flow.handleSetActivePlatform}
+            platform={flow.platforms[0] || Platform.Instagram}
+            postPurpose={flow.postPurpose}
+            gmapPurpose={flow.gmapPurpose}
+            onPostPurposeChange={flow.setPostPurpose}
+            onGmapPurposeChange={flow.setGmapPurpose}
+            tone={flow.tone}
+            onToneChange={flow.setTone}
+            length={flow.length}
+            onLengthChange={flow.setLength}
+            inputText={flow.inputText}
+            onInputTextChange={flow.setInputText}
+            starRating={flow.starRating}
+            onStarRatingChange={flow.onStarRatingChange}
+            includeEmojis={flow.includeEmojis}
+            onIncludeEmojisChange={flow.setIncludeEmojis}
+            includeSymbols={flow.includeSymbols}
+            onIncludeSymbolsChange={flow.setIncludeSymbols}
+            xConstraint140={flow.xConstraint140}
+            onXConstraint140Change={flow.setXConstraint140}
+            isGenerating={flow.loading}
+            onGenerate={handleGenerate}
+            generateButtonRef={buttonRef}
             plan={plan}
-          />
-        </div>
-
-
-        {/* 2-Column Layout */}
-        <div className="px-1 sm:px-8 grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-
-          {/* Left Column: Input Form (8 Cols) */}
-          <div className="lg:col-span-8">
-            <PostInputForm
-              storeProfile={storeProfile}
-              platforms={flow.platforms}
-              activePlatform={flow.platforms[0] || Platform.Instagram}
-              isMultiGen={flow.isMultiGenMode}
-              // ...
-              isStyleLocked={flow.isStyleLocked}
-              onPlatformToggle={flow.handlePlatformToggle}
-              onToggleMultiGen={flow.handleToggleMultiGen}
-              onSetActivePlatform={flow.handleSetActivePlatform}
-              platform={flow.platforms[0] || Platform.Instagram}
-              postPurpose={flow.postPurpose}
-              gmapPurpose={flow.gmapPurpose}
-              onPostPurposeChange={flow.setPostPurpose}
-              onGmapPurposeChange={flow.setGmapPurpose}
-              tone={flow.tone}
-              onToneChange={flow.setTone}
-              length={flow.length}
-              onLengthChange={flow.setLength}
-              inputText={flow.inputText}
-              onInputTextChange={flow.setInputText}
-              starRating={flow.starRating}
-              onStarRatingChange={flow.onStarRatingChange}
-              includeEmojis={flow.includeEmojis}
-              onIncludeEmojisChange={flow.setIncludeEmojis}
-              includeSymbols={flow.includeSymbols}
-              onIncludeSymbolsChange={flow.setIncludeSymbols}
-              xConstraint140={flow.xConstraint140}
-              onXConstraint140Change={flow.setXConstraint140}
-              isGenerating={flow.loading}
-              onGenerate={handleGenerate}
-              generateButtonRef={buttonRef}
-              plan={plan}
-              presets={presets}
-              activePresetId={flow.activePresetId}
-              onApplyPreset={flow.handleApplyPreset}
-              onOpenPresetModal={() => setIsPresetModalOpen(true)}
-              customPrompt={flow.customPrompt}
-              onCustomPromptChange={flow.setCustomPrompt}
-              storeSupplement={flow.storeSupplement}
-              onStoreSupplementChange={flow.setStoreSupplement}
-              language={flow.language}
-              onLanguageChange={flow.setLanguage}
-              onOpenGuide={onOpenGuide}
-              hasResults={flow.resultGroups.length > 0}
-              onReset={React.useCallback(() => {
-                flow.setInputText('');
-                setResetTrigger(prev => prev + 1);
-              }, [flow.setInputText])}
-              resetTrigger={resetTrigger}
-              // Result props
-              generatedResults={flow.resultGroups}
-              activeResultTab={flow.activeTab}
-              onResultTabChange={flow.setActiveTab}
-              onManualEdit={flow.handleManualEdit}
-              onToggleFooter={flow.handleToggleFooter}
-              onRefine={flow.performRefine}
-              onRegenerateSingle={(platform) => flow.performGeneration([platform], true)}
-              onShare={flow.handleShare}
-              getShareButtonLabel={getShareButtonLabel}
-              refiningKey={flow.refiningKey}
-              onRefineToggle={flow.handleRefineToggle}
-              refineText={flow.refineText}
-              onRefineTextChange={flow.setRefineText}
-              onPerformRefine={flow.performRefine}
-              isRefining={flow.isRefining}
-              includeFooter={flow.includeFooter}
-              onIncludeFooterChange={flow.setIncludeFooter}
-              onAutoFormat={flow.handleAutoFormat}
-              isAutoFormatting={flow.isAutoFormatting}
-              onCopy={flow.handleCopy}
-              onMobileResultOpen={setIsMobileResultOpen}
-              onStepChange={setMobileStep}
-              restoreId={restorePost?.id}
-              closeDrawerTrigger={closeDrawerTrigger}
-              openDrawerTrigger={openDrawerTrigger}
-              onOpenOnboarding={() => setShowOnboarding(true)}
-            />
-          </div>
-
-          {/* Right Column: Results (4 Cols) */}
-          <div className="hidden lg:col-span-4 lg:block">
-            <div ref={resultsRef} className="pb-4 md:pb-8 px-4">
-              <PostResultTabs
-                results={flow.resultGroups}
-                activeTab={flow.activeTab}
-                onTabChange={flow.setActiveTab}
-                onManualEdit={flow.handleManualEdit}
-                onToggleFooter={flow.handleToggleFooter}
-                onRefine={flow.performRefine}
-                onRegenerateSingle={(platform) => flow.performGeneration([platform], true)}
-                onShare={flow.handleShare}
-                getShareButtonLabel={getShareButtonLabel}
-                storeProfile={storeProfile}
-                refiningKey={flow.refiningKey}
-                onRefineToggle={flow.handleRefineToggle}
-                refineText={flow.refineText}
-                onRefineTextChange={flow.setRefineText}
-                onPerformRefine={flow.performRefine}
-                isRefining={flow.isRefining}
-                includeFooter={flow.includeFooter}
-                onIncludeFooterChange={flow.setIncludeFooter}
-                presetId={flow.activePresetId || undefined}
-                onAutoFormat={flow.handleAutoFormat}
-                isAutoFormatting={flow.isAutoFormatting}
-                onCopy={flow.handleCopy}
-              />
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      {/* Sticky Generation Footer */}
-      <div className="hidden sm:block fixed bottom-0 left-0 right-0 z-[90]">
-        <div className="absolute inset-x-0 bottom-0 h-24 md:h-32 bg-gradient-to-t from-[var(--bg-primary)] via-[var(--bg-primary)]/90 to-transparent pointer-events-none" />
-        <div className="relative px-4 py-3 pb-4 md:pb-6 safe-area-bottom flex items-center justify-center">
-          <button
-            onClick={handleGenerate}
-            disabled={flow.loading || !flow.inputText.trim()}
-            className={`w-full max-w-xl py-6 md:py-8 rounded-[32px] font-black text-lg md:text-2xl tracking-[0.2em] flex items-center justify-center gap-3 md:gap-5 group transition-all duration-300
-                ${flow.loading || !flow.inputText.trim()
-                ? 'bg-[#f4f4f5] text-[#a1a1aa] cursor-not-allowed'
-                : 'bg-[var(--plexo-yellow)] text-[var(--plexo-black)] shadow-lg hover:shadow-xl hover:translate-y-[-2px] active:scale-95'
-              }`}
-          >
-            <div className="flex items-center justify-center gap-3 md:gap-5 relative z-10">
-              {flow.loading ? (
-                <>
-                  <div className="w-6 h-6 md:w-8 md:h-8 border-4 border-slate-400 border-t-slate-600 rounded-full animate-spin"></div>
-                  <span className="opacity-80 animate-pulse">PROCESSING...</span>
-                </>
-              ) : (
-                <>
-                  <div className="relative">
-                    <SparklesIcon className={`w-6 h-6 md:w-8 md:h-8 group-hover:rotate-12 transition-transform ${flow.resultGroups.length > 0 ? 'text-black' : 'text-primary'}`} />
-                  </div>
-                  <span className={`drop-shadow-none uppercase ${flow.resultGroups.length > 0 ? 'text-black' : 'text-primary'}`}>
-                    {flow.resultGroups.length === 0
-                      ? '投稿を生成'
-                      : (flow.resultGroups[0].config.inputText !== flow.inputText
-                        ? '内容を更新して生成'
-                        : '再生成する')}
-                  </span>
-                </>
-              )}
-            </div>
-          </button>
-        </div>
-      </div>
-
-      {
-        isPresetModalOpen && (
-          <PresetModal
-            onClose={() => setIsPresetModalOpen(false)}
             presets={presets}
-            onSave={handleSavePreset}
-            onDelete={handleDeletePreset}
-            initialPresetId={flow.activePresetId || undefined}
-            isSaving={isSavingPreset}
-            onReorder={props.refreshPresets}
-            trainingItems={trainingItems}
-            onToggleTraining={(text, platform, presetId, replaceId, source) => onToggleFavorite(text, platform, presetId, replaceId, source || 'manual')}
-            onRefreshTraining={onRefreshTraining}
-            onLogout={onLogout}
+            activePresetId={flow.activePresetId}
+            onApplyPreset={flow.handleApplyPreset}
+            onOpenPresetModal={() => setIsPresetModalOpen(true)}
+            customPrompt={flow.customPrompt}
+            onCustomPromptChange={flow.setCustomPrompt}
+            storeSupplement={flow.storeSupplement}
+            onStoreSupplementChange={flow.setStoreSupplement}
+            language={flow.language}
+            onLanguageChange={flow.setLanguage}
+            onOpenGuide={onOpenGuide}
+            hasResults={flow.resultGroups.length > 0}
+            onReset={React.useCallback(() => {
+              flow.setInputText('');
+              setResetTrigger(prev => prev + 1);
+            }, [flow.setInputText])}
+            resetTrigger={resetTrigger}
+            generatedResults={flow.resultGroups}
+            activeResultTab={flow.activeTab}
+            onResultTabChange={flow.setActiveTab}
+            onManualEdit={flow.handleManualEdit}
+            onToggleFooter={flow.handleToggleFooter}
+            onRefine={flow.performRefine}
+            onRegenerateSingle={(platform) => flow.performGeneration([platform], true)}
+            onShare={flow.handleShare}
+            getShareButtonLabel={getShareButtonLabel}
+            refiningKey={flow.refiningKey}
+            onRefineToggle={flow.handleRefineToggle}
+            refineText={flow.refineText}
+            onRefineTextChange={flow.setRefineText}
+            onPerformRefine={flow.performRefine}
+            isRefining={flow.isRefining}
+            includeFooter={flow.includeFooter}
+            onIncludeFooterChange={flow.setIncludeFooter}
+            onAutoFormat={flow.handleAutoFormat}
+            isAutoFormatting={flow.isAutoFormatting}
+            onCopy={flow.handleCopy}
+            onMobileResultOpen={setIsMobileResultOpen}
+            onStepChange={setMobileStep}
+            restoreId={restorePost?.id}
+            closeDrawerTrigger={closeDrawerTrigger}
+            openDrawerTrigger={openDrawerTrigger}
+            onOpenOnboarding={() => setShowOnboarding(true)}
           />
-        )
-      }
+        </div>
 
-      {
-        shouldShowTour && (
-          <GuestTour
-            isOpen={shouldShowTour}
-            onClose={() => { }}
-            inputRef={inputRef}
-            buttonRef={buttonRef}
-            instagramRef={instagramRef as any}
-          />
-        )
-      }
-
-      {
-        flow.toastMessage && (
-          <div className="fixed bottom-24 md:bottom-8 left-1/2 -translate-x-1/2 z-[110] animate-in slide-in-from-bottom-4 duration-300 pointer-events-none">
-            <div className="bg-stone-900 text-white px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border border-stone-700">
-              <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
-              <span className="text-sm font-bold">{flow.toastMessage}</span>
-            </div>
-          </div>
-        )
-      }
-
-      <LoadingModal isOpen={flow.loading} />
-
-      {/* Mobile Footer Navigation */}
-      {!isMobileResultOpen && (
-        <MobileFooter
-          activeTab={mobileActiveTab}
-          currentStep={mobileStep}
-          isGenerating={flow.loading}
-          onTabChange={(tab) => {
-            if (tab === 'home') {
+        {/* Floating Mobile Footer Navigation - Only shown when results are NOT open */}
+        {!isMobileResultOpen && (
+          <MobileFooter
+            activeTab={mobileActiveTab}
+            currentStep={mobileStep}
+            isGenerating={flow.loading}
+            onTabChange={(tab) => {
+              if (tab === 'home') {
+                setMobileActiveTab('home');
+                setCloseDrawerTrigger(prev => prev + 1);
+              } else if (tab === 'history') {
+                if (onOpenHistory) onOpenHistory();
+              } else if (tab === 'settings') {
+                if (onOpenSettings) onOpenSettings();
+              } else if (tab === 'learning') {
+                setIsPresetModalOpen(true);
+              }
+            }}
+            onPlusClick={mobileStep === 'confirm' ? handleGenerate : () => {
               setMobileActiveTab('home');
-              setCloseDrawerTrigger(prev => prev + 1);
-            } else if (tab === 'history') {
-              if (onOpenHistory) onOpenHistory();
-              // Don't setMobileActiveTab to keep it on 'home' while sidebar is open
-            } else if (tab === 'settings') {
-              if (onOpenSettings) onOpenSettings();
-            } else if (tab === 'learning') {
-              setIsPresetModalOpen(true);
-            }
-          }}
-          onPlusClick={mobileStep === 'confirm' ? handleGenerate : () => {
-            // New Post behavior: Reset all inputs and open drawer
-            setMobileActiveTab('home');
-            setOpenDrawerTrigger(prev => prev + 1);
+              setOpenDrawerTrigger(prev => prev + 1);
+              if (mobileStep !== 'result') {
+                flow.handleResetAll();
+              }
+            }}
+            onGenerate={handleGenerate}
+          />
+        )}
+      </div>
 
-            if (mobileStep !== 'result') {
-              flow.handleResetAll();
-            }
-          }}
-          onGenerate={handleGenerate}
+      {/* Global Modals */}
+      {isPresetModalOpen && (
+        <PresetModal
+          onClose={() => setIsPresetModalOpen(false)}
+          presets={presets}
+          onSave={handleSavePreset}
+          onDelete={handleDeletePreset}
+          initialPresetId={flow.activePresetId || undefined}
+          isSaving={isSavingPreset}
+          onReorder={props.refreshPresets}
+          trainingItems={trainingItems}
+          onToggleTraining={(text, platform, presetId, replaceId, source) => onToggleFavorite(text, platform, presetId, replaceId, source || 'manual')}
+          onRefreshTraining={onRefreshTraining}
+          onLogout={onLogout}
         />
       )}
+
+      {flow.toastMessage && (
+        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[110] animate-in slide-in-from-bottom-4 duration-300 pointer-events-none">
+          <div className="bg-stone-900 text-white px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border border-stone-700">
+            <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
+            <span className="text-sm font-bold">{flow.toastMessage}</span>
+          </div>
+        </div>
+      )}
+
+      <LoadingModal isOpen={flow.loading} />
 
       {showOnboarding && (
         <Onboarding

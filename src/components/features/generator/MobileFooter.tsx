@@ -98,7 +98,7 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
     `;
 
     return (
-        <div className={`sm:hidden fixed bottom-6 left-0 right-0 z-[150] px-4 bg-transparent transition-all duration-500 ${isDrawerOpen ? 'opacity-0 translate-y-20 pointer-events-none' : 'opacity-100 translate-y-0 pointer-events-auto'}`}>
+        <div className={`fixed bottom-0 sm:absolute sm:bottom-0 left-0 right-0 z-[150] px-4 bg-transparent transition-all duration-500 ${isDrawerOpen ? 'opacity-0 translate-y-20 pointer-events-none' : 'opacity-100 translate-y-0 pointer-events-auto'}`}>
             <div className="relative w-full h-[84px] pointer-events-auto">
 
                 {/* SVG Background Shape */}

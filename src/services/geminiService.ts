@@ -336,16 +336,7 @@ export const generateContent = async (
       - Language: ${config.language || 'Japanese'}
   </style_guidelines>
 
-  ${config.customPrompt ? `<custom_instructions>
-  ${config.customPrompt}
-  
-  <style_reminder>
-    IMPORTANT: You must strict adherence to the **Emojis** and **Special Characters** rules defined in <style_guidelines>.
-    - Emojis: **${hasPersona ? 'FOLLOW SAMPLES' : (config.includeEmojis ? 'active ON' : 'OFF')}** (Priority: High)
-    - Special Characters: **${hasPersona ? 'FOLLOW SAMPLES' : (config.includeSymbols ? 'active ON' : 'OFF')}**
-    ${config.includeEmojis ? 'You MUST use emojis if they are enabled, even if the custom instructions are serious.' : ''}
-  </style_reminder>
-  </custom_instructions>` : ""}
+
 
   <constraints>
     - **No Fabrication**: Do NOT invent ingredients (e.g., "mochi", "matcha") or prices unless explicitly stated in the <user_input>.
@@ -392,6 +383,17 @@ export const generateContent = async (
   </user_input>
 
   ${config.storeSupplement ? `<owner_explanation>\n${config.storeSupplement}\n</owner_explanation>` : ""}
+
+  ${config.customPrompt ? `<important_user_instruction>
+  The user has provided specific instructions that MUST override any conflicting style rules above.
+  INSTRUCTION: "${config.customPrompt}"
+  
+  <execution_rule>
+  1. If this instruction asks for a specific tone (e.g. "Excited", "Sad"), IGNORE the standard tone settings.
+  2. If it asks for specific emojis or formatting, FOLLOW IT exactly.
+  3. This instruction is the FINAL command.
+  </execution_rule>
+  </important_user_instruction>` : ""}
 
   <task>
     ${(() => {
@@ -463,7 +465,7 @@ DO NOT use stiff business boilerplate like "誠にありがとうございます
 
   ${profile.aiAnalysis ? `<store_background>\n${profile.aiAnalysis}\n</store_background>` : ""}
 
-  ${config.customPrompt ? `<custom_instructions>\n${config.customPrompt}\n</custom_instructions>` : ""}
+
 
   ${languageRule}
 
@@ -472,6 +474,8 @@ DO NOT use stiff business boilerplate like "誠にありがとうございます
   </user_input>
 
   ${config.storeSupplement ? `<owner_explanation>\n${config.storeSupplement}\n</owner_explanation>` : ""}
+
+  ${config.customPrompt ? `<custom_instructions>\n${config.customPrompt}\n</custom_instructions>` : ""}
 
   <task>
     ${(() => {

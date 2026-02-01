@@ -247,12 +247,11 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     const [cachedInspirationCards, setCachedInspirationCards] = React.useState<any[]>([]);
 
     return (
-        // <div className="flex flex-col h-full min-h-[100dvh] relative overflow-hidden font-inter bg-[#6339f9]">
-        <div className="flex flex-col h-full min-h-[100dvh] relative overflow-hidden font-inter bg-white">
+        <div className="flex flex-col h-full relative overflow-hidden font-inter bg-white">
 
             {/* Step 1: Home (Platform Grid) */}
             <div className={`flex flex-col h-full overflow-hidden relative transition-all duration-500 ${isStepDrawerOpen ? 'blur-md scale-[0.98] opacity-60' : 'opacity-100'}`}>
-                <div className="flex-1 flex flex-col p-4 pt-6 pb-8 safe-area-bottom">
+                <div className="flex-1 flex flex-col p-4 pt-6 pb-32 safe-area-bottom overflow-y-auto no-scrollbar">
                     {/* High-Design Header - Magazine Style Date & Minimal Avatar */}
                     <div className="flex items-start justify-between mb-4 px-1">
                         {/* Typography Date Display - Interactive Trigger */}
@@ -499,7 +498,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
             {/* Bottom Sheet Drawer - Monochrome Style */}
             {isStepDrawerOpen && (
-                <div className="fixed inset-0 z-[130] flex items-end">
+                <div className="absolute inset-0 z-[130] flex items-end">
                     {/* Immersive Backdrop */}
                     <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" onClick={() => {
                         setIsStepDrawerOpen(false);
