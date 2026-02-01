@@ -147,7 +147,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
     <div className="min-h-screen w-full relative bg-[#F5F5F7] flex flex-col items-center justify-center overflow-hidden">
 
       {/* Main Layout Grid */}
-      <div className="flex flex-row items-center justify-center gap-6 xl:gap-12 w-full max-w-[1600px] px-4">
+      <div className="flex flex-row items-center justify-center gap-6 xl:gap-12 w-full max-w-[1600px] px-0 sm:px-4">
 
         {/* Left Sidebar (PC Only) */}
         <div className="hidden xl:block h-[85vh] max-h-[850px] shrink-0">
@@ -155,7 +155,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
         </div>
 
         {/* App Shell Container */}
-        <div className="relative w-full h-[100dvh] sm:h-[90vh] sm:max-h-[900px] sm:w-[414px] shrink-0 bg-white sm:rounded-[40px] shadow-2xl overflow-hidden border-0 sm:border-[8px] sm:border-white ring-1 ring-black/5 flex flex-col isolate z-10 transition-all duration-500">
+        <div className="relative w-full h-[100dvh] sm:h-[90vh] sm:max-h-[900px] sm:w-[414px] shrink-0 bg-white sm:rounded-[40px] sm:shadow-2xl overflow-hidden border-0 sm:border-[8px] sm:border-white sm:ring-1 sm:ring-black/5 flex flex-col isolate z-10 transition-all duration-500">
 
           {/* Mobile Content Area */}
           <div className="flex-1 w-full relative overflow-hidden bg-white">
