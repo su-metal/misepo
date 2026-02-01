@@ -318,6 +318,11 @@ export function useGeneratorFlow(props: {
     setLoading(true);
     if (!isRegeneration) setResultGroups([]);
     
+    // Reset refining state for every new generation run
+    setRefiningKey(null);
+    setRefineText("");
+
+    
     // Resolve Configs for all target platforms
     const batchConfigs = targetPlatforms.map(p => {
       const purpose = p === Platform.GoogleMaps ? gmapPurpose : postPurpose;
@@ -600,6 +605,10 @@ export function useGeneratorFlow(props: {
       }));
       setResultGroups(reconstructed);
       setActiveTab(0);
+      // Ensure refining state is reset when restoring from history
+      setRefiningKey(null);
+      setRefineText("");
+
     }
   }, [restorePost]);
 

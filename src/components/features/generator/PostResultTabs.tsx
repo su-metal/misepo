@@ -6,6 +6,7 @@ import { AutoResizingTextarea } from './AutoResizingTextarea';
 import { RefinePanel } from './RefinePanel';
 import { PostPreviewModal } from './PostPreviewModal';
 import { CopyIcon, CrownIcon, MagicWandIcon, RotateCcwIcon, ExternalLinkIcon, EyeIcon, SparklesIcon, LineIcon, CloseIcon } from '../../Icons';
+
 interface PostResultTabsProps {
     results: GeneratedResult[];
     activeTab: number;
@@ -191,7 +192,6 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
     return (
         <>
             <div className={`space-y-8 animate-in fade-in duration-700 ${results.length === 0 ? 'hidden md:block' : ''}`}>
-
                 {/* Main Results Container - Premium Layout */}
                 <div className="text-primary flex flex-col min-h-[600px] overflow-hidden group/main transition-all duration-700 w-full max-w-6xl mx-auto bg-white rounded-[48px] border border-[#F0F0F0] shadow-[0_20px_50px_rgba(0,0,0,0.04)]">
 
@@ -227,10 +227,8 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                     {/* Results Content Area */}
                     <div className="flex-1">
                         {results.length === 0 ? (
-                            // Placeholder when no results (Monochrome)
                             <div className="p-12 h-full flex flex-col items-center justify-center text-center space-y-8 animate-in fade-in duration-1000">
                                 <h2 className="text-3xl tracking-[0.25em] text-center font-black text-[#111111] uppercase">プレビュー</h2>
-
                                 <div className="space-y-6 max-w-sm">
                                     <div className="w-24 h-24 rounded-[32px] bg-[#FAFAFA] border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_#111111] flex items-center justify-center text-[#111111]/20 mx-auto">
                                         <SparklesIcon className="w-12 h-12" />
@@ -241,119 +239,103 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                     </p>
                                 </div>
                             </div>
+                        ) : refiningKey ? (
+                            <div className="p-8 lg:p-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                                {(() => {
+                                    const [gIdx, iIdx] = refiningKey.split('-').map(Number);
+                                    return (
+                                        <RefinePanel
+                                            refineText={refineText}
+                                            onRefineTextChange={onRefineTextChange}
+                                            onRefine={() => onPerformRefine(gIdx, iIdx)}
+                                            onCancel={() => onRefineToggle(gIdx, iIdx)}
+                                            isRefining={isRefining}
+                                        />
+                                    );
+                                })()}
+                            </div>
                         ) : (
                             results.map((res, gIdx) => {
                                 const theme = getPlatformTheme(res.platform);
                                 return (
                                     <div key={res.platform} className={activeTab === gIdx ? 'block animate-in fade-in duration-700' : 'hidden'}>
-                                        <div className={`divide-y border-[#F0F0F0]`}>
-                                            {res.data.map((text, iIdx) => {
-                                                const isRefiningThis = refiningKey === `${gIdx}-${iIdx}`;
-
-                                                return (
-                                                    <div key={iIdx} className={`py-12 px-8 lg:px-6 flex flex-col relative text-left transition-colors duration-700`}>
-
-                                                        {/* Normal Use & Actions -> Hidden when refining */}
-                                                        {!isRefiningThis ? (
-                                                            <>
-                                                                {/* Text Area Content Wrapper */}
-                                                                <div className={`mb-2 relative group/textarea ${theme.wrapperClass || ''}`}>
-                                                                    {text ? (
-                                                                        <AutoResizingTextarea
-                                                                            value={text}
-                                                                            onChange={(e) => onManualEdit(gIdx, iIdx, e.target.value)}
-                                                                            className={`w-full bg-transparent focus:outline-none resize-none placeholder:text-[#CCCCCC] whitespace-pre-wrap overflow-hidden ${theme.contentClasses || 'text-base text-[#111111] font-bold'}`}
-                                                                            trigger={activeTab}
-                                                                        />
-                                                                    ) : (
-                                                                        <div className="py-4 text-[#CCCCCC] italic">コンテンツがありません</div>
-                                                                    )}
-                                                                </div>
-
-                                                                {/* Character Count (One level down, Right Aligned) */}
-                                                                <div className="flex justify-end mb-6 opacity-40">
-                                                                    <CharCounter
-                                                                        platform={res.platform}
-                                                                        text={text}
-                                                                        config={{ platform: res.platform } as any}
-                                                                        minimal={true}
-                                                                        footerText={storeProfile.instagramFooter}
-                                                                    />
-                                                                </div>
-
-                                                                {/* Unified Action Layout */}
-                                                                <div className="mt-auto pt-10 border-t border-[#F0F0F0]">
-                                                                    {/* Utility Row: Settings & Tools */}
-                                                                    <div className="flex items-center justify-between mb-8 gap-3">
-                                                                        {/* Left: Platform Specifics */}
-                                                                        <div className="flex items-center gap-2">
-                                                                            {theme.extra && theme.extra(gIdx, iIdx)}
-                                                                        </div>
-
-                                                                        {/* Right: Inspection */}
-                                                                        <div className="flex items-center gap-2">
-                                                                            <button
-                                                                                onClick={() => onCopy(text)}
-                                                                                className="flex items-center justify-center w-12 h-12 rounded-2xl bg-white text-[#949594] border border-[#F0F0F0] hover:bg-[#F9F9FB] hover:text-[#111111] transition-all active:scale-95 shadow-sm"
-                                                                                title="コピー"
-                                                                            >
-                                                                                <CopyIcon className="w-5 h-5" />
-                                                                            </button>
-                                                                            <button
-                                                                                onClick={() => setPreviewState({ isOpen: true, platform: res.platform, text, gIdx, iIdx })}
-                                                                                className="flex items-center justify-center w-12 h-12 rounded-2xl bg-white text-[#949594] border border-[#F0F0F0] hover:bg-[#F9F9FB] hover:text-[#111111] transition-all active:scale-95 shadow-sm"
-                                                                                title="プレビュー"
-                                                                            >
-                                                                                <EyeIcon className="w-5 h-5" />
-                                                                            </button>
-                                                                        </div>
-                                                                    </div>
-
-                                                                    {/* Primary Tier Actions */}
-                                                                    <div className="flex flex-col gap-4">
-                                                                        {/* Prominent Refine Button */}
-                                                                        <button
-                                                                            onClick={() => onRefineToggle(gIdx, iIdx)}
-                                                                            className={`flex items-center justify-center gap-3 py-5 rounded-full text-[13px] font-bold transition-all duration-300 relative group bg-white text-[#949594] border border-[#F0F0F0] active:scale-[0.98] shadow-sm hover:bg-[#F9F9FB]`}
-                                                                        >
-                                                                            <MagicWandIcon className="w-5 h-5 transition-transform" />
-                                                                            <span>AIで内容を微調整する</span>
-                                                                        </button>
-
-                                                                        <button
-                                                                            onClick={() => {
-                                                                                if (res.platform === Platform.Line) {
-                                                                                    const encodedText = encodeURIComponent(text);
-                                                                                    navigator.clipboard.writeText(text);
-                                                                                    window.location.href = `https://line.me/R/share?text=${encodedText}`;
-                                                                                } else {
-                                                                                    onShare(res.platform, text);
-                                                                                }
-                                                                            }}
-                                                                            className={`flex items-center justify-center gap-3 py-5 rounded-full font-bold text-[14px] transition-all duration-300 group mt-1 relative overflow-hidden active:scale-[0.98] ${theme.actionColor}`}
-                                                                        >
-                                                                            <span className="relative z-10">{theme.actionLabel}</span>
-                                                                            <ExternalLinkIcon className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform relative z-10" />
-                                                                        </button>
-                                                                    </div>
-                                                                </div>
-                                                            </>
+                                        <div className="divide-y border-[#F0F0F0]">
+                                            {res.data.map((text, iIdx) => (
+                                                <div key={iIdx} className="py-12 px-8 lg:px-6 flex flex-col relative text-left transition-colors duration-700">
+                                                    <div className={`mb-2 relative group/textarea ${theme.wrapperClass || ''}`}>
+                                                        {text ? (
+                                                            <AutoResizingTextarea
+                                                                value={text}
+                                                                onChange={(e) => onManualEdit(gIdx, iIdx, e.target.value)}
+                                                                className={`w-full bg-transparent focus:outline-none resize-none placeholder:text-[#CCCCCC] whitespace-pre-wrap overflow-hidden ${theme.contentClasses || 'text-base text-[#111111] font-bold'}`}
+                                                                trigger={activeTab}
+                                                            />
                                                         ) : (
-                                                            /* Refinement Overlay (per variant) - Exclusive Mode */
-                                                            /* Refinement Panel - Direct Embed */
-                                                            <div className="w-full animate-in fade-in duration-300">
-                                                                <RefinePanel
-                                                                    refineText={refineText}
-                                                                    onRefineTextChange={onRefineTextChange}
-                                                                    onRefine={() => onPerformRefine(gIdx, iIdx)}
-                                                                    onCancel={() => onRefineToggle(gIdx, iIdx)}
-                                                                    isRefining={isRefining}
-                                                                />
-                                                            </div>
+                                                            <div className="py-4 text-[#CCCCCC] italic">コンテンツがありません</div>
                                                         )}
                                                     </div>
-                                                );
-                                            })}
+
+                                                    <div className="flex justify-end mb-6 opacity-40">
+                                                        <CharCounter
+                                                            platform={res.platform}
+                                                            text={text}
+                                                            config={{ platform: res.platform } as any}
+                                                            minimal={true}
+                                                            footerText={storeProfile.instagramFooter}
+                                                        />
+                                                    </div>
+
+                                                    <div className="mt-auto pt-10 border-t border-[#F0F0F0]">
+                                                        <div className="flex items-center justify-between mb-8 gap-3">
+                                                            <div className="flex items-center gap-2">
+                                                                {theme.extra && theme.extra(gIdx, iIdx)}
+                                                            </div>
+                                                            <div className="flex items-center gap-2">
+                                                                <button
+                                                                    onClick={() => onCopy(text)}
+                                                                    className="flex items-center justify-center w-12 h-12 rounded-2xl bg-white text-[#949594] border border-[#F0F0F0] hover:bg-[#F9F9FB] hover:text-[#111111] transition-all active:scale-95 shadow-sm"
+                                                                    title="コピー"
+                                                                >
+                                                                    <CopyIcon className="w-5 h-5" />
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => setPreviewState({ isOpen: true, platform: res.platform, text, gIdx, iIdx })}
+                                                                    className="flex items-center justify-center w-12 h-12 rounded-2xl bg-white text-[#949594] border border-[#F0F0F0] hover:bg-[#F9F9FB] hover:text-[#111111] transition-all active:scale-95 shadow-sm"
+                                                                    title="プレビュー"
+                                                                >
+                                                                    <EyeIcon className="w-5 h-5" />
+                                                                </button>
+                                                            </div>
+                                                        </div>
+
+                                                        <div className="flex flex-col gap-4">
+                                                            <button
+                                                                onClick={() => onRefineToggle(gIdx, iIdx)}
+                                                                className="flex items-center justify-center gap-3 py-5 rounded-full text-[13px] font-bold transition-all duration-300 relative group bg-white text-[#949594] border border-[#F0F0F0] active:scale-[0.98] shadow-sm hover:bg-[#F9F9FB]"
+                                                            >
+                                                                <MagicWandIcon className="w-5 h-5 transition-transform" />
+                                                                <span>AIで内容を微調整する</span>
+                                                            </button>
+
+                                                            <button
+                                                                onClick={() => {
+                                                                    if (res.platform === Platform.Line) {
+                                                                        const encodedText = encodeURIComponent(text);
+                                                                        navigator.clipboard.writeText(text);
+                                                                        window.location.href = `https://line.me/R/share?text=${encodedText}`;
+                                                                    } else {
+                                                                        onShare(res.platform, text);
+                                                                    }
+                                                                }}
+                                                                className={`flex items-center justify-center gap-3 py-5 rounded-full font-bold text-[14px] transition-all duration-300 group mt-1 relative overflow-hidden active:scale-[0.98] ${theme.actionColor}`}
+                                                            >
+                                                                <span className="relative z-10">{theme.actionLabel}</span>
+                                                                <ExternalLinkIcon className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform relative z-10" />
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
                                         </div>
                                     </div>
                                 );
