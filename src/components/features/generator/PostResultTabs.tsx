@@ -182,7 +182,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                     </svg>
                 );
             case Platform.Line:
-                return <LineIcon className={iconClass} isActive={isSelected} color={isSelected ? "#06C755" : "currentColor"} />;
+                return <LineIcon className={iconClass} isActive={isSelected} color={isSelected ? "#06C755" : "currentColor"} activeTextFill="#0071b9" />;
             default:
                 return null;
         }
