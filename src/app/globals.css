@@ -3,30 +3,43 @@
 @tailwind utilities;
 
 :root {
-  /* Strict Plexo Palette */
-  --plexo-black: #0d0d0d;
-  --plexo-dark-gray: #666666;
-  --plexo-med-gray: #949594;
-  --plexo-yellow: #f8ea5d;
+  /* Reference Design (1-365.me) Color System */
+  --ichizen-blue: #1f29fc;
+  --ichizen-blue-light: #d8e4ff;
+  --ichizen-green: #00de7a;
+  --ichizen-beige: #E8E3D5;
+  --ichizen-white: #ffffff;
+  --ichizen-text: #1a1a1a;
+  
+  /* Semantic Mapping for App Shell */
+  --brand-primary: var(--ichizen-blue);
+  --brand-secondary: var(--ichizen-blue-light);
+  --brand-accent: var(--ichizen-green);
+  --brand-bg: var(--ichizen-white);
+  --brand-text: var(--ichizen-text);
+
+  /* Legacy / Compatibility Overrides */
+  --plexo-black: #1a1a1a; /* Softer black */
+  --plexo-dark-gray: #4a5568;
+  --plexo-med-gray: #a0aec0;
+  --plexo-yellow: var(--ichizen-green); /* Mapping yellow to green accent */
   --plexo-white: #ffffff;
 
-  /* Semantic Mapping */
-  --bg-primary: var(--plexo-white);
-  --bg-secondary: #f9f9f9; /* Very subtle gray for inputs */
+  --bg-primary: var(--brand-bg);
+  --bg-secondary: var(--brand-secondary);
   
-  --text-primary: var(--plexo-black);
+  --text-primary: var(--brand-text);
   --text-secondary: var(--plexo-dark-gray);
   --text-placeholder: var(--plexo-med-gray);
 
-  --accent-primary: var(--plexo-yellow);
-  --border-default: var(--plexo-med-gray);
-  --border-active: var(--plexo-black);
+  --accent-primary: var(--brand-primary);
+  --border-default: #e2e8f0;
+  --border-active: var(--brand-primary);
 
-  /* Legacy overrides to ensure compatibility */
-  --primary: var(--plexo-black);
-  --accent: var(--plexo-yellow);
-  --bg-beige: var(--plexo-white); /* Override existing beige */
-  --menu-bg: var(--plexo-white);
+  --primary: var(--brand-primary);
+  --accent: var(--brand-accent);
+  --bg-beige: var(--brand-secondary);
+  --menu-bg: var(--brand-bg);
 }
 
 body {

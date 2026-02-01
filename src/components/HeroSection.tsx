@@ -81,58 +81,12 @@ export default function HeroSection() {
             {/* Soft Background Gradients Removed */}
 
             <div
-                className="relative min-h-screen h-auto md:h-screen w-full flex flex-col md:block pb-32 md:pb-0"
+                className="relative h-auto w-full flex flex-col items-center justify-center pt-12 md:pt-20 pb-20"
             >
                 <div className="max-w-7xl mx-auto w-full h-full relative px-4 flex flex-col md:relative md:block">
-                    {/* Mobile Text (Static at top) */}
-                    <div className="md:hidden pt-24 px-4 text-center z-20 relative mb-12 shrink-0">
-                        <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white border border-[#F5CC6D]/30 rounded-full shadow-sm mb-6">
-                            <span className="w-2 h-2 rounded-full bg-[#F5CC6D] animate-pulse" />
-                            <span className="text-xs font-bold text-slate-600 uppercase tracking-widest">7日間の無料体験実施中</span>
-                        </div>
-                        <h1 className="text-4xl font-bold text-slate-800 tracking-tight leading-tight mb-6">
-                            AIなのに、<br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#E88BA3] to-[#F5CC6D]">あなたの言葉。</span>
-                        </h1>
-                        <p className="text-sm text-slate-500 font-medium leading-relaxed px-2 mb-8">
-                            丁寧だけどキレイなだけのAIは卒業。<br />
-                            MisePoはあなたのお手本から「書き癖」を学習し、<br />
-                            店主の『分身』としてSNS運用を代行します。
-                        </p>
-                        <div className="flex flex-col gap-4 max-w-sm mx-auto mt-2 px-4">
-                            <button onClick={() => window.location.href = '/start'} className="w-full px-6 py-4 bg-gradient-to-r from-[#4DB39A] to-[#45a089] text-white font-bold rounded-2xl shadow-lg shadow-[#4DB39A]/30 flex items-center justify-center gap-2 active:scale-95 transition-all">
-                                <Icons.Sparkles size={20} className="text-[#F5CC6D]" />
-                                <span className="text-lg tracking-widest">無料で試してみる</span>
-                            </button>
-                        </div>
-                    </div>
+                    {/* Mobile Text Removed - Moved to SplitLayout Left Panel */}
 
-                    {/* Desktop Text (Absolute) */}
-                    <div className="hidden md:block absolute top-1/2 -translate-y-1/2 left-4 lg:left-8 z-20 max-w-xl">
-                        <div className="inline-flex items-center gap-3 px-4 py-2 bg-white/80 backdrop-blur-sm border border-slate-200/50 rounded-full shadow-sm mb-8">
-                            <span className="flex h-2.5 w-2.5 relative">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#4DB39A] opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#4DB39A]"></span>
-                            </span>
-                            <span className="text-xs font-bold text-slate-500 tracking-wide">SNS運用をAIが丸ごと代行！ 7日間の無料体験実施中</span>
-                        </div>
-                        <h1 className="text-6xl lg:text-[5.5rem] font-bold text-slate-800 tracking-tighter leading-[1.1] mb-8">
-                            AIなのに、<br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#E88BA3] to-[#F5CC6D]">あなたの言葉。</span>
-                        </h1>
-                        <p className="text-lg text-slate-500 font-medium leading-relaxed mb-10 max-w-lg">
-                            丁寧だけどキレイなだけのAIは卒業。MisePoはあなたのお手本から「書き癖」を学習し、想いのこもった文章を30秒で作成。店主の『分身』が、運用を代行します。
-                        </p>
-                        <div className="flex gap-4">
-                            <button onClick={() => window.location.href = '/start'} className="px-8 py-4 bg-slate-900 text-white font-bold rounded-2xl shadow-xl shadow-slate-900/20 hover:shadow-2xl hover:bg-slate-800 transition-all flex items-center gap-3 active:scale-95">
-                                <Icons.Sparkles size={20} className="text-[#F5CC6D]" />
-                                無料で試してみる
-                            </button>
-                            <button onClick={() => window.location.href = '#pricing'} className="px-8 py-4 bg-white text-slate-700 font-bold rounded-2xl border border-slate-200 hover:bg-slate-50 transition-all active:scale-95 shadow-sm">
-                                料金プラン
-                            </button>
-                        </div>
-                    </div>
+                    {/* Desktop Text Removed - Moved to SplitLayout Left Panel */}
 
                     {/* Animation Container (Abstract Cards) */}
                     <div className="relative mt-0 md:mt-0 h-[500px] md:h-auto md:absolute md:inset-0 md:left-[50%] lg:left-[50%] flex items-center justify-center pointer-events-none w-full md:w-auto">
@@ -153,7 +107,7 @@ export default function HeroSection() {
                                         {/* Abstract Header */}
                                         <div className="px-8 pb-6 flex justify-between items-center">
                                             <div className="p-2 bg-slate-50 rounded-full"><Icons.Menu className="text-slate-400" size={20} /></div>
-                                            <div className="w-8 h-8 bg-[#F5CC6D]/20 rounded-full flex items-center justify-center text-[#F5CC6D]"><Icons.Sparkles size={16} fill="currentColor" /></div>
+                                            <div className="w-8 h-8 bg-[var(--ichizen-green)]/20 rounded-full flex items-center justify-center text-[var(--ichizen-green)]"><Icons.Sparkles size={16} fill="currentColor" /></div>
                                         </div>
 
                                         <div className="px-6 flex-1 flex flex-col justify-center pb-24">
@@ -162,19 +116,19 @@ export default function HeroSection() {
                                                 <div className="bg-slate-800 text-white px-4 py-2 rounded-full shadow-lg font-bold text-xs flex items-center gap-2">
                                                     {effectiveProgress < 3000 && (
                                                         <>
-                                                            <span className="w-1.5 h-1.5 bg-[#4DB39A] rounded-full animate-pulse" />
+                                                            <span className="w-1.5 h-1.5 bg-[var(--ichizen-blue)] rounded-full animate-pulse" />
                                                             Thinking...
                                                         </>
                                                     )}
                                                     {effectiveProgress >= 3000 && effectiveProgress < 5000 && (
                                                         <>
-                                                            <Icons.Sparkles size={12} className="text-[#F5CC6D] animate-spin" />
+                                                            <Icons.Sparkles size={12} className="text-[var(--ichizen-green)] animate-spin" />
                                                             Writing...
                                                         </>
                                                     )}
                                                     {effectiveProgress >= 5000 && (
                                                         <>
-                                                            <div className="bg-[#4DB39A] rounded-full p-0.5"><Icons.Check size={8} className="text-white" strokeWidth={3} /></div>
+                                                            <div className="bg-[var(--ichizen-blue)] rounded-full p-0.5"><Icons.Check size={8} className="text-white" strokeWidth={3} /></div>
                                                             Done!
                                                         </>
                                                     )}
@@ -186,14 +140,14 @@ export default function HeroSection() {
                                                 <div className="absolute top-0 right-0 p-12 bg-gradient-to-br from-[#E88BA3]/10 to-transparent rounded-bl-[100px] -z-10 opacity-50 transition-opacity group-hover:opacity-100" />
 
                                                 <div className="flex gap-2 mb-4">
-                                                    <span className="px-3 py-1 bg-[#E88BA3]/10 text-[#E88BA3] text-[10px] font-bold rounded-full">Instagram</span>
+                                                    <span className="px-3 py-1 bg-[var(--ichizen-blue)]/10 text-[var(--ichizen-blue)] text-[10px] font-bold rounded-full">Instagram</span>
                                                     <span className="px-3 py-1 bg-slate-100 text-slate-500 text-[10px] font-bold rounded-full">Casual</span>
                                                 </div>
 
                                                 <div className={`space-y-2 transition-all duration-500 ease-in-out min-h-[140px]`} style={{ opacity: textOpacity }}>
                                                     <div className="text-sm text-slate-600 whitespace-pre-wrap font-medium leading-loose">
                                                         {currentText}
-                                                        <span className={`${isTypingDone ? 'hidden' : 'inline'} animate-pulse text-[#E88BA3]`}>|</span>
+                                                        <span className={`${isTypingDone ? 'hidden' : 'inline'} animate-pulse text-[var(--ichizen-blue)]`}>|</span>
                                                     </div>
                                                 </div>
 
@@ -203,7 +157,7 @@ export default function HeroSection() {
                                                     </div>
 
                                                     {effectiveProgress >= 1900 && effectiveProgress <= 2300 && (
-                                                        <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[10%] w-full h-full bg-[#E88BA3]/20 rounded-2xl animate-ping opacity-30 pointer-events-none" />
+                                                        <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[10%] w-full h-full bg-[var(--ichizen-blue)]/20 rounded-2xl animate-ping opacity-30 pointer-events-none" />
                                                     )}
                                                 </div>
                                             </div>
@@ -227,7 +181,7 @@ export default function HeroSection() {
                                         <div className="absolute inset-0 z-50 pointer-events-none overflow-hidden">
                                             {/* Toast */}
                                             <div className={`absolute bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-3 bg-white/90 backdrop-blur-md text-slate-800 px-6 py-4 rounded-2xl shadow-2xl w-[85%] justify-center border border-white/50 transition-all duration-700 transform ${effectiveProgress > 6800 ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}>
-                                                <div className="w-6 h-6 bg-[#4DB39A] rounded-full flex items-center justify-center shrink-0 shadow-lg shadow-[#4DB39A]/30">
+                                                <div className="w-6 h-6 bg-[var(--ichizen-blue)] rounded-full flex items-center justify-center shrink-0 shadow-lg shadow-[var(--ichizen-blue)]/30">
                                                     <Icons.Check size={12} className="text-white" strokeWidth={3} />
                                                 </div>
                                                 <p className="font-bold text-sm">Successfully Posted!</p>
@@ -261,7 +215,7 @@ export default function HeroSection() {
                                         <div className="flex flex-col bg-white transition-transform duration-[2850ms] ease-out pt-2" style={isPosted ? innerContentStyle : {}}>
                                             {/* Post Header */}
                                             <div className="px-6 py-2 flex items-center gap-3 mb-2">
-                                                <div className="p-[2px] bg-gradient-to-tr from-[#E88BA3] to-[#F5CC6D] rounded-full">
+                                                <div className="p-[2px] bg-gradient-to-tr from-[var(--ichizen-blue)] to-[var(--ichizen-green)] rounded-full">
                                                     <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center p-0.5">
                                                         <Icons.Smartphone size={14} className="text-slate-300" />
                                                     </div>
@@ -280,7 +234,7 @@ export default function HeroSection() {
                                             <div className="p-6 space-y-4 pb-24">
                                                 <div className="flex justify-between items-center text-slate-700">
                                                     <div className="flex gap-5">
-                                                        <Icons.Heart className="text-[#E88BA3] fill-[#E88BA3]" size={26} />
+                                                        <Icons.Heart className="text-[var(--ichizen-blue)] fill-[#E88BA3]" size={26} />
                                                         <Icons.MessageCircle size={26} />
                                                         <Icons.Send size={26} />
                                                     </div>
@@ -289,7 +243,7 @@ export default function HeroSection() {
                                                 <p className="font-bold text-xs text-slate-800">1,203 likes</p>
                                                 <div className="text-xs space-y-2">
                                                     <div className="text-slate-600 font-medium leading-relaxed">
-                                                        <span className="font-bold mr-2 text-slate-900">MisePo Cafe</span>
+                                                        <span className="font-bold mr-2 text-[var(--ichizen-blue)]">MisePo Cafe</span>
                                                         <span className="whitespace-pre-wrap block mt-2 text-slate-500">
                                                             {generatedResult}
                                                         </span>
@@ -329,7 +283,7 @@ export default function HeroSection() {
                                     <div className="flex-1 bg-slate-50/50 p-4 space-y-4">
                                         <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100">
                                             <div className="flex items-center gap-3 mb-3">
-                                                <div className="w-8 h-8 bg-[#F5CC6D]/20 rounded-full flex items-center justify-center text-[#F5CC6D]"><Icons.MapPin size={14} fill="currentColor" /></div>
+                                                <div className="w-8 h-8 bg-[var(--ichizen-green)]/20 rounded-full flex items-center justify-center text-[var(--ichizen-green)]"><Icons.MapPin size={14} fill="currentColor" /></div>
                                                 <div>
                                                     <div className="text-xs font-bold text-slate-700">MisePo Cafe</div>
                                                     <div className="text-[9px] text-slate-400 font-medium">4.8 ★★★★★ (120)</div>
