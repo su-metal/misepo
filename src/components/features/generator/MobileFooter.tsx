@@ -179,14 +179,14 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
                             `}>Home</span>
                         </button>
                         <button
-                            onClick={() => onTabChange('history')}
+                            onClick={() => onTabChange('learning')}
                             className={`flex flex-col items-center gap-1.5 transition-all active:scale-95 ${isConfirmStep ? 'opacity-40 grayscale pointer-events-none' : ''}`}
                         >
-                            <CustomHistory active={activeTab === 'history'} />
+                            <CustomAvatar active={activeTab === 'learning'} />
                             <span className={`
                                 text-[9px] font-black uppercase tracking-[0.1em] transition-all
-                                ${activeTab === 'history' ? 'text-[#0071b9]' : 'text-slate-500'}
-                            `}>History</span>
+                                ${activeTab === 'learning' ? 'text-[#0071b9]' : 'text-slate-500'}
+                            `}>分身</span>
                         </button>
                     </div>
 
@@ -196,14 +196,14 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
                     {/* Right Side Items */}
                     <div className="flex items-center justify-center gap-8 w-[120px]">
                         <button
-                            onClick={() => onTabChange('learning')}
+                            onClick={() => onTabChange('history')}
                             className={`flex flex-col items-center gap-1.5 transition-all active:scale-95 ${isConfirmStep ? 'opacity-40 grayscale pointer-events-none' : ''}`}
                         >
-                            <CustomAvatar active={activeTab === 'learning'} />
+                            <CustomHistory active={activeTab === 'history'} />
                             <span className={`
                                 text-[9px] font-black uppercase tracking-[0.1em] transition-all
-                                ${activeTab === 'learning' ? 'text-[#0071b9]' : 'text-slate-500'}
-                            `}>分身</span>
+                                ${activeTab === 'history' ? 'text-[#0071b9]' : 'text-slate-500'}
+                            `}>History</span>
                         </button>
                         <button
                             onClick={() => onTabChange('settings')}

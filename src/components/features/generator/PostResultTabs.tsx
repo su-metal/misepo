@@ -251,7 +251,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                 const isRefiningThis = refiningKey === `${gIdx}-${iIdx}`;
 
                                                 return (
-                                                    <div key={iIdx} className={`py-12 px-8 lg:px-4 flex flex-col relative text-left transition-colors duration-700`}>
+                                                    <div key={iIdx} className={`py-12 px-8 lg:px-6 flex flex-col relative text-left transition-colors duration-700`}>
 
                                                         {/* Normal Use & Actions -> Hidden when refining */}
                                                         {!isRefiningThis ? (
@@ -340,29 +340,15 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                             </>
                                                         ) : (
                                                             /* Refinement Overlay (per variant) - Exclusive Mode */
-                                                            <div className="w-full flex flex-col p-4 animate-in fade-in duration-300 bg-white rounded-[32px] border border-[#F0F0F0] shadow-sm">
-                                                                {/* Header with Close Button */}
-                                                                <div className="flex justify-end pb-2">
-                                                                    <button
-                                                                        onClick={() => onRefineToggle(gIdx, iIdx)}
-                                                                        className="p-2 rounded-full hover:bg-black/5 transition-colors"
-                                                                    >
-                                                                        <CloseIcon className="w-5 h-5 text-[#111111] opacity-30 group-hover:opacity-100" />
-                                                                    </button>
-                                                                </div>
-
-                                                                {/* Panel Content */}
-                                                                <div className="flex-1 flex flex-col items-center max-w-full mx-auto w-full pt-1 pb-2">
-                                                                    <div className="w-full">
-                                                                        <RefinePanel
-                                                                            refineText={refineText}
-                                                                            onRefineTextChange={onRefineTextChange}
-                                                                            onRefine={() => onPerformRefine(gIdx, iIdx)}
-                                                                            onCancel={() => onRefineToggle(gIdx, iIdx)}
-                                                                            isRefining={isRefining}
-                                                                        />
-                                                                    </div>
-                                                                </div>
+                                                            /* Refinement Panel - Direct Embed */
+                                                            <div className="w-full animate-in fade-in duration-300">
+                                                                <RefinePanel
+                                                                    refineText={refineText}
+                                                                    onRefineTextChange={onRefineTextChange}
+                                                                    onRefine={() => onPerformRefine(gIdx, iIdx)}
+                                                                    onCancel={() => onRefineToggle(gIdx, iIdx)}
+                                                                    isRefining={isRefining}
+                                                                />
                                                             </div>
                                                         )}
                                                     </div>
