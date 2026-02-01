@@ -964,6 +964,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                     disabled={isGenerating}
                                     className={`
                                         w-full group relative overflow-hidden rounded-[32px] py-6
+                                        flex items-center justify-center
                                         transition-all duration-500 active:scale-95
                                         ${isGenerating ? 'bg-stone-300 cursor-not-allowed' : 'bg-[#f2e018] shadow-[0_10px_30px_rgba(0,113,185,0.2)]'}
                                     `}
@@ -972,11 +973,9 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         {isGenerating ? (
                                             <div className="w-6 h-6 border-3 border-white/20 border-t-[#122646] rounded-full animate-spin" />
                                         ) : (
-                                            <div className="flex items-center gap-3">
-                                                <span className="text-[#122646] text-base font-black uppercase tracking-[0.3em]">
-                                                    投稿案を作成する
-                                                </span>
-                                            </div>
+                                            <span className="text-[#122646] text-base font-black uppercase tracking-[0.3em]">
+                                                投稿案を作成する
+                                            </span>
                                         )}
                                     </div>
                                 </button>

@@ -5,7 +5,7 @@ import { CharCounter } from './CharCounter';
 import { AutoResizingTextarea } from './AutoResizingTextarea';
 import { RefinePanel } from './RefinePanel';
 import { PostPreviewModal } from './PostPreviewModal';
-import { CopyIcon, CrownIcon, MagicWandIcon, RotateCcwIcon, ExternalLinkIcon, EyeIcon, SparklesIcon, LineIcon } from '../../Icons';
+import { CopyIcon, CrownIcon, MagicWandIcon, RotateCcwIcon, ExternalLinkIcon, EyeIcon, SparklesIcon, LineIcon, CloseIcon } from '../../Icons';
 interface PostResultTabsProps {
     results: GeneratedResult[];
     activeTab: number;
@@ -196,7 +196,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                 <div className="text-primary flex flex-col min-h-[600px] overflow-hidden group/main transition-all duration-700 w-full max-w-6xl mx-auto bg-white rounded-[48px] border border-[#F0F0F0] shadow-[0_20px_50px_rgba(0,0,0,0.04)]">
 
                     {/* Integrated Tab Navigation Header (Premium Light) */}
-                    {results.length > 0 && (
+                    {results.length > 0 && !refiningKey && (
                         <div className="flex items-center w-full border-b border-[#F0F0F0] bg-white py-2 px-2 overflow-x-auto no-scrollbar">
                             {results.map((res, idx) => {
                                 const isSelected = activeTab === idx;
@@ -310,9 +310,9 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                                 onClick={() => onRefineToggle(gIdx, iIdx)}
                                                                 className={`flex items-center justify-center gap-3 py-5 rounded-full text-[13px] font-bold transition-all duration-300 relative group
                                                                     ${refiningKey === `${gIdx}-${iIdx}`
-                                                                        ? 'bg-[#7F5AF0] text-white shadow-[0_8px_20px_rgba(127,90,240,0.2)]'
+                                                                        ? 'bg-[#0071b9] text-white shadow-[0_8px_20px_rgba(0,113,185,0.2)]'
                                                                         : 'bg-white text-[#949594] border border-[#F0F0F0] active:scale-[0.98] shadow-sm'
-                                                                    }`}
+                                                                    } transition-colors`}
                                                             >
                                                                 <MagicWandIcon className="w-5 h-5 transition-transform" />
                                                                 <span>AIで内容を微調整する</span>
@@ -336,20 +336,17 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                         </div>
                                                     </div>
 
-                                                    {/* Refinement Overlay (per variant) - Monochrome */}
+                                                    {/* Refinement Overlay (per variant) - Minimalist */}
                                                     {refiningKey === `${gIdx}-${iIdx}` && (
-                                                        <div className="absolute inset-0 bg-white/95 backdrop-blur-xl z-20 flex flex-col p-12 animate-in fade-in zoom-in duration-500 rounded-[54px] border border-[#F0F0F0] shadow-2xl">
-                                                            <div className="flex-1 flex flex-col items-center justify-center max-w-lg mx-auto w-full">
-                                                                <div className="mb-10 text-center space-y-5">
-                                                                    <div className="w-20 h-20 bg-[#111111] text-white rounded-[28px] flex items-center justify-center shadow-xl border border-white/10 mx-auto">
-                                                                        <MagicWandIcon className="w-10 h-10" />
-                                                                    </div>
-                                                                    <div>
-                                                                        <h4 className="text-[10px] font-black text-[#999999] uppercase tracking-[0.4em] mb-2">AI Refinement</h4>
-                                                                        <p className="text-2xl font-black text-[#111111] leading-tight tracking-tight">How can I improve it?</p>
-                                                                    </div>
-                                                                </div>
+                                                        <div className="absolute inset-0 bg-white z-20 flex flex-col p-8 sm:p-12 animate-in fade-in duration-300 rounded-[54px] border border-[#F0F0F0] shadow-2xl overflow-y-auto">
+                                                            <button
+                                                                onClick={() => onRefineToggle(gIdx, iIdx)}
+                                                                className="absolute top-8 right-8 p-2 rounded-full hover:bg-black/5 transition-colors z-30"
+                                                            >
+                                                                <CloseIcon className="w-6 h-6 text-[#111111] opacity-30 group-hover:opacity-100" />
+                                                            </button>
 
+                                                            <div className="flex-1 flex flex-col items-center max-w-2xl mx-auto w-full pt-10 pb-6">
                                                                 <div className="w-full">
                                                                     <RefinePanel
                                                                         refineText={refineText}
