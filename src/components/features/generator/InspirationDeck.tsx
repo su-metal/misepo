@@ -141,8 +141,8 @@ export const InspirationDeck: React.FC<InspirationDeckProps> = ({ storeProfile, 
         return (
             <div className="w-full h-32 flex items-center justify-center bg-stone-50/50 rounded-2xl mb-4 border border-stone-100/50">
                 <div className="flex flex-col items-center gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-[#0071b9] animate-ping" />
-                    <span className="text-[9px] font-black text-[#0071b9]/50 tracking-widest uppercase">Looking for ideas...</span>
+                    <div className="w-1.5 h-1.5 rounded-full bg-[#1f29fc] animate-ping" />
+                    <span className="text-[9px] font-black text-[#1f29fc]/50 tracking-widest uppercase">Looking for ideas...</span>
                 </div>
             </div>
         );
@@ -172,8 +172,8 @@ export const InspirationDeck: React.FC<InspirationDeckProps> = ({ storeProfile, 
                         }}
                         className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#f5f7fa] border border-slate-200 active:scale-95 transition-all group"
                     >
-                        <RotateCcwIcon className={`w-3 h-3 text-slate-500 group-hover:text-[#0071b9] transition-colors ${loading ? 'animate-spin' : ''}`} />
-                        <span className="text-[9px] font-black text-slate-500 group-hover:text-[#0071b9] tracking-wider uppercase">Shuffle</span>
+                        <RotateCcwIcon className={`w-3 h-3 text-slate-500 group-hover:text-[#1f29fc] transition-colors ${loading ? 'animate-spin' : ''}`} />
+                        <span className="text-[9px] font-black text-slate-500 group-hover:text-[#1f29fc] tracking-wider uppercase">Shuffle</span>
                     </button>
                 )}
             </div>
@@ -190,7 +190,7 @@ export const InspirationDeck: React.FC<InspirationDeckProps> = ({ storeProfile, 
                             className="
                             flex items-center gap-2.5 px-5 py-3
                             bg-white rounded-full border border-stone-100 shadow-sm md:shadow-md
-                            transition-all hover:scale-[1.02] active:scale-95 hover:border-[#0071b9]/30
+                            transition-all hover:scale-[1.02] active:scale-95 hover:border-[#1f29fc]/30
                             group shrink-0 whitespace-nowrap
                             "
                         >
@@ -199,7 +199,7 @@ export const InspirationDeck: React.FC<InspirationDeckProps> = ({ storeProfile, 
 
                             {/* Title & Type Badge (Mini) */}
                             <div className="flex flex-col items-start leading-tight">
-                                <h4 className="text-[13px] font-bold text-[#111111] group-hover:text-[#0071b9] transition-colors">
+                                <h4 className="text-[13px] font-bold text-[#111111] group-hover:text-[#1f29fc] transition-colors">
                                     {card.title}
                                 </h4>
                                 <span className="text-[8px] font-black text-stone-400 uppercase tracking-tighter">

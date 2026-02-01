@@ -14,7 +14,7 @@ export const MobileFeatures = () => {
                 <div className="space-y-6">
                     {/* Feature 1 */}
                     <div className="text-center">
-                        <div className="w-12 h-12 mx-auto bg-[#0071b9]/10 rounded-2xl flex items-center justify-center text-[#0071b9] mb-3">
+                        <div className="w-12 h-12 mx-auto bg-[#1f29fc]/10 rounded-2xl flex items-center justify-center text-[#1f29fc] mb-3">
                             <Icons.Users size={24} />
                         </div>
                         <h4 className="font-bold text-[#122646] mb-2">採用率 1.8倍</h4>
