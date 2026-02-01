@@ -545,40 +545,41 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             <div className="w-16 h-1.5 bg-[#E5E5E5] rounded-full" />
                         </div>
 
-                        {/* Drawer Header */}
-                        <div className="px-8 pb-4 flex items-center justify-between">
-                            <div className="flex items-center gap-4">
-                                <button onClick={handleBackStep} className="w-12 h-12 rounded-full bg-white border border-[#E5E5E5] flex items-center justify-center shadow-sm active:scale-90 transition-all">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#111111" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
-                                </button>
-                                <div className="flex flex-col">
-                                    <h3 className="text-[17px] font-black text-[#0071b9] tracking-tight leading-none mb-1">
-                                        {mobileStep === 'input' ? '投稿内容を入力' : mobileStep === 'confirm' ? '投稿内容の確認' : '生成完了'}
-                                    </h3>
-                                    <span className="text-[10px] font-black text-[#666666] uppercase tracking-[0.2em] leading-none">
-                                        {mobileStep === 'input' ? 'STEP 2 / 3' : mobileStep === 'confirm' ? 'STEP 3 / 3' : 'SUCCESS!'}
-                                    </span>
+                        {/* Drawer Header - Hidden during AI Refinement */}
+                        {!refiningKey && (
+                            <div className="px-8 pb-4 flex items-center justify-between animate-in fade-in duration-300">
+                                <div className="flex items-center gap-4">
+                                    <button onClick={handleBackStep} className="w-12 h-12 rounded-full bg-white border border-[#E5E5E5] flex items-center justify-center shadow-sm active:scale-90 transition-all">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#111111" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
+                                    </button>
+                                    <div className="flex flex-col">
+                                        <h3 className="text-[17px] font-black text-[#0071b9] tracking-tight leading-none mb-1">
+                                            {mobileStep === 'input' ? '投稿内容を入力' : mobileStep === 'confirm' ? '投稿内容の確認' : '生成完了'}
+                                        </h3>
+                                        <span className="text-[10px] font-black text-[#666666] uppercase tracking-[0.2em] leading-none">
+                                            {mobileStep === 'input' ? 'STEP 2 / 3' : mobileStep === 'confirm' ? 'STEP 3 / 3' : 'SUCCESS!'}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="flex -space-x-2">
+                                    {platforms.map(p => (
+                                        <div key={p} className="w-10 h-10 rounded-full bg-white border-2 border-[#FAFAFA] flex items-center justify-center shadow-sm z-10">
+                                            {getPlatformIcon(p, "w-5 h-5")}
+                                        </div>
+                                    ))}
+                                    <button
+                                        onClick={() => {
+                                            setIsStepDrawerOpen(false);
+                                            // ALWAYS reset to platform to ensure footer contrast resets (Dark Mode)
+                                            setMobileStep('platform');
+                                        }}
+                                        className="w-10 h-10 rounded-full bg-white border border-[#E5E5E5] flex items-center justify-center shadow-sm active:scale-90 transition-all ml-2 z-20"
+                                    >
+                                        <CloseIcon className="w-5 h-5 text-[#111111]" />
+                                    </button>
                                 </div>
                             </div>
-                            <div className="flex -space-x-2">
-                                {platforms.map(p => (
-                                    <div key={p} className="w-10 h-10 rounded-full bg-white border-2 border-[#FAFAFA] flex items-center justify-center shadow-sm z-10">
-                                        {getPlatformIcon(p, "w-5 h-5")}
-                                    </div>
-                                ))}
-                                <button
-                                    onClick={() => {
-                                        setIsStepDrawerOpen(false);
-                                        setIsStepDrawerOpen(false);
-                                        // ALWAYS reset to platform to ensure footer contrast resets (Dark Mode)
-                                        setMobileStep('platform');
-                                    }}
-                                    className="w-10 h-10 rounded-full bg-white border border-[#E5E5E5] flex items-center justify-center shadow-sm active:scale-90 transition-all ml-2 z-20"
-                                >
-                                    <CloseIcon className="w-5 h-5 text-[#111111]" />
-                                </button>
-                            </div>
-                        </div>
+                        )}
 
                         {/* Drawer Content - Redesigned for Sticky Actions */}
                         <div className="flex-1 flex flex-col min-h-0 overflow-hidden relative">
