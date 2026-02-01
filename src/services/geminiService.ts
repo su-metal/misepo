@@ -1398,7 +1398,7 @@ export const generateInspirationCards = async (
   inputReviews?: { text: string }[],
   currentTrend?: any
 ): Promise<InspirationCard[]> => {
-  const modelName = 'models/gemini-2.5-flash-lite';
+  const modelName = 'models/gemini-2.5-flash';
   
   // Prepare inputs for the prompt
   const trendInfo = currentTrend ? JSON.stringify(currentTrend) : 'None';
@@ -1430,9 +1430,12 @@ export const generateInspirationCards = async (
   ✅ Empathy: 「売り込み」よりも「共感」を重視。「それわかる！」「懐かしい！」と思わせる内容。
   ✅ Chatty: 業種と関係ない話題（天気、記念日、ニュース）も積極的に採用し、お客様との雑談のきっかけを作る。
 
-  【厳守事項】
-  1. 「業種」に関係のない話題でも、**「お客様との雑談」として成立するなら積極的に採用する**こと。無理に商品に繋げなくて良い。
-  2. Outputの 'prompt' フィールドは、AIに対する「〜する記事を書いて」という**命令形**の指示にすること。(「〜はいかがですか？」は禁止)
+  【厳守事項: パーソナライズの徹底】
+  1. **店舗の特徴:「${storeProfile.description || ''}」** を深く理解し、この店で実施不可能な提案は絶対にしないこと。
+     - 悪い例: 「ケーキ屋」なのに「飲み放題プラン」や「おつまみ」を提案する。
+     - 良い例: 「ケーキ屋」なら「新作スイーツ」「ホワイトデー」「手土産」を提案する。
+  2. 「業種」に関係のない話題（天気・ニュース）はOKだが、**「業種」において不自然な商品・サービス（宴会、コース料理など）の提案はNG**。
+  3. Outputの 'prompt' フィールドは、AIに対する「〜する記事を書いて」という**命令形**の指示にすること。(「〜はいかがですか？」は禁止)
 
   【作成する5つのカード】(以下の5つのタイプをこの順序で出力)
   1. type: **"review"** (お客様の声): 口コミへの感謝返信。なければ「お客様とのほっこりエピソード」。
