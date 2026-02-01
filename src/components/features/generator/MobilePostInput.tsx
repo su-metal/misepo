@@ -45,11 +45,17 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     const [isStepDrawerOpen, setIsStepDrawerOpen] = React.useState(false);
 
     const [isPromptExpanded, setIsPromptExpanded] = React.useState(true);
+    const [isAudienceExpanded, setIsAudienceExpanded] = React.useState(false);
     const [isOmakaseLoading, setIsOmakaseLoading] = React.useState(false);
     const [isCalendarOpen, setIsCalendarOpen] = React.useState(false);
     const [isDefaultStyleEnabled, setIsDefaultStyleEnabled] = React.useState(() => {
         return localStorage.getItem('misepo_use_default_preset') === 'true';
     });
+    const [isDefaultAudienceEnabled, setIsDefaultAudienceEnabled] = React.useState(() => {
+        return localStorage.getItem('misepo_use_default_audience') === 'true';
+    });
+
+
 
     // Handle Calendar Strategy Launch
     const handleTrendStrategy = (event: TrendEvent) => {
@@ -155,6 +161,14 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
         }
     }, [isDefaultStyleEnabled, activePresetId]);
 
+    // Handle Default Audience Persistence
+    React.useEffect(() => {
+        localStorage.setItem('misepo_use_default_audience', String(isDefaultAudienceEnabled));
+        if (isDefaultAudienceEnabled && targetAudiences) {
+            localStorage.setItem('misepo_preferred_audiences', JSON.stringify(targetAudiences));
+        }
+    }, [isDefaultAudienceEnabled, targetAudiences]);
+
     // Apply Default Style on Entry
     React.useEffect(() => {
         if (isStepDrawerOpen && mobileStep === 'confirm' && isDefaultStyleEnabled) {
@@ -171,6 +185,33 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
             }
         }
     }, [isStepDrawerOpen, mobileStep, isDefaultStyleEnabled, activePresetId, presets, onApplyPreset]);
+
+    // Apply Default Audience on Entry
+    React.useEffect(() => {
+        if (isStepDrawerOpen && mobileStep === 'confirm' && isDefaultAudienceEnabled) {
+            const preferredAudiencesStr = localStorage.getItem('misepo_preferred_audiences');
+            if (preferredAudiencesStr) {
+                try {
+                    const preferredAudiences = JSON.parse(preferredAudiencesStr);
+                    // Only update if different to avoid infinite loop
+                    if (JSON.stringify(preferredAudiences) !== JSON.stringify(targetAudiences)) {
+                        onTargetAudiencesChange(preferredAudiences);
+                    }
+                } catch (e) {
+                    console.error('Failed to parse preferred audiences', e);
+                }
+            }
+        }
+    }, [isStepDrawerOpen, mobileStep, isDefaultAudienceEnabled, targetAudiences, onTargetAudiencesChange]);
+
+    // Enforce at least one audience (default to '全般')
+    React.useEffect(() => {
+        if (mobileStep === 'confirm' && (!targetAudiences || targetAudiences.length === 0)) {
+            if (onTargetAudiencesChange) {
+                onTargetAudiencesChange(['全般']);
+            }
+        }
+    }, [mobileStep, targetAudiences, onTargetAudiencesChange]);
 
     const toggleVoiceInput = React.useCallback(() => {
         if (isListening) {
@@ -218,10 +259,39 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
         if (!targetAudiences || !onTargetAudiencesChange) return;
 
         const current = targetAudiences;
-        if (current.includes(target)) {
-            onTargetAudiencesChange(current.filter(t => t !== target));
+
+        // "Omakase" Strategy:
+        // 1. If '全般' is clicked
+        if (target === '全般') {
+            if (current.includes('全般')) {
+                // Mandatory Rule: Cannot deselect if it's the only one. 
+                // Actually, since '全般' clears others, if it's ON, it must be the only one.
+                // So we just return/do nothing.
+                return;
+            } else {
+                // If checking '全般', clear others
+                onTargetAudiencesChange(['全般']);
+            }
+            return;
+        }
+
+        // 2. If any OTHER tag is clicked, '全般' must be removed (if present).
+        let newSelection = [...current];
+        if (newSelection.includes('全般')) {
+            newSelection = newSelection.filter(t => t !== '全般');
+        }
+
+        if (newSelection.includes(target)) {
+            // Deselecting logic with fallback
+            const filtered = newSelection.filter(t => t !== target);
+            if (filtered.length === 0) {
+                // Fallback to '全般' if trying to empty the list
+                onTargetAudiencesChange(['全般']);
+            } else {
+                onTargetAudiencesChange(filtered);
+            }
         } else {
-            onTargetAudiencesChange([...current, target]);
+            onTargetAudiencesChange([...newSelection, target]);
         }
     };
 
@@ -260,7 +330,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     const [cachedInspirationCards, setCachedInspirationCards] = React.useState<any[]>([]);
 
     // --- Audience Logic (Moved to Top Level) ---
-    const [isAudienceExpanded, setIsAudienceExpanded] = React.useState(false);
+
 
     const profileTargets = React.useMemo(() => {
         return storeProfile?.targetAudience
@@ -268,9 +338,9 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
             : [];
     }, [storeProfile?.targetAudience]);
 
-    // Primary: In Profile OR Selected
+    // Primary: In Profile OR Selected OR '全般' (Always visible as default option)
     const primaryAudienceList = TARGET_AUDIENCES.filter(t =>
-        profileTargets.includes(t) || targetAudiences?.includes(t)
+        t === '全般' || profileTargets.includes(t) || targetAudiences?.includes(t)
     );
 
     // Secondary: The rest
@@ -730,19 +800,37 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                 </button>
                                             </div>
 
+
+                                            {/* Target Audience - Horizontal Scroll for Compactness */}
                                             {targetAudiences && (
                                                 <div className="flex flex-col gap-3">
                                                     <div className="flex items-center justify-between px-2">
-                                                        <span className="text-[11px] font-black text-[#122646] uppercase tracking-[0.2em]">ターゲット設定</span>
+                                                        <div className="flex items-center gap-3">
+                                                            <span className="text-[11px] font-black text-[#122646] uppercase tracking-[0.2em]">ターゲット設定</span>
+                                                            <label className="flex items-center gap-1.5 cursor-pointer group/label">
+                                                                <div className="relative flex items-center justify-center">
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        checked={isDefaultAudienceEnabled}
+                                                                        onChange={(e) => setIsDefaultAudienceEnabled(e.target.checked)}
+                                                                        className="peer appearance-none w-3.5 h-3.5 rounded border border-stone-300 checked:bg-[#0071b9] checked:border-[#0071b9] transition-all"
+                                                                    />
+                                                                    <svg className="absolute w-2.5 h-2.5 text-white opacity-0 peer-checked:opacity-100 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="4">
+                                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                                                    </svg>
+                                                                </div>
+                                                                <span className="text-[9px] font-bold text-stone-400 group-hover/label:text-stone-600 transition-colors">デフォルトに設定</span>
+                                                            </label>
+                                                        </div>
                                                         <span className="text-[9px] font-bold text-stone-400">※複数選択可</span>
                                                     </div>
-                                                    <div className="flex flex-wrap gap-2 px-2">
+                                                    <div className="flex overflow-x-auto gap-2 pb-2 pt-2 -mx-2 px-3 no-scrollbar scrollbar-hide">
                                                         {primaryAudienceList.map(target => (
                                                             <button
                                                                 key={target}
                                                                 onClick={() => handleTargetAudienceToggle(target)}
                                                                 className={`
-                                                                    flex-shrink-0 px-4 py-2 rounded-xl font-bold text-[11px] transition-all active:scale-95 border
+                                                                    flex-shrink-0 px-4 py-2 rounded-xl font-bold text-[11px] transition-all active:scale-95 border whitespace-nowrap
                                                                     ${targetAudiences?.includes(target)
                                                                         ? 'bg-[#122646] text-white border-[#122646] shadow-md'
                                                                         : 'bg-white text-stone-500 border-stone-200 hover:border-stone-300'
@@ -759,7 +847,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                                 {!isAudienceExpanded ? (
                                                                     <button
                                                                         onClick={() => setIsAudienceExpanded(true)}
-                                                                        className="px-3 py-2 rounded-xl font-bold text-[10px] bg-stone-100 text-stone-400 border border-stone-100 hover:bg-stone-200 transition-colors flex items-center gap-1"
+                                                                        className="flex-shrink-0 px-3 py-2 rounded-xl font-bold text-[10px] bg-stone-100 text-stone-400 border border-stone-100 hover:bg-stone-200 transition-colors flex items-center gap-1 whitespace-nowrap"
                                                                     >
                                                                         <span>＋ 他のターゲット</span>
                                                                     </button>
@@ -769,7 +857,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                                             key={target}
                                                                             onClick={() => handleTargetAudienceToggle(target)}
                                                                             className={`
-                                                                                flex-shrink-0 px-4 py-2 rounded-xl font-bold text-[11px] transition-all active:scale-95 border bg-white text-stone-500 border-stone-200 hover:border-stone-300 opacity-80
+                                                                                flex-shrink-0 px-4 py-2 rounded-xl font-bold text-[11px] transition-all active:scale-95 border bg-white text-stone-500 border-stone-200 hover:border-stone-300 opacity-80 whitespace-nowrap
                                                                             `}
                                                                         >
                                                                             {target}
@@ -826,108 +914,106 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                 </div>
                                             </div>
 
-                                            {/* Settings Grid - Monochrome */}
-                                            <div className="flex flex-col gap-6 pb-8">
-                                                <div className="grid grid-cols-2 gap-8 px-2 mb-4">
-                                                    {/* Tone Slider */}
-                                                    <div className={`flex flex-col gap-3 transition-opacity ${isStyleLocked ? 'opacity-70 relative' : ''}`}>
-                                                        <div className="flex items-center justify-between px-1">
-                                                            <div className="flex items-center gap-1.5">
-                                                                <span className="text-[8px] font-black text-stone-400 uppercase tracking-[0.2em]">トーン</span>
-                                                                {isStyleLocked && <LockIcon className="w-2.5 h-2.5 text-[#0071b9]" />}
-                                                            </div>
-                                                            {isStyleLocked && <div className="text-[7px] bg-[#d8e9f4] px-1.5 py-0.5 rounded text-[#0071b9] font-black uppercase tracking-widest">学習データ適用中</div>}
-                                                        </div>
-                                                        <div className="relative px-1 pt-1 pb-2">
-                                                            {/* Track */}
-                                                            <div className="absolute top-[6px] left-1 right-1 h-[1.5px] bg-stone-200" />
-                                                            {/* Points */}
-                                                            <div className="relative flex justify-between items-center h-3">
-                                                                {TONES.map((t) => {
-                                                                    const isActive = tone === t.id;
-                                                                    return (
-                                                                        <button
-                                                                            key={t.id}
-                                                                            disabled={isStyleLocked}
-                                                                            onClick={() => !isStyleLocked && onToneChange(t.id)}
-                                                                            className={`relative z-10 flex flex-col items-center group w-full first:items-start last:items-end ${isStyleLocked ? 'cursor-not-allowed' : ''}`}
-                                                                        >
-                                                                            <div className={`w-3 h-3 rounded-full border-2 transition-all duration-300 ${isActive ? 'bg-[#0071b9] border-[#0071b9] scale-110' : 'bg-white border-stone-300'}`} />
-                                                                            <span className={`absolute -bottom-4 text-[8px] font-black transition-colors duration-300 whitespace-nowrap ${isActive ? 'text-[#0071b9]' : 'text-stone-400'}`}>
-                                                                                {t.label}
-                                                                            </span>
-                                                                        </button>
-                                                                    );
-                                                                })}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    {/* Length Slider */}
-                                                    {!isX && (
-                                                        <div className="flex flex-col gap-3">
-                                                            <div className="flex items-center justify-between px-1">
-                                                                <span className="text-[8px] font-black text-stone-400 uppercase tracking-[0.2em]">長さ</span>
-                                                            </div>
-                                                            <div className="relative px-1 pt-1 pb-2">
-                                                                {/* Track */}
-                                                                <div className="absolute top-[6px] left-1 right-1 h-[1.5px] bg-stone-200" />
-                                                                {/* Points */}
-                                                                <div className="relative flex justify-between items-center h-3">
-                                                                    {LENGTHS.map((l) => {
-                                                                        const isActive = length === l.id;
-                                                                        return (
-                                                                            <button
-                                                                                key={l.id}
-                                                                                onClick={() => onLengthChange(l.id)}
-                                                                                className="relative z-10 flex flex-col items-center group w-full first:items-start last:items-end"
-                                                                            >
-                                                                                <div className={`w-3 h-3 rounded-full border-2 transition-all duration-300 ${isActive ? 'bg-[#0071b9] border-[#0071b9] scale-110' : 'bg-white border-stone-300'}`} />
-                                                                                <span className={`absolute -bottom-4 text-[8px] font-black transition-colors duration-300 whitespace-nowrap ${isActive ? 'text-[#0071b9]' : 'text-stone-400'}`}>
-                                                                                    {l.label}
-                                                                                </span>
-                                                                            </button>
-                                                                        );
-                                                                    })}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    )}
-                                                </div>
-
-                                                {/* Store Supplement (GMap) */}
-                                                {isGoogleMaps && (
-                                                    <div className="bg-[#f5f7fa] px-6 py-4 rounded-[28px] border border-stone-200 flex flex-col gap-2 shadow-sm">
-                                                        <span className="text-[8px] font-black text-stone-500 uppercase tracking-[0.2em]">補足情報 / 当日の事情</span>
-                                                        <AutoResizingTextarea
-                                                            value={storeSupplement}
-                                                            onChange={(e) => onStoreSupplementChange(e.target.value)}
-                                                            placeholder="例：急な欠勤でお待たせした、感謝を伝えたい等"
-                                                            className="bg-transparent text-sm font-bold text-[#122646] focus:outline-none resize-none min-h-[40px] placeholder:text-stone-300"
-                                                        />
-                                                    </div>
-                                                )}
-
-                                                {/* Custom Prompt */}
-                                                <div className="bg-[#f5f7fa] px-6 py-4 rounded-[28px] border border-stone-200 flex flex-col gap-2 shadow-sm">
+                                            {/* Custom Prompt (Always Visible) */}
+                                            <div className="my-2">
+                                                <div className="bg-[#f5f7fa] px-6 py-4 rounded-[32px] border border-stone-200 flex flex-col gap-2 shadow-sm active:border-[#0071b9]/30 transition-colors">
                                                     <div className="flex items-center gap-1.5">
                                                         <AutoSparklesIcon className="w-3 h-3 text-[#0071b9]" />
                                                         <span className="text-[8px] font-black text-stone-500 uppercase tracking-[0.2em]">追加指示（任意）</span>
                                                     </div>
-                                                    <input
-                                                        type="text"
+                                                    <AutoResizingTextarea
                                                         value={customPrompt}
                                                         onChange={(e) => onCustomPromptChange(e.target.value)}
-                                                        placeholder="例：絵文字多め、明るいトーンで、等"
-                                                        className="bg-transparent text-sm font-bold text-[#122646] focus:outline-none placeholder:text-stone-300"
+                                                        placeholder="AIへの具体的なお願いはこちらに..."
+                                                        className="bg-transparent text-sm font-bold text-[#122646] focus:outline-none resize-none min-h-[32px] placeholder:text-stone-300 w-full"
                                                     />
                                                 </div>
                                             </div>
+
+                                            {/* Fine-tuning Settings (Tone, Length, Supplement) */}
+                                            {(!isStyleLocked || !isX) && (
+                                                <div className="mt-8 px-2 space-y-8">
+                                                    {/* Settings Grid - Monochrome */}
+                                                    <div className="flex gap-8 mb-4">
+                                                        {/* Tone Slider - Hide if Locked */}
+                                                        {!isStyleLocked && (
+                                                            <div className="flex-1 flex flex-col gap-3">
+                                                                <div className="flex items-center justify-between px-1">
+                                                                    <div className="flex items-center gap-1.5">
+                                                                        <span className="text-[8px] font-black text-stone-400 uppercase tracking-[0.2em]">トーン</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div className="relative px-1 pt-1 pb-2">
+                                                                    <div className="absolute top-[6px] left-1 right-1 h-[1.5px] bg-stone-200" />
+                                                                    <div className="relative flex justify-between items-center h-3">
+                                                                        {TONES.map((t) => {
+                                                                            const isActive = tone === t.id;
+                                                                            return (
+                                                                                <button
+                                                                                    key={t.id}
+                                                                                    onClick={() => onToneChange(t.id)}
+                                                                                    className="relative z-10 flex flex-col items-center group w-full first:items-start last:items-end"
+                                                                                >
+                                                                                    <div className={`w-3 h-3 rounded-full border-2 transition-all duration-300 ${isActive ? 'bg-[#0071b9] border-[#0071b9] scale-110' : 'bg-white border-stone-300'}`} />
+                                                                                    <span className={`absolute -bottom-4 text-[8px] font-black transition-colors duration-300 whitespace-nowrap ${isActive ? 'text-[#0071b9]' : 'text-stone-400'}`}>
+                                                                                        {t.label}
+                                                                                    </span>
+                                                                                </button>
+                                                                            );
+                                                                        })}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        )}
+
+                                                        {/* Length Slider */}
+                                                        {!isX && (
+                                                            <div className="flex-1 flex flex-col gap-3">
+                                                                <div className="flex items-center justify-between px-1">
+                                                                    <span className="text-[8px] font-black text-stone-400 uppercase tracking-[0.2em]">長さ</span>
+                                                                </div>
+                                                                <div className="relative px-1 pt-1 pb-2">
+                                                                    <div className="absolute top-[6px] left-1 right-1 h-[1.5px] bg-stone-200" />
+                                                                    <div className="relative flex justify-between items-center h-3">
+                                                                        {LENGTHS.map((l) => {
+                                                                            const isActive = length === l.id;
+                                                                            return (
+                                                                                <button
+                                                                                    key={l.id}
+                                                                                    onClick={() => onLengthChange(l.id)}
+                                                                                    className="relative z-10 flex flex-col items-center group w-full first:items-start last:items-end"
+                                                                                >
+                                                                                    <div className={`w-3 h-3 rounded-full border-2 transition-all duration-300 ${isActive ? 'bg-[#0071b9] border-[#0071b9] scale-110' : 'bg-white border-stone-300'}`} />
+                                                                                    <span className={`absolute -bottom-4 text-[8px] font-black transition-colors duration-300 whitespace-nowrap ${isActive ? 'text-[#0071b9]' : 'text-stone-400'}`}>
+                                                                                        {l.label}
+                                                                                    </span>
+                                                                                </button>
+                                                                            );
+                                                                        })}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                    </div>
+
+                                                    {/* Store Supplement (GMap) - Note: Only renders if isGoogleMaps, handled within this block but structure is safe */}
+                                                    {isGoogleMaps && (
+                                                        <div className="bg-[#f5f7fa] px-6 py-4 rounded-[28px] border border-stone-200 flex flex-col gap-2 shadow-sm">
+                                                            <span className="text-[8px] font-black text-stone-500 uppercase tracking-[0.2em]">補足情報 / 当日の事情</span>
+                                                            <AutoResizingTextarea
+                                                                value={storeSupplement}
+                                                                onChange={(e) => onStoreSupplementChange(e.target.value)}
+                                                                placeholder="例：急な欠勤でお待たせした、感謝を伝えたい等"
+                                                                className="bg-transparent text-sm font-bold text-[#122646] focus:outline-none resize-none min-h-[40px] placeholder:text-stone-300"
+                                                            />
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
                             )}
-
                             {mobileStep === 'result' && (
                                 <div className="flex-1 overflow-y-auto pb-4 animate-in fade-in slide-in-from-bottom-10 duration-700 px-0">
                                     <PostResultTabs
