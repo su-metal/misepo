@@ -179,39 +179,35 @@ export const InspirationDeck: React.FC<InspirationDeckProps> = ({ storeProfile, 
 
             <div
                 ref={scrollContainerRef}
-                className="flex overflow-x-auto gap-3 pb-4 -mx-8 px-8 snap-x snap-mandatory no-scrollbar"
+                className="flex overflow-x-auto pb-4 -mx-8 px-8 no-scrollbar scroll-smooth"
             >
-                {cards.map((card, idx) => (
-                    <button
-                        key={card.id || idx}
-                        onClick={() => onSelect(card.prompt)}
-                        className="
-                        relative flex flex-col items-start text-left p-4
-                        min-w-[200px] max-w-[200px] h-[140px]
-                        bg-white rounded-[24px] border border-stone-100 shadow-sm md:shadow-md
-                        snap-center transition-all hover:scale-[1.02] active:scale-95 hover:border-[#0071b9]/30
-                        group
-                        "
-                    >
-                        {/* Icon & Label */}
-                        <div className="flex items-center justify-between w-full mb-2">
-                            <span className="text-xl">{card.icon || '✨'}</span>
-                            <div className="bg-stone-50 px-2 py-1 rounded-full border border-stone-100">
-                                <span className="text-[8px] font-black text-stone-400 uppercase tracking-widest">
+                <div className="grid grid-rows-2 grid-flow-col gap-2">
+                    {cards.map((card, idx) => (
+                        <button
+                            key={card.id || idx}
+                            onClick={() => onSelect(card.prompt)}
+                            className="
+                            flex items-center gap-2.5 px-5 py-3
+                            bg-white rounded-full border border-stone-100 shadow-sm md:shadow-md
+                            transition-all hover:scale-[1.02] active:scale-95 hover:border-[#0071b9]/30
+                            group shrink-0 whitespace-nowrap
+                            "
+                        >
+                            {/* Icon */}
+                            <span className="text-xl leading-none">{card.icon || '✨'}</span>
+
+                            {/* Title & Type Badge (Mini) */}
+                            <div className="flex flex-col items-start leading-tight">
+                                <h4 className="text-[13px] font-bold text-[#111111] group-hover:text-[#0071b9] transition-colors">
+                                    {card.title}
+                                </h4>
+                                <span className="text-[8px] font-black text-stone-400 uppercase tracking-tighter">
                                     {card.type === 'review' ? 'PICKUP' : card.type === 'trend' ? 'TREND' : 'IDEA'}
                                 </span>
                             </div>
-                        </div>
-
-                        <h4 className="text-sm font-bold text-[#111111] mb-1 line-clamp-1 group-hover:text-[#0071b9] transition-colors">
-                            {card.title}
-                        </h4>
-                        <p className="text-[10px] font-medium text-stone-500 leading-relaxed line-clamp-3">
-                            {card.description}
-                        </p>
-                    </button>
-                ))
-                }
+                        </button>
+                    ))}
+                </div>
             </div >
         </div >
     );

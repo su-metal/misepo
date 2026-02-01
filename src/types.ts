@@ -149,6 +149,7 @@ export interface TrendEvent {
     title: string;
     icon: string; // Emoji
     description: string;
+    prompt: string;
     hashtags: string[];
     isRecommended: boolean;
 }

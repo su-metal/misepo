@@ -213,8 +213,8 @@ export const TrendSidebar: React.FC<TrendSidebarProps> = ({
                                     <span className="text-4xl drop-shadow-sm">{currentEvent.icon}</span>
                                 </div>
                                 <div className="flex-1 min-w-0 pt-1">
-                                    <h3 className="text-base font-black truncate leading-none mb-1.5 tracking-tight text-[#122646]">{currentEvent.title}</h3>
-                                    <p className="text-[11px] text-[#122646]/70 line-clamp-2 leading-relaxed font-bold">{currentEvent.description}</p>
+                                    <h3 className="text-base font-black leading-tight mb-1.5 tracking-tight text-[#122646]">{currentEvent.title}</h3>
+                                    <p className="text-[11px] text-[#122646]/70 leading-relaxed font-bold whitespace-pre-wrap">{currentEvent.description}</p>
                                 </div>
                             </div>
 
@@ -234,7 +234,7 @@ export const TrendSidebar: React.FC<TrendSidebarProps> = ({
                                 ) : (
                                     <>
                                         <SparklesIcon className="w-4 h-4" />
-                                        Use this Trend
+                                        このテーマで作成
                                     </>
                                 )}
                             </button>

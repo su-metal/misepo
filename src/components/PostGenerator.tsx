@@ -276,7 +276,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
         <div className="hidden xl:block h-[85vh] max-h-[850px] shrink-0">
           <TrendSidebar
             onSelectEvent={(event) => {
-              const textToAdd = `【話題のネタ】\n${event.title}\n${event.description}`;
+              const textToAdd = `【話題のネタ】\n${event.title}\n${event.prompt}`;
               // Overwrite existing text
               flow.setInputText(textToAdd);
               setMobileStep('input');

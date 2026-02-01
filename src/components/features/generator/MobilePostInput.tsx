@@ -71,7 +71,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
             setMobileStep('input');
             setIsStepDrawerOpen(true);
             // Pre-fill context
-            const strategyPrompt = `✨ ${event.title} (${event.date}) の投稿戦略：\n${event.description}\n\nおすすめハッシュタグ: ${event.hashtags.join(' ')}\n\nこのイベントに合わせて、集客効果の高い投稿を作ってください。`;
+            const strategyPrompt = `✨ ${event.title} (${event.date}) の生成指示：\n${event.prompt}\n\nおすすめハッシュタグ: ${event.hashtags.join(' ')}`;
             onInputTextChange(strategyPrompt);
         }, 800);
     };
@@ -569,8 +569,8 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                 'Googleマップ選択時は利用できません'
                                             ) : (
                                                 <>
-                                                    今日のおすすめやお店の様子を入力するだけで、<br />
-                                                    AIが魅力的な投稿に仕上げます。
+                                                    迷ったらここから。<br />
+                                                    AIと一緒に魅力的な発信を始めましょう。
                                                 </>
                                             )}
                                         </p>

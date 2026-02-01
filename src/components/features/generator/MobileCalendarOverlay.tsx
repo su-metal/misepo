@@ -267,7 +267,7 @@ export const MobileCalendarOverlay: React.FC<MobileCalendarOverlayProps> = ({
                                 ) : (
                                     <>
                                         <SparklesIcon className="w-4 h-4" />
-                                        戦略を作成する
+                                        このテーマで作成
                                     </>
                                 )}
                             </button>
