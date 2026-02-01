@@ -20,7 +20,7 @@ export const InspirationDeck: React.FC<InspirationDeckProps> = ({ storeProfile, 
     const [fetched, setFetched] = useState(false);
     const scrollContainerRef = useRef<HTMLDivElement>(null);
     const lastProfileKeyRef = useRef<string>("");
-    const prevIsVisibleRef = useRef<boolean>(false);
+
 
     useEffect(() => {
         // Reset fetch state if profile changes meaningfully
@@ -33,25 +33,16 @@ export const InspirationDeck: React.FC<InspirationDeckProps> = ({ storeProfile, 
         // Early return conditions
         if (!storeProfile || loading) return;
 
-        // Only fetch when visibility changes from false to true (opening the deck)
-        const isNowVisible = isVisible;
-        const wasVisible = prevIsVisibleRef.current;
-
-        // Update the ref for next render
-        prevIsVisibleRef.current = isNowVisible;
-
         // If not visible now, just return
-        if (!isNowVisible) return;
+        if (!isVisible) return;
 
-        // If already fetched and have enough cards, don't re-fetch
+        // If already have cached cards from parent (5+), use them (don't re-fetch)
+        if (cachedCards && cachedCards.length >= 5) return;
+
+        // If already fetched locally and have enough cards, use cache (don't re-fetch)
         if (fetched && cards.length >= 5) return;
 
-        // Only fetch if we just became visible (transition from false to true)
-        // OR if we don't have cached data yet
-        if (wasVisible && fetched) {
-            // We were already visible and already fetched, skip
-            return;
-        }
+
 
         const fetchInspiration = async () => {
             setLoading(true);
