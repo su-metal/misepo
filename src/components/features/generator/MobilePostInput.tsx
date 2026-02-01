@@ -418,7 +418,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                     </div>
 
                     {/* Bottom Section - Promotional Card (AI Omakase Mode Redesign) */}
-                    <div className="mt-4 md:mt-1">
+                    <div className="mt-4 md:mt-6">
                         <div
                             onClick={handleOmakaseStart}
                             className={`
