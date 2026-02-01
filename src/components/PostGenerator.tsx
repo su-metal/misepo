@@ -143,7 +143,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
   return (
     <div className="min-h-screen w-full relative bg-[#F5F5F7] flex flex-col items-center justify-center overflow-hidden">
 
-      {/* App Shell Container */}
+      {/* App Shell Container - positioned relative for modal containment */}
       <div className="relative w-full h-[100dvh] sm:h-[90vh] sm:max-h-[900px] sm:w-[414px] bg-white sm:rounded-[40px] shadow-2xl overflow-hidden border-0 sm:border-[8px] sm:border-white ring-1 ring-black/5 flex flex-col isolate">
 
         {/* Mobile Content Area */}
@@ -254,9 +254,12 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
             onGenerate={handleGenerate}
           />
         )}
+
+        {/* Modal Container - Portals will render here, contained within App Shell */}
+        <div id="app-shell-modal-root" className="absolute inset-0 pointer-events-none" style={{ zIndex: 9999 }} />
       </div>
 
-      {/* Global Modals */}
+      {/* Global Modals - Rendered outside App Shell */}
       {isPresetModalOpen && (
         <PresetModal
           onClose={() => setIsPresetModalOpen(false)}
@@ -275,9 +278,9 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
 
       {flow.toastMessage && (
         <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[110] animate-in slide-in-from-bottom-4 duration-300 pointer-events-none">
-          <div className="bg-stone-900 text-white px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border border-stone-700">
+          <div className="bg-stone-900/90 backdrop-blur text-white px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border border-stone-700/50">
             <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
-            <span className="text-sm font-bold">{flow.toastMessage}</span>
+            <span className="text-xs font-bold truncate">{flow.toastMessage}</span>
           </div>
         </div>
       )}

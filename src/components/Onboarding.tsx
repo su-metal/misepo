@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { StoreProfile } from '../types';
 import { INDUSTRIES } from '../constants';
 import { AutoResizingTextarea } from './features/generator/AutoResizingTextarea';
@@ -220,15 +221,22 @@ const Onboarding: React.FC<OnboardingProps> = ({
 
   const isEditMode = !!initialProfile;
 
-  return (
-    <div className="fixed inset-0 z-[300] flex items-center justify-center p-0 sm:p-4 animate-in fade-in duration-500">
+  // Portal target - App Shell modal container if available, fallback to document.body
+  const portalTarget = typeof document !== 'undefined'
+    ? (document.getElementById('app-shell-modal-root') || document.body)
+    : null;
+
+  if (!portalTarget) return null;
+
+  return createPortal(
+    <div className="absolute inset-0 z-[300] flex items-center justify-center p-0 sm:p-4 animate-in fade-in duration-500 pointer-events-auto">
       {/* VisionOS Style Backdrop */}
       <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-md" />
 
-      <div className="bg-white rounded-none sm:rounded-[40px] shadow-2xl overflow-hidden w-full max-w-lg md:max-w-6xl md:h-[90vh] h-full sm:max-h-[800px] flex flex-col md:flex-row md:overflow-hidden relative animate-in zoom-in-95 duration-500 ring-1 ring-black/5">
+      <div className="bg-white w-full h-full flex flex-col animate-in zoom-in-95 duration-500 overflow-y-auto no-scrollbar">
 
-        {/* LEFT PANEL */}
-        <div className="md:w-5/12 bg-slate-50/50 relative p-6 sm:p-8 md:p-12 flex flex-col justify-between shrink-0 min-h-min md:h-full border-b md:border-b-0 md:border-r border-slate-100">
+        {/* HEADER PANEL (Mobile Optimized) */}
+        <div className="bg-slate-50/50 relative p-6 pb-2 flex flex-col shrink-0">
 
           {/* Decorative gradients */}
           <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-40">
@@ -242,13 +250,13 @@ const Onboarding: React.FC<OnboardingProps> = ({
                 <div className="w-2 h-2 rounded-full bg-[#eb714f] shadow-[0_0_10px_rgba(127,90,240,0.5)] animate-pulse"></div>
                 <span className="text-[9px] md:text-[10px] font-black tracking-[0.3em] text-slate-400 uppercase">Hospitality Assistant</span>
               </div>
-              <h1 className="text-2xl md:text-5xl tracking-tighter leading-none font-black text-slate-800">
+              <h1 className="text-3xl tracking-tighter leading-none font-black text-slate-800">
                 MisePo
               </h1>
             </div>
 
-            <div className="space-y-4 md:space-y-6 mb-6 md:mb-12 flex-1">
-              <h2 className="text-lg md:text-3xl leading-tight animate-in slide-in-from-left-4 duration-700 delay-100 font-extrabold text-slate-800">
+            <div className="space-y-2 mb-2">
+              <h2 className="text-lg leading-tight animate-in slide-in-from-left-4 duration-700 delay-100 font-extrabold text-slate-800">
                 {isEditMode ? 'Settings & Profile' : 'AIが提案する、\n次世代の集客。'}
               </h2>
               <p className="text-slate-500 text-sm font-medium leading-relaxed animate-in slide-in-from-left-4 duration-700 delay-200">
@@ -258,14 +266,14 @@ const Onboarding: React.FC<OnboardingProps> = ({
               </p>
 
               {/* Status Pill */}
-              <div className="hidden md:inline-flex items-center gap-2 rounded-full px-4 py-2 animate-in zoom-in-95 duration-700 delay-300 bg-white shadow-md ring-1 ring-slate-100">
+              <div className="hidden">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse box-shadow-[0_0_8px_rgba(52,211,153,0.6)]"></span>
                 <span className="text-[10px] font-black uppercase tracking-widest text-slate-600">AI Engine Ready</span>
               </div>
             </div>
 
             {/* Feature Cards & Characters */}
-            <div className="space-y-6 hidden md:block animate-in slide-in-from-bottom-8 duration-1000 delay-500">
+            <div className="hidden">
               {/* Generated Characters Display */}
               <div className="flex items-center justify-center -space-x-4 pb-4">
                 {[1, 2, 3, 4].map((num, i) => (
@@ -308,8 +316,8 @@ const Onboarding: React.FC<OnboardingProps> = ({
         </div>
 
         {/* RIGHT PANEL: Modern Form */}
-        <div className="flex-1 bg-white overflow-y-auto overscroll-contain animate-in slide-in-from-right-8 duration-700">
-          <form onSubmit={handleSubmit} className="p-5 md:p-14 space-y-12">
+        <div className="flex-1 bg-white overflow-visible relative">
+          <form onSubmit={handleSubmit} className="p-5 pb-24 space-y-8">
 
             {/* Basic Info Inputs */}
             <div className="grid grid-cols-1 gap-10">
@@ -515,7 +523,8 @@ const Onboarding: React.FC<OnboardingProps> = ({
           </button>
         )}
       </div>
-    </div>
+    </div>,
+    portalTarget
   );
 };
 
