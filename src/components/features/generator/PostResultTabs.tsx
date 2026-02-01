@@ -338,16 +338,15 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
 
                                                     {/* Refinement Overlay (per variant) - Minimalist */}
                                                     {refiningKey === `${gIdx}-${iIdx}` && (
-                                                        <div className="absolute inset-0 bg-white z-20 flex flex-col p-8 sm:p-12 animate-in fade-in duration-300 rounded-[54px] border border-[#F0F0F0] shadow-2xl overflow-y-auto">
+                                                        <div className="absolute inset-0 bg-white z-20 flex flex-col p-4 animate-in fade-in duration-300 rounded-[32px] border border-[#F0F0F0] shadow-2xl overflow-y-auto">
                                                             <button
                                                                 onClick={() => onRefineToggle(gIdx, iIdx)}
-                                                                className="absolute top-8 right-8 p-2 rounded-full hover:bg-black/5 transition-colors z-30"
+                                                                className="absolute top-4 right-4 p-2 rounded-full hover:bg-black/5 transition-colors z-30"
                                                             >
-                                                                <CloseIcon className="w-6 h-6 text-[#111111] opacity-30 group-hover:opacity-100" />
+                                                                <CloseIcon className="w-5 h-5 text-[#111111] opacity-30 group-hover:opacity-100" />
                                                             </button>
-
-                                                            <div className="flex-1 flex flex-col items-center max-w-2xl mx-auto w-full pt-10 pb-6">
-                                                                <div className="w-full">
+                                                            <div className="flex-1 flex flex-col items-center max-w-full mx-auto w-full h-full pt-0 pb-2">
+                                                                <div className="w-full h-full">
                                                                     <RefinePanel
                                                                         refineText={refineText}
                                                                         onRefineTextChange={onRefineTextChange}
