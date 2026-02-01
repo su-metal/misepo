@@ -229,14 +229,14 @@ const Onboarding: React.FC<OnboardingProps> = ({
   if (!portalTarget) return null;
 
   return createPortal(
-    <div className="absolute inset-0 z-[300] flex items-center justify-center p-0 sm:p-4 animate-in fade-in duration-500 pointer-events-auto">
+    <div className="absolute inset-0 z-[300] flex items-center justify-center p-0 animate-in fade-in duration-500 pointer-events-auto">
       {/* VisionOS Style Backdrop */}
       <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-md" />
 
       <div className="bg-white w-full h-full flex flex-col animate-in zoom-in-95 duration-500 overflow-y-auto no-scrollbar">
 
         {/* HEADER PANEL (Mobile Optimized) */}
-        <div className="bg-slate-50/50 relative p-6 pb-2 flex flex-col shrink-0">
+        <div className="bg-slate-50/50 relative px-6 pt-12 pb-4 flex flex-col shrink-0">
 
           {/* Decorative gradients */}
           <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-40">
@@ -317,10 +317,10 @@ const Onboarding: React.FC<OnboardingProps> = ({
 
         {/* RIGHT PANEL: Modern Form */}
         <div className="flex-1 bg-white overflow-visible relative">
-          <form onSubmit={handleSubmit} className="p-5 pb-24 space-y-8">
+          <form onSubmit={handleSubmit} className="px-6 pt-8 pb-32 space-y-6">
 
             {/* Basic Info Inputs */}
-            <div className="grid grid-cols-1 gap-10">
+            <div className="grid grid-cols-1 gap-6">
               <div className="space-y-3">
                 <div className="flex items-center gap-2 pl-1">
                   <label className="text-xs font-black text-slate-700 uppercase tracking_widest">
@@ -334,7 +334,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
                     onChange={(e) => handleNameChange(e.target.value)}
                     onBlur={() => { if (name.trim().length > 1) setShowDetails(true); }}
                     placeholder="例：焼きたてパンの店 アン"
-                    className="w-full px-6 py-5 rounded-[20px] transition-all text-lg text-slate-800 font-bold tracking-tight placeholder:text-slate-300 outline-none bg-slate-50 border border-slate-200 focus:bg-white focus:shadow-lg focus:shadow-slate-100/50 focus:ring-2 focus:ring-[#7F5AF0]/10"
+                    className="w-full px-5 py-4 rounded-[16px] transition-all text-base text-slate-800 font-bold tracking-tight placeholder:text-slate-300 outline-none bg-slate-50 border border-slate-200 focus:bg-white focus:shadow-lg focus:shadow-slate-100/50 focus:ring-2 focus:ring-[#7F5AF0]/10"
                     required
                   />
                   <div className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#7F5AF0] transition-colors">
