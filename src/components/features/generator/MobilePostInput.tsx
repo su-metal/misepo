@@ -509,7 +509,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                     }} />
 
                     {/* Sliding Panel (Monochrome) */}
-                    <div className={`absolute bottom-0 left-0 right-0 bg-[#FAFAFA] border-t border-[#E5E5E5] rounded-t-[54px] shadow-[0_-20px_60px_rgba(0,0,0,0.1)] animate-nyoki flex flex-col ${mobileStep === 'platform' ? 'h-[88vh]' : 'h-[96vh]'} ${mobileStep === 'result' ? 'pb-8 safe-area-bottom' : 'pb-0'}`}>
+                    <div className={`absolute bottom-0 left-0 right-0 bg-[#FAFAFA] border-t border-[#E5E5E5] rounded-t-[54px] shadow-[0_-20px_60px_rgba(0,0,0,0.1)] animate-nyoki flex flex-col ${mobileStep === 'platform' ? 'h-[88%]' : 'h-[96%]'} ${mobileStep === 'result' ? 'pb-8 safe-area-bottom' : 'pb-0'}`}>
                         {/* Drag Handle */}
                         <div className="w-full flex justify-center py-6">
                             <div className="w-16 h-1.5 bg-[#E5E5E5] rounded-full" />
