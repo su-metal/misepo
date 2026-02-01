@@ -320,7 +320,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                     </div>
 
                     {/* Standard 2x2 Grid Platform Selection */}
-                    <div className="grid grid-cols-2 gap-3 px-1 mb-4 mt-2">
+                    <div className="grid grid-cols-2 gap-3 px-1 mt-2">
                         {(() => {
                             const getPlatformDetails = (platform: Platform) => {
                                 switch (platform) {
@@ -418,7 +418,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                     </div>
 
                     {/* Bottom Section - Promotional Card (AI Omakase Mode Redesign) */}
-                    <div className="mt-auto pt-2">
+                    <div className="mt-4 md:mt-1">
                         <div
                             onClick={handleOmakaseStart}
                             className={`
