@@ -15,8 +15,10 @@ export const TrendSidebar: React.FC<TrendSidebarProps> = ({
     onSelectEvent, industry, description, isGoogleMaps
 }) => {
     // Calendar State
-    const [currentYear, setCurrentYear] = React.useState(2026);
-    const [currentMonth, setCurrentMonth] = React.useState(1); // Start at Feb (0-indexed 1)
+    const today = new Date();
+    const [currentYear, setCurrentYear] = React.useState(today.getFullYear());
+    const [currentMonth, setCurrentMonth] = React.useState(today.getMonth());
+    const [baseDate] = React.useState(() => new Date(today.getFullYear(), today.getMonth(), 1));
 
     // Data State
     const [trendCache, setTrendCache] = React.useState<TrendEvent[]>([]);
@@ -135,11 +137,22 @@ export const TrendSidebar: React.FC<TrendSidebarProps> = ({
 
                 {/* Month Nav */}
                 <div className="flex items-center justify-between mb-4 relative z-10 bg-white/60 p-2 rounded-xl border border-[#122646]/5">
-                    <button onClick={handlePrevMonth} className="p-1 rounded-lg hover:bg-[#d8e9f4] transition-colors">
+                    <button
+                        onClick={handlePrevMonth}
+                        disabled={currentYear === baseDate.getFullYear() && currentMonth === baseDate.getMonth()}
+                        className="p-1 rounded-lg hover:bg-[#d8e9f4] transition-colors disabled:opacity-30 disabled:pointer-events-none"
+                    >
                         <ChevronRightIcon className="w-4 h-4 text-[#122646] rotate-180" />
                     </button>
                     <span className="text-sm font-black text-[#122646] tracking-tight">{monthNames[currentMonth]} {currentYear}</span>
-                    <button onClick={handleNextMonth} className="p-1 rounded-lg hover:bg-[#d8e9f4] transition-colors">
+                    <button
+                        onClick={handleNextMonth}
+                        disabled={
+                            (currentYear > baseDate.getFullYear()) ||
+                            (currentYear === baseDate.getFullYear() && currentMonth >= baseDate.getMonth() + 2)
+                        }
+                        className="p-1 rounded-lg hover:bg-[#d8e9f4] transition-colors disabled:opacity-30 disabled:pointer-events-none"
+                    >
                         <ChevronRightIcon className="w-4 h-4 text-[#122646]" />
                     </button>
                 </div>

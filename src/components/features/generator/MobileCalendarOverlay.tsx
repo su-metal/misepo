@@ -15,11 +15,12 @@ export const MobileCalendarOverlay: React.FC<MobileCalendarOverlayProps> = ({
     isOpen, onClose, onSelectEvent, industry, description, isGoogleMaps
 }) => {
     // Calendar State
-    const [currentYear, setCurrentYear] = React.useState(2026);
-    const [currentMonth, setCurrentMonth] = React.useState(1); // Start at Feb (0-indexed 1) -> Initial Default
+    const today = new Date();
+    const [currentYear, setCurrentYear] = React.useState(today.getFullYear());
+    const [currentMonth, setCurrentMonth] = React.useState(today.getMonth());
 
     // Store the initial month/year to define the 3-month range
-    const [baseDate] = React.useState(() => new Date(2026, 1, 1)); // Fixed Feb 2026 for now, or use today
+    const [baseDate] = React.useState(() => new Date(today.getFullYear(), today.getMonth(), 1));
 
     // Data State
     const [trendCache, setTrendCache] = React.useState<TrendEvent[]>([]);
