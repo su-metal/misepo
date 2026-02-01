@@ -17,18 +17,18 @@ export const RefinePanel: React.FC<RefinePanelProps> = ({
     isRefining
 }) => {
     return (
-        <div className="w-full h-full flex flex-col relative z-10 gap-2">
+        <div className="w-full flex flex-col relative z-10 gap-2">
             <div className="flex-none px-1">
                 <label className="block text-[10px] font-black text-[#111111] uppercase tracking-wider opacity-40">
                     AIへの指示
                 </label>
             </div>
 
-            <div className="flex-1 flex flex-col gap-3 min-h-0">
+            <div className="w-full flex flex-col gap-3">
                 <textarea
                     value={refineText}
                     onChange={(e) => onRefineTextChange(e.target.value)}
-                    className="flex-1 w-full bg-[#F5F5F7] border border-black/[0.03] rounded-[20px] p-4 text-[15px] font-bold text-black placeholder:text-black/20 focus:bg-[#EDEDF0] outline-none transition-all resize-none shadow-[inset_0_2px_10px_rgba(0,0,0,0.02)]"
+                    className="w-full bg-[#F5F5F7] border border-black/[0.03] rounded-[20px] p-4 text-[15px] font-bold text-black placeholder:text-black/20 focus:bg-[#EDEDF0] outline-none transition-all resize-none shadow-[inset_0_2px_10px_rgba(0,0,0,0.02)] h-40"
                     placeholder="例：もっと親しみやすい口調にして、絵文字を少し増やして"
                     autoFocus
                 />
