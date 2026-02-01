@@ -46,7 +46,7 @@ export const RefinePanel: React.FC<RefinePanelProps> = ({
                                 onRefineTextChange(chip.text);
                                 setTimeout(() => onRefine(), 0);
                             }}
-                            className="px-3 py-1.5 rounded-full text-[11px] font-bold transition-all duration-300 active:scale-95 border border-black/[0.05] bg-white text-black/60 hover:bg-[#0071b9] hover:text-white hover:border-[#0071b9] shadow-sm"
+                            className="px-3 py-1.5 rounded-full text-[11px] font-bold transition-all duration-300 active:scale-95 border border-black/[0.05] bg-white text-black/60 hover:bg-[#1f29fc] hover:text-white hover:border-[#1f29fc] shadow-sm"
                         >
                             {chip.label}
                         </button>
@@ -63,7 +63,7 @@ export const RefinePanel: React.FC<RefinePanelProps> = ({
                     <button
                         onClick={onRefine}
                         disabled={isRefining || !refineText.trim()}
-                        className="flex items-center gap-2 px-6 py-2 rounded-full text-[13px] font-black shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-30 disabled:shadow-none bg-[#0071b9] text-white"
+                        className="flex items-center gap-2 px-6 py-2 rounded-full text-[13px] font-black shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-30 disabled:shadow-none bg-[#1f29fc] text-white"
                     >
                         {isRefining ? (
                             <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
