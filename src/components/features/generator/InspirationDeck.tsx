@@ -179,7 +179,7 @@ export const InspirationDeck: React.FC<InspirationDeckProps> = ({ storeProfile, 
 
             <div
                 ref={scrollContainerRef}
-                className="flex overflow-x-auto pb-4 -mx-8 px-8 no-scrollbar scroll-smooth"
+                className="flex overflow-x-auto pb-4 -mx-8 px-8 scrollbar-hide scroll-smooth"
             >
                 <div className="grid grid-rows-2 grid-flow-col gap-2">
                     {cards.map((card, idx) => (
