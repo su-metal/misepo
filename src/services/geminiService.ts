@@ -848,35 +848,100 @@ const trendSchema = {
 export const generateTrendCalendar = async (
     year: number, 
     startMonth: number, 
-    durationMonths: number = 3
+    durationMonths: number = 3,
+    industry?: string,
+    description?: string // Added description
 ): Promise<TrendEvent[]> => {
-    const modelName = getModelName(true);
+    // Specific model for calendar as requested
+    const modelName = "models/gemini-2.5-flash-lite";
     const ai = getServerAI();
 
-    // Construct target range description
-    const endDate = new Date(year, startMonth - 1 + durationMonths, 0); // Last day of end month
-    const targetPeriod = `${year}年${startMonth}月から${durationMonths}ヶ月間`;
+    // Construct target months list for explicit instruction
+    const targetMonths = [];
+    for (let i = 0; i < durationMonths; i++) {
+        const d = new Date(year, startMonth - 1 + i, 1);
+        targetMonths.push(`${d.getFullYear()}年${d.getMonth() + 1}月`);
+    }
+    const monthsStr = targetMonths.join("、");
+
+    // Industry specific guidance
+    let industryGuidance = "";
+    if (industry?.includes("飲食") || industry?.includes("カフェ") || industry?.includes("居酒屋")) {
+        industryGuidance = `
+   - **重点トピック（飲食）**:
+     - 旬の食材（魚、野菜、果物）とその美味しい食べ方
+     - 宴会需要（歓送迎会、忘年会、暑気払い）のアピール時期
+     - 季節限定メニューの予告（冷やし中華、鍋、イチゴフェア等）
+     - 気温変化に合わせたメニュー提案（暑い日のビール、寒い日の熱燗）`;
+    } else if (industry?.includes("美容") || industry?.includes("サロン") || industry?.includes("ネイル")) {
+        industryGuidance = `
+   - **重点トピック（美容）**:
+     - 季節ごとの悩み解決（紫外線ケア、乾燥対策、梅雨のうねり）
+     - イベント前の準備（成人式、卒業式、結婚式シーズンのセット）
+     - 季節のトレンドカラーやデザインの提案
+     - 気分転換・リフレッシュの提案`;
+    } else if (industry?.includes("小売") || industry?.includes("アパレル") || industry?.includes("雑貨")) {
+        industryGuidance = `
+   - **重点トピック（小売）**:
+     - セール・バーゲン時期（クリアランス、初売り）
+     - ギフト需要（母の日、父の日、クリスマス、バレンタイン）
+     - 衣替え、新生活準備などのライフスタイル変化
+     - 季節の必需品提案（日傘、マフラー、手帳）`;
+    } else {
+        // Default / General
+        industryGuidance = `
+   - **重点トピック（一般）**:
+     - 季節ごとの一般的な消費トレンド
+     - 地域行事やビジネス上の挨拶・マナー
+     - 季節の変わり目の体調管理やライフハック`;
+    }
+
 
     const systemInstruction = `
 <instruction>
-You are an expert Social Media Strategist for the Japanese market.
-Your task is to predict/generate a calendar of "Social Media Trends & Events" for the specified period in Japan.
-Target Period: ${targetPeriod}
+あなたはプロのSNSマーケティングコンサルタント兼コピーライターです。
+地域密着型の店舗ビジネス（実店舗、サロン、飲食店など）向けに、集客効果の高い「トレンドカレンダー（3ヶ月分）」を作成してください。
+
+ターゲット業種: ${industry || '全般'}
+${description ? `店舗の具体的な特徴・こだわり: ${description}` : ''}
+
+【重要：パーソナライズの徹底】
+- ターゲット業種が「飲食店」であっても、店舗の特徴（${description || ''}）が「ケーキ屋」「ベーカリー」「カフェ」等の場合は、**「宴会」「飲み放題」「コース料理」「新年会」「忘年会」といった不適切なトピックは【絶対に除外】**してください。
+- 代わりに、その店舗の具体的な業態（例：スイーツ店ならホワイトデー、新作ケーキの発売、家族でのホームパーティ等）に特化した、真に集客に繋がるイベントのみを提案してください。
+- ターゲットが「美容室」であれば美容に関する内容、「小売」ならセールやギフト提案、というように、店舗の個性に寄り添ったカレンダーにしてください。
+
+1. **対象期間**: ${year}年${startMonth}月から${durationMonths}ヶ月間（${monthsStr}）
+2. **目的**: ターゲット業種の店舗が投稿ネタにできる「トレンド・行事カレンダー」を作成すること。
 
 <rules>
-1. **Focus**: Identify ACTIONABLE topics for restaurants, cafes, and retail stores to post about.
-2. **Variety**: Include a mix of:
-   - **Major Events**: (e.g., Valentine's, Golden Week, Obon)
-   - **Micro-Seasons (24 Sekki)**: (e.g., Risshun, Geshi)
-   - **Niche Commemorative Days**: (e.g., Meat Day, Cat Day, Good Couple Day)
-   - **Pop Culture/Food Trends**: (e.g., seasonal ingredients, viral food themes)
-3. **Volume**: Generate at least 4-5 key events PER MONTH.
-4. **IsRecommended**: Mark highly effective marketing opportunities as 'true'.
-5. **Description**: Brief, actionable advice on *how* to post about it (e.g., "Promote limited sakura sweets").
+1. **言語**: 全て【日本語】で出力してください。
+2. **事実の厳格な検証**: 記念日やイベントは、**「実在性が100%確実なもの」**（国民の祝日、二十四節気、内閣府や自治体が発表している公的なイベント、一般に広く認知されているバレンタイン等の商業記念日）のみをリストアップしてください。
+   - **創作の禁止**: 知名度の低いマイナーな語呂合わせ記念日や、実在するか怪しい記念日は一切含めないでください。不確実な場合は、その日のデータを出力しないでください。
+   - 嘘の由来（デタラメな語呂合わせ）は厳禁です。
+3. **対象期間の厳守**: ${monthsStr} に実際に発生する事象のみを抽出してください。
+   - ${durationMonths}ヶ月分、合計で ${durationMonths * 7}〜${durationMonths * 10}件のデータが必要です。各月最低7件は必須です。
+4. **推奨トピックの拡充（安全かつ実用的なネタ）**:
+   - **二十四節気・雑節**: 立春、夏至、土用の丑の日、節分、彼岸など
+   - **国民の祝日・伝統行事**: ひな祭り、七夕、お盆、正月など
+   - **給料日・消費行動**: 給料日（25日付近）、ボーナス時期、月末等
+${industryGuidance}
+   - **重要**: オリンピックや万博など、開催年によって変わるイベントは、確実な知識がない限り含めないでください。
+5. **不適切トピックの完全除外（Security/Brand Safety）**:
+   - **特定の宗教団体（新興宗教含む）、政治政党、思想団体の創立記念日や関連イベントは【絶対に出力しないでください】。**
+   - ビジネスアカウントでの投稿としてリスクとなる、論争の余地があるトピックや、特定の信条・信仰に深く関わる内容は排除してください。
+   - ※クリスマス、お盆、初詣など、日本社会で一般的・商業的に定着している伝統行事はOKですが、特定の教団名を冠するものはNGです。
+6. **アイコン**: 企画の内容を端的に表す絵文字を【1つだけ】指定してください（例：🌸）。複数の絵文字を並べることや、文字を混ぜることは【厳禁】です。必ず1文字（1絵文字）で出力してください。
+7. **アドバイス**: 各項目に、店舗がどのように投稿すれば集客に繋がるか、具体的で短いアドバイスを含めてください。
+7. **業種適合性の徹底（最重要）**:
+   - イベントの「説明」や「アドバイス」は、必ず**ターゲット業種（${industry}）の店舗が実施可能な内容**に書き換えてください。
+   - **禁止事項**: ターゲット業種と無関係な提案は厳禁です。
+     - 例1: ターゲットが「**美容室・サロン**」の場合、「お彼岸」や「節分」だからといって、「おはぎ」や「恵方巻」の販売・提供を提案してはいけません（**食品の提案は飲食・小売業界限定です**）。代わりに「お墓参り前の身だしらみセット」や「イベント前のスキンケア」等を提案してください。
+     - 例2: ターゲットが「飲食店」でないのに、「新作メニュー」「宴会コース」という言葉を使わないでください。
+   - その業種で通常扱わない商品やサービスを提案するくらいなら、そのイベント自体を除外するか、挨拶程度の投稿ネタ（「みなさん良いお彼岸を」など）に留めてください。
 </rules>
 
 <output_format>
-JSON with a "trends" array.
+JSON format with "trends" array.
 Date format: "YYYY-MM-DD"
 </output_format>
 </instruction>
@@ -886,7 +951,8 @@ Date format: "YYYY-MM-DD"
         systemInstruction,
         responseMimeType: "application/json",
         responseSchema: trendSchema,
-        temperature: 0.4, 
+        temperature: 0.1, 
+        topP: 0.8,
         safetySettings: [
             { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_NONE' },
             { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_NONE' },
@@ -907,8 +973,23 @@ Date format: "YYYY-MM-DD"
 
         const parsed = JSON.parse(result.text);
         if (!parsed.trends || !Array.isArray(parsed.trends)) return [];
-        
-        return parsed.trends as TrendEvent[];
+
+        // Post-process to ensure single emoji (Safety Guard)
+        // Using Intl.Segmenter to correctly handle ZWJ and complex emojis
+        const sanitizedTrends = parsed.trends.map((t: any) => {
+            let icon = "📅";
+            try {
+                const segmenter = new Intl.Segmenter('ja-JP', { granularity: 'grapheme' });
+                const segments = Array.from(segmenter.segment((t.icon as string) || "📅"));
+                icon = (segments[0]?.segment as string) || "📅";
+            } catch (e) {
+                // Fallback for older environments
+                icon = (Array.from((t.icon as string) || "📅")[0] as string) || "📅";
+            }
+            return { ...t, icon };
+        });
+
+        return sanitizedTrends as TrendEvent[];
 
     } catch (e: any) {
         console.error("[GEMINI TREND ERROR]", e);

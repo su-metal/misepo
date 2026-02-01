@@ -469,7 +469,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                 <div className="relative z-10 flex items-center justify-center">
                                     <div className={`
                                         w-14 h-14 rounded-2xl flex items-center justify-center shadow-xl transition-all duration-500
-                                        ${isOmakaseLoading ? 'bg-white scale-90' : 'bg-white group-hover:bg-[#0071b9] group-hover:scale-110 group-active:scale-95 group-hover:rotate-6 animate-pulse-gentle'}
+                                        ${isOmakaseLoading ? 'bg-white scale-90' : 'bg-white group-hover:bg-[#0071b9] group-hover:scale-110 group-active:scale-95 group-hover:rotate-6'}
                                     `}>
                                         {isOmakaseLoading ? (
                                             <div className="w-5 h-5 border-2 border-[#0071b9]/20 border-t-[#0071b9] rounded-full animate-spin" />
@@ -478,10 +478,6 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         )}
                                     </div>
 
-                                    {/* Pulse Effect Rings */}
-                                    {!isOmakaseLoading && (
-                                        <div className="absolute inset-0 rounded-2xl bg-[#0071b9]/20 animate-ping opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
-                                    )}
                                 </div>
                             </div>
 
@@ -497,6 +493,8 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                 isOpen={isCalendarOpen}
                 onClose={() => setIsCalendarOpen(false)}
                 onSelectEvent={handleTrendStrategy}
+                industry={storeProfile?.industry}
+                description={storeProfile?.description}
             />
 
             {/* Bottom Sheet Drawer - Monochrome Style */}

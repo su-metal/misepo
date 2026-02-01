@@ -1,15 +1,17 @@
 import React from 'react';
 import { TrendEvent } from '@/types'; // Use shared type
-import { SparklesIcon, CloseIcon, ChevronRightIcon } from '../../Icons';
+import { SparklesIcon, CloseIcon, ChevronRightIcon, RotateCcwIcon } from '../../Icons';
 
 interface MobileCalendarOverlayProps {
     isOpen: boolean;
     onClose: () => void;
     onSelectEvent: (event: TrendEvent) => void;
+    industry?: string;
+    description?: string;
 }
 
 export const MobileCalendarOverlay: React.FC<MobileCalendarOverlayProps> = ({
-    isOpen, onClose, onSelectEvent
+    isOpen, onClose, onSelectEvent, industry, description
 }) => {
     // Calendar State
     const [currentYear, setCurrentYear] = React.useState(2026);
@@ -25,28 +27,46 @@ export const MobileCalendarOverlay: React.FC<MobileCalendarOverlayProps> = ({
 
     const [selectedDate, setSelectedDate] = React.useState<string | null>(null);
 
+    // Clear cache when industry or description changes to force re-fetch
+    React.useEffect(() => {
+        setTrendCache([]);
+        setHasFetched(false);
+    }, [industry, description]);
+
     const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
     const startDay = new Date(currentYear, currentMonth, 1).getDay(); // Sunday = 0
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
     // Fetch Data (Batch)
-    const fetchTrends = async (year: number, month: number) => {
+    const fetchTrends = async (year: number, month: number, force: boolean = false) => {
         setIsLoading(true);
         try {
             // Fetch 3 months starting from the requested month
             // API expects 1-indexed month (currentMonth + 1)
-            const res = await fetch(`/api/trends?year=${year}&month=${month + 1}&duration=3`);
+            const params = new URLSearchParams({
+                year: year.toString(),
+                month: (month + 1).toString(),
+                duration: '3',
+                force: force ? 'true' : 'false',
+                industry: industry || '',
+                description: description || ''
+            });
+            const res = await fetch(`/api/trends?${params.toString()}`);
             if (!res.ok) throw new Error("Failed to fetch");
             const data = await res.json();
 
             if (data.trends) {
-                // Merge with existing cache
+                // Merge with existing cache, PREFERRING new data
                 setTrendCache(prev => {
                     const newTrends = data.trends as TrendEvent[];
-                    // Avoid duplicates by filtering
-                    const existingDates = new Set(prev.map(t => t.date));
-                    const uniqueNew = newTrends.filter(t => !existingDates.has(t.date));
-                    return [...prev, ...uniqueNew];
+                    const trendMap = new Map(prev.map(t => [t.date, t]));
+
+                    // Overwrite or add new trends
+                    newTrends.forEach(t => {
+                        trendMap.set(t.date, t);
+                    });
+
+                    return Array.from(trendMap.values());
                 });
             }
         } catch (e) {
@@ -149,12 +169,21 @@ export const MobileCalendarOverlay: React.FC<MobileCalendarOverlayProps> = ({
                         </div>
                         <span className="text-xs font-bold text-white/50 uppercase tracking-widest ml-1">{currentYear} トレンド予報</span>
                     </div>
-                    <button
-                        onClick={onClose}
-                        className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
-                    >
-                        <CloseIcon className="w-5 h-5 text-white" />
-                    </button>
+                    <div className="flex gap-2">
+                        <button
+                            onClick={() => fetchTrends(currentYear, currentMonth, true)}
+                            disabled={isLoading}
+                            className={`w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors disabled:opacity-50 ${isLoading ? 'animate-spin' : ''}`}
+                        >
+                            <RotateCcwIcon className="w-5 h-5 text-white" />
+                        </button>
+                        <button
+                            onClick={onClose}
+                            className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
+                        >
+                            <CloseIcon className="w-5 h-5 text-white" />
+                        </button>
+                    </div>
                 </div>
 
                 {/* Calendar Grid */}
@@ -190,7 +219,9 @@ export const MobileCalendarOverlay: React.FC<MobileCalendarOverlayProps> = ({
                                 >
                                     <span className="text-sm z-10 relative">{day}</span>
                                     {event && !isLoading && (
-                                        <span className="absolute -bottom-4 text-lg">{event.icon}</span>
+                                        <span className="absolute -bottom-4 text-lg w-full h-6 flex items-center justify-center overflow-hidden whitespace-nowrap pointer-events-none">
+                                            {event.icon}
+                                        </span>
                                     )}
                                     {event?.isRecommended && !isSelected && (
                                         <div className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-[#FF4081] animate-pulse" />
