@@ -53,6 +53,7 @@ export interface StoreProfile {
   name: string;
   region: string;
   description?: string;
+  targetAudience?: string;
   instagramFooter?: string;
   googlePlaceId?: string;
   aiAnalysis?: string; // AI generated context for the store
@@ -86,6 +87,7 @@ export interface GenerationConfig {
   post_samples?: { [key in Platform]?: string }; // Passed from active preset
   persona_yaml?: string | null; // Can be a monolithic YAML string (Legacy) OR a serialized JSON string `{ [key in Platform]: string }`
   presetId?: string; // ID of the preset used for this generation
+  targetAudience?: string; // Target audience override for this specific post
 }
 
 export interface GeneratedResult {
@@ -147,6 +149,7 @@ export interface TrendEvent {
     title: string;
     icon: string; // Emoji
     description: string;
+    prompt: string;
     hashtags: string[];
     isRecommended: boolean;
 }

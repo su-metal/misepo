@@ -18,6 +18,7 @@ export function normalizeStoreProfile(profile: any): StoreProfile | null {
     instagramFooter: profile.instagramFooter || profile.instagram_footer || '',
     googlePlaceId: profile.googlePlaceId || profile.google_place_id || '',
     aiAnalysis: profile.aiAnalysis || profile.ai_analysis || '',
+    targetAudience: profile.targetAudience || profile.target_audience || '',
   };
 }
 

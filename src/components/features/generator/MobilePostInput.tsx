@@ -13,6 +13,7 @@ import { InspirationDeck } from './InspirationDeck';
 import {
     PostInputFormProps, renderAvatar, PURPOSES, GMAP_PURPOSES, TONES, LENGTHS
 } from './inputConstants';
+import { TARGET_AUDIENCES } from '../../../constants';
 import { PostResultTabs } from './PostResultTabs';
 
 export const MobilePostInput: React.FC<PostInputFormProps> = ({
@@ -32,7 +33,8 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     refineText, onRefineTextChange, onPerformRefine, isRefining,
     includeFooter, onIncludeFooterChange, onAutoFormat,
     isAutoFormatting, onCopy, onMobileResultOpen, restoreId,
-    onStepChange, closeDrawerTrigger, openDrawerTrigger, onOpenOnboarding
+    onStepChange, closeDrawerTrigger, openDrawerTrigger, onOpenOnboarding,
+    targetAudiences, onTargetAudiencesChange
 }) => {
     const textareaRef = React.useRef<HTMLTextAreaElement>(null);
     const dateObj = new Date();
@@ -43,11 +45,17 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     const [isStepDrawerOpen, setIsStepDrawerOpen] = React.useState(false);
 
     const [isPromptExpanded, setIsPromptExpanded] = React.useState(true);
+    const [isAudienceExpanded, setIsAudienceExpanded] = React.useState(false);
     const [isOmakaseLoading, setIsOmakaseLoading] = React.useState(false);
     const [isCalendarOpen, setIsCalendarOpen] = React.useState(false);
     const [isDefaultStyleEnabled, setIsDefaultStyleEnabled] = React.useState(() => {
         return localStorage.getItem('misepo_use_default_preset') === 'true';
     });
+    const [isDefaultAudienceEnabled, setIsDefaultAudienceEnabled] = React.useState(() => {
+        return localStorage.getItem('misepo_use_default_audience') === 'true';
+    });
+
+
 
     // Handle Calendar Strategy Launch
     const handleTrendStrategy = (event: TrendEvent) => {
@@ -63,7 +71,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
             setMobileStep('input');
             setIsStepDrawerOpen(true);
             // Pre-fill context
-            const strategyPrompt = `✨ ${event.title} (${event.date}) の投稿戦略：\n${event.description}\n\nおすすめハッシュタグ: ${event.hashtags.join(' ')}\n\nこのイベントに合わせて、集客効果の高い投稿を作ってください。`;
+            const strategyPrompt = `✨ ${event.title} (${event.date}) の生成指示：\n${event.prompt}\n\nおすすめハッシュタグ: ${event.hashtags.join(' ')}`;
             onInputTextChange(strategyPrompt);
         }, 800);
     };
@@ -153,6 +161,14 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
         }
     }, [isDefaultStyleEnabled, activePresetId]);
 
+    // Handle Default Audience Persistence
+    React.useEffect(() => {
+        localStorage.setItem('misepo_use_default_audience', String(isDefaultAudienceEnabled));
+        if (isDefaultAudienceEnabled && targetAudiences) {
+            localStorage.setItem('misepo_preferred_audiences', JSON.stringify(targetAudiences));
+        }
+    }, [isDefaultAudienceEnabled, targetAudiences]);
+
     // Apply Default Style on Entry
     React.useEffect(() => {
         if (isStepDrawerOpen && mobileStep === 'confirm' && isDefaultStyleEnabled) {
@@ -169,6 +185,33 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
             }
         }
     }, [isStepDrawerOpen, mobileStep, isDefaultStyleEnabled, activePresetId, presets, onApplyPreset]);
+
+    // Apply Default Audience on Entry
+    React.useEffect(() => {
+        if (isStepDrawerOpen && mobileStep === 'confirm' && isDefaultAudienceEnabled) {
+            const preferredAudiencesStr = localStorage.getItem('misepo_preferred_audiences');
+            if (preferredAudiencesStr) {
+                try {
+                    const preferredAudiences = JSON.parse(preferredAudiencesStr);
+                    // Only update if different to avoid infinite loop
+                    if (JSON.stringify(preferredAudiences) !== JSON.stringify(targetAudiences)) {
+                        onTargetAudiencesChange(preferredAudiences);
+                    }
+                } catch (e) {
+                    console.error('Failed to parse preferred audiences', e);
+                }
+            }
+        }
+    }, [isStepDrawerOpen, mobileStep, isDefaultAudienceEnabled, targetAudiences, onTargetAudiencesChange]);
+
+    // Enforce at least one audience (default to '全般')
+    React.useEffect(() => {
+        if (mobileStep === 'confirm' && (!targetAudiences || targetAudiences.length === 0)) {
+            if (onTargetAudiencesChange) {
+                onTargetAudiencesChange(['全般']);
+            }
+        }
+    }, [mobileStep, targetAudiences, onTargetAudiencesChange]);
 
     const toggleVoiceInput = React.useCallback(() => {
         if (isListening) {
@@ -212,6 +255,46 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
         setIsStepDrawerOpen(true);
     };
 
+    const handleTargetAudienceToggle = (target: string) => {
+        if (!targetAudiences || !onTargetAudiencesChange) return;
+
+        const current = targetAudiences;
+
+        // "Omakase" Strategy:
+        // 1. If '全般' is clicked
+        if (target === '全般') {
+            if (current.includes('全般')) {
+                // Mandatory Rule: Cannot deselect if it's the only one. 
+                // Actually, since '全般' clears others, if it's ON, it must be the only one.
+                // So we just return/do nothing.
+                return;
+            } else {
+                // If checking '全般', clear others
+                onTargetAudiencesChange(['全般']);
+            }
+            return;
+        }
+
+        // 2. If any OTHER tag is clicked, '全般' must be removed (if present).
+        let newSelection = [...current];
+        if (newSelection.includes('全般')) {
+            newSelection = newSelection.filter(t => t !== '全般');
+        }
+
+        if (newSelection.includes(target)) {
+            // Deselecting logic with fallback
+            const filtered = newSelection.filter(t => t !== target);
+            if (filtered.length === 0) {
+                // Fallback to '全般' if trying to empty the list
+                onTargetAudiencesChange(['全般']);
+            } else {
+                onTargetAudiencesChange(filtered);
+            }
+        } else {
+            onTargetAudiencesChange([...newSelection, target]);
+        }
+    };
+
     const handleOmakaseStart = () => {
         setIsOmakaseLoading(true);
         onApplyPreset({ id: 'plain-ai' } as any); // Force AI Standard preset
@@ -245,6 +328,23 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
     // State for Inspiration Deck Caching
     const [cachedInspirationCards, setCachedInspirationCards] = React.useState<any[]>([]);
+
+    // --- Audience Logic (Moved to Top Level) ---
+
+
+    const profileTargets = React.useMemo(() => {
+        return storeProfile?.targetAudience
+            ? storeProfile.targetAudience.split(',').map(s => s.trim())
+            : [];
+    }, [storeProfile?.targetAudience]);
+
+    // Primary: In Profile OR Selected OR '全般' (Always visible as default option)
+    const primaryAudienceList = TARGET_AUDIENCES.filter(t =>
+        t === '全般' || profileTargets.includes(t) || targetAudiences?.includes(t)
+    );
+
+    // Secondary: The rest
+    const secondaryAudienceList = TARGET_AUDIENCES.filter(t => !primaryAudienceList.includes(t));
 
     return (
         <div className="flex flex-col h-full relative overflow-hidden font-inter bg-white">
@@ -420,46 +520,54 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                     {/* Bottom Section - Promotional Card (AI Omakase Mode Redesign) */}
                     <div className="mt-4 md:mt-6">
                         <div
-                            onClick={handleOmakaseStart}
+                            onClick={!isGoogleMaps ? handleOmakaseStart : undefined}
                             className={`
-                                relative group transition-all duration-700 cursor-pointer active:scale-95 my-1
+                                relative group transition-all duration-700 my-1
                                 rounded-[32px] overflow-hidden
-                                ${isOmakaseLoading ? 'scale-[0.98]' : 'hover:scale-[1.02] hover:-translate-y-1.5'}
-                                shadow-[0_10px_30px_rgba(0,113,185,0.08)] hover:shadow-[0_25px_50px_rgba(0,113,185,0.18)]
+                                ${!isGoogleMaps ? 'cursor-pointer active:scale-95' : 'cursor-not-allowed opacity-60 grayscale'}
+                                ${isOmakaseLoading ? 'scale-[0.98]' : (!isGoogleMaps ? 'hover:scale-[1.02] hover:-translate-y-1.5' : '')}
+                                ${!isGoogleMaps ? 'shadow-[0_10px_30px_rgba(0,113,185,0.08)] hover:shadow-[0_25px_50px_rgba(0,113,185,0.18)]' : 'shadow-sm border border-stone-200'}
                             `}
                             style={{
-                                backgroundColor: '#d8e9f4',
+                                backgroundColor: !isGoogleMaps ? '#d8e9f4' : '#f3f4f6',
                                 clipPath: 'polygon(0% 0%, 100% 0%, 100% 35%, 98% 40%, 98% 60%, 100% 65%, 100% 100%, 0% 100%, 0% 65%, 2% 60%, 2% 40%, 0% 35%)'
                             }}
                         >
                             {/* Texture & Glass Layer */}
-                            <div className="absolute inset-0 bg-white/10 backdrop-blur-[2px] opacity-50 pointer-events-none" />
+                            {!isGoogleMaps && <div className="absolute inset-0 bg-white/10 backdrop-blur-[2px] opacity-50 pointer-events-none" />}
 
-                            {/* Shine Effect */}
-                            <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent w-1/2 animate-ticket-shine" />
-                            </div>
+                            {/* Shine Effect removed */}
 
                             {/* Decorative Background Glows */}
-                            <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/30 rounded-full blur-[40px] pointer-events-none group-hover:bg-white/50 transition-colors duration-700" />
-                            <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-[#0071b9]/5 rounded-full blur-[30px] pointer-events-none" />
+                            {!isGoogleMaps && (
+                                <>
+                                    <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/30 rounded-full blur-[40px] pointer-events-none group-hover:bg-white/50 transition-colors duration-700" />
+                                    <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-[#0071b9]/5 rounded-full blur-[30px] pointer-events-none" />
+                                </>
+                            )}
 
                             <div className="relative p-5 pl-10 pr-6 flex items-center justify-between">
                                 {/* Left Content */}
                                 <div className="relative z-10 flex flex-col gap-6">
-                                    <div className="self-start inline-flex px-4 py-1.5 rounded-full bg-[#0071b9] text-[9px] font-black text-white uppercase tracking-[0.2em] shadow-sm border border-[#0071b9]/5">
-                                        AIが自動提案
+                                    <div className={`self-start inline-flex px-4 py-1.5 rounded-full ${!isGoogleMaps ? 'bg-[#0071b9]' : 'bg-stone-400'} text-[9px] font-black text-white uppercase tracking-[0.2em] shadow-sm`}>
+                                        {isGoogleMaps ? '利用不可' : 'AIが自動提案'}
                                     </div>
                                     <div className="space-y-1">
                                         <div className="flex items-center gap-2">
-                                            <h4 className="text-[24px] font-black text-[#0071b9] tracking-tighter leading-none whitespace-nowrap">
+                                            <h4 className={`text-[24px] font-black tracking-tighter leading-none whitespace-nowrap ${!isGoogleMaps ? 'text-[#0071b9]' : 'text-stone-400'}`}>
                                                 AIおまかせ生成
                                             </h4>
-                                            <SparklesIcon className="w-5 h-5 text-[#0071b9] animate-pulse" />
+                                            {!isGoogleMaps && <SparklesIcon className="w-5 h-5 text-[#0071b9] animate-pulse" />}
                                         </div>
                                         <p className="text-[11px] text-stone-500 font-bold leading-relaxed">
-                                            今日のおすすめやお店の様子を入力するだけで、<br />
-                                            AIが魅力的な投稿に仕上げます。
+                                            {isGoogleMaps ? (
+                                                'Googleマップ選択時は利用できません'
+                                            ) : (
+                                                <>
+                                                    迷ったらここから。<br />
+                                                    AIと一緒に魅力的な発信を始めましょう。
+                                                </>
+                                            )}
                                         </p>
                                     </div>
                                 </div>
@@ -468,12 +576,12 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                 <div className="relative z-10 flex items-center justify-center">
                                     <div className={`
                                         w-14 h-14 rounded-2xl flex items-center justify-center shadow-xl transition-all duration-500
-                                        ${isOmakaseLoading ? 'bg-white scale-90' : 'bg-white group-hover:bg-[#0071b9] group-hover:scale-110 group-active:scale-95 group-hover:rotate-6'}
+                                        ${isOmakaseLoading ? 'bg-white scale-90' : (!isGoogleMaps ? 'bg-white group-hover:bg-[#0071b9] group-hover:scale-110 group-active:scale-95 group-hover:rotate-6' : 'bg-stone-200 shadow-none')}
                                     `}>
                                         {isOmakaseLoading ? (
                                             <div className="w-5 h-5 border-2 border-[#0071b9]/20 border-t-[#0071b9] rounded-full animate-spin" />
                                         ) : (
-                                            <ChevronRightIcon className="w-6 h-6 text-[#0071b9] group-hover:text-white transition-colors duration-500 animate-arrow-flow" />
+                                            <ChevronRightIcon className={`w-6 h-6 ${!isGoogleMaps ? 'text-[#0071b9] group-hover:text-white' : 'text-stone-400'} transition-colors duration-500 ${!isGoogleMaps ? 'animate-arrow-flow' : ''}`} />
                                         )}
                                     </div>
 
@@ -481,7 +589,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             </div>
 
                             {/* Ticket Perforation Line (Visual Only) */}
-                            <div className="absolute top-[8%] bottom-[8%] right-[25%] w-px border-r-2 border-dotted border-[#0071b9]/20 pointer-events-none" />
+                            <div className={`absolute top-[8%] bottom-[8%] right-[25%] w-px border-r-2 border-dotted ${!isGoogleMaps ? 'border-[#0071b9]/20' : 'border-stone-300'} pointer-events-none`} />
                         </div>
                     </div>
                 </div>
@@ -494,6 +602,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                 onSelectEvent={handleTrendStrategy}
                 industry={storeProfile?.industry}
                 description={storeProfile?.description}
+                isGoogleMaps={isGoogleMaps}
             />
 
             {/* Bottom Sheet Drawer - Monochrome Style */}
@@ -515,40 +624,41 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             <div className="w-16 h-1.5 bg-[#E5E5E5] rounded-full" />
                         </div>
 
-                        {/* Drawer Header */}
-                        <div className="px-8 pb-4 flex items-center justify-between">
-                            <div className="flex items-center gap-4">
-                                <button onClick={handleBackStep} className="w-12 h-12 rounded-full bg-white border border-[#E5E5E5] flex items-center justify-center shadow-sm active:scale-90 transition-all">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#111111" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
-                                </button>
-                                <div className="flex flex-col">
-                                    <h3 className="text-[17px] font-black text-[#0071b9] tracking-tight leading-none mb-1">
-                                        {mobileStep === 'input' ? '投稿内容を入力' : mobileStep === 'confirm' ? '投稿内容の確認' : '生成完了'}
-                                    </h3>
-                                    <span className="text-[10px] font-black text-[#666666] uppercase tracking-[0.2em] leading-none">
-                                        {mobileStep === 'input' ? 'STEP 2 / 3' : mobileStep === 'confirm' ? 'STEP 3 / 3' : 'SUCCESS!'}
-                                    </span>
+                        {/* Drawer Header - Hidden during AI Refinement */}
+                        {!refiningKey && (
+                            <div className="px-8 pb-4 flex items-center justify-between animate-in fade-in duration-300">
+                                <div className="flex items-center gap-4">
+                                    <button onClick={handleBackStep} className="w-12 h-12 rounded-full bg-white border border-[#E5E5E5] flex items-center justify-center shadow-sm active:scale-90 transition-all">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#111111" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
+                                    </button>
+                                    <div className="flex flex-col">
+                                        <h3 className="text-[17px] font-black text-[#0071b9] tracking-tight leading-none mb-1">
+                                            {mobileStep === 'input' ? '投稿内容を入力' : mobileStep === 'confirm' ? '投稿内容の確認' : '生成完了'}
+                                        </h3>
+                                        <span className="text-[10px] font-black text-[#666666] uppercase tracking-[0.2em] leading-none">
+                                            {mobileStep === 'input' ? 'STEP 2 / 3' : mobileStep === 'confirm' ? 'STEP 3 / 3' : 'SUCCESS!'}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="flex -space-x-2">
+                                    {platforms.map(p => (
+                                        <div key={p} className="w-10 h-10 rounded-full bg-white border-2 border-[#FAFAFA] flex items-center justify-center shadow-sm z-10">
+                                            {getPlatformIcon(p, "w-5 h-5")}
+                                        </div>
+                                    ))}
+                                    <button
+                                        onClick={() => {
+                                            setIsStepDrawerOpen(false);
+                                            // ALWAYS reset to platform to ensure footer contrast resets (Dark Mode)
+                                            setMobileStep('platform');
+                                        }}
+                                        className="w-10 h-10 rounded-full bg-white border border-[#E5E5E5] flex items-center justify-center shadow-sm active:scale-90 transition-all ml-2 z-20"
+                                    >
+                                        <CloseIcon className="w-5 h-5 text-[#111111]" />
+                                    </button>
                                 </div>
                             </div>
-                            <div className="flex -space-x-2">
-                                {platforms.map(p => (
-                                    <div key={p} className="w-10 h-10 rounded-full bg-white border-2 border-[#FAFAFA] flex items-center justify-center shadow-sm z-10">
-                                        {getPlatformIcon(p, "w-5 h-5")}
-                                    </div>
-                                ))}
-                                <button
-                                    onClick={() => {
-                                        setIsStepDrawerOpen(false);
-                                        setIsStepDrawerOpen(false);
-                                        // ALWAYS reset to platform to ensure footer contrast resets (Dark Mode)
-                                        setMobileStep('platform');
-                                    }}
-                                    className="w-10 h-10 rounded-full bg-white border border-[#E5E5E5] flex items-center justify-center shadow-sm active:scale-90 transition-all ml-2 z-20"
-                                >
-                                    <CloseIcon className="w-5 h-5 text-[#111111]" />
-                                </button>
-                            </div>
-                        </div>
+                        )}
 
                         {/* Drawer Content - Redesigned for Sticky Actions */}
                         <div className="flex-1 flex flex-col min-h-0 overflow-hidden relative">
@@ -557,7 +667,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
                                     {/* 1. Top Fixed Header Section */}
                                     {!isGoogleMaps && (
-                                        <div className="flex-shrink-0 flex justify-center py-4 bg-gradient-to-b from-[#FAFAFA] to-transparent z-10">
+                                        <div className="flex-shrink-0 flex justify-center py-4 bg-[#FAFAFA] z-10 border-b border-stone-100">
                                             <button
                                                 onClick={toggleVoiceInput}
                                                 className={`relative w-28 h-28 rounded-full flex-shrink-0 flex items-center justify-center transition-all duration-700 ${isListening ? 'scale-110' : 'hover:scale-105'}`}
@@ -699,6 +809,76 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                 </button>
                                             </div>
 
+
+                                            {/* Target Audience - Horizontal Scroll for Compactness */}
+                                            {targetAudiences && (
+                                                <div className="flex flex-col gap-3">
+                                                    <div className="flex items-center justify-between px-2">
+                                                        <div className="flex items-center gap-3">
+                                                            <span className="text-[11px] font-black text-[#122646] uppercase tracking-[0.2em]">ターゲット設定</span>
+                                                            <label className="flex items-center gap-1.5 cursor-pointer group/label">
+                                                                <div className="relative flex items-center justify-center">
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        checked={isDefaultAudienceEnabled}
+                                                                        onChange={(e) => setIsDefaultAudienceEnabled(e.target.checked)}
+                                                                        className="peer appearance-none w-3.5 h-3.5 rounded border border-stone-300 checked:bg-[#0071b9] checked:border-[#0071b9] transition-all"
+                                                                    />
+                                                                    <svg className="absolute w-2.5 h-2.5 text-white opacity-0 peer-checked:opacity-100 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="4">
+                                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                                                    </svg>
+                                                                </div>
+                                                                <span className="text-[9px] font-bold text-stone-400 group-hover/label:text-stone-600 transition-colors">デフォルトに設定</span>
+                                                            </label>
+                                                        </div>
+                                                        <span className="text-[9px] font-bold text-stone-400">※複数選択可</span>
+                                                    </div>
+                                                    <div className="flex overflow-x-auto gap-2 pb-2 pt-2 -mx-2 px-3 no-scrollbar scrollbar-hide">
+                                                        {primaryAudienceList.map(target => (
+                                                            <button
+                                                                key={target}
+                                                                onClick={() => handleTargetAudienceToggle(target)}
+                                                                className={`
+                                                                    flex-shrink-0 px-4 py-2 rounded-xl font-bold text-[11px] transition-all active:scale-95 border whitespace-nowrap
+                                                                    ${targetAudiences?.includes(target)
+                                                                        ? 'bg-[#122646] text-white border-[#122646] shadow-md'
+                                                                        : 'bg-white text-stone-500 border-stone-200 hover:border-stone-300'
+                                                                    }
+                                                                `}
+                                                            >
+                                                                {target}
+                                                            </button>
+                                                        ))}
+
+                                                        {/* Show All Toggle or Secondary List */}
+                                                        {secondaryAudienceList.length > 0 && (
+                                                            <>
+                                                                {!isAudienceExpanded ? (
+                                                                    <button
+                                                                        onClick={() => setIsAudienceExpanded(true)}
+                                                                        className="flex-shrink-0 px-3 py-2 rounded-xl font-bold text-[10px] bg-stone-100 text-stone-400 border border-stone-100 hover:bg-stone-200 transition-colors flex items-center gap-1 whitespace-nowrap"
+                                                                    >
+                                                                        <span>＋ 他のターゲット</span>
+                                                                    </button>
+                                                                ) : (
+                                                                    secondaryAudienceList.map(target => (
+                                                                        <button
+                                                                            key={target}
+                                                                            onClick={() => handleTargetAudienceToggle(target)}
+                                                                            className={`
+                                                                                flex-shrink-0 px-4 py-2 rounded-xl font-bold text-[11px] transition-all active:scale-95 border bg-white text-stone-500 border-stone-200 hover:border-stone-300 opacity-80 whitespace-nowrap
+                                                                            `}
+                                                                        >
+                                                                            {target}
+                                                                        </button>
+                                                                    ))
+                                                                )}
+                                                            </>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            )}
+
                                             {/* Style Selection - Horizontal Pill Style (Monochrome) */}
                                             <div className="flex flex-col gap-4">
                                                 <div className="flex items-center justify-between px-2">
@@ -743,110 +923,108 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                 </div>
                                             </div>
 
-                                            {/* Settings Grid - Monochrome */}
-                                            <div className="flex flex-col gap-6 pb-8">
-                                                <div className="grid grid-cols-2 gap-8 px-2 mb-4">
-                                                    {/* Tone Slider */}
-                                                    <div className={`flex flex-col gap-3 transition-opacity ${isStyleLocked ? 'opacity-70 relative' : ''}`}>
-                                                        <div className="flex items-center justify-between px-1">
-                                                            <div className="flex items-center gap-1.5">
-                                                                <span className="text-[8px] font-black text-stone-400 uppercase tracking-[0.2em]">トーン</span>
-                                                                {isStyleLocked && <LockIcon className="w-2.5 h-2.5 text-[#0071b9]" />}
-                                                            </div>
-                                                            {isStyleLocked && <div className="text-[7px] bg-[#d8e9f4] px-1.5 py-0.5 rounded text-[#0071b9] font-black uppercase tracking-widest">学習データ適用中</div>}
-                                                        </div>
-                                                        <div className="relative px-1 pt-1 pb-2">
-                                                            {/* Track */}
-                                                            <div className="absolute top-[6px] left-1 right-1 h-[1.5px] bg-stone-200" />
-                                                            {/* Points */}
-                                                            <div className="relative flex justify-between items-center h-3">
-                                                                {TONES.map((t) => {
-                                                                    const isActive = tone === t.id;
-                                                                    return (
-                                                                        <button
-                                                                            key={t.id}
-                                                                            disabled={isStyleLocked}
-                                                                            onClick={() => !isStyleLocked && onToneChange(t.id)}
-                                                                            className={`relative z-10 flex flex-col items-center group w-full first:items-start last:items-end ${isStyleLocked ? 'cursor-not-allowed' : ''}`}
-                                                                        >
-                                                                            <div className={`w-3 h-3 rounded-full border-2 transition-all duration-300 ${isActive ? 'bg-[#0071b9] border-[#0071b9] scale-110' : 'bg-white border-stone-300'}`} />
-                                                                            <span className={`absolute -bottom-4 text-[8px] font-black transition-colors duration-300 whitespace-nowrap ${isActive ? 'text-[#0071b9]' : 'text-stone-400'}`}>
-                                                                                {t.label}
-                                                                            </span>
-                                                                        </button>
-                                                                    );
-                                                                })}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    {/* Length Slider */}
-                                                    {!isX && (
-                                                        <div className="flex flex-col gap-3">
-                                                            <div className="flex items-center justify-between px-1">
-                                                                <span className="text-[8px] font-black text-stone-400 uppercase tracking-[0.2em]">長さ</span>
-                                                            </div>
-                                                            <div className="relative px-1 pt-1 pb-2">
-                                                                {/* Track */}
-                                                                <div className="absolute top-[6px] left-1 right-1 h-[1.5px] bg-stone-200" />
-                                                                {/* Points */}
-                                                                <div className="relative flex justify-between items-center h-3">
-                                                                    {LENGTHS.map((l) => {
-                                                                        const isActive = length === l.id;
-                                                                        return (
-                                                                            <button
-                                                                                key={l.id}
-                                                                                onClick={() => onLengthChange(l.id)}
-                                                                                className="relative z-10 flex flex-col items-center group w-full first:items-start last:items-end"
-                                                                            >
-                                                                                <div className={`w-3 h-3 rounded-full border-2 transition-all duration-300 ${isActive ? 'bg-[#0071b9] border-[#0071b9] scale-110' : 'bg-white border-stone-300'}`} />
-                                                                                <span className={`absolute -bottom-4 text-[8px] font-black transition-colors duration-300 whitespace-nowrap ${isActive ? 'text-[#0071b9]' : 'text-stone-400'}`}>
-                                                                                    {l.label}
-                                                                                </span>
-                                                                            </button>
-                                                                        );
-                                                                    })}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    )}
-                                                </div>
-
-                                                {/* Store Supplement (GMap) */}
-                                                {isGoogleMaps && (
-                                                    <div className="bg-[#f5f7fa] px-6 py-4 rounded-[28px] border border-stone-200 flex flex-col gap-2 shadow-sm">
-                                                        <span className="text-[8px] font-black text-stone-500 uppercase tracking-[0.2em]">補足情報 / 当日の事情</span>
-                                                        <AutoResizingTextarea
-                                                            value={storeSupplement}
-                                                            onChange={(e) => onStoreSupplementChange(e.target.value)}
-                                                            placeholder="例：急な欠勤でお待たせした、感謝を伝えたい等"
-                                                            className="bg-transparent text-sm font-bold text-[#122646] focus:outline-none resize-none min-h-[40px] placeholder:text-stone-300"
-                                                        />
-                                                    </div>
-                                                )}
-
-                                                {/* Custom Prompt */}
-                                                <div className="bg-[#f5f7fa] px-6 py-4 rounded-[28px] border border-stone-200 flex flex-col gap-2 shadow-sm">
+                                            {/* Custom Prompt (Always Visible) */}
+                                            <div className="my-2">
+                                                <div className="bg-[#f5f7fa] px-6 py-4 rounded-[32px] border border-stone-200 flex flex-col gap-2 shadow-sm active:border-[#0071b9]/30 transition-colors">
                                                     <div className="flex items-center gap-1.5">
                                                         <AutoSparklesIcon className="w-3 h-3 text-[#0071b9]" />
                                                         <span className="text-[8px] font-black text-stone-500 uppercase tracking-[0.2em]">追加指示（任意）</span>
                                                     </div>
-                                                    <input
-                                                        type="text"
+                                                    <AutoResizingTextarea
                                                         value={customPrompt}
                                                         onChange={(e) => onCustomPromptChange(e.target.value)}
-                                                        placeholder="例：絵文字多め、明るいトーンで、等"
-                                                        className="bg-transparent text-sm font-bold text-[#122646] focus:outline-none placeholder:text-stone-300"
+                                                        placeholder="AIへの具体的なお願いはこちらに..."
+                                                        className="bg-transparent text-sm font-bold text-[#122646] focus:outline-none resize-none min-h-[32px] placeholder:text-stone-300 w-full"
                                                     />
                                                 </div>
                                             </div>
+
+                                            {/* Fine-tuning Settings (Tone, Length, Supplement) */}
+                                            {(!isStyleLocked || !isX) && (
+                                                <div className="mt-8 px-2 space-y-8">
+                                                    {/* Settings Grid - Monochrome */}
+                                                    <div className="flex gap-8 mb-4">
+                                                        {/* Tone Slider - Hide if Locked */}
+                                                        {!isStyleLocked && (
+                                                            <div className="flex-1 flex flex-col gap-3">
+                                                                <div className="flex items-center justify-between px-1">
+                                                                    <div className="flex items-center gap-1.5">
+                                                                        <span className="text-[8px] font-black text-stone-400 uppercase tracking-[0.2em]">トーン</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div className="relative px-1 pt-1 pb-2">
+                                                                    <div className="absolute top-[6px] left-1 right-1 h-[1.5px] bg-stone-200" />
+                                                                    <div className="relative flex justify-between items-center h-3">
+                                                                        {TONES.map((t) => {
+                                                                            const isActive = tone === t.id;
+                                                                            return (
+                                                                                <button
+                                                                                    key={t.id}
+                                                                                    onClick={() => onToneChange(t.id)}
+                                                                                    className="relative z-10 flex flex-col items-center group w-full first:items-start last:items-end"
+                                                                                >
+                                                                                    <div className={`w-3 h-3 rounded-full border-2 transition-all duration-300 ${isActive ? 'bg-[#0071b9] border-[#0071b9] scale-110' : 'bg-white border-stone-300'}`} />
+                                                                                    <span className={`absolute -bottom-4 text-[8px] font-black transition-colors duration-300 whitespace-nowrap ${isActive ? 'text-[#0071b9]' : 'text-stone-400'}`}>
+                                                                                        {t.label}
+                                                                                    </span>
+                                                                                </button>
+                                                                            );
+                                                                        })}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        )}
+
+                                                        {/* Length Slider */}
+                                                        {!isX && (
+                                                            <div className="flex-1 flex flex-col gap-3">
+                                                                <div className="flex items-center justify-between px-1">
+                                                                    <span className="text-[8px] font-black text-stone-400 uppercase tracking-[0.2em]">長さ</span>
+                                                                </div>
+                                                                <div className="relative px-1 pt-1 pb-2">
+                                                                    <div className="absolute top-[6px] left-1 right-1 h-[1.5px] bg-stone-200" />
+                                                                    <div className="relative flex justify-between items-center h-3">
+                                                                        {LENGTHS.map((l) => {
+                                                                            const isActive = length === l.id;
+                                                                            return (
+                                                                                <button
+                                                                                    key={l.id}
+                                                                                    onClick={() => onLengthChange(l.id)}
+                                                                                    className="relative z-10 flex flex-col items-center group w-full first:items-start last:items-end"
+                                                                                >
+                                                                                    <div className={`w-3 h-3 rounded-full border-2 transition-all duration-300 ${isActive ? 'bg-[#0071b9] border-[#0071b9] scale-110' : 'bg-white border-stone-300'}`} />
+                                                                                    <span className={`absolute -bottom-4 text-[8px] font-black transition-colors duration-300 whitespace-nowrap ${isActive ? 'text-[#0071b9]' : 'text-stone-400'}`}>
+                                                                                        {l.label}
+                                                                                    </span>
+                                                                                </button>
+                                                                            );
+                                                                        })}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                    </div>
+
+                                                    {/* Store Supplement (GMap) - Note: Only renders if isGoogleMaps, handled within this block but structure is safe */}
+                                                    {isGoogleMaps && (
+                                                        <div className="bg-[#f5f7fa] px-6 py-4 rounded-[28px] border border-stone-200 flex flex-col gap-2 shadow-sm">
+                                                            <span className="text-[8px] font-black text-stone-500 uppercase tracking-[0.2em]">補足情報 / 当日の事情</span>
+                                                            <AutoResizingTextarea
+                                                                value={storeSupplement}
+                                                                onChange={(e) => onStoreSupplementChange(e.target.value)}
+                                                                placeholder="例：急な欠勤でお待たせした、感謝を伝えたい等"
+                                                                className="bg-transparent text-sm font-bold text-[#122646] focus:outline-none resize-none min-h-[40px] placeholder:text-stone-300"
+                                                            />
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
                             )}
-
                             {mobileStep === 'result' && (
-                                <div className="flex-1 overflow-y-auto pb-20 animate-in fade-in slide-in-from-bottom-10 duration-700 px-8">
+                                <div className="flex-1 overflow-y-auto pb-4 animate-in fade-in slide-in-from-bottom-10 duration-700 px-0">
                                     <PostResultTabs
                                         results={generatedResults}
                                         activeTab={activeResultTab}
@@ -876,37 +1054,41 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
                         {/* Step 3 Sticky Action Area - Fixed for Hitbox and Layout accuracy */}
                         {mobileStep === 'confirm' && (
-                            <div className="absolute bottom-[60px] left-0 right-0 px-8 z-[120] flex flex-col items-center gap-4">
-                                <button
-                                    onClick={onGenerate}
-                                    disabled={isGenerating}
-                                    className={`
-                                        w-full group relative overflow-hidden rounded-[32px] py-6
-                                        transition-all duration-500 active:scale-95
-                                        ${isGenerating ? 'bg-stone-300 cursor-not-allowed' : 'bg-[#f2e018] shadow-[0_10px_30px_rgba(0,113,185,0.2)]'}
-                                    `}
-                                >
-                                    <div className="relative flex items-center justify-center gap-3">
-                                        {isGenerating ? (
-                                            <div className="w-6 h-6 border-3 border-white/20 border-t-[#122646] rounded-full animate-spin" />
-                                        ) : (
-                                            <div className="flex items-center gap-3">
+                            <div className="absolute bottom-0 left-0 right-0 z-[120] flex flex-col items-center">
+                                {/* Gradient Fade Border */}
+                                {/* Gradient fade removed */}
+
+                                {/* Opaque Background with Content */}
+                                <div className="w-full bg-[#FAFAFA] px-8 pt-4 pb-[24px] flex flex-col items-center gap-4">
+                                    <button
+                                        onClick={onGenerate}
+                                        disabled={isGenerating}
+                                        className={`
+                                            w-full group relative overflow-hidden rounded-[32px] py-6
+                                            flex items-center justify-center
+                                            transition-all duration-500 active:scale-95
+                                            ${isGenerating ? 'bg-stone-300 cursor-not-allowed' : 'bg-[#f2e018] shadow-[0_10px_30px_rgba(0,113,185,0.2)]'}
+                                        `}
+                                    >
+                                        <div className="relative flex items-center justify-center gap-3">
+                                            {isGenerating ? (
+                                                <div className="w-6 h-6 border-3 border-white/20 border-t-[#122646] rounded-full animate-spin" />
+                                            ) : (
                                                 <span className="text-[#122646] text-base font-black uppercase tracking-[0.3em]">
                                                     投稿案を作成する
                                                 </span>
-                                            </div>
-                                        )}
-                                    </div>
-                                </button>
-                                <p className="text-center text-[10px] font-bold text-[#999999] uppercase tracking-widest pointer-events-none">
-                                    あなたの想いを、AIが最高の文章に仕上げます
-                                </p>
+                                            )}
+                                        </div>
+                                    </button>
+                                    <p className="text-center text-[10px] font-bold text-[#999999] uppercase tracking-widest pointer-events-none">
+                                        あなたの想いを、AIが最高の文章に仕上げます
+                                    </p>
+                                </div>
                             </div>
                         )}
                     </div>
-                </div >
-            )
-            }
-        </div >
+                </div>
+            )}
+        </div>
     );
 };

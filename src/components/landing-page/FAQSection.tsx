@@ -7,31 +7,35 @@ interface FAQ {
     a: string;
 }
 
-export const FAQSection = ({ faqs, openFaq, setOpenFaq }: { faqs: FAQ[]; openFaq: number | null; setOpenFaq: (idx: number | null) => void }) => {
+export const FAQSection = ({ faqs, openFaq, setOpenFaq, isMobile = false }: { faqs: FAQ[]; openFaq: number | null; setOpenFaq: (idx: number | null) => void; isMobile?: boolean }) => {
     return (
-        <section id="faq" className="py-24 bg-white">
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 className="text-4xl md:text-6xl font-bold text-center text-slate-800 mb-16 tracking-tight">
-                    <span className="bg-gradient-to-r from-[#9B8FD4] to-[#9B8FD4]/70 bg-clip-text text-transparent">よくある質問</span>
-                </h2>
-                <div className="space-y-4">
-                    {faqs.map((faq, index) => (
-                        <div key={index} className="border border-slate-200 rounded-3xl bg-white overflow-hidden transition-all duration-300 hover:border-[#9B8FD4]/30 hover:shadow-lg hover:shadow-[#9B8FD4]/5">
+        <section id="faq" className="py-24 md:py-48 bg-[#282d32] text-white overflow-hidden">
+            <div className="max-w-7xl mx-auto px-6">
+                <div className="flex flex-col items-start mb-24">
+                    <span className="text-[10px] font-black text-[#1823ff] uppercase tracking-[0.2em] mb-8 px-4 py-2 bg-[#1823ff]/10 rounded-full border border-[#1823ff]/20">Frequently Asked</span>
+                    <h2 className={`font-black tracking-tighter leading-[0.9] text-white ${isMobile ? 'text-5xl' : 'text-7xl md:text-8xl lg:text-[8rem]'}`}>
+                        ASK IF<br />
+                        <span className="text-[#1823ff]">UNCLEAR.</span>
+                    </h2>
+                </div>
+
+                <div className="max-w-4xl space-y-4">
+                    {faqs.map((faq, idx) => (
+                        <div key={idx} className={`border border-white/5 rounded-[32px] overflow-hidden transition-all duration-500 ${openFaq === idx ? 'bg-white/5' : 'bg-transparent'}`}>
                             <button
-                                className="w-full px-8 py-6 text-left flex justify-between items-center bg-white hover:bg-slate-50/50 transition-colors"
-                                onClick={() => setOpenFaq(openFaq === index ? null : index)}
-                                aria-expanded={openFaq === index}
+                                onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
+                                className="w-full p-8 md:p-12 flex items-center justify-between text-left group"
                             >
-                                <span className={`font-bold text-lg md:text-xl transition-colors duration-300 ${openFaq === index ? 'text-[#9B8FD4]' : 'text-slate-800'}`}>
-                                    {faq.q}
-                                </span>
-                                <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 shrink-0 ml-4 ${openFaq === index ? 'bg-[#9B8FD4] text-white rotate-180' : 'bg-slate-100 text-slate-400'}`}>
-                                    <Icons.ChevronUp size={20} />
+                                <span className="text-xl md:text-2xl font-black pr-8">{faq.q}</span>
+                                <div className={`w-8 h-8 rounded-full border border-white/20 flex items-center justify-center transition-transform duration-500 ${openFaq === idx ? 'rotate-180 bg-white text-[#282d32]' : ''}`}>
+                                    <Icons.ChevronDown size={16} />
                                 </div>
                             </button>
-                            <div className={`overflow-hidden transition-all duration-300 ease-in-out ${openFaq === index ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
-                                <div className="px-8 pb-8 pt-0">
-                                    <p className="text-slate-500 font-medium text-base leading-relaxed border-t border-slate-100 pt-6">{faq.a}</p>
+                            <div className={`overflow-hidden transition-all duration-500 ${openFaq === idx ? 'max-h-[400px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                                <div className="p-8 md:p-12 pt-0">
+                                    <p className="text-lg font-bold text-slate-400 leading-tight">
+                                        {faq.a}
+                                    </p>
                                 </div>
                             </div>
                         </div>

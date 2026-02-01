@@ -2,43 +2,35 @@
 import React from 'react';
 import { Icons } from '../LandingPageIcons';
 
-export const CTASection = () => {
+export const CTASection = ({ isMobile = false }: { isMobile?: boolean }) => {
     return (
-        <section className="py-32 bg-slate-900 text-white relative overflow-hidden">
-            {/* Background Gradients */}
-            <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-40">
-                <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-[#E88BA3] rounded-full blur-[120px]" />
-                <div className="absolute bottom-[-20%] left-[-10%] w-[800px] h-[800px] bg-[#4DB39A] rounded-full blur-[120px]" />
-            </div>
+        <section className="py-24 md:py-48 bg-[#1823ff] text-white relative overflow-hidden">
+            {/* Background Texture */}
+            <div className="absolute inset-0 opacity-[0.05] pointer-events-none" style={{ backgroundImage: 'radial-gradient(white 0.5px, transparent 0.5px)', backgroundSize: '32px 32px' }} />
 
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-                <div className="mb-12">
-                    <div className="inline-block px-4 py-1.5 bg-[#F5CC6D]/20 border border-[#F5CC6D]/30 rounded-full text-[#F5CC6D] text-xs font-bold uppercase tracking-widest mb-8 backdrop-blur-sm">
-                        For Business Owners
-                    </div>
-                </div>
-                <h2 className="text-5xl md:text-7xl font-bold mb-10 leading-[1.1] tracking-tight">
-                    365日の<br className="md:hidden" />SNSの悩み、<br />
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#E88BA3] to-[#F5CC6D]">これでおしまい。</span>
-                </h2>
-                <p className="text-lg md:text-xl text-slate-300 font-medium leading-relaxed mb-16 max-w-2xl mx-auto">
-                    あなたの情熱は、<br className="md:hidden" />本来のお客様のために。<br />
-                    文章作成は、あなたの『分身』に任せてください。
-                </p>
-                <div className="flex flex-col gap-6 justify-center items-center">
+            <div className="max-w-7xl mx-auto px-6 text-center relative z-10">
+                <div className="flex flex-col items-center">
+                    <span className="text-[10px] font-black text-white/50 uppercase tracking-[0.4em] mb-12">Final Step</span>
+                    <h2 className={`font-black tracking-tighter leading-[0.9] text-white mb-16 ${isMobile ? 'text-5xl' : 'text-7xl md:text-8xl lg:text-[8rem]'}`}>
+                        GET YOUR<br />
+                        <span className="opacity-40">FREE TRIAL.</span>
+                    </h2>
+                    <p className="text-xl md:text-2xl font-bold text-white/70 max-w-2xl mb-16 leading-tight">
+                        あなたの情熱は、本来のお客様のために。<br />
+                        SNS運用は、あなただけの『分身』に任せてみませんか。
+                    </p>
+
                     <button
                         onClick={() => window.location.href = '/start'}
-                        className="group relative px-10 py-5 bg-white text-slate-900 rounded-full font-bold text-xl shadow-2xl shadow-white/10 hover:shadow-white/20 hover:-translate-y-1 transition-all flex items-center gap-3 overflow-hidden"
+                        className="px-16 py-8 bg-white text-[#1823ff] font-black rounded-full shadow-2xl shadow-black/20 hover:scale-[1.05] transition-all text-2xl flex items-center gap-4 group"
                     >
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-slate-100/50 to-transparent translate-x-[-100%] group-hover:animate-shimmer" />
-                        <span className="relative z-10">今すぐ無料で始める</span>
-                        <Icons.ArrowRight className="relative z-10 group-hover:translate-x-1 transition-transform" size={24} />
+                        7日間無料で試す
+                        <Icons.ArrowRight className="group-hover:translate-x-2 transition-transform" size={28} />
                     </button>
-                    <div className="flex items-center gap-2 text-[#4DB39A]">
-                        <Icons.CheckCircle size={16} />
-                        <p className="text-sm font-bold tracking-wide">
-                            まずは7日間、無料で体験
-                        </p>
+
+                    <div className="mt-12 flex items-center gap-3 text-white/50 text-xs font-black tracking-widest uppercase">
+                        <Icons.CheckCircle size={14} className="text-[#00b900]" />
+                        START YOUR STORY IN 30 SECONDS
                     </div>
                 </div>
             </div>

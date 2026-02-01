@@ -80,6 +80,8 @@ export interface PostInputFormProps {
     onStepChange?: (step: 'platform' | 'input' | 'confirm' | 'result') => void;
     restoreId?: string;
     onOpenOnboarding?: () => void;
+    targetAudiences?: string[];
+    onTargetAudiencesChange?: (audiences: string[]) => void;
 }
 
 export const AVATAR_OPTIONS = [

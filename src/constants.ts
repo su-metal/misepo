@@ -5,6 +5,10 @@ export const INDUSTRIES = [
   '飲食店', 'カフェ', '居酒屋', '美容室', 'ネイル・まつげ', 'エステ・サロン', '旅館・ホテル', '整体・接骨院', 'ジム', '小売', 'その他'
 ];
 
+export const TARGET_AUDIENCES = [
+  '全般', 'お一人様', '働く人', 'ファミリー', '学生', 'カップル・夫婦', '女子会・ママ友', 'シニア', '地元の方・ご近所', '観光客・インバウンド'
+];
+
 export const POST_PURPOSES = [
   { value: PostPurpose.Promotion, label: '宣伝・告知', icon: '📢' },
   { value: PostPurpose.Story, label: 'ストーリー・感想', icon: '📖' },

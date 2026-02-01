@@ -8,17 +8,19 @@ interface MobileCalendarOverlayProps {
     onSelectEvent: (event: TrendEvent) => void;
     industry?: string;
     description?: string;
+    isGoogleMaps?: boolean;
 }
 
 export const MobileCalendarOverlay: React.FC<MobileCalendarOverlayProps> = ({
-    isOpen, onClose, onSelectEvent, industry, description
+    isOpen, onClose, onSelectEvent, industry, description, isGoogleMaps
 }) => {
     // Calendar State
-    const [currentYear, setCurrentYear] = React.useState(2026);
-    const [currentMonth, setCurrentMonth] = React.useState(1); // Start at Feb (0-indexed 1) -> Initial Default
+    const today = new Date();
+    const [currentYear, setCurrentYear] = React.useState(today.getFullYear());
+    const [currentMonth, setCurrentMonth] = React.useState(today.getMonth());
 
     // Store the initial month/year to define the 3-month range
-    const [baseDate] = React.useState(() => new Date(2026, 1, 1)); // Fixed Feb 2026 for now, or use today
+    const [baseDate] = React.useState(() => new Date(today.getFullYear(), today.getMonth(), 1));
 
     // Data State
     const [trendCache, setTrendCache] = React.useState<TrendEvent[]>([]);
@@ -250,11 +252,24 @@ export const MobileCalendarOverlay: React.FC<MobileCalendarOverlayProps> = ({
                             </div>
 
                             <button
-                                onClick={() => onSelectEvent(currentEvent)}
-                                className="w-full py-4 rounded-[20px] bg-gradient-to-r from-[var(--plexo-yellow)] to-amber-300 text-black font-black text-xs uppercase tracking-widest shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2"
+                                onClick={() => !isGoogleMaps && onSelectEvent(currentEvent)}
+                                disabled={isGoogleMaps}
+                                className={`
+                                    w-full py-4 rounded-[20px] font-black text-xs uppercase tracking-widest shadow-lg transition-all flex items-center justify-center gap-2
+                                    ${isGoogleMaps
+                                        ? 'bg-stone-600 text-stone-400 cursor-not-allowed shadow-none'
+                                        : 'bg-gradient-to-r from-[var(--plexo-yellow)] to-amber-300 text-black active:scale-95 hover:shadow-xl'
+                                    }
+                                `}
                             >
-                                <SparklesIcon className="w-4 h-4" />
-                                戦略を作成する
+                                {isGoogleMaps ? (
+                                    <span>Googleマップでは利用不可</span>
+                                ) : (
+                                    <>
+                                        <SparklesIcon className="w-4 h-4" />
+                                        このテーマで作成
+                                    </>
+                                )}
                             </button>
                         </div>
                     ) : (
