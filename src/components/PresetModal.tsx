@@ -949,7 +949,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
         </div>
 
         {/* Combined Scrollable Content View */}
-        <div className="flex-1 overflow-y-auto p-8 md:p-10 no-scrollbar pb-32 bg-stone-50/30">
+        <div className="flex-1 overflow-y-auto p-6 no-scrollbar pb-32 bg-stone-50/30">
           <div className="max-w-4xl mx-auto space-y-8">
             {renderProfileTab()}
 
@@ -958,7 +958,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
         </div>
 
         {/* Modal Footer / Save Action */}
-        <div className="p-8 md:p-10 bg-white border-t border-[#122646]/5 flex flex-col gap-4">
+        <div className="p-6 bg-white border-t border-[#122646]/5 flex flex-col gap-4">
           <button
             onClick={() => handleSave()}
             disabled={isSaving || !name.trim()}
@@ -993,25 +993,31 @@ const PresetModal: React.FC<PresetModalProps> = ({
     </div>
   );
 
+  // Portal target - Standard global portal
+  const portalTarget = typeof document !== 'undefined' ? document.body : null;
+
+  if (!portalTarget) return null;
+
   const mainPortal = createPortal(
-    <div className="fixed inset-0 z-[150] flex items-center justify-center p-0 md:p-8">
+    <div className="fixed inset-0 z-[9995] flex items-center justify-center p-0 md:p-8 pointer-events-auto">
       {/* Backdrop */}
       <div className="absolute inset-0 bg-stone-950/20 backdrop-blur-md animate-in fade-in duration-500" onClick={onClose} />
 
-      {/* Container */}
-      <div className="w-full max-w-7xl h-full md:max-h-[850px] bg-white md:rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-10 duration-700 relative z-10 flex flex-col border border-stone-100">
+      {/* Container - Modal look on desktop */}
+      <div className="w-full h-full md:max-w-7xl md:max-h-[850px] bg-white md:rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-10 duration-700 relative z-10 flex flex-col border border-stone-100">
         {modalBody}
       </div>
     </div>,
-    document.body
+    portalTarget
   );
 
   // Focus Mode Overlay (Learning Editor)
   const focusModeOverlay = expandingPlatform && createPortal(
-    <div className="fixed inset-0 z-[300] flex items-center justify-center p-0 md:p-8">
+    <div className="absolute inset-0 z-[300] flex items-center justify-center p-0 pointer-events-auto">
       <div className="absolute inset-0 bg-indigo-950/20 backdrop-blur-xl animate-in fade-in duration-500" onClick={() => setExpandingPlatform(null)} />
 
-      <div className="w-full max-w-4xl h-full md:max-h-[700px] bg-white md:rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-500 relative z-10 flex flex-col">
+      <div className="w-full h-full bg-white shadow-2xl overflow-hidden animate-in zoom-in-95 duration-500 relative z-10 flex flex-col">
+        {/* Header */}
         <div className="p-8 md:p-10 border-b border-stone-100 flex items-center justify-between bg-stone-50/50">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-2xl bg-[#d8e9f4] text-white flex items-center justify-center shadow-lg shadow-indigo-100">
@@ -1035,6 +1041,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
           </button>
         </div>
 
+        {/* Content */}
         <div className="flex-1 overflow-y-auto p-10 space-y-8 no-scrollbar">
           <div className="space-y-4">
             <div className="flex items-center justify-between px-2">
@@ -1140,7 +1147,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
         />
       </div>
     </div>,
-    document.body
+    portalTarget
   );
 
   return (

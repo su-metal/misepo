@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { StoreProfile } from '../types';
 import { INDUSTRIES } from '../constants';
 import { AutoResizingTextarea } from './features/generator/AutoResizingTextarea';
@@ -15,6 +16,27 @@ const Onboarding: React.FC<OnboardingProps> = ({
   initialProfile,
   onCancel,
 }) => {
+  // Helper to detect industry from Google Maps types
+  const detectIndustryFromTypes = (types: string[]): string => {
+    if (!types || types.length === 0) return INDUSTRIES[INDUSTRIES.length - 1]; // その他
+
+    const typeSet = new Set(types);
+
+    // mapping logic
+    if (typeSet.has('cafe')) return 'カフェ';
+    if (typeSet.has('bar') || typeSet.has('night_club')) return '居酒屋';
+    if (typeSet.has('restaurant') || typeSet.has('food')) return '飲食店';
+    if (typeSet.has('hair_care') || typeSet.has('beauty_salon')) return '美容室';
+    if (typeSet.has('nail_salon')) return 'ネイル・まつげ';
+    if (typeSet.has('spa')) return 'エステ・サロン';
+    if (typeSet.has('lodging')) return '旅館・ホテル';
+    if (typeSet.has('physiotherapist')) return '整体・接骨院';
+    if (typeSet.has('gym') || typeSet.has('health')) return 'ジム';
+    if (typeSet.has('store') || typeSet.has('establishment')) return '小売';
+
+    return INDUSTRIES[INDUSTRIES.length - 1]; // その他
+  };
+
   const [industry, setIndustry] = useState<string>(INDUSTRIES[0]);
   const [name, setName] = useState<string>('');
   const [region, setRegion] = useState<string>('');
@@ -23,6 +45,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
   const [googlePlaceId, setGooglePlaceId] = useState<string>('');
   const [aiAnalysis, setAiAnalysis] = useState<string>('');
   const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
+  const [showDetails, setShowDetails] = useState<boolean>(false);
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const autocompleteService = useRef<any>(null);
   const placesService = useRef<any>(null);
@@ -45,6 +68,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
       setInstagramFooter(initialProfile.instagramFooter || '');
       setGooglePlaceId(initialProfile.googlePlaceId || '');
       setAiAnalysis(initialProfile.aiAnalysis || '');
+      setShowDetails(true);
     }
   }, [initialProfile]);
 
@@ -120,6 +144,12 @@ const Onboarding: React.FC<OnboardingProps> = ({
         },
         async (details: any, status: any) => {
           if (status === 'OK' && details) {
+            // 0. Auto-detect industry
+            if (details.types) {
+              const detected = detectIndustryFromTypes(details.types);
+              setIndustry(detected);
+            }
+
             // 1. Auto-fill Instagram Footer
             const address = details.address_components
               ?.filter((c: any) => c.types.includes('locality') || c.types.includes('sublocality') || c.types.includes('street_number'))
@@ -130,6 +160,10 @@ const Onboarding: React.FC<OnboardingProps> = ({
             const phone = details.formatted_phone_number || '';
             const hours = details.opening_hours?.weekday_text?.[new Date().getDay() === 0 ? 6 : new Date().getDay() - 1]?.split(': ')[1] || '';
             const website = details.website || '';
+
+            // 2. Auto-fill Region (locality)
+            const locality = details.address_components?.find((c: any) => c.types.includes('locality'))?.long_name || '';
+            if (locality) setRegion(locality);
 
             let footer = '';
             if (address) footer += `📍 ${address}\n`;
@@ -187,15 +221,20 @@ const Onboarding: React.FC<OnboardingProps> = ({
 
   const isEditMode = !!initialProfile;
 
-  return (
-    <div className="fixed inset-0 z-[300] flex items-center justify-center p-0 sm:p-4 animate-in fade-in duration-500">
+  // Portal target - Standard global portal
+  const portalTarget = typeof document !== 'undefined' ? document.body : null;
+
+  if (!portalTarget) return null;
+
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-0 md:p-8 animate-in fade-in duration-500 pointer-events-auto">
       {/* VisionOS Style Backdrop */}
-      <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-md" />
+      <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-md" onClick={onCancel} />
 
-      <div className="bg-white rounded-none sm:rounded-[40px] shadow-2xl overflow-hidden w-full max-w-lg md:max-w-6xl md:h-[90vh] h-full sm:max-h-[800px] flex flex-col md:flex-row md:overflow-hidden relative animate-in zoom-in-95 duration-500 ring-1 ring-black/5">
+      <div className="bg-white w-full h-full md:max-w-7xl md:max-h-[90vh] md:rounded-[3rem] shadow-2xl flex flex-col md:flex-row animate-in zoom-in-95 duration-500 relative overflow-hidden border border-stone-100">
 
-        {/* LEFT PANEL */}
-        <div className="md:w-5/12 bg-slate-50/50 relative p-6 sm:p-8 md:p-12 flex flex-col justify-between shrink-0 min-h-min md:h-full border-b md:border-b-0 md:border-r border-slate-100">
+        {/* LEFT PANEL: Rich Info (Always visible on desktop, compact on mobile) */}
+        <div className="w-full md:w-[42%] lg:w-[480px] shrink-0 bg-slate-50 relative p-8 md:p-14 flex flex-col">
 
           {/* Decorative gradients */}
           <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-40">
@@ -209,7 +248,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
                 <div className="w-2 h-2 rounded-full bg-[#eb714f] shadow-[0_0_10px_rgba(127,90,240,0.5)] animate-pulse"></div>
                 <span className="text-[9px] md:text-[10px] font-black tracking-[0.3em] text-slate-400 uppercase">Hospitality Assistant</span>
               </div>
-              <h1 className="text-2xl md:text-5xl tracking-tighter leading-none font-black text-slate-800">
+              <h1 className="text-3xl md:text-5xl tracking-tighter leading-none font-black text-slate-800">
                 MisePo
               </h1>
             </div>
@@ -225,7 +264,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
               </p>
 
               {/* Status Pill */}
-              <div className="hidden md:inline-flex items-center gap-2 rounded-full px-4 py-2 animate-in zoom-in-95 duration-700 delay-300 bg-white shadow-md ring-1 ring-slate-100">
+              <div className="md:inline-flex items-center gap-2 rounded-full px-4 py-2 animate-in zoom-in-95 duration-700 delay-300 bg-white shadow-md ring-1 ring-slate-100 hidden">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse box-shadow-[0_0_8px_rgba(52,211,153,0.6)]"></span>
                 <span className="text-[10px] font-black uppercase tracking-widest text-slate-600">AI Engine Ready</span>
               </div>
@@ -276,37 +315,13 @@ const Onboarding: React.FC<OnboardingProps> = ({
 
         {/* RIGHT PANEL: Modern Form */}
         <div className="flex-1 bg-white overflow-y-auto overscroll-contain animate-in slide-in-from-right-8 duration-700">
-          <form onSubmit={handleSubmit} className="p-5 md:p-14 space-y-12">
-
-            {/* Industry Selection */}
-            <div className="space-y-6">
-              <div className="flex items-center justify-between">
-                <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">カテゴリー</h3>
-                {!isEditMode && <span className="bg-slate-100 text-slate-500 text-[8px] font-black px-2 py-1 rounded-full tracking-widest uppercase">Required</span>}
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {INDUSTRIES.filter(ind => ind !== '旅館・ホテル').map((ind) => (
-                  <button
-                    key={ind}
-                    type="button"
-                    onClick={() => setIndustry(ind)}
-                    className={`px-5 py-2.5 rounded-full text-[11px] font-black transition-all duration-200 border border-transparent
-                        ${industry === ind
-                        ? 'bg-[#0071b9] text-white shadow-lg shadow-stone-200 scale-105'
-                        : 'bg-slate-50 text-slate-500 hover:bg-slate-100'
-                      }`}
-                  >
-                    {ind}
-                  </button>
-                ))}
-              </div>
-            </div>
+          <form onSubmit={handleSubmit} className="p-8 md:p-14 space-y-12">
 
             {/* Basic Info Inputs */}
             <div className="grid grid-cols-1 gap-10">
               <div className="space-y-3">
                 <div className="flex items-center gap-2 pl-1">
-                  <label className="text-xs font-black text-slate-700 uppercase tracking-widest">
+                  <label className="text-xs font-black text-slate-700 uppercase tracking_widest">
                     店舗名・ブランド名
                   </label>
                 </div>
@@ -315,6 +330,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
                     type="text"
                     value={name}
                     onChange={(e) => handleNameChange(e.target.value)}
+                    onBlur={() => { if (name.trim().length > 1) setShowDetails(true); }}
                     placeholder="例：焼きたてパンの店 アン"
                     className="w-full px-6 py-5 rounded-[20px] transition-all text-lg text-slate-800 font-bold tracking-tight placeholder:text-slate-300 outline-none bg-slate-50 border border-slate-200 focus:bg-white focus:shadow-lg focus:shadow-slate-100/50 focus:ring-2 focus:ring-[#7F5AF0]/10"
                     required
@@ -355,79 +371,108 @@ const Onboarding: React.FC<OnboardingProps> = ({
                 </div>
               </div>
 
-              <div className="space-y-3">
-                <div className="flex items-center gap-2 pl-1">
-                  <label className="text-xs font-black text-slate-700 uppercase tracking-widest">
-                    活動地域（例：横浜市、目黒区）
-                  </label>
-                </div>
-                <div className="relative group">
-                  <input
-                    type="text"
-                    value={region}
-                    onChange={(e) => setRegion(e.target.value)}
-                    placeholder="地名を入れるとより親しみやすい文章になります"
-                    className="w-full px-6 py-5 rounded-[20px] transition-all text-lg text-slate-800 font-bold tracking-tight placeholder:text-slate-300 outline-none bg-slate-50 border border-slate-200 focus:bg-white focus:shadow-lg focus:shadow-slate-100/50 focus:ring-2 focus:ring-[#7F5AF0]/10"
-                  />
-                  <div className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#7F5AF0] transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Description */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">施設の特徴・こだわり</h3>
-                {isAnalyzing && (
-                  <div className="flex items-center gap-1.5 px-2 py-1 bg-blue-50 rounded-full animate-in fade-in zoom-in duration-300">
-                    <div className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
-                    <span className="text-[8px] font-black text-blue-500 uppercase tracking-widest">AI Generating...</span>
-                  </div>
-                )}
-              </div>
-              <AutoResizingTextarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="例：創業100年の老舗です。全客室から海が見渡せます。地元の新鮮な魚介類を使った料理が自慢です..."
-                className="w-full px-6 py-5 rounded-[24px] transition-all resize-none text-base text-slate-800 font-medium leading-relaxed placeholder:text-slate-300 outline-none bg-slate-50 border border-slate-200 focus:bg-white focus:shadow-lg focus:shadow-slate-100/50 focus:ring-2 focus:ring-[#7F5AF0]/10 min-h-[120px]"
-              />
-            </div>
-
-            {/* Instagram Footer: Info Card */}
-            <div className="bg-slate-50/50 rounded-[24px] p-4 md:p-6 space-y-4 border border-slate-100 transition-all hover:bg-white hover:shadow-md group">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 flex items-center justify-center text-white shadow-sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5" /><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" /><line x1="17.5" x2="17.51" y2="6.5" y1="6.5" /></svg>
-                  </div>
-                  <div className="flex flex-col">
-                    <h4 className="text-[10px] font-black text-slate-700 uppercase tracking-widest">Instagram 定型文</h4>
-                    {aiAnalysis && (
-                      <span className="text-[8px] font-bold text-emerald-500 flex items-center gap-1">
-                        <svg className="w-2.5 h-2.5" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" /></svg>
-                        AIによる店舗背景の解析が完了しました
-                      </span>
-                    )}
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  {isAnalyzing && (
-                    <div className="flex items-center gap-1.5 px-2 py-1 bg-blue-50 rounded-full">
-                      <div className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
-                      <span className="text-[8px] font-black text-blue-500 uppercase tracking-widest">AI Analyzing...</span>
+              {/* Step-by-step content */}
+              {showDetails && (
+                <div className="space-y-12 animate-in slide-in-from-top-4 duration-500">
+                  {/* Category Selection */}
+                  <div className="space-y-6">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">カテゴリー</h3>
+                      {!isEditMode && <span className="bg-slate-100 text-slate-500 text-[8px] font-black px-2 py-1 rounded-full tracking-widest uppercase">Required</span>}
                     </div>
-                  )}
-                  <span className="text-[9px] font-black text-slate-400 bg-white border border-slate-200 px-3 py-1 rounded-full uppercase tracking-widest">Option</span>
+                    <div className="flex flex-wrap gap-2">
+                      {INDUSTRIES.filter(ind => ind !== '旅館・ホテル').map((ind) => (
+                        <button
+                          key={ind}
+                          type="button"
+                          onClick={() => setIndustry(ind)}
+                          className={`px-5 py-2.5 rounded-full text-[11px] font-black transition-all duration-200 border border-transparent
+                              ${industry === ind
+                              ? 'bg-[#0071b9] text-white shadow-lg shadow-stone-200 scale-105'
+                              : 'bg-slate-50 text-slate-500 hover:bg-slate-100'
+                            }`}
+                        >
+                          {ind}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2 pl-1">
+                      <label className="text-xs font-black text-slate-700 uppercase tracking_widest">
+                        活動地域（例：横浜市、目黒区）
+                      </label>
+                    </div>
+                    <div className="relative group">
+                      <input
+                        type="text"
+                        value={region}
+                        onChange={(e) => setRegion(e.target.value)}
+                        placeholder="地名を入れるとより親しみやすい文章になります"
+                        className="w-full px-6 py-5 rounded-[20px] transition-all text-lg text-slate-800 font-bold tracking-tight placeholder:text-slate-300 outline-none bg-slate-50 border border-slate-200 focus:bg-white focus:shadow-lg focus:shadow-slate-100/50 focus:ring-2 focus:ring-[#7F5AF0]/10"
+                      />
+                      <div className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#7F5AF0] transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Description */}
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">施設の特徴・こだわり</h3>
+                      {isAnalyzing && (
+                        <div className="flex items-center gap-1.5 px-2 py-1 bg-blue-50 rounded-full animate-in fade-in zoom-in duration-300">
+                          <div className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
+                          <span className="text-[8px] font-black text-blue-500 uppercase tracking_widest">AI Generating...</span>
+                        </div>
+                      )}
+                    </div>
+                    <AutoResizingTextarea
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      placeholder="例：創業100年の老舗です。全客室から海が見渡せます。地元の新鮮な魚介類を使った料理が自慢です..."
+                      className="w-full px-6 py-5 rounded-[24px] transition-all resize-none text-base text-slate-800 font-medium leading-relaxed placeholder:text-slate-300 outline-none bg-slate-50 border border-slate-200 focus:bg-white focus:shadow-lg focus:shadow-slate-100/50 focus:ring-2 focus:ring-[#7F5AF0]/10 min-h-[120px]"
+                    />
+                  </div>
+
+                  {/* Instagram Footer: Info Card */}
+                  <div className="bg-slate-50/50 rounded-[24px] p-4 md:p-6 space-y-4 border border-slate-100 transition-all hover:bg-white hover:shadow-md group">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 flex items-center justify-center text-white shadow-sm">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5" /><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" /><line x1="17.5" x2="17.51" y2="6.5" y1="6.5" /></svg>
+                        </div>
+                        <div className="flex flex-col">
+                          <h4 className="text-[10px] font-black text-slate-700 uppercase tracking_widest">Instagram 定型文</h4>
+                          {aiAnalysis && (
+                            <span className="text-[8px] font-bold text-emerald-500 flex items-center gap-1">
+                              <svg className="w-2.5 h-2.5" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" /></svg>
+                              AIによる店舗背景の解析が完了しました
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {isAnalyzing && (
+                          <div className="flex items-center gap-1.5 px-2 py-1 bg-blue-50 rounded-full">
+                            <div className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
+                            <span className="text-[8px] font-black text-blue-500 uppercase tracking_widest">AI Analyzing...</span>
+                          </div>
+                        )}
+                        <span className="text-[9px] font-black text-slate-400 bg-white border border-slate-200 px-3 py-1 rounded-full uppercase tracking_widest">Option</span>
+                      </div>
+                    </div>
+                    <AutoResizingTextarea
+                      value={instagramFooter}
+                      onChange={(e) => setInstagramFooter(e.target.value)}
+                      placeholder="📍 アクセス情報や営業時間をセット..."
+                      className="w-full px-4 md:px-5 py-4 rounded-xl transition-all resize-none text-sm text-slate-700 leading-relaxed placeholder_slate-300 font-medium min-h-[100px] outline-none bg-white border border-slate-200 focus:border-[#E1306C]/50 focus:ring-2 focus:ring-[#E1306C]/10"
+                    />
+                  </div>
                 </div>
-              </div>
-              <AutoResizingTextarea
-                value={instagramFooter}
-                onChange={(e) => setInstagramFooter(e.target.value)}
-                placeholder="📍 アクセス情報や営業時間をセット..."
-                className="w-full px-4 md:px-5 py-4 rounded-xl transition-all resize-none text-sm text-slate-700 leading-relaxed placeholder-slate-300 font-medium min-h-[100px] outline-none bg-white border border-slate-200 focus:border-[#E1306C]/50 focus:ring-2 focus:ring-[#E1306C]/10"
-              />
+              )}
             </div>
 
             {/* Actions */}
@@ -476,7 +521,8 @@ const Onboarding: React.FC<OnboardingProps> = ({
           </button>
         )}
       </div>
-    </div>
+    </div>,
+    portalTarget
   );
 };
 

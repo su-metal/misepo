@@ -1,6 +1,7 @@
 
 import fs from 'fs';
 import path from 'path';
+import crypto from 'crypto';
 import { TrendEvent } from '@/types';
 
 const CACHE_FILE_PATH = path.join(process.cwd(), 'src', 'data', 'trends.json');
@@ -48,8 +49,9 @@ function writeCache(cache: TrendCache) {
 /**
  * Gets cached trends for a specific month if they exist.
  */
-export async function getCachedTrends(year: number, month: number): Promise<TrendEvent[] | null> {
-  const key = `${year}-${String(month).padStart(2, '0')}`;
+export async function getCachedTrends(year: number, month: number, industry?: string, description?: string): Promise<TrendEvent[] | null> {
+  const descHash = description ? crypto.createHash('md5').update(description).digest('hex').substring(0, 8) : 'default';
+  const key = `${year}-${String(month).padStart(2, '0')}-${industry || 'default'}-${descHash}`;
   const cache = readCache();
   
   if (cache[key] && cache[key].data && cache[key].data.length > 0) {
@@ -63,15 +65,16 @@ export async function getCachedTrends(year: number, month: number): Promise<Tren
  * Saves generated trends to the global cache by month key.
  * This handles parsing the full list and bucketing them by month.
  */
-export async function saveTrendsToCache(trends: TrendEvent[]) {
+export async function saveTrendsToCache(trends: TrendEvent[], industry?: string, description?: string) {
   const cache = readCache();
+  const descHash = description ? crypto.createHash('md5').update(description).digest('hex').substring(0, 8) : 'default';
   
   // Group trends by "YYYY-MM"
   const buckets: { [key: string]: TrendEvent[] } = {};
   
   trends.forEach(trend => {
     // Trend date format is "YYYY-MM-DD"
-    const prefix = trend.date.substring(0, 7); // "YYYY-MM"
+    const prefix = `${trend.date.substring(0, 7)}-${industry || 'default'}-${descHash}`; // "YYYY-MM-INDUSTRY-DESC"
     if (!buckets[prefix]) {
       buckets[prefix] = [];
     }

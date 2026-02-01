@@ -64,14 +64,20 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
 
     // Dynamic SVG Path Generation
     const [width, setWidth] = useState(375);
+    const containerRef = React.useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        if (typeof window !== 'undefined') {
-            setWidth(window.innerWidth);
-            const handleResize = () => setWidth(window.innerWidth);
-            window.addEventListener('resize', handleResize);
-            return () => window.removeEventListener('resize', handleResize);
-        }
+        const updateWidth = () => {
+            if (containerRef.current) {
+                setWidth(containerRef.current.offsetWidth);
+            } else if (typeof window !== 'undefined') {
+                setWidth(window.innerWidth);
+            }
+        };
+
+        updateWidth();
+        window.addEventListener('resize', updateWidth);
+        return () => window.removeEventListener('resize', updateWidth);
     }, [isDrawerOpen]); // Re-calculate when drawer state changes to ensure correct rendering
 
     // Curve parameters
@@ -98,7 +104,10 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
     `;
 
     return (
-        <div className={`sm:hidden fixed bottom-6 left-0 right-0 z-[150] px-4 bg-transparent transition-all duration-500 ${isDrawerOpen ? 'opacity-0 translate-y-20 pointer-events-none' : 'opacity-100 translate-y-0 pointer-events-auto'}`}>
+        <div
+            ref={containerRef}
+            className={`fixed bottom-8 sm:absolute sm:bottom-8 left-0 right-0 z-[150] px-4 bg-transparent transition-all duration-500 pb-safe ${isDrawerOpen ? 'opacity-0 translate-y-20 pointer-events-none' : 'opacity-100 translate-y-0 pointer-events-auto'}`}
+        >
             <div className="relative w-full h-[84px] pointer-events-auto">
 
                 {/* SVG Background Shape */}

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { StoreProfile } from '../../../types';
-import { SparklesIcon, ChatHeartIcon, CalendarIcon, MegaphoneIcon, LightbulbIcon } from '../../Icons';
+import { SparklesIcon, ChatHeartIcon, CalendarIcon, MegaphoneIcon, LightbulbIcon, RotateCcwIcon } from '../../Icons';
 import { InspirationCard } from '../../../services/geminiService';
 
 interface InspirationDeckProps {
@@ -19,19 +19,29 @@ export const InspirationDeck: React.FC<InspirationDeckProps> = ({ storeProfile, 
     const [loading, setLoading] = useState(false);
     const [fetched, setFetched] = useState(false);
     const scrollContainerRef = useRef<HTMLDivElement>(null);
+    const lastProfileKeyRef = useRef<string>("");
 
     useEffect(() => {
-        // If we already have cards (cached or local) AND we have 5 or more (new format), don't fetch.
-        // If we have fewer than 5 cards, we assume it's the old format and re-fetch.
-        if (cards.length >= 5) return;
+        // Reset fetch state if profile changes meaningfully
+        const profileKey = `${storeProfile?.name}-${storeProfile?.industry}-${storeProfile?.description}`;
+        if (fetched && lastProfileKeyRef.current !== profileKey) {
+            setFetched(false);
+            setLocalCards([]);
+        }
 
         if (!isVisible || !storeProfile || loading) return;
 
-        // If we have fetched but only got <5 cards, we might be in a loop if the API returns <5. 
+        // If we have fetched but only got <5 cards, we assume it's the old format and re-fetch.
         // But for this migration, let's allow re-fetching if fetched is true but items are insufficient, 
         // provided we reset 'fetched' state. 
         // Actually, let's just ignore 'fetched' flag if we have < 5 cards.
         if (fetched && cards.length >= 5) return;
+
+        const handleShuffle = () => {
+            if (loading) return;
+            setFetched(false);
+            setLocalCards([]);
+        };
 
         const fetchInspiration = async () => {
             setLoading(true);
@@ -107,6 +117,7 @@ export const InspirationDeck: React.FC<InspirationDeckProps> = ({ storeProfile, 
                     const data = await res.json();
                     if (data.cards) {
                         setLocalCards(data.cards);
+                        lastProfileKeyRef.current = `${storeProfile?.name}-${storeProfile?.industry}-${storeProfile?.description}`;
                         if (onCardsLoaded) {
                             onCardsLoaded(data.cards);
                         }
@@ -150,6 +161,20 @@ export const InspirationDeck: React.FC<InspirationDeckProps> = ({ storeProfile, 
                         {loading ? '少々お待ちください' : '話題を選んで書き始めよう'}
                     </p>
                 </div>
+
+                {/* Shuffle Button */}
+                {!loading && (
+                    <button
+                        onClick={() => {
+                            setFetched(false);
+                            setLocalCards([]);
+                        }}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#f5f7fa] border border-slate-200 active:scale-95 transition-all group"
+                    >
+                        <RotateCcwIcon className={`w-3 h-3 text-slate-500 group-hover:text-[#0071b9] transition-colors ${loading ? 'animate-spin' : ''}`} />
+                        <span className="text-[9px] font-black text-slate-500 group-hover:text-[#0071b9] tracking-wider uppercase">Shuffle</span>
+                    </button>
+                )}
             </div>
 
             <div

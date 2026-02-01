@@ -87,7 +87,7 @@ export const DesktopPostInput: React.FC<PostInputFormProps> = ({
                                     };
                                     case Platform.Line: return {
                                         name: 'LINE', tagline: 'Messages', sub: 'リピーター獲得',
-                                        icon: <LineIcon className="w-7 h-7" />,
+                                        icon: <LineIcon className="w-7 h-7" isActive={platforms.includes(Platform.Line)} activeTextFill="#0071b9" />,
                                     };
                                     case Platform.GoogleMaps: return {
                                         name: 'Google Maps', tagline: 'Local Search', sub: '店舗集客とMEO対策',

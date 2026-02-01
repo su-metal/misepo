@@ -315,6 +315,13 @@ export function useGeneratorFlow(props: {
       let systemPrompt = loadedPresetPrompts[p] || '';
       let userPrompt = customPrompt.trim();
 
+      // Merge preset prompt and user custom prompt to ensure both are sent to AI
+      // as the backend primarily looks at 'customPrompt' for instructions.
+      let combinedPrompt = systemPrompt;
+      if (userPrompt) {
+        combinedPrompt = combinedPrompt ? `${combinedPrompt}\n\n${userPrompt}` : userPrompt;
+      }
+
       const config: GenerationConfig = {
         platform: p,
         purpose,
@@ -324,8 +331,8 @@ export function useGeneratorFlow(props: {
         starRating: p === Platform.GoogleMaps ? starRating : undefined,
         language,
         storeSupplement,
-        customPrompt: userPrompt, // Only user instructions
-        presetPrompt: systemPrompt, // Separate preset instructions
+        customPrompt: combinedPrompt, // Send combined instructions
+        presetPrompt: systemPrompt, // Keep original for reference if needed
         xConstraint140,
         includeSymbols,
         includeEmojis,

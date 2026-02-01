@@ -247,12 +247,11 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     const [cachedInspirationCards, setCachedInspirationCards] = React.useState<any[]>([]);
 
     return (
-        // <div className="flex flex-col h-full min-h-[100dvh] relative overflow-hidden font-inter bg-[#6339f9]">
-        <div className="flex flex-col h-full min-h-[100dvh] relative overflow-hidden font-inter bg-white">
+        <div className="flex flex-col h-full relative overflow-hidden font-inter bg-white">
 
             {/* Step 1: Home (Platform Grid) */}
             <div className={`flex flex-col h-full overflow-hidden relative transition-all duration-500 ${isStepDrawerOpen ? 'blur-md scale-[0.98] opacity-60' : 'opacity-100'}`}>
-                <div className="flex-1 flex flex-col p-4 pt-6 pb-8 safe-area-bottom">
+                <div className="flex-1 flex flex-col p-4 pt-6 pb-32 safe-area-bottom overflow-y-auto no-scrollbar">
                     {/* High-Design Header - Magazine Style Date & Minimal Avatar */}
                     <div className="flex items-start justify-between mb-4 px-1">
                         {/* Typography Date Display - Interactive Trigger */}
@@ -321,7 +320,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                     </div>
 
                     {/* Standard 2x2 Grid Platform Selection */}
-                    <div className="grid grid-cols-2 gap-3 px-1 mb-4 mt-2">
+                    <div className="grid grid-cols-2 gap-3 px-1 mt-2">
                         {(() => {
                             const getPlatformDetails = (platform: Platform) => {
                                 switch (platform) {
@@ -343,7 +342,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         name: 'LINE',
                                         tagline: 'Messages',
                                         sub: 'リピーター獲得',
-                                        icon: <LineIcon className="w-7 h-7" isActive={platforms.includes(Platform.Line)} activeTextFill="white" />,
+                                        icon: <LineIcon className="w-7 h-7" isActive={platforms.includes(Platform.Line)} activeTextFill="#0071b9" />,
                                         color: 'from-green-500/10 to-emerald-500/10'
                                     };
                                     case Platform.GoogleMaps: return {
@@ -419,14 +418,14 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                     </div>
 
                     {/* Bottom Section - Promotional Card (AI Omakase Mode Redesign) */}
-                    <div className="mt-auto pt-2">
+                    <div className="mt-4 md:mt-6">
                         <div
                             onClick={handleOmakaseStart}
                             className={`
                                 relative group transition-all duration-700 cursor-pointer active:scale-95 my-1
                                 rounded-[32px] overflow-hidden
                                 ${isOmakaseLoading ? 'scale-[0.98]' : 'hover:scale-[1.02] hover:-translate-y-1.5'}
-                                shadow-[0_4px_20px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_40px_rgba(0,113,185,0.15)]
+                                shadow-[0_10px_30px_rgba(0,113,185,0.08)] hover:shadow-[0_25px_50px_rgba(0,113,185,0.18)]
                             `}
                             style={{
                                 backgroundColor: '#d8e9f4',
@@ -435,6 +434,11 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                         >
                             {/* Texture & Glass Layer */}
                             <div className="absolute inset-0 bg-white/10 backdrop-blur-[2px] opacity-50 pointer-events-none" />
+
+                            {/* Shine Effect */}
+                            <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent w-1/2 animate-ticket-shine" />
+                            </div>
 
                             {/* Decorative Background Glows */}
                             <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/30 rounded-full blur-[40px] pointer-events-none group-hover:bg-white/50 transition-colors duration-700" />
@@ -451,7 +455,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             <h4 className="text-[24px] font-black text-[#0071b9] tracking-tighter leading-none whitespace-nowrap">
                                                 AIおまかせ生成
                                             </h4>
-                                            {/* <SparklesIcon className="w-5 h-5 text-[#0071b9] animate-pulse" /> */}
+                                            <SparklesIcon className="w-5 h-5 text-[#0071b9] animate-pulse" />
                                         </div>
                                         <p className="text-[11px] text-stone-500 font-bold leading-relaxed">
                                             今日のおすすめやお店の様子を入力するだけで、<br />
@@ -469,17 +473,15 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         {isOmakaseLoading ? (
                                             <div className="w-5 h-5 border-2 border-[#0071b9]/20 border-t-[#0071b9] rounded-full animate-spin" />
                                         ) : (
-                                            <ChevronRightIcon className="w-6 h-6 text-[#0071b9] group-hover:text-white transition-colors duration-500" />
+                                            <ChevronRightIcon className="w-6 h-6 text-[#0071b9] group-hover:text-white transition-colors duration-500 animate-arrow-flow" />
                                         )}
                                     </div>
 
-                                    {/* Pulse Effect */}
-                                    <div className="absolute inset-0 rounded-2xl bg-white/40 animate-ping opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
                                 </div>
                             </div>
 
                             {/* Ticket Perforation Line (Visual Only) */}
-                            <div className="absolute top-0 bottom-0 right-[25%] w-px border-r-2 border-dashed border-[#0071b9]/10 pointer-events-none" />
+                            <div className="absolute top-[8%] bottom-[8%] right-[25%] w-px border-r-2 border-dotted border-[#0071b9]/20 pointer-events-none" />
                         </div>
                     </div>
                 </div>
@@ -490,11 +492,13 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                 isOpen={isCalendarOpen}
                 onClose={() => setIsCalendarOpen(false)}
                 onSelectEvent={handleTrendStrategy}
+                industry={storeProfile?.industry}
+                description={storeProfile?.description}
             />
 
             {/* Bottom Sheet Drawer - Monochrome Style */}
             {isStepDrawerOpen && (
-                <div className="fixed inset-0 z-[130] flex items-end">
+                <div className="absolute inset-0 z-[130] flex items-end">
                     {/* Immersive Backdrop */}
                     <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" onClick={() => {
                         setIsStepDrawerOpen(false);
@@ -505,7 +509,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                     }} />
 
                     {/* Sliding Panel (Monochrome) */}
-                    <div className={`absolute bottom-0 left-0 right-0 bg-[#FAFAFA] border-t border-[#E5E5E5] rounded-t-[54px] shadow-[0_-20px_60px_rgba(0,0,0,0.1)] animate-nyoki flex flex-col ${mobileStep === 'platform' ? 'h-[88vh]' : 'h-[96vh]'} ${mobileStep === 'result' ? 'pb-8 safe-area-bottom' : 'pb-0'}`}>
+                    <div className={`absolute bottom-0 left-0 right-0 bg-[#FAFAFA] border-t border-[#E5E5E5] rounded-t-[54px] shadow-[0_-20px_60px_rgba(0,0,0,0.1)] animate-nyoki flex flex-col ${mobileStep === 'platform' ? 'h-[88%]' : 'h-[96%]'} ${mobileStep === 'result' ? 'pb-8 safe-area-bottom' : 'pb-0'}`}>
                         {/* Drag Handle */}
                         <div className="w-full flex justify-center py-6">
                             <div className="w-16 h-1.5 bg-[#E5E5E5] rounded-full" />
