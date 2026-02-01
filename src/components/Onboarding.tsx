@@ -221,22 +221,20 @@ const Onboarding: React.FC<OnboardingProps> = ({
 
   const isEditMode = !!initialProfile;
 
-  // Portal target - App Shell modal container if available, fallback to document.body
-  const portalTarget = typeof document !== 'undefined'
-    ? (document.getElementById('app-shell-modal-root') || document.body)
-    : null;
+  // Portal target - Standard global portal
+  const portalTarget = typeof document !== 'undefined' ? document.body : null;
 
   if (!portalTarget) return null;
 
   return createPortal(
-    <div className="absolute inset-0 z-[300] flex items-center justify-center p-0 animate-in fade-in duration-500 pointer-events-auto">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-0 md:p-8 animate-in fade-in duration-500 pointer-events-auto">
       {/* VisionOS Style Backdrop */}
-      <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-md" />
+      <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-md" onClick={onCancel} />
 
-      <div className="bg-white w-full h-full flex flex-col animate-in zoom-in-95 duration-500 overflow-y-auto no-scrollbar">
+      <div className="bg-white w-full h-full md:max-w-7xl md:max-h-[90vh] md:rounded-[3rem] shadow-2xl flex flex-col md:flex-row animate-in zoom-in-95 duration-500 relative overflow-hidden border border-stone-100">
 
-        {/* HEADER PANEL (Mobile Optimized) */}
-        <div className="bg-slate-50/50 relative px-6 pt-12 pb-4 flex flex-col shrink-0">
+        {/* LEFT PANEL: Rich Info (Always visible on desktop, compact on mobile) */}
+        <div className="w-full md:w-[42%] lg:w-[480px] shrink-0 bg-slate-50 relative p-8 md:p-14 flex flex-col">
 
           {/* Decorative gradients */}
           <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-40">
@@ -250,13 +248,13 @@ const Onboarding: React.FC<OnboardingProps> = ({
                 <div className="w-2 h-2 rounded-full bg-[#eb714f] shadow-[0_0_10px_rgba(127,90,240,0.5)] animate-pulse"></div>
                 <span className="text-[9px] md:text-[10px] font-black tracking-[0.3em] text-slate-400 uppercase">Hospitality Assistant</span>
               </div>
-              <h1 className="text-3xl tracking-tighter leading-none font-black text-slate-800">
+              <h1 className="text-3xl md:text-5xl tracking-tighter leading-none font-black text-slate-800">
                 MisePo
               </h1>
             </div>
 
-            <div className="space-y-2 mb-2">
-              <h2 className="text-lg leading-tight animate-in slide-in-from-left-4 duration-700 delay-100 font-extrabold text-slate-800">
+            <div className="space-y-4 md:space-y-6 mb-6 md:mb-12 flex-1">
+              <h2 className="text-lg md:text-3xl leading-tight animate-in slide-in-from-left-4 duration-700 delay-100 font-extrabold text-slate-800">
                 {isEditMode ? 'Settings & Profile' : 'AIが提案する、\n次世代の集客。'}
               </h2>
               <p className="text-slate-500 text-sm font-medium leading-relaxed animate-in slide-in-from-left-4 duration-700 delay-200">
@@ -266,14 +264,14 @@ const Onboarding: React.FC<OnboardingProps> = ({
               </p>
 
               {/* Status Pill */}
-              <div className="hidden">
+              <div className="md:inline-flex items-center gap-2 rounded-full px-4 py-2 animate-in zoom-in-95 duration-700 delay-300 bg-white shadow-md ring-1 ring-slate-100 hidden">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse box-shadow-[0_0_8px_rgba(52,211,153,0.6)]"></span>
                 <span className="text-[10px] font-black uppercase tracking-widest text-slate-600">AI Engine Ready</span>
               </div>
             </div>
 
             {/* Feature Cards & Characters */}
-            <div className="hidden">
+            <div className="space-y-6 hidden md:block animate-in slide-in-from-bottom-8 duration-1000 delay-500">
               {/* Generated Characters Display */}
               <div className="flex items-center justify-center -space-x-4 pb-4">
                 {[1, 2, 3, 4].map((num, i) => (
@@ -316,11 +314,11 @@ const Onboarding: React.FC<OnboardingProps> = ({
         </div>
 
         {/* RIGHT PANEL: Modern Form */}
-        <div className="flex-1 bg-white overflow-visible relative">
-          <form onSubmit={handleSubmit} className="px-6 pt-8 pb-32 space-y-6">
+        <div className="flex-1 bg-white overflow-y-auto overscroll-contain animate-in slide-in-from-right-8 duration-700">
+          <form onSubmit={handleSubmit} className="p-8 md:p-14 space-y-12">
 
             {/* Basic Info Inputs */}
-            <div className="grid grid-cols-1 gap-6">
+            <div className="grid grid-cols-1 gap-10">
               <div className="space-y-3">
                 <div className="flex items-center gap-2 pl-1">
                   <label className="text-xs font-black text-slate-700 uppercase tracking_widest">
@@ -334,7 +332,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
                     onChange={(e) => handleNameChange(e.target.value)}
                     onBlur={() => { if (name.trim().length > 1) setShowDetails(true); }}
                     placeholder="例：焼きたてパンの店 アン"
-                    className="w-full px-5 py-4 rounded-[16px] transition-all text-base text-slate-800 font-bold tracking-tight placeholder:text-slate-300 outline-none bg-slate-50 border border-slate-200 focus:bg-white focus:shadow-lg focus:shadow-slate-100/50 focus:ring-2 focus:ring-[#7F5AF0]/10"
+                    className="w-full px-6 py-5 rounded-[20px] transition-all text-lg text-slate-800 font-bold tracking-tight placeholder:text-slate-300 outline-none bg-slate-50 border border-slate-200 focus:bg-white focus:shadow-lg focus:shadow-slate-100/50 focus:ring-2 focus:ring-[#7F5AF0]/10"
                     required
                   />
                   <div className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#7F5AF0] transition-colors">

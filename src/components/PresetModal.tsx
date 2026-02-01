@@ -949,7 +949,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
         </div>
 
         {/* Combined Scrollable Content View */}
-        <div className="flex-1 overflow-y-auto p-8 md:p-10 no-scrollbar pb-32 bg-stone-50/30">
+        <div className="flex-1 overflow-y-auto p-6 no-scrollbar pb-32 bg-stone-50/30">
           <div className="max-w-4xl mx-auto space-y-8">
             {renderProfileTab()}
 
@@ -958,7 +958,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
         </div>
 
         {/* Modal Footer / Save Action */}
-        <div className="p-8 md:p-10 bg-white border-t border-[#122646]/5 flex flex-col gap-4">
+        <div className="p-6 bg-white border-t border-[#122646]/5 flex flex-col gap-4">
           <button
             onClick={() => handleSave()}
             disabled={isSaving || !name.trim()}
@@ -993,20 +993,18 @@ const PresetModal: React.FC<PresetModalProps> = ({
     </div>
   );
 
-  // Portal target - App Shell modal container if available, fallback to document.body
-  const portalTarget = typeof document !== 'undefined'
-    ? (document.getElementById('app-shell-modal-root') || document.body)
-    : null;
+  // Portal target - Standard global portal
+  const portalTarget = typeof document !== 'undefined' ? document.body : null;
 
   if (!portalTarget) return null;
 
   const mainPortal = createPortal(
-    <div className="absolute inset-0 z-[100] flex items-center justify-center p-0 pointer-events-auto">
+    <div className="fixed inset-0 z-[9995] flex items-center justify-center p-0 md:p-8 pointer-events-auto">
       {/* Backdrop */}
       <div className="absolute inset-0 bg-stone-950/20 backdrop-blur-md animate-in fade-in duration-500" onClick={onClose} />
 
-      {/* Container - Full bleed for shell */}
-      <div className="w-full h-full bg-white shadow-2xl overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-10 duration-700 relative z-10 flex flex-col border border-stone-100">
+      {/* Container - Modal look on desktop */}
+      <div className="w-full h-full md:max-w-7xl md:max-h-[850px] bg-white md:rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-10 duration-700 relative z-10 flex flex-col border border-stone-100">
         {modalBody}
       </div>
     </div>,

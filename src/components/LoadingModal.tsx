@@ -22,15 +22,13 @@ const LoadingModal: React.FC<LoadingModalProps> = ({ isOpen }) => {
 
     if (!isOpen) return null;
 
-    // Portal target - App Shell modal container if available, fallback to document.body
-    const portalTarget = typeof document !== 'undefined'
-        ? (document.getElementById('app-shell-modal-root') || document.body)
-        : null;
+    // Portal target - Standard global portal
+    const portalTarget = typeof document !== 'undefined' ? document.body : null;
 
     if (!portalTarget) return null;
 
     return createPortal(
-        <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm z-[200] flex items-center justify-center p-6 animate-in fade-in duration-500 pointer-events-auto">
+        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[10000] flex items-center justify-center p-6 animate-in fade-in duration-500 pointer-events-auto">
             <div className="bg-white rounded-[32px] shadow-[4px_4px_0_0_rgba(0,0,0,1)] border-[3px] border-black w-full max-w-xl overflow-hidden relative group animate-in zoom-in duration-500">
 
                 <div className="relative z-10 p-12 text-center space-y-10">
