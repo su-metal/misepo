@@ -54,7 +54,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
   const flow = useGeneratorFlow({
     storeProfile, isLoggedIn, onOpenLogin,
     onGenerateSuccess, onTaskComplete, favorites, onToggleFavorite, restorePost,
-    resetResultsTrigger, refreshPlan, trainingItems
+    resetResultsTrigger, refreshPlan, trainingItems, plan
   });
 
   const [isPresetModalOpen, setIsPresetModalOpen] = React.useState(false);

@@ -56,9 +56,9 @@ export const AppScreensSection = ({ isMobile = false }: { isMobile?: boolean }) 
                                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-6 bg-[#282d32] rounded-b-2xl z-20" />
                                 <div className="w-full h-full overflow-hidden rounded-[2.5rem] bg-white">
                                     <img
-                                        src="/misepo_app_screen_post_generation_1769989464802.png"
+                                        src="/misepo_input_screen.jpg"
                                         alt="App Generation Support"
-                                        className="w-full h-full object-cover scale-[1.02]"
+                                        className="w-full h-full object-cover object-top"
                                     />
                                 </div>
                             </div>
@@ -74,9 +74,9 @@ export const AppScreensSection = ({ isMobile = false }: { isMobile?: boolean }) 
                                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-6 bg-[#282d32] rounded-b-2xl z-20" />
                                 <div className="w-full h-full overflow-hidden rounded-[2.5rem] bg-white">
                                     <img
-                                        src="/misepo_app_screen_calendar_view_1769989478054.png"
+                                        src="/misepo_topic_sommelier.jpg"
                                         alt="Content Calendar"
-                                        className="w-full h-full object-cover scale-[1.02]"
+                                        className="w-full h-full object-cover object-top"
                                     />
                                 </div>
                             </div>
@@ -92,9 +92,9 @@ export const AppScreensSection = ({ isMobile = false }: { isMobile?: boolean }) 
                                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-6 bg-[#282d32] rounded-b-2xl z-20" />
                                 <div className="w-full h-full overflow-hidden rounded-[2.5rem] bg-white">
                                     <img
-                                        src="/misepo_app_screen_learning_data_1769989493137.png"
+                                        src="/misepo_profile_selection.jpg"
                                         alt="AI Learning View"
-                                        className="w-full h-full object-cover scale-[1.02]"
+                                        className="w-full h-full object-cover object-top"
                                     />
                                 </div>
                             </div>
