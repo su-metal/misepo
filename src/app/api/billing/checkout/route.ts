@@ -7,7 +7,7 @@ import { computeCanUseApp } from "@/lib/entitlements/canUseApp";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
-type Plan = "monthly" | "yearly";
+type Plan = "entry" | "standard" | "professional";
 const PROMO_KEY = "intro_monthly_1000off";
 const APP_ID = env.APP_ID;
 
@@ -16,8 +16,14 @@ export async function POST(req: Request) {
     // ---- env guard
     if (!process.env.STRIPE_SECRET_KEY) throw new Error("missing STRIPE_SECRET_KEY");
     if (!process.env.NEXT_PUBLIC_APP_URL) throw new Error("missing NEXT_PUBLIC_APP_URL");
-    if (!process.env.STRIPE_PRICE_MONTHLY_ID) throw new Error("missing STRIPE_PRICE_MONTHLY_ID");
-    if (!process.env.STRIPE_PRICE_YEARLY_ID) throw new Error("missing STRIPE_PRICE_YEARLY_ID");
+    
+    const PRICE_ID_ENTRY = process.env.STRIPE_PRICE_MONTHLY_EARLY_BIRD_ID;
+    const PRICE_ID_STANDARD = process.env.STRIPE_PRICE_MONTHLY_STANDARD_ID;
+    const PRICE_ID_PROFESSIONAL = process.env.STRIPE_PRICE_MONTHLY_ID;
+
+    if (!PRICE_ID_ENTRY || !PRICE_ID_STANDARD || !PRICE_ID_PROFESSIONAL) {
+      throw new Error("Missing required Stripe Price IDs in environment variables");
+    }
 
     const TRIAL_DAYS = Number(process.env.STRIPE_TRIAL_DAYS ?? "7");
     if (!Number.isFinite(TRIAL_DAYS) || TRIAL_DAYS < 0 || TRIAL_DAYS > 365) {
@@ -27,7 +33,7 @@ export async function POST(req: Request) {
 
     // ---- request
     const body = await req.json().catch(() => ({}));
-    const plan: Plan = body?.plan === "yearly" ? "yearly" : "monthly";
+    const plan: Plan = body?.plan || "standard";
 
     // ---- auth
     const supabase = await createClient();
@@ -87,43 +93,18 @@ export async function POST(req: Request) {
       entitlement = created;
     }
 
-    // If already on a paid plan (monthly/yearly), don't create a new checkout
-    const isAlreadyPaid = (entitlement?.plan === 'monthly' || entitlement?.plan === 'yearly') && 
+    // If already on a paid plan, don't create a new checkout unless it's an upgrade (simplified for now to just block if active)
+    const isAlreadyPaid = (entitlement?.plan === 'entry' || entitlement?.plan === 'standard' || entitlement?.plan === 'professional' || entitlement?.plan === 'monthly' || entitlement?.plan === 'yearly') && 
                           (entitlement?.status === 'active' || entitlement?.status === 'trialing');
 
     if (isAlreadyPaid) {
       return NextResponse.json({ ok: false, error: "already_active" }, { status: 400 });
     }
 
-    // ---- pick price (monthly tier logic: first 100 users get Early Bird price)
-    let priceId = plan === "yearly"
-      ? process.env.STRIPE_PRICE_YEARLY_ID!
-      : process.env.STRIPE_PRICE_MONTHLY_ID!;
-
-    if (plan === "monthly") {
-      // Count subscribers who are currently on a paid plan (including trials)
-      const { count, error: countErr } = await supabaseAdmin
-        .from("entitlements")
-        .select("*", { count: "exact", head: true })
-        .not("plan", "eq", "free")
-        .in("status", ["active", "trialing"]);
-
-      if (countErr) {
-        console.error("Critical: subscriber count failed", countErr);
-        // Fallback to standard price if count fails, to avoid blocking sales
-      } else {
-        const subCount = count ?? 0;
-        const EARLY_BIRD_LIMIT = 100;
-        
-        if (subCount < EARLY_BIRD_LIMIT) {
-          // Use Early Bird ID if available
-          priceId = process.env.STRIPE_PRICE_MONTHLY_EARLY_BIRD_ID || priceId;
-        } else {
-          // Use Standard ID if available
-          priceId = process.env.STRIPE_PRICE_MONTHLY_STANDARD_ID || priceId;
-        }
-      }
-    }
+    // ---- pick price
+    let priceId = PRICE_ID_STANDARD;
+    if (plan === "entry") priceId = PRICE_ID_ENTRY;
+    if (plan === "professional") priceId = PRICE_ID_PROFESSIONAL;
 
     // ---- ensure customer
     let customerId = entitlement?.stripe_customer_id ?? null;

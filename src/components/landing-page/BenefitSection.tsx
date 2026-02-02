@@ -15,7 +15,7 @@ export const BenefitSection = ({ isMobile = false }: { isMobile?: boolean }) => 
                     <span className="text-[10px] font-black text-[#1823ff] uppercase tracking-[0.2em] mb-8 px-4 py-2 bg-white rounded-full border border-[#1823ff]/10 shadow-sm">The New Standard</span>
                     <h2 className={`font-black text-[#282d32] tracking-tighter leading-[0.85] ${isMobile ? 'text-5xl' : 'text-7xl md:text-8xl lg:text-[5rem]'}`}>
                         SNSを、<br />
-                        <span className="text-[#1823ff]">お店の資産に。</span>
+                        <span className="text-gradient-primary">お店の資産に。</span>
                     </h2>
                     <p className="text-xl md:text-2xl font-bold text-slate-400 mt-12 max-w-2xl leading-tight">
                         投稿が続くことで、お店の信頼とファンが積み重なっていきます。

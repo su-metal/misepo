@@ -16,7 +16,7 @@ function StartPageContent() {
     initialPlan
   } = useStartFlow();
 
-  const [plan, setPlan] = useState<"monthly" | "yearly">("monthly");
+  const [plan, setPlan] = useState<"entry" | "standard" | "professional">("standard");
 
   // Sync with initial plan from URL/Storage
   useEffect(() => {
@@ -55,17 +55,18 @@ function StartPageContent() {
         <div className="absolute bottom-[20%] right-[10%] w-48 h-48 border-[4px] border-black/5 rounded-[40px] -rotate-12"></div>
       </div>
 
+      {/* Back Button - Fixed Position */}
+      <Link
+        href={isLoggedIn ? "/generate" : "/"}
+        className="fixed top-6 left-6 z-20 inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-black/40 hover:text-black transition-colors group"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" className="group-hover:-translate-x-1 transition-transform">
+          <path d="M19 12H5M12 19l-7-7 7-7" />
+        </svg>
+        {isLoggedIn ? "Back to Dashboard" : "Back to Home"}
+      </Link>
+
       <div className="w-full max-w-2xl relative z-10 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-        {/* Back Button */}
-        <Link
-          href={isLoggedIn ? "/generate" : "/"}
-          className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-black/40 hover:text-black transition-colors mb-8 group"
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" className="group-hover:-translate-x-1 transition-transform">
-            <path d="M19 12H5M12 19l-7-7 7-7" />
-          </svg>
-          {isLoggedIn ? "Back to Dashboard" : "Back to Home"}
-        </Link>
 
         <div className="text-center mb-10 pt-2">
           <h1 className="text-4xl sm:text-5xl font-black text-black tracking-tighter leading-none mb-3 uppercase italic">
@@ -87,7 +88,7 @@ function StartPageContent() {
               </p>
               <button
                 className="w-full py-5 bg-white text-[#4DB39A] rounded-[20px] font-black text-2xl italic shadow-xl active:scale-95 transition-all flex items-center justify-center gap-4"
-                onClick={() => startGoogleLogin("trial", "monthly")}
+                onClick={() => startGoogleLogin("trial", "standard")}
                 disabled={loading}
               >
                 {loading ? <div className="w-6 h-6 border-[4px] border-[#4DB39A]/20 border-t-[#4DB39A] rounded-full animate-spin" /> : (
@@ -105,67 +106,94 @@ function StartPageContent() {
           )}
 
           <div className="pt-4">
-            <div className="text-center mb-6">
+            <div className="text-center mb-10">
               <span className="text-[11px] font-black text-black/20 uppercase tracking-[0.4em] font-sans">
                 {eligibleForTrial !== false ? 'Upgrade your experience' : 'Choose your subscription'}
               </span>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Monthly Plan Card */}
-              <div className="bg-white rounded-[32px] p-8 flex flex-col relative transition-all border-2 border-transparent hover:border-black/5 shadow-sm hover:shadow-md">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Entry Plan Card */}
+              <div className="bg-white rounded-[24px] p-6 flex flex-col relative transition-all border-2 border-transparent hover:border-black/5 shadow-sm hover:shadow-md">
                 <div className="mb-4">
-                  <span className="text-[10px] font-black text-black/30 uppercase tracking-widest mb-1 block">STANDARD</span>
-                  <h3 className="text-2xl font-black text-black uppercase italic">月額プラン</h3>
+                  <span className="text-[9px] font-black text-black/30 uppercase tracking-widest mb-1 block">ENTRY</span>
+                  <h3 className="text-xl font-black text-black uppercase italic">エントリー</h3>
                 </div>
                 <div className="mb-6 flex items-baseline gap-1">
-                  <span className="text-3xl font-black">¥1,980</span>
-                  <span className="text-xs font-bold text-black/40 uppercase">/ month</span>
+                  <span className="text-2xl font-black">¥980</span>
+                  <span className="text-[10px] font-bold text-black/40 uppercase">/ month</span>
                 </div>
-                <ul className="space-y-3 mb-10 flex-grow">
-                  {['月間300回生成', '全プラットフォーム対応', 'AI分身学習機能'].map((feature, i) => (
-                    <li key={i} className="flex items-center gap-2 text-sm font-bold text-black/60">
-                      <Icons.Check size={16} strokeWidth={4} className="text-[#4DB39A]" />
+                <ul className="space-y-2 mb-8 flex-grow">
+                  {['月間50回生成', '全プラットフォーム対応', 'AI分身学習機能'].map((feature, i) => (
+                    <li key={i} className="flex items-start gap-2 text-[12px] font-bold text-black/60 leading-tight">
+                      <Icons.Check size={14} strokeWidth={4} className="text-[#4DB39A] shrink-0 mt-0.5" />
                       {feature}
                     </li>
                   ))}
                 </ul>
                 <button
-                  className="w-full py-4 bg-zinc-900 text-white rounded-[16px] font-black text-base italic hover:bg-black transition-all shadow-lg"
-                  onClick={() => startGoogleLogin("trial", "monthly")}
+                  className="w-full py-3 bg-zinc-900 text-white rounded-[12px] font-black text-sm italic hover:bg-black transition-all shadow-lg"
+                  onClick={() => startGoogleLogin("trial", "entry")}
                   disabled={loading}
                 >
                   {loading ? "..." : "月額で開始"}
                 </button>
               </div>
 
-              {/* Yearly Plan Card */}
-              <div className="bg-white rounded-[32px] p-8 flex flex-col relative transition-all border-2 border-[#E88BA3]/10 hover:border-[#E88BA3]/30 shadow-sm hover:shadow-md">
-                <div className="absolute top-6 right-8 bg-[#E88BA3] text-white text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-widest shadow-sm">
-                  SAVE 17%
+              {/* Standard Plan Card */}
+              <div className="bg-white rounded-[24px] (ring-2 ring-[#1823ff]/20) p-6 flex flex-col relative transition-all border-2 border-[#1823ff]/10 hover:border-[#1823ff]/30 shadow-md transform hover:scale-[1.02]">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#1823ff] text-white text-[9px] font-black px-4 py-1 rounded-full uppercase tracking-widest shadow-lg whitespace-nowrap">
+                  MOST POPULAR
                 </div>
-                <div className="mb-4">
-                  <span className="text-[10px] font-black text-[#E88BA3] uppercase tracking-widest mb-1 block">BEST VALUE</span>
-                  <h3 className="text-2xl font-black text-black uppercase italic">年額プラン</h3>
+                <div className="mb-4 mt-2">
+                  <span className="text-[9px] font-black text-[#1823ff] uppercase tracking-widest mb-1 block">STANDARD</span>
+                  <h3 className="text-xl font-black text-black uppercase italic">スタンダード</h3>
                 </div>
                 <div className="mb-6 flex items-baseline gap-1">
-                  <span className="text-3xl font-black text-[#E88BA3]">¥19,800</span>
-                  <span className="text-xs font-bold text-black/40 uppercase">/ year</span>
+                  <span className="text-3xl font-black text-[#1823ff]">¥1,980</span>
+                  <span className="text-[10px] font-bold text-black/40 uppercase">/ month</span>
                 </div>
-                <ul className="space-y-3 mb-10 flex-grow">
-                  {['月間300回生成', '全プラットフォーム対応', '最優先機能アップデート'].map((feature, i) => (
-                    <li key={i} className="flex items-center gap-2 text-sm font-bold text-black/60">
-                      <Icons.Check size={16} strokeWidth={4} className="text-[#E88BA3]" />
+                <ul className="space-y-2 mb-8 flex-grow">
+                  {['月間150回生成', '全プラットフォーム対応', '優先AI解析', '最新機能へのアクセス'].map((feature, i) => (
+                    <li key={i} className="flex items-start gap-2 text-[12px] font-bold text-black/60 leading-tight">
+                      <Icons.Check size={14} strokeWidth={4} className="text-[#1823ff] shrink-0 mt-0.5" />
                       {feature}
                     </li>
                   ))}
                 </ul>
                 <button
-                  className="w-full py-4 bg-[#E88BA3] text-white rounded-[16px] font-black text-base italic hover:bg-[#D67A91] transition-all shadow-lg"
-                  onClick={() => startGoogleLogin("trial", "yearly")}
+                  className="w-full py-4 bg-[#1823ff] text-white rounded-[12px] font-black text-base italic hover:bg-[#1219cc] transition-all shadow-xl"
+                  onClick={() => startGoogleLogin("trial", "standard")}
                   disabled={loading}
                 >
-                  {loading ? "..." : "年額で開始"}
+                  {loading ? "..." : "月額で開始"}
+                </button>
+              </div>
+
+              {/* Pro Plan Card */}
+              <div className="bg-white rounded-[24px] p-6 flex flex-col relative transition-all border-2 border-transparent hover:border-black/5 shadow-sm hover:shadow-md">
+                <div className="mb-4">
+                  <span className="text-[9px] font-black text-black/30 uppercase tracking-widest mb-1 block">PROFESSIONAL</span>
+                  <h3 className="text-xl font-black text-black uppercase italic">プロ</h3>
+                </div>
+                <div className="mb-6 flex items-baseline gap-1">
+                  <span className="text-2xl font-black">¥2,980</span>
+                  <span className="text-[10px] font-bold text-black/40 uppercase">/ month</span>
+                </div>
+                <ul className="space-y-2 mb-8 flex-grow">
+                  {['月間300回生成', '全プラットフォーム対応', '無制限AI学習', '個別サポートチャット'].map((feature, i) => (
+                    <li key={i} className="flex items-start gap-2 text-[12px] font-bold text-black/60 leading-tight">
+                      <Icons.Check size={14} strokeWidth={4} className="text-zinc-400 shrink-0 mt-0.5" />
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+                <button
+                  className="w-full py-3 bg-[#282d32] text-white rounded-[12px] font-black text-sm italic hover:bg-black transition-all shadow-lg"
+                  onClick={() => startGoogleLogin("trial", "professional")}
+                  disabled={loading}
+                >
+                  {loading ? "..." : "月額で開始"}
                 </button>
               </div>
             </div>

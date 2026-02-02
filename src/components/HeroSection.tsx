@@ -27,32 +27,31 @@ export default function HeroSection() {
     );
 
     return (
-        <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-[#f0eae4] pt-24 pb-12">
+        <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-[#f0eae4] pt-24 pb-12 bg-gradient-mesh">
             <NoiseOverlay />
 
-            {/* Background Decor */}
-            <div className="absolute top-20 right-20 w-96 h-96 bg-[#1823ff]/5 rounded-full blur-[100px] pointer-events-none" />
-            <div className="absolute bottom-20 left-20 w-[30rem] h-[30rem] bg-slate-50 rounded-full blur-[120px] pointer-events-none" />
+            {/* Background Decor - More Vibrant Orbs */}
+            <div className="glow-orb w-[50rem] h-[50rem] bg-[#1823ff]/40 -top-20 -right-20 animate-pulse-gentle" />
+            <div className="glow-orb w-[40rem] h-[40rem] bg-[#7c3aed]/20 bottom-0 -left-20 animate-spin-slow" />
+            <div className="glow-orb w-[30rem] h-[30rem] bg-[#00d2ff]/20 top-1/2 left-1/4" />
 
             <div className="max-w-6xl mx-auto w-full px-6 flex flex-col items-center lg:grid lg:grid-cols-2 lg:gap-x-12 lg:items-center relative z-10">
-
-                {/* 1. Headline - Top on Mobile, Top Left on PC */}
                 {/* 1. Headline - Top on Mobile, Top Left on PC */}
                 <div className="relative flex flex-col items-start text-left mb-[-20px] lg:mb-0 z-20 lg:col-start-1 lg:row-start-1 w-full">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#1823ff]/5 border border-[#1823ff]/10 rounded-full mb-8">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/50 backdrop-blur-md border border-[#1823ff]/10 rounded-full mb-8 shadow-sm">
                         <span className="w-1.5 h-1.5 rounded-full bg-[#1823ff] animate-pulse" />
                         <span className="text-[10px] font-bold text-[#1823ff] uppercase tracking-[0.2em]">Your Alter Ego for SNS</span>
                     </div>
 
                     <h1 className="text-5xl md:text-7xl lg:text-[7.5rem] font-black tracking-tighter leading-[0.95] text-[#282d32]">
                         想いを、<br />
-                        <span className="text-[#1823ff]">一瞬で言葉に。</span>
+                        <span className="text-gradient-primary">一瞬で言葉に。</span>
                     </h1>
                 </div>
 
                 {/* 2. Slider - Middle on Mobile, Right Column on PC */}
-                <div className="relative w-full max-w-md mb-12 lg:mb-0 lg:col-start-2 lg:row-start-1 lg:row-span-2">
-                    <div className="relative aspect-[3/4] rounded-[3rem] overflow-hidden shadow-2xl shadow-slate-900/20">
+                <div className="relative w-full max-w-md mb-12 lg:mb-0 lg:col-start-2 lg:row-start-1 lg:row-span-2 floating-element">
+                    <div className="relative aspect-[3/4] rounded-[3rem] overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.2)] ring-1 ring-black/5">
                         {images.map((src, index) => (
                             <div
                                 key={src}
@@ -66,6 +65,7 @@ export default function HeroSection() {
                                     className="object-cover"
                                     priority={index === 0}
                                 />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
                             </div>
                         ))}
                     </div>
@@ -78,7 +78,7 @@ export default function HeroSection() {
                                 onClick={() => setActiveImage(index)}
                                 className={`h-2 rounded-full transition-all duration-300 ${index === activeImage
                                     ? 'w-8 bg-[#1823ff]'
-                                    : 'w-2 bg-slate-300 hover:bg-slate-400'
+                                    : 'w-2 bg-slate-200 hover:bg-slate-300'
                                     }`}
                                 aria-label={`画像 ${index + 1}を表示`}
                             />
@@ -87,18 +87,22 @@ export default function HeroSection() {
                 </div>
 
                 {/* 3. Description & CTA - Bottom on Mobile, Bottom Left on PC */}
-                <div className="flex flex-col items-center lg:items-start text-center lg:text-left lg:col-start-1 lg:row-start-2 max-w-xl">
-                    <p className="text-xl md:text-2xl font-bold text-slate-400 leading-tight mb-12 mt-4 lg:mt-8">
+                <div className="flex flex-col items-center lg:items-start text-center lg:text-left lg:col-start-1 lg:row-start-2 max-w-xl relative">
+                    <p className="text-xl md:text-2xl font-bold text-slate-500/80 leading-tight mb-12 mt-4 lg:mt-8">
                         「何を書けばいいか分からない」を、AIが解決。<br />
                         メモを入れるだけで、SNS投稿が完成します。
                     </p>
 
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start w-full">
-                        <button onClick={() => window.location.href = '/start'} className="px-10 py-5 bg-[#1823ff] text-white font-black rounded-full shadow-2xl shadow-[#1823ff]/30 hover:scale-[1.02] active:scale-95 transition-all text-lg flex items-center justify-center gap-3">
-                            <Icons.Sparkles size={20} className="text-yellow-300" />
-                            7日間無料で試す
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start w-full relative z-10">
+                        <button
+                            onClick={() => window.location.href = '/start'}
+                            className="group relative px-10 py-5 bg-gradient-primary text-white font-black rounded-full shadow-[0_20px_50px_rgba(24,35,255,0.3)] hover:scale-[1.02] active:scale-95 transition-all text-lg flex items-center justify-center gap-3 overflow-hidden"
+                        >
+                            <div className="absolute inset-0 bg-gradient-shine opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-ticket-shine" />
+                            <Icons.Sparkles size={20} className="text-yellow-300 relative z-10" />
+                            <span className="relative z-10">7日間無料で試す</span>
                         </button>
-                        <button onClick={() => window.location.href = '#flow'} className="px-10 py-5 bg-white text-[#282d32] font-black rounded-full border border-slate-200 hover:bg-slate-50 transition-all text-lg">
+                        <button onClick={() => window.location.href = '#flow'} className="px-10 py-5 bg-white/80 backdrop-blur-md text-[#282d32] font-black rounded-full border border-white shadow-sm hover:bg-white transition-all text-lg">
                             使い方を見る
                         </button>
                     </div>

@@ -15,7 +15,7 @@ export function useStartFlow() {
 
   // クライアントサイドで intent を取得 (SSR中は null、クライアントで確定)
   const [intent, setIntent] = useState<"trial" | "login" | null>(null);
-  const [initialPlan, setInitialPlan] = useState<"monthly" | "yearly">("monthly");
+  const [initialPlan, setInitialPlan] = useState<"entry" | "standard" | "professional">("standard");
 
   // intent の初期化 (クライアントサイドのみ)
   useEffect(() => {
@@ -25,13 +25,13 @@ export function useStartFlow() {
     const resolved = fromUrl ?? fromStorage ?? "login";
     setIntent(resolved);
 
-    const planFromUrl = searchParams.get("plan") as "monthly" | "yearly" | null;
-    const planFromStorage = window.localStorage.getItem("login_plan") as "monthly" | "yearly" | null;
+    const planFromUrl = searchParams.get("plan") as "entry" | "standard" | "professional" | null;
+    const planFromStorage = window.localStorage.getItem("login_plan") as "entry" | "standard" | "professional" | null;
     if (planFromUrl) setInitialPlan(planFromUrl);
     else if (planFromStorage) setInitialPlan(planFromStorage);
   }, [searchParams]);
 
-  const startGoogleLogin = async (nextIntent: "trial" | "login", nextPlan: "monthly" | "yearly" = "monthly") => {
+  const startGoogleLogin = async (nextIntent: "trial" | "login", nextPlan: "entry" | "standard" | "professional" = "standard") => {
     // ログイン後のために intent と plan を保存
     if (typeof window !== "undefined") {
       window.localStorage.setItem("login_intent", nextIntent);
@@ -59,7 +59,7 @@ export function useStartFlow() {
     });
   };
 
-  const goCheckout = useCallback(async (plan: "monthly" | "yearly" = initialPlan) => {
+  const goCheckout = useCallback(async (plan: "entry" | "standard" | "professional" = initialPlan) => {
     setIsRedirecting(true);
     const res = await fetch("/api/billing/checkout", {
       method: "POST",

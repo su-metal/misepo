@@ -106,7 +106,11 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
       if (!res.ok) throw new Error('Failed to save preset');
 
       const savedPreset = await res.json();
-      await props.refreshPresets();
+
+      // Only refresh for updates, not new creations (modal handles new preset refresh)
+      if (preset.id) {
+        await props.refreshPresets();
+      }
 
       // If the saved preset is the currently active one, update the flow state immediately
       if (preset.id && preset.id === flow.activePresetId) {
@@ -115,10 +119,9 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
           const updated = { ...currentActiveInfo, ...preset } as Preset;
           flow.handleApplyPreset(updated);
         }
-      } else if (!preset.id) {
-        // If it was a new preset, switch to it? 
-        // Usually we stay on the modal or let the modal handle it.
-        // But for flow state, we might want to know.
+      } else if (!preset.id && savedPreset && savedPreset.ok && savedPreset.preset) {
+        // If it was a new preset, switch to it automatically
+        flow.handleApplyPreset(savedPreset.preset);
       }
 
       return savedPreset;

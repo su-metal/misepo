@@ -35,7 +35,7 @@ export async function GET() {
 
   let { data: ent, error: readErr } = await supabaseAdmin
     .from("entitlements")
-    .select("plan,status,expires_at,trial_ends_at,billing_reference_id")
+    .select("plan,status,expires_at,trial_ends_at,billing_reference_id,stripe_customer_id")
     .eq("app_id", APP_ID)
     .eq("user_id", userId)
     .maybeSingle();
@@ -49,24 +49,65 @@ export async function GET() {
     const { data: created, error: createErr } = await supabaseAdmin
       .from("entitlements")
       .upsert({ app_id: APP_ID, user_id: userId, plan: "free", status: "inactive", expires_at: null, trial_ends_at: null }, { onConflict: "user_id,app_id" })
-      .select("plan,status,expires_at,trial_ends_at,billing_reference_id")
+      .select("plan,status,expires_at,trial_ends_at,billing_reference_id,stripe_customer_id")
       .single();
 
     if (createErr) return NextResponse.json({ ok: false, error: createErr.message }, { status: 500, headers: NO_STORE_HEADERS });
     ent = created;
   }
 
-  // --- SELF-HEALING: Check for Trial Expiration Lag ---
-  // If DB says 'trialing' but the date is past, Stripe might have transitioned or webhook missed.
+  // --- SELF-HEALING: Check for Trial Expiration or Webhook Latency ---
+  // If user has a customer ID but no sub info (or stale info), try to recover from Stripe.
+  if (ent.stripe_customer_id && (!ent.billing_reference_id || (ent.status === 'inactive' || ent.status === 'trialing'))) {
+    try {
+      const subs = await stripe.subscriptions.list({
+        customer: ent.stripe_customer_id,
+        status: 'all',
+        limit: 1,
+      });
+
+      if (subs.data.length > 0) {
+        const sub: any = subs.data[0];
+        const subPlan = sub.metadata.plan || "entry"; // Fallback to entry if metadata missing
+        
+        if (sub.status !== ent.status || subPlan !== ent.plan) {
+          console.log(`[api/me/plan] Healing subscription for ${userId}: ${ent.status} -> ${sub.status}, ${ent.plan} -> ${subPlan}`);
+          
+          const newExpiresAt = sub.cancel_at ? new Date(sub.cancel_at * 1000).toISOString() : 
+                               sub.current_period_end ? new Date(sub.current_period_end * 1000).toISOString() : 
+                               null;
+          const newTrialEndsAt = sub.trial_end ? new Date(sub.trial_end * 1000).toISOString() : null;
+
+          const { data: updated } = await supabaseAdmin
+            .from("entitlements")
+            .update({
+              plan: subPlan,
+              status: sub.status,
+              expires_at: newExpiresAt,
+              trial_ends_at: newTrialEndsAt,
+              billing_reference_id: sub.id
+            })
+            .eq("user_id", userId)
+            .eq("app_id", APP_ID)
+            .select("plan,status,expires_at,trial_ends_at,billing_reference_id,stripe_customer_id")
+            .single();
+          
+          if (updated) ent = updated;
+        }
+      }
+    } catch (e) {
+      console.error("[api/me/plan] Stripe healing failed:", e);
+    }
+  }
+  
   const now = new Date();
   if (ent.status === 'trialing' && ent.trial_ends_at && new Date(ent.trial_ends_at) < now) {
-    console.log(`[api/me/plan] Detected trial lag for user ${userId}. Fetching Stripe...`);
+    // Legacy healing by sub ID
+    console.log(`[api/me/plan] Detected trial lag for user ${userId}. Fetching Stripe sub...`);
     if (ent.billing_reference_id) {
       try {
         const sub: any = await stripe.subscriptions.retrieve(ent.billing_reference_id);
         if (sub.status !== ent.status) {
-          console.log(`[api/me/plan] Self-healing status: ${ent.status} -> ${sub.status}`);
-          
           const newExpiresAt = sub.cancel_at ? new Date(sub.cancel_at * 1000).toISOString() : 
                                sub.current_period_end ? new Date(sub.current_period_end * 1000).toISOString() : 
                                null;
@@ -81,13 +122,13 @@ export async function GET() {
             })
             .eq("user_id", userId)
             .eq("app_id", APP_ID)
-            .select("plan,status,expires_at,trial_ends_at,billing_reference_id")
+            .select("plan,status,expires_at,trial_ends_at,billing_reference_id,stripe_customer_id")
             .single();
           
           if (updated) ent = updated;
         }
       } catch (e) {
-        console.error("[api/me/plan] Stripe fallback failed:", e);
+        console.error("[api/me/plan] Stripe sub fallback failed:", e);
       }
     }
   }
@@ -105,10 +146,8 @@ export async function GET() {
 
   // --- CARDLESS TRIAL INITIALIZATION ---
   let finalTrialEndsAt = ent.trial_ends_at;
-  let currentPlan = ent.plan;
-  let currentStatus = ent.status;
 
-  if (isEligibleForTrial && currentPlan === 'free') {
+  if (isEligibleForTrial && ent.plan === 'free') {
     // New user or user without trial. Initialize it to 7 days from now (JST)
     const jstOffset = 9 * 60 * 60 * 1000;
     const nowJST = new Date(Date.now() + jstOffset);
@@ -134,13 +173,11 @@ export async function GET() {
       })
       .eq('app_id', APP_ID)
       .eq('user_id', userId)
-      .select("plan,status,expires_at,trial_ends_at,billing_reference_id")
+      .select("plan,status,expires_at,trial_ends_at,billing_reference_id,stripe_customer_id")
       .single();
     
     if (updated) {
       ent = updated;
-      currentPlan = updated.plan;
-      currentStatus = updated.status;
     }
     
     console.log(`[PlanAPI] Initialized cardless trial for ${userId}: ends at ${finalTrialEndsAt}`);
@@ -151,7 +188,7 @@ export async function GET() {
   const expiresMs = ent.expires_at ? new Date(ent.expires_at).getTime() : null;
 
   const isTrialWindow = trialEndsMs !== null && trialEndsMs > nowMs;
-  const isPaidActive = currentPlan !== 'free' && currentPlan !== 'trial' && currentStatus === 'active' && (expiresMs === null || expiresMs > nowMs);
+  const isPaidActive = ent.plan !== 'free' && ent.plan !== 'trial' && ent.status === 'active' && (expiresMs === null || expiresMs > nowMs);
   
   const canUseApp = isTrialWindow || isPaidActive;
   const isPro = isPaidActive; // Explicitly Pro if paid
@@ -164,9 +201,16 @@ export async function GET() {
   // JST Calculation (Using shared utility)
   const { startOfToday, startOfMonth } = getJSTDateRange();
 
-  if (isPro) {
-    // Paid Pro: Monthly Limit (300)
-    limit = 300;
+  // Define limits for each plan
+  let monthlyLimit = 0;
+  if (ent.plan === 'entry') monthlyLimit = 50;
+  else if (ent.plan === 'standard') monthlyLimit = 150;
+  else if (ent.plan === 'professional') monthlyLimit = 300;
+  else if (ent.plan === 'monthly' || ent.plan === 'yearly' || ent.plan === 'pro') monthlyLimit = 300; // Legacy
+
+  if (monthlyLimit > 0 && (ent.status === 'active' || ent.status === 'trialing' || ent.status === 'past_due')) {
+    // Paid Plans: Monthly Limit
+    limit = monthlyLimit;
     usage_period = 'monthly';
     const { data: usageData } = await supabaseAdmin
       .from("ai_runs")
@@ -178,9 +222,9 @@ export async function GET() {
     if (usageData) {
         usage = usageData.reduce((acc, curr) => acc + (curr.run_type === 'multi-gen' ? 2 : 1), 0);
     }
-  } else if (isTrialWindow) {
-    // Trial: Daily Limit (10)
-    limit = 10;
+  } else {
+    // Free/Trial: Daily Limit (Changed from 10 to 5)
+    limit = 5;
     usage_period = 'daily';
     const { data: usageData } = await supabaseAdmin
       .from("ai_runs")
@@ -197,12 +241,12 @@ export async function GET() {
   return NextResponse.json({
     ok: true,
     app_id: APP_ID,
-    plan: currentPlan,
-    status: currentStatus,
+    plan: ent.plan,
+    status: ent.status,
     expires_at: ent.expires_at,
     trial_ends_at: finalTrialEndsAt,
     canUseApp,
-    isPro,
+    isPro: monthlyLimit > 0,
     eligibleForTrial: isEligibleForTrial,
     limit,
     usage,

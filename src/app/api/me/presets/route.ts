@@ -87,8 +87,8 @@ export async function POST(req: Request) {
     app_id: APP_ID,
     user_id: user.id,
     name: body.name,
-    avatar: body.avatar ?? "👤",
-    custom_prompt: body.custom_prompt ?? null,
+    avatar: body.avatar ?? "shop",
+    custom_prompt: body.custom_prompt ?? "",
     post_samples: body.post_samples ?? null,
     sort_order: (count ?? 0) + 1,
   };

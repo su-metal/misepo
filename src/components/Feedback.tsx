@@ -87,7 +87,7 @@ export const Feedback = ({ mode = 'floating' }: { mode?: 'floating' | 'sidebar' 
     return (
         <>
             {/* Trigger Button */}
-            {mode === 'sidebar' ? (
+            {mode === 'sidebar' && (
                 <button
                     onClick={() => setIsOpen(true)}
                     className="flex flex-col items-center gap-1.5 p-3 rounded-2xl transition-all group w-full h-full bg-white shadow-sm ring-1 ring-slate-100 hover:shadow-md hover:bg-slate-50 active:scale-95"
@@ -96,7 +96,9 @@ export const Feedback = ({ mode = 'floating' }: { mode?: 'floating' | 'sidebar' 
                     <MessageCircleIcon className="w-4 h-4 text-slate-400 group-hover:text-[#7F5AF0] group-hover:scale-110 transition-all" />
                     <span className="text-[8px] font-black text-slate-400 tracking-widest uppercase group-hover:text-slate-600">Feedback</span>
                 </button>
-            ) : (
+            )}
+            {/* Floating button hidden as per user request */}
+            {/* {mode !== 'sidebar' && (
                 <button
                     onClick={() => setIsOpen(true)}
                     className="hidden md:flex fixed bottom-8 right-8 z-[100] items-center gap-3 transition-all group px-6 py-4 bg-[#7F5AF0] text-white rounded-full shadow-lg shadow-indigo-200 hover:shadow-xl hover:shadow-indigo-300 hover:-translate-y-1 active:scale-95 active:translate-y-0"
@@ -104,7 +106,7 @@ export const Feedback = ({ mode = 'floating' }: { mode?: 'floating' | 'sidebar' 
                     <MessageCircleIcon className="w-5 h-5 group-hover:rotate-12 transition-transform" />
                     <span className="font-extrabold text-sm tracking-tight">フィードバック</span>
                 </button>
-            )}
+            )} */}
 
             {/* Modal Overlay */}
             {(isOpen && mounted) && createPortal(

@@ -35,8 +35,12 @@ export const GeneratorHeader: React.FC<GeneratorHeaderProps> = ({
                         <span className="text-[10px] font-black text-[#AAAAAA] uppercase tracking-[0.2em] leading-none mb-1 group-hover:text-[#7F5AF0] transition-colors">Business Profile</span>
                         <div className="flex items-end gap-2">
                             <span className="text-xl font-black text-[var(--plexo-black)] tracking-tight leading-none truncate max-w-[120px] sm:max-w-none">{storeProfile?.name || 'Store Admin'}</span>
-                            {plan?.plan === 'pro' && (
-                                <span className="mb-0.5 px-1.5 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider bg-[var(--plexo-black)] text-[var(--plexo-yellow)] leading-none">PRO</span>
+                            {(plan?.plan === 'entry' || plan?.plan === 'standard' || plan?.plan === 'professional' || plan?.plan === 'pro' || plan?.plan === 'monthly' || plan?.plan === 'yearly') && (
+                                <span className="mb-0.5 px-1.5 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider bg-[var(--plexo-black)] text-[var(--plexo-yellow)] leading-none">
+                                    {plan?.plan === 'entry' ? 'ENTRY' :
+                                        plan?.plan === 'standard' ? 'STD' :
+                                            plan?.plan === 'professional' ? 'PRO' : 'PRO'}
+                                </span>
                             )}
                         </div>
                     </div>

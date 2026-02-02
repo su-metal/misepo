@@ -41,6 +41,7 @@ export async function POST(req: Request) {
   const fallbackAppId = env.APP_ID;
 
   // --- Stripe webhook dedupe（二重処理防止） ---
+  console.log("[stripe] Received event:", event.id, event.type);
   const { error: dedupeErr } = await supabaseAdmin
     .from("stripe_events")
     .insert({
@@ -84,35 +85,10 @@ export async function POST(req: Request) {
               ? sub.customer
               : sub?.customer?.id ?? null);
 
-      // ---- Prevent Duplicate Subscriptions ----
-      // Check if customer already has other active subscriptions
-      if (customerId) {
-        const existingSubs = await stripe.subscriptions.list({
-          customer: customerId,
-          status: "active",
-          limit: 10,
-        });
-
-        // If multiple active subscriptions exist, cancel older ones
-        const activeSubs = existingSubs.data.filter((s) => s.id !== subId);
-        if (activeSubs.length > 0) {
-          console.log(`[webhook] Found ${activeSubs.length} duplicate subscription(s) for customer ${customerId}`);
-          
-          for (const oldSub of activeSubs) {
-            try {
-              await stripe.subscriptions.cancel(oldSub.id);
-              console.log(`[webhook] Cancelled duplicate subscription: ${oldSub.id}`);
-            } catch (cancelErr: any) {
-              console.error(`[webhook] Failed to cancel subscription ${oldSub.id}:`, cancelErr.message);
-            }
-          }
-        }
-      }
-
       await upsertEntitlement({
         userId,
         appId,
-        plan: "pro",
+        plan: session?.metadata?.plan || sub?.metadata?.plan || "pro",
         status: sub?.status ?? "inactive",
         expiresAt: getExpiresAt(sub),
         trialEndsAt: getTrialEndsAt(sub),
@@ -144,8 +120,7 @@ export async function POST(req: Request) {
 
     if (
       event.type === "customer.subscription.created" ||
-      event.type === "customer.subscription.updated" ||
-      event.type === "customer.subscription.deleted"
+      event.type === "customer.subscription.updated"
     ) {
       const sub: any = event.data.object;
 
@@ -163,13 +138,53 @@ export async function POST(req: Request) {
       await upsertEntitlement({
         userId,
         appId,
-        plan: "pro",
+        plan: sub?.metadata?.plan || "pro",
         status: sub?.status ?? "inactive",
         expiresAt: getExpiresAt(sub),
         trialEndsAt: getTrialEndsAt(sub),
         billingRef: sub?.id ?? null,
         customerId,
       });
+    }
+
+    if (event.type === "customer.subscription.deleted") {
+      const sub: any = event.data.object;
+
+      const userId: string | undefined = sub?.metadata?.user_id;
+      const appId: string = sub?.metadata?.app_id ?? fallbackAppId;
+
+      if (!userId)
+        throw new Error("user_id not found in subscription metadata");
+
+      // Check if this is the current subscription in DB before marking as canceled
+      const { data: currentEnt } = await supabaseAdmin
+        .from("entitlements")
+        .select("billing_reference_id")
+        .eq("app_id", appId)
+        .eq("user_id", userId)
+        .maybeSingle();
+
+      // Only update if this is the current subscription
+      if (currentEnt?.billing_reference_id === sub.id) {
+        const customerId =
+          typeof sub?.customer === "string"
+            ? sub.customer
+            : sub?.customer?.id ?? null;
+
+        await upsertEntitlement({
+          userId,
+          appId,
+          plan: sub?.metadata?.plan || "pro",
+          status: "canceled",
+          expiresAt: getExpiresAt(sub),
+          trialEndsAt: getTrialEndsAt(sub),
+          billingRef: sub?.id ?? null,
+          customerId,
+        });
+        console.log(`[webhook] Subscription deleted for user ${userId}: ${sub.id}`);
+      } else {
+        console.log(`[webhook] Ignoring delete event for old subscription ${sub.id}. Current: ${currentEnt?.billing_reference_id}`);
+      }
     }
 
     if (event.type === "invoice.payment_succeeded") {
@@ -230,7 +245,7 @@ function getTrialEndsAt(sub: any) {
 async function upsertEntitlement(params: {
   userId: string;
   appId: string;
-  plan: "free" | "pro";
+  plan: string;
   status: string;
   expiresAt: string | null;
   trialEndsAt?: string | null;
@@ -238,6 +253,8 @@ async function upsertEntitlement(params: {
   customerId?: string | null;
 }) {
   const { userId, appId, plan, status, expiresAt, billingRef, trialEndsAt } = params;
+
+  console.log(`[webhook] Upserting entitlement for ${userId}. Plan: ${plan}, Status: ${status}, Ref: ${billingRef}`);
 
   const payload: Record<string, unknown> = {
     user_id: userId,

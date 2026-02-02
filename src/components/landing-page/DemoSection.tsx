@@ -29,17 +29,6 @@ export const DemoSection = ({
     isMobile = false
 }: DemoSectionProps & { isMobile?: boolean }) => {
     const activeScenario = demoScenarios[activeScenarioIdx];
-    const scrollRef = React.useRef<HTMLDivElement>(null);
-
-    React.useEffect(() => {
-        if (demoResult && scrollRef.current) {
-            setTimeout(() => {
-                if (scrollRef.current) {
-                    scrollRef.current.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
-                }
-            }, 100);
-        }
-    }, [demoResult]);
 
     return (
         <section id="demo" className="py-24 md:py-48 bg-gradient-to-br from-[#1823ff] via-[#2531ff] to-[#1823ff] text-white relative overflow-hidden">
@@ -49,10 +38,10 @@ export const DemoSection = ({
 
             <div className="max-w-7xl mx-auto px-6 relative z-10">
                 <div className="flex flex-col items-start mb-24">
-                    <span className="text-[10px] font-black text-white/50 uppercase tracking-[0.2em] mb-8 px-4 py-2 bg-white/5 rounded-full border border-white/10">Interactive Demo</span>
+                    <span className="text-[10px] font-black text-white/70 uppercase tracking-[0.2em] mb-8 px-4 py-2 bg-white/10 rounded-full border border-white/20 backdrop-blur-md">Interactive Demo</span>
                     <h2 className={`font-black tracking-tighter leading-[0.85] text-white ${isMobile ? 'text-5xl' : 'text-7xl md:text-8xl lg:text-[5rem]'}`}>
                         今すぐ、<br />
-                        <span className="opacity-60">試してみる。</span>
+                        <span className="text-white opacity-60">試してみる。</span>
                     </h2>
                     <p className="text-xl md:text-3xl font-bold text-white/70 mt-12 max-w-2xl leading-tight">
                         MisePoの実力を、今すぐ体験。<br />
@@ -114,7 +103,7 @@ export const DemoSection = ({
                                 <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Result View</span>
                             </div>
 
-                            <div ref={scrollRef} className="flex-1 overflow-y-auto custom-scrollbar">
+                            <div className="flex-1 overflow-y-auto custom-scrollbar">
                                 {isDemoGenerating ? (
                                     <div className="flex flex-col gap-4">
                                         <div className="h-4 w-3/4 bg-slate-50 rounded-full animate-pulse" />

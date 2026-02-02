@@ -9,8 +9,17 @@ export const UnifiedFlowSection = ({ isMobile = false }: { isMobile?: boolean })
                 <div className="flex flex-col items-start text-left md:items-center md:text-center mb-32">
                     <span className="text-[10px] font-black text-[#1823ff] uppercase tracking-[0.2em] mb-8 px-4 py-2 bg-[#1823ff]/5 rounded-full border border-[#1823ff]/10 inline-block">The Workflow</span>
                     <h2 className={`font-black tracking-tighter leading-[0.9] text-[#282d32] ${isMobile ? 'text-5xl' : 'text-7xl md:text-8xl lg:text-[5rem]'}`}>
-                        メモから投稿まで、<br />
-                        <span className="text-[#1823ff]">あっという間に。</span>
+                        {isMobile ? (
+                            <>
+                                メモから<br />
+                                <span className="text-gradient-primary">あっという間に。</span>
+                            </>
+                        ) : (
+                            <>
+                                メモから投稿まで、<br />
+                                <span className="text-gradient-primary">あっという間に。</span>
+                            </>
+                        )}
                     </h2>
                 </div>
 

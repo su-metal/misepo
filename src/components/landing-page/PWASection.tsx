@@ -10,7 +10,7 @@ export const PWASection = ({ isMobile = false }: { isMobile?: boolean }) => {
                     <span className="text-[10px] font-black text-[#1823ff] uppercase tracking-[0.2em] mb-8 px-4 py-2 bg-[#1823ff]/5 rounded-full border border-[#1823ff]/10">Anywhere, Anytime</span>
                     <h2 className={`font-black tracking-tighter leading-[0.9] text-[#282d32] ${isMobile ? 'text-5xl' : 'text-7xl md:text-8xl lg:text-[5rem]'}`}>
                         場所を選ばない、<br />
-                        <span className="text-[#1823ff]">自由な運用を。</span>
+                        <span className="text-gradient-primary">自由な運用を。</span>
                     </h2>
                     <p className="text-xl md:text-3xl font-bold text-slate-400 mt-12 max-w-2xl leading-tight">
                         ブラウザがあれば、そこがあなたの編集室。<br className="hidden md:block" />
