@@ -7,7 +7,6 @@ import HeroSection from './HeroSection';
 import { Header } from './landing-page/Header';
 import { ProblemSection } from './landing-page/ProblemSection';
 import { BenefitSection } from './landing-page/BenefitSection';
-import { FeaturesSection } from './landing-page/FeaturesSection';
 import { UnifiedFlowSection } from './landing-page/UnifiedFlowSection';
 import { DemoSection } from './landing-page/DemoSection';
 import { PWASection } from './landing-page/PWASection';
@@ -17,6 +16,7 @@ import { FAQSection } from './landing-page/FAQSection';
 import { CTASection } from './landing-page/CTASection';
 import { ExperienceSection } from './landing-page/ExperienceSection';
 import { AppScreensSection } from './landing-page/AppScreensSection';
+import { ReviewResponseSection } from './landing-page/ReviewResponseSection';
 import { Footer } from './landing-page/Footer';
 
 export default function LandingPage() {
@@ -154,9 +154,10 @@ LINE友だち限定で、このホットチョコドーナツが
       <Header scrolled={scrolled} isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} loginWithGoogle={loginWithGoogle} />
       <HeroSection />
       <ExperienceSection isMobile={isMobile} />
+      <ProblemSection problems={problems} isMobile={isMobile} />
       <AppScreensSection isMobile={isMobile} />
       <UnifiedFlowSection />
-      <ProblemSection problems={problems} isMobile={isMobile} />
+      <ReviewResponseSection />
       <DemoSection
         demoScenarios={demoScenarios}
         activeScenarioIdx={activeScenarioIdx}
@@ -166,7 +167,6 @@ LINE友だち限定で、このホットチョコドーナツが
         handleDemoGenerate={handleDemoGenerate}
       />
       <BenefitSection />
-      <FeaturesSection isMobile={isMobile} />
       <PWASection isMobile={isMobile} />
       <TestimonialsSection isMobile={isMobile} />
       <PricingSection isMobile={isMobile} />

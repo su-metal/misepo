@@ -1,5 +1,6 @@
 "use client";
 import React from 'react';
+import { Icons } from '../LandingPageIcons';
 
 const NoiseOverlay = () => (
     <div className="absolute inset-0 pointer-events-none opacity-[0.2] mix-blend-overlay" style={{
@@ -18,11 +19,25 @@ export const AppScreensSection = ({ isMobile = false }: { isMobile?: boolean }) 
                     <h2 className="text-7xl md:text-8xl lg:text-[10rem] font-black tracking-tighter leading-[0.85] text-[#1823ff] mb-12">
                         ABOUT
                     </h2>
-                    <p className="text-xl md:text-3xl font-bold text-slate-400 max-w-2xl leading-tight">
-                        misepo（ミセポ）は、お店の日常をSNS投稿文に変換するAIアプリです。<br />
-                        メモ一つで、X・Instagram・LINE・Google Mapsそれぞれに最適な文章が自動で完成します。<br />
-
+                    <p className="text-xl md:text-3xl font-bold text-slate-400 max-w-2xl leading-tight mb-12">
+                        misepo（ミセポ）は、お店の「今日」をSNS投稿文に変換するAIアプリです。<br />
+                        メモ一つで、各プラットフォームに最適な文章が自動で完成します。
                     </p>
+
+                    {/* Platform Icons Overlay */}
+                    <div className="flex flex-wrap items-center gap-3 md:gap-5">
+                        {[
+                            { name: 'Instagram', icon: <Icons.Instagram size={18} /> },
+                            { name: 'X (Twitter)', icon: <Icons.Twitter size={16} /> },
+                            { name: 'LINE', icon: <span className="font-black text-[10px] tracking-tighter">LINE</span> },
+                            { name: 'Google Maps', icon: <Icons.MapPin size={18} /> }
+                        ].map((platform) => (
+                            <div key={platform.name} className="flex items-center gap-2 px-6 py-3 bg-white/50 backdrop-blur-sm rounded-full border border-slate-200 shadow-sm hover:border-[#1823ff]/30 hover:bg-white transition-all group">
+                                <span className="text-slate-400 group-hover:text-[#1823ff] transition-colors">{platform.icon}</span>
+                                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{platform.name}</span>
+                            </div>
+                        ))}
+                    </div>
                 </div>
 
                 {/* Smartphone Mocks Row */}

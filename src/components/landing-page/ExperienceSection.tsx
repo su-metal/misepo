@@ -22,18 +22,22 @@ export const ExperienceSection = ({ isMobile = false }: { isMobile?: boolean }) 
                 >
                     <NoiseOverlay />
 
+                    {/* Background Large Text Accent */}
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 select-none pointer-events-none opacity-[0.08] whitespace-nowrap z-0">
+                        <span className="text-[20rem] md:text-[40rem] font-black text-white italic tracking-tighter">EMOTION</span>
+                    </div>
+
                     <div className="max-w-6xl mx-auto px-8 md:px-12 relative z-10">
                         {/* Section 1: Intro with Phone Card */}
                         <div className="flex flex-col md:flex-row items-center gap-16 md:gap-32 mb-48 md:mb-64">
                             <div className="flex-1 order-2 md:order-1 lg:pl-8">
-                                <h3 className="text-3xl md:text-5xl lg:text-6xl font-black text-white leading-[1.2] mb-10">
-                                    SNS投稿を、<br />
-                                    もっと身近に、<br />
-                                    もっと楽しく。
+                                <h3 className="text-3xl md:text-5xl lg:text-7xl font-black text-white leading-[1.2] mb-10">
+                                    「いつもの感じ」を、<br />
+                                    AIが再現。
                                 </h3>
                                 <p className="text-white/80 text-xl md:text-2xl font-bold leading-relaxed">
-                                    お店の「いつも」が、お客様の「楽しみ」に変わる。<br />
-                                    あなたらしい言葉で、毎日をもっと自由に。
+                                    普段の何気ないメモを、魅力的な発信へ。<br />
+                                    お店の個性が伝わる文章を数秒で作ります。
                                 </p>
                             </div>
                             <div className="flex-1 order-1 md:order-2 relative">

@@ -13,7 +13,7 @@ export const UnifiedFlowSection = () => {
                         <span className="text-[#1823ff]">あっという間に。</span>
                     </h2>
                     <p className="text-xl md:text-3xl font-bold text-slate-400 mt-12 max-w-2xl leading-tight">
-                        伝えたいことを、そのまま言葉に。難しいことは、何もありません。
+                        日々の出来事をメモするだけ。難しい設定や操作は不要です。
                     </p>
                 </div>
 
@@ -33,7 +33,7 @@ export const UnifiedFlowSection = () => {
                         {
                             step: "02",
                             title: "あなたらしい言葉を、一瞬で",
-                            badge: "ぬくもりを言葉に綴る魔法",
+                            badge: "お店の個性を反映した文章作成",
                             desc: "ボタンを押して数秒。あなたの口癖や温度感を大切にしながら、SNSに最適な文章を書き上げます。",
                             img: "/misepo_step02_generation_natural_screen_1769994809838.png",
                             align: "right"
@@ -41,8 +41,8 @@ export const UnifiedFlowSection = () => {
                         {
                             step: "03",
                             title: "あとは、届けるだけ",
-                            badge: "感謝とワクワクを届ける",
-                            desc: "完成した文章を確認して、ワンタップで完了。\n悩んでいた時間が、お客様との繋がりを楽しむ時間に変わります。",
+                            badge: "確認してワンタップで投稿",
+                            desc: "完成した文章を確認して、ワンタップで完了。\n文章作成の手間をなくし、投稿の頻度を無理なく高められます。",
                             img: "/misepo_step03_happy_shop_owner_sns_1769994514693.png",
                             align: "left"
                         }

@@ -46,7 +46,7 @@ export default function HeroSection() {
 
                     <h1 className="text-6xl md:text-7xl lg:text-[7.5rem] font-black tracking-tighter leading-[0.9] text-[#282d32]">
                         想いを、<br />
-                        <span className="text-[#1823ff]">言葉に。</span>
+                        <span className="text-[#1823ff]">一瞬で言葉に。</span>
                     </h1>
                 </div>
 
@@ -89,8 +89,8 @@ export default function HeroSection() {
                 {/* 3. Description & CTA - Bottom on Mobile, Bottom Left on PC */}
                 <div className="flex flex-col items-center lg:items-start text-center lg:text-left lg:col-start-1 lg:row-start-2 max-w-xl">
                     <p className="text-xl md:text-2xl font-bold text-slate-400 leading-tight mb-12 mt-4 lg:mt-8">
-                        お店の毎日が、ファンの心に届く物語に。<br />
-                        伝えたかった想いを、自然な言葉で。
+                        「何を書けばいいか分からない」を、AIが解決。<br />
+                        メモを入れるだけで、SNS投稿が完成します。
                     </p>
 
                     <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start w-full">
