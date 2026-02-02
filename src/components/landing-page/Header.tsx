@@ -17,8 +17,9 @@ export const Header = ({ scrolled, isMenuOpen, setIsMenuOpen, loginWithGoogle }:
                         <div className="bg-[#1823ff] w-10 h-10 flex items-center justify-center rounded-xl shadow-lg shadow-[#1823ff]/30 transition-transform group-hover:scale-105">
                             <Icons.Smartphone size={20} className="text-white" />
                         </div>
-                        <div className="flex flex-col">
-                            <span className="font-inter font-black text-3xl tracking-tighter text-[#282d32] leading-none">MISEPO</span>
+                        <div className="flex flex-col justify-center">
+                            <span className="font-inter font-black text-2xl md:text-3xl tracking-tighter text-[#282d32] leading-none">MISEPO</span>
+                            <span className="text-[8px] md:text-[10px] font-bold text-slate-500 mt-1 tracking-widest whitespace-nowrap">お店のポストを丸っとおまかせ</span>
                         </div>
                     </div>
                     <nav className="hidden md:flex items-center space-x-12">

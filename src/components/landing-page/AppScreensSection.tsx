@@ -15,7 +15,7 @@ export const AppScreensSection = ({ isMobile = false }: { isMobile?: boolean }) 
 
             <div className="max-w-7xl mx-auto px-6 relative z-10">
                 <div className="flex flex-col items-start mb-24">
-                    <span className="text-[10px] font-black text-[#1823ff] uppercase tracking-[0.4em] mb-8">MISEPOってなに？</span>
+                    <span className="text-[16px] font-black text-[#1823ff] uppercase tracking-[0.4em] mb-8">MISEPOってなに？</span>
                     <h2 className="text-7xl md:text-8xl lg:text-[10rem] font-black tracking-tighter leading-[0.85] text-[#1823ff] mb-12">
                         ABOUT
                     </h2>
@@ -82,7 +82,7 @@ export const AppScreensSection = ({ isMobile = false }: { isMobile?: boolean }) 
                             </div>
                             <div className="mt-8 text-center md:text-left">
                                 <span className="text-[10px] font-black text-[#1823ff] uppercase tracking-widest block mb-2">Feature 02</span>
-                                <h4 className="text-xl font-black text-[#282d32]">予定を、ファンへ。</h4>
+                                <h4 className="text-xl font-black text-[#282d32]">一緒に考える</h4>
                             </div>
                         </div>
 
