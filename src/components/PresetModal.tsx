@@ -382,9 +382,10 @@ const PresetModal: React.FC<PresetModalProps> = ({
           });
           setCustomPrompts(initialPrompts);
         }
+      } else {
+        setCustomPrompts({});
+        setLastAnalyzedState({});
       }
-      setCustomPrompts({});
-      setLastAnalyzedState({});
     } else {
       setName('');
       setAvatar('shop');
@@ -1013,7 +1014,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
   // Focus Mode Overlay (Learning Editor)
   const focusModeOverlay = expandingPlatform && createPortal(
-    <div className="absolute inset-0 z-[300] flex items-center justify-center p-0 pointer-events-auto">
+    <div className="fixed inset-0 z-[10001] flex items-center justify-center p-0 pointer-events-auto">
       <div className="absolute inset-0 bg-indigo-950/20 backdrop-blur-xl animate-in fade-in duration-500" onClick={() => setExpandingPlatform(null)} />
 
       <div className="w-full h-full bg-white shadow-2xl overflow-hidden animate-in zoom-in-95 duration-500 relative z-10 flex flex-col">
