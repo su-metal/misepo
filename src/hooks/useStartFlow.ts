@@ -114,16 +114,19 @@ export function useStartFlow() {
         if (cancelled) return;
 
         const allowed = !!(res.ok && payload?.ok && payload?.canUseApp);
+        const isOutOfCredits = payload?.usage !== undefined && payload?.limit !== undefined && payload.usage >= payload.limit && payload.limit > 0;
+
         setCanUseApp(allowed);
         setEligibleForTrial(payload?.eligibleForTrial ?? true);
 
         if (allowed) {
-          console.log('[useStartFlow] User can use app, checking for upgrade intent...');
+          console.log('[useStartFlow] User can use app, checking for upgrade intent or credit status...');
           
-          // If the user explicitly came here to upgrade, don't redirect them back to the app.
+          // If the user explicitly came here to upgrade, OR if they are out of credits,
+          // don't redirect them back to the app.
           const isUpgrade = searchParams.get("upgrade") === "true";
-          if (isUpgrade) {
-            console.log('[useStartFlow] Upgrade intent detected, staying on start page.');
+          if (isUpgrade || isOutOfCredits) {
+            console.log('[useStartFlow] Upgrade intent or out of credits detected, staying on start page.');
             setLoading(false);
             setIsLoggedIn(true);
             return;

@@ -148,7 +148,7 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
                                             </p>
 
                                             <button
-                                                onClick={() => { router.push('/start'); toggleOpen(); }}
+                                                onClick={() => { router.push('/start?upgrade=true'); toggleOpen(); }}
                                                 className="w-full py-4 bg-white text-[#1f29fc] rounded-[1.25rem] font-black text-xs uppercase tracking-[0.15em] hover:bg-accent hover:text-white transition-all active:scale-95 shadow-xl shadow-black/10 flex items-center justify-center gap-2"
                                             >
                                                 Subscribe to Pro
