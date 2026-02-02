@@ -155,8 +155,8 @@ LINE友だち限定で、このホットチョコドーナツが
       <HeroSection />
       <ExperienceSection isMobile={isMobile} />
       <AppScreensSection isMobile={isMobile} />
-      <ProblemSection problems={problems} isMobile={isMobile} />
       <UnifiedFlowSection />
+      <ProblemSection problems={problems} isMobile={isMobile} />
       <DemoSection
         demoScenarios={demoScenarios}
         activeScenarioIdx={activeScenarioIdx}

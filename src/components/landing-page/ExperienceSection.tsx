@@ -13,30 +13,19 @@ export const ExperienceSection = ({ isMobile = false }: { isMobile?: boolean }) 
         <section className="relative bg-[#f0eae4] pt-24 overflow-hidden">
             {/* Top Transition - Curved Entrance to Blue */}
             <div className="relative z-20 flex flex-col items-center">
-                {/* Mascot Dog */}
-                <div className="w-28 h-28 mb-[-48px] relative z-30 group">
-                    <div className="w-full h-full bg-white rounded-full p-2 shadow-xl ring-4 ring-white transition-transform group-hover:scale-110 duration-500">
-                        <img
-                            src="/misepo_mascot_dog_illustration_1769987250429.png"
-                            alt="MisePo Mascot"
-                            className="w-full h-full object-contain"
-                        />
-                    </div>
-                </div>
-
-                <div className="w-full bg-[#1823ff] pt-48 pb-24 md:pb-64 relative overflow-hidden" style={{ borderTopLeftRadius: '50vw', borderTopRightRadius: '50vw' }}>
+                <div className="w-full bg-[#1823ff] pt-48 pb-24 md:pb-64 relative overflow-hidden" style={{ borderTopLeftRadius: '50% 300px', borderTopRightRadius: '50% 300px' }}>
                     <NoiseOverlay />
 
-                    <div className="max-w-7xl mx-auto px-6 relative z-10">
+                    <div className="max-w-6xl mx-auto px-8 md:px-12 relative z-10">
                         {/* Section 1: Intro with Phone Card */}
                         <div className="flex flex-col md:flex-row items-center gap-16 md:gap-32 mb-48 md:mb-64">
-                            <div className="flex-1 order-2 md:order-1">
-                                <h3 className="text-3xl md:text-5xl font-black text-white leading-[1.4] mb-8">
+                            <div className="flex-1 order-2 md:order-1 lg:pl-8">
+                                <h3 className="text-3xl md:text-5xl lg:text-6xl font-black text-white leading-[1.2] mb-10">
                                     SNS投稿を、<br />
                                     もっと身近に、<br />
                                     もっと楽しく。
                                 </h3>
-                                <p className="text-white/80 text-xl font-bold leading-relaxed">
+                                <p className="text-white/80 text-xl md:text-2xl font-bold leading-relaxed">
                                     お店の「いつも」が、お客様の「楽しみ」に変わる。<br />
                                     あなたらしい言葉で、毎日をもっと自由に。
                                 </p>
