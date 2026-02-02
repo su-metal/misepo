@@ -13,7 +13,7 @@ export const PricingSection = ({ isMobile = false }: { isMobile?: boolean }) => 
                     <span className="text-[10px] font-black text-[#1823ff] uppercase tracking-[0.2em] mb-8 px-4 py-2 bg-[#1823ff]/5 rounded-full border border-[#1823ff]/10">Cost Performance</span>
                     <h2 className={`font-black tracking-tighter leading-[0.9] text-[#282d32] ${isMobile ? 'text-5xl' : 'text-7xl md:text-8xl lg:text-[5rem]'}`}>
                         より高い、<br />
-                        <span className="text-[#1823ff]">価値を。</span>
+                        <span className="text-gradient-primary">価値を。</span>
                     </h2>
                     <p className="text-xl md:text-2xl font-bold text-slate-400 mt-12 max-w-2xl leading-tight">
                         人件費や外注費をかけずに、<br />
@@ -52,7 +52,7 @@ export const PricingSection = ({ isMobile = false }: { isMobile?: boolean }) => 
                     <span className="text-[10px] font-black text-[#1823ff] uppercase tracking-[0.2em] mb-8 px-4 py-2 bg-[#1823ff]/5 rounded-full border border-[#1823ff]/10 inline-block">Plan Details</span>
                     <h2 className={`font-black text-[#282d32] tracking-tighter leading-[0.9] mb-8 ${isMobile ? 'text-5xl' : 'text-7xl md:text-8xl lg:text-[5rem]'}`}>
                         シンプルな、<br />
-                        <span className="text-[#1823ff]">料金プラン。</span>
+                        <span className="text-gradient-primary">料金プラン。</span>
                     </h2>
                     <p className="text-xl md:text-2xl font-bold text-slate-400 leading-tight max-w-3xl">
                         お店の成長に必要なすべてを。追加料金なしで、全機能を解放します。

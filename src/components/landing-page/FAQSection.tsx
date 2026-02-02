@@ -24,7 +24,7 @@ export const FAQSection = ({ faqs, openFaq, setOpenFaq, isMobile = false }: { fa
                     <span className="text-[10px] font-black text-[#1823ff] uppercase tracking-[0.2em] mb-8 px-4 py-2 bg-[#1823ff]/5 rounded-full border border-[#1823ff]/10">Frequently Asked</span>
                     <h2 className={`font-black tracking-tighter leading-[0.85] text-[#282d32] ${isMobile ? 'text-5xl' : 'text-7xl md:text-8xl lg:text-[5rem]'}`}>
                         よくある<br />
-                        <span className="text-[#1823ff]">質問。</span>
+                        <span className="text-gradient-primary">質問。</span>
                     </h2>
                 </div>
 
