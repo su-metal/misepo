@@ -18,6 +18,7 @@ export const InspirationDeck: React.FC<InspirationDeckProps> = ({ storeProfile, 
 
     const [loading, setLoading] = useState(false);
     const [fetched, setFetched] = useState(false);
+    const [refreshKey, setRefreshKey] = useState(0);
     const scrollContainerRef = useRef<HTMLDivElement>(null);
     const lastProfileKeyRef = useRef<string>("");
 
@@ -37,10 +38,12 @@ export const InspirationDeck: React.FC<InspirationDeckProps> = ({ storeProfile, 
         if (!isVisible) return;
 
         // If already have cached cards from parent (5+), use them (don't re-fetch)
-        if (cachedCards && cachedCards.length >= 5) return;
+        // EXCEPT if refreshKey > 0 (meaning user clicked Shuffle)
+        if (cachedCards && cachedCards.length >= 5 && refreshKey === 0) return;
 
         // If already fetched locally and have enough cards, use cache (don't re-fetch)
-        if (fetched && cards.length >= 5) return;
+        // EXCEPT if refreshKey > 0
+        if (fetched && cards.length >= 5 && refreshKey === 0) return;
 
 
 
@@ -110,7 +113,8 @@ export const InspirationDeck: React.FC<InspirationDeckProps> = ({ storeProfile, 
                         date: new Date().toISOString(),
                         storeProfile,
                         reviews,
-                        trend: trendData
+                        trend: trendData,
+                        seed: Math.random().toString(36).substring(7) // Inject random seed for variety
                     })
                 });
 
@@ -133,7 +137,7 @@ export const InspirationDeck: React.FC<InspirationDeckProps> = ({ storeProfile, 
         };
 
         fetchInspiration();
-    }, [storeProfile]); // Only re-run when storeProfile changes
+    }, [storeProfile, refreshKey]); // Now depends on refreshKey to allow Shuffle
 
     if (!isVisible) return null;
 
@@ -169,6 +173,7 @@ export const InspirationDeck: React.FC<InspirationDeckProps> = ({ storeProfile, 
                         onClick={() => {
                             setFetched(false);
                             setLocalCards([]);
+                            setRefreshKey(prev => prev + 1); // Increment key to trigger useEffect
                         }}
                         className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#f5f7fa] border border-slate-200 active:scale-95 transition-all group"
                     >

@@ -1453,7 +1453,8 @@ export const generateInspirationCards = async (
   date: string,
   storeProfile: StoreProfile,
   inputReviews?: { text: string }[],
-  currentTrend?: any
+  currentTrend?: any,
+  seed?: string // Added seed for variety
 ): Promise<InspirationCard[]> => {
   const modelName = 'models/gemini-2.5-flash-lite';
   
@@ -1467,6 +1468,10 @@ export const generateInspirationCards = async (
   精神論やポエムは一切禁止です。
   提供された店舗情報とデータに基づき、実益のある具体的な投稿案のみを作成してください。
   出力は厳格にJSON形式(Array)で、指定されたスキーマに従ってください。
+  
+  【多様性の確保】
+  - 毎回、異なる切り口や視点を提案してください。
+  - 前回の提案（seed: ${seed || 'なし'}）を意識し、マンネリ化を防ぐために新しい話題（季節、時間帯、地域、店主の意外な一面など）を選択してください。
   `;
 
   // Construct a detailed User Message with all constraints and data
@@ -1481,11 +1486,16 @@ export const generateInspirationCards = async (
   日付: ${date}
   トレンド: ${trendInfo !== 'None' ? trendInfo : '特になし'} (※データのdescriptionに含まれるビジネス提案は無視して構いません)
   口コミ: ${reviewTexts.length > 0 ? reviewTexts.slice(0, 3).join('\n') : 'なし'}
+  インスピレーション・シード: ${seed || '特になし'} (このシード値から連想を広げ、毎回異なる角度で提案してください)
 
   【目指すべき投稿スタイル】
   ✅ Friendly: 店員さんが話しかけるような、親しみやすく柔らかい口調。
   ✅ Empathy: 「売り込み」よりも「共感」を重視。「それわかる！」「懐かしい！」と思わせる内容。
   ✅ Chatty: 業種と関係ない話題（天気、記念日、ニュース）も積極的に採用し、お客様との雑談のきっかけを作る。
+  
+  【話題のバリエーション指示】
+  - **意外性**: 業種の定番以外の話題（例：店主の好きなもの、お店の裏側、地域のちょっとした発見）を1つは含めてください。
+  - **鮮度**: 今この瞬間の空気感を大切にしてください。
 
   【厳守事項: タイトル(title)の形式】
   - ユーザーが「これを選ぶと何が起きるか」を一目で理解できるよう、タイトルは**15文字以内の客観的なアクション形式（〜する投稿、〜を伝える内容、〜への返信）**にしてください。
@@ -1517,6 +1527,8 @@ export const generateInspirationCards = async (
       contents: [{ role: "user", parts: [{ text: userPrompt }] }],
       config: {
         responseMimeType: "application/json",
+        // @ts-ignore
+        temperature: 1.0, // Increased for more creative variety
         // @ts-ignore
         responseSchema: {
           type: "ARRAY",
