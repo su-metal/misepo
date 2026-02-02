@@ -5,7 +5,7 @@ export const maxDuration = 30; // 30 seconds timeout for AI generation
 
 export async function POST(req: Request) {
   try {
-    const { date, storeProfile, reviews, trend } = await req.json();
+    const { date, storeProfile, reviews, trend, seed } = await req.json();
 
     console.log('[Inspiration API] Received data:', {
       date,
@@ -13,7 +13,8 @@ export async function POST(req: Request) {
       storeProfileIndustry: storeProfile?.industry,
       reviewCount: reviews?.length || 0,
       reviewSample: reviews?.[0]?.text?.substring(0, 50) || 'No reviews',
-      trend: trend || 'No trend'
+      trend: trend || 'No trend',
+      seed: seed || 'No seed'
     });
 
     if (!date || !storeProfile) {
@@ -21,7 +22,7 @@ export async function POST(req: Request) {
     }
 
     // Call Gemini Service
-    const cards = await generateInspirationCards(date, storeProfile, reviews, trend);
+    const cards = await generateInspirationCards(date, storeProfile, reviews, trend, seed);
 
     return NextResponse.json({ cards });
   } catch (error: any) {

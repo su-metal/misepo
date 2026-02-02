@@ -346,6 +346,14 @@ html {
     animation: pulse-gentle 2s ease-in-out infinite;
 }
 
+@keyframes pulse-slow {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.9; transform: scale(1.02); }
+}
+.animate-pulse-slow {
+    animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
 @keyframes arrow-flow {
     0%, 70% { transform: translateX(0); opacity: 1; }
     80% { transform: translateX(10px); opacity: 0; }

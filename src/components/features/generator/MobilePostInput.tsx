@@ -34,6 +34,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     includeFooter, onIncludeFooterChange, onAutoFormat,
     isAutoFormatting, onCopy, onMobileResultOpen, restoreId,
     onStepChange, closeDrawerTrigger, openDrawerTrigger, onOpenOnboarding,
+    onOpenSettings,
     targetAudiences, onTargetAudiencesChange
 }) => {
     const textareaRef = React.useRef<HTMLTextAreaElement>(null);
@@ -372,11 +373,23 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                         </div>
 
                         <div className="flex flex-col items-end gap-3">
-                            {/* Decorative Avatar (No Name) */}
-                            <div className="relative group cursor-pointer" onClick={onOpenOnboarding}>
-                                <div className="absolute inset-0 bg-[#7F5AF0] rounded-full blur-[10px] opacity-20 group-hover:opacity-40 transition-opacity" />
-                                <div className="relative w-10 h-10 rounded-full bg-white flex items-center justify-center overflow-hidden shadow-md border-[2px] border-slate-100">
-                                    <span className="text-[var(--plexo-black)] font-black text-lg" style={{ transform: 'rotate(-10deg)', marginTop: '2px' }}>ミ</span>
+                            <div className="flex items-center gap-3">
+                                {plan?.plan === 'trial' && (
+                                    <button
+                                        onClick={onOpenSettings}
+                                        className="h-9 px-4 rounded-full bg-gradient-to-r from-accent via-yellow-400 to-accent text-black text-[10px] font-black uppercase tracking-[0.1em] shadow-xl shadow-accent/20 active:scale-95 transition-all flex items-center gap-1.5 border border-white/50 animate-pulse-slow"
+                                    >
+                                        <SparklesIcon className="w-3 h-3" />
+                                        Go Pro
+                                    </button>
+                                )}
+
+                                {/* Decorative Avatar (No Name) */}
+                                <div className="relative group cursor-pointer" onClick={onOpenOnboarding}>
+                                    <div className="absolute inset-0 bg-[#7F5AF0] rounded-full blur-[10px] opacity-20 group-hover:opacity-40 transition-opacity" />
+                                    <div className="relative w-10 h-10 rounded-full bg-white flex items-center justify-center overflow-hidden shadow-md border-[2px] border-slate-100">
+                                        <span className="text-[var(--plexo-black)] font-black text-lg" style={{ transform: 'rotate(-10deg)', marginTop: '2px' }}>ミ</span>
+                                    </div>
                                 </div>
                             </div>
 
@@ -398,16 +411,18 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             style={{ width: `${(Math.max(0, plan.limit - plan.usage) / plan.limit) * 100}%` }}
                                         />
                                     </div>
-                                    <div className="flex gap-1 pr-1">
-                                        {Array.from({ length: 5 }).map((_, i) => (
-                                            <div
-                                                key={i}
-                                                className={`h-[3px] w-6 rounded-full transition-colors duration-500 ${((plan.limit - plan.usage) / plan.limit) * 5 > i
-                                                    ? 'bg-[#1f29fc]'
-                                                    : 'bg-slate-200'
-                                                    }`}
-                                            />
-                                        ))}
+                                    <div className="flex gap-1 pr-1 items-center justify-between w-full">
+                                        <div className="flex gap-1">
+                                            {Array.from({ length: 5 }).map((_, i) => (
+                                                <div
+                                                    key={i}
+                                                    className={`h-[3px] w-5 rounded-full transition-colors duration-500 ${((plan.limit - plan.usage) / plan.limit) * 5 > i
+                                                        ? 'bg-[#1f29fc]'
+                                                        : 'bg-slate-200'
+                                                        }`}
+                                                />
+                                            ))}
+                                        </div>
                                     </div>
                                 </div>
                             )}

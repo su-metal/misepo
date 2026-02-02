@@ -205,6 +205,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
               language={flow.language}
               onLanguageChange={flow.setLanguage}
               onOpenGuide={onOpenGuide}
+              onOpenSettings={onOpenSettings}
               hasResults={flow.resultGroups.length > 0}
               onReset={React.useCallback(() => {
                 flow.setInputText('');
