@@ -42,17 +42,17 @@ export const DemoSection = ({
     }, [demoResult]);
 
     return (
-        <section id="demo" className="py-24 md:py-48 bg-white text-[#282d32] relative overflow-hidden">
+        <section id="demo" className="py-24 md:py-48 bg-[#f0eae4] text-[#282d32] relative overflow-hidden">
             <div className="max-w-7xl mx-auto px-6 relative z-10">
                 <div className="flex flex-col items-start mb-24">
                     <span className="text-[10px] font-black text-[#1823ff] uppercase tracking-[0.2em] mb-8 px-4 py-2 bg-[#1823ff]/5 rounded-full border border-[#1823ff]/10">Interactive Demo</span>
-                    <h2 className={`font-black tracking-tighter leading-[0.9] ${isMobile ? 'text-5xl' : 'text-7xl md:text-8xl lg:text-[8rem]'}`}>
-                        AI IN<br />
-                        <span className="text-[#1823ff]">ACTION.</span>
+                    <h2 className={`font-black tracking-tighter leading-[0.85] text-[#282d32] ${isMobile ? 'text-5xl' : 'text-7xl md:text-8xl lg:text-[8rem]'}`}>
+                        言葉が、<br />
+                        <span className="text-[#1823ff]">生まれる。</span>
                     </h2>
                     <p className="text-xl md:text-3xl font-bold text-slate-400 mt-12 max-w-2xl leading-tight">
-                        MisePoの実力を、今すぐ体験。
-                        あなたの指示を汲み取り、理想の言葉を紡ぎ出します。
+                        MisePoの実力を、今すぐ体験。<br />
+                        あなたの想いを汲み取り、心に届く言葉に変えます。
                     </p>
                 </div>
 
@@ -71,7 +71,7 @@ export const DemoSection = ({
                             ))}
                         </div>
 
-                        <div className="bg-slate-50 rounded-[40px] p-8 md:p-12 border border-slate-100 flex flex-col gap-8 h-full min-h-[400px]">
+                        <div className="bg-white rounded-[40px] p-8 md:p-12 border border-slate-100 flex flex-col gap-8 h-full min-h-[400px]">
                             <div className="flex justify-between items-center">
                                 <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Input Memo</span>
                                 <div className="px-3 py-1 bg-white rounded-full text-[10px] font-black text-[#1823ff] border border-[#1823ff]/10">

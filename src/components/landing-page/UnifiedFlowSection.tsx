@@ -4,32 +4,79 @@ import { Icons } from '../LandingPageIcons';
 
 export const UnifiedFlowSection = () => {
     return (
-        <section id="flow" className="py-24 md:py-48 bg-[#F4F6F9] overflow-hidden">
+        <section id="flow" className="py-24 md:py-48 bg-[#f0eae4] overflow-hidden">
             <div className="max-w-7xl mx-auto px-6">
-                <div className="flex flex-col items-start mb-24">
-                    <span className="text-[10px] font-black text-[#1823ff] uppercase tracking-[0.2em] mb-8 px-4 py-2 bg-[#1823ff]/5 rounded-full border border-[#1823ff]/10">The Workflow</span>
-                    <h2 className="text-7xl md:text-8xl lg:text-[7.5rem] font-black tracking-tighter leading-[0.9] text-[#282d32]">
-                        作成から投稿まで、<br />
-                        <span className="text-[#1823ff]">淀みなく。</span>
+                <div className="flex flex-col items-center text-center mb-32">
+                    <span className="text-[10px] font-black text-[#1823ff] uppercase tracking-[0.2em] mb-8 px-4 py-2 bg-[#1823ff]/5 rounded-full border border-[#1823ff]/10 inline-block">The Workflow</span>
+                    <h2 className="text-6xl md:text-8xl lg:text-[7.5rem] font-black tracking-tighter leading-[0.9] text-[#282d32]">
+                        メモから投稿まで、<br />
+                        <span className="text-[#1823ff]">あっという間に。</span>
                     </h2>
                     <p className="text-xl md:text-3xl font-bold text-slate-400 mt-12 max-w-2xl leading-tight">
-                        アイデアが、一瞬でフォロワーに届く。<br className="hidden md:block" />
-                        そのための全ての工程を、圧倒的に短縮します。
+                        伝えたいことを、そのまま言葉に。難しいことは、何もありません。
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="flex flex-col gap-32 md:gap-48 relative">
+                    {/* Dotted Connection Line (Desktop) */}
+                    <div className="absolute left-1/2 top-0 bottom-0 w-px border-l-2 border-dashed border-slate-200 hidden md:block -z-0 translate-x-1/2" />
+
                     {[
-                        { step: "01", title: "MEMO", desc: "箇条書きや断片的なメモでOK。AIが文脈を深く読み取ります。" },
-                        { step: "02", title: "GENERATE", desc: "ボタン一つで、プロ顔負けの文章が数秒で完成します。" },
-                        { step: "03", title: "POST", desc: "各SNSへの最適化。あとは確認して投稿するだけです。" }
+                        {
+                            step: "01",
+                            title: "メモ",
+                            badge: "想いをカタチにするために",
+                            desc: "「新作のいちごタルト、生地がサクサクで美味しい」\nそんな断片的なメモでいいんです。AIがあなたの頭の中にある熱意を深く汲み取ります。",
+                            img: "/misepo_step01_memo_cafe_vibe_1769994472883.png",
+                            align: "left"
+                        },
+                        {
+                            step: "02",
+                            title: "生成",
+                            badge: "あなたらしい言葉を紡ぐために",
+                            desc: "ボタンを押してから、わずか数秒。\nあなた独自の口癖やリズム、温もりをそのままに、SNSごとに最適なトーンで文章を紡ぎ出します。",
+                            img: "/misepo_step02_generation_natural_screen_1769994809838.png",
+                            align: "right"
+                        },
+                        {
+                            step: "03",
+                            title: "投稿",
+                            badge: "ファンと繋がる瞬間のために",
+                            desc: "出来上がった文章を確認して、ワンタップで投稿。\n今まで何時間も悩んでいた時間が、わずか数分の楽しい瞬間に変わります。",
+                            img: "/misepo_step03_happy_shop_owner_sns_1769994514693.png",
+                            align: "left"
+                        }
                     ].map((item, idx) => (
-                        <div key={idx} className="bg-white rounded-[48px] p-10 md:p-16 border border-slate-100 flex flex-col items-start text-left group">
-                            <div className="text-[10px] font-black text-[#1823ff] mb-8 uppercase tracking-widest">Step {item.step}</div>
-                            <h3 className="text-4xl md:text-5xl font-black text-[#282d32] mb-6 tracking-tighter transition-all group-hover:translate-x-2">{item.title}</h3>
-                            <p className="text-lg font-bold text-slate-400 leading-tight">
-                                {item.desc}
-                            </p>
+                        <div key={idx} className={`flex flex-col ${item.align === 'right' ? 'md:flex-row-reverse' : 'md:flex-row'} items-center gap-16 md:gap-32 relative z-10`}>
+                            {/* Image Section */}
+                            <div className="w-full md:w-1/2 flex justify-center">
+                                <div className="relative group w-full max-w-[500px]">
+                                    {/* Organic Image Shape */}
+                                    <div className="relative overflow-hidden aspect-[4/3] transition-transform duration-700 group-hover:scale-[1.02]" style={{
+                                        borderRadius: item.align === 'left' ? '120px 40px 120px 40px' : '40px 120px 40px 120px'
+                                    }}>
+                                        <img src={item.img} alt={item.title} className="w-full h-full object-cover" />
+                                        <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors" />
+                                    </div>
+
+                                    {/* Title Badge (Overlay) */}
+                                    <div className={`absolute bottom-6 ${item.align === 'left' ? '-left-4' : '-right-4'} bg-[#282d32] px-8 py-5 rounded-[2rem] shadow-2xl transform transition-transform group-hover:-translate-y-2`}>
+                                        <div className="text-[10px] font-black text-[#1823ff] uppercase tracking-widest mb-1">Step {item.step}</div>
+                                        <div className="text-2xl font-black text-white tracking-tight">{item.badge}</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Text Section */}
+                            <div className={`w-full md:w-1/2 flex flex-col ${item.align === 'right' ? 'items-start md:items-end md:text-right' : 'items-start'} gap-8`}>
+                                <div className="flex items-center gap-4">
+                                    <span className="text-sm font-black text-[#1823ff] px-4 py-1.5 bg-[#1823ff]/5 rounded-full border border-[#1823ff]/10">0{idx + 1}</span>
+                                    <h3 className="text-4xl md:text-5xl font-black text-[#282d32] tracking-tighter">{item.title}</h3>
+                                </div>
+                                <p className="text-xl md:text-2xl font-bold text-slate-500 leading-snug whitespace-pre-line">
+                                    {item.desc}
+                                </p>
+                            </div>
                         </div>
                     ))}
                 </div>
