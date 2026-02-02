@@ -5,18 +5,17 @@ import { useAuth } from '@/hooks/useAuth';
 import { Icons } from './LandingPageIcons';
 import HeroSection from './HeroSection';
 import { Header } from './landing-page/Header';
-import { ProblemSection } from './landing-page/ProblemSection';
 import { BenefitSection } from './landing-page/BenefitSection';
-import { FeaturesSection } from './landing-page/FeaturesSection';
 import { UnifiedFlowSection } from './landing-page/UnifiedFlowSection';
 import { DemoSection } from './landing-page/DemoSection';
 import { PWASection } from './landing-page/PWASection';
-import { TestimonialsSection } from './landing-page/TestimonialsSection';
+
 import { PricingSection } from './landing-page/PricingSection';
 import { FAQSection } from './landing-page/FAQSection';
 import { CTASection } from './landing-page/CTASection';
 import { ExperienceSection } from './landing-page/ExperienceSection';
 import { AppScreensSection } from './landing-page/AppScreensSection';
+import { ReviewResponseSection } from './landing-page/ReviewResponseSection';
 import { Footer } from './landing-page/Footer';
 
 export default function LandingPage() {
@@ -135,12 +134,7 @@ LINE友だち限定で、このホットチョコドーナツが
     setIsDemoGenerating(false);
   };
 
-  const problems = [
-    { icon: <Icons.Moon />, title: "営業後の\n投稿作成を、\nもっと楽に", desc: "一日の終わりに、\nその日の出来事を振り返りながら。\nMisePoが、あなたの言葉を見つけます。", bg: "bg-[#eb714f]", delay: 0 },
-    { icon: <Icons.Bot />, title: "あなたらしい\n言葉で、\n自然に", desc: "丁寧すぎる文章じゃなくて、\nいつものあなたの口調で。\nMisePoが、あなたの話し方を学びます。", bg: "bg-[#1f29fc]", delay: 0.1 },
-    { icon: <Icons.MessageCircle />, title: "クチコミ返信も、\n30秒で\n心を込めて", desc: "お客様の声に、\nちゃんと応えたい。\nMisePoが、感謝の気持ちを言葉にします。", bg: "bg-[#f2e018]", delay: 0.2 },
-    { icon: <Icons.Users />, title: "スタッフと\n一緒に、\nお店の声を", desc: "誰が書いても、\nお店らしい雰囲気で。\n『お店の人格』を共有できます。", bg: "bg-[#00b900]", delay: 0.3 },
-  ];
+
 
   const faqs = [
     { q: "AIだと不自然な文章になりませんか？", a: "MisePoは過去の投稿を学習し、あなたの口癖や語尾まで再現します。フォロワーからも「いつも通りですね」と言われるほど自然な文章が生成されるため、AI特有の堅苦しさはありません。" },
@@ -156,7 +150,7 @@ LINE友だち限定で、このホットチョコドーナツが
       <ExperienceSection isMobile={isMobile} />
       <AppScreensSection isMobile={isMobile} />
       <UnifiedFlowSection />
-      <ProblemSection problems={problems} isMobile={isMobile} />
+      <ReviewResponseSection />
       <DemoSection
         demoScenarios={demoScenarios}
         activeScenarioIdx={activeScenarioIdx}
@@ -166,9 +160,8 @@ LINE友だち限定で、このホットチョコドーナツが
         handleDemoGenerate={handleDemoGenerate}
       />
       <BenefitSection />
-      <FeaturesSection isMobile={isMobile} />
       <PWASection isMobile={isMobile} />
-      <TestimonialsSection isMobile={isMobile} />
+
       <PricingSection isMobile={isMobile} />
       <FAQSection faqs={faqs} openFaq={openFaq} setOpenFaq={setOpenFaq} isMobile={isMobile} />
       <CTASection isMobile={isMobile} />

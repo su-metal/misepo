@@ -33,9 +33,10 @@ export const ProblemSection = ({ problems, isMobile = false }: { problems: Probl
                         <span className="text-[#1823ff]">物語に。</span>
                     </h2>
                     <p className="text-xl md:text-3xl font-bold text-slate-400 mt-12 max-w-2xl leading-tight">
-                        「今日は常連さんが笑顔で帰ってくれた」<br />
-                        「新しいメニュー、思った以上に好評だった」<br />
-                        そんな何気ない一日を、ファンに届ける言葉に変えて。
+                        こんな悩みありませんか？<br />
+                        「今日は常連さんが笑顔で帰ってくれた」と伝えたいのに時間がない。<br />
+                        「新しいメニュー、思った以上に好評だった」を手早く届けられない。<br />
+                        何気ない一日を、ファンに見せる言葉にまとめられずに終わってしまう。
                     </p>
                 </div>
 
