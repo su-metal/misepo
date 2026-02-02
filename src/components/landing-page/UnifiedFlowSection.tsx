@@ -24,25 +24,25 @@ export const UnifiedFlowSection = () => {
                     {[
                         {
                             step: "01",
-                            title: "心のカケラを、メモに託す",
+                            title: "思いついたら、すぐにメモ",
                             badge: "想いをカタチにする第一歩",
-                            desc: "「新作のいちごタルト、生地がサクサクで美味しい」\nそんな、あなただけが知る心の機微を。断片的な言葉の粒が、AIの手で物語として輝き始めます。",
+                            desc: "「新作のいちごタルトが、サクサクに焼けた」\nそんな一言で大丈夫。AIがあなたの意図をしっかり汲み取ります。",
                             img: "/misepo_step01_memo_cafe_vibe_1769994472883.png",
                             align: "left"
                         },
                         {
                             step: "02",
-                            title: "あなたの「らしさ」が、溢れ出す",
+                            title: "あなたらしい言葉を、一瞬で",
                             badge: "ぬくもりを言葉に綴る魔法",
-                            desc: "ボタンを押してから、ほんの数秒。\nあなたの口癖や温度感をそのままに、SNSごとに一番あなたらしい「生きた言葉」を紡ぎ出します。",
+                            desc: "ボタンを押して数秒。あなたの口癖や温度感を大切にしながら、SNSに最適な文章を書き上げます。",
                             img: "/misepo_step02_generation_natural_screen_1769994809838.png",
                             align: "right"
                         },
                         {
                             step: "03",
-                            title: "心がつながる、投稿の瞬間",
-                            badge: "感謝とワクワクを届けるために",
-                            desc: "完成した文章をワンタップで世界へ。\n文章に悩んでいた時間が、ファンと出会う喜びへと変わる。投稿が、もっと自由に、待ち遠しくなります。",
+                            title: "あとは、届けるだけ",
+                            badge: "感謝とワクワクを届ける",
+                            desc: "完成した文章を確認して、ワンタップで完了。\n悩んでいた時間が、お客様との繋がりを楽しむ時間に変わります。",
                             img: "/misepo_step03_happy_shop_owner_sns_1769994514693.png",
                             align: "left"
                         }
@@ -61,7 +61,7 @@ export const UnifiedFlowSection = () => {
 
                                     {/* Title Badge (Overlay) */}
                                     <div className={`absolute bottom-6 ${item.align === 'left' ? '-left-4' : '-right-4'} bg-[#282d32] px-8 py-5 rounded-[2rem] shadow-2xl transform transition-transform group-hover:-translate-y-2`}>
-                                        <div className="text-[10px] font-black text-[#1823ff] uppercase tracking-widest mb-1">FEATURE {item.step}</div>
+                                        <div className="text-[10px] font-black text-[#1823ff] uppercase tracking-widest mb-1">Step {item.step}</div>
                                         <div className="text-2xl font-black text-white tracking-tight">{item.badge}</div>
                                     </div>
                                 </div>
@@ -70,7 +70,7 @@ export const UnifiedFlowSection = () => {
                             {/* Text Section */}
                             <div className={`w-full md:w-1/2 flex flex-col ${item.align === 'right' ? 'items-start md:items-end md:text-right' : 'items-start'} gap-8`}>
                                 <div className="flex items-center gap-4">
-                                    <span className="text-sm font-black text-[#1823ff] px-4 py-1.5 bg-[#1823ff]/5 rounded-full border border-[#1823ff]/10">FEATURE 0{idx + 1}</span>
+                                    <span className="text-sm font-black text-[#1823ff] px-4 py-1.5 bg-[#1823ff]/5 rounded-full border border-[#1823ff]/10">0{idx + 1}</span>
                                     <h3 className="text-4xl md:text-5xl font-black text-[#282d32] tracking-tighter">{item.title}</h3>
                                 </div>
                                 <p className="text-xl md:text-2xl font-bold text-slate-500 leading-snug whitespace-pre-line">
