@@ -182,6 +182,10 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
               onLengthChange={flow.setLength}
               inputText={flow.inputText}
               onInputTextChange={flow.setInputText}
+              question={flow.question}
+              onQuestionChange={flow.setQuestion}
+              topicPrompt={flow.topicPrompt}
+              onTopicPromptChange={flow.setTopicPrompt}
               starRating={flow.starRating}
               onStarRatingChange={flow.onStarRatingChange}
               includeEmojis={flow.includeEmojis}

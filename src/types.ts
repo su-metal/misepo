@@ -88,6 +88,8 @@ export interface GenerationConfig {
   persona_yaml?: string | null; // Can be a monolithic YAML string (Legacy) OR a serialized JSON string `{ [key in Platform]: string }`
   presetId?: string; // ID of the preset used for this generation
   targetAudience?: string; // Target audience override for this specific post
+  question?: string; // Sommelier Question (Q&A mode)
+  topicPrompt?: string; // The selected topic instruction (Q&A mode)
 }
 
 export interface GeneratedResult {
@@ -152,4 +154,11 @@ export interface TrendEvent {
     prompt: string;
     hashtags: string[];
     isRecommended: boolean;
+}
+export interface TopicTemplate {
+  title: string;
+  description: string;
+  prompt: string;
+  question: string; // The specific question the AI Sommelier asks the owner
+  icon: string;
 }

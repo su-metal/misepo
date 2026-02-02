@@ -35,7 +35,9 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     isAutoFormatting, onCopy, onMobileResultOpen, restoreId,
     onStepChange, closeDrawerTrigger, openDrawerTrigger, onOpenOnboarding,
     onOpenSettings,
-    targetAudiences, onTargetAudiencesChange
+    targetAudiences, onTargetAudiencesChange,
+    question, onQuestionChange,
+    topicPrompt, onTopicPromptChange
 }) => {
     const textareaRef = React.useRef<HTMLTextAreaElement>(null);
     const dateObj = new Date();
@@ -726,9 +728,11 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                 }
                                                 cachedCards={cachedInspirationCards}
                                                 onCardsLoaded={setCachedInspirationCards}
-                                                onSelect={(prompt) => {
-                                                    onInputTextChange(prompt);
-                                                    // Optional: auto-focus or scroll?
+                                                onSelect={(prompt, q) => {
+                                                    onInputTextChange(""); // Clear for user answer
+                                                    if (onQuestionChange) onQuestionChange(q);
+                                                    if (onTopicPromptChange) onTopicPromptChange(prompt);
+                                                    setIsPromptExpanded(false);
                                                 }}
                                             />
 
@@ -738,12 +742,29 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                     {isGoogleMaps ? 'Googleマップの口コミを貼り付けてください' : '今日はどんなことを伝えますか？'}
                                                 </p>
                                             </div>
+                                            {question && (
+                                                <div className="mb-6 p-6 bg-[#1f29fc]/5 border border-[#1f29fc]/10 rounded-[32px] animate-in slide-in-from-top-4 duration-500">
+                                                    <div className="flex gap-3 items-start">
+                                                        <div className="w-8 h-8 rounded-xl bg-[#1f29fc] flex items-center justify-center flex-shrink-0 mt-0.5">
+                                                            <SparklesIcon className="w-4 h-4 text-white" />
+                                                        </div>
+                                                        <div className="flex flex-col gap-1">
+                                                            <span className="text-[10px] font-black text-[#1f29fc] uppercase tracking-wider opacity-60">Sommelier Question</span>
+                                                            <p className="text-[15px] font-bold text-[#122646] leading-relaxed italic">
+                                                                「{question}」
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
+
                                             <AutoResizingTextarea
                                                 value={inputText}
                                                 onChange={(e) => onInputTextChange(e.target.value)}
-                                                placeholder={isGoogleMaps ? "こちらにお客様からの口コミを貼り付けてください。丁寧な返信案をいくつか作成します。" : "「旬の食材が入荷した」「雨の日限定の割引をする」など、短いメモ書きでも大丈夫ですよ。"}
+                                                placeholder={question ? "こちらの質問への答えを短く入力してください..." : (isGoogleMaps ? "こちらにお客様からの口コミを貼り付けてください。丁寧な返信案をいくつか作成します。" : "「旬の食材が入荷した」「雨の日限定の割引をする」など、短いメモ書きでも大丈夫ですよ。")}
                                                 className="w-full min-h-[220px] p-8 bg-white border border-[#E5E5E5] rounded-[40px] text-lg font-bold leading-relaxed focus:outline-none focus:border-[#111111] transition-all placeholder:text-[#CCCCCC] text-[#111111] resize-none overflow-hidden"
                                             />
+
                                             {isGoogleMaps && (
                                                 <button
                                                     onClick={toggleVoiceInput}
