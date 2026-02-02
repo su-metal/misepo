@@ -149,7 +149,7 @@ LINE友だち限定で、このホットチョコドーナツが
       <HeroSection />
       <ExperienceSection isMobile={isMobile} />
       <AppScreensSection isMobile={isMobile} />
-      <UnifiedFlowSection />
+      <UnifiedFlowSection isMobile={isMobile} />
       <ReviewResponseSection />
       <DemoSection
         demoScenarios={demoScenarios}
@@ -158,8 +158,9 @@ LINE友だち限定で、このホットチョコドーナツが
         isDemoGenerating={isDemoGenerating}
         demoResult={demoResult}
         handleDemoGenerate={handleDemoGenerate}
+        isMobile={isMobile}
       />
-      <BenefitSection />
+      <BenefitSection isMobile={isMobile} />
       <PWASection isMobile={isMobile} />
 
       <PricingSection isMobile={isMobile} />

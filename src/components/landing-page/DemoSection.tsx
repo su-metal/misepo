@@ -69,8 +69,8 @@ export const DemoSection = ({
                                     key={scenario.id}
                                     onClick={() => setActiveScenarioIdx(idx)}
                                     className={`px-6 py-3 rounded-full text-xs font-black tracking-widest transition-all ${activeScenarioIdx === idx
-                                            ? 'bg-white text-[#1823ff] shadow-xl shadow-black/10'
-                                            : 'bg-white/10 text-white/60 hover:bg-white/20 hover:text-white border border-white/20'
+                                        ? 'bg-white text-[#1823ff] shadow-xl shadow-black/10'
+                                        : 'bg-white/10 text-white/60 hover:bg-white/20 hover:text-white border border-white/20'
                                         }`}
                                 >
                                     {scenario.label.toUpperCase()}
@@ -94,8 +94,8 @@ export const DemoSection = ({
                                 onClick={handleDemoGenerate}
                                 disabled={isDemoGenerating}
                                 className={`w-full py-6 rounded-full font-black tracking-widest text-lg transition-all ${isDemoGenerating
-                                        ? 'bg-white/10 text-white/40 cursor-not-allowed'
-                                        : 'bg-white text-[#1823ff] shadow-2xl shadow-black/20 hover:scale-[1.02]'
+                                    ? 'bg-white/10 text-white/40 cursor-not-allowed'
+                                    : 'bg-white text-[#1823ff] shadow-2xl shadow-black/20 hover:scale-[1.02]'
                                     }`}
                             >
                                 {isDemoGenerating ? "GENERATING..." : "GENERATE CONTENT"}
