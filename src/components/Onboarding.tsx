@@ -294,7 +294,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
                   </div>
                 ))}
                 <div className="pl-6 text-xs font-bold text-slate-400">
-                  <span className="block text-[#7F5AF0]">4,000+</span>
+                  <span className="block text-[#7F5AF0]">many</span>
                   Owners
                 </div>
               </div>

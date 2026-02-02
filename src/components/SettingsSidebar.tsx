@@ -173,7 +173,7 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
                                                     {plan?.plan === 'entry' ? 'Entry Plan' :
                                                         plan?.plan === 'standard' ? 'Standard Plan' :
                                                             plan?.plan === 'professional' ? 'Professional Plan' :
-                                                                plan?.plan === 'pro' || plan?.plan === 'monthly' || plan?.plan === 'yearly' ? 'Pro Plan' :
+                                                                plan?.plan === 'trial' ? 'Trial Plan' :
                                                                     'Free Plan'}
                                                 </span>
                                                 <span className="text-[10px] font-medium text-stone-400 group-hover:text-indigo-400 transition-colors">Edit Store Profile</span>
