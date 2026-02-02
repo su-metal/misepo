@@ -29,17 +29,6 @@ export const DemoSection = ({
     isMobile = false
 }: DemoSectionProps & { isMobile?: boolean }) => {
     const activeScenario = demoScenarios[activeScenarioIdx];
-    const scrollRef = React.useRef<HTMLDivElement>(null);
-
-    React.useEffect(() => {
-        if (demoResult && scrollRef.current) {
-            setTimeout(() => {
-                if (scrollRef.current) {
-                    scrollRef.current.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
-                }
-            }, 100);
-        }
-    }, [demoResult]);
 
     return (
         <section id="demo" className="py-24 md:py-48 bg-gradient-to-br from-[#1823ff] via-[#2531ff] to-[#1823ff] text-white relative overflow-hidden">
@@ -114,7 +103,7 @@ export const DemoSection = ({
                                 <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Result View</span>
                             </div>
 
-                            <div ref={scrollRef} className="flex-1 overflow-y-auto custom-scrollbar">
+                            <div className="flex-1 overflow-y-auto custom-scrollbar">
                                 {isDemoGenerating ? (
                                     <div className="flex flex-col gap-4">
                                         <div className="h-4 w-3/4 bg-slate-50 rounded-full animate-pulse" />
