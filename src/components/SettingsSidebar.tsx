@@ -121,6 +121,40 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
                             <section className="space-y-4">
                                 <span className="px-1 text-[10px] font-black uppercase tracking-[.2em] text-stone-400">Profile & Plan</span>
 
+                                {/* Upgrade Promotion Card */}
+                                {plan?.plan === 'trial' && (
+                                    <div className="bg-gradient-to-br from-[#1f29fc] to-[#7F5AF0] rounded-[2.5rem] p-7 text-white shadow-2xl shadow-indigo-200 relative overflow-hidden group">
+                                        {/* Decorative backgrounds */}
+                                        <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl group-hover:scale-125 transition-transform duration-700 pointer-events-none" />
+                                        <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-accent/20 rounded-full blur-2xl pointer-events-none" />
+
+                                        <div className="relative z-10">
+                                            <div className="flex items-center gap-2 mb-4">
+                                                <div className="p-1.5 rounded-lg bg-white/20 backdrop-blur-md">
+                                                    <SparklesIcon className="w-4 h-4 text-accent" />
+                                                </div>
+                                                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/80">Premium Access</span>
+                                            </div>
+
+                                            <h3 className="text-xl font-black leading-tight mb-3 tracking-tighter">
+                                                プロプランで<br />制限を解除
+                                            </h3>
+
+                                            <p className="text-[11px] font-bold text-white/70 mb-6 leading-relaxed">
+                                                全ての機能と無制限の生成、<br />高度な分析をご利用いただけます。
+                                            </p>
+
+                                            <button
+                                                onClick={() => { onOpenAccount(); toggleOpen(); }}
+                                                className="w-full py-4 bg-white text-[#1f29fc] rounded-[1.25rem] font-black text-xs uppercase tracking-[0.15em] hover:bg-accent hover:text-white transition-all active:scale-95 shadow-xl shadow-black/10 flex items-center justify-center gap-2"
+                                            >
+                                                Subscribe to Pro
+                                                <ChevronDownIcon className="w-4 h-4 -rotate-90" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+
                                 <button
                                     onClick={() => { onOpenStoreProfile(); toggleOpen(); }}
                                     className="group w-full p-1 bg-white border border-stone-100 rounded-[2rem] shadow-sm hover:shadow-md hover:border-indigo-100 transition-all duration-300 text-left"
@@ -176,18 +210,6 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
                                 </div>
                             </section>
 
-                            {/* Sign Out */}
-                            <div className="pt-0 flex flex-col items-center gap-4">
-                                <button
-                                    onClick={() => { onLogout(); toggleOpen(); }}
-                                    className="px-8 py-3 rounded-xl bg-stone-100 text-stone-500 font-bold text-xs uppercase tracking-widest hover:bg-rose-50 hover:text-rose-500 transition-all duration-300"
-                                >
-                                    <div className="flex items-center gap-3">
-                                        <LogOutIcon className="w-4 h-4" />
-                                        Sign Out
-                                    </div>
-                                </button>
-                            </div>
                         </>
                     ) : (
                         <div className="flex flex-col items-center justify-center py-12 text-center">
@@ -208,8 +230,21 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
                     )}
                 </div>
 
-                {/* Footer: Legal */}
-                <div className="p-8 border-t border-stone-100 bg-stone-50/50">
+                {/* Footer: Legal & Logic */}
+                <div className="p-8 border-t border-stone-100 bg-white shadow-[0_-10px_30px_rgba(0,0,0,0.02)] relative z-20">
+                    {/* Sign Out Button - Sticky in Footer */}
+                    {isLoggedIn && (
+                        <div className="mb-8">
+                            <button
+                                onClick={() => { onLogout(); toggleOpen(); }}
+                                className="w-full py-4 rounded-2xl bg-stone-50 text-stone-400 font-black text-[10px] uppercase tracking-[0.2em] hover:bg-rose-50 hover:text-rose-500 transition-all duration-300 border border-stone-100 flex items-center justify-center gap-3"
+                            >
+                                <LogOutIcon className="w-4 h-4" />
+                                Sign Out
+                            </button>
+                        </div>
+                    )}
+
                     <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 mb-6">
                         <a href="/terms" className="text-[10px] font-bold text-stone-400 hover:text-indigo-500 transition-colors uppercase tracking-widest">Terms</a>
                         <a href="/privacy" className="text-[10px] font-bold text-stone-400 hover:text-indigo-500 transition-colors uppercase tracking-widest">Privacy</a>
