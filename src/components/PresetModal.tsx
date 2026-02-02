@@ -407,7 +407,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
   };
 
 
-  const performPersonaAnalysis = async (overrideSamples?: TrainingItem[]): Promise<any> => {
+  const performPersonaAnalysis = async (overrideSamples?: TrainingItem[] | { content: string, platform: string }[]): Promise<any> => {
     // Current target platform based on tab mode
     const targetKey = learningMode === 'maps' ? Platform.GoogleMaps : 'General';
 
