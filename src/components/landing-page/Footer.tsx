@@ -15,8 +15,8 @@ export const Footer = () => {
                             <span className="text-[10px] font-black text-[#1823ff] uppercase tracking-[0.4em] ml-1">ホスピタリティAIパートナー</span>
                         </div>
                         <p className="text-lg md:text-xl font-bold text-slate-400 max-w-sm leading-relaxed mb-12">
-                            「何を書けばいいか分からない」を、喜びへ。<br />
-                            お店の個性を最高の言葉に変える、<br className="hidden md:block" />
+                            「何を書こう？」と悩む時間は、もうおしまい。<br />
+                            あなたの「らしさ」を、1分で言葉にする<br className="hidden md:block" />
                             AIパートナー。
                         </p>
 

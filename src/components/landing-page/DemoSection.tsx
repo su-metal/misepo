@@ -87,7 +87,7 @@ export const DemoSection = ({
                                     : 'bg-white text-[#1823ff] shadow-2xl shadow-black/20 hover:scale-[1.02]'
                                     }`}
                             >
-                                {isDemoGenerating ? "GENERATING..." : "GENERATE CONTENT"}
+                                {isDemoGenerating ? "作成中..." : "デモを試す"}
                             </button>
                         </div>
                     </div>
