@@ -11,7 +11,7 @@ export const BenefitSection = ({ isMobile = false }: { isMobile?: boolean }) => 
             <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#eef2ff] rounded-full blur-[100px] opacity-60" />
 
             <div className="max-w-7xl mx-auto px-6 relative z-10">
-                <div className="flex flex-col items-center text-center mb-24">
+                <div className={`flex flex-col mb-24 ${isMobile ? 'items-start text-left' : 'items-center text-center'}`}>
                     <span className="text-[10px] font-black text-[#1823ff] uppercase tracking-[0.2em] mb-8 px-4 py-2 bg-white rounded-full border border-[#1823ff]/10 shadow-sm">The New Standard</span>
                     <h2 className={`font-black text-[#282d32] tracking-tighter leading-[0.85] ${isMobile ? 'text-5xl' : 'text-7xl md:text-8xl lg:text-[8rem]'}`}>
                         SNSを、<br />
@@ -135,13 +135,13 @@ export const BenefitSection = ({ isMobile = false }: { isMobile?: boolean }) => 
                     ].map((feature, idx) => {
                         const IconComponent = Icons[feature.icon];
                         return (
-                            <div key={idx} className="bg-white rounded-[2.5rem] p-6 md:p-8 flex flex-col md:flex-row items-center gap-8 border border-white/50 shadow-xl shadow-slate-200/40 transition-all hover:translate-y-[-4px] hover:shadow-2xl">
-                                <div className={`w-20 h-20 md:w-24 md:h-24 rounded-[1.5rem] md:rounded-[2rem] ${feature.bg} flex items-center justify-center shrink-0`}>
-                                    <IconComponent className={`${feature.color}`} size={isMobile ? 32 : 44} />
+                            <div key={idx} className="bg-white rounded-[2.5rem] p-6 md:p-8 flex flex-row items-start gap-6 md:gap-8 border border-white/50 shadow-xl shadow-slate-200/40 transition-all hover:translate-y-[-4px] hover:shadow-2xl">
+                                <div className={`w-16 h-16 md:w-24 md:h-24 rounded-[1.5rem] md:rounded-[2rem] ${feature.bg} flex items-center justify-center shrink-0`}>
+                                    <IconComponent className={`${feature.color}`} size={isMobile ? 28 : 44} />
                                 </div>
-                                <div className="flex flex-col items-center md:items-start text-center md:text-left">
-                                    <h4 className="text-xl md:text-2xl font-black text-[#282d32] mb-2 tracking-tight">{feature.title}</h4>
-                                    <p className="text-base md:text-lg font-bold text-slate-400 leading-snug">
+                                <div className="flex flex-col items-start text-left flex-1">
+                                    <h4 className="text-lg md:text-2xl font-black text-[#282d32] mb-2 tracking-tight">{feature.title}</h4>
+                                    <p className="text-sm md:text-lg font-bold text-slate-400 leading-snug">
                                         {feature.desc}
                                     </p>
                                 </div>
