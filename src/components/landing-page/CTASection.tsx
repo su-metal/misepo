@@ -39,9 +39,6 @@ export const CTASection = ({ isMobile = false }: { isMobile?: boolean }) => {
                     </button>
 
                     <div className="mt-16 flex flex-col items-center gap-6">
-                        <div className="w-16 h-16 bg-white/10 rounded-full p-3 border border-white/20">
-                            <img src="/misepo_mascot_dog_illustration_1769987250429.png" alt="Mascot" className="w-full h-full object-contain invert opacity-50" />
-                        </div>
                         <div className="flex items-center gap-3 text-white/50 text-[10px] font-black tracking-[0.3em] uppercase">
                             <Icons.CheckCircle size={14} className="text-white/30" />
                             Start your story in 30 seconds

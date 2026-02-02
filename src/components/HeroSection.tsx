@@ -89,8 +89,8 @@ export default function HeroSection() {
                 {/* 3. Description & CTA - Bottom on Mobile, Bottom Left on PC */}
                 <div className="flex flex-col items-center lg:items-start text-center lg:text-left lg:col-start-1 lg:row-start-2 max-w-xl relative">
                     <p className="text-xl md:text-2xl font-bold text-slate-500/80 leading-tight mb-12 mt-4 lg:mt-8">
-                        「何を書けばいいか分からない」を、AIが解決。<br />
-                        メモを入れるだけで、SNS投稿が完成します。
+                        お店のSNS発信、「何を書けばいいか分からない」を、AIが解決。<br />
+                        メモを入力するだけで、SNS投稿が完成します。
                     </p>
 
                     <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start w-full relative z-10">
