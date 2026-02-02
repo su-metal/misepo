@@ -459,7 +459,7 @@ function App() {
       />
 
       <div className="min-w-0">
-        {!plan.isPro && isLoggedIn && <UpgradeBanner plan={plan.plan} onUpgrade={handleUpgrade} />}
+        {(plan.plan === 'free' || plan.plan === 'trial') && isLoggedIn && <UpgradeBanner plan={plan.plan} onUpgrade={handleUpgrade} />}
 
         <main className="flex-1 overflow-y-auto overflow-x-hidden">
           {isLoggedIn && !plan.canUseApp ? (

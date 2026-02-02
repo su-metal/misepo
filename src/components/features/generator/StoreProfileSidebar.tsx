@@ -62,7 +62,12 @@ export const StoreProfileSidebar: React.FC<StoreProfileSidebarProps> = ({ storeP
                             <span className="text-[9px] font-black uppercase">Plan</span>
                         </div>
                         <div className="text-xs font-bold text-[#122646] truncate">
-                            {plan.plan === 'premium' ? 'Premium' : plan.plan}
+                            {plan.plan === 'entry' ? 'Entry' :
+                                plan.plan === 'standard' ? 'Standard' :
+                                    plan.plan === 'professional' ? 'Professional' :
+                                        plan.plan === 'pro' || plan.plan === 'monthly' || plan.plan === 'yearly' ? 'Pro' :
+                                            plan.plan === 'premium' ? 'Premium' :
+                                                plan.plan || 'Free'}
                         </div>
                     </div>
                 </div>

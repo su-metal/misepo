@@ -133,7 +133,11 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
                                             <h3 className="font-bold text-stone-900 text-lg tracking-tight truncate">{storeProfile?.name || 'Store Name'}</h3>
                                             <div className="flex flex-wrap items-center gap-2 mt-1">
                                                 <span className="px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-600 text-[9px] font-bold uppercase tracking-wider border border-indigo-100/50">
-                                                    {plan?.plan === 'pro' ? 'Pro Plan' : 'Free Plan'}
+                                                    {plan?.plan === 'entry' ? 'Entry Plan' :
+                                                        plan?.plan === 'standard' ? 'Standard Plan' :
+                                                            plan?.plan === 'professional' ? 'Professional Plan' :
+                                                                plan?.plan === 'pro' || plan?.plan === 'monthly' || plan?.plan === 'yearly' ? 'Pro Plan' :
+                                                                    'Free Plan'}
                                                 </span>
                                                 <span className="text-[10px] font-medium text-stone-400 group-hover:text-indigo-400 transition-colors">Edit Store Profile</span>
                                             </div>
@@ -173,7 +177,7 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
                             </section>
 
                             {/* Sign Out */}
-                            <div className="pt-8 flex flex-col items-center gap-4">
+                            <div className="pt-0 flex flex-col items-center gap-4">
                                 <button
                                     onClick={() => { onLogout(); toggleOpen(); }}
                                     className="px-8 py-3 rounded-xl bg-stone-100 text-stone-500 font-bold text-xs uppercase tracking-widest hover:bg-rose-50 hover:text-rose-500 transition-all duration-300"

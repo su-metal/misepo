@@ -39,7 +39,7 @@ export const ExperienceSection = ({ isMobile = false }: { isMobile?: boolean }) 
 
                 <div className="max-w-6xl mx-auto px-8 md:px-12 relative z-10">
                     {/* Section 1: Intro with Phone Card */}
-                    <div className="flex flex-col md:flex-row items-center gap-16 md:gap-32 pt-24 md:pt-48 mb-48 md:mb-64">
+                    <div className="flex flex-col md:flex-row items-center gap-16 md:gap-32 pt-8 md:pt-48 mb-48 md:mb-64">
                         <div className="flex-1 order-2 md:order-1 lg:pl-8">
                             <h3 className="text-3xl md:text-5xl lg:text-7xl font-black text-white leading-[1.2] mb-10">
                                 投稿が、<br />

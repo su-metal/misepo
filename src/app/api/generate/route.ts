@@ -138,18 +138,34 @@ export async function POST(req: Request) {
             .filter(run => run.created_at >= startOfToday)
             .reduce((sum, run) => sum + (run.run_type === 'multi-gen' ? 2 : 1), 0);
         
-        const isTrial = effectiveEnt?.status === 'trialing' || (effectiveEnt?.plan === 'free' && effectiveEnt?.status === 'inactive');
-        const isPro = effectiveEnt?.plan === 'pro' && effectiveEnt?.status === 'active';
-
-        if (isTrial && totalTodayCredits + cost > 10) {
-            return NextResponse.json({ ok: false, error: "daily_limit_reached", limit: 10, current: totalTodayCredits }, { status: 403 });
+        // Plan-based limits
+        const planName = effectiveEnt?.plan;
+        const status = effectiveEnt?.status;
+        
+        // Define monthly limits for each plan
+        let monthlyLimit = 0;
+        if (planName === 'entry') monthlyLimit = 50;
+        else if (planName === 'standard') monthlyLimit = 150;
+        else if (planName === 'professional') monthlyLimit = 300;
+        else if (planName === 'monthly' || planName === 'yearly') monthlyLimit = 300; // Legacy plans
+        
+        // Free/Trial users: 5 per day
+        const isFreeOrTrial = (planName === 'free' || status === 'trialing') && !monthlyLimit;
+        
+        if (isFreeOrTrial && totalTodayCredits + cost > 5) {
+            return NextResponse.json({ ok: false, error: "daily_limit_reached", limit: 5, current: totalTodayCredits }, { status: 403 });
         }
-        if (isPro && totalMonthCredits + cost > 300) {
-            return NextResponse.json({ ok: false, error: "monthly_limit_reached", limit: 300, current: totalMonthCredits }, { status: 403 });
-        }
-        // Fallback for generic free if not trialing (e.g. 5/day default if unspecified, but following user request for 10)
-        if (!isPro && totalTodayCredits + cost > 10) {
-            return NextResponse.json({ ok: false, error: "usage_limit_reached" }, { status: 403 });
+        
+        // Paid plan users: monthly limit
+        if (monthlyLimit > 0 && (status === 'active' || status === 'trialing')) {
+            if (totalMonthCredits + cost > monthlyLimit) {
+                return NextResponse.json({ 
+                    ok: false, 
+                    error: "monthly_limit_reached", 
+                    limit: monthlyLimit, 
+                    current: totalMonthCredits 
+                }, { status: 403 });
+            }
         }
     }
   }

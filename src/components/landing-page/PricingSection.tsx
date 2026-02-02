@@ -3,8 +3,6 @@ import React, { useState } from 'react';
 import { Icons } from '../LandingPageIcons';
 
 export const PricingSection = ({ isMobile = false }: { isMobile?: boolean }) => {
-    const [isYearly, setIsYearly] = useState(false);
-
     return (
         <section id="pricing" className="py-16 md:py-24 bg-[#f0eae4] relative overflow-hidden">
             <div className="max-w-7xl mx-auto px-6 relative z-10">

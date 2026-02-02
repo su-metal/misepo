@@ -45,7 +45,7 @@ export const TrialEndedBarrier = ({ onUpgrade, usageCount }: TrialEndedBarrierPr
                     </button>
 
                     <p className="mt-8 text-[11px] font-black text-black/40 uppercase tracking-widest leading-relaxed">
-                        月額 ¥1,980（月間300回生成）<br />
+                        月額 ¥980〜（選べる3つのプラン）<br />
                         いつでもマイページから解約可能です。
                     </p>
                 </div>
