@@ -67,7 +67,7 @@ export const UnifiedFlowSection = () => {
                             </div>
 
                             {/* Text Section */}
-                            <div className={`w-full md:w-1/2 flex flex-col ${item.align === 'right' ? 'items-start md:items-end md:text-right' : 'items-start'} gap-8`}>
+                            <div className="w-full md:w-1/2 flex flex-col items-start gap-8">
                                 <div className="flex items-center gap-4">
                                     <h3 className="text-4xl md:text-5xl font-black text-[#282d32] tracking-tighter">{item.title}</h3>
                                 </div>
