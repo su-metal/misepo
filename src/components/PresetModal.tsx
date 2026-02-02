@@ -1014,10 +1014,10 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
   // Focus Mode Overlay (Learning Editor)
   const focusModeOverlay = expandingPlatform && createPortal(
-    <div className="fixed inset-0 z-[10001] flex items-center justify-center p-0 pointer-events-auto">
+    <div className="fixed inset-0 z-[10001] flex items-center justify-center p-0 md:p-8 pointer-events-auto">
       <div className="absolute inset-0 bg-indigo-950/20 backdrop-blur-xl animate-in fade-in duration-500" onClick={() => setExpandingPlatform(null)} />
 
-      <div className="w-full h-full bg-white shadow-2xl overflow-hidden animate-in zoom-in-95 duration-500 relative z-10 flex flex-col">
+      <div className="w-full h-full md:max-w-7xl md:max-h-[850px] bg-white md:rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-500 relative z-10 flex flex-col border border-stone-100">
         {/* Header */}
         <div className="p-8 md:p-10 border-b border-stone-100 flex items-center justify-between bg-stone-50/50">
           <div className="flex items-center gap-4">
