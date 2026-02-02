@@ -15,28 +15,28 @@ export const FAQSection = ({ faqs, openFaq, setOpenFaq, isMobile = false }: { fa
     );
 
     return (
-        <section id="faq" className="py-24 md:py-48 bg-[#282d32] text-white relative overflow-hidden">
+        <section id="faq" className="py-24 md:py-48 bg-[#f0eae4] text-[#282d32] relative overflow-hidden">
             <NoiseOverlay />
             <div className="absolute top-0 right-0 w-96 h-96 bg-[#1823ff]/5 rounded-full blur-[100px] pointer-events-none" />
 
             <div className="max-w-7xl mx-auto px-6">
                 <div className="flex flex-col items-start mb-24">
-                    <span className="text-[10px] font-black text-[#1823ff] uppercase tracking-[0.2em] mb-8 px-4 py-2 bg-[#1823ff]/10 rounded-full border border-[#1823ff]/20">Frequently Asked</span>
-                    <h2 className={`font-black tracking-tighter leading-[0.85] text-white ${isMobile ? 'text-5xl' : 'text-7xl md:text-8xl lg:text-[8rem]'}`}>
-                        不安を、<br />
-                        <span className="text-[#1823ff]">安心に。</span>
+                    <span className="text-[10px] font-black text-[#1823ff] uppercase tracking-[0.2em] mb-8 px-4 py-2 bg-[#1823ff]/5 rounded-full border border-[#1823ff]/10">Frequently Asked</span>
+                    <h2 className={`font-black tracking-tighter leading-[0.85] text-[#282d32] ${isMobile ? 'text-5xl' : 'text-7xl md:text-8xl lg:text-[8rem]'}`}>
+                        よくある<br />
+                        <span className="text-[#1823ff]">質問。</span>
                     </h2>
                 </div>
 
                 <div className="max-w-4xl space-y-4">
                     {faqs.map((faq, idx) => (
-                        <div key={idx} className={`border border-white/5 rounded-[32px] overflow-hidden transition-all duration-500 ${openFaq === idx ? 'bg-white/5' : 'bg-transparent'}`}>
+                        <div key={idx} className={`border border-slate-200 rounded-[32px] overflow-hidden transition-all duration-500 ${openFaq === idx ? 'bg-white shadow-xl shadow-slate-200/50' : 'bg-transparent'}`}>
                             <button
                                 onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
                                 className="w-full p-8 md:p-12 flex items-center justify-between text-left group"
                             >
-                                <span className="text-xl md:text-2xl font-black pr-8">{faq.q}</span>
-                                <div className={`w-8 h-8 rounded-full border border-white/20 flex items-center justify-center transition-transform duration-500 ${openFaq === idx ? 'rotate-180 bg-white text-[#282d32]' : ''}`}>
+                                <span className="text-xl md:text-2xl font-black pr-8 transition-colors group-hover:text-[#1823ff]">{faq.q}</span>
+                                <div className={`w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center transition-transform duration-500 ${openFaq === idx ? 'rotate-180 bg-[#1823ff] text-white border-[#1823ff]' : 'text-slate-300'}`}>
                                     <Icons.ChevronDown size={16} />
                                 </div>
                             </button>

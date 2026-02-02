@@ -22,6 +22,14 @@ export const ExperienceSection = ({ isMobile = false }: { isMobile?: boolean }) 
                 >
                     <NoiseOverlay />
 
+                    {/* Centered Message Inside Blue Circle at Top */}
+                    <div className="absolute top-12 md:top-20 left-1/2 -translate-x-1/2 text-center z-10 pointer-events-none select-none w-full px-4">
+                        <div className={`font-black tracking-tighter leading-[0.85] ${isMobile ? 'text-5xl' : 'text-7xl md:text-8xl lg:text-[7.5rem]'}`}>
+                            <div className="text-white whitespace-nowrap">SNS投稿が</div>
+                            <div className="text-[#282d32] whitespace-nowrap">楽しくなる。</div>
+                        </div>
+                    </div>
+
                     {/* Background Large Text Accent */}
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 select-none pointer-events-none opacity-[0.08] whitespace-nowrap z-0">
                         <span className="text-[20rem] md:text-[40rem] font-black text-white italic tracking-tighter">EMOTION</span>
@@ -29,7 +37,7 @@ export const ExperienceSection = ({ isMobile = false }: { isMobile?: boolean }) 
 
                     <div className="max-w-6xl mx-auto px-8 md:px-12 relative z-10">
                         {/* Section 1: Intro with Phone Card */}
-                        <div className="flex flex-col md:flex-row items-center gap-16 md:gap-32 mb-48 md:mb-64">
+                        <div className="flex flex-col md:flex-row items-center gap-16 md:gap-32 mt-32 md:mt-48 mb-48 md:mb-64">
                             <div className="flex-1 order-2 md:order-1 lg:pl-8">
                                 <h3 className="text-3xl md:text-5xl lg:text-7xl font-black text-white leading-[1.2] mb-10">
                                     「いつもの感じ」を、<br />

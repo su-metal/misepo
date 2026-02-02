@@ -12,9 +12,6 @@ export const UnifiedFlowSection = () => {
                         メモから投稿まで、<br />
                         <span className="text-[#1823ff]">あっという間に。</span>
                     </h2>
-                    <p className="text-xl md:text-3xl font-bold text-slate-400 mt-12 max-w-2xl leading-tight">
-                        日々の出来事をメモするだけ。難しい設定や操作は不要です。
-                    </p>
                 </div>
 
                 <div className="flex flex-col gap-32 md:gap-48 relative">
@@ -24,25 +21,28 @@ export const UnifiedFlowSection = () => {
                     {[
                         {
                             step: "01",
-                            title: "思いついたら、すぐにメモ",
+                            problem: "忙しくて、文章を考える時間がない...",
+                            title: "思いついた時に、一言メモするだけ。",
                             badge: "想いをカタチにする第一歩",
-                            desc: "「新作のいちごタルトが、サクサクに焼けた」\nそんな一言で大丈夫。AIがあなたの意図をしっかり汲み取ります。",
+                            desc: "「新作のタルトが焼けた」「常連さんに喜んでもらえた」\nそんな一言で大丈夫。AIがあなたの意図をしっかり汲み取ります。",
                             img: "/misepo_step01_memo_cafe_vibe_1769994472883.png",
                             align: "left"
                         },
                         {
                             step: "02",
-                            title: "あなたらしい言葉を、一瞬で",
+                            problem: "何を書けばいいか分からない、言葉が出てこない...",
+                            title: "AIが、数秒であなたらしい言葉に。",
                             badge: "お店の個性を反映した文章作成",
-                            desc: "ボタンを押して数秒。あなたの口癖や温度感を大切にしながら、SNSに最適な文章を書き上げます。",
+                            desc: "ボタンを押して数秒。SNSごとの文化や文字数に合わせて、\nあなたの温度感を大切にした文章をAIが書き上げます。",
                             img: "/misepo_step02_generation_natural_screen_1769994809838.png",
                             align: "right"
                         },
                         {
                             step: "03",
-                            title: "あとは、届けるだけ",
+                            problem: "各SNSへの投稿作業がとにかく面倒...",
+                            title: "あとは確認して、ワンタップで完了。",
                             badge: "確認してワンタップで投稿",
-                            desc: "完成した文章を確認して、ワンタップで完了。\n文章作成の手間をなくし、投稿の頻度を無理なく高められます。",
+                            desc: "完成した文章を確認して、ワンタップでコピー＆投稿。\nSNS運用が「義務」から、楽しい「ルーチン」に変わります。",
                             img: "/misepo_step03_happy_shop_owner_sns_1769994514693.png",
                             align: "left"
                         }
@@ -69,8 +69,14 @@ export const UnifiedFlowSection = () => {
                             {/* Text Section */}
                             <div className="w-full md:w-1/2 flex flex-col items-start gap-8">
                                 <div className="flex flex-col items-start gap-4">
-                                    <span className="text-sm font-black text-[#1823ff] px-4 py-1.5 bg-[#1823ff]/5 rounded-full border border-[#1823ff]/10">FEATURE 0{idx + 1}</span>
-                                    <h3 className="text-4xl md:text-5xl font-black text-[#282d32] tracking-tighter">{item.title}</h3>
+                                    <span className="text-sm font-black text-[#1823ff] px-4 py-1.5 bg-[#1823ff]/5 rounded-full border border-[#1823ff]/10">STEP 0{idx + 1}</span>
+                                    <div className="flex flex-col gap-2">
+                                        <div className="flex items-center gap-2 text-slate-400">
+                                            <Icons.X size={16} className="shrink-0" />
+                                            <span className="text-sm md:text-lg font-bold line-through opacity-60 italic">{item.problem}</span>
+                                        </div>
+                                        <h3 className="text-4xl md:text-5xl font-black text-[#282d32] tracking-tighter">{item.title}</h3>
+                                    </div>
                                 </div>
                                 <p className="text-xl md:text-2xl font-bold text-slate-500 leading-snug whitespace-pre-line">
                                     {item.desc}

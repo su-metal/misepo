@@ -10,23 +10,23 @@ const NoiseOverlay = () => (
 
 export const ReviewResponseSection = () => {
     return (
-        <section className="py-24 md:py-32 bg-gradient-to-br from-[#FF9F1C]/5 via-white to-[#FF9F1C]/10 relative overflow-hidden">
+        <section className="py-24 md:py-32 bg-gradient-to-br from-[#1823ff]/5 via-white to-[#1823ff]/10 relative overflow-hidden">
             <NoiseOverlay />
 
             {/* Background Decorations */}
-            <div className="absolute top-20 right-10 w-96 h-96 bg-[#FF9F1C]/10 rounded-full blur-[120px] pointer-events-none" />
+            <div className="absolute top-20 right-10 w-96 h-96 bg-[#1823ff]/10 rounded-full blur-[120px] pointer-events-none" />
             <div className="absolute bottom-10 left-10 w-80 h-80 bg-[#1823ff]/5 rounded-full blur-[100px] pointer-events-none" />
 
             <div className="max-w-6xl mx-auto px-6 relative z-10">
                 <div className="grid md:grid-cols-2 gap-16 items-center">
                     {/* Left: Text Content */}
                     <div className="order-2 md:order-1">
-                        <span className="text-[10px] font-black text-[#FF9F1C] uppercase tracking-[0.2em] mb-8 px-4 py-2 bg-[#FF9F1C]/5 rounded-full border border-[#FF9F1C]/10 inline-block">
+                        <span className="text-[10px] font-black text-[#1823ff] uppercase tracking-[0.2em] mb-8 px-4 py-2 bg-[#1823ff]/5 rounded-full border border-[#1823ff]/10 inline-block">
                             Review Response AI
                         </span>
                         <h2 className="text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter leading-[0.9] text-[#282d32] mb-8">
                             口コミ返信も、<br />
-                            <span className="text-[#FF9F1C]">AIにおまかせ。</span>
+                            <span className="text-[#1823ff]">AIにおまかせ。</span>
                         </h2>
                         <p className="text-xl md:text-2xl font-bold text-slate-400 leading-tight mb-12">
                             「何て返せばいいか分からない」を解消。<br />
@@ -43,8 +43,8 @@ export const ReviewResponseSection = () => {
                                 const IconComponent = Icons[item.icon];
                                 return (
                                     <div key={idx} className="flex items-center gap-4">
-                                        <div className="w-12 h-12 rounded-2xl bg-[#FF9F1C]/10 flex items-center justify-center shrink-0">
-                                            <IconComponent className="text-[#FF9F1C]" size={20} />
+                                        <div className="w-12 h-12 rounded-2xl bg-[#1823ff]/10 flex items-center justify-center shrink-0">
+                                            <IconComponent className="text-[#1823ff]" size={20} />
                                         </div>
                                         <span className="text-lg font-black text-[#282d32]">{item.text}</span>
                                     </div>
@@ -55,7 +55,7 @@ export const ReviewResponseSection = () => {
 
                     {/* Right: Visual Mock */}
                     <div className="order-1 md:order-2 relative">
-                        <div className="bg-white rounded-[3rem] p-8 md:p-12 shadow-2xl shadow-slate-900/10 border border-slate-100">
+                        <div className="bg-white rounded-[3rem] p-8 md:p-12 shadow-2xl shadow-[#1823ff]/10 border border-slate-100">
                             {/* Google Maps Review Card Mock */}
                             <div className="space-y-6">
                                 {/* Review Header */}
@@ -79,15 +79,15 @@ export const ReviewResponseSection = () => {
                                 </div>
 
                                 {/* AI Response */}
-                                <div className="bg-gradient-to-br from-[#FF9F1C]/5 to-[#FF9F1C]/10 rounded-2xl p-6 border-2 border-[#FF9F1C]/20 relative">
-                                    <div className="absolute -top-3 left-6 px-3 py-1 bg-[#FF9F1C] text-white text-[10px] font-black rounded-full flex items-center gap-1">
+                                <div className="bg-gradient-to-br from-[#1823ff]/5 to-[#1823ff]/10 rounded-2xl p-6 border-2 border-[#1823ff]/20 relative">
+                                    <div className="absolute -top-3 left-6 px-3 py-1 bg-[#1823ff] text-white text-[10px] font-black rounded-full flex items-center gap-1">
                                         <Icons.Sparkles size={10} />
                                         AI下書き
                                     </div>
                                     <div className="space-y-2 mt-2">
-                                        <div className="h-3 w-full bg-[#FF9F1C]/20 rounded" />
-                                        <div className="h-3 w-full bg-[#FF9F1C]/20 rounded" />
-                                        <div className="h-3 w-3/4 bg-[#FF9F1C]/20 rounded" />
+                                        <div className="h-3 w-full bg-[#1823ff]/20 rounded" />
+                                        <div className="h-3 w-full bg-[#1823ff]/20 rounded" />
+                                        <div className="h-3 w-3/4 bg-[#1823ff]/20 rounded" />
                                     </div>
                                 </div>
                             </div>
