@@ -68,7 +68,8 @@ export const UnifiedFlowSection = () => {
 
                             {/* Text Section */}
                             <div className="w-full md:w-1/2 flex flex-col items-start gap-8">
-                                <div className="flex items-center gap-4">
+                                <div className="flex flex-col items-start gap-4">
+                                    <span className="text-sm font-black text-[#1823ff] px-4 py-1.5 bg-[#1823ff]/5 rounded-full border border-[#1823ff]/10">FEATURE 0{idx + 1}</span>
                                     <h3 className="text-4xl md:text-5xl font-black text-[#282d32] tracking-tighter">{item.title}</h3>
                                 </div>
                                 <p className="text-xl md:text-2xl font-bold text-slate-500 leading-snug whitespace-pre-line">

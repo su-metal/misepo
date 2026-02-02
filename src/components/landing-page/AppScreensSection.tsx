@@ -19,8 +19,9 @@ export const AppScreensSection = ({ isMobile = false }: { isMobile?: boolean }) 
                         ABOUT
                     </h2>
                     <p className="text-xl md:text-3xl font-bold text-slate-400 max-w-2xl leading-tight">
-                        あなたのお店の「日常」が、ファンとつながる「物語」に変わります。<br />
-                        何気ないお店の出来事を、魅力的な言葉に変えて。
+                        misepo（ミセポ）は、お店の日常をSNS投稿文に変換するAIアプリです。<br />
+                        メモ一つで、X・Instagram・LINE・Google Mapsそれぞれに最適な文章が自動で完成します。<br />
+
                     </p>
                 </div>
 
