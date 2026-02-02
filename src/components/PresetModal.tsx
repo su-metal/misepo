@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import {
   DndContext,
@@ -331,7 +331,9 @@ const PresetModal: React.FC<PresetModalProps> = ({
   const [isResetting, setIsResetting] = useState(false);
   const [viewingSampleId, setViewingSampleId] = useState<string | null>(null);
   const [lastAnalyzedState, setLastAnalyzedState] = useState<{ [key: string]: string }>({});
+  const isSavingRef = useRef(false);
   const [tempNewSamples, setTempNewSamples] = useState<TrainingItem[]>([]);
+  const [isAnalyzingScreenshot, setIsAnalyzingScreenshot] = useState(false);
 
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -405,21 +407,21 @@ const PresetModal: React.FC<PresetModalProps> = ({
   };
 
 
-  const performPersonaAnalysis = async (overrideSamples?: { content: string, platform: string }[]): Promise<any> => {
+  const performPersonaAnalysis = async (overrideSamples?: TrainingItem[]): Promise<any> => {
     // Current target platform based on tab mode
     const targetKey = learningMode === 'maps' ? Platform.GoogleMaps : 'General';
 
     // Filter samples relevant to the current mode
     // SNS mode: Includes X, Instagram, Line, General
     // Maps mode: Includes GoogleMaps
-    const samplesToUse = overrideSamples || trainingItems
+    const samplesToUse = (overrideSamples || trainingItems
       .filter(item => {
         const p = item.presetId === (selectedPresetId || 'omakase');
         const plats = item.platform.split(',').map(s => s.trim());
         const isMaps = plats.includes(Platform.GoogleMaps);
         if (learningMode === 'maps') return p && isMaps;
         return p && !isMaps;
-      })
+      }))
       .map(item => ({
         content: item.content,
         platform: item.platform
@@ -493,22 +495,26 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
   const handleSave = async (overridePrompts?: { [key: string]: string }) => {
     if (!name.trim()) return;
+    if (isSavingRef.current) return;
+
+    isSavingRef.current = true;
     setIsInternalSaving(true);
     try {
       let finalCustomPrompts = overridePrompts ? { ...customPrompts, ...overridePrompts } : { ...customPrompts };
 
+      // Compute relatedItems first for analysis
+      const relatedItems = selectedPresetId
+        ? trainingItems.filter(item => item.presetId === selectedPresetId)
+        : tempNewSamples;
+
       // Auto-analyze during save if manual update
       if (!overridePrompts) {
-        const newStyle = await performPersonaAnalysis();
+        const newStyle = await performPersonaAnalysis(relatedItems);
         if (newStyle) {
           finalCustomPrompts = { ...finalCustomPrompts, ...newStyle };
         }
       }
       const currentPresetId = selectedPresetId || 'omakase';
-      // For new profiles (null ID), use tempNewSamples. For existing, use trainingItems.
-      const relatedItems = selectedPresetId
-        ? trainingItems.filter(item => item.presetId === selectedPresetId)
-        : tempNewSamples;
 
       const newPostSamples: { [key in Platform]?: string } = {};
 
@@ -536,27 +542,54 @@ const PresetModal: React.FC<PresetModalProps> = ({
         custom_prompt: customPromptJSON,
         persona_yaml: null,
         post_samples: newPostSamples,
-      });
+      }) as any;
 
-      if (!selectedPresetId && result && 'id' in result && result.id) {
-        const newId = result.id;
-        await Promise.all(relatedItems.map(async (item) => {
-          try {
-            await onToggleTraining(item.content, item.platform as any, newId, undefined, item.source || 'manual');
-          } catch (e) {
-            console.error('Failed to migrate item:', item.id, e);
+      if (result && result.ok) {
+        // 1. Success! Immediately determine the active profile ID
+        const currentId = selectedPresetId || result.preset?.id || result.id;
+
+        // 2. If this was a new profile, we MUST update selectedPresetId NOW.
+        // This ensures the modal knows it's no longer a "new" screen if the user clicks Save again.
+        if (!selectedPresetId && currentId) {
+          setSelectedPresetId(currentId);
+        }
+        // Determine ID for migration
+        const newId = currentId;
+
+        // 3. Handle Migration if we have temporary samples (originated as new profile)
+        if (tempNewSamples.length > 0 && newId) {
+          // Refresh list once so the app knows about the new ID before we link items
+          if (onReorder) await onReorder();
+
+          // Migrate items
+          await Promise.all(tempNewSamples.map(async (item) => {
+            try {
+              await onToggleTraining(item.content, item.platform as any, newId, undefined, item.source || 'manual');
+            } catch (e) {
+              console.error('Failed to migrate item:', item.id, e);
+            }
+          }));
+
+          // Final refresh to show all migrated items in the UI
+          if (onRefreshTraining) {
+            await onRefreshTraining();
           }
-        }));
-        setSelectedPresetId(newId);
-      }
 
-      setShowSuccessToast(true);
-      setTimeout(() => setShowSuccessToast(false), 3000);
+          setTempNewSamples([]); // Clear temporary cache after migration
+        }
+
+        setShowSuccessToast(true);
+        setTimeout(() => setShowSuccessToast(false), 3000);
+      } else {
+        // Step 1 failed
+        alert('保存に失敗しました: ' + (result?.error || '不明なエラーが発生しました'));
+      }
     } catch (err) {
       console.error('Failed to save preset:', err);
       alert('保存中にエラーが発生しました。');
     } finally {
       setIsInternalSaving(false);
+      isSavingRef.current = false;
     }
   };
 
@@ -1064,12 +1097,13 @@ const PresetModal: React.FC<PresetModalProps> = ({
             <div className="flex items-center justify-between px-2">
               <span className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em]"></span>
               {!viewingSampleId && (
-                <div className="flex gap-2">
+                <div className="flex gap-4">
                   <button
                     onClick={() => fileInputRef.current?.click()}
-                    className="flex items-center gap-2 text-[10px] font-black text-[#1f29fc] hover:opacity-70"
+                    disabled={isAnalyzingScreenshot}
+                    className="flex items-center gap-2.5 text-xs font-black text-[#1f29fc] hover:opacity-70 disabled:opacity-50"
                   >
-                    <TieIcon className="w-3.5 h-3.5" />
+                    <TieIcon className="w-4 h-4" />
                     スクショ解析
                   </button>
                   <button
@@ -1080,20 +1114,30 @@ const PresetModal: React.FC<PresetModalProps> = ({
                       if (data.ok) setModalText(data.sanitized);
                       setIsSanitizing(false);
                     }}
-                    disabled={isSanitizing || !modalText.trim()}
-                    className="flex items-center gap-2 text-[10px] font-black text-[#1f29fc] hover:opacity-70 disabled:opacity-30"
+                    disabled={isSanitizing || !modalText.trim() || isAnalyzingScreenshot}
+                    className="flex items-center gap-2.5 text-xs font-black text-[#1f29fc] hover:opacity-70 disabled:opacity-30"
                   >
-                    <SparklesIcon className="w-3.5 h-3.5" />
+                    <SparklesIcon className="w-4 h-4" />
                     AI伏せ字
                   </button>
                 </div>
               )}
             </div>
 
-            <div className="bg-stone-50 border border-stone-100 rounded-[2.5rem] p-8">
+            <div className="bg-stone-50 border border-stone-100 rounded-[2.5rem] p-8 relative overflow-hidden">
+              {isAnalyzingScreenshot && (
+                <div className="absolute inset-0 z-10 bg-white/60 backdrop-blur-sm flex items-center justify-center animate-in fade-in duration-300">
+                  <div className="flex flex-col items-center gap-4">
+                    <div className="w-8 h-8 border-4 border-stone-100 border-t-[#1f29fc] rounded-full animate-spin shadow-xl" />
+                    <span className="text-xs font-black text-stone-900 tracking-widest uppercase bg-white px-6 py-2 rounded-full shadow-sm border border-stone-100">
+                      スクショ解析中...
+                    </span>
+                  </div>
+                </div>
+              )}
               <AutoResizingTextarea
                 autoFocus={!viewingSampleId}
-                readOnly={!!viewingSampleId}
+                readOnly={!!viewingSampleId || isAnalyzingScreenshot}
                 value={modalText}
                 onChange={setModalText}
                 placeholder={learningMode === 'sns'
@@ -1137,11 +1181,19 @@ const PresetModal: React.FC<PresetModalProps> = ({
           onChange={async (e) => {
             const file = e.target.files?.[0];
             if (!file) return;
+            setIsAnalyzingScreenshot(true);
             const reader = new FileReader();
             reader.onloadend = async () => {
-              const res = await fetch('/api/ai/analyze-screenshot', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ image: reader.result as string, mimeType: file.type, platform: expandingPlatform }) });
-              const data = await res.json();
-              if (data.ok) setModalText(prev => prev + (prev.trim() ? '\n---\n' : '') + data.text);
+              try {
+                const res = await fetch('/api/ai/analyze-screenshot', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ image: reader.result as string, mimeType: file.type, platform: expandingPlatform }) });
+                const data = await res.json();
+                if (data.ok) setModalText(prev => prev + (prev.trim() ? '\n---\n' : '') + data.text);
+              } catch (err) {
+                console.error('Screenshot analysis failed:', err);
+              } finally {
+                setIsAnalyzingScreenshot(false);
+                if (fileInputRef.current) fileInputRef.current.value = '';
+              }
             };
             reader.readAsDataURL(file);
           }}

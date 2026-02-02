@@ -1061,11 +1061,15 @@ export const extractPostFromImage = async (
 
   const systemInstruction = `
 You are a highly accurate OCR and content extraction assistant specialized in social media.
-Extract the "main post body" or "owner reply text" from the provided screenshot of a ${platform} interface.
+Extract ONLY the "main post body" (for SNS) or "owner reply text" (for Google Maps) from the provided screenshot of a ${platform} interface.
 
 **Rules:**
-1. Extract ONLY the actual text written by the user.
-2. Ignore UI elements like "Like", "Comment", "Share", platform logos, timestamps, usernames (unless part of the text), and system buttons.
+1. Extract ONLY the primary content text written by the author.
+2. DO NOT extract:
+   - Customer reviews (for Google Maps, extract ONLY the owner's response)
+   - Other users' comments or replies
+   - UI elements (buttons, logos, timestamp, follower count, like/share counts)
+   - Meta information like "View insights" or "Promote post"
 3. Preserve original line breaks and spacing within the post.
 4. If there are multiple posts in the screenshot, extract all of them separated by "---".
 5. Output ONLY the extracted text. No explanations or extra commentary.
