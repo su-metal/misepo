@@ -8,7 +8,7 @@ export default function HeroSection() {
 
     const images = [
         '/misepo_hero_hand_phone_1769997838406.png',
-        '/misepo_hero_hand_phone_diagonal_1769998056394.png',
+        '/misepo_hero_emo_strawberry_parfait_1770000553590.png',
         '/misepo_hero_hand_phone_side_1769998079370.png'
     ];
 

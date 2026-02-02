@@ -6,7 +6,7 @@ export const UnifiedFlowSection = () => {
     return (
         <section id="flow" className="py-24 md:py-48 bg-[#f0eae4] overflow-hidden">
             <div className="max-w-7xl mx-auto px-6">
-                <div className="flex flex-col items-center text-center mb-32">
+                <div className="flex flex-col items-start text-left md:items-center md:text-center mb-32">
                     <span className="text-[10px] font-black text-[#1823ff] uppercase tracking-[0.2em] mb-8 px-4 py-2 bg-[#1823ff]/5 rounded-full border border-[#1823ff]/10 inline-block">The Workflow</span>
                     <h2 className="text-6xl md:text-8xl lg:text-[7.5rem] font-black tracking-tighter leading-[0.9] text-[#282d32]">
                         メモから投稿まで、<br />
@@ -24,25 +24,25 @@ export const UnifiedFlowSection = () => {
                     {[
                         {
                             step: "01",
-                            title: "メモ",
-                            badge: "想いをカタチにするために",
-                            desc: "「新作のいちごタルト、生地がサクサクで美味しい」\nそんな断片的なメモでいいんです。AIがあなたの頭の中にある熱意を深く汲み取ります。",
+                            title: "心のカケラを、メモに託す",
+                            badge: "想いをカタチにする第一歩",
+                            desc: "「新作のいちごタルト、生地がサクサクで美味しい」\nそんな、あなただけが知る心の機微を。断片的な言葉の粒が、AIの手で物語として輝き始めます。",
                             img: "/misepo_step01_memo_cafe_vibe_1769994472883.png",
                             align: "left"
                         },
                         {
                             step: "02",
-                            title: "生成",
-                            badge: "あなたらしい言葉を紡ぐために",
-                            desc: "ボタンを押してから、わずか数秒。\nあなた独自の口癖やリズム、温もりをそのままに、SNSごとに最適なトーンで文章を紡ぎ出します。",
+                            title: "あなたの「らしさ」が、溢れ出す",
+                            badge: "ぬくもりを言葉に綴る魔法",
+                            desc: "ボタンを押してから、ほんの数秒。\nあなたの口癖や温度感をそのままに、SNSごとに一番あなたらしい「生きた言葉」を紡ぎ出します。",
                             img: "/misepo_step02_generation_natural_screen_1769994809838.png",
                             align: "right"
                         },
                         {
                             step: "03",
-                            title: "投稿",
-                            badge: "ファンと繋がる瞬間のために",
-                            desc: "出来上がった文章を確認して、ワンタップで投稿。\n今まで何時間も悩んでいた時間が、わずか数分の楽しい瞬間に変わります。",
+                            title: "心がつながる、投稿の瞬間",
+                            badge: "感謝とワクワクを届けるために",
+                            desc: "完成した文章をワンタップで世界へ。\n文章に悩んでいた時間が、ファンと出会う喜びへと変わる。投稿が、もっと自由に、待ち遠しくなります。",
                             img: "/misepo_step03_happy_shop_owner_sns_1769994514693.png",
                             align: "left"
                         }
@@ -61,7 +61,7 @@ export const UnifiedFlowSection = () => {
 
                                     {/* Title Badge (Overlay) */}
                                     <div className={`absolute bottom-6 ${item.align === 'left' ? '-left-4' : '-right-4'} bg-[#282d32] px-8 py-5 rounded-[2rem] shadow-2xl transform transition-transform group-hover:-translate-y-2`}>
-                                        <div className="text-[10px] font-black text-[#1823ff] uppercase tracking-widest mb-1">Step {item.step}</div>
+                                        <div className="text-[10px] font-black text-[#1823ff] uppercase tracking-widest mb-1">FEATURE {item.step}</div>
                                         <div className="text-2xl font-black text-white tracking-tight">{item.badge}</div>
                                     </div>
                                 </div>
@@ -70,7 +70,7 @@ export const UnifiedFlowSection = () => {
                             {/* Text Section */}
                             <div className={`w-full md:w-1/2 flex flex-col ${item.align === 'right' ? 'items-start md:items-end md:text-right' : 'items-start'} gap-8`}>
                                 <div className="flex items-center gap-4">
-                                    <span className="text-sm font-black text-[#1823ff] px-4 py-1.5 bg-[#1823ff]/5 rounded-full border border-[#1823ff]/10">0{idx + 1}</span>
+                                    <span className="text-sm font-black text-[#1823ff] px-4 py-1.5 bg-[#1823ff]/5 rounded-full border border-[#1823ff]/10">FEATURE 0{idx + 1}</span>
                                     <h3 className="text-4xl md:text-5xl font-black text-[#282d32] tracking-tighter">{item.title}</h3>
                                 </div>
                                 <p className="text-xl md:text-2xl font-bold text-slate-500 leading-snug whitespace-pre-line">
