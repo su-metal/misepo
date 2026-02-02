@@ -20,16 +20,16 @@ export const ExperienceSection = ({ isMobile = false }: { isMobile?: boolean }) 
                 <NoiseOverlay />
 
                 {/* Centered Message sitting at the boundary */}
-                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 text-center z-30 pointer-events-none select-none w-full px-4 translate-y-[20%]">
-                    <div className={`font-black tracking-tighter leading-[0.85] ${isMobile ? 'text-5xl' : 'text-7xl md:text-8xl lg:text-[7.5rem]'}`}>
-                        <div className="text-white whitespace-nowrap">SNS投稿が</div>
-                        <div className="text-[#282d32] whitespace-nowrap">楽しくなる。</div>
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center z-30 pointer-events-none select-none w-full px-4">
+                    <div className={`font-black tracking-tighter leading-[0.8] ${isMobile ? 'text-5xl' : 'text-7xl md:text-8xl lg:text-[7.5rem]'}`}>
+                        <div className="text-white whitespace-nowrap">SOCIAL MEDIA,</div>
+                        <div className="text-[#282d32] whitespace-nowrap">ENJOYED.</div>
                     </div>
                 </div>
             </div>
 
             {/* Main Content Area - Solid Blue Background */}
-            <div className="relative bg-[#1823ff] pb-48 md:pb-64 z-20">
+            <div className="relative bg-[#1823ff] pb-16 md:pb-64 z-20">
                 <NoiseOverlay />
 
                 {/* Background Large Text Accent */}
@@ -42,12 +42,12 @@ export const ExperienceSection = ({ isMobile = false }: { isMobile?: boolean }) 
                     <div className="flex flex-col md:flex-row items-center gap-16 md:gap-32 pt-24 md:pt-48 mb-48 md:mb-64">
                         <div className="flex-1 order-2 md:order-1 lg:pl-8">
                             <h3 className="text-3xl md:text-5xl lg:text-7xl font-black text-white leading-[1.2] mb-10">
-                                「いつもの感じ」を、<br />
-                                AIが再現。
+                                投稿が、<br />
+                                続けられる。
                             </h3>
                             <p className="text-white/80 text-xl md:text-2xl font-bold leading-relaxed">
-                                普段の何気ないメモを、魅力的な発信へ。<br />
-                                お店の個性が伝わる文章を数秒で作ります。
+                                「何を書けばいいか分からない」から解放。<br />
+                                メモするだけで、負担なく投稿が続きます。
                             </p>
                         </div>
                         <div className="flex-1 order-1 md:order-2 relative">

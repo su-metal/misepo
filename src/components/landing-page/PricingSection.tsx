@@ -11,7 +11,7 @@ export const PricingSection = ({ isMobile = false }: { isMobile?: boolean }) => 
                 {/* Part 1: Value Proposition */}
                 <div className="flex flex-col items-start mb-24">
                     <span className="text-[10px] font-black text-[#1823ff] uppercase tracking-[0.2em] mb-8 px-4 py-2 bg-[#1823ff]/5 rounded-full border border-[#1823ff]/10">Cost Performance</span>
-                    <h2 className={`font-black tracking-tighter leading-[0.9] text-[#282d32] ${isMobile ? 'text-5xl' : 'text-7xl md:text-8xl lg:text-[8rem]'}`}>
+                    <h2 className={`font-black tracking-tighter leading-[0.9] text-[#282d32] ${isMobile ? 'text-5xl' : 'text-7xl md:text-8xl lg:text-[5rem]'}`}>
                         より高い、<br />
                         <span className="text-[#1823ff]">価値を。</span>
                     </h2>
@@ -50,7 +50,7 @@ export const PricingSection = ({ isMobile = false }: { isMobile?: boolean }) => 
                 {/* Part 2: Pricing Details */}
                 <div className={`flex flex-col mb-24 pt-24 border-t border-slate-200 ${isMobile ? 'items-start text-left' : 'items-center text-center'}`}>
                     <span className="text-[10px] font-black text-[#1823ff] uppercase tracking-[0.2em] mb-8 px-4 py-2 bg-[#1823ff]/5 rounded-full border border-[#1823ff]/10 inline-block">Plan Details</span>
-                    <h2 className={`font-black text-[#282d32] tracking-tighter leading-[0.9] mb-8 ${isMobile ? 'text-5xl' : 'text-7xl md:text-8xl'}`}>
+                    <h2 className={`font-black text-[#282d32] tracking-tighter leading-[0.9] mb-8 ${isMobile ? 'text-5xl' : 'text-7xl md:text-8xl lg:text-[5rem]'}`}>
                         シンプルな、<br />
                         <span className="text-[#1823ff]">料金プラン。</span>
                     </h2>

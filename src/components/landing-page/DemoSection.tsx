@@ -50,7 +50,7 @@ export const DemoSection = ({
             <div className="max-w-7xl mx-auto px-6 relative z-10">
                 <div className="flex flex-col items-start mb-24">
                     <span className="text-[10px] font-black text-white/50 uppercase tracking-[0.2em] mb-8 px-4 py-2 bg-white/5 rounded-full border border-white/10">Interactive Demo</span>
-                    <h2 className={`font-black tracking-tighter leading-[0.85] text-white ${isMobile ? 'text-5xl' : 'text-7xl md:text-8xl lg:text-[8rem]'}`}>
+                    <h2 className={`font-black tracking-tighter leading-[0.85] text-white ${isMobile ? 'text-5xl' : 'text-7xl md:text-8xl lg:text-[5rem]'}`}>
                         今すぐ、<br />
                         <span className="opacity-60">試してみる。</span>
                     </h2>

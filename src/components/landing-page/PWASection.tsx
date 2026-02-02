@@ -8,7 +8,7 @@ export const PWASection = ({ isMobile = false }: { isMobile?: boolean }) => {
             <div className="max-w-7xl mx-auto px-6">
                 <div className={`flex flex-col mb-24 ${isMobile ? 'items-start text-left' : 'items-end text-right'}`}>
                     <span className="text-[10px] font-black text-[#1823ff] uppercase tracking-[0.2em] mb-8 px-4 py-2 bg-[#1823ff]/5 rounded-full border border-[#1823ff]/10">Anywhere, Anytime</span>
-                    <h2 className={`font-black tracking-tighter leading-[0.9] text-[#282d32] ${isMobile ? 'text-5xl' : 'text-7xl md:text-8xl lg:text-[8rem]'}`}>
+                    <h2 className={`font-black tracking-tighter leading-[0.9] text-[#282d32] ${isMobile ? 'text-5xl' : 'text-7xl md:text-8xl lg:text-[5rem]'}`}>
                         場所を選ばない、<br />
                         <span className="text-[#1823ff]">自由な運用を。</span>
                     </h2>
