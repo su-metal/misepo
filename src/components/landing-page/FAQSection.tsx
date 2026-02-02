@@ -22,7 +22,7 @@ export const FAQSection = ({ faqs, openFaq, setOpenFaq, isMobile = false }: { fa
             <div className="max-w-7xl mx-auto px-6">
                 <div className="flex flex-col items-start mb-24">
                     <span className="text-[10px] font-black text-[#1823ff] uppercase tracking-[0.2em] mb-8 px-4 py-2 bg-[#1823ff]/5 rounded-full border border-[#1823ff]/10">Frequently Asked</span>
-                    <h2 className={`font-black tracking-tighter leading-[0.85] text-[#282d32] ${isMobile ? 'text-5xl' : 'text-7xl md:text-8xl lg:text-[8rem]'}`}>
+                    <h2 className={`font-black tracking-tighter leading-[0.85] text-[#282d32] ${isMobile ? 'text-5xl' : 'text-7xl md:text-8xl lg:text-[5rem]'}`}>
                         よくある<br />
                         <span className="text-[#1823ff]">質問。</span>
                     </h2>
@@ -30,19 +30,20 @@ export const FAQSection = ({ faqs, openFaq, setOpenFaq, isMobile = false }: { fa
 
                 <div className="max-w-4xl space-y-4">
                     {faqs.map((faq, idx) => (
-                        <div key={idx} className={`border border-slate-200 rounded-[32px] overflow-hidden transition-all duration-500 ${openFaq === idx ? 'bg-white shadow-xl shadow-slate-200/50' : 'bg-transparent'}`}>
+                        <div key={idx} className={`border border-white/60 shadow-sm rounded-[32px] overflow-hidden transition-all duration-500 ${openFaq === idx ? 'bg-white shadow-xl shadow-[#1823ff]/5 scale-[1.01] border-[#1823ff]/10' : 'bg-white/80 hover:bg-white hover:shadow-md'}`}>
                             <button
                                 onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
                                 className="w-full p-8 md:p-12 flex items-center justify-between text-left group"
                             >
-                                <span className="text-xl md:text-2xl font-black pr-8 transition-colors group-hover:text-[#1823ff]">{faq.q}</span>
-                                <div className={`w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center transition-transform duration-500 ${openFaq === idx ? 'rotate-180 bg-[#1823ff] text-white border-[#1823ff]' : 'text-slate-300'}`}>
-                                    <Icons.ChevronDown size={16} />
+                                <span className={`text-xl md:text-2xl font-black pr-8 transition-colors ${openFaq === idx ? 'text-[#1823ff]' : 'text-[#282d32]'}`}>{faq.q}</span>
+                                <div className={`w-10 h-10 rounded-full border flex items-center justify-center transition-all duration-500 ${openFaq === idx ? 'rotate-180 bg-[#1823ff] text-white border-[#1823ff]' : 'border-slate-200 text-slate-300 group-hover:border-[#1823ff]/30 group-hover:text-[#1823ff]'}`}>
+                                    <Icons.ChevronDown size={20} />
                                 </div>
                             </button>
-                            <div className={`overflow-hidden transition-all duration-500 ${openFaq === idx ? 'max-h-[400px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                            <div className={`overflow-hidden transition-all duration-500 ${openFaq === idx ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
                                 <div className="p-8 md:p-12 pt-0">
-                                    <p className="text-lg font-bold text-slate-400 leading-tight">
+                                    <div className="h-px bg-slate-100 w-full mb-8" />
+                                    <p className="text-lg md:text-xl font-bold text-slate-500 leading-relaxed">
                                         {faq.a}
                                     </p>
                                 </div>
