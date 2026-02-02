@@ -13,7 +13,13 @@ export const ExperienceSection = ({ isMobile = false }: { isMobile?: boolean }) 
         <section className="relative bg-[#f0eae4] pt-24 overflow-hidden">
             {/* Top Transition - Curved Entrance to Blue */}
             <div className="relative z-20 flex flex-col items-center">
-                <div className="w-full bg-[#1823ff] pt-48 pb-24 md:pb-64 relative overflow-hidden" style={{ borderTopLeftRadius: '50% 300px', borderTopRightRadius: '50% 300px' }}>
+                <div
+                    className={`w-full bg-[#1823ff] pb-24 md:pb-64 relative overflow-hidden ${isMobile ? 'pt-32' : 'pt-48'}`}
+                    style={{
+                        borderTopLeftRadius: isMobile ? '50% 100px' : '50% 300px',
+                        borderTopRightRadius: isMobile ? '50% 100px' : '50% 300px'
+                    }}
+                >
                     <NoiseOverlay />
 
                     <div className="max-w-6xl mx-auto px-8 md:px-12 relative z-10">
