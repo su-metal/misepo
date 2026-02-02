@@ -1,133 +1,106 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { Icons } from './LandingPageIcons';
+import Image from 'next/image';
 
 export default function HeroSection() {
-    const [heroAnimationProgress, setHeroAnimationProgress] = useState(0);
+    const [activeImage, setActiveImage] = useState(0);
 
-    const ANIMATION_DURATION = 12000;
+    const images = [
+        '/misepo_hero_hand_phone_1769997838406.png',
+        '/misepo_hero_hand_phone_diagonal_1769998056394.png',
+        '/misepo_hero_hand_phone_side_1769998079370.png'
+    ];
+
     useEffect(() => {
-        let startTime: number | null = null;
-        let animationFrameId: number;
+        const interval = setInterval(() => {
+            setActiveImage((prev) => (prev + 1) % images.length);
+        }, 5000);
 
-        const animate = (timestamp: number) => {
-            if (!startTime) startTime = timestamp;
-            const elapsed = timestamp - startTime;
-            const progress = elapsed % ANIMATION_DURATION;
-            setHeroAnimationProgress(progress);
-            animationFrameId = requestAnimationFrame(animate);
-        };
+        return () => clearInterval(interval);
+    }, [images.length]);
 
-        animationFrameId = requestAnimationFrame(animate);
-        return () => cancelAnimationFrame(animationFrameId);
-    }, []);
-
-    const typingProgress = Math.min(Math.max(heroAnimationProgress / 3000, 0), 1);
-    const userMemo = "・春限定のいちごタルト開始\n・サクサク生地と完熟いちご\n・自家製カスタード";
-    const generatedResult = "【春限定】とろける幸せ、いちごタルト解禁🍓\n\nサクサクのクッキー生地と、\n溢れんばかりの完熟いちご。\n一口食べれば、そこはもう春。";
-
-    let currentText = "";
-    if (heroAnimationProgress < 3000) {
-        currentText = userMemo.slice(0, Math.floor(userMemo.length * typingProgress));
-    } else if (heroAnimationProgress < 5000) {
-        currentText = "Generating...";
-    } else {
-        currentText = generatedResult;
-    }
-
-    const isResultShown = heroAnimationProgress > 5000;
-    const isPosted = heroAnimationProgress > 8000;
+    const NoiseOverlay = () => (
+        <div className="absolute inset-0 pointer-events-none opacity-[0.2] mix-blend-overlay" style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+        }} />
+    );
 
     return (
-        <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-white pt-24 md:pt-32">
-            {/* Background Texture Placeholder */}
-            <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#1823ff 0.5px, transparent 0.5px)', backgroundSize: '24px 24px' }} />
+        <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-[#f0eae4] pt-24 pb-12">
+            <NoiseOverlay />
 
-            <div className="max-w-7xl mx-auto w-full px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
+            {/* Background Decor */}
+            <div className="absolute top-20 right-20 w-96 h-96 bg-[#1823ff]/5 rounded-full blur-[100px] pointer-events-none" />
+            <div className="absolute bottom-20 left-20 w-[30rem] h-[30rem] bg-slate-50 rounded-full blur-[120px] pointer-events-none" />
 
-                {/* Left: Huge Typography */}
-                <div className="flex flex-col items-start text-left">
+            <div className="max-w-6xl mx-auto w-full px-6 flex flex-col items-center lg:grid lg:grid-cols-2 lg:gap-x-12 lg:items-center relative z-10">
+
+                {/* 1. Headline - Top on Mobile, Top Left on PC */}
+                {/* 1. Headline - Top on Mobile, Top Left on PC */}
+                <div className="relative flex flex-col items-center lg:items-start text-center lg:text-left mb-[-20px] lg:mb-0 z-20 lg:col-start-1 lg:row-start-1">
                     <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#1823ff]/5 border border-[#1823ff]/10 rounded-full mb-8">
                         <span className="w-1.5 h-1.5 rounded-full bg-[#1823ff] animate-pulse" />
-                        <span className="text-[10px] font-bold text-[#1823ff] uppercase tracking-[0.2em]">Next-Gen AI for Business</span>
+                        <span className="text-[10px] font-bold text-[#1823ff] uppercase tracking-[0.2em]">Your Alter Ego for SNS</span>
                     </div>
 
-                    <h1 className="text-6xl md:text-7xl lg:text-[7rem] font-black tracking-tight leading-[0.9] text-[#282d32] mb-8 font-inter">
-                        AI BUT<br />
-                        <span className="text-[#1823ff]">YOURS.</span>
+                    <h1 className="text-6xl md:text-7xl lg:text-[7.5rem] font-black tracking-tighter leading-[0.9] text-[#282d32]">
+                        想いを、<br />
+                        <span className="text-[#1823ff]">言葉に。</span>
                     </h1>
+                </div>
 
-                    <div className="max-w-md">
-                        <p className="text-xl md:text-2xl font-medium text-slate-500 leading-tight mb-12">
-                            丁寧だけど、どこか他人事。<br />
-                            そんなAIを卒業しませんか。
-                        </p>
+                {/* 2. Slider - Middle on Mobile, Right Column on PC */}
+                <div className="relative w-full max-w-md mb-12 lg:mb-0 lg:col-start-2 lg:row-start-1 lg:row-span-2">
+                    <div className="relative aspect-[3/4] rounded-[3rem] overflow-hidden shadow-2xl shadow-slate-900/20">
+                        {images.map((src, index) => (
+                            <div
+                                key={src}
+                                className={`absolute inset-0 transition-opacity duration-1000 ${index === activeImage ? 'opacity-100' : 'opacity-0'
+                                    }`}
+                            >
+                                <Image
+                                    src={src}
+                                    alt={`MisePo App ${index + 1}`}
+                                    fill
+                                    className="object-cover"
+                                    priority={index === 0}
+                                />
+                            </div>
+                        ))}
+                    </div>
 
-                        <div className="flex flex-col sm:flex-row gap-4">
-                            <button onClick={() => window.location.href = '/start'} className="px-10 py-5 bg-[#1823ff] text-white font-black rounded-full shadow-2xl shadow-[#1823ff]/30 hover:scale-[1.02] active:scale-95 transition-all text-lg flex items-center gap-3">
-                                <Icons.Sparkles size={20} className="text-yellow-300" />
-                                7日間無料で試す
-                            </button>
-                            <button onClick={() => window.location.href = '#flow'} className="px-10 py-5 bg-white text-[#282d32] font-black rounded-full border border-slate-200 hover:bg-slate-50 transition-all text-lg">
-                                使い方を見る
-                            </button>
-                        </div>
+                    {/* Carousel Indicators */}
+                    <div className="flex justify-center gap-2 mt-6">
+                        {images.map((_, index) => (
+                            <button
+                                key={index}
+                                onClick={() => setActiveImage(index)}
+                                className={`h-2 rounded-full transition-all duration-300 ${index === activeImage
+                                    ? 'w-8 bg-[#1823ff]'
+                                    : 'w-2 bg-slate-300 hover:bg-slate-400'
+                                    }`}
+                                aria-label={`画像 ${index + 1}を表示`}
+                            />
+                        ))}
                     </div>
                 </div>
 
-                {/* Right: Sleek Animation UI */}
-                <div className="relative flex justify-center items-center h-[600px] lg:h-[800px]">
-                    <div className="relative w-full max-w-[400px]">
+                {/* 3. Description & CTA - Bottom on Mobile, Bottom Left on PC */}
+                <div className="flex flex-col items-center lg:items-start text-center lg:text-left lg:col-start-1 lg:row-start-2 max-w-xl">
+                    <p className="text-xl md:text-2xl font-bold text-slate-400 leading-tight mb-12 mt-4 lg:mt-8">
+                        お店の毎日が、ファンの心に届く物語に。<br />
+                        伝えたかった想いを、自然な言葉で。
+                    </p>
 
-                        {/* Main UI Card */}
-                        <div className={`w-full bg-white rounded-[40px] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)] border border-slate-100 p-8 transition-all duration-1000 ${isPosted ? 'scale-95 opacity-50 -translate-x-12 rotate-[-5deg] blur-[1px]' : 'scale-100 opacity-100 translate-x-0 rotate-0'}`}>
-                            <div className="flex justify-between items-center mb-10">
-                                <div className="flex gap-1.5">
-                                    <div className="w-3 h-3 rounded-full bg-slate-100" />
-                                    <div className="w-3 h-3 rounded-full bg-slate-100" />
-                                </div>
-                                <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">MisePo AI</div>
-                            </div>
-
-                            <div className="space-y-6">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center">
-                                        <Icons.PlusSquare size={18} className="text-slate-300" />
-                                    </div>
-                                    <div className="h-4 w-32 bg-slate-50 rounded-full" />
-                                </div>
-
-                                <div className="bg-slate-50 rounded-[32px] p-8 min-h-[220px]">
-                                    <p className="text-lg font-bold text-slate-700 leading-relaxed whitespace-pre-wrap">
-                                        {currentText}
-                                        <span className="inline-block w-2 h-5 bg-[#1823ff] ml-1 animate-pulse" />
-                                    </p>
-                                </div>
-
-                                <div className="pt-4">
-                                    <div className={`w-full py-5 rounded-[24px] font-black text-center text-sm transition-all duration-700 ${isResultShown ? 'bg-[#1823ff] text-white shadow-xl shadow-[#1823ff]/20' : 'bg-slate-100 text-slate-400'}`}>
-                                        {isResultShown ? "Post to Instagram" : "Generating..."}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Result Confirmation card (Floats in) */}
-                        <div className={`absolute inset-0 flex items-center justify-center transition-all duration-1000 ${isPosted ? 'translate-y-0 opacity-100 scale-105' : 'translate-y-20 opacity-0 scale-90 pointer-events-none'}`}>
-                            <div className="bg-white rounded-[40px] shadow-[0_60px_120px_-30px_rgba(24,35,255,0.25)] border-2 border-[#1823ff]/10 p-10 text-center w-full max-w-[320px]">
-                                <div className="w-20 h-20 bg-[#1823ff] rounded-full flex items-center justify-center mx-auto mb-8 shadow-xl shadow-[#1823ff]/30">
-                                    <Icons.Check size={40} className="text-white" strokeWidth={3} />
-                                </div>
-                                <h4 className="text-2xl font-black text-[#282d32] mb-3">Posted!</h4>
-                                <p className="text-sm text-slate-500 font-bold mb-8">AIによって、あなたらしい文章が発信されました。</p>
-                                <div className="flex gap-2 justify-center">
-                                    <div className="w-2 h-2 rounded-full bg-[#1823ff]" />
-                                    <div className="w-2 h-2 rounded-full bg-[#1823ff]/30" />
-                                    <div className="w-2 h-2 rounded-full bg-[#1823ff]/30" />
-                                </div>
-                            </div>
-                        </div>
-
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start w-full">
+                        <button onClick={() => window.location.href = '/start'} className="px-10 py-5 bg-[#1823ff] text-white font-black rounded-full shadow-2xl shadow-[#1823ff]/30 hover:scale-[1.02] active:scale-95 transition-all text-lg flex items-center justify-center gap-3">
+                            <Icons.Sparkles size={20} className="text-yellow-300" />
+                            7日間無料で試す
+                        </button>
+                        <button onClick={() => window.location.href = '#flow'} className="px-10 py-5 bg-white text-[#282d32] font-black rounded-full border border-slate-200 hover:bg-slate-50 transition-all text-lg">
+                            使い方を見る
+                        </button>
                     </div>
                 </div>
 

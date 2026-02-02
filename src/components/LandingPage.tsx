@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
@@ -15,6 +15,8 @@ import { TestimonialsSection } from './landing-page/TestimonialsSection';
 import { PricingSection } from './landing-page/PricingSection';
 import { FAQSection } from './landing-page/FAQSection';
 import { CTASection } from './landing-page/CTASection';
+import { ExperienceSection } from './landing-page/ExperienceSection';
+import { AppScreensSection } from './landing-page/AppScreensSection';
 import { Footer } from './landing-page/Footer';
 
 export default function LandingPage() {
@@ -125,42 +127,19 @@ LINE友だち限定で、このホットチョコドーナツが
 
   const handleDemoGenerate = async () => {
     setIsDemoGenerating(true);
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    const mockResponse = `˗ˏˋ ✨新作ドーナツ登場✨ ˎˊ˗
-
-misepocafeに、とっておきのドーナツが3種類仲間入りしました🍩
-
-今回仲間入りしたのは、
-・ハニーディップ
-・トリプルチョコ
-・パイ生地ドーナツ
-
-どれも一つ280円です！
-
-自家焙煎のこだわりのコーヒーと一緒に、ぜひお楽しみくださいね☕️
-数量限定ですので、売り切れ次第終了となります。お早めにどうぞ😊
-
-MisePoCafe coffee&eat
-☎︎03-1234-5678
-
-open11:00-close 17:00
-（sat）open11:00-close21:00
-（sun）open11:00-close18:00
-
-〒150-0000 東京都渋谷区神南1-0-0 ミセポビル2F
-
-#misepocafe #渋谷カフェ #表参道カフェ #東京グルメ #新作ドーナツ #ドーナツ #カフェ巡り`;
-    setDemoResult("");
+    // Simulate generation process
     await new Promise(resolve => setTimeout(resolve, 1500));
+    setDemoResult("");
+    await new Promise(resolve => setTimeout(resolve, 1000));
     setDemoResult(demoScenarios[activeScenarioIdx].result);
     setIsDemoGenerating(false);
   };
 
   const problems = [
-    { icon: <Icons.Moon />, title: "閉店後の\nSNS作業がツラい", desc: "疲れた体でスマホを見つめて、\n手が止まる。\nそんな夜はもう終わりにしませんか。", bg: "bg-[#eb714f]", delay: 0 },
-    { icon: <Icons.Bot />, title: "AI文章に\n違和感がある", desc: "丁寧すぎて『自分らしくない』。\nMisePoなら、あなたの口癖や\n話し方を再現します。", bg: "bg-[#1f29fc]", delay: 0.1 },
-    { icon: <Icons.MessageCircle />, title: "クチコミ返信が\n放置気味…", desc: "言葉が見つからず、\n気づけば数週間。お客様との絆を\n30秒で紡ぎ直せます。", bg: "bg-[#f2e018]", delay: 0.2 },
-    { icon: <Icons.Users />, title: "任せたいけど\n任せられない", desc: "スタッフに頼みたいけど、\n店の雰囲気が壊れないか心配…\n『店の人格』を設定すれば解決。", bg: "bg-[#00b900]", delay: 0.3 },
+    { icon: <Icons.Moon />, title: "営業後の\n投稿作成を、\nもっと楽に", desc: "一日の終わりに、\nその日の出来事を振り返りながら。\nMisePoが、あなたの言葉を見つけます。", bg: "bg-[#eb714f]", delay: 0 },
+    { icon: <Icons.Bot />, title: "あなたらしい\n言葉で、\n自然に", desc: "丁寧すぎる文章じゃなくて、\nいつものあなたの口調で。\nMisePoが、あなたの話し方を学びます。", bg: "bg-[#1f29fc]", delay: 0.1 },
+    { icon: <Icons.MessageCircle />, title: "クチコミ返信も、\n30秒で\n心を込めて", desc: "お客様の声に、\nちゃんと応えたい。\nMisePoが、感謝の気持ちを言葉にします。", bg: "bg-[#f2e018]", delay: 0.2 },
+    { icon: <Icons.Users />, title: "スタッフと\n一緒に、\nお店の声を", desc: "誰が書いても、\nお店らしい雰囲気で。\n『お店の人格』を共有できます。", bg: "bg-[#00b900]", delay: 0.3 },
   ];
 
   const faqs = [
@@ -171,11 +150,13 @@ open11:00-close 17:00
   ];
 
   return (
-    <div className="min-h-screen bg-white text-[#282d32] font-inter selection:bg-[#1823ff] selection:text-white">
+    <div className="min-h-screen bg-[#f0eae4] text-[#282d32] font-inter selection:bg-[#1823ff] selection:text-white">
       <Header scrolled={scrolled} isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} loginWithGoogle={loginWithGoogle} />
       <HeroSection />
-      <ProblemSection problems={problems} isMobile={isMobile} />
+      <ExperienceSection isMobile={isMobile} />
+      <AppScreensSection isMobile={isMobile} />
       <UnifiedFlowSection />
+      <ProblemSection problems={problems} isMobile={isMobile} />
       <DemoSection
         demoScenarios={demoScenarios}
         activeScenarioIdx={activeScenarioIdx}
@@ -193,12 +174,6 @@ open11:00-close 17:00
       <CTASection isMobile={isMobile} />
       <Footer />
 
-      <style jsx global>{`
-                html { scroll-behavior: smooth; scroll-padding-top: 80px; }
-                .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-                .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-                .custom-scrollbar::-webkit-scrollbar-thumb { background: #1823ff; border-radius: 10px; }
-            `}</style>
     </div>
   );
 }

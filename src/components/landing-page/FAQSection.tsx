@@ -8,14 +8,23 @@ interface FAQ {
 }
 
 export const FAQSection = ({ faqs, openFaq, setOpenFaq, isMobile = false }: { faqs: FAQ[]; openFaq: number | null; setOpenFaq: (idx: number | null) => void; isMobile?: boolean }) => {
+    const NoiseOverlay = () => (
+        <div className="absolute inset-0 pointer-events-none opacity-[0.2] mix-blend-overlay" style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3Map%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+        }} />
+    );
+
     return (
-        <section id="faq" className="py-24 md:py-48 bg-[#282d32] text-white overflow-hidden">
+        <section id="faq" className="py-24 md:py-48 bg-[#282d32] text-white relative overflow-hidden">
+            <NoiseOverlay />
+            <div className="absolute top-0 right-0 w-96 h-96 bg-[#1823ff]/5 rounded-full blur-[100px] pointer-events-none" />
+
             <div className="max-w-7xl mx-auto px-6">
                 <div className="flex flex-col items-start mb-24">
                     <span className="text-[10px] font-black text-[#1823ff] uppercase tracking-[0.2em] mb-8 px-4 py-2 bg-[#1823ff]/10 rounded-full border border-[#1823ff]/20">Frequently Asked</span>
-                    <h2 className={`font-black tracking-tighter leading-[0.9] text-white ${isMobile ? 'text-5xl' : 'text-7xl md:text-8xl lg:text-[8rem]'}`}>
-                        ASK IF<br />
-                        <span className="text-[#1823ff]">UNCLEAR.</span>
+                    <h2 className={`font-black tracking-tighter leading-[0.85] text-white ${isMobile ? 'text-5xl' : 'text-7xl md:text-8xl lg:text-[8rem]'}`}>
+                        不安を、<br />
+                        <span className="text-[#1823ff]">安心に。</span>
                     </h2>
                 </div>
 
