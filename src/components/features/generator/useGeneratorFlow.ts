@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { 
   Platform, PostPurpose, GoogleMapPurpose, Tone, Length, 
-  StoreProfile, GenerationConfig, GeneratedPost, Preset, GeneratedResult, TrainingItem 
+  StoreProfile, GenerationConfig, GeneratedPost, Preset, GeneratedResult, TrainingItem, UserPlan
 } from '../../../types';
 import { DEMO_SAMPLE_TEXT, LOADING_TIPS } from '../../../constants';
 import { insertInstagramFooter, removeInstagramFooter } from './utils';
@@ -24,10 +24,12 @@ export function useGeneratorFlow(props: {
   resetResultsTrigger?: number;
   refreshPlan?: () => Promise<void>;
   trainingItems: TrainingItem[];
+  plan: UserPlan;
 }) {
   const { 
     storeProfile, isLoggedIn, onOpenLogin, onGenerateSuccess, 
-    onTaskComplete, favorites, onToggleFavorite, restorePost, resetResultsTrigger, refreshPlan 
+    onTaskComplete, favorites, onToggleFavorite, restorePost, resetResultsTrigger, refreshPlan,
+    plan
   } = props;
 
   // --- State ---
@@ -315,6 +317,19 @@ export function useGeneratorFlow(props: {
     if (!inputText.trim()) {
       alert('テキストを入力してください');
       return;
+    }
+    
+    // Client-side credit check
+    const cost = targetPlatforms.length > 1 ? 2 : 1;
+    if (plan.limit !== undefined && plan.usage !== undefined) {
+      if (plan.usage + cost > plan.limit) {
+        if (plan.usage_period === 'daily') {
+          alert(`本日の生成制限（${plan.limit}回）に達しました。明日またご利用いただけます。`);
+        } else {
+          alert(`今月の生成制限（${plan.limit}回）に達しました。来月までお待ちいただくか、プランのアップグレードをご検討ください。`);
+        }
+        return;
+      }
     }
 
     setLoading(true);
