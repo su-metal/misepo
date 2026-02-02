@@ -509,7 +509,7 @@ DO NOT use stiff business boilerplate like "誠にありがとうございます
   ${languageRule}
 
   <user_input>
-    "${config.inputText}"
+    ${config.topicPrompt ? `【話題のテーマ】: "${config.topicPrompt}"\n` : ''}${config.question ? `    【ソムリエからの質問】: "${config.question}"\n    【オーナーの回答】: "${config.inputText}"` : `"${config.inputText}"`}
   </user_input>
 
   ${config.storeSupplement ? `<owner_explanation>\n${config.storeSupplement}\n</owner_explanation>` : ""}
@@ -1446,6 +1446,7 @@ export interface InspirationCard {
   title: string;
   description: string;
   prompt: string; // The instruction for the AI when this card is selected
+  question?: string; // The natural language question for the owner (NEW)
   icon?: string; // Emoji
 }
 

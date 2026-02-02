@@ -26,6 +26,10 @@ export interface PostInputFormProps {
     onLengthChange: (l: Length) => void;
     inputText: string;
     onInputTextChange: (text: string) => void;
+    question: string | undefined;
+    onQuestionChange: (question: string | undefined) => void;
+    topicPrompt: string | undefined;
+    onTopicPromptChange: (prompt: string | undefined) => void;
     starRating: number | null;
     onStarRatingChange: (r: number | null) => void;
     includeEmojis: boolean;

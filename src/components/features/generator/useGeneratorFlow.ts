@@ -48,6 +48,8 @@ export function useGeneratorFlow(props: {
   const [includeSymbols, setIncludeSymbols] = useState<boolean>(false);
   const [includeEmojis, setIncludeEmojis] = useState<boolean>(true);
   const [targetAudiences, setTargetAudiences] = useState<string[]>([]);
+  const [question, setQuestion] = useState<string | undefined>(undefined);
+  const [topicPrompt, setTopicPrompt] = useState<string | undefined>(undefined);
   
   // Initialize target audiences from store profile
   useEffect(() => {
@@ -343,6 +345,8 @@ export function useGeneratorFlow(props: {
         tone,
         length,
         inputText,
+        question,
+        topicPrompt,
         starRating: p === Platform.GoogleMaps ? starRating : undefined,
         language,
         storeSupplement,
@@ -677,6 +681,8 @@ export function useGeneratorFlow(props: {
     includeSymbols, setIncludeSymbols: handleSymbolsToggle,
     includeEmojis, setIncludeEmojis: handleEmojiToggle,
     language, setLanguage,
+    question, setQuestion,
+    topicPrompt, setTopicPrompt,
     storeSupplement, setStoreSupplement,
     targetAudiences, setTargetAudiences,
     handlePlatformToggle,
