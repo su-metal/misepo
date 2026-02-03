@@ -451,9 +451,31 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                         </div>
                     </div>
 
-                    <div className="flex flex-col gap-0.5 items-start px-2 mt-2 mb-0">
-                        <h2 className="text-[12px] font-black text-[#1f29fc] tracking-tight">投稿先を選択</h2>
-                        <p className="text-[11px] text-slate-400 font-bold uppercase tracking-[0.2em]">Select your canvas</p>
+                    <div className="flex items-center justify-between px-2 mt-2 mb-0">
+                        <div className="flex flex-col gap-0.5 items-start">
+                            <h2 className="text-[12px] font-black text-[#1f29fc] tracking-tight">投稿先を選択</h2>
+                            <p className="text-[11px] text-slate-400 font-bold uppercase tracking-[0.2em]">Select your canvas</p>
+                        </div>
+
+                        {/* Simultaneous Generation Toggle */}
+                        <div className="flex items-center gap-3 bg-slate-50 px-4 py-2 rounded-2xl border border-slate-100 shadow-sm active:scale-95 transition-all cursor-pointer select-none"
+                            onClick={onToggleMultiGen}>
+                            <div className="flex flex-col items-end">
+                                <span className={`text-[9px] font-black tracking-widest uppercase leading-none mb-0.5 ${isMultiGen ? 'text-[#1f29fc]' : 'text-slate-400'}`}>
+                                    {isMultiGen ? 'ON' : 'OFF'}
+                                </span>
+                                <span className="text-[8px] font-bold text-slate-500 leading-none whitespace-nowrap">同時生成</span>
+                            </div>
+                            <div className={`
+                                relative w-10 h-5 rounded-full transition-all duration-300
+                                ${isMultiGen ? 'bg-[#1f29fc]' : 'bg-slate-200'}
+                            `}>
+                                <div className={`
+                                    absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform duration-300 shadow-sm
+                                    ${isMultiGen ? 'translate-x-5' : 'translate-x-0'}
+                                `} />
+                            </div>
+                        </div>
                     </div>
 
                     {/* Standard 2x2 Grid Platform Selection */}

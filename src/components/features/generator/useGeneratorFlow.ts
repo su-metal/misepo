@@ -673,9 +673,11 @@ export function useGeneratorFlow(props: {
     });
   }, [includeFooter, storeProfile.instagramFooter]);
 
-  const handleResetAll = useCallback(() => {
-    setPlatforms([Platform.Instagram]);
-    setIsMultiGenMode(false);
+  const handleResetAll = useCallback((keepPlatforms = false) => {
+    if (!keepPlatforms) {
+      setPlatforms([Platform.Instagram]);
+      setIsMultiGenMode(false);
+    }
     setPostPurpose(PostPurpose.Auto);
     setGmapPurpose(GoogleMapPurpose.Auto);
     setTone(Tone.Standard);
