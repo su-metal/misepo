@@ -326,7 +326,9 @@ export function useGeneratorFlow(props: {
         if (plan.usage_period === 'daily') {
           alert(`本日の生成制限（${plan.limit}回）に達しました。明日またご利用いただけます。`);
         } else {
-          alert(`今月の生成制限（${plan.limit}回）に達しました。来月までお待ちいただくか、プランのアップグレードをご検討ください。`);
+          if (confirm(`今月の生成制限（${plan.limit}回）に達しました。プランをアップグレードしてすぐに制限を解除しますか？`)) {
+            window.location.href = '/start?upgrade=true';
+          }
         }
         return;
       }
@@ -403,7 +405,9 @@ export function useGeneratorFlow(props: {
             if (data.error === 'daily_limit_reached') {
                 alert(`本日の生成制限（10回）に達しました。明日またご利用いただけます。`);
             } else if (data.error === 'monthly_limit_reached') {
-                alert(`今月の生成制限（300回）に達しました。来月までお待ちいただくか、サポートにお問い合わせください。`);
+                if (confirm(`今月の生成制限（${data.limit || '規定'}回）に達しました。プランをアップグレードしてすぐに制限を解除しますか？`)) {
+                    window.location.href = '/start?upgrade=true';
+                }
             } else {
                 alert(`生成制限に達しました。`);
             }

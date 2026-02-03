@@ -378,14 +378,14 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
                         <div className="flex flex-col items-end gap-3">
                             <div className="flex items-center gap-3">
-                                {plan?.plan === 'trial' && (
-                                    <button
-                                        onClick={onOpenSettings}
-                                        className="h-9 px-4 rounded-full bg-gradient-to-r from-accent via-yellow-400 to-accent text-black text-[10px] font-black uppercase tracking-[0.1em] shadow-xl shadow-accent/20 active:scale-95 transition-all flex items-center gap-1.5 border border-white/50 animate-pulse-slow"
+                                {plan?.plan !== 'professional' && (
+                                    <a
+                                        href="/start?upgrade=true"
+                                        className="xl:hidden h-8 px-4 rounded-full bg-gradient-to-r from-[#1f29fc] to-[#7f5af0] text-white text-[9px] font-black uppercase tracking-[0.1em] shadow-lg shadow-indigo-500/20 active:scale-95 transition-all flex items-center gap-1.5 border border-white/20"
                                     >
-                                        <SparklesIcon className="w-3 h-3" />
-                                        Go Pro
-                                    </button>
+                                        <SparklesIcon className="w-2.5 h-2.5" />
+                                        {plan?.plan === 'free' || plan?.plan === 'trial' ? 'Go Pro' : 'Upgrade'}
+                                    </a>
                                 )}
 
                                 {/* Decorative Avatar (No Name) */}

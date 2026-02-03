@@ -52,7 +52,7 @@ export async function POST(req: Request) {
     // ---- load entitlement (DB is source of truth)
     const entRes = await supabaseAdmin
       .from("entitlements")
-      .select("plan,status,expires_at,trial_ends_at,stripe_customer_id")
+      .select("plan,status,expires_at,trial_ends_at,stripe_customer_id,billing_reference_id")
       .eq("app_id", appId)
       .eq("user_id", userId)
       .maybeSingle();
@@ -66,6 +66,7 @@ export async function POST(req: Request) {
           expires_at?: string | null;
           trial_ends_at?: string | null;
           stripe_customer_id?: string | null;
+          billing_reference_id?: string | null;
         }
       | null;
 
@@ -94,12 +95,6 @@ export async function POST(req: Request) {
     }
 
     // If already on a paid plan, don't create a new checkout unless it's an upgrade (simplified for now to just block if active)
-    const isAlreadyPaid = (entitlement?.plan === 'entry' || entitlement?.plan === 'standard' || entitlement?.plan === 'professional' || entitlement?.plan === 'monthly' || entitlement?.plan === 'yearly') && 
-                          (entitlement?.status === 'active' || entitlement?.status === 'trialing');
-
-    if (isAlreadyPaid) {
-      return NextResponse.json({ ok: false, error: "already_active" }, { status: 400 });
-    }
 
     // ---- pick price
     let priceId = PRICE_ID_STANDARD;
@@ -130,6 +125,27 @@ export async function POST(req: Request) {
         );
 
       if (saveErr) throw new Error(saveErr.message);
+    }
+
+    const isAlreadyPaid = (entitlement?.plan === 'entry' || entitlement?.plan === 'standard' || entitlement?.plan === 'professional' || entitlement?.plan === 'monthly' || entitlement?.plan === 'yearly') && 
+                          (entitlement?.status === 'active' || entitlement?.status === 'trialing');
+
+    if (isAlreadyPaid && entitlement?.billing_reference_id && customerId) {
+      // Redirect to Stripe Billing Portal for plan change (Subscription Update flow)
+      const session = await stripe.billingPortal.sessions.create({
+        customer: customerId,
+        return_url: successUrl,
+        flow_data: {
+          type: 'subscription_update',
+          subscription_update: {
+            subscription: entitlement.billing_reference_id
+          }
+        }
+      });
+      return NextResponse.json({ ok: true, url: session.url });
+    } else if (isAlreadyPaid) {
+      // Safety check: if they are paid but we don't have sub ID, block and suggest support
+      return NextResponse.json({ ok: false, error: "already_active" }, { status: 400 });
     }
 
     // ---- discount removed as per request
