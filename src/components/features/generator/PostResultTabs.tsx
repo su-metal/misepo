@@ -58,6 +58,22 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
 }) => {
     const [previewState, setPreviewState] = React.useState<{ isOpen: boolean, platform: Platform, text: string, gIdx: number, iIdx: number } | null>(null);
 
+    // Debug: Log results structure when component receives data
+    React.useEffect(() => {
+        if (results && results.length > 0 && process.env.NODE_ENV === 'development') {
+            console.group('📊 PostResultTabs - Results Data');
+            console.log('Total results:', results.length);
+            console.log('Results structure:', results.map((r, idx) => ({
+                index: idx,
+                platform: r.platform,
+                dataCount: r.data?.length || 0,
+                dataSample: r.data?.[0]?.substring(0, 50) + '...'
+            })));
+            console.log('Active tab:', activeTab);
+            console.groupEnd();
+        }
+    }, [results, activeTab]);
+
     const getPlatformTheme = (platform: Platform) => {
         switch (platform) {
             case Platform.X:
@@ -269,8 +285,13 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                             ) : (
                                 results.map((res, gIdx) => {
                                     const theme = getPlatformTheme(res.platform);
+                                    const isActive = Number(activeTab) === Number(gIdx);
                                     return (
-                                        <div key={res.platform} className={activeTab === gIdx ? 'block animate-in fade-in duration-700' : 'hidden'}>
+                                        <div
+                                            key={`${res.platform}-${gIdx}`}
+                                            style={{ display: isActive ? 'block' : 'none' }}
+                                            className={isActive ? 'animate-in fade-in duration-700' : ''}
+                                        >
                                             <div className="divide-y border-[#F0F0F0]">
                                                 {res.data.map((text, iIdx) => (
                                                     <div key={iIdx} className="py-12 px-8 lg:px-12 flex flex-col relative text-left transition-colors duration-700">

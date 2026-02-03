@@ -57,14 +57,21 @@ export function normalizeResults(raw: any, fallbackPlatform: Platform): Generate
       } else if (r && typeof r === 'object') {
         // Handle both 'data' (normalized) and 'posts' (raw from gemini)
         const content = r.data || r.posts; 
+        // IMPROVED: Ensure platform is explicitly extracted from each result object
+        const platform = r.platform || fallbackPlatform;
         if (content) {
-            addResult(r.platform || fallbackPlatform, Array.isArray(content) ? content : [content]);
+            addResult(platform, Array.isArray(content) ? content : [content]);
         }
       }
     });
   }
   // Handle structured object (from Gemini service result: { analysis, posts })
   else if (raw && typeof raw === 'object') {
+    // Check if this is a results wrapper with array inside
+    if (Array.isArray(raw.results)) {
+      // Recursively process the nested results array
+      return normalizeResults(raw.results, fallbackPlatform);
+    }
     if (Array.isArray(raw.posts)) {
       addResult(fallbackPlatform, raw.posts);
     }
@@ -123,5 +130,16 @@ export function mapHistoryEntry(entry: any): GeneratedPost {
     },
     results: normalizeResults(rawResults, fallbackPlatform),
     isPinned: typeof entry.isPinned === 'boolean' ? entry.isPinned : Boolean(entry.is_pinned || rawConfig.isPinned),
+  };
+}
+
+// Debug helper to log history data structure
+if (typeof window !== 'undefined') {
+  (window as any).__debugHistoryData = (entry: any) => {
+    console.group('🔍 History Entry Debug');
+    console.log('Raw entry:', entry);
+    console.log('Raw results:', entry.results || entry.result);
+    console.log('Normalized results:', mapHistoryEntry(entry).results);
+    console.groupEnd();
   };
 }

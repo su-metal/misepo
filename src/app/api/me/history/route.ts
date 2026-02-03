@@ -107,13 +107,27 @@ export async function GET() {
       
       if (!storedConfig) storedConfig = {};
       
-      return {
+      
+      const historyEntry = {
         id: row.id,
         timestamp: new Date(row.created_at).getTime(),
         isPinned: row.is_pinned,
         config: storedConfig,
         results: rec?.output ?? [],
       };
+      
+      // Debug: Log the first history entry to see data structure
+      if (row.id && process.env.NODE_ENV === 'development') {
+        console.log('[HISTORY DEBUG] Entry structure:', {
+          id: row.id,
+          outputType: typeof rec?.output,
+          outputIsArray: Array.isArray(rec?.output),
+          outputSample: rec?.output,
+          platforms: storedConfig?.platforms,
+        });
+      }
+      
+      return historyEntry;
     });
 
   return NextResponse.json({ ok: true, history });
