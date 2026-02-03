@@ -76,7 +76,7 @@ function StartPageContent() {
               <Icons.Smartphone size={24} className="text-white" />
             </div>
             <h1 className="text-5xl md:text-6xl font-black text-[#282d32] tracking-tighter leading-none mb-0 flex flex-col items-start translate-y-[-2px]">
-              MISEPO
+              misepo
               <span className="text-[12px] font-black text-[#1823ff] uppercase tracking-[0.4em] ml-1">Studio</span>
             </h1>
           </div>

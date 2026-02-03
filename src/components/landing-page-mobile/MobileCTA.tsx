@@ -4,7 +4,7 @@ import { Icons } from '../LandingPageIcons';
 
 export const MobileCTA = () => {
     return (
-        <section className="bg-[#1f29fc] rounded-3xl p-8 text-center text-white shadow-lg mb-20 relative overflow-hidden">
+        <section className="bg-[#0071b9] rounded-3xl p-8 text-center text-white shadow-lg mb-20 relative overflow-hidden">
             {/* Decorative circles */}
             <div className="absolute top-[-20%] right-[-20%] w-32 h-32 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
             <div className="absolute bottom-[-10%] left-[-10%] w-24 h-24 bg-[#00b900]/20 rounded-full blur-xl pointer-events-none"></div>
@@ -19,7 +19,7 @@ export const MobileCTA = () => {
                     あなたの分身を作りましょう。
                 </p>
 
-                <button onClick={() => window.location.href = '/start'} className="w-full py-4 bg-white text-[#1f29fc] font-bold rounded-xl shadow-xl flex items-center justify-center gap-2 active:scale-95 transition-transform group relative overflow-hidden">
+                <button onClick={() => window.location.href = '/start'} className="w-full py-4 bg-white text-[#0071b9] font-bold rounded-xl shadow-xl flex items-center justify-center gap-2 active:scale-95 transition-transform group relative overflow-hidden">
                     <Icons.Sparkles size={18} className="text-[#00b900] group-hover:rotate-12 transition-transform" />
                     <span>無料で始める</span>
                 </button>

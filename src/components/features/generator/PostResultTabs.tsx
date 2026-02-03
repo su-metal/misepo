@@ -93,10 +93,10 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                 }`}
                         >
                             <span className={`w-1.5 h-1.5 rounded-full transition-colors ${includeFooter ? 'bg-[var(--plexo-yellow)] shadow-[0_0_8px_var(--plexo-yellow)]' : 'bg-[var(--plexo-med-gray)]'}`} />
-                            <span className="font-bold">フッター</span>
+                            <span className="font-bold">店舗情報を含める</span>
                         </button>
                     ),
-                    actionColor: "bg-[#1f29fc] text-white shadow-[0_8px_25px_rgba(31,41,252,0.15)]",
+                    actionColor: "bg-[#0071b9] text-white shadow-[0_8px_25px_rgba(31,41,252,0.15)]",
                     actionLabel: "Instagramを起動",
                     contentClasses: "text-[15px] text-[#111111] font-medium leading-relaxed",
                     wrapperClass: "max-w-[340px]",
@@ -115,7 +115,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                         </div>
                     ),
                     label: 'Google Maps',
-                    actionColor: 'bg-[#1f29fc] text-white hover:opacity-90 shadow-[0_8px_20px_rgba(31,41,252,0.15)] border-none',
+                    actionColor: 'bg-[#0071b9] text-white hover:opacity-90 shadow-[0_8px_20px_rgba(31,41,252,0.15)] border-none',
                     actionLabel: "Googleマップで返信する",
                     contentClasses: "text-[15px] text-[#111111] font-medium leading-relaxed",
                     wrapperClass: "max-w-[325px]",
@@ -132,7 +132,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                         </div>
                     ),
                     label: 'LINE',
-                    actionColor: "bg-[#1f29fc] text-white shadow-[0_8px_20px_rgba(31,41,252,0.15)]",
+                    actionColor: "bg-[#0071b9] text-white shadow-[0_8px_20px_rgba(31,41,252,0.15)]",
                     actionLabel: "LINEで送る",
                     contentClasses: "text-[15px] text-[#111111] font-medium leading-relaxed",
                     wrapperClass: "max-w-[400px]",
@@ -146,7 +146,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                 return {
                     icon: null,
                     label: platform,
-                    actionColor: "bg-[#1f29fc] text-white shadow-[0_8px_20px_rgba(31,41,252,0.15)]",
+                    actionColor: "bg-[#0071b9] text-white shadow-[0_8px_20px_rgba(31,41,252,0.15)]",
                     actionLabel: "投稿する",
                     contentClasses: "text-base text-[#111111] font-black",
                     brandTextColor: "text-[#111111]",
@@ -183,7 +183,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                     </svg>
                 );
             case Platform.Line:
-                return <LineIcon className={iconClass} isActive={isSelected} color={isSelected ? "#06C755" : "currentColor"} activeTextFill="#1f29fc" />;
+                return <LineIcon className={iconClass} isActive={isSelected} color={isSelected ? "#06C755" : "currentColor"} activeTextFill="#0071b9" />;
             default:
                 return null;
         }
@@ -266,7 +266,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                         <div key={res.platform} className={activeTab === gIdx ? 'block animate-in fade-in duration-700' : 'hidden'}>
                                             <div className="divide-y border-[#F0F0F0]">
                                                 {res.data.map((text, iIdx) => (
-                                                    <div key={iIdx} className="py-12 px-8 lg:px-6 flex flex-col relative text-left transition-colors duration-700">
+                                                    <div key={iIdx} className="py-12 px-8 lg:px-12 flex flex-col relative text-left transition-colors duration-700">
                                                         <div className={`mb-2 relative group/textarea ${theme.wrapperClass || ''}`}>
                                                             {text ? (
                                                                 <AutoResizingTextarea

@@ -41,7 +41,7 @@ export const ExperienceSection = ({ isMobile = false }: { isMobile?: boolean }) 
                     {/* Section 1: Intro with Phone Card */}
                     <div className="flex flex-col md:flex-row items-center gap-16 md:gap-32 pt-8 md:pt-48 mb-48 md:mb-64">
                         <div className="flex-1 order-2 md:order-1 lg:pl-8">
-                            <span className="text-lg md:text-2xl font-bold text-white/70 block mb-2 tracking-tight">misepoなら</span>
+                            <span className="text-lg md:text-2xl font-bold text-white/70 block mb-2 tracking-tight">MisePoなら</span>
                             <h3 className="text-3xl md:text-5xl lg:text-7xl font-black text-white leading-[1.2] mb-10">
                                 投稿が、<br />
                                 続けられる。
@@ -92,7 +92,7 @@ export const ExperienceSection = ({ isMobile = false }: { isMobile?: boolean }) 
                             </p>
                             <p className="text-lg md:text-xl font-bold text-white/70 leading-relaxed">
                                 そんな小さな瞬間を、<br />
-                                MisePoが心に響く言葉に変えます。<br />
+                                misepoが心に響く言葉に変えます。<br />
                                 あなたの毎日に、もっと寄りそうパートナー。
                             </p>
                         </div>

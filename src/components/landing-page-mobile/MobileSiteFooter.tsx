@@ -30,7 +30,7 @@ export const MobileSiteFooter = () => {
 
             {/* Page Top */}
             <div className="flex justify-end mb-8 border-b border-slate-200 pb-2">
-                <button onClick={scrollToTop} className="flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-[#1f29fc] transition-colors">
+                <button onClick={scrollToTop} className="flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-[#0071b9] transition-colors">
                     <span>ページのトップに戻る</span>
                     <div className="bg-slate-200 rounded-full p-0.5">
                         <Icons.ChevronUp size={12} className="text-slate-500" />

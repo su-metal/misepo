@@ -20,7 +20,7 @@ export const AppScreensSection = ({ isMobile = false }: { isMobile?: boolean }) 
                         ABOUT
                     </h2>
                     <p className="text-xl md:text-3xl font-bold text-slate-400 max-w-2xl leading-tight mb-12">
-                        misepo（ミセポ）は、お店の「今日」をSNS投稿文に変換するAIアプリです。<br />
+                        MisePo（ミセポ）は、お店の「今日」をSNS投稿文に変換するAIアプリです。<br />
                         メモ一つで、各プラットフォームに最適な文章が自動で完成します。
                     </p>
 

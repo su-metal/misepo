@@ -7,7 +7,7 @@ const problems = [
         icon: <Icons.Moon size={20} className="text-white" />,
         title: "閉店後のSNS作業",
         desc: "疲れた体でスマホを見つめて、手が止まる。そんな夜はもう終わりにしませんか。",
-        bg: "bg-[#1f29fc]"
+        bg: "bg-[#0071b9]"
     },
     {
         icon: <Icons.Bot size={20} className="text-white" />,

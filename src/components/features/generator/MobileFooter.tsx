@@ -18,35 +18,35 @@ interface MobileFooterProps {
 const CustomHome = ({ active }: { active: boolean }) => (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="transition-all duration-300">
         <path d="M3 10L12 3L21 10V20C21 20.5523 20.5523 21 20 21H15V14H9V21H4C3.44772 21 3 20.5523 3 20V10Z"
-            stroke={active ? "#1f29fc" : "#64748B"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
-            fill={active ? "#1f29fc" : "none"} fillOpacity={active ? 0.2 : 0} />
+            stroke={active ? "#0071b9" : "#64748B"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+            fill={active ? "#0071b9" : "none"} fillOpacity={active ? 0.2 : 0} />
     </svg>
 );
 
 const CustomHistory = ({ active }: { active: boolean }) => (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="transition-all duration-300">
         <path d="M3 12C3 16.9706 7.02944 21 12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C9.5 3 7.25 4.01 5.6 5.6"
-            stroke={active ? "#1f29fc" : "#64748B"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M5.6 1.6V5.6H1.6" stroke={active ? "#1f29fc" : "#64748B"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M12 7V12L15 15" stroke={active ? "#1f29fc" : "#64748B"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+            stroke={active ? "#0071b9" : "#64748B"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M5.6 1.6V5.6H1.6" stroke={active ? "#0071b9" : "#64748B"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M12 7V12L15 15" stroke={active ? "#0071b9" : "#64748B"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
 );
 
 const CustomAvatar = ({ active }: { active: boolean }) => (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="transition-all duration-300">
-        <circle cx="12" cy="7" r="4" stroke={active ? "#1f29fc" : "#64748B"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill={active ? "#1f29fc" : "none"} fillOpacity={active ? 0.2 : 0} />
+        <circle cx="12" cy="7" r="4" stroke={active ? "#0071b9" : "#64748B"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill={active ? "#0071b9" : "none"} fillOpacity={active ? 0.2 : 0} />
         <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21"
-            stroke={active ? "#1f29fc" : "#64748B"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+            stroke={active ? "#0071b9" : "#64748B"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
 );
 
 const CustomSettings = ({ active }: { active: boolean }) => (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="transition-all duration-300">
         <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.1a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.1a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"
-            stroke={active ? "#1f29fc" : "#64748B"}
+            stroke={active ? "#0071b9" : "#64748B"}
             strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
         <circle cx="12" cy="12" r="3"
-            stroke={active ? "#1f29fc" : "#64748B"}
+            stroke={active ? "#0071b9" : "#64748B"}
             strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
 );
@@ -175,7 +175,7 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
                             <CustomHome active={activeTab === 'home'} />
                             <span className={`
                                 text-[9px] font-black uppercase tracking-[0.1em] transition-all
-                                ${activeTab === 'home' ? 'text-[#1f29fc]' : 'text-slate-500'}
+                                ${activeTab === 'home' ? 'text-[#0071b9]' : 'text-slate-500'}
                             `}>Home</span>
                         </button>
                         <button
@@ -185,7 +185,7 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
                             <CustomAvatar active={activeTab === 'learning'} />
                             <span className={`
                                 text-[9px] font-black uppercase tracking-[0.1em] transition-all
-                                ${activeTab === 'learning' ? 'text-[#1f29fc]' : 'text-slate-500'}
+                                ${activeTab === 'learning' ? 'text-[#0071b9]' : 'text-slate-500'}
                             `}>分身</span>
                         </button>
                     </div>
@@ -202,7 +202,7 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
                             <CustomHistory active={activeTab === 'history'} />
                             <span className={`
                                 text-[9px] font-black uppercase tracking-[0.1em] transition-all
-                                ${activeTab === 'history' ? 'text-[#1f29fc]' : 'text-slate-500'}
+                                ${activeTab === 'history' ? 'text-[#0071b9]' : 'text-slate-500'}
                             `}>History</span>
                         </button>
                         <button
@@ -212,7 +212,7 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
                             <CustomSettings active={activeTab === 'settings'} />
                             <span className={`
                                 text-[9px] font-black uppercase tracking-[0.1em] transition-all
-                                ${activeTab === 'settings' ? 'text-[#1f29fc]' : 'text-slate-500'}
+                                ${activeTab === 'settings' ? 'text-[#0071b9]' : 'text-slate-500'}
                             `}>Setting</span>
                         </button>
                     </div>
