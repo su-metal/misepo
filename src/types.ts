@@ -162,4 +162,5 @@ export interface TopicTemplate {
   prompt: string;
   question: string; // The specific question the AI Sommelier asks the owner
   icon: string;
+  originalTitle?: string; // New: Track source to prevent duplicates
 }

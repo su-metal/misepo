@@ -57,6 +57,7 @@ ${placeData.reviews?.map((r: any) => `- ${r.text}`).join("\n") || "なし"}
   "description": "ユーザー向けの店舗紹介文（100-150文字程度）。",
   "tailoredTopics": [
     {
+      "originalTitle": "元のトピックのタイトル（ここから引用）",
       "title": "リライト後のタイトル",
       "description": "リライト後の説明",
       "prompt": "リライト後のAIへの指示文",
