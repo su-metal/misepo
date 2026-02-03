@@ -25,7 +25,7 @@ export const Header = ({ scrolled, isMenuOpen, setIsMenuOpen, loginWithGoogle, u
                     </div>
                     <nav className="hidden md:flex items-center space-x-12">
                         {['お悩み', '機能', 'デモ', '料金', 'FAQ'].map((item, i) => (
-                            <a key={item} href={['#problem', '#features', '#demo', '#pricing', '#faq'][i]} className="text-[10px] font-black text-slate-400 hover:text-[#1823ff] transition-colors relative group tracking-[0.2em] uppercase">
+                            <a key={item} href={['#problem', '#features', '#demo', '#pricing', '#faq'][i]} className="text-[14px] font-black text-slate-400 hover:text-[#1823ff] transition-colors relative group tracking-[0.2em] uppercase">
                                 {item}
                             </a>
                         ))}
