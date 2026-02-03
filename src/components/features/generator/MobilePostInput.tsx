@@ -223,6 +223,17 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
         }
     }, [mobileStep, targetAudiences, onTargetAudiencesChange]);
 
+    // Reset target audiences to plain state for Google Maps
+    React.useEffect(() => {
+        if (mobileStep === 'confirm' && isGoogleMaps && targetAudiences && targetAudiences.length > 0) {
+            if (JSON.stringify(targetAudiences) !== JSON.stringify(['全般'])) {
+                if (onTargetAudiencesChange) {
+                    onTargetAudiencesChange(['全般']);
+                }
+            }
+        }
+    }, [mobileStep, isGoogleMaps, targetAudiences, onTargetAudiencesChange]);
+
     const toggleVoiceInput = React.useCallback(() => {
         if (isListening) {
             recognitionRef.current?.stop();
@@ -890,8 +901,8 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             </div>
 
 
-                                            {/* Target Audience - Horizontal Scroll for Compactness */}
-                                            {targetAudiences && (
+                                            {/* Target Audience - Horizontal Scroll for Compactness - Hidden for Google Maps */}
+                                            {!isGoogleMaps && targetAudiences && (
                                                 <div className="flex flex-col gap-3">
                                                     <div className="flex items-center justify-between px-2">
                                                         <div className="flex items-center gap-3">
@@ -1008,7 +1019,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                 <div className="bg-[#f5f7fa] px-6 py-4 rounded-[32px] border border-stone-200 flex flex-col gap-2 shadow-sm active:border-[#1f29fc]/30 transition-colors">
                                                     <div className="flex items-center gap-1.5">
                                                         <AutoSparklesIcon className="w-3 h-3 text-[#1f29fc]" />
-                                                        <span className="text-[8px] font-black text-stone-500 uppercase tracking-[0.2em]">追加指示（任意）</span>
+                                                        <span className="text-[11px] font-black text-stone-500 uppercase tracking-[0.2em]">追加指示（任意）</span>
                                                     </div>
                                                     <AutoResizingTextarea
                                                         value={customPrompt}
@@ -1018,6 +1029,21 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                     />
                                                 </div>
                                             </div>
+
+                                            {/* Store Supplement (Google Maps Only) - Moved here after Custom Prompt */}
+                                            {isGoogleMaps && (
+                                                <div className="my-2">
+                                                    <div className="bg-[#f5f7fa] px-6 py-4 rounded-[32px] border border-stone-200 flex flex-col gap-2 shadow-sm">
+                                                        <span className="text-[11px] font-black text-stone-500 uppercase tracking-[0.2em]">補足情報 / 当日の事情</span>
+                                                        <AutoResizingTextarea
+                                                            value={storeSupplement}
+                                                            onChange={(e) => onStoreSupplementChange(e.target.value)}
+                                                            placeholder="例：急な欠勤でお待たせした、感謝を伝えたい等"
+                                                            className="bg-transparent text-sm font-bold text-[#122646] focus:outline-none resize-none min-h-[40px] placeholder:text-stone-300"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            )}
 
                                             {/* Fine-tuning Settings (Tone, Length, Supplement) */}
                                             {(!isStyleLocked || !isX) && (
@@ -1085,18 +1111,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                         )}
                                                     </div>
 
-                                                    {/* Store Supplement (GMap) - Note: Only renders if isGoogleMaps, handled within this block but structure is safe */}
-                                                    {isGoogleMaps && (
-                                                        <div className="bg-[#f5f7fa] px-6 py-4 rounded-[28px] border border-stone-200 flex flex-col gap-2 shadow-sm">
-                                                            <span className="text-[8px] font-black text-stone-500 uppercase tracking-[0.2em]">補足情報 / 当日の事情</span>
-                                                            <AutoResizingTextarea
-                                                                value={storeSupplement}
-                                                                onChange={(e) => onStoreSupplementChange(e.target.value)}
-                                                                placeholder="例：急な欠勤でお待たせした、感謝を伝えたい等"
-                                                                className="bg-transparent text-sm font-bold text-[#122646] focus:outline-none resize-none min-h-[40px] placeholder:text-stone-300"
-                                                            />
-                                                        </div>
-                                                    )}
+                                                    {/* Store Supplement removed from here - now appears after Custom Prompt */}
                                                 </div>
                                             )}
                                         </div>
