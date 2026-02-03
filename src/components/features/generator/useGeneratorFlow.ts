@@ -674,14 +674,33 @@ export function useGeneratorFlow(props: {
   }, [includeFooter, storeProfile.instagramFooter]);
 
   const handleResetAll = useCallback(() => {
+    setPlatforms([Platform.Instagram]);
+    setIsMultiGenMode(false);
+    setPostPurpose(PostPurpose.Auto);
+    setGmapPurpose(GoogleMapPurpose.Auto);
+    setTone(Tone.Standard);
+    setLength(Length.Medium);
     setInputText('');
-    setCustomPrompt('');
-    setStoreSupplement('');
+    setQuestion(undefined);
+    setTopicPrompt(undefined);
     setStarRating(null);
+    setIncludeEmojis(true);
+    setIncludeSymbols(false);
+    setUserChangedEmoji(false);
+    setUserChangedSymbols(false);
+    setXConstraint140(true);
+    setIncludeFooter(true);
+    setLanguage('Japanese');
+    setStoreSupplement('');
+    setCustomPrompt('');
+    setTargetAudiences([]);
+    setLoadedPresetPrompts({});
+    setCurrentPostSamples({});
     setResultGroups([]);
+    setActiveTab(0);
     setRefiningKey(null);
     setRefineText("");
-    setActivePresetId(null);
+    setActivePresetId('plain-ai');
   }, []);
 
   return {

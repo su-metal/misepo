@@ -267,10 +267,8 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
               }}
               onPlusClick={mobileStep === 'confirm' ? handleGenerate : () => {
                 setMobileActiveTab('home');
+                flow.handleResetAll();
                 setOpenDrawerTrigger(prev => prev + 1);
-                if (mobileStep !== 'result') {
-                  flow.handleResetAll();
-                }
               }}
               onGenerate={handleGenerate}
             />
