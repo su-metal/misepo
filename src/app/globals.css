@@ -3,60 +3,61 @@
 @tailwind utilities;
 
 :root {
-  /* 新しいカラーパレット (1-365.me / ADAY 参考) */
-  --ichizen-blue: #1823ff;         /* Electric Blue */
-  --ichizen-blue-light: #e0e4ff;   /* 薄い青 */
-  --ichizen-green: #00b900;        
-  --ichizen-green-light: #e6f6e6;  
-  --ichizen-beige: #F4F6F9;        /* ベース背景色 (Cool White) */
-  --ichizen-navy: #282d32;         /* テキストカラー (Dark Gray) */
-  --ichizen-orange: #eb714f;       
-  --ichizen-yellow: #f2e018;       
-  
+  /* Pop Violet Palette */
+  --pop-violet-bg: #6F78FF;
+  --pop-violet-card: #2B2B2F;
+  --pop-violet-main: #6F78FF;
+  --pop-violet-accent-a: #FF7A59; /* Coral */
+  --pop-violet-accent-b: #FFD166; /* Yellow */
+  --pop-violet-sub-light: #F3F4FF;
+
+  /* Legacy Colors (Keep for safety, but remapped where appropriate) */
   --ichizen-white: #ffffff;
   
-  /* セマンティックマッピング */
-  --brand-primary: var(--ichizen-blue);
-  --brand-secondary: var(--ichizen-blue-light);
-  --brand-accent: var(--ichizen-green);
-  --brand-bg: var(--ichizen-beige);
-  --brand-text: var(--ichizen-navy);
-  --brand-warning: var(--ichizen-orange);
-  --brand-highlight: var(--ichizen-yellow);
+  /* Semantic Mapping for Pop Violet Theme */
+  --brand-primary: var(--pop-violet-main);
+  --brand-secondary: var(--pop-violet-sub-light);
+  --brand-accent: var(--pop-violet-accent-a);
+  --brand-bg: var(--pop-violet-bg);
+  --brand-card-bg: var(--pop-violet-card);
+  --brand-text: #FFFFFF;
+  --brand-text-muted: #A0A0A0;
+  --brand-warning: var(--pop-violet-accent-a);
+  --brand-highlight: var(--pop-violet-accent-b);
 
-  /* レガシー / 互換性用オーバーライド */
-  --plexo-black: var(--ichizen-navy);
-  --plexo-dark-gray: #4a5568;
-  --plexo-med-gray: #a0aec0;
-  --plexo-yellow: var(--ichizen-yellow);
-  --plexo-white: #ffffff;
+  /* Legacy / Compatibility Overrides */
+  --plexo-black: #FFFFFF;
+  --plexo-dark-gray: #E0E0E0;
+  --plexo-med-gray: #A0A0A0;
+  --plexo-yellow: var(--pop-violet-accent-b);
+  --plexo-white: #2B2B2F; /* Inverting for dark mode logic if needed, but be careful */
 
   --bg-primary: var(--brand-bg);
   --bg-secondary: var(--brand-secondary);
   
   --text-primary: var(--brand-text);
-  --text-secondary: var(--plexo-dark-gray);
-  --text-placeholder: var(--plexo-med-gray);
+  --text-secondary: var(--brand-text-muted);
+  --text-placeholder: #666666;
 
   --accent-primary: var(--brand-primary);
-  --border-default: rgba(18, 38, 70, 0.1); /* ネイビーの低透明度 */
+  --border-default: rgba(255, 255, 255, 0.1);
   --border-active: var(--brand-primary);
 
   --primary: var(--brand-primary);
   --accent: var(--brand-accent);
   --bg-beige: var(--brand-bg);
-  --menu-bg: var(--ichizen-white);
+  --menu-bg: var(--brand-card-bg);
 
   /* Glass Variables */
-  --glass-bg: rgba(255, 255, 255, 0.75);
-  --glass-border: rgba(255, 255, 255, 0.5);
-  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+  --glass-bg: rgba(43, 43, 47, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
 }
 
 body {
   font-family: 'Inter', 'Noto Sans JP', sans-serif;
-  background-color: var(--ichizen-beige);
-  color: var(--ichizen-navy);
+  background-color: var(--brand-bg);
+  color: var(--brand-text);
   min-height: 100vh;
   overscroll-behavior-y: none;
 }
@@ -83,37 +84,37 @@ body {
 }
 
 /* Gradient Utilities - More Vibrant & High Contrast */
+/* Gradient Utilities - Pop Violet Theme */
 .text-gradient-primary {
-  background: linear-gradient(135deg, #1823ff 0%, #7c3aed 50%, #00d2ff 100%);
+  background: linear-gradient(135deg, #FFFFFF 0%, #F3F4FF 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  filter: drop-shadow(0 2px 10px rgba(24, 35, 255, 0.1));
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
 .bg-gradient-primary {
-  background: linear-gradient(135deg, #1823ff 0%, #4f46e5 100%);
+  background: linear-gradient(135deg, var(--pop-violet-main) 0%, #7c3aed 100%);
 }
 
 .bg-gradient-mesh {
-  background: 
-    radial-gradient(at 0% 0%, rgba(24, 35, 255, 0.12) 0%, transparent 50%),
-    radial-gradient(at 100% 0%, rgba(124, 58, 237, 0.12) 0%, transparent 50%),
-    radial-gradient(at 50% 100%, rgba(6, 182, 212, 0.12) 0%, transparent 50%);
+  background-color: var(--pop-violet-bg);
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(255, 255, 255, 0.15) 0%, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(0, 0, 0, 0.15) 0%, transparent 50%);
 }
 
 .bg-gradient-mesh-soft {
-  background-color: #fbfdff;
+  background-color: var(--pop-violet-card);
   background-image:
-    radial-gradient(at 0% 0%, rgba(24, 35, 255, 0.03) 0%, transparent 70%),
-    radial-gradient(at 100% 10%, rgba(124, 58, 237, 0.03) 0%, transparent 70%),
-    radial-gradient(at 50% 100%, rgba(6, 182, 212, 0.03) 0%, transparent 75%);
+    radial-gradient(at 0% 0%, rgba(111, 120, 255, 0.05) 0%, transparent 70%),
+    radial-gradient(at 100% 10%, rgba(255, 122, 89, 0.05) 0%, transparent 70%);
   background-repeat: no-repeat;
   background-size: 140% 140%;
 }
 
 .bg-gradient-shine {
-  background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.4) 50%, transparent 70%);
+  background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.2) 50%, transparent 70%);
   background-size: 200% 100%;
 }
 
