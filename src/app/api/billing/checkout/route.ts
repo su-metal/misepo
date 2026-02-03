@@ -70,29 +70,7 @@ export async function POST(req: Request) {
         }
       | null;
 
-    // create baseline row if missing (keeps downstream logic simple)
-    if (!entitlement) {
-      const { data: created, error: createErr } = await supabaseAdmin
-        .from("entitlements")
-        .upsert(
-          {
-            user_id: userId,
-            app_id: appId,
-            plan: "free",
-            status: "inactive",
-            expires_at: null,
-            trial_ends_at: null,
-            billing_provider: "stripe",
-            stripe_customer_id: null,
-          },
-          { onConflict: "user_id,app_id" }
-        )
-        .select("plan,status,expires_at,trial_ends_at,stripe_customer_id")
-        .single();
-
-      if (createErr) throw new Error(createErr.message);
-      entitlement = created;
-    }
+    // If missing, we'll create it during checkout or trial start
 
     // If already on a paid plan, don't create a new checkout unless it's an upgrade (simplified for now to just block if active)
 

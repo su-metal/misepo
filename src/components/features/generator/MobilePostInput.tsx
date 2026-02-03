@@ -57,18 +57,22 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     const [isDefaultAudienceEnabled, setIsDefaultAudienceEnabled] = React.useState(() => {
         return localStorage.getItem('misepo_use_default_audience') === 'true';
     });
+    const [isOmakaseMode, setIsOmakaseMode] = React.useState(false);
 
 
 
     // Handle Calendar Strategy Launch
     const handleTrendStrategy = (event: TrendEvent) => {
         setIsCalendarOpen(false);
+        setIsOmakaseMode(false);
         // Start Omakase-like flow but with context
         setIsOmakaseLoading(true);
         if (platforms.length === 0) {
             onPlatformToggle(Platform.Instagram);
             onPlatformToggle(Platform.X);
         }
+        if (onQuestionChange) onQuestionChange('');
+        if (onTopicPromptChange) onTopicPromptChange('');
         setTimeout(() => {
             setIsOmakaseLoading(false);
             setMobileStep('input');
@@ -123,6 +127,9 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     // Handle Open Drawer Explicitly (Footer Plus Tap when at Home)
     React.useEffect(() => {
         if (openDrawerTrigger && openDrawerTrigger > 0) {
+            setIsOmakaseMode(false);
+            if (onQuestionChange) onQuestionChange('');
+            if (onTopicPromptChange) onTopicPromptChange('');
             setMobileStep('input');
             setIsStepDrawerOpen(true);
         }
@@ -253,6 +260,9 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     }, [isListening, inputText, onInputTextChange]);
 
     const handlePlatformSelect = (p: Platform) => {
+        setIsOmakaseMode(false);
+        if (onQuestionChange) onQuestionChange('');
+        if (onTopicPromptChange) onTopicPromptChange('');
         onSetActivePlatform(p);
         setMobileStep('input');
         setIsStepDrawerOpen(true);
@@ -299,6 +309,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     };
 
     const handleOmakaseStart = () => {
+        setIsOmakaseMode(true);
         setIsOmakaseLoading(true);
         onApplyPreset({ id: 'plain-ai' } as any); // Force AI Standard preset
 
@@ -307,6 +318,8 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
             onPlatformToggle(Platform.Instagram);
             onPlatformToggle(Platform.X);
         }
+        if (onQuestionChange) onQuestionChange('');
+        if (onTopicPromptChange) onTopicPromptChange('');
 
         // Brief delay for "Thinking" feel
         setTimeout(() => {
@@ -331,6 +344,11 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
     // State for Inspiration Deck Caching
     const [cachedInspirationCards, setCachedInspirationCards] = React.useState<any[]>([]);
+
+    // Clear inspiration cache if industry changes
+    React.useEffect(() => {
+        setCachedInspirationCards([]);
+    }, [storeProfile?.industry]);
 
     // --- Audience Logic (Moved to Top Level) ---
 
@@ -722,8 +740,9 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             {/* AI Inspiration Deck for "AI Standard" */}
                                             <InspirationDeck
                                                 storeProfile={storeProfile}
-                                                // Show if plain-ai AND (empty input OR default omakase prompt)
+                                                // Show if OmakaseMode AND plain-ai AND (empty input OR default omakase prompt)
                                                 isVisible={
+                                                    isOmakaseMode &&
                                                     activePresetId === 'plain-ai' &&
                                                     (!inputText || inputText.startsWith("✨ AIおまかせ生成")) &&
                                                     !isGoogleMaps

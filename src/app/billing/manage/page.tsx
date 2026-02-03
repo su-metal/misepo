@@ -27,7 +27,12 @@ export default function BillingManagePage() {
     setPortalLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/billing/portal", { method: "POST" });
+      const returnUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+      const res = await fetch("/api/billing/portal", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ returnUrl }),
+      });
       const data = await res.json().catch(() => null);
       if (!res.ok || !data?.ok || !data?.url) {
         setError(data?.error ?? `エラー: ${res.status}`);

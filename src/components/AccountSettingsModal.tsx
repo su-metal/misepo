@@ -34,7 +34,12 @@ const AccountSettingsModal: React.FC<AccountSettingsModalProps> = ({ user, plan,
     const handleOpenPortal = async () => {
         setIsPortalLoading(true);
         try {
-            const res = await fetch('/api/billing/portal', { method: 'POST' });
+            const returnUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+            const res = await fetch('/api/billing/portal', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ returnUrl }),
+            });
             const data = await res.json();
             if (data.ok && data.url) {
                 window.location.href = data.url;
