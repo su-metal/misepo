@@ -66,7 +66,7 @@ export const StoreProfileSidebar: React.FC<StoreProfileSidebarProps> = ({ storeP
                                                         plan.plan || 'Free'}
                                 </div>
                             </div>
-                            {plan?.plan !== 'professional' && (
+                            {plan?.plan !== 'professional' && plan?.plan !== 'monthly' && plan?.plan !== 'yearly' && plan?.plan !== 'pro' && (
                                 <a
                                     href="/start?upgrade=true"
                                     className="px-3 py-1.5 rounded-xl bg-white text-[#122646] hover:bg-[#f2e018] transition-all text-[9px] font-black uppercase tracking-widest shadow-lg active:scale-95"

@@ -326,8 +326,13 @@ export function useGeneratorFlow(props: {
         if (plan.usage_period === 'daily') {
           alert(`本日の生成制限（${plan.limit}回）に達しました。明日またご利用いただけます。`);
         } else {
-          if (confirm(`今月の生成制限（${plan.limit}回）に達しました。プランをアップグレードしてすぐに制限を解除しますか？`)) {
-            window.location.href = '/start?upgrade=true';
+          const isMaxPlan = plan.plan === 'professional' || plan.plan === 'monthly' || plan.plan === 'yearly' || plan.plan === 'pro';
+          if (isMaxPlan) {
+            alert(`今月の生成制限（${plan.limit}回）に達しました。来月までお待ちいただくか、お問い合わせください。`);
+          } else {
+            if (confirm(`今月の生成制限（${plan.limit}回）に達しました。プランをアップグレードしてすぐに制限を解除しますか？`)) {
+              window.location.href = '/start?upgrade=true';
+            }
           }
         }
         return;
