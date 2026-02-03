@@ -131,18 +131,32 @@ export async function POST(req: Request) {
                           (entitlement?.status === 'active' || entitlement?.status === 'trialing');
 
     if (isAlreadyPaid && entitlement?.billing_reference_id && customerId) {
-      // Redirect to Stripe Billing Portal for plan change (Subscription Update flow)
-      const session = await stripe.billingPortal.sessions.create({
-        customer: customerId,
-        return_url: successUrl,
-        flow_data: {
-          type: 'subscription_update',
-          subscription_update: {
-            subscription: entitlement.billing_reference_id
+      try {
+        // Redirect to Stripe Billing Portal for plan change (Subscription Update flow)
+        const session = await stripe.billingPortal.sessions.create({
+          customer: customerId,
+          return_url: successUrl,
+          flow_data: {
+            type: 'subscription_update',
+            subscription_update: {
+              subscription: entitlement.billing_reference_id
+            }
           }
+        });
+        return NextResponse.json({ ok: true, url: session.url });
+      } catch (err: any) {
+        console.warn("Stripe Billing Portal Update flow failed (likely disabled in dashboard):", err.message);
+        // Fallback to plain portal session
+        try {
+          const session = await stripe.billingPortal.sessions.create({
+            customer: customerId,
+            return_url: successUrl,
+          });
+          return NextResponse.json({ ok: true, url: session.url });
+        } catch (innerErr: any) {
+          throw innerErr; // Re-throw if even plain portal fails
         }
-      });
-      return NextResponse.json({ ok: true, url: session.url });
+      }
     } else if (isAlreadyPaid) {
       // Safety check: if they are paid but we don't have sub ID, block and suggest support
       return NextResponse.json({ ok: false, error: "already_active" }, { status: 400 });

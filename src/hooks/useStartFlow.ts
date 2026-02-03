@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { UserPlan } from '@/types';
 
 export function useStartFlow() {
   const router = useRouter();
@@ -11,6 +12,7 @@ export function useStartFlow() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [canUseApp, setCanUseApp] = useState<boolean | null>(null);
   const [eligibleForTrial, setEligibleForTrial] = useState<boolean>(true);
+  const [currentPlan, setCurrentPlan] = useState<UserPlan | null>(null);
   const [isRedirecting, setIsRedirecting] = useState(false);
   const isSwitch = searchParams.get("switch") === "1";
   const error = searchParams.get("error");
@@ -123,6 +125,7 @@ export function useStartFlow() {
 
         setCanUseApp(allowed);
         setEligibleForTrial(payload?.eligibleForTrial ?? true);
+        setCurrentPlan(payload);
 
         if (allowed) {
           const isUpgrade = searchParams.get("upgrade") === "true";
@@ -173,6 +176,7 @@ export function useStartFlow() {
     errorDescription,
     startGoogleLogin,
     goCheckout,
-    initialPlan
+    initialPlan,
+    currentPlan
   };
 }

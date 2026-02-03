@@ -44,7 +44,7 @@ export const DemoSection = ({
                         <span className="text-white opacity-60">試してみる。</span>
                     </h2>
                     <p className="text-xl md:text-3xl font-bold text-white/70 mt-12 max-w-2xl leading-tight">
-                        MisePoの実力を、今すぐ体験。<br />
+                        misepoの実力を、今すぐ体験。<br />
                         あなたの想いを汲み取り、心に届く言葉に変えます。
                     </p>
                 </div>
