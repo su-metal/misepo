@@ -18,7 +18,7 @@ export const GeneratorHeader: React.FC<GeneratorHeaderProps> = ({
 }) => {
     return (
         <header className="sticky top-0 sm:top-4 z-[100] w-full sm:px-0">
-            <div className={`py-4 px-6 sm:px-8 flex items-center justify-between gap-4 transition-all duration-300 ${TOKENS.container} bg-white/80 backdrop-blur-md border border-white/50 shadow-sm sm:rounded-[32px]`}>
+            <div className={`py-4 px-6 sm:px-8 flex items-center justify-between gap-4 transition-all duration-300 ${TOKENS.container} glass-panel sm:rounded-[32px]`}>
 
                 {/* Left: Brand & Store Info - Interactive Trigger for Onboarding */}
                 <button
@@ -26,8 +26,8 @@ export const GeneratorHeader: React.FC<GeneratorHeaderProps> = ({
                     className="flex items-center gap-4 text-left group hover:opacity-80 transition-all active:scale-95 cursor-pointer"
                 >
                     {/* Stylized Logo Avatar */}
-                    <div className="w-12 h-12 rounded-full bg-[var(--plexo-black)] border border-[#EEEEEE] shadow-sm flex items-center justify-center overflow-hidden flex-shrink-0 group-hover:shadow-md group-hover:-translate-y-0.5 transition-all">
-                        <span className="text-[var(--plexo-yellow)] font-black text-xl" style={{ transform: 'rotate(-10deg)', marginTop: '2px' }}>ミ</span>
+                    <div className="w-12 h-12 rounded-full bg-[var(--brand-primary)] border border-white/20 shadow-sm flex items-center justify-center overflow-hidden flex-shrink-0 group-hover:shadow-md group-hover:-translate-y-0.5 transition-all">
+                        <span className="text-[var(--brand-highlight)] font-black text-xl" style={{ transform: 'rotate(-10deg)', marginTop: '2px' }}>ミ</span>
                     </div>
 
                     {/* Typography */}
@@ -36,7 +36,7 @@ export const GeneratorHeader: React.FC<GeneratorHeaderProps> = ({
                         <div className="flex items-end gap-2">
                             <span className="text-xl font-black text-[var(--plexo-black)] tracking-tight leading-none truncate max-w-[120px] sm:max-w-none">{storeProfile?.name || 'Store Admin'}</span>
                             {(plan?.plan === 'entry' || plan?.plan === 'standard' || plan?.plan === 'professional' || plan?.plan === 'pro' || plan?.plan === 'monthly' || plan?.plan === 'yearly') && (
-                                <span className="mb-0.5 px-1.5 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider bg-[var(--plexo-black)] text-[var(--plexo-yellow)] leading-none">
+                                <span className="mb-0.5 px-1.5 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider bg-[var(--brand-text)] text-[var(--brand-highlight)] leading-none">
                                     {plan?.plan === 'entry' ? 'ENTRY' :
                                         plan?.plan === 'standard' ? 'STD' :
                                             plan?.plan === 'professional' ? 'PRO' : 'PRO'}

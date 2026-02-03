@@ -97,8 +97,8 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
             toggleOpen();
           }}
           className={`w-full text-left rounded-[28px] transition-all duration-500 relative overflow-hidden flex flex-col gap-3 hover:-translate-y-1 active:scale-[0.98] ${item.isPinned
-            ? 'bg-[#d8e9f4]/50 p-[1.5px] shadow-md shadow-blue-900/5 ring-1 ring-[#1f29fc]/20'
-            : 'bg-white p-6 border border-[#122646]/5 shadow-sm hover:shadow-xl hover:shadow-blue-900/5 hover:border-[#1f29fc]/20'
+            ? 'bg-[var(--brand-primary)]/5 p-[1.5px] shadow-md shadow-[var(--brand-primary)]/5 ring-1 ring-[var(--brand-primary)]/20'
+            : 'bg-white p-6 border border-[#122646]/5 shadow-sm hover:shadow-xl hover:shadow-blue-900/5 hover:border-[var(--brand-primary)]/20'
             }`}
         >
           {/* Subtle Inner Glow for Pinned */}
@@ -110,8 +110,8 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
             <div className="flex items-center justify-between">
               <div className="flex -space-x-2">
                 {item.config.platforms.map((p, pIdx) => (
-                  <div key={`${p}-${pIdx}`} className="w-8 h-8 rounded-full flex items-center justify-center bg-white border border-[#122646]/5 shadow-sm group-hover:border-[#1f29fc]/20 transition-colors">
-                    {getPlatformIcon(p, "w-3.5 h-3.5 text-slate-400 group-hover:text-[#1f29fc] transition-colors")}
+                  <div key={`${p}-${pIdx}`} className="w-8 h-8 rounded-full flex items-center justify-center bg-white border border-[#122646]/5 shadow-sm group-hover:border-[var(--brand-primary)]/20 transition-colors">
+                    {getPlatformIcon(p, "w-3.5 h-3.5 text-slate-400 group-hover:text-[var(--brand-primary)] transition-colors")}
                   </div>
                 ))}
               </div>
@@ -120,7 +120,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
               </span>
             </div>
 
-            <p className="text-sm text-[#122646] font-bold tracking-tight line-clamp-2 leading-relaxed transition-colors group-hover:text-[#1f29fc] pr-12">
+            <p className="text-sm text-[#122646] font-bold tracking-tight line-clamp-2 leading-relaxed transition-colors group-hover:text-[var(--brand-primary)] pr-12">
               {previewText}
             </p>
           </div>
@@ -131,8 +131,8 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
           <button
             onClick={(e) => { e.stopPropagation(); onTogglePin(item.id, !item.isPinned); }}
             className={`w-8.5 h-8.5 flex items-center justify-center transition-all ${item.isPinned
-              ? 'text-[#00b900]'
-              : 'text-slate-200 hover:text-[#1f29fc] hover:scale-110'
+              ? 'text-[var(--brand-accent)]'
+              : 'text-slate-200 hover:text-[var(--brand-primary)] hover:scale-110'
               }`}
             title={item.isPinned ? "ピン留めを解除" : "ピン留めして保護"}
           >
@@ -153,7 +153,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
 
         {/* Pinned Accent Bar */}
         {item.isPinned && (
-          <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-1 h-8 bg-[#1f29fc] rounded-r-full shadow-[2px_0_10px_rgba(235,113,79,0.3)] z-20" />
+          <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-1 h-8 bg-[var(--brand-primary)] rounded-r-full shadow-[2px_0_10px_rgba(24,35,255,0.3)] z-20" />
         )}
       </div>
     );
@@ -225,8 +225,8 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                   {displayHistory.some(i => i.isPinned) && (
                     <div className="space-y-5">
                       <div className="flex items-center gap-3 px-3">
-                        <div className="w-1.5 h-1.5 rounded-full bg-[#1f29fc]"></div>
-                        <span className="text-[11px] font-black text-[#1f29fc] uppercase tracking-[0.25em]">お気に入り</span>
+                        <div className="w-1.5 h-1.5 rounded-full bg-[var(--brand-primary)]"></div>
+                        <span className="text-[11px] font-black text-[var(--brand-primary)] uppercase tracking-[0.25em]">お気に入り</span>
                       </div>
                       <div className="space-y-4">
                         {displayHistory.filter(i => i.isPinned).map((item, idx) => renderHistoryItem(item, idx))}
