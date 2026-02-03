@@ -19,9 +19,20 @@ export const InspirationDeck: React.FC<InspirationDeckProps> = ({ storeProfile, 
     const [refreshKey, setRefreshKey] = useState(0);
     const scrollContainerRef = useRef<HTMLDivElement>(null);
 
+    const lastIndustryRef = useRef<string | undefined>(storeProfile?.industry);
+
     useEffect(() => {
         if (!isVisible || !storeProfile) return;
-        if (cachedCards && cachedCards.length > 0 && refreshKey === 0) return;
+
+        const currentIndustry = storeProfile.industry;
+        const industryChanged = currentIndustry !== lastIndustryRef.current;
+
+        // If industry changed, we must re-fetch regardless of cache
+        if (!industryChanged && cachedCards && cachedCards.length > 0 && refreshKey === 0) return;
+
+        if (industryChanged) {
+            lastIndustryRef.current = currentIndustry;
+        }
 
         setLoading(true);
         // Simulate minor loading for UX "thinking" feel

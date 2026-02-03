@@ -345,6 +345,11 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     // State for Inspiration Deck Caching
     const [cachedInspirationCards, setCachedInspirationCards] = React.useState<any[]>([]);
 
+    // Clear inspiration cache if industry changes
+    React.useEffect(() => {
+        setCachedInspirationCards([]);
+    }, [storeProfile?.industry]);
+
     // --- Audience Logic (Moved to Top Level) ---
 
 
