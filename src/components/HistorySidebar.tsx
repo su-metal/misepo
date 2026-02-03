@@ -5,7 +5,7 @@ import {
   XIcon,
   InstagramIcon,
   GoogleMapsIcon,
-  LineCircleIcon,
+  LineIcon,
   LockIcon,
   TrashIcon,
   HistoryIcon,
@@ -75,7 +75,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
       case Platform.X: return <XIcon className={iconClass} />;
       case Platform.Instagram: return <InstagramIcon className={iconClass} />;
       case Platform.GoogleMaps: return <GoogleMapsIcon className={iconClass} />;
-      case Platform.Line: return <LineCircleIcon className={iconClass} />;
+      case Platform.Line: return <LineIcon className={iconClass} color="currentColor" textFill="white" />;
       default: return null;
     }
   };

@@ -46,9 +46,13 @@ export const InspirationDeck: React.FC<InspirationDeckProps> = ({ storeProfile, 
                 const selectedTailored = [...tailoredPool].sort(() => Math.random() - 0.5).slice(0, 3);
                 const remainingCount = 5 - selectedTailored.length;
 
-                // Avoid duplicates by filtering out base items that were used for tailoring (by title if they match exactly)
-                const tailoredTitles = new Set(selectedTailored.map(t => t.title));
-                const filteredBase = basePool.filter(t => !tailoredTitles.has(t.title));
+                // Avoid duplicates by filtering out base items that were used for tailoring
+                const tailoredSources = new Set([
+                    ...selectedTailored.map(t => t.title),
+                    ...selectedTailored.map(t => t.originalTitle).filter(Boolean)
+                ]);
+
+                const filteredBase = basePool.filter(t => !tailoredSources.has(t.title));
                 const selectedBase = [...filteredBase].sort(() => Math.random() - 0.5).slice(0, remainingCount);
 
                 const mixedPool = [...selectedTailored, ...selectedBase];
@@ -102,7 +106,14 @@ export const InspirationDeck: React.FC<InspirationDeckProps> = ({ storeProfile, 
 
                 const selectedTailored = [...tailoredPool].sort(() => Math.random() - 0.5).slice(0, 3);
                 const remainingCount = 6 - selectedTailored.length;
-                const selectedBase = [...basePool].sort(() => Math.random() - 0.5).slice(0, remainingCount);
+
+                const tailoredSources = new Set([
+                    ...selectedTailored.map(t => t.title),
+                    ...selectedTailored.map(t => t.originalTitle).filter(Boolean)
+                ]);
+
+                const filteredBase = basePool.filter(t => !tailoredSources.has(t.title));
+                const selectedBase = [...filteredBase].sort(() => Math.random() - 0.5).slice(0, remainingCount);
 
                 const shuffled = [...selectedTailored, ...selectedBase]
                     .sort(() => Math.random() - 0.5)

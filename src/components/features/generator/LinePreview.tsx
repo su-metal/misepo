@@ -14,7 +14,7 @@ export const LinePreview: React.FC<LinePreviewProps> = ({ text, storeProfile, on
     const timeStr = `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
 
     return (
-        <div className="w-full min-h-[300px] flex flex-col gap-5 font-sans relative overflow-hidden">
+        <div className="w-full min-h-[300px] flex flex-col gap-5 font-sans relative overflow-hidden bg-[#8cabd9] p-4 sm:p-6 rounded-[32px]">
             <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black/5 to-transparent pointer-events-none" />
             {/* Date Header */}
             <div className="flex justify-center">
@@ -33,26 +33,26 @@ export const LinePreview: React.FC<LinePreviewProps> = ({ text, storeProfile, on
 
                 {/* Content Area */}
                 <div className="flex flex-col gap-1 max-w-[85%] text-left">
-                    <span className="text-[#666666] text-[10px] sm:text-[11px] font-black pl-1 drop-shadow-sm text-left">
+                    <span className="text-white text-[10px] sm:text-[11px] font-black pl-1 drop-shadow-sm text-left">
                         {storeProfile.name || 'Store Name'}
                     </span>
                     <div className="flex items-end gap-1.5 text-left">
                         {/* Bubble */}
-                        <div className="relative bg-[#111111] text-white px-3 sm:px-4 py-2 sm:py-2.5 rounded-[18px] rounded-tl-none shadow-sm border border-[#111111] text-left">
+                        <div className="relative bg-white text-black px-3 sm:px-4 py-2 sm:py-2.5 rounded-[18px] rounded-tl-none shadow-sm border border-white text-left">
                             {/* Triangle hook */}
-                            <div className="absolute top-0 -left-[7px] w-0 h-0 border-t-[8px] border-t-[#111111] border-l-[8px] border-l-transparent text-left" />
+                            <div className="absolute top-0 -left-[7px] w-0 h-0 border-t-[8px] border-t-white border-l-[8px] border-l-transparent text-left" />
 
                             <div className="text-[15px] leading-relaxed font-medium w-[15em] max-w-full text-left">
                                 <AutoResizingTextarea
                                     value={text}
                                     onChange={(e) => onChange?.(e.target.value)}
-                                    className="w-full bg-transparent focus:outline-none resize-none p-0 inline-block font-medium min-h-[1.5em] text-white break-all"
+                                    className="w-full bg-transparent focus:outline-none resize-none p-0 inline-block font-medium min-h-[1.5em] text-[#0e0e0e] break-all"
                                 />
                             </div>
                         </div>
 
                         {/* Time */}
-                        <div className="flex flex-col text-[#999999] text-[9px] sm:text-[10px] font-bold leading-tight pb-0.5 text-left">
+                        <div className="flex flex-col text-white/80 text-[9px] sm:text-[10px] font-bold leading-tight pb-0.5 text-left">
                             <span>{timeStr}</span>
                         </div>
                     </div>

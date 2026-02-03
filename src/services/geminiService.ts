@@ -354,8 +354,11 @@ export const generateContent = async (
     - **Line Breaks**: **NEVER** insert line breaks in the middle of a grammatical phrase or word (e.g., don't split "ご来店いただき" across lines). Maintain natural reading flow. Avoid "auto-formatting for mobile" unless the <learning_samples> explicitly use that specific rhythm.
     - **Platform Rules**:
       - Platform: ${config.platform}
-      ${isLine ? `- Style: **Friendly but Professional "LINE" Marketing**.
-        - **Layout**: Generate content as a single cohesive message with a logical flow: 1. Hook (immediate impact), 2. Details (value/offer), and 3. Action (CTA). Use natural line breaks to keep it clean.` : ''}
+      ${isLine ? `- Style: **LINE Official Account (Repeater Focus)**.
+        - **Context**: Written for "Friends" (existing customers). High-impact, re-engagement oriented.
+        - **Tone**: Close distance, skip self-introductions. Ensure a warm but efficient communication.
+        - **Value**: Focus on direct benefits like "Limited Offers", "Coupons", or "Booking Status". Avoid low-value diary-like updates to prevent "Blocking".
+        - **Layout**: Concise chat style. Use 1-2 symbols (e.g. ＼ ✧ ／) for headers. Prioritize vertical readability with short, rhythmic sentences.` : ''}
     - **Readability & Vertical Flow**: Avoid long, dense blocks of text. Use line breaks (newlines) frequently—ideally after every sentence, emoji, or when shifting topics. Ensure a rhythmic, vertical flow that is easy to scan on a vertical mobile screen.
       - Length: ${config.length}
       - Language: ${config.language || 'Japanese'}
@@ -534,7 +537,11 @@ DO NOT use stiff business boilerplate like "誠にありがとうございます
             return `The <user_input> is a customer review. ${ratingInstruction} Generate a REPLY from the owner. ${factInstruction} ${lengthWarning}`;
         }
         
-        if (isLine) return `Generate a LINE message with a clear flow: 1. Hook, 2. Details, 3. Action. ${lengthWarning} **VISUAL**: Use a header for the hook. **STRICT EMOJI RULE**: ${config.includeEmojis ? 'Use emojis naturally.' : 'DO NOT use any emojis.'} **LAYOUT**: Clean vertical flow.`;
+        if (isLine) return `Generate a HIGH-CONVERSION LINE message for REPEATERS.
+- **Hook**: First line must grab attention (e.g., 【限定】 or ＼重要なお知らせ／).
+- **Benefit**: Clearly state the specific value for the customer (Coupon, Exclusive Info, etc.).
+- **Action**: Conclude with a clear next step (e.g., "Tap Rich Menu below", "Check details in link").
+- **Layout**: Short, vertical flow with emojis. NO hashtags. ${lengthWarning}`;
 
         return `Generate an attractive post based on the <user_input>. ${lengthWarning}`;
     })()}
