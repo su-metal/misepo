@@ -117,7 +117,7 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
 
                                     <div className="text-xs font-black text-black mb-4">1,234 likes</div>
 
-                                    <div className="text-[14px] text-black font-medium leading-relaxed">
+                                    <div className="text-[16px] text-black font-medium leading-relaxed">
                                         <span className="font-black mr-2">{storeProfile.name || 'your_account'}</span>
                                         <AutoResizingTextarea
                                             value={text}
@@ -147,7 +147,7 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
                                             <MoreHorizontalIcon className="w-5 h-5 text-[#CCCCCC]" />
                                         </div>
 
-                                        <div className="text-[15px] text-black font-medium leading-tight mb-4">
+                                        <div className="text-[16px] text-black font-medium leading-tight mb-4">
                                             <AutoResizingTextarea
                                                 value={text}
                                                 onChange={(e) => onChange?.(e.target.value)}
@@ -203,7 +203,7 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
                                             </div>
                                         </div>
 
-                                        <div className="text-[15px] text-black font-medium leading-relaxed">
+                                        <div className="text-[16px] text-black font-medium leading-relaxed">
                                             <AutoResizingTextarea
                                                 value={text}
                                                 onChange={(e) => onChange?.(e.target.value)}

@@ -379,7 +379,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     const secondaryAudienceList = TARGET_AUDIENCES.filter(t => !primaryAudienceList.includes(t));
 
     return (
-        <div className="flex flex-col h-full relative overflow-hidden font-inter bg-gradient-mesh">
+        <div className="flex flex-col h-full relative overflow-hidden font-inter bg-[#c6d3ca]">
 
             {/* Step 1: Home (Platform Grid) */}
             <div className={`flex flex-col h-full overflow-hidden relative transition-all duration-500 ${isStepDrawerOpen ? 'blur-md scale-[0.98] opacity-60' : 'opacity-100'}`}>
@@ -431,7 +431,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                 <div className="flex flex-col items-end gap-1 scale-90 origin-right">
                                     <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--pop-violet-card)] text-white backdrop-blur-xl border border-white/20 shadow-xl overflow-hidden relative">
                                         <span className="text-[8px] font-black text-white/60 uppercase tracking-widest mr-1">CREDITS</span>
-                                        <span className="text-sm font-black text-[#FFD166] leading-none">
+                                        <span className="text-sm font-black text-[#f86957] leading-none">
                                             {Math.max(0, plan.limit - plan.usage)}
                                         </span>
                                         <span className="text-[10px] font-bold text-white/60 leading-none">/ {plan.limit}</span>
@@ -440,7 +440,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         <div className="absolute bottom-0 left-0 h-[2px] bg-white/10 w-full" />
                                         {/* Active Gauge Fill */}
                                         <div
-                                            className="absolute bottom-0 left-0 h-[2px] bg-[#FFD166] shadow-[0_0_10px_rgba(255,209,102,0.5)] transition-all duration-1000"
+                                            className="absolute bottom-0 left-0 h-[2px] bg-[#f86957] shadow-[0_0_10px_rgba(248,105,87,0.5)] transition-all duration-1000"
                                             style={{ width: `${(Math.max(0, plan.limit - plan.usage) / plan.limit) * 100}%` }}
                                         />
                                     </div>
@@ -450,7 +450,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                 <div
                                                     key={i}
                                                     className={`h-[3px] w-5 rounded-full transition-colors duration-500 ${((plan.limit - plan.usage) / plan.limit) * 5 > i
-                                                        ? 'bg-[#FFD166]'
+                                                        ? 'bg-[#f86957]'
                                                         : 'bg-white/10'
                                                         }`}
                                                 />
@@ -539,7 +539,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             relative rounded-[20px] overflow-hidden cursor-pointer border transition-all duration-500 group
                                             ${bentoClass}
                                              ${isActive
-                                                ? 'bg-[#f9cd61] border-[#f9cd61] shadow-[0_15px_35px_rgba(249,205,97,0.4)] scale-[0.98] animate-tactile-pop ring-2 ring-white/10'
+                                                ? 'bg-[#f86957] border-[#f86957] shadow-[0_15px_35px_rgba(249,205,97,0.4)] scale-[0.98] animate-tactile-pop ring-2 ring-white/10'
                                                 : `bg-[var(--pop-violet-card)] border-white/5 shadow-[0_4px_12px_rgba(0,0,0,0.2)] hover:border-white/20 hover:shadow-lg active:scale-[0.98]`
                                             }
                                         `}
@@ -561,7 +561,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                     }}
                                                     className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 active:scale-90 shadow-lg ${isActive ? 'bg-[#1E1E24]' : 'bg-white/10 text-white shadow-[0_4px_10px_rgba(0,0,0,0.2)]'}`}
                                                 >
-                                                    <ChevronRightIcon className={`w-5 h-5 ${isActive ? 'text-[#f9cd61]' : 'text-white'}`} />
+                                                    <ChevronRightIcon className={`w-5 h-5 ${isActive ? 'text-[#f86957]' : 'text-white'}`} />
                                                 </div>
                                             </div>
 
@@ -829,6 +829,16 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                         <MicIcon className="w-6 h-6" />
                                                     </button>
                                                 )}
+
+                                                {inputText && (
+                                                    <button
+                                                        onClick={() => onInputTextChange("")}
+                                                        className="absolute bottom-6 right-6 w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center shadow-md active:scale-95 transition-all text-[#A0A0A0] hover:text-white"
+                                                        title="入力をクリア"
+                                                    >
+                                                        <EraserIcon className="w-6 h-6" />
+                                                    </button>
+                                                )}
                                             </div>
                                         </div>
 
@@ -869,7 +879,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                         </div>
                                                         <span className="text-[10px] font-black text-white uppercase tracking-[0.2em]">入力内容の確認</span>
                                                     </div>
-                                                    <div className="text-white text-[15px] font-bold leading-relaxed">
+                                                    <div className="text-white text-[16px] font-bold leading-relaxed">
                                                         {inputText.length > 200 ? inputText.substring(0, 200) + '...' : inputText || "ここに内容が表示されます..."}
                                                     </div>
 
