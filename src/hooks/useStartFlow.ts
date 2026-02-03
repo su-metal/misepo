@@ -17,11 +17,9 @@ export function useStartFlow() {
   const errorCode = searchParams.get("error_code");
   const errorDescription = searchParams.get("error_description");
 
-  // クライアントサイドで intent を取得 (SSR中は null、クライアントで確定)
   const [intent, setIntent] = useState<"trial" | "login" | null>(null);
   const [initialPlan, setInitialPlan] = useState<"entry" | "standard" | "professional">("standard");
 
-  // intent の初期化 (クライアントサイドのみ)
   useEffect(() => {
     if (typeof window === "undefined") return;
     const fromUrl = searchParams.get("intent") as "trial" | "login" | null;
@@ -35,31 +33,6 @@ export function useStartFlow() {
     else if (planFromStorage) setInitialPlan(planFromStorage);
   }, [searchParams]);
 
-  const startGoogleLogin = async (nextIntent: "trial" | "login", nextPlan: "entry" | "standard" | "professional" = "standard") => {
-    // ログイン後のために intent と plan を保存
-    if (typeof window !== "undefined") {
-      window.localStorage.removeItem("login_intent");
-      window.localStorage.removeItem("login_plan");
-      window.localStorage.setItem("login_intent", nextIntent);
-      window.localStorage.setItem("login_plan", nextPlan);
-    }
-
-    // Force sign out first to ensure account selection works
-    await supabase.auth.signOut();
-
-    const origin = window.location.origin;
-    await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${origin}/auth/callback?intent=${encodeURIComponent(nextIntent)}`,
-        queryParams: {
-          access_type: 'offline',
-          prompt: 'select_account', // Force account selection
-        },
-      },
-    });
-  };
-
   const goCheckout = useCallback(async (plan: "entry" | "standard" | "professional" = initialPlan) => {
     setIsRedirecting(true);
     const res = await fetch("/api/billing/checkout", {
@@ -70,35 +43,58 @@ export function useStartFlow() {
     const data = await res.json().catch(() => null);
 
     if (res.ok && data?.ok && data?.url) {
-      // 決済へ進むので意図をクリア
       if (typeof window !== "undefined") {
         window.localStorage.removeItem("login_intent");
         window.localStorage.removeItem("login_plan");
       }
       window.location.href = data.url;
     } else if (data?.error === "already_active") {
-      // 既に有効ならストレージをクリアして遷移
       if (typeof window !== "undefined") {
         window.localStorage.removeItem("login_intent");
       }
       router.replace("/generate");
     } else {
       setIsRedirecting(false);
-      setLoading(false); // Ensure loading is off if checkout fails
+      setLoading(false);
       alert(data?.error ?? "Checkout failed");
     }
-  }, [router]);
+  }, [router, initialPlan]);
 
-  // メインロジック: intent が確定してから実行
+  const startGoogleLogin = async (nextIntent: "trial" | "login", nextPlan: "entry" | "standard" | "professional" = "standard") => {
+    if (isLoggedIn && nextIntent === "trial") {
+      goCheckout(nextPlan);
+      return;
+    }
+
+    if (typeof window !== "undefined") {
+      window.localStorage.removeItem("login_intent");
+      window.localStorage.removeItem("login_plan");
+      window.localStorage.setItem("login_intent", nextIntent);
+      window.localStorage.setItem("login_plan", nextPlan);
+    }
+
+    await supabase.auth.signOut();
+
+    const origin = window.location.origin;
+    await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${origin}/auth/callback?intent=${encodeURIComponent(nextIntent)}`,
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'select_account',
+        },
+      },
+    });
+  };
+
   useEffect(() => {
-    // intent が null (未確定) の間は何もしない
     if (intent === null) return;
 
     let cancelled = false;
     (async () => {
       try {
         if (error || errorCode) {
-          // If OAuth flow failed, clear any existing session to prevent auto-login loops.
           await supabase.auth.signOut();
           if (!cancelled) {
             setIsLoggedIn(false);
@@ -111,14 +107,12 @@ export function useStartFlow() {
         if (cancelled) return;
 
         if (userError || !data.user) {
-          console.log('[useStartFlow] No user found or error:', userError);
           setIsLoggedIn(false);
           setLoading(false);
           return;
         }
 
         setIsLoggedIn(true);
-        console.log('[useStartFlow] User is logged in, fetching plan...');
         const res = await fetch("/api/me/plan", { cache: "no-store" });
         const payload = await res.json().catch(() => null);
 
@@ -131,19 +125,19 @@ export function useStartFlow() {
         setEligibleForTrial(payload?.eligibleForTrial ?? true);
 
         if (allowed) {
-          console.log('[useStartFlow] User can use app, checking for upgrade intent or credit status...');
-          
-          // If the user explicitly came here to upgrade, OR if they are out of credits,
-          // don't redirect them back to the app.
           const isUpgrade = searchParams.get("upgrade") === "true";
+
+          if (intent === "trial" && (isUpgrade || isOutOfCredits)) {
+            goCheckout(initialPlan);
+            return;
+          }
+
           if (isUpgrade || isOutOfCredits || isSwitch) {
-            console.log('[useStartFlow] Upgrade intent or out of credits detected, staying on start page.');
             setLoading(false);
             setIsLoggedIn(true);
             return;
           }
 
-          console.log('[useStartFlow] No upgrade intent, redirecting to /generate');
           if (typeof window !== "undefined") {
             window.localStorage.removeItem("login_intent");
             window.localStorage.removeItem("login_plan");
@@ -152,10 +146,10 @@ export function useStartFlow() {
           return;
         }
 
-        console.log('[useStartFlow] User cannot use app. Intent:', intent);
-        
-        // Removed auto-checkout for trial intent. 
-        // Backend now auto-assigns 7-day cardless trial to 'free' plan users on GET /api/me/plan.
+        if (intent === "trial") {
+          goCheckout(initialPlan);
+          return;
+        }
         
         setLoading(false);
       } catch (err) {
@@ -164,14 +158,14 @@ export function useStartFlow() {
       }
     })();
     return () => { cancelled = true; };
-  }, [intent, router, supabase, goCheckout, isSwitch, searchParams]);
+  }, [intent, router, supabase, goCheckout, isSwitch, searchParams, initialPlan, error, errorCode]);
 
   return {
     loading,
     isLoggedIn,
     canUseApp,
     eligibleForTrial,
-    intent: intent ?? "login", // 外部には "login" をデフォルトとして返す
+    intent: intent ?? "login",
     isRedirecting,
     isSwitch,
     error,
