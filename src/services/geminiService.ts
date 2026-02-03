@@ -9,8 +9,8 @@ import {
   PostPurpose,
   GoogleMapPurpose,
   RiskTier,
-  Length,
   Tone,
+  TopicTemplate,
 } from "../types";
 
 import crypto from 'crypto';
@@ -970,6 +970,11 @@ ${description ? `店舗の具体的な特徴・こだわり: ${description}` : '
    - **国民の祝日・伝統行事**: ひな祭り、七夕、お盆、正月など
    - **給料日・消費行動**: 給料日（25日付近）、ボーナス時期、月末等
 ${industryGuidance}
+   - **重要：Webトレンド・消費者心理**:
+     - **「イライラ消費」や「心の安定（コンフォート消費）」**: 物価高や社会不安の中で、自分を癒やすためのちょっとした贅沢や気晴らしを求める傾向。
+     - **「パーソナライズ・診断」**: 自分にぴったりのものをAIやプロに見つけてほしいという欲求（肌診断、似合わせ提案、カスタムメニュー等）。
+     - **「体験型・エンタメ」**: ただ買うだけでなく、作る工程が見える、珍しい飲み物（モクテル）、非日常を味わえる体験。
+     - **「平成レトロ・再燃」**: Z世代を中心に流行している、少し懐かしくて新しいデザインやスタイル。
    - **重要**: オリンピックや万博など、開催年によって変わるイベントは、確実な知識がない限り含めないでください。
 5. **不適切トピックの完全除外（Security/Brand Safety）**:
    - **特定の宗教団体（新興宗教含む）、政治政党、思想団体の創立記念日や関連イベントは【絶対に出力しないでください】。**
@@ -991,6 +996,8 @@ ${industryGuidance}
      - 例1: ターゲットが「**美容室・サロン**」の場合、「お彼岸」や「節分」だからといって、「おはぎ」や「恵方巻」の販売・提供を投稿内容にしてはいけません。代わりに「お墓参り前の身だしらみセット」や「イベント前のスキンケア」を「紹介する投稿」にしてください。
      - 例2: ターゲットが「飲食店」でないのに、「新作メニュー」「宴会コース」という言葉を使わないでください。
    - その業種で通常扱わない商品やサービスを提案するくらいなら、そのイベント自体を除外するか、挨拶程度の投稿ネタに留めてください。
+11. **多様性の確保（Boring対策）**:
+    - **単なる「今日は〜の日」といった形式だけでなく、「〜という最近の流行に合わせて、自店ではこれを提供している」といった実用的な切り口、または「忙しい毎日の合間に〜で一息つきませんか」といった心に寄り添う切り口を混ぜてください。**
 </rules>
 
 <output_format>
@@ -1442,7 +1449,7 @@ export const analyzePersona = generateStyleInstruction;
 // Inspiration Deck Generation
 export interface InspirationCard {
   id: string;
-  type: 'review' | 'trend' | 'variety';
+  type: 'review' | 'trend' | 'variety' | 'local' | 'quiz' | 'web';
   title: string;
   description: string;
   prompt: string; // The instruction for the AI when this card is selected
@@ -1455,24 +1462,35 @@ export const generateInspirationCards = async (
   storeProfile: StoreProfile,
   inputReviews?: { text: string }[],
   currentTrend?: any,
-  seed?: string // Added seed for variety
+  seed?: string,
+  templates?: TopicTemplate[],
+  mode?: 'full' | 'trend_only'
 ): Promise<InspirationCard[]> => {
   const modelName = 'models/gemini-2.5-flash-lite';
   
   // Prepare inputs for the prompt
   const trendInfo = currentTrend ? JSON.stringify(currentTrend) : 'None';
   const reviewTexts = inputReviews ? inputReviews.map(r => r.text) : [];
+  
+  // Inject a high-entropy random value to break AI determinism
+  const randomSalt = Math.random().toString(36).substring(7);
 
-  // Main system instruction focused on ROLE and FORMAT
   const systemInstruction = `
   あなたはプロのSNS運用担当者です。
   精神論やポエムは一切禁止です。
   提供された店舗情報とデータに基づき、実益のある具体的な投稿案のみを作成してください。
+  各カードには、**【店主へのインタビュー質問（question）】**を必ず含めてください。
   出力は厳格にJSON形式(Array)で、指定されたスキーマに従ってください。
+  
+  【question（ソムリエの質問）の最重要定義】
+  - **これはSNSに投稿される文章ではありません。不特定多数の「お客様」へ呼びかける言葉は絶対に禁止です。**
+  - これは、AIが投稿を作るために**「ネタ（事実）」を店主から聞き出すためのインタビュー**です。
+  - 店主がその時の状況（今日のおすすめ、今の悩み、こだわり）を回答することで、投稿の中身が具体的になります。
   
   【多様性の確保】
   - 毎回、異なる切り口や視点を提案してください。
-  - 前回の提案（seed: ${seed || 'なし'}）を意識し、マンネリ化を防ぐために新しい話題（季節、時間帯、地域、店主の意外な一面など）を選択してください。
+  - プロンプトに含まれる例示はあくまで「一例」です。それに縛られず、自由でクリエイティブな提案をしてください。
+  - **同じような内容を繰り返さないでください。シャッフル（再生成）された場合は、前回のトピックとは180度違う角度から攻めてください。**
   `;
 
   // Construct a detailed User Message with all constraints and data
@@ -1498,6 +1516,14 @@ export const generateInspirationCards = async (
   - **意外性**: 業種の定番以外の話題（例：店主の好きなもの、お店の裏側、地域のちょっとした発見）を1つは含めてください。
   - **鮮度**: 今この瞬間の空気感を大切にしてください。
 
+  【重要：ベースとなる業界テンプレート】
+  以下のテンプレートは、この業種において非常に重要で質の高い基本ネタです。
+  これらの中から4つ程度を選び、${storeProfile.name || 'この店舗'}向けに最適化して提案してください。
+  特に「question（店主への質問）」は、これらテンプレートのトーンや言葉遣いを強く参考にしてください。
+  ---
+  ${templates ? JSON.stringify(templates.slice(0, 15)) : 'なし'}
+  ---
+
   【厳守事項: タイトル(title)の形式】
   - ユーザーが「これを選ぶと何が起きるか」を一目で理解できるよう、タイトルは**15文字以内の客観的なアクション形式（〜する投稿、〜を伝える内容、〜への返信）**にしてください。
   - ❌ 「お客様の声」 → ⭕️ 「口コミへの感謝を伝える返信」
@@ -1505,12 +1531,29 @@ export const generateInspirationCards = async (
   - ❌ 「新商品」 → ⭕️ 「限定メニューの魅力をアピール」
   - ※ピル型UIで表示するため、簡潔かつ具体的に、動詞で終わる形式が望ましいです。
 
-  【作成する5つのカード】(以下の5つのタイプをこの順序で出力)
-  1. type: **"review"** (お客様の声): 口コミへの感謝返信。なければ「お客様とのほっこりエピソード」。
-  2. type: **"trend"** (トレンド): 「${trendInfo !== 'None' ? JSON.parse(trendInfo).title : '季節の話題'}」についての雑談。**無理に店の商品に繋げず、「もうこんな季節ですね」といった共感トークのみでもOK。**
-  3. type: **"variety"** (PR): お店の商品やサービスの魅力紹介（ここだけはしっかり宣伝）。
-  4. type: **"local"** (地域/挨拶): 「急に寒くなりましたね」「近くでお祭りがありますね」など、地域の人と共有できる挨拶やニュース。
-  5. type: **"quiz"** (参加型): 「どっちが好き？（A or B）」や「クイズ」など、コメント欄で盛り上がれる問いかけ。
+  【本日のランダム・バイアス】
+  - シード: ${seed || 'None'}
+  - 乱数ソルト: ${randomSalt}
+  - **今回のミッション**: 定番に飽きたユーザーを「おっ、今回は面白いな」と思わせるような、意外性のあるネタを優先してください。
+
+  ${mode === 'trend_only' ? `
+  【ミッション】
+  今回は、今日のトレンド（${trendInfo !== 'None' ? JSON.parse(trendInfo).title : '季節の話題'}）やWeb潮流を活かした、**「今日ならではの特別な話題」を【1つだけ】**考案してください。
+  それ以外の話題は不要です。
+  
+  作成するカード1枚の指示:
+  - type: "trend" または "web"
+  - タイトル: その話題が何であるか15文字以内で
+  - 内容: 店主へのインタビュー質問（question）を、 industryTopics.ts のような質の高いものにすること。
+  ` : `
+  【作成する6つのカード】(以下のタイプからバランスよく、かつユニークに6つ選出)
+  - **"review"**: 口コミがあればそれ。なければ「最近のほっこりした瞬間」へのインタビュー。
+  - **"trend"**: 「${trendInfo !== 'None' ? JSON.parse(trendInfo).title : '今の季節'}」の話題。そのまま語るのではなく、別の視点（例：その日の天候、地域の噂、健康法など）と掛け算してください。
+  - **"variety"**: お店やスタッフの「マニアックなこだわり」や「失敗談」、「実はこれ好きなんです」という人間味あふれるネタ。
+  - **"local"**: 近所の変化、通学路の様子、最近見つけたいい景色など「超ローカル」な挨拶。
+  - **"quiz"**: 答えが1つじゃない、店主の価値観を聞くような「究極の2択」や「大喜利テーマ」。
+  - **"web"**: 最新のWebキーワード（タイパ、自分軸、推し活、癒やし、レトロ等）を1つ、店舗の文脈に無理やりではなく自然に組み込んだもの。
+  `}
 
   【具体的な出力イメージ(トーン)】
   - 良い例: "今日は本当に寒いですね⛄️ 皆様、風邪など引かれてませんか？お店では温かい○○を用意して..." (気遣いがある)
@@ -1529,7 +1572,7 @@ export const generateInspirationCards = async (
       config: {
         responseMimeType: "application/json",
         // @ts-ignore
-        temperature: 1.0, // Increased for more creative variety
+        temperature: 1.2, // Significantly increased for major variety
         // @ts-ignore
         responseSchema: {
           type: "ARRAY",
@@ -1537,14 +1580,17 @@ export const generateInspirationCards = async (
             type: "OBJECT",
             properties: {
               id: { type: "STRING" },
-              type: { type: "STRING", enum: ["review", "trend", "variety", "local", "quiz"] },
+              type: { type: "STRING", enum: ["review", "trend", "variety", "local", "quiz", "web"] },
               title: { type: "STRING" },
               description: { type: "STRING" },
               prompt: { type: "STRING" },
+              question: { type: "STRING" },
               icon: { type: "STRING" }
             },
-            required: ["id", "type", "title", "description", "prompt", "icon"]
-          }
+            required: ["id", "type", "title", "description", "prompt", "question", "icon"]
+          },
+          minItems: mode === 'trend_only' ? 1 : 1,
+          maxItems: mode === 'trend_only' ? 1 : 6
         }
       }
     });
@@ -1574,6 +1620,7 @@ export const generateInspirationCards = async (
         title: "お店のこだわり",
         description: "創業の思いや、普段語らないこだわりを発信してみませんか？",
         prompt: "お店のこだわりや、お客様への想いについて情熱的な投稿を作成してください。",
+        question: "お店を始めようと思ったきっかけや、お客様への一番の想いを教えてください。",
         icon: "✨"
       }
     ];

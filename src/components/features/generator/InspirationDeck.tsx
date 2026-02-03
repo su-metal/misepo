@@ -34,30 +34,79 @@ export const InspirationDeck: React.FC<InspirationDeckProps> = ({ storeProfile, 
             lastIndustryRef.current = currentIndustry;
         }
 
-        setLoading(true);
-        // Simulate minor loading for UX "thinking" feel
-        setTimeout(() => {
-            const industry = storeProfile.industry || 'その他';
-            const pool = INDUSTRY_TOPIC_POOL[industry] || INDUSTRY_TOPIC_POOL['その他'];
+        const fetchInspiration = async () => {
+            setLoading(true);
+            try {
+                const industry = storeProfile.industry || 'その他';
+                const pool = INDUSTRY_TOPIC_POOL[industry] || INDUSTRY_TOPIC_POOL['その他'];
 
-            // Shuffle and pick up to 6 cards
-            const shuffled = [...pool]
-                .sort(() => Math.random() - 0.5)
-                .slice(0, 6)
-                .map((t, idx) => ({
-                    id: `temp-${idx}-${refreshKey}`,
-                    type: 'variety' as const,
-                    title: t.title,
-                    description: t.description,
-                    prompt: t.prompt,
-                    question: t.question,
-                    icon: t.icon
-                }));
+                // 1. Pick 5 cards from local pool (Shuffle)
+                const localTemplates = [...pool]
+                    .sort(() => Math.random() - 0.5)
+                    .slice(0, 5)
+                    .map((t, idx) => ({
+                        id: `local-${idx}-${refreshKey}`,
+                        type: 'variety' as const,
+                        title: t.title,
+                        description: t.description,
+                        prompt: t.prompt,
+                        question: t.question,
+                        icon: t.icon
+                    }));
 
-            setLocalCards(shuffled);
-            if (onCardsLoaded) onCardsLoaded(shuffled);
-            setLoading(false);
-        }, 600);
+                // 2. Fetch only the TREND card from AI
+                const todayStr = new Date().toISOString().split('T')[0];
+                const resTrend = await fetch(`/api/trends?industry=${encodeURIComponent(industry)}`);
+                const trendData = await resTrend.json();
+                const todayTrend = trendData.trends?.find((t: any) => t.date === todayStr) || trendData.trends?.[0];
+
+                const resInspiration = await fetch('/api/ai/inspiration', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        date: todayStr,
+                        storeProfile,
+                        trend: todayTrend,
+                        seed: `trend-only-${refreshKey}`,
+                        mode: 'trend_only' // Custom flag to tell AI to only return variety
+                    })
+                });
+
+                const aiData = await resInspiration.json();
+                const aiTrendCard = aiData.cards?.[0];
+
+                // 3. Mix (5 local + 1 AI trend)
+                const finalCards = aiTrendCard
+                    ? [...localTemplates, aiTrendCard].sort(() => Math.random() - 0.5)
+                    : localTemplates;
+
+                setLocalCards(finalCards);
+                if (onCardsLoaded) onCardsLoaded(finalCards);
+            } catch (error) {
+                console.error("Failed to fetch inspiration:", error);
+                // Fallback strictly to local pool
+                const industry = storeProfile.industry || 'その他';
+                const pool = INDUSTRY_TOPIC_POOL[industry] || INDUSTRY_TOPIC_POOL['その他'];
+                const shuffled = [...pool]
+                    .sort(() => Math.random() - 0.5)
+                    .slice(0, 6)
+                    .map((t, idx) => ({
+                        id: `temp-${idx}-${refreshKey}`,
+                        type: 'variety' as const,
+                        title: t.title,
+                        description: t.description,
+                        prompt: t.prompt,
+                        question: t.question,
+                        icon: t.icon
+                    }));
+                setLocalCards(shuffled);
+                if (onCardsLoaded) onCardsLoaded(shuffled);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchInspiration();
     }, [isVisible, storeProfile, refreshKey]);
 
     if (!isVisible) return null;
@@ -102,7 +151,12 @@ export const InspirationDeck: React.FC<InspirationDeckProps> = ({ storeProfile, 
                             <span className="text-xl leading-none">{card.icon}</span>
                             <div className="flex flex-col items-start leading-tight">
                                 <h4 className="text-[13px] font-bold text-[#111111] group-hover:text-[#1f29fc] transition-colors">{card.title}</h4>
-                                <span className="text-[8px] font-black text-stone-400 uppercase tracking-tighter">RECOMMEND</span>
+                                <span className={`text-[8px] font-black uppercase tracking-tighter ${card.type === 'trend' || card.type === 'web'
+                                    ? 'text-[#1f29fc]'
+                                    : 'text-stone-400'
+                                    }`}>
+                                    {card.type === 'trend' ? 'TREND' : card.type === 'web' ? 'WEB TREND' : 'NEW IDEA'}
+                                </span>
                             </div>
                         </button>
                     ))}
