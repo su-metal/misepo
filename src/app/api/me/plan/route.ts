@@ -44,7 +44,9 @@ export async function GET() {
     .maybeSingle();
   
   if (!profile) {
-    await supabaseAdmin.from("profiles").insert({ user_id: userId }).onConflict("user_id").ignore();
+    await supabaseAdmin
+      .from("profiles")
+      .upsert({ user_id: userId }, { onConflict: "user_id", ignoreDuplicates: true });
   }
 
   // 2. Load Entitlement
