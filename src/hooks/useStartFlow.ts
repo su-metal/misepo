@@ -38,11 +38,6 @@ export function useStartFlow() {
       window.localStorage.setItem("login_plan", nextPlan);
     }
 
-    if (isLoggedIn) {
-      await goCheckout(nextPlan);
-      return;
-    }
-
     // Force sign out first to ensure account selection works
     await supabase.auth.signOut();
 
@@ -53,7 +48,7 @@ export function useStartFlow() {
         redirectTo: `${origin}/auth/callback?intent=${encodeURIComponent(nextIntent)}`,
         queryParams: {
           access_type: 'offline',
-          prompt: 'consent', // Force consent screen to ensure account picker appears
+          prompt: 'select_account', // Force account selection
         },
       },
     });

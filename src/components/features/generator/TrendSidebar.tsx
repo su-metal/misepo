@@ -225,7 +225,7 @@ export const TrendSidebar: React.FC<TrendSidebarProps> = ({
                                     w-full py-3 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all shadow-sm flex items-center justify-center gap-2 border border-[#122646]/5
                                     ${isGoogleMaps
                                         ? 'bg-stone-200 text-stone-400 cursor-not-allowed shadow-none'
-                                        : 'bg-white text-[#0071b9] hover:bg-[#fafafa] hover:shadow-md hover:-translate-y-0.5 active:scale-95 active:translate-y-0'
+                                        : 'bg-white text-[#1f29fc] hover:bg-[#fafafa] hover:shadow-md hover:-translate-y-0.5 active:scale-95 active:translate-y-0'
                                     }
                                 `}
                             >

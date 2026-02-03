@@ -15,28 +15,28 @@ const FeatureWalkthrough: React.FC<FeatureWalkthroughProps> = ({ onComplete, onS
             desc: "あなたのお店専属のAI広報担当。\n日々の投稿や返信を、もっと簡単に、もっと魅力的に。",
             image: "/assets/avatar_01.png",
             accent: "bg-[#d8e9f4]",
-            textColor: "text-[#0071b9]"
+            textColor: "text-[#1f29fc]"
         },
         {
             title: "文章作成はAIにおまかせ",
             desc: "「何を書こう？」と迷う時間はもう終わり。\nAIがお店の雰囲気を学習し、最適な文章を提案します。",
             image: "/assets/avatar_02.png",
             accent: "bg-[#d8e9f4]",
-            textColor: "text-[#0071b9]"
+            textColor: "text-[#1f29fc]"
         },
         {
             title: "全SNSをワンタップで",
             desc: "Instagram、X、LINE、Googleマップ。\nそれぞれの媒体に合わせた投稿文を一度に作成できます。",
             image: "/assets/avatar_03.png",
             accent: "bg-[#d8e9f4]",
-            textColor: "text-[#0071b9]"
+            textColor: "text-[#1f29fc]"
         },
         {
             title: "さあ、始めましょう",
             desc: "まずは簡単なプロフィール設定から。\nあなたの「AI広報担当」が待っています。",
             image: "/assets/avatar_04.png",
             accent: "bg-[#d8e9f4]",
-            textColor: "text-[#0071b9]"
+            textColor: "text-[#1f29fc]"
         }
     ];
 
@@ -54,14 +54,14 @@ const FeatureWalkthrough: React.FC<FeatureWalkthroughProps> = ({ onComplete, onS
         <div className="fixed inset-0 z-[400] bg-white flex flex-col animate-in fade-in duration-500">
             {/* Background Decorations - Flat Color Accents */}
             <div className="absolute inset-x-0 top-0 h-[40vh] bg-[#d8e9f4]/30 pointer-events-none" />
-            <div className="absolute top-[35vh] left-0 right-0 h-px bg-[#0071b9]/5 pointer-events-none" />
+            <div className="absolute top-[35vh] left-0 right-0 h-px bg-[#1f29fc]/5 pointer-events-none" />
 
             {/* Header / Skip */}
             <div className="relative z-10 px-6 py-6 flex justify-end">
                 {!isLastStep && (
                     <button
                         onClick={onComplete}
-                        className="text-xs font-black text-[#122646]/30 hover:text-[#0071b9] transition-colors tracking-[0.3em] uppercase"
+                        className="text-xs font-black text-[#122646]/30 hover:text-[#1f29fc] transition-colors tracking-[0.3em] uppercase"
                     >
                         SKIP
                     </button>
@@ -104,7 +104,7 @@ const FeatureWalkthrough: React.FC<FeatureWalkthroughProps> = ({ onComplete, onS
                     {steps.map((_, i) => (
                         <div
                             key={i}
-                            className={`h-1.5 rounded-full transition-all duration-300 ${i === step ? 'w-8 bg-[#0071b9]' : 'w-1.5 bg-[#d8e9f4]'
+                            className={`h-1.5 rounded-full transition-all duration-300 ${i === step ? 'w-8 bg-[#1f29fc]' : 'w-1.5 bg-[#d8e9f4]'
                                 }`}
                         />
                     ))}
@@ -118,13 +118,13 @@ const FeatureWalkthrough: React.FC<FeatureWalkthroughProps> = ({ onComplete, onS
                     onClick={handleNext}
                     className={`w-full py-5 rounded-full font-black text-sm uppercase tracking-[0.2em] shadow-xl active:scale-95 transition-all flex items-center justify-center gap-2 group
                         ${isLastStep
-                            ? 'bg-[#122646] text-white hover:bg-[#0071b9] shadow-[#d8e9f4]'
+                            ? 'bg-[#122646] text-white hover:bg-[#1f29fc] shadow-[#d8e9f4]'
                             : 'bg-white text-[#122646] hover:bg-slate-50 border border-[#122646]/10'
                         }
                     `}
                 >
                     {isLastStep ? '設定をはじめる' : '次へ'}
-                    <ChevronRightIcon className={`w-4 h-4 transition-transform group-hover:translate-x-1 ${!isLastStep && 'text-[#0071b9]/40'}`} />
+                    <ChevronRightIcon className={`w-4 h-4 transition-transform group-hover:translate-x-1 ${!isLastStep && 'text-[#1f29fc]/40'}`} />
                 </button>
             </div>
         </div>

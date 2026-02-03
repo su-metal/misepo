@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { User } from '@supabase/supabase-js';
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
 
   useEffect(() => {
     const init = async () => {
@@ -15,19 +15,30 @@ export function useAuth() {
     };
     init();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
+  const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    if (_event === 'SIGNED_OUT') {
+      setUser(null);
+    } else if (session) {
+      setUser(session.user);
+    }
+  });
 
-    return () => subscription.unsubscribe();
-  }, [supabase]);
+  return () => {
+    subscription.unsubscribe();
+  };
+}, [supabase]);
 
   const loginWithGoogle = async (intent: string = 'login') => {
+    // Force sign out first to ensure account selection works
+    await supabase.auth.signOut();
     const origin = typeof window !== 'undefined' ? window.location.origin : '';
     await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
         redirectTo: `${origin}/auth/callback?intent=${intent}&next=/generate`,
+        queryParams: {
+          prompt: 'select_account',
+        },
       },
     });
   };

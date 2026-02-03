@@ -6,9 +6,10 @@ interface HeaderProps {
     isMenuOpen: boolean;
     setIsMenuOpen: (open: boolean) => void;
     loginWithGoogle: (type: 'login' | 'signup') => void;
+    user: any;
 }
 
-export const Header = ({ scrolled, isMenuOpen, setIsMenuOpen, loginWithGoogle }: HeaderProps) => {
+export const Header = ({ scrolled, isMenuOpen, setIsMenuOpen, loginWithGoogle, user }: HeaderProps) => {
     return (
         <header className={`fixed w-full z-50 transition-all duration-500 ${scrolled ? 'bg-white/95 border-b border-slate-100 shadow-xl shadow-slate-200/20 backdrop-blur-md py-4' : 'bg-transparent py-6'}`}>
             <div className="max-w-7xl mx-auto px-6">
@@ -30,8 +31,14 @@ export const Header = ({ scrolled, isMenuOpen, setIsMenuOpen, loginWithGoogle }:
                         ))}
                     </nav>
                     <div className="hidden md:flex items-center space-x-4">
-                        <button onClick={() => loginWithGoogle('login')} className="text-[10px] font-black text-[#282d32] px-6 py-3 rounded-full border border-slate-200 hover:bg-slate-50 transition-all tracking-[0.2em]">サインイン</button>
-                        <button onClick={() => window.location.href = '/start'} className="bg-[#1823ff] text-white px-8 py-3 rounded-full text-[10px] font-black shadow-2xl shadow-[#1823ff]/20 hover:scale-[1.02] transition-all tracking-[0.2em]">7日間無料で試す</button>
+                        {user ? (
+                            <button onClick={() => window.location.href = '/generate'} className="bg-[#1823ff] text-white px-8 py-3 rounded-full text-[10px] font-black shadow-2xl shadow-[#1823ff]/20 hover:scale-[1.02] transition-all tracking-[0.2em]">ダッシュボードへ</button>
+                        ) : (
+                            <>
+                                <button onClick={() => loginWithGoogle('login')} className="text-[10px] font-black text-[#282d32] px-6 py-3 rounded-full border border-slate-200 hover:bg-slate-50 transition-all tracking-[0.2em]">サインイン</button>
+                                <button onClick={() => window.location.href = '/start'} className="bg-[#1823ff] text-white px-8 py-3 rounded-full text-[10px] font-black shadow-2xl shadow-[#1823ff]/20 hover:scale-[1.02] transition-all tracking-[0.2em]">7日間無料で試す</button>
+                            </>
+                        )}
                     </div>
                     <div className="md:hidden flex items-center">
                         <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-slate-600 hover:text-slate-900 focus:outline-none p-2" aria-label="メニューを開く">
@@ -47,8 +54,14 @@ export const Header = ({ scrolled, isMenuOpen, setIsMenuOpen, loginWithGoogle }:
                             <a key={item} href={['#problem', '#features', '#demo', '#pricing'][i]} className="block px-4 py-3 text-lg font-black text-[#282d32] hover:bg-slate-50 rounded-xl transition-all" onClick={() => setIsMenuOpen(false)}>{item.toUpperCase()}</a>
                         ))}
                         <div className="pt-6 flex flex-col gap-3">
-                            <button onClick={() => loginWithGoogle('login')} className="w-full bg-white border border-slate-200 text-[#282d32] px-5 py-3 rounded-xl text-xs font-black hover:bg-slate-50 transition-all shadow-sm">サインイン</button>
-                            <button onClick={() => window.location.href = '/start'} className="w-full bg-[#1823ff] text-white px-5 py-4 rounded-xl text-xs font-black shadow-lg shadow-[#1823ff]/30 transition-all">7日間無料で試す</button>
+                            {user ? (
+                                <button onClick={() => window.location.href = '/generate'} className="w-full bg-[#1823ff] text-white px-5 py-4 rounded-xl text-xs font-black shadow-lg shadow-[#1823ff]/30 transition-all">ダッシュボードへ</button>
+                            ) : (
+                                <>
+                                    <button onClick={() => loginWithGoogle('login')} className="w-full bg-white border border-slate-200 text-[#282d32] px-5 py-3 rounded-xl text-xs font-black hover:bg-slate-50 transition-all shadow-sm">サインイン</button>
+                                    <button onClick={() => window.location.href = '/start'} className="w-full bg-[#1823ff] text-white px-5 py-4 rounded-xl text-xs font-black shadow-lg shadow-[#1823ff]/30 transition-all">7日間無料で試す</button>
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>

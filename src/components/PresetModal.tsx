@@ -118,10 +118,10 @@ const SortablePresetRow = ({
       className={`
         group flex items-center gap-3 p-4 rounded-2xl transition-all duration-300 border
         ${isSelected
-          ? 'bg-[#0071b9] border-[#0071b9] shadow-[0_8px_30px_rgb(0,113,185,0.2)]'
-          : 'bg-white/40 border-stone-100 hover:bg-white hover:border-[#0071b9]/10 hover:shadow-sm'
+          ? 'bg-[#1f29fc] border-[#1f29fc] shadow-[0_8px_30px_rgb(0,113,185,0.2)]'
+          : 'bg-white/40 border-stone-100 hover:bg-white hover:border-[#1f29fc]/10 hover:shadow-sm'
         }
-        ${isDragging ? 'opacity-50 ring-2 ring-[#0071b9]' : ''}
+        ${isDragging ? 'opacity-50 ring-2 ring-[#1f29fc]' : ''}
       `}
     >
       <div
@@ -138,7 +138,7 @@ const SortablePresetRow = ({
         <div className={`font-black text-[15px] truncate mb-0.5 ${isSelected ? 'text-white' : 'text-[#122646]'}`}>
           {preset.name}
         </div>
-        <div className={`text-[11px] font-black uppercase tracking-widest truncate ${isSelected ? 'text-white/70' : 'text-[#0071b9]'}`}>
+        <div className={`text-[11px] font-black uppercase tracking-widest truncate ${isSelected ? 'text-white/70' : 'text-[#1f29fc]'}`}>
           分身プロフィール
         </div>
       </button>
@@ -247,11 +247,11 @@ const SampleSlider = ({
           {samples.map((item) => (
             <div
               key={item.id}
-              className="snap-center shrink-0 w-full group p-8 md:p-12 bg-white border border-[#122646]/5 rounded-[2rem] shadow-sm hover:shadow-md hover:border-[#0071b9]/10 transition-all flex flex-col justify-between min-h-[180px] relative overflow-hidden"
+              className="snap-center shrink-0 w-full group p-8 md:p-12 bg-white border border-[#122646]/5 rounded-[2rem] shadow-sm hover:shadow-md hover:border-[#1f29fc]/10 transition-all flex flex-col justify-between min-h-[180px] relative overflow-hidden"
             >
               <div className="space-y-5">
                 <div className="flex items-center justify-between">
-                  <span className={`text-[9px] font-black px-2.5 py-1 rounded-lg uppercase tracking-widest ${mode === 'sns' ? 'bg-[#d8e9f4] text-[#0071b9]' : 'bg-[#00b900]/10 text-[#00b900]'}`}>
+                  <span className={`text-[9px] font-black px-2.5 py-1 rounded-lg uppercase tracking-widest ${mode === 'sns' ? 'bg-[#d8e9f4] text-[#1f29fc]' : 'bg-[#00b900]/10 text-[#00b900]'}`}>
                     {mode === 'sns' ? 'SNS投稿例' : 'マップ返信例'}
                   </span>
                   <span className="text-[10px] font-black text-stone-300 uppercase tracking-widest">
@@ -266,7 +266,7 @@ const SampleSlider = ({
               <div className="mt-8 flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0">
                 <button
                   onClick={() => onEdit(item)}
-                  className="p-3 text-[#0071b9]/50 hover:text-[#0071b9] hover:bg-[#d8e9f4]/50 rounded-2xl transition-all border border-transparent hover:border-[#0071b9]/10"
+                  className="p-3 text-[#1f29fc]/50 hover:text-[#1f29fc] hover:bg-[#d8e9f4]/50 rounded-2xl transition-all border border-transparent hover:border-[#1f29fc]/10"
                   title="詳細を表示"
                 >
                   <BookOpenIcon className="w-5 h-5" />
@@ -735,10 +735,10 @@ const PresetModal: React.FC<PresetModalProps> = ({
         <div className="shrink-0 flex flex-col items-center gap-2">
           <button
             onClick={() => setIsIconSelectorOpen(!isIconSelectorOpen)}
-            className="w-16 h-16 rounded-2xl bg-[#d8e9f4]/30 border border-[#0071b9]/10 flex items-center justify-center text-[#0071b9] shadow-sm hover:shadow-md transition-all active:scale-95 group relative"
+            className="w-16 h-16 rounded-2xl bg-[#d8e9f4]/30 border border-[#1f29fc]/10 flex items-center justify-center text-[#1f29fc] shadow-sm hover:shadow-md transition-all active:scale-95 group relative"
           >
             <div className="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none">
-              <div className="absolute inset-0 bg-gradient-to-br from-[#0071b9]/0 to-[#0071b9]/5 group-hover:to-[#0071b9]/10 transition-all" />
+              <div className="absolute inset-0 bg-gradient-to-br from-[#1f29fc]/0 to-[#1f29fc]/5 group-hover:to-[#1f29fc]/10 transition-all" />
             </div>
             <div className="relative transform group-hover:scale-110 transition-transform">
               {renderAvatarIcon(avatar, "w-8 h-8")}
@@ -747,7 +747,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
           <div
             onClick={() => setIsIconSelectorOpen(!isIconSelectorOpen)}
-            className="flex items-center justify-center p-1 bg-white rounded-full border border-stone-100 text-stone-300 shadow-sm cursor-pointer hover:text-[#0071b9] hover:border-[#0071b9]/20 transition-all"
+            className="flex items-center justify-center p-1 bg-white rounded-full border border-stone-100 text-stone-300 shadow-sm cursor-pointer hover:text-[#1f29fc] hover:border-[#1f29fc]/20 transition-all"
           >
             <ChevronDownIcon className={`w-3 h-3 transition-transform duration-300 ${isIconSelectorOpen ? 'rotate-180' : ''}`} />
           </div>
@@ -762,7 +762,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="例: 店長（公式）, SNS担当スタッフ"
-            className="w-full px-5 py-4 bg-stone-50 border border-stone-100 focus:bg-white focus:border-[#0071b9]/30 focus:ring-4 focus:ring-[#0071b9]/5 outline-none rounded-2xl text-[#122646] font-bold placeholder-stone-300 transition-all shadow-sm text-sm"
+            className="w-full px-5 py-4 bg-stone-50 border border-stone-100 focus:bg-white focus:border-[#1f29fc]/30 focus:ring-4 focus:ring-[#1f29fc]/5 outline-none rounded-2xl text-[#122646] font-bold placeholder-stone-300 transition-all shadow-sm text-sm"
           />
           <p className="text-[10px] text-stone-400 pl-1">
             ※誰が投稿しているか分かりやすい名前をつけましょう
@@ -771,13 +771,13 @@ const PresetModal: React.FC<PresetModalProps> = ({
       </div>
 
       {isIconSelectorOpen && (
-        <div className="p-5 bg-[#d8e9f4]/20 rounded-[2.5rem] border border-[#0071b9]/10 animate-in zoom-in-95 duration-300">
+        <div className="p-5 bg-[#d8e9f4]/20 rounded-[2.5rem] border border-[#1f29fc]/10 animate-in zoom-in-95 duration-300">
           <div className="grid grid-cols-6 sm:grid-cols-8 gap-2">
             {AVATAR_OPTIONS.map(opt => (
               <button
                 key={opt.id}
                 onClick={() => { setAvatar(opt.id); setIsIconSelectorOpen(false); }}
-                className={`aspect-square rounded-xl flex items-center justify-center transition-all ${avatar === opt.id ? 'bg-[#122646] text-white shadow-lg shadow-[#122646]/10' : 'bg-white border border-stone-100 text-stone-400 hover:text-[#0071b9] hover:border-[#0071b9]/20'}`}
+                className={`aspect-square rounded-xl flex items-center justify-center transition-all ${avatar === opt.id ? 'bg-[#122646] text-white shadow-lg shadow-[#122646]/10' : 'bg-white border border-stone-100 text-stone-400 hover:text-[#1f29fc] hover:border-[#1f29fc]/20'}`}
                 title={opt.label}
               >
                 {React.createElement(opt.icon, { className: "w-5 h-5" })}
@@ -798,8 +798,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-2">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <div className="text-[#0071b9]">{icon}</div>
-              <label className="text-[10px] font-black text-[#0071b9] uppercase tracking-[0.2em] block">学習カテゴリ</label>
+              <div className="text-[#1f29fc]">{icon}</div>
+              <label className="text-[10px] font-black text-[#1f29fc] uppercase tracking-[0.2em] block">学習カテゴリ</label>
             </div>
             <h4 className="font-black text-stone-900 tracking-tighter text-lg">{title}</h4>
           </div>
@@ -848,18 +848,18 @@ const PresetModal: React.FC<PresetModalProps> = ({
     return (
       <div className="space-y-12">
         <div className="flex flex-col items-start gap-4 px-1">
-          <label className="text-[10px] font-black text-[#0071b9] uppercase tracking-[0.2em] block">2. 学習とスタイル設定</label>
+          <label className="text-[10px] font-black text-[#1f29fc] uppercase tracking-[0.2em] block">2. 学習とスタイル設定</label>
 
           <div className="flex p-1.5 bg-stone-100 rounded-full border border-stone-200 shadow-inner overflow-hidden self-start">
             <button
               onClick={() => setLearningMode('sns')}
-              className={`px-8 py-2.5 rounded-full text-[11px] font-black tracking-widest transition-all ${learningMode === 'sns' ? 'bg-[#0071b9] text-white shadow-sm ring-2 ring-[#0071b9]' : 'text-stone-400 hover:text-stone-600'}`}
+              className={`px-8 py-2.5 rounded-full text-[11px] font-black tracking-widest transition-all ${learningMode === 'sns' ? 'bg-[#1f29fc] text-white shadow-sm ring-2 ring-[#1f29fc]' : 'text-stone-400 hover:text-stone-600'}`}
             >
               SNS
             </button>
             <button
               onClick={() => setLearningMode('maps')}
-              className={`px-8 py-2.5 rounded-full text-[11px] font-black tracking-widest transition-all ${learningMode === 'maps' ? 'bg-[#0071b9] text-white shadow-sm ring-2 ring-[#0071b9]' : 'text-stone-400 hover:text-stone-600'}`}
+              className={`px-8 py-2.5 rounded-full text-[11px] font-black tracking-widest transition-all ${learningMode === 'maps' ? 'bg-[#1f29fc] text-white shadow-sm ring-2 ring-[#1f29fc]' : 'text-stone-400 hover:text-stone-600'}`}
             >
               G-MAPS
             </button>
@@ -913,7 +913,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
           <label className="text-[11px] font-black text-stone-400 uppercase tracking-widest">プロフィールを選択</label>
           <button
             onClick={handleStartNew}
-            className="flex items-center gap-1.5 text-[11px] font-black text-[#122646] hover:text-[#0071b9] transition-colors uppercase tracking-widest"
+            className="flex items-center gap-1.5 text-[11px] font-black text-[#122646] hover:text-[#1f29fc] transition-colors uppercase tracking-widest"
           >
             <PlusIcon className="w-3.5 h-3.5" />
             <span>新規作成</span>
@@ -942,7 +942,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
           {orderedPresets.length === 0 && (
             <div className="py-20 px-6 text-center">
-              <div className="w-16 h-16 bg-[#d8e9f4]/30 rounded-full flex items-center justify-center mx-auto mb-6 text-[#0071b9]">
+              <div className="w-16 h-16 bg-[#d8e9f4]/30 rounded-full flex items-center justify-center mx-auto mb-6 text-[#1f29fc]">
                 <PlusIcon className="w-8 h-8" />
               </div>
               <h5 className="text-sm font-black text-[#122646] mb-2">まだプロフィールがありません</h5>
@@ -970,7 +970,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
             )}
 
             <div className="flex items-center gap-3">
-              <span className="text-[11px] font-black text-[#0071b9] uppercase tracking-[0.2em] block leading-none">プロフィールの編集</span>
+              <span className="text-[11px] font-black text-[#1f29fc] uppercase tracking-[0.2em] block leading-none">プロフィールの編集</span>
             </div>
           </div>
 
@@ -1000,7 +1000,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
               w-full py-5 rounded-2xl flex items-center justify-center gap-4 transition-all duration-500
               ${isSaving || !name.trim()
                 ? 'bg-stone-100 text-stone-300 cursor-not-allowed'
-                : 'bg-[#122646] text-white shadow-xl shadow-[#122646]/20 hover:bg-[#0071b9] hover:shadow-[#0071b9]/20 hover:-translate-y-1 active:scale-95'
+                : 'bg-[#122646] text-white shadow-xl shadow-[#122646]/20 hover:bg-[#1f29fc] hover:shadow-[#1f29fc]/20 hover:-translate-y-1 active:scale-95'
               }
             `}
           >
@@ -1087,7 +1087,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                   {learningMode === 'sns' ? 'X, Instagram, LINEなどの投稿をそのまま貼り付けてください。' : 'Googleマップでの口コミへの返信文を貼り付けてください。'}
                 </p>
               </div>
-              <span className={`text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-widest ${learningMode === 'sns' ? 'bg-[#0071b9]-50 text-[#0071b9]-500' : 'bg-teal-50 text-teal-600'}`}>
+              <span className={`text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-widest ${learningMode === 'sns' ? 'bg-[#1f29fc]-50 text-[#1f29fc]-500' : 'bg-teal-50 text-teal-600'}`}>
                 {learningMode === 'sns' ? 'SNS用' : 'マップ返信用'}
               </span>
             </div>
@@ -1101,7 +1101,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                   <button
                     onClick={() => fileInputRef.current?.click()}
                     disabled={isAnalyzingScreenshot}
-                    className="flex items-center gap-2.5 text-xs font-black text-[#0071b9] hover:opacity-70 disabled:opacity-50"
+                    className="flex items-center gap-2.5 text-xs font-black text-[#1f29fc] hover:opacity-70 disabled:opacity-50"
                   >
                     <TieIcon className="w-4 h-4" />
                     スクショ解析
@@ -1115,7 +1115,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                       setIsSanitizing(false);
                     }}
                     disabled={isSanitizing || !modalText.trim() || isAnalyzingScreenshot}
-                    className="flex items-center gap-2.5 text-xs font-black text-[#0071b9] hover:opacity-70 disabled:opacity-30"
+                    className="flex items-center gap-2.5 text-xs font-black text-[#1f29fc] hover:opacity-70 disabled:opacity-30"
                   >
                     <SparklesIcon className="w-4 h-4" />
                     AI伏せ字
@@ -1128,7 +1128,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
               {isAnalyzingScreenshot && (
                 <div className="absolute inset-0 z-10 bg-white/60 backdrop-blur-sm flex items-center justify-center animate-in fade-in duration-300">
                   <div className="flex flex-col items-center gap-4">
-                    <div className="w-8 h-8 border-4 border-stone-100 border-t-[#0071b9] rounded-full animate-spin shadow-xl" />
+                    <div className="w-8 h-8 border-4 border-stone-100 border-t-[#1f29fc] rounded-full animate-spin shadow-xl" />
                     <span className="text-xs font-black text-stone-900 tracking-widest uppercase bg-white px-6 py-2 rounded-full shadow-sm border border-stone-100">
                       スクショ解析中...
                     </span>

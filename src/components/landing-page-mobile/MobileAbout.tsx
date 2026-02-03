@@ -11,10 +11,10 @@ export const MobileAbout = () => {
     return (
         <section className="bg-[var(--ichizen-beige)] py-16 px-6 overflow-hidden">
             <div className="mb-8 overflow-hidden">
-                <p className="text-[#0071b9] font-black text-sm mb-2 tracking-tight">
+                <p className="text-[#1f29fc] font-black text-sm mb-2 tracking-tight">
                     MisePoってなに？
                 </p>
-                <h2 className="text-[#0071b9] text-7xl font-black tracking-tighter mb-8 italic">
+                <h2 className="text-[#1f29fc] text-7xl font-black tracking-tighter mb-8 italic">
                     ABOUT
                 </h2>
                 <p className="text-[#122646] text-sm font-bold leading-relaxed max-w-[300px]">
@@ -43,7 +43,7 @@ export const MobileAbout = () => {
                                         <div className="h-2 w-4/6 bg-slate-100 rounded-full"></div>
                                     </div>
                                     <div className="grid grid-cols-2 gap-2 pt-2">
-                                        <div className="h-12 bg-[#0071b9]/10 rounded-xl"></div>
+                                        <div className="h-12 bg-[#1f29fc]/10 rounded-xl"></div>
                                         <div className="h-12 bg-[#00b900]/10 rounded-xl"></div>
                                     </div>
                                 </div>
@@ -64,7 +64,7 @@ export const MobileAbout = () => {
                 <svg width="100%" height="100%" viewBox="0 0 400 50" fill="none" className="opacity-20">
                     <path
                         d="M0,25 Q100,0 200,25 T400,25"
-                        stroke="#0071b9"
+                        stroke="#1f29fc"
                         strokeWidth="3"
                         strokeDasharray="6 10"
                         strokeLinecap="round"
