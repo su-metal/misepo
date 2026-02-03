@@ -6,15 +6,46 @@ import { env } from "@/lib/env";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 const APP_ID = env.APP_ID;
-const RETURN_URL = process.env.NEXT_PUBLIC_APP_URL
-  ? `${process.env.NEXT_PUBLIC_APP_URL.replace(/\/$/, "")}/`
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL
+  ? process.env.NEXT_PUBLIC_APP_URL.replace(/\/$/, "")
   : null;
 
-export async function POST() {
+const getSafeReturnUrl = async (request: Request) => {
+  if (!BASE_URL) throw new Error("missing NEXT_PUBLIC_APP_URL");
+
+  let candidate: string | null = null;
+  try {
+    const body = await request.json();
+    if (body && typeof body.returnUrl === "string") {
+      candidate = body.returnUrl;
+    }
+  } catch {
+    // Ignore invalid JSON and fall back to BASE_URL.
+  }
+
+  if (!candidate) return `${BASE_URL}/`;
+
+  if (candidate.startsWith("/")) {
+    return `${BASE_URL}${candidate}`;
+  }
+
+  try {
+    const candidateUrl = new URL(candidate);
+    const baseUrl = new URL(BASE_URL);
+    if (candidateUrl.origin === baseUrl.origin) {
+      return candidateUrl.toString();
+    }
+  } catch {
+    // Ignore invalid URLs and fall back to BASE_URL.
+  }
+
+  return `${BASE_URL}/`;
+};
+
+export async function POST(request: Request) {
   try {
     if (!process.env.STRIPE_SECRET_KEY)
       throw new Error("missing STRIPE_SECRET_KEY");
-    if (!RETURN_URL) throw new Error("missing NEXT_PUBLIC_APP_URL");
 
     const supabase = await createClient();
 
@@ -73,9 +104,11 @@ export async function POST() {
       if (updateErr) throw new Error(updateErr.message);
     }
 
+    const returnUrl = await getSafeReturnUrl(request);
+
     const portal = await stripe.billingPortal.sessions.create({
       customer: customerId,
-      return_url: RETURN_URL,
+      return_url: returnUrl,
     });
 
     return NextResponse.json({ ok: true, url: portal.url });
