@@ -29,11 +29,21 @@ async function checkStripeSub(subId: string) {
     const sub = await stripe.subscriptions.retrieve(subId);
     console.log("Sub Object Type:", sub.object);
     console.log("Full JSON:", JSON.stringify(sub, null, 2));
-    console.log("Current Period Start (Raw):", sub.current_period_start);
-    console.log("Current Period End (Raw):", sub.current_period_end);
-    
-    if (sub.current_period_start) {
-        console.log("Current Period Start (ISO):", new Date(sub.current_period_start * 1000).toISOString());
+
+    const firstItem = sub.items?.data?.[0];
+    if (!firstItem) {
+      console.log("No subscription items found.");
+      return;
+    }
+
+    console.log("Current Period Start (Raw):", firstItem.current_period_start);
+    console.log("Current Period End (Raw):", firstItem.current_period_end);
+
+    if (firstItem.current_period_start) {
+      console.log(
+        "Current Period Start (ISO):",
+        new Date(firstItem.current_period_start * 1000).toISOString()
+      );
     }
     
     // Check if it's actually an active subscription
