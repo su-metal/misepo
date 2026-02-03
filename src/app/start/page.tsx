@@ -19,7 +19,11 @@ function StartPageContent() {
     isRedirecting,
     intent,
     startGoogleLogin,
-    initialPlan
+    initialPlan,
+    isSwitch,
+    error,
+    errorCode,
+    errorDescription
   } = useStartFlow();
 
   const [plan, setPlan] = useState<"entry" | "standard" | "professional">("standard");
@@ -82,6 +86,40 @@ function StartPageContent() {
           </div>
           <p className="text-[12px] font-black text-slate-400 uppercase tracking-[0.4em] max-w-sm">Ignite your social presence in seconds</p>
         </div>
+
+        {(error || errorCode || errorDescription) && (
+          <div className="mb-8 w-full max-w-2xl text-center bg-red-50/80 backdrop-blur-md border border-red-200/60 shadow-sm rounded-2xl px-6 py-4">
+            <p className="text-[11px] font-black text-red-700 uppercase tracking-[0.2em]">
+              他のアカウントでサインインしているため、いったんサインインを解除しました。
+            </p>
+            {(errorCode || errorDescription) && (
+              <p className="mt-2 text-[10px] font-bold text-red-600 tracking-widest">
+                {errorCode ?? error}: {errorDescription ?? "認証状態が見つかりませんでした。"}
+              </p>
+            )}
+            <p className="mt-2 text-[10px] font-bold text-red-600 tracking-widest">
+              ご希望のアカウントで再度サインインしてください。
+            </p>
+            <button
+              className="mt-4 inline-flex items-center justify-center w-full max-w-[220px] mx-auto px-4 py-3 bg-white text-[#1823ff] font-black text-[11px] tracking-[0.2em] uppercase rounded-[30px] border border-[#1823ff] shadow-xl shadow-[#1823ff]/20 hover:bg-[#1823ff]/10 transition-all"
+              onClick={() => startGoogleLogin("login", initialPlan)}
+              disabled={loading}
+            >
+              {loading ? "..." : "再度サインインする"}
+            </button>
+          </div>
+        )}
+
+        {(isSwitch || isLoggedIn) && (
+          <div className="mb-10 w-full max-w-2xl text-center bg-white/70 backdrop-blur-md border border-white/60 shadow-sm rounded-2xl px-6 py-4">
+            <p className="text-[11px] font-black text-slate-600 uppercase tracking-[0.2em]">
+              別アカウントでログインする場合は、下のボタンからログインしてください。
+            </p>
+            <p className="mt-2 text-[10px] font-bold text-slate-500 tracking-widest">
+              Google で既に別アカウントが選択されている場合は、アカウント選択画面で切り替えてください。
+            </p>
+          </div>
+        )}
 
         <div className="w-full max-w-3xl space-y-12">
           {/* Direct Trial Entry for Eligible Users */}

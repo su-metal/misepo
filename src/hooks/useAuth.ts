@@ -29,6 +29,9 @@ export function useAuth() {
 }, [supabase]);
 
   const loginWithGoogle = async (intent: string = 'login') => {
+    if (typeof window !== 'undefined') {
+      window.localStorage.removeItem('login_intent');
+    }
     // Force sign out first to ensure account selection works
     await supabase.auth.signOut();
     const origin = typeof window !== 'undefined' ? window.location.origin : '';

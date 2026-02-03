@@ -12,6 +12,10 @@ export function useStartFlow() {
   const [canUseApp, setCanUseApp] = useState<boolean | null>(null);
   const [eligibleForTrial, setEligibleForTrial] = useState<boolean>(true);
   const [isRedirecting, setIsRedirecting] = useState(false);
+  const isSwitch = searchParams.get("switch") === "1";
+  const error = searchParams.get("error");
+  const errorCode = searchParams.get("error_code");
+  const errorDescription = searchParams.get("error_description");
 
   // クライアントサイドで intent を取得 (SSR中は null、クライアントで確定)
   const [intent, setIntent] = useState<"trial" | "login" | null>(null);
@@ -34,6 +38,8 @@ export function useStartFlow() {
   const startGoogleLogin = async (nextIntent: "trial" | "login", nextPlan: "entry" | "standard" | "professional" = "standard") => {
     // ログイン後のために intent と plan を保存
     if (typeof window !== "undefined") {
+      window.localStorage.removeItem("login_intent");
+      window.localStorage.removeItem("login_plan");
       window.localStorage.setItem("login_intent", nextIntent);
       window.localStorage.setItem("login_plan", nextPlan);
     }
@@ -91,6 +97,16 @@ export function useStartFlow() {
     let cancelled = false;
     (async () => {
       try {
+        if (error || errorCode) {
+          // If OAuth flow failed, clear any existing session to prevent auto-login loops.
+          await supabase.auth.signOut();
+          if (!cancelled) {
+            setIsLoggedIn(false);
+            setLoading(false);
+          }
+          return;
+        }
+
         const { data, error: userError } = await supabase.auth.getUser();
         if (cancelled) return;
 
@@ -120,7 +136,7 @@ export function useStartFlow() {
           // If the user explicitly came here to upgrade, OR if they are out of credits,
           // don't redirect them back to the app.
           const isUpgrade = searchParams.get("upgrade") === "true";
-          if (isUpgrade || isOutOfCredits) {
+          if (isUpgrade || isOutOfCredits || isSwitch) {
             console.log('[useStartFlow] Upgrade intent or out of credits detected, staying on start page.');
             setLoading(false);
             setIsLoggedIn(true);
@@ -130,6 +146,7 @@ export function useStartFlow() {
           console.log('[useStartFlow] No upgrade intent, redirecting to /generate');
           if (typeof window !== "undefined") {
             window.localStorage.removeItem("login_intent");
+            window.localStorage.removeItem("login_plan");
           }
           router.replace("/generate");
           return;
@@ -147,7 +164,7 @@ export function useStartFlow() {
       }
     })();
     return () => { cancelled = true; };
-  }, [intent, router, supabase, goCheckout]);
+  }, [intent, router, supabase, goCheckout, isSwitch, searchParams]);
 
   return {
     loading,
@@ -156,6 +173,10 @@ export function useStartFlow() {
     eligibleForTrial,
     intent: intent ?? "login", // 外部には "login" をデフォルトとして返す
     isRedirecting,
+    isSwitch,
+    error,
+    errorCode,
+    errorDescription,
     startGoogleLogin,
     goCheckout,
     initialPlan
