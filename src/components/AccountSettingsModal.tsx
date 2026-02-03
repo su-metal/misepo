@@ -129,7 +129,11 @@ const AccountSettingsModal: React.FC<AccountSettingsModalProps> = ({ user, plan,
                                     <div>
                                         <div className="flex items-center gap-2 mb-0.5">
                                             <span className={`text-lg font-black tracking-tight ${isPro ? 'text-slate-800' : 'text-slate-700'}`}>
-                                                {isTrial ? 'Trial Plan' : isPaid ? 'Pro Plan' : 'Free Plan'}
+                                                {plan?.plan === 'entry' ? 'Entry Plan' :
+                                                    plan?.plan === 'standard' ? 'Standard Plan' :
+                                                        plan?.plan === 'professional' ? 'Professional Plan' :
+                                                            isTrial ? 'Trial Plan' :
+                                                                'Free Plan'}
                                             </span>
                                             {isPro && (
                                                 <span className="text-[9px] px-2 py-0.5 rounded-full font-black uppercase tracking-widest bg-indigo-50 text-[#7F5AF0]">

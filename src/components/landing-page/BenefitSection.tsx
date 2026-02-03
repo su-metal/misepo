@@ -99,14 +99,14 @@ export const BenefitSection = ({ isMobile = false }: { isMobile?: boolean }) => 
                         },
                         {
                             title: "カレンダー連動トレンド機能",
-                            desc: "季節のイベントや地域のトレンドをAIが分析し、最適な投稿タイミングを提案。",
+                            desc: "季節のイベントやトレンドをAIが分析し、最適な投稿トピックを提案。",
                             icon: "Calendar",
                             color: "text-[#FF6B6B]",
                             bg: "bg-[#FF6B6B]/5"
                         },
                         {
                             title: "独自の文体学習機能",
-                            desc: "過去の投稿を学習し、あなたの口癖やリズムを忠実に再現。使うほど馴染みます。",
+                            desc: "過去の投稿を登録・学習し、あなたの口癖やリズムを忠実に再現。",
                             icon: "MessageCircle",
                             color: "text-[#4ECDC4]",
                             bg: "bg-[#4ECDC4]/5"
@@ -125,13 +125,13 @@ export const BenefitSection = ({ isMobile = false }: { isMobile?: boolean }) => 
                             color: "text-[#7F5AF0]",
                             bg: "bg-[#7F5AF0]/5"
                         },
-                        {
-                            title: "インバウンド・グローバル対応",
-                            desc: "日本語の投稿から、英語・中国語・韓国語をワンタップ生成。海外のお客様へのアピールも手間ゼロに。",
-                            icon: "Globe",
-                            color: "text-[#1823ff]",
-                            bg: "bg-[#1823ff]/5"
-                        }
+                        // {
+                        //     title: "インバウンド・グローバル対応",
+                        //     desc: "日本語の投稿から、英語・中国語・韓国語をワンタップ生成。海外のお客様へのアピールも手間ゼロに。",
+                        //     icon: "Globe",
+                        //     color: "text-[#1823ff]",
+                        //     bg: "bg-[#1823ff]/5"
+                        // }
                     ].map((feature, idx) => {
                         const IconComponent = Icons[feature.icon];
                         return (

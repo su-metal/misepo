@@ -18,7 +18,7 @@ export const StoreProfileSidebar: React.FC<StoreProfileSidebarProps> = ({ storeP
                 {/* Header */}
                 <div className="flex items-center justify-between relative z-10">
                     <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-[#1f29fc] animate-pulse shadow-[0_0_8px_rgba(31,41,252,0.6)]" />
+                        <div className="w-2 h-2 rounded-full bg-[#0071b9] animate-pulse shadow-[0_0_8px_rgba(31,41,252,0.6)]" />
                         <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#122646]/60">AI Monitor</span>
                     </div>
                     <div className="px-2 py-0.5 rounded-full bg-[#122646]/5 border border-[#122646]/10 text-[9px] font-bold text-[#122646] uppercase tracking-wide">

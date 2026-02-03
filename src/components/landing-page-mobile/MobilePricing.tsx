@@ -19,8 +19,8 @@ export const MobilePricing = () => {
             name: "Standard",
             price: "1,980",
             count: "150",
-            color: "bg-[#1f29fc]",
-            borderColor: "border-[#1f29fc]",
+            color: "bg-[#0071b9]",
+            borderColor: "border-[#0071b9]",
             textColor: "text-white",
             recommended: true
         },
@@ -39,7 +39,7 @@ export const MobilePricing = () => {
     return (
         <section className="bg-white py-20 px-6">
             <div className="text-center mb-12">
-                <h2 className="text-[#1f29fc] text-4xl font-black mb-4">
+                <h2 className="text-[#0071b9] text-4xl font-black mb-4">
                     PLAN
                 </h2>
                 <p className="text-slate-600 font-bold text-sm">
@@ -80,16 +80,16 @@ export const MobilePricing = () => {
 
                         <ul className="space-y-3 mb-6 px-2">
                             <li className={`flex items-center gap-3 text-xs font-bold ${plan.textColor === 'text-white' ? 'text-white/90' : 'text-slate-600'}`}>
-                                <Icons.Check size={16} className={plan.textColor === 'text-white' ? 'text-[#00b900]' : 'text-[#1f29fc]'} />
+                                <Icons.Check size={16} className={plan.textColor === 'text-white' ? 'text-[#00b900]' : 'text-[#0071b9]'} />
                                 <span>全機能利用可能</span>
                             </li>
                             <li className={`flex items-center gap-3 text-xs font-bold ${plan.textColor === 'text-white' ? 'text-white/90' : 'text-slate-600'}`}>
-                                <Icons.Check size={16} className={plan.textColor === 'text-white' ? 'text-[#00b900]' : 'text-[#1f29fc]'} />
+                                <Icons.Check size={16} className={plan.textColor === 'text-white' ? 'text-[#00b900]' : 'text-[#0071b9]'} />
                                 <span>いつでも解約OK</span>
                             </li>
                         </ul>
 
-                        <button className={`w-full py-4 rounded-xl font-black text-sm shadow-lg transition-transform active:scale-95 ${plan.textColor === 'text-white' ? 'bg-white text-[#1f29fc]' : 'bg-[#1f29fc] text-white hover:bg-[#1f29fc]/90'}`}>
+                        <button className={`w-full py-4 rounded-xl font-black text-sm shadow-lg transition-transform active:scale-95 ${plan.textColor === 'text-white' ? 'bg-white text-[#0071b9]' : 'bg-[#0071b9] text-white hover:bg-[#0071b9]/90'}`}>
                             このプランではじめる
                         </button>
                     </div>

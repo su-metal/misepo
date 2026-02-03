@@ -10,7 +10,7 @@ export const MobileFooterCTA = () => {
     return (
         <section className="relative pt-24 pb-12 overflow-hidden">
             {/* Curved Blue Background */}
-            <div className="absolute inset-0 bg-[#1f29fc] rounded-t-[50%] scale-x-150 w-full h-full -z-10 transform origin-top"></div>
+            <div className="absolute inset-0 bg-[#0071b9] rounded-t-[50%] scale-x-150 w-full h-full -z-10 transform origin-top"></div>
 
             {/* Content Container (Counteract scale-x) */}
             <div className="relative z-10 flex flex-col items-center text-white px-6">

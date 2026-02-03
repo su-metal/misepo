@@ -21,7 +21,7 @@ export const PricingSection = ({ isMobile = false }: { isMobile?: boolean }) => 
 
                 <div className={`grid gap-3 md:gap-4 ${isMobile ? 'grid-cols-1' : 'md:grid-cols-3'} mb-16 md:mb-20`}>
                     <div className="bg-white rounded-[40px] p-8 md:p-10 flex flex-col items-start border border-slate-100">
-                        <span className="text-[10px] font-black text-slate-300 uppercase mb-4 tracking-widest">Manual Staff</span>
+                        <span className="text-[16px] font-black text-slate-300 uppercase mb-4 tracking-widest">スタッフ対応</span>
                         <div className="text-4xl font-black text-[#282d32] mb-6"><span className="text-base text-slate-300 ml-2">?</span></div>
                         <p className="text-lg font-bold text-slate-400 leading-tight">
                             コストはゼロですが、あなたとスタッフの貴重な「時間」と「精神」を削り続けます。
@@ -29,7 +29,7 @@ export const PricingSection = ({ isMobile = false }: { isMobile?: boolean }) => 
                     </div>
 
                     <div className="bg-white rounded-[40px] p-8 md:p-10 flex flex-col items-start border border-slate-100">
-                        <span className="text-[10px] font-black text-slate-300 uppercase mb-4 tracking-widest">Agency</span>
+                        <span className="text-[16px] font-black text-slate-300 uppercase mb-4 tracking-widest">運用代行</span>
                         <div className="text-4xl font-black text-[#282d32] mb-6">¥50k<span className="text-base text-slate-300 ml-2">+</span></div>
                         <p className="text-lg font-bold text-slate-400 leading-tight">
                             質は安定しますが、多額の固定費がかかり、店独自の個性が薄れがちです。
@@ -37,10 +37,10 @@ export const PricingSection = ({ isMobile = false }: { isMobile?: boolean }) => 
                     </div>
 
                     <div className="bg-[#1823ff] rounded-[40px] p-8 md:p-10 flex flex-col items-start shadow-2xl shadow-[#1823ff]/20">
-                        <span className="text-[10px] font-black text-white/50 uppercase mb-4 tracking-widest">MisePo AI</span>
+                        <span className="text-[16px] font-black text-white/50 uppercase mb-4 tracking-widest">MisePo AI</span>
                         <div className="text-4xl font-black text-white mb-6">¥980<span className="text-base text-white/50 ml-2">〜 /mo</span></div>
                         <p className="text-lg font-bold text-white/80 leading-tight">
-                            圧倒的な低コストで、あなたの人格を100%継承。24時間365日、理想の言葉を発信します。
+                            圧倒的な低コストで、あなたらしい言葉を忠実に再現。24時間365日、理想の言葉を発信します。
                         </p>
                     </div>
                 </div>

@@ -20,10 +20,9 @@ export const CTASection = ({ isMobile = false }: { isMobile?: boolean }) => {
 
             <div className="max-w-7xl mx-auto px-6 text-center relative z-10">
                 <div className="flex flex-col items-center">
-                    <span className="text-[10px] font-black text-white/50 uppercase tracking-[0.4em] mb-12">Final Step</span>
                     <h2 className={`font-black tracking-tighter leading-[0.85] text-white mb-16 ${isMobile ? 'text-5xl' : 'text-7xl md:text-8xl lg:text-[5rem]'}`}>
-                        今日から、<br />
-                        <span className="opacity-60">楽になる。</span>
+                        SNSは、<br />
+                        <span className="opacity-60">分身に任せる。</span>
                     </h2>
                     <p className="text-xl md:text-2xl font-bold text-white/70 max-w-2xl mb-20 leading-tight">
                         あなたの大切な時間は、お店とお客様のために。<br />

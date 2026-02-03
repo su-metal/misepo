@@ -294,7 +294,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
                   </div>
                 ))}
                 <div className="pl-6 text-xs font-bold text-slate-400">
-                  <span className="block text-[#7F5AF0]">4,000+</span>
+                  <span className="block text-[#7F5AF0]">many</span>
                   Owners
                 </div>
               </div>
@@ -394,7 +394,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
                           onClick={() => setIndustry(ind)}
                           className={`px-5 py-2.5 rounded-full text-[11px] font-black transition-all duration-200 border border-transparent
                               ${industry === ind
-                              ? 'bg-[#1f29fc] text-white shadow-lg shadow-stone-200 scale-105'
+                              ? 'bg-[#0071b9] text-white shadow-lg shadow-stone-200 scale-105'
                               : 'bg-slate-50 text-slate-500 hover:bg-slate-100'
                             }`}
                         >

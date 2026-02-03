@@ -21,8 +21,8 @@ export const MobileFAQ = () => {
                             onClick={() => setOpen(open === idx ? null : idx)}
                             className="w-full flex items-center justify-between p-4 bg-slate-50 text-left"
                         >
-                            <span className={`text-xs font-bold transition-colors ${open === idx ? 'text-[#1f29fc]' : 'text-[#122646]'}`}>{item.q}</span>
-                            <Icons.ChevronDown size={14} className={`text-slate-400 transition-transform ${open === idx ? 'rotate-180 text-[#1f29fc]' : ''}`} />
+                            <span className={`text-xs font-bold transition-colors ${open === idx ? 'text-[#0071b9]' : 'text-[#122646]'}`}>{item.q}</span>
+                            <Icons.ChevronDown size={14} className={`text-slate-400 transition-transform ${open === idx ? 'rotate-180 text-[#0071b9]' : ''}`} />
                         </button>
                         <div className={`bg-white text-xs text-slate-500 leading-relaxed px-4 transition-all duration-300 ${open === idx ? 'py-4 max-h-40' : 'py-0 max-h-0 overflow-hidden'}`}>
                             {item.a}
