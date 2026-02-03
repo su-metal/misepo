@@ -368,11 +368,11 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     const secondaryAudienceList = TARGET_AUDIENCES.filter(t => !primaryAudienceList.includes(t));
 
     return (
-        <div className="flex flex-col h-full relative overflow-hidden font-inter bg-white">
+        <div className="flex flex-col h-full relative overflow-hidden font-inter bg-gradient-mesh">
 
             {/* Step 1: Home (Platform Grid) */}
             <div className={`flex flex-col h-full overflow-hidden relative transition-all duration-500 ${isStepDrawerOpen ? 'blur-md scale-[0.98] opacity-60' : 'opacity-100'}`}>
-                <div className="flex-1 flex flex-col p-4 pt-6 pb-32 safe-area-bottom overflow-y-auto no-scrollbar">
+                <div className="flex-1 flex flex-col p-4 pt-[max(1.5rem,env(safe-area-inset-top))] pb-32 safe-area-bottom overflow-y-auto no-scrollbar">
                     {/* High-Design Header - Magazine Style Date & Minimal Avatar */}
                     <div className="flex items-start justify-between mb-4 px-1">
                         {/* Typography Date Display - Interactive Trigger */}

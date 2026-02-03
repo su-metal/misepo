@@ -136,14 +136,14 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
                                                 <div className="p-1.5 rounded-lg bg-white/20 backdrop-blur-md">
                                                     <SparklesIcon className="w-4 h-4 text-accent" />
                                                 </div>
-                                                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/80">Premium Access</span>
+                                                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-black/80">Premium Access</span>
                                             </div>
 
-                                            <h3 className="text-xl font-black leading-tight mb-3 tracking-tighter">
+                                            <h3 className="text-xl font-black text-black/80 leading-tight mb-3 tracking-tighter">
                                                 上位プランで<br />生成枠を拡大
                                             </h3>
 
-                                            <p className="text-[11px] font-bold text-white/70 mb-6 leading-relaxed">
+                                            <p className="text-[11px] font-bold text-black/80 mb-6 leading-relaxed">
                                                 生成回数の上限を大幅に増やして、<br />集客をさらに加速させましょう。
                                             </p>
 
