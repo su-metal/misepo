@@ -71,6 +71,8 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
             onPlatformToggle(Platform.Instagram);
             onPlatformToggle(Platform.X);
         }
+        if (onQuestionChange) onQuestionChange('');
+        if (onTopicPromptChange) onTopicPromptChange('');
         setTimeout(() => {
             setIsOmakaseLoading(false);
             setMobileStep('input');
@@ -126,6 +128,8 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     React.useEffect(() => {
         if (openDrawerTrigger && openDrawerTrigger > 0) {
             setIsOmakaseMode(false);
+            if (onQuestionChange) onQuestionChange('');
+            if (onTopicPromptChange) onTopicPromptChange('');
             setMobileStep('input');
             setIsStepDrawerOpen(true);
         }
@@ -257,6 +261,8 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
     const handlePlatformSelect = (p: Platform) => {
         setIsOmakaseMode(false);
+        if (onQuestionChange) onQuestionChange('');
+        if (onTopicPromptChange) onTopicPromptChange('');
         onSetActivePlatform(p);
         setMobileStep('input');
         setIsStepDrawerOpen(true);
@@ -312,6 +318,8 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
             onPlatformToggle(Platform.Instagram);
             onPlatformToggle(Platform.X);
         }
+        if (onQuestionChange) onQuestionChange('');
+        if (onTopicPromptChange) onTopicPromptChange('');
 
         // Brief delay for "Thinking" feel
         setTimeout(() => {
