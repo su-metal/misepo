@@ -26,7 +26,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 async function checkStripeSub(subId: string) {
   console.log(`Checking Stripe Sub: ${subId}`);
   try {
-    const sub = await stripe.subscriptions.retrieve(subId);
+    const sub = (await stripe.subscriptions.retrieve(subId)).data;
     console.log("Sub Object Type:", sub.object);
     console.log("Full JSON:", JSON.stringify(sub, null, 2));
     console.log("Current Period Start (Raw):", sub.current_period_start);
