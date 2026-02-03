@@ -4,10 +4,10 @@ import { UserPlan } from '../types';
 export function usePlan(user: any) {
   const [plan, setPlan] = useState<UserPlan>({
     isPro: false,
-    canUseApp: true,
+    canUseApp: false,
     eligibleForTrial: true,
-    plan: 'free',
-    status: 'active',
+    plan: 'none',
+    status: 'inactive',
     trial_ends_at: null,
     usage: 0,
     limit: 0,
@@ -18,7 +18,7 @@ export function usePlan(user: any) {
   const refreshPlan = useCallback(async (loggedInOverride?: boolean) => {
     const isLoggedIn = loggedInOverride !== undefined ? loggedInOverride : !!user;
     if (!isLoggedIn) {
-      setPlan({ isPro: false, canUseApp: true, eligibleForTrial: true, plan: 'free', status: 'active', trial_ends_at: null, usage: 0, limit: 0, usage_period: 'daily' });
+      setPlan({ isPro: false, canUseApp: true, eligibleForTrial: true, plan: 'none', status: 'inactive', trial_ends_at: null, usage: 0, limit: 0, usage_period: 'daily' });
       return;
     }
 

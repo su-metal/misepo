@@ -140,11 +140,11 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
                                             </div>
 
                                             <h3 className="text-xl font-black leading-tight mb-3 tracking-tighter">
-                                                プロプランで<br />制限を解除
+                                                上位プランで<br />生成枠を拡大
                                             </h3>
 
                                             <p className="text-[11px] font-bold text-white/70 mb-6 leading-relaxed">
-                                                全ての機能と無制限の生成、<br />高度な分析をご利用いただけます。
+                                                生成回数の上限を大幅に増やして、<br />集客をさらに加速させましょう。
                                             </p>
 
                                             <button
