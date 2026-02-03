@@ -829,6 +829,16 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                         <MicIcon className="w-6 h-6" />
                                                     </button>
                                                 )}
+
+                                                {inputText && (
+                                                    <button
+                                                        onClick={() => onInputTextChange("")}
+                                                        className="absolute bottom-6 right-6 w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center shadow-md active:scale-95 transition-all text-[#A0A0A0] hover:text-white"
+                                                        title="入力をクリア"
+                                                    >
+                                                        <EraserIcon className="w-6 h-6" />
+                                                    </button>
+                                                )}
                                             </div>
                                         </div>
 
@@ -869,7 +879,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                         </div>
                                                         <span className="text-[10px] font-black text-white uppercase tracking-[0.2em]">入力内容の確認</span>
                                                     </div>
-                                                    <div className="text-white text-[15px] font-bold leading-relaxed">
+                                                    <div className="text-white text-[16px] font-bold leading-relaxed">
                                                         {inputText.length > 200 ? inputText.substring(0, 200) + '...' : inputText || "ここに内容が表示されます..."}
                                                     </div>
 
