@@ -175,12 +175,27 @@ export async function GET() {
   if (monthlyLimit > 0 && (ent.status === 'active' || ent.status === 'trialing' || ent.status === 'past_due')) {
     limit = monthlyLimit;
     usage_period = 'monthly';
+
+    // ✅ プラン開始日（Stripeの現在の期間開始日）を基準にすることで、アップグレード直後のクレジットを「満タン」にする
+    let usageStartTime = startOfMonth;
+    if (ent.billing_reference_id && ent.billing_reference_id.startsWith('sub_')) {
+      try {
+        const sub: any = await stripe.subscriptions.retrieve(ent.billing_reference_id);
+        const effectiveStart = sub.current_period_start ?? sub.billing_cycle_anchor ?? sub.start_date;
+        if (effectiveStart) {
+          usageStartTime = new Date(effectiveStart * 1000).toISOString();
+        }
+      } catch (e) {
+        console.error("[PlanAPI] Stripe subscription retrieval failed:", e);
+      }
+    }
+
     const { data: usageData } = await supabaseAdmin
       .from("ai_runs")
       .select("run_type")
       .eq("user_id", userId)
       .eq("app_id", APP_ID)
-      .gte("created_at", startOfMonth);
+      .gte("created_at", usageStartTime);
     if (usageData) usage = usageData.reduce((acc, curr) => acc + (curr.run_type === 'multi-gen' ? 2 : 1), 0);
   } else {
     limit = 5;
