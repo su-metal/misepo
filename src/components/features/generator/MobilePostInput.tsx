@@ -388,18 +388,18 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                     <div className="flex items-start justify-between mb-4 px-1">
                         {/* Typography Date Display - Interactive Trigger */}
                         <div className="flex flex-col cursor-pointer active:scale-95 transition-transform" onClick={() => setIsCalendarOpen(true)}>
-                            <span className="text-[9px] font-black text-[#1f29fc] uppercase tracking-[0.4em] ml-1 mb-1 z-10 relative flex items-center gap-1">
-                                misepo <span className="bg-slate-900/10 px-1 rounded text-[8px] tracking-normal text-slate-500">HUB</span>
+                            <span className="text-[9px] font-black text-[var(--pop-violet-accent-b)] uppercase tracking-[0.4em] ml-1 mb-1 z-10 relative flex items-center gap-1">
+                                misepo <span className="bg-white/10 px-1 rounded text-[8px] tracking-normal text-[var(--pop-violet-sub-light)]">HUB</span>
                             </span>
                             <div className="flex items-center gap-3 select-none">
-                                <span className="text-[3.5rem] font-black text-slate-900 tracking-tighter leading-[0.8]">{day}</span>
+                                <span className="text-[3.5rem] font-black text-white tracking-tighter leading-[0.8]">{day}</span>
                                 <div className="flex flex-col justify-center gap-0.5 pt-1">
-                                    <span className="text-sm font-black text-slate-900 uppercase tracking-widest leading-none">{month}</span>
-                                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] leading-none">{weekday}</span>
+                                    <span className="text-sm font-black text-white uppercase tracking-widest leading-none">{month}</span>
+                                    <span className="text-[10px] font-bold text-[var(--pop-violet-sub-light)] uppercase tracking-[0.2em] leading-none">{weekday}</span>
                                 </div>
                             </div>
-                            <div className="inline-flex items-center gap-1 px-3 py-1 bg-[#1f29fc]/10 rounded-full mt-2 ml-1 self-start">
-                                <p className="text-[10px] font-black text-[#1f29fc] tracking-tight select-none flex items-center gap-1">
+                            <div className="inline-flex items-center gap-1 px-3 py-1 bg-white/10 rounded-full mt-2 ml-1 self-start">
+                                <p className="text-[10px] font-black text-white tracking-tight select-none flex items-center gap-1">
                                     カレンダー見る <ChevronRightIcon className="w-3 h-3" />
                                 </p>
                             </div>
@@ -429,9 +429,9 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             {/* High-Contrast Credit Design with Gauge */}
                             {plan && typeof plan.usage !== 'undefined' && typeof plan.limit !== 'undefined' && (
                                 <div className="flex flex-col items-end gap-1 scale-90 origin-right">
-                                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#1f29fc] text-white backdrop-blur-xl border border-white/20 shadow-xl overflow-hidden relative">
+                                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--pop-violet-card)] text-white backdrop-blur-xl border border-white/20 shadow-xl overflow-hidden relative">
                                         <span className="text-[8px] font-black text-white/60 uppercase tracking-widest mr-1">CREDITS</span>
-                                        <span className="text-sm font-black text-[#f2e018] leading-none">
+                                        <span className="text-sm font-black text-[#FFD166] leading-none">
                                             {Math.max(0, plan.limit - plan.usage)}
                                         </span>
                                         <span className="text-[10px] font-bold text-white/60 leading-none">/ {plan.limit}</span>
@@ -440,7 +440,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         <div className="absolute bottom-0 left-0 h-[2px] bg-white/10 w-full" />
                                         {/* Active Gauge Fill */}
                                         <div
-                                            className="absolute bottom-0 left-0 h-[2px] bg-[#1f29fc] shadow-[0_0_10px_rgba(127,90,240,0.5)] transition-all duration-1000"
+                                            className="absolute bottom-0 left-0 h-[2px] bg-[#FFD166] shadow-[0_0_10px_rgba(255,209,102,0.5)] transition-all duration-1000"
                                             style={{ width: `${(Math.max(0, plan.limit - plan.usage) / plan.limit) * 100}%` }}
                                         />
                                     </div>
@@ -450,8 +450,8 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                 <div
                                                     key={i}
                                                     className={`h-[3px] w-5 rounded-full transition-colors duration-500 ${((plan.limit - plan.usage) / plan.limit) * 5 > i
-                                                        ? 'bg-[#1f29fc]'
-                                                        : 'bg-slate-200'
+                                                        ? 'bg-[#FFD166]'
+                                                        : 'bg-white/10'
                                                         }`}
                                                 />
                                             ))}
@@ -464,22 +464,22 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
                     <div className="flex items-center justify-between px-2 mt-2 mb-0">
                         <div className="flex flex-col gap-0.5 items-start">
-                            <h2 className="text-[12px] font-black text-[#1f29fc] tracking-tight">投稿先を選択</h2>
-                            <p className="text-[11px] text-slate-400 font-bold uppercase tracking-[0.2em]">Select your canvas</p>
+                            <h2 className="text-[12px] font-black text-white tracking-tight">投稿先を選択</h2>
+                            <p className="text-[11px] text-[var(--pop-violet-sub-light)] font-bold uppercase tracking-[0.2em]">Select your canvas</p>
                         </div>
 
                         {/* Simultaneous Generation Toggle */}
-                        <div className="flex items-center gap-3 bg-slate-50 px-4 py-2 rounded-2xl border border-slate-100 shadow-sm active:scale-95 transition-all cursor-pointer select-none"
+                        <div className="flex items-center gap-3 bg-[var(--pop-violet-card)] px-4 py-2 rounded-2xl border border-white/10 shadow-sm active:scale-95 transition-all cursor-pointer select-none"
                             onClick={onToggleMultiGen}>
                             <div className="flex flex-col items-end">
-                                <span className={`text-[9px] font-black tracking-widest uppercase leading-none mb-0.5 ${isMultiGen ? 'text-[#1f29fc]' : 'text-slate-400'}`}>
+                                <span className={`text-[9px] font-black tracking-widest uppercase leading-none mb-0.5 ${isMultiGen ? 'text-[#FFD166]' : 'text-[#A0A0A0]'}`}>
                                     {isMultiGen ? 'ON' : 'OFF'}
                                 </span>
-                                <span className="text-[8px] font-bold text-slate-500 leading-none whitespace-nowrap">同時生成</span>
+                                <span className="text-[8px] font-bold text-[#A0A0A0] leading-none whitespace-nowrap">同時生成</span>
                             </div>
                             <div className={`
                                 relative w-10 h-5 rounded-full transition-all duration-300
-                                ${isMultiGen ? 'bg-[#1f29fc]' : 'bg-slate-200'}
+                                ${isMultiGen ? 'bg-[var(--pop-violet-accent-b)]' : 'bg-white/10'}
                             `}>
                                 <div className={`
                                     absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform duration-300 shadow-sm
@@ -539,8 +539,8 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             relative rounded-[20px] overflow-hidden cursor-pointer border transition-all duration-500 group
                                             ${bentoClass}
                                              ${isActive
-                                                ? 'bg-gradient-to-br from-[var(--brand-primary)] via-[#4f46e5] to-[#7c3aed] border-white/20 shadow-[0_15px_35px_rgba(24,35,255,0.3)] scale-[0.98] animate-tactile-pop ring-2 ring-white/10'
-                                                : `bg-[#f8fafc] border-slate-200 shadow-[0_4px_12px_rgba(0,0,0,0.03)] hover:border-[var(--brand-primary)]/20 hover:shadow-lg active:scale-[0.98]`
+                                                ? 'bg-gradient-to-br from-[var(--pop-violet-main)] via-[#4f46e5] to-[#7c3aed] border-white/20 shadow-[0_15px_35px_rgba(24,35,255,0.3)] scale-[0.98] animate-tactile-pop ring-2 ring-white/10'
+                                                : `bg-[var(--pop-violet-card)] border-white/5 shadow-[0_4px_12px_rgba(0,0,0,0.2)] hover:border-white/20 hover:shadow-lg active:scale-[0.98]`
                                             }
                                         `}
                                     >
@@ -549,7 +549,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             <div className="flex justify-between items-start">
                                                 <div className={`
                                                     transition-all duration-300
-                                                     ${isActive ? 'text-white' : 'text-slate-400 group-hover:text-slate-600'}
+                                                     ${isActive ? 'text-white' : 'text-[#A0A0A0] group-hover:text-white'}
                                                 `}>
                                                     {details.icon}
                                                 </div>
@@ -559,9 +559,9 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                         e.stopPropagation();
                                                         handlePlatformSelect(p);
                                                     }}
-                                                    className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 active:scale-90 shadow-lg ${isActive ? 'bg-white' : 'bg-white shadow-[0_4px_10px_rgba(0,0,0,0.05)]'}`}
+                                                    className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 active:scale-90 shadow-lg ${isActive ? 'bg-white' : 'bg-white/10 text-white shadow-[0_4px_10px_rgba(0,0,0,0.2)]'}`}
                                                 >
-                                                    <ChevronRightIcon className={`w-5 h-5 ${isActive ? 'text-[var(--brand-primary)]' : 'text-slate-300'}`} />
+                                                    <ChevronRightIcon className={`w-5 h-5 ${isActive ? 'text-[var(--pop-violet-main)]' : 'text-white'}`} />
                                                 </div>
                                             </div>
 
@@ -572,10 +572,10 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                 </span>
                                                 */}
                                                 <div className="flex flex-col leading-tight">
-                                                    <h3 className={`font-black tracking-tighter text-xl transition-colors duration-500 ${isActive ? 'text-white' : 'text-[#122646]'}`} style={{ fontFamily: 'Inter, sans-serif' }}>
+                                                    <h3 className={`font-black tracking-tighter text-xl transition-colors duration-500 ${isActive ? 'text-white' : 'text-white'}`} style={{ fontFamily: 'Inter, sans-serif' }}>
                                                         {details.name}
                                                     </h3>
-                                                    <p className={`text-[11px] font-medium transition-opacity ${isActive ? 'text-white/60' : 'text-slate-400'}`}>
+                                                    <p className={`text-[11px] font-medium transition-opacity ${isActive ? 'text-white/60' : 'text-[#A0A0A0]'}`}>
                                                         {details.sub}
                                                     </p>
                                                 </div>
@@ -599,20 +599,20 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                 ${!isGoogleMaps ? 'shadow-[0_15px_40px_rgba(24,35,255,0.1)] hover:shadow-[0_25px_60px_rgba(24,35,255,0.2)]' : 'shadow-sm border border-stone-200'}
                             `}
                             style={{
-                                backgroundColor: !isGoogleMaps ? 'var(--brand-secondary)' : '#f3f4f6',
+                                background: !isGoogleMaps ? 'var(--pop-violet-card)' : '#2B2B2F',
                                 clipPath: 'polygon(0% 0%, 100% 0%, 100% 35%, 98% 40%, 98% 60%, 100% 65%, 100% 100%, 0% 100%, 0% 65%, 2% 60%, 2% 40%, 0% 35%)'
                             }}
                         >
                             {/* Texture & Glass Layer */}
-                            {!isGoogleMaps && <div className="absolute inset-0 bg-white/10 backdrop-blur-[2px] opacity-50 pointer-events-none" />}
+                            {!isGoogleMaps && <div className="absolute inset-0 bg-white/5 backdrop-blur-[2px] opacity-50 pointer-events-none" />}
 
                             {/* Shine Effect removed */}
 
                             {/* Decorative Background Glows */}
                             {!isGoogleMaps && (
                                 <>
-                                    <div className="absolute -top-10 -right-10 w-40 h-40 bg-[var(--brand-primary)]/10 rounded-full blur-[40px] pointer-events-none group-hover:bg-[var(--brand-primary)]/20 transition-colors duration-700" />
-                                    <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-[var(--brand-primary)]/5 rounded-full blur-[30px] pointer-events-none" />
+                                    <div className="absolute -top-10 -right-10 w-40 h-40 bg-[var(--pop-violet-main)]/20 rounded-full blur-[40px] pointer-events-none group-hover:bg-[var(--pop-violet-main)]/30 transition-colors duration-700" />
+                                    <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-[var(--pop-violet-accent-a)]/10 rounded-full blur-[30px] pointer-events-none" />
                                     <div className="absolute inset-0 bg-gradient-shine opacity-10 group-hover:animate-shine pointer-events-none" />
                                 </>
                             )}
@@ -620,17 +620,17 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             <div className="relative p-5 pl-10 pr-6 flex items-center justify-between">
                                 {/* Left Content */}
                                 <div className="relative z-10 flex flex-col gap-6">
-                                    <div className={`self-start inline-flex px-4 py-1.5 rounded-full ${!isGoogleMaps ? 'bg-[var(--brand-primary)]' : 'bg-stone-400'} text-[9px] font-black text-white uppercase tracking-[0.2em] shadow-lg shadow-[var(--brand-primary)]/20`}>
+                                    <div className={`self-start inline-flex px-4 py-1.5 rounded-full ${!isGoogleMaps ? 'bg-[var(--pop-violet-main)]' : 'bg-white/10'} text-[9px] font-black text-white uppercase tracking-[0.2em] shadow-lg shadow-[var(--pop-violet-main)]/20`}>
                                         {isGoogleMaps ? '利用不可' : 'AIが自動提案'}
                                     </div>
                                     <div className="space-y-1">
                                         <div className="flex items-center gap-2">
-                                            <h4 className={`text-[24px] font-black tracking-[0.05em] leading-none whitespace-nowrap ${!isGoogleMaps ? 'text-[var(--brand-primary)]' : 'text-stone-400'}`}>
+                                            <h4 className={`text-[24px] font-black tracking-[0.05em] leading-none whitespace-nowrap ${!isGoogleMaps ? 'text-white' : 'text-[#A0A0A0]'}`}>
                                                 AIおまかせ生成
                                             </h4>
-                                            {!isGoogleMaps && <SparklesIcon className="w-5 h-5 text-[var(--brand-primary)] animate-pulse" />}
+                                            {!isGoogleMaps && <SparklesIcon className="w-5 h-5 text-[#FFD166] animate-pulse" />}
                                         </div>
-                                        <p className="text-[11px] text-stone-500 font-bold leading-relaxed">
+                                        <p className="text-[11px] text-[#A0A0A0] font-bold leading-relaxed">
                                             {isGoogleMaps ? (
                                                 'Googleマップ選択時は利用できません'
                                             ) : (
@@ -647,12 +647,12 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                 <div className="relative z-10 flex items-center justify-center">
                                     <div className={`
                                         w-14 h-14 rounded-2xl flex items-center justify-center shadow-2xl transition-all duration-500
-                                        ${isOmakaseLoading ? 'bg-white scale-90' : (!isGoogleMaps ? 'bg-white group-hover:bg-[var(--brand-primary)] group-hover:scale-110 group-active:scale-95 group-hover:rotate-6 shadow-indigo-200' : 'bg-stone-200 shadow-none')}
+                                        ${isOmakaseLoading ? 'bg-white scale-90' : (!isGoogleMaps ? 'bg-white group-hover:bg-[var(--pop-violet-main)] group-hover:scale-110 group-active:scale-95 group-hover:rotate-6 shadow-[var(--pop-violet-main)]/20' : 'bg-white/5 shadow-none')}
                                     `}>
                                         {isOmakaseLoading ? (
-                                            <div className="w-5 h-5 border-2 border-[var(--brand-primary)]/20 border-t-[var(--brand-primary)] rounded-full animate-spin" />
+                                            <div className="w-5 h-5 border-2 border-[var(--pop-violet-main)]/20 border-t-[var(--pop-violet-main)] rounded-full animate-spin" />
                                         ) : (
-                                            <ChevronRightIcon className={`w-6 h-6 ${!isGoogleMaps ? 'text-[var(--brand-primary)]' : 'text-stone-400'} transition-colors duration-500 ${!isGoogleMaps ? 'animate-arrow-flow' : ''}`} />
+                                            <ChevronRightIcon className={`w-6 h-6 ${!isGoogleMaps ? 'text-[var(--pop-violet-main)] group-hover:text-white' : 'text-[#A0A0A0]'} transition-colors duration-500 ${!isGoogleMaps ? 'animate-arrow-flow' : ''}`} />
                                         )}
                                     </div>
 
@@ -660,7 +660,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             </div>
 
                             {/* Ticket Perforation Line (Visual Only) */}
-                            <div className={`absolute top-[8%] bottom-[8%] right-[25%] w-px border-r-2 border-dotted ${!isGoogleMaps ? 'border-[#1f29fc]/20' : 'border-stone-300'} pointer-events-none`} />
+                            <div className={`absolute top-[8%] bottom-[8%] right-[25%] w-px border-r-2 border-dotted ${!isGoogleMaps ? 'border-white/10' : 'border-white/5'} pointer-events-none`} />
                         </div>
                     </div>
                 </div>
@@ -677,513 +677,515 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
             />
 
             {/* Bottom Sheet Drawer - Monochrome Style */}
-            {isStepDrawerOpen && (
-                <div className="absolute inset-0 z-[130] flex items-end">
-                    {/* Immersive Backdrop */}
-                    <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" onClick={() => {
-                        setIsStepDrawerOpen(false);
-                        // Reset step to platform when closing from input/confirm steps
-                        if (mobileStep !== 'result') {
-                            setMobileStep('platform');
-                        }
-                    }} />
+            {
+                isStepDrawerOpen && (
+                    <div className="absolute inset-0 z-[130] flex items-end">
+                        {/* Immersive Backdrop */}
+                        <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" onClick={() => {
+                            setIsStepDrawerOpen(false);
+                            // Reset step to platform when closing from input/confirm steps
+                            if (mobileStep !== 'result') {
+                                setMobileStep('platform');
+                            }
+                        }} />
 
-                    {/* Sliding Panel (Monochrome) */}
-                    <div className={`absolute bottom-0 left-0 right-0 bg-[#FAFAFA] border-t border-[#E5E5E5] rounded-t-[54px] shadow-[0_-20px_60px_rgba(0,0,0,0.1)] animate-nyoki flex flex-col ${mobileStep === 'platform' ? 'h-[88%]' : 'h-[96%]'} ${mobileStep === 'result' ? 'pb-8 safe-area-bottom' : 'pb-0'}`}>
-                        {/* Drag Handle */}
-                        <div className="w-full flex justify-center py-6">
-                            <div className="w-16 h-1.5 bg-[#E5E5E5] rounded-full" />
-                        </div>
-
-                        {/* Drawer Header - Hidden during AI Refinement */}
-                        {!refiningKey && (
-                            <div className="px-8 pb-4 flex items-center justify-between animate-in fade-in duration-300">
-                                <div className="flex items-center gap-4">
-                                    <button onClick={handleBackStep} className="w-12 h-12 rounded-full bg-white border border-[#E5E5E5] flex items-center justify-center shadow-sm active:scale-90 transition-all">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#111111" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
-                                    </button>
-                                    <div className="flex flex-col">
-                                        <h3 className="text-[17px] font-black text-[#1f29fc] tracking-tight leading-none mb-1">
-                                            {mobileStep === 'input' ? '投稿内容を入力' : mobileStep === 'confirm' ? '投稿内容の確認' : '生成完了'}
-                                        </h3>
-                                        <span className="text-[10px] font-black text-[#666666] uppercase tracking-[0.2em] leading-none">
-                                            {mobileStep === 'input' ? 'STEP 2 / 3' : mobileStep === 'confirm' ? 'STEP 3 / 3' : 'SUCCESS!'}
-                                        </span>
-                                    </div>
-                                </div>
-                                <div className="flex -space-x-2">
-                                    {platforms.map(p => (
-                                        <div key={p} className="w-10 h-10 rounded-full bg-white border-2 border-[#FAFAFA] flex items-center justify-center shadow-sm z-10">
-                                            {getPlatformIcon(p, "w-5 h-5")}
-                                        </div>
-                                    ))}
-                                    <button
-                                        onClick={() => {
-                                            setIsStepDrawerOpen(false);
-                                            // ALWAYS reset to platform to ensure footer contrast resets (Dark Mode)
-                                            setMobileStep('platform');
-                                        }}
-                                        className="w-10 h-10 rounded-full bg-white border border-[#E5E5E5] flex items-center justify-center shadow-sm active:scale-90 transition-all ml-2 z-20"
-                                    >
-                                        <CloseIcon className="w-5 h-5 text-[#111111]" />
-                                    </button>
-                                </div>
+                        {/* Sliding Panel (Monochrome) */}
+                        <div className={`absolute bottom-0 left-0 right-0 bg-[#1E1E24] border-t border-white/10 rounded-t-[54px] shadow-[0_-20px_60px_rgba(0,0,0,0.3)] animate-nyoki flex flex-col ${mobileStep === 'platform' ? 'h-[88%]' : 'h-[96%]'} ${mobileStep === 'result' ? 'pb-8 safe-area-bottom' : 'pb-0'}`}>
+                            {/* Drag Handle */}
+                            <div className="w-full flex justify-center py-6">
+                                <div className="w-16 h-1.5 bg-white/10 rounded-full" />
                             </div>
-                        )}
 
-                        {/* Drawer Content - Redesigned for Sticky Actions */}
-                        <div className="flex-1 flex flex-col min-h-0 overflow-hidden relative">
-                            {mobileStep === 'input' && (
-                                <div className="flex-1 flex flex-col min-h-0 animate-in fade-in zoom-in-95 duration-700">
-
-                                    {/* 1. Top Fixed Header Section */}
-                                    {!isGoogleMaps && (
-                                        <div className="flex-shrink-0 flex justify-center py-4 bg-[#FAFAFA] z-10 border-b border-stone-100">
-                                            <button
-                                                onClick={toggleVoiceInput}
-                                                className={`relative w-28 h-28 rounded-full flex-shrink-0 flex items-center justify-center transition-all duration-700 ${isListening ? 'scale-110' : 'hover:scale-105'}`}
-                                            >
-                                                {/* Animated Rings for Listening - Monochrome */}
-                                                {isListening && (
-                                                    <>
-                                                        <div className="absolute inset-0 rounded-full bg-[#111111] opacity-10 animate-ping [animation-duration:2s]" />
-                                                        <div className="absolute inset-4 rounded-full bg-[#111111] opacity-10 animate-pulse [animation-duration:1s]" />
-                                                    </>
-                                                )}
-                                                <div className={`w-full h-full rounded-full flex flex-col items-center justify-center transition-all duration-500 shadow-xl border border-white/40 ${isListening ? 'bg-[#111111] text-white' : 'bg-white text-[#111111] border-[#E5E5E5]'}`}>
-                                                    {isListening ? (
-                                                        <div className="flex gap-1.5 h-6 items-center">
-                                                            <div className="w-1 h-5 bg-white rounded-full animate-bounce [animation-delay:0s]" />
-                                                            <div className="w-1 h-7 bg-white rounded-full animate-bounce [animation-delay:0.1s]" />
-                                                            <div className="w-1 h-5 bg-white rounded-full animate-bounce [animation-delay:0.2s]" />
-                                                        </div>
-                                                    ) : (
-                                                        <MicIcon className="w-10 h-10 text-[#111111]" />
-                                                    )}
-                                                    <span className={`mt-1.5 text-[8px] font-black uppercase tracking-[0.2em] ${isListening ? 'text-white' : 'text-[#999999]'}`}>
-                                                        {isListening ? '聞き取り中...' : '音声入力'}
-                                                    </span>
-                                                </div>
-                                            </button>
-                                        </div>
-                                    )}
-
-                                    {/* 2. Middle Scrollable Area (Main Text inputs) */}
-                                    <div className="flex-1 overflow-y-auto px-8 py-2">
-                                        <div className="w-full relative py-2 mb-4">
-                                            {/* AI Inspiration Deck for "AI Standard" */}
-                                            <InspirationDeck
-                                                storeProfile={storeProfile}
-                                                // Show if OmakaseMode AND plain-ai AND (empty input OR default omakase prompt)
-                                                isVisible={
-                                                    isOmakaseMode &&
-                                                    activePresetId === 'plain-ai' &&
-                                                    (!inputText || inputText.startsWith("✨ AIおまかせ生成")) &&
-                                                    !isGoogleMaps
-                                                }
-                                                cachedCards={cachedInspirationCards}
-                                                onCardsLoaded={setCachedInspirationCards}
-                                                onSelect={(prompt, q) => {
-                                                    onInputTextChange(""); // Clear for user answer
-                                                    if (onQuestionChange) onQuestionChange(q);
-                                                    if (onTopicPromptChange) onTopicPromptChange(prompt);
-                                                    setIsPromptExpanded(false);
-                                                }}
-                                            />
-
-                                            <div className="text-center space-y-2 mb-6">
-                                                <h4 className="text-xl font-bold text-[#111111]">{isGoogleMaps ? 'Review Reply' : 'New Post'}</h4>
-                                                <p className="text-sm text-[#666666]">
-                                                    {isGoogleMaps ? 'Googleマップの口コミを貼り付けてください' : '今日はどんなことを伝えますか？'}
-                                                </p>
-                                            </div>
-                                            {question && (
-                                                <div className="mb-6 p-6 bg-[#1f29fc]/5 border border-[#1f29fc]/10 rounded-[32px] animate-in slide-in-from-top-4 duration-500">
-                                                    <div className="flex gap-3 items-start">
-                                                        <div className="w-8 h-8 rounded-xl bg-[#1f29fc] flex items-center justify-center flex-shrink-0 mt-0.5">
-                                                            <SparklesIcon className="w-4 h-4 text-white" />
-                                                        </div>
-                                                        <div className="flex flex-col gap-1">
-                                                            <span className="text-[10px] font-black text-[#1f29fc] uppercase tracking-wider opacity-60">Sommelier Question</span>
-                                                            <p className="text-[15px] font-bold text-[#122646] leading-relaxed italic">
-                                                                「{question}」
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            )}
-
-                                            <AutoResizingTextarea
-                                                value={inputText}
-                                                onChange={(e) => onInputTextChange(e.target.value)}
-                                                placeholder={question ? "こちらの質問への答えを短く入力してください..." : (isGoogleMaps ? "こちらにお客様からの口コミを貼り付けてください。丁寧な返信案をいくつか作成します。" : "「旬の食材が入荷した」「雨の日限定の割引をする」など、短いメモ書きでも大丈夫ですよ。")}
-                                                className="w-full min-h-[220px] p-8 bg-white border border-[#E5E5E5] rounded-[40px] text-lg font-bold leading-relaxed focus:outline-none focus:border-[#111111] transition-all placeholder:text-[#CCCCCC] text-[#111111] resize-none overflow-hidden"
-                                            />
-
-                                            {isGoogleMaps && (
-                                                <button
-                                                    onClick={toggleVoiceInput}
-                                                    className={`absolute bottom-6 left-6 w-12 h-12 rounded-full flex items-center justify-center transition-all shadow-md ${isListening ? 'bg-[#111111] text-white animate-pulse' : 'bg-[#F5F5F5] text-[#111111]'}`}
-                                                >
-                                                    <MicIcon className="w-6 h-6" />
-                                                </button>
-                                            )}
+                            {/* Drawer Header - Hidden during AI Refinement */}
+                            {!refiningKey && (
+                                <div className="px-8 pb-4 flex items-center justify-between animate-in fade-in duration-300">
+                                    <div className="flex items-center gap-4">
+                                        <button onClick={handleBackStep} className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center shadow-sm active:scale-90 transition-all">
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
+                                        </button>
+                                        <div className="flex flex-col">
+                                            <h3 className="text-[17px] font-black text-white tracking-tight leading-none mb-1">
+                                                {mobileStep === 'input' ? '投稿内容を入力' : mobileStep === 'confirm' ? '投稿内容の確認' : '生成完了'}
+                                            </h3>
+                                            <span className="text-[10px] font-black text-[#A0A0A0] uppercase tracking-[0.2em] leading-none">
+                                                {mobileStep === 'input' ? 'STEP 2 / 3' : mobileStep === 'confirm' ? 'STEP 3 / 3' : 'SUCCESS!'}
+                                            </span>
                                         </div>
                                     </div>
-
-                                    {/* 3. Sticky Action Footer */}
-                                    <div className="p-6 pb-12 safe-area-bottom border-t border-[#E5E5E5]/50 flex-shrink-0 bg-[#FAFAFA] flex flex-col gap-4 shadow-[0_-10px_30px_rgba(0,0,0,0.02)] z-20">
-
-                                        {!isListening && (
-                                            <button
-                                                onClick={() => {
-                                                    setMobileStep('confirm');
-                                                }}
-                                                disabled={!inputText.trim()}
-                                                className={`w-full py-5 rounded-[28px] font-black text-sm uppercase tracking-[0.2em] shadow-xl active:scale-95 transition-all flex items-center justify-center gap-2 ${inputText.trim()
-                                                    ? 'bg-[#1f29fc] text-white'
-                                                    : 'bg-stone-200 text-stone-400 cursor-not-allowed shadow-none'
-                                                    }`}
-                                            >
-                                                確認画面へ
-                                                <ChevronRightIcon className="w-5 h-5" />
-                                            </button>
-                                        )}
+                                    <div className="flex -space-x-2">
+                                        {platforms.map(p => (
+                                            <div key={p} className="w-10 h-10 rounded-full bg-[#2B2B2F] border-2 border-[#1E1E24] flex items-center justify-center shadow-sm z-10">
+                                                {getPlatformIcon(p, "w-5 h-5")}
+                                            </div>
+                                        ))}
+                                        <button
+                                            onClick={() => {
+                                                setIsStepDrawerOpen(false);
+                                                // ALWAYS reset to platform to ensure footer contrast resets (Dark Mode)
+                                                setMobileStep('platform');
+                                            }}
+                                            className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center shadow-sm active:scale-90 transition-all ml-2 z-20"
+                                        >
+                                            <CloseIcon className="w-5 h-5 text-white" />
+                                        </button>
                                     </div>
                                 </div>
                             )}
 
-                            {mobileStep === 'confirm' && (
-                                <div className="flex-1 relative min-h-0 animate-in fade-in slide-in-from-bottom-10 duration-700">
-                                    {/* Scrollable Preview and Settings */}
-                                    <div className="absolute inset-0 overflow-y-auto px-8 py-4 pb-[240px] space-y-4 no-scrollbar scrollbar-hide">
-                                        <div className="flex flex-col gap-4">
-                                            {/* Preview Box - Brand Style */}
-                                            <div className="bg-white/95 backdrop-blur-sm border border-stone-100 rounded-[40px] p-8 min-h-[180px] relative shadow-sm overflow-hidden group">
-                                                <div className="absolute top-0 right-0 w-32 h-32 bg-[#d8e9f4]/30 rounded-full blur-3xl -mr-16 -mt-16" />
-                                                <div className="flex items-center justify-between mb-6">
-                                                    <div className="flex gap-1.5">
-                                                        <div className="w-1.5 h-1.5 rounded-full bg-[#1f29fc]/30" />
-                                                        <div className="w-1.5 h-1.5 rounded-full bg-[#1f29fc]/30" />
-                                                    </div>
-                                                    <span className="text-[10px] font-black text-[#122646] uppercase tracking-[0.2em]">入力内容の確認</span>
-                                                </div>
-                                                <div className="text-[#122646] text-[15px] font-bold leading-relaxed">
-                                                    {inputText.length > 200 ? inputText.substring(0, 200) + '...' : inputText || "ここに内容が表示されます..."}
-                                                </div>
+                            {/* Drawer Content - Redesigned for Sticky Actions */}
+                            <div className="flex-1 flex flex-col min-h-0 overflow-hidden relative">
+                                {mobileStep === 'input' && (
+                                    <div className="flex-1 flex flex-col min-h-0 animate-in fade-in zoom-in-95 duration-700">
 
-                                                {/* GMap Star Rating */}
-                                                {isGoogleMaps && (
-                                                    <div className="mt-4 pt-4 border-t border-[#122646]/5 flex flex-col items-center gap-2">
-                                                        <span className="text-[10px] font-black text-stone-400 uppercase tracking-widest">口コミの評価</span>
-                                                        <div className="flex gap-2">
-                                                            {[1, 2, 3, 4, 5].map((star) => (
-                                                                <button
-                                                                    key={star}
-                                                                    onClick={() => onStarRatingChange(star)}
-                                                                    className="transition-transform active:scale-95"
-                                                                >
-                                                                    <StarIcon
-                                                                        className={`w-7 h-7 transition-all ${star <= (starRating || 0)
-                                                                            ? 'text-[#f2e018] fill-[#f2e018] drop-shadow-sm'
-                                                                            : 'text-[#E5E5E5]'
-                                                                            }`}
-                                                                    />
-                                                                </button>
-                                                            ))}
+                                        {/* 1. Top Fixed Header Section */}
+                                        {!isGoogleMaps && (
+                                            <div className="flex-shrink-0 flex justify-center py-4 bg-[#1E1E24] z-10 border-b border-white/5">
+                                                <button
+                                                    onClick={toggleVoiceInput}
+                                                    className={`relative w-28 h-28 rounded-full flex-shrink-0 flex items-center justify-center transition-all duration-700 ${isListening ? 'scale-110' : 'hover:scale-105'}`}
+                                                >
+                                                    {/* Animated Rings for Listening - Monochrome */}
+                                                    {isListening && (
+                                                        <>
+                                                            <div className="absolute inset-0 rounded-full bg-white/20 opacity-10 animate-ping [animation-duration:2s]" />
+                                                            <div className="absolute inset-4 rounded-full bg-white/20 opacity-10 animate-pulse [animation-duration:1s]" />
+                                                        </>
+                                                    )}
+                                                    <div className={`w-full h-full rounded-full flex flex-col items-center justify-center transition-all duration-500 shadow-xl border border-white/10 ${isListening ? 'bg-white text-[var(--pop-violet-main)]' : 'bg-[#2B2B2F] text-white'}`}>
+                                                        {isListening ? (
+                                                            <div className="flex gap-1.5 h-6 items-center">
+                                                                <div className="w-1 h-5 bg-[var(--pop-violet-main)] rounded-full animate-bounce [animation-delay:0s]" />
+                                                                <div className="w-1 h-7 bg-[var(--pop-violet-main)] rounded-full animate-bounce [animation-delay:0.1s]" />
+                                                                <div className="w-1 h-5 bg-[var(--pop-violet-main)] rounded-full animate-bounce [animation-delay:0.2s]" />
+                                                            </div>
+                                                        ) : (
+                                                            <MicIcon className="w-10 h-10 text-white" />
+                                                        )}
+                                                        <span className={`mt-1.5 text-[8px] font-black uppercase tracking-[0.2em] ${isListening ? 'text-[var(--pop-violet-main)]' : 'text-[#A0A0A0]'}`}>
+                                                            {isListening ? '聞き取り中...' : '音声入力'}
+                                                        </span>
+                                                    </div>
+                                                </button>
+                                            </div>
+                                        )}
+
+                                        {/* 2. Middle Scrollable Area (Main Text inputs) */}
+                                        <div className="flex-1 overflow-y-auto px-8 py-2">
+                                            <div className="w-full relative py-2 mb-4">
+                                                {/* AI Inspiration Deck for "AI Standard" */}
+                                                <InspirationDeck
+                                                    storeProfile={storeProfile}
+                                                    // Show if OmakaseMode AND plain-ai AND (empty input OR default omakase prompt)
+                                                    isVisible={
+                                                        isOmakaseMode &&
+                                                        activePresetId === 'plain-ai' &&
+                                                        (!inputText || inputText.startsWith("✨ AIおまかせ生成")) &&
+                                                        !isGoogleMaps
+                                                    }
+                                                    cachedCards={cachedInspirationCards}
+                                                    onCardsLoaded={setCachedInspirationCards}
+                                                    onSelect={(prompt, q) => {
+                                                        onInputTextChange(""); // Clear for user answer
+                                                        if (onQuestionChange) onQuestionChange(q);
+                                                        if (onTopicPromptChange) onTopicPromptChange(prompt);
+                                                        setIsPromptExpanded(false);
+                                                    }}
+                                                />
+
+                                                <div className="text-center space-y-2 mb-6">
+                                                    <h4 className="text-xl font-bold text-white">{isGoogleMaps ? 'Review Reply' : 'New Post'}</h4>
+                                                    <p className="text-sm text-[#A0A0A0]">
+                                                        {isGoogleMaps ? 'Googleマップの口コミを貼り付けてください' : '今日はどんなことを伝えますか？'}
+                                                    </p>
+                                                </div>
+                                                {question && (
+                                                    <div className="mb-6 p-6 bg-[var(--pop-violet-card)] border border-white/10 rounded-[32px] animate-in slide-in-from-top-4 duration-500">
+                                                        <div className="flex gap-3 items-start">
+                                                            <div className="w-8 h-8 rounded-xl bg-[var(--pop-violet-main)] flex items-center justify-center flex-shrink-0 mt-0.5">
+                                                                <SparklesIcon className="w-4 h-4 text-white" />
+                                                            </div>
+                                                            <div className="flex flex-col gap-1">
+                                                                <span className="text-[10px] font-black text-[var(--pop-violet-main)] uppercase tracking-wider opacity-60">Sommelier Question</span>
+                                                                <p className="text-[15px] font-bold text-white leading-relaxed italic">
+                                                                    「{question}」
+                                                                </p>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 )}
 
-                                                <button onClick={() => setMobileStep('input')} className="absolute bottom-6 right-8 w-11 h-11 bg-white border border-[#E5E5E5] rounded-2xl text-[#999999] hover:text-[#111111] transition-all flex items-center justify-center active:scale-95 shadow-sm">
-                                                    <RotateCcwIcon className="w-5 h-5" />
-                                                </button>
+                                                <AutoResizingTextarea
+                                                    value={inputText}
+                                                    onChange={(e) => onInputTextChange(e.target.value)}
+                                                    placeholder={question ? "こちらの質問への答えを短く入力してください..." : (isGoogleMaps ? "こちらにお客様からの口コミを貼り付けてください。丁寧な返信案をいくつか作成します。" : "「旬の食材が入荷した」「雨の日限定の割引をする」など、短いメモ書きでも大丈夫ですよ。")}
+                                                    className="w-full min-h-[220px] p-8 bg-[#2B2B2F] border border-white/10 rounded-[40px] text-lg font-bold leading-relaxed focus:outline-none focus:border-[var(--pop-violet-main)] transition-all placeholder:text-[#666666] text-white resize-none overflow-hidden"
+                                                />
+
+                                                {isGoogleMaps && (
+                                                    <button
+                                                        onClick={toggleVoiceInput}
+                                                        className={`absolute bottom-6 left-6 w-12 h-12 rounded-full flex items-center justify-center transition-all shadow-md ${isListening ? 'bg-[var(--pop-violet-main)] text-white animate-pulse' : 'bg-white/10 text-white'}`}
+                                                    >
+                                                        <MicIcon className="w-6 h-6" />
+                                                    </button>
+                                                )}
                                             </div>
+                                        </div>
+
+                                        {/* 3. Sticky Action Footer */}
+                                        <div className="p-6 pb-12 safe-area-bottom border-t border-white/5 flex-shrink-0 bg-[#1E1E24] flex flex-col gap-4 shadow-[0_-10px_30px_rgba(0,0,0,0.2)] z-20">
+
+                                            {!isListening && (
+                                                <button
+                                                    onClick={() => {
+                                                        setMobileStep('confirm');
+                                                    }}
+                                                    disabled={!inputText.trim()}
+                                                    className={`w-full py-5 rounded-[28px] font-black text-sm uppercase tracking-[0.2em] shadow-xl active:scale-95 transition-all flex items-center justify-center gap-2 ${inputText.trim()
+                                                        ? 'bg-[var(--pop-violet-main)] text-white'
+                                                        : 'bg-white/10 text-[#666666] cursor-not-allowed shadow-none'
+                                                        }`}
+                                                >
+                                                    確認画面へ
+                                                    <ChevronRightIcon className="w-5 h-5" />
+                                                </button>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {mobileStep === 'confirm' && (
+                                    <div className="flex-1 relative min-h-0 animate-in fade-in slide-in-from-bottom-10 duration-700">
+                                        {/* Scrollable Preview and Settings */}
+                                        <div className="absolute inset-0 overflow-y-auto px-8 py-4 pb-[240px] space-y-4 no-scrollbar scrollbar-hide">
+                                            <div className="flex flex-col gap-4">
+                                                {/* Preview Box - Brand Style */}
+                                                <div className="bg-[#2B2B2F] border border-white/5 rounded-[40px] p-8 min-h-[180px] relative shadow-sm overflow-hidden group">
+                                                    <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--pop-violet-main)]/10 rounded-full blur-3xl -mr-16 -mt-16" />
+                                                    <div className="flex items-center justify-between mb-6">
+                                                        <div className="flex gap-1.5">
+                                                            <div className="w-1.5 h-1.5 rounded-full bg-[var(--pop-violet-main)]/50" />
+                                                            <div className="w-1.5 h-1.5 rounded-full bg-[var(--pop-violet-main)]/50" />
+                                                        </div>
+                                                        <span className="text-[10px] font-black text-white uppercase tracking-[0.2em]">入力内容の確認</span>
+                                                    </div>
+                                                    <div className="text-white text-[15px] font-bold leading-relaxed">
+                                                        {inputText.length > 200 ? inputText.substring(0, 200) + '...' : inputText || "ここに内容が表示されます..."}
+                                                    </div>
+
+                                                    {/* GMap Star Rating */}
+                                                    {isGoogleMaps && (
+                                                        <div className="mt-4 pt-4 border-t border-white/10 flex flex-col items-center gap-2">
+                                                            <span className="text-[10px] font-black text-[#A0A0A0] uppercase tracking-widest">口コミの評価</span>
+                                                            <div className="flex gap-2">
+                                                                {[1, 2, 3, 4, 5].map((star) => (
+                                                                    <button
+                                                                        key={star}
+                                                                        onClick={() => onStarRatingChange(star)}
+                                                                        className="transition-transform active:scale-95"
+                                                                    >
+                                                                        <StarIcon
+                                                                            className={`w-7 h-7 transition-all ${star <= (starRating || 0)
+                                                                                ? 'text-[#FFD166] fill-[#FFD166] drop-shadow-sm'
+                                                                                : 'text-white/20'
+                                                                                }`}
+                                                                        />
+                                                                    </button>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    )}
+
+                                                    <button onClick={() => setMobileStep('input')} className="absolute bottom-6 right-8 w-11 h-11 bg-white/5 border border-white/10 rounded-2xl text-[#999999] hover:text-white transition-all flex items-center justify-center active:scale-95 shadow-sm">
+                                                        <RotateCcwIcon className="w-5 h-5" />
+                                                    </button>
+                                                </div>
 
 
-                                            {/* Target Audience - Horizontal Scroll for Compactness - Hidden for Google Maps */}
-                                            {!isGoogleMaps && targetAudiences && (
-                                                <div className="flex flex-col gap-3">
+                                                {/* Target Audience - Horizontal Scroll for Compactness - Hidden for Google Maps */}
+                                                {!isGoogleMaps && targetAudiences && (
+                                                    <div className="flex flex-col gap-3">
+                                                        <div className="flex items-center justify-between px-2">
+                                                            <div className="flex items-center gap-3">
+                                                                <span className="text-[11px] font-black text-[#122646] uppercase tracking-[0.2em]">ターゲット設定</span>
+                                                                <label className="flex items-center gap-1.5 cursor-pointer group/label">
+                                                                    <div className="relative flex items-center justify-center">
+                                                                        <input
+                                                                            type="checkbox"
+                                                                            checked={isDefaultAudienceEnabled}
+                                                                            onChange={(e) => setIsDefaultAudienceEnabled(e.target.checked)}
+                                                                            className="peer appearance-none w-3.5 h-3.5 rounded border border-stone-300 checked:bg-[#1f29fc] checked:border-[#1f29fc] transition-all"
+                                                                        />
+                                                                        <svg className="absolute w-2.5 h-2.5 text-white opacity-0 peer-checked:opacity-100 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="4">
+                                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                                                        </svg>
+                                                                    </div>
+                                                                    <span className="text-[9px] font-bold text-stone-400 group-hover/label:text-stone-600 transition-colors">デフォルトに設定</span>
+                                                                </label>
+                                                            </div>
+                                                            <span className="text-[9px] font-bold text-stone-400">※複数選択可</span>
+                                                        </div>
+                                                        <div className="flex overflow-x-auto gap-2 pb-2 pt-2 -mx-2 px-3 no-scrollbar scrollbar-hide">
+                                                            {primaryAudienceList.map(target => (
+                                                                <button
+                                                                    key={target}
+                                                                    onClick={() => handleTargetAudienceToggle(target)}
+                                                                    className={`
+                                                                    flex-shrink-0 px-4 py-2 rounded-xl font-bold text-[11px] transition-all active:scale-95 border whitespace-nowrap
+                                                                    ${targetAudiences?.includes(target)
+                                                                            ? 'bg-[#122646] text-white border-[#122646] shadow-md'
+                                                                            : 'bg-white text-stone-500 border-stone-200 hover:border-stone-300'
+                                                                        }
+                                                                `}
+                                                                >
+                                                                    {target}
+                                                                </button>
+                                                            ))}
+
+                                                            {/* Show All Toggle or Secondary List */}
+                                                            {secondaryAudienceList.length > 0 && (
+                                                                <>
+                                                                    {!isAudienceExpanded ? (
+                                                                        <button
+                                                                            onClick={() => setIsAudienceExpanded(true)}
+                                                                            className="flex-shrink-0 px-3 py-2 rounded-xl font-bold text-[10px] bg-stone-100 text-stone-400 border border-stone-100 hover:bg-stone-200 transition-colors flex items-center gap-1 whitespace-nowrap"
+                                                                        >
+                                                                            <span>＋ 他のターゲット</span>
+                                                                        </button>
+                                                                    ) : (
+                                                                        secondaryAudienceList.map(target => (
+                                                                            <button
+                                                                                key={target}
+                                                                                onClick={() => handleTargetAudienceToggle(target)}
+                                                                                className={`
+                                                                                flex-shrink-0 px-4 py-2 rounded-xl font-bold text-[11px] transition-all active:scale-95 border bg-white text-stone-500 border-stone-200 hover:border-stone-300 opacity-80 whitespace-nowrap
+                                                                            `}
+                                                                            >
+                                                                                {target}
+                                                                            </button>
+                                                                        ))
+                                                                    )}
+                                                                </>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                )}
+
+                                                {/* Style Selection - Horizontal Pill Style (Monochrome) */}
+                                                <div className="flex flex-col gap-4">
                                                     <div className="flex items-center justify-between px-2">
                                                         <div className="flex items-center gap-3">
-                                                            <span className="text-[11px] font-black text-[#122646] uppercase tracking-[0.2em]">ターゲット設定</span>
+                                                            <span className="text-[11px] font-black text-white uppercase tracking-[0.2em]">スタイルを選ぶ</span>
                                                             <label className="flex items-center gap-1.5 cursor-pointer group/label">
                                                                 <div className="relative flex items-center justify-center">
                                                                     <input
                                                                         type="checkbox"
-                                                                        checked={isDefaultAudienceEnabled}
-                                                                        onChange={(e) => setIsDefaultAudienceEnabled(e.target.checked)}
-                                                                        className="peer appearance-none w-3.5 h-3.5 rounded border border-stone-300 checked:bg-[#1f29fc] checked:border-[#1f29fc] transition-all"
+                                                                        checked={isDefaultStyleEnabled}
+                                                                        onChange={(e) => setIsDefaultStyleEnabled(e.target.checked)}
+                                                                        className="peer appearance-none w-3.5 h-3.5 rounded border border-[#666666] checked:bg-[var(--pop-violet-main)] checked:border-[var(--pop-violet-main)] transition-all"
                                                                     />
                                                                     <svg className="absolute w-2.5 h-2.5 text-white opacity-0 peer-checked:opacity-100 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="4">
                                                                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                                                                     </svg>
                                                                 </div>
-                                                                <span className="text-[9px] font-bold text-stone-400 group-hover/label:text-stone-600 transition-colors">デフォルトに設定</span>
+                                                                <span className="text-[9px] font-bold text-[#A0A0A0] group-hover/label:text-white transition-colors">デフォルトに設定</span>
                                                             </label>
                                                         </div>
-                                                        <span className="text-[9px] font-bold text-stone-400">※複数選択可</span>
+                                                        <button onClick={onOpenPresetModal} className="text-[10px] font-black text-[var(--pop-violet-main)] uppercase tracking-widest bg-[var(--pop-violet-card)] px-3 py-1 rounded-full border border-white/10 hover:bg-white/10 transition-all">編集</button>
                                                     </div>
-                                                    <div className="flex overflow-x-auto gap-2 pb-2 pt-2 -mx-2 px-3 no-scrollbar scrollbar-hide">
-                                                        {primaryAudienceList.map(target => (
-                                                            <button
-                                                                key={target}
-                                                                onClick={() => handleTargetAudienceToggle(target)}
-                                                                className={`
-                                                                    flex-shrink-0 px-4 py-2 rounded-xl font-bold text-[11px] transition-all active:scale-95 border whitespace-nowrap
-                                                                    ${targetAudiences?.includes(target)
-                                                                        ? 'bg-[#122646] text-white border-[#122646] shadow-md'
-                                                                        : 'bg-white text-stone-500 border-stone-200 hover:border-stone-300'
-                                                                    }
-                                                                `}
-                                                            >
-                                                                {target}
-                                                            </button>
-                                                        ))}
-
-                                                        {/* Show All Toggle or Secondary List */}
-                                                        {secondaryAudienceList.length > 0 && (
-                                                            <>
-                                                                {!isAudienceExpanded ? (
-                                                                    <button
-                                                                        onClick={() => setIsAudienceExpanded(true)}
-                                                                        className="flex-shrink-0 px-3 py-2 rounded-xl font-bold text-[10px] bg-stone-100 text-stone-400 border border-stone-100 hover:bg-stone-200 transition-colors flex items-center gap-1 whitespace-nowrap"
-                                                                    >
-                                                                        <span>＋ 他のターゲット</span>
-                                                                    </button>
-                                                                ) : (
-                                                                    secondaryAudienceList.map(target => (
-                                                                        <button
-                                                                            key={target}
-                                                                            onClick={() => handleTargetAudienceToggle(target)}
-                                                                            className={`
-                                                                                flex-shrink-0 px-4 py-2 rounded-xl font-bold text-[11px] transition-all active:scale-95 border bg-white text-stone-500 border-stone-200 hover:border-stone-300 opacity-80 whitespace-nowrap
-                                                                            `}
-                                                                        >
-                                                                            {target}
-                                                                        </button>
-                                                                    ))
-                                                                )}
-                                                            </>
-                                                        )}
+                                                    <div className="flex overflow-x-auto gap-3 pb-2 pt-2 -mx-2 px-3 no-scrollbar scrollbar-hide">
+                                                        <button
+                                                            onClick={() => onApplyPreset({ id: 'plain-ai' } as any)}
+                                                            className={`flex-shrink-0 px-8 py-3 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] transition-all duration-500 shadow-sm border ${activePresetId === 'plain-ai' ? 'bg-[var(--pop-violet-main)] text-white border-[var(--pop-violet-main)] scale-105 active:scale-95 shadow-[var(--pop-violet-main)]/30' : 'bg-[#2B2B2F] border-white/10 text-[#A0A0A0] hover:text-white'}`}
+                                                        >
+                                                            AI標準
+                                                        </button>
+                                                        {presets.map((p) => {
+                                                            const isSelected = activePresetId === p.id;
+                                                            return (
+                                                                <button
+                                                                    key={p.id}
+                                                                    onClick={() => onApplyPreset(p)}
+                                                                    className={`flex-shrink-0 px-8 py-3 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] transition-all duration-500 shadow-sm border truncate max-w-[160px] ${isSelected ? 'bg-[var(--pop-violet-main)] text-white border-[var(--pop-violet-main)] scale-105 active:scale-95 shadow-[var(--pop-violet-main)]/30' : 'bg-[#2B2B2F] border-white/10 text-[#A0A0A0] hover:text-white'}`}
+                                                                >
+                                                                    {p.name}
+                                                                </button>
+                                                            );
+                                                        })}
                                                     </div>
                                                 </div>
-                                            )}
 
-                                            {/* Style Selection - Horizontal Pill Style (Monochrome) */}
-                                            <div className="flex flex-col gap-4">
-                                                <div className="flex items-center justify-between px-2">
-                                                    <div className="flex items-center gap-3">
-                                                        <span className="text-[11px] font-black text-[#122646] uppercase tracking-[0.2em]">スタイルを選ぶ</span>
-                                                        <label className="flex items-center gap-1.5 cursor-pointer group/label">
-                                                            <div className="relative flex items-center justify-center">
-                                                                <input
-                                                                    type="checkbox"
-                                                                    checked={isDefaultStyleEnabled}
-                                                                    onChange={(e) => setIsDefaultStyleEnabled(e.target.checked)}
-                                                                    className="peer appearance-none w-3.5 h-3.5 rounded border border-stone-300 checked:bg-[#1f29fc] checked:border-[#1f29fc] transition-all"
-                                                                />
-                                                                <svg className="absolute w-2.5 h-2.5 text-white opacity-0 peer-checked:opacity-100 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="4">
-                                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                                                                </svg>
-                                                            </div>
-                                                            <span className="text-[9px] font-bold text-stone-400 group-hover/label:text-stone-600 transition-colors">デフォルトに設定</span>
-                                                        </label>
-                                                    </div>
-                                                    <button onClick={onOpenPresetModal} className="text-[10px] font-black text-[#1f29fc] uppercase tracking-widest bg-[#d8e9f4]/30 px-3 py-1 rounded-full border border-[#1f29fc]/20 hover:bg-[#d8e9f4]/50 transition-all">編集</button>
-                                                </div>
-                                                <div className="flex overflow-x-auto gap-3 pb-2 pt-2 -mx-2 px-3 no-scrollbar scrollbar-hide">
-                                                    <button
-                                                        onClick={() => onApplyPreset({ id: 'plain-ai' } as any)}
-                                                        className={`flex-shrink-0 px-8 py-3 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] transition-all duration-500 shadow-sm border ${activePresetId === 'plain-ai' ? 'bg-[#1f29fc] text-white border-[#1f29fc] scale-105 active:scale-95' : 'bg-white/95 backdrop-blur-sm border-stone-100 text-stone-400'}`}
-                                                    >
-                                                        AI標準
-                                                    </button>
-                                                    {presets.map((p) => {
-                                                        const isSelected = activePresetId === p.id;
-                                                        return (
-                                                            <button
-                                                                key={p.id}
-                                                                onClick={() => onApplyPreset(p)}
-                                                                className={`flex-shrink-0 px-8 py-3 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] transition-all duration-500 shadow-sm border truncate max-w-[160px] ${isSelected ? 'bg-[#1f29fc] text-white border-[#1f29fc] scale-105 active:scale-95' : 'bg-white/95 backdrop-blur-sm border-stone-100 text-stone-400'}`}
-                                                            >
-                                                                {p.name}
-                                                            </button>
-                                                        );
-                                                    })}
-                                                </div>
-                                            </div>
-
-                                            {/* Custom Prompt (Always Visible) */}
-                                            <div className="my-2">
-                                                <div className="bg-[#f5f7fa] px-6 py-4 rounded-[32px] border border-stone-200 flex flex-col gap-2 shadow-sm active:border-[#1f29fc]/30 transition-colors">
-                                                    <div className="flex items-center gap-1.5">
-                                                        <AutoSparklesIcon className="w-3 h-3 text-[#1f29fc]" />
-                                                        <span className="text-[11px] font-black text-stone-500 uppercase tracking-[0.2em]">追加指示（任意）</span>
-                                                    </div>
-                                                    <AutoResizingTextarea
-                                                        value={customPrompt}
-                                                        onChange={(e) => onCustomPromptChange(e.target.value)}
-                                                        placeholder="AIへの具体的なお願いはこちらに..."
-                                                        className="bg-transparent text-sm font-bold text-[#122646] focus:outline-none resize-none min-h-[32px] placeholder:text-stone-300 w-full"
-                                                    />
-                                                </div>
-                                            </div>
-
-                                            {/* Store Supplement (Google Maps Only) - Moved here after Custom Prompt */}
-                                            {isGoogleMaps && (
+                                                {/* Custom Prompt (Always Visible) */}
                                                 <div className="my-2">
-                                                    <div className="bg-[#f5f7fa] px-6 py-4 rounded-[32px] border border-stone-200 flex flex-col gap-2 shadow-sm">
-                                                        <span className="text-[11px] font-black text-stone-500 uppercase tracking-[0.2em]">補足情報 / 当日の事情</span>
+                                                    <div className="bg-[#2B2B2F] px-6 py-4 rounded-[32px] border border-white/10 flex flex-col gap-2 shadow-sm active:border-[var(--pop-violet-main)]/30 transition-colors">
+                                                        <div className="flex items-center gap-1.5">
+                                                            <AutoSparklesIcon className="w-3 h-3 text-[var(--pop-violet-main)]" />
+                                                            <span className="text-[11px] font-black text-[#A0A0A0] uppercase tracking-[0.2em]">追加指示（任意）</span>
+                                                        </div>
                                                         <AutoResizingTextarea
-                                                            value={storeSupplement}
-                                                            onChange={(e) => onStoreSupplementChange(e.target.value)}
-                                                            placeholder="例：急な欠勤でお待たせした、感謝を伝えたい等"
-                                                            className="bg-transparent text-sm font-bold text-[#122646] focus:outline-none resize-none min-h-[40px] placeholder:text-stone-300"
+                                                            value={customPrompt}
+                                                            onChange={(e) => onCustomPromptChange(e.target.value)}
+                                                            placeholder="AIへの具体的なお願いはこちらに..."
+                                                            className="bg-transparent text-sm font-bold text-white focus:outline-none resize-none min-h-[32px] placeholder:text-[#666666] w-full"
                                                         />
                                                     </div>
                                                 </div>
-                                            )}
 
-                                            {/* Fine-tuning Settings (Tone, Length, Supplement) */}
-                                            {(!isStyleLocked || !isX) && (
-                                                <div className="mt-8 px-2 space-y-8">
-                                                    {/* Settings Grid - Monochrome */}
-                                                    <div className="flex gap-8 mb-4">
-                                                        {/* Tone Slider - Hide if Locked */}
-                                                        {!isStyleLocked && (
-                                                            <div className="flex-1 flex flex-col gap-3">
-                                                                <div className="flex items-center justify-between px-1">
-                                                                    <div className="flex items-center gap-1.5">
-                                                                        <span className="text-[8px] font-black text-stone-400 uppercase tracking-[0.2em]">トーン</span>
-                                                                    </div>
-                                                                </div>
-                                                                <div className="relative px-1 pt-1 pb-2">
-                                                                    <div className="absolute top-[6px] left-1 right-1 h-[1.5px] bg-stone-200" />
-                                                                    <div className="relative flex justify-between items-center h-3">
-                                                                        {TONES.map((t) => {
-                                                                            const isActive = tone === t.id;
-                                                                            return (
-                                                                                <button
-                                                                                    key={t.id}
-                                                                                    onClick={() => onToneChange(t.id)}
-                                                                                    className="relative z-10 flex flex-col items-center group w-full first:items-start last:items-end"
-                                                                                >
-                                                                                    <div className={`w-3 h-3 rounded-full border-2 transition-all duration-300 ${isActive ? 'bg-[#1f29fc] border-[#1f29fc] scale-110' : 'bg-white border-stone-300'}`} />
-                                                                                    <span className={`absolute -bottom-4 text-[8px] font-black transition-colors duration-300 whitespace-nowrap ${isActive ? 'text-[#1f29fc]' : 'text-stone-400'}`}>
-                                                                                        {t.label}
-                                                                                    </span>
-                                                                                </button>
-                                                                            );
-                                                                        })}
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        )}
-
-                                                        {/* Length Slider */}
-                                                        {!isX && (
-                                                            <div className="flex-1 flex flex-col gap-3">
-                                                                <div className="flex items-center justify-between px-1">
-                                                                    <span className="text-[8px] font-black text-stone-400 uppercase tracking-[0.2em]">長さ</span>
-                                                                </div>
-                                                                <div className="relative px-1 pt-1 pb-2">
-                                                                    <div className="absolute top-[6px] left-1 right-1 h-[1.5px] bg-stone-200" />
-                                                                    <div className="relative flex justify-between items-center h-3">
-                                                                        {LENGTHS.map((l) => {
-                                                                            const isActive = length === l.id;
-                                                                            return (
-                                                                                <button
-                                                                                    key={l.id}
-                                                                                    onClick={() => onLengthChange(l.id)}
-                                                                                    className="relative z-10 flex flex-col items-center group w-full first:items-start last:items-end"
-                                                                                >
-                                                                                    <div className={`w-3 h-3 rounded-full border-2 transition-all duration-300 ${isActive ? 'bg-[#1f29fc] border-[#1f29fc] scale-110' : 'bg-white border-stone-300'}`} />
-                                                                                    <span className={`absolute -bottom-4 text-[8px] font-black transition-colors duration-300 whitespace-nowrap ${isActive ? 'text-[#1f29fc]' : 'text-stone-400'}`}>
-                                                                                        {l.label}
-                                                                                    </span>
-                                                                                </button>
-                                                                            );
-                                                                        })}
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        )}
+                                                {/* Store Supplement (Google Maps Only) - Moved here after Custom Prompt */}
+                                                {isGoogleMaps && (
+                                                    <div className="my-2">
+                                                        <div className="bg-[#2B2B2F] px-6 py-4 rounded-[32px] border border-white/10 flex flex-col gap-2 shadow-sm">
+                                                            <span className="text-[11px] font-black text-[#A0A0A0] uppercase tracking-[0.2em]">補足情報 / 当日の事情</span>
+                                                            <AutoResizingTextarea
+                                                                value={storeSupplement}
+                                                                onChange={(e) => onStoreSupplementChange(e.target.value)}
+                                                                placeholder="例：急な欠勤でお待たせした、感謝を伝えたい等"
+                                                                className="bg-transparent text-sm font-bold text-white focus:outline-none resize-none min-h-[40px] placeholder:text-[#666666]"
+                                                            />
+                                                        </div>
                                                     </div>
+                                                )}
 
-                                                    {/* Store Supplement removed from here - now appears after Custom Prompt */}
-                                                </div>
-                                            )}
+                                                {/* Fine-tuning Settings (Tone, Length, Supplement) */}
+                                                {(!isStyleLocked || !isX) && (
+                                                    <div className="mt-8 px-2 space-y-8">
+                                                        {/* Settings Grid - Monochrome */}
+                                                        <div className="flex gap-8 mb-4">
+                                                            {/* Tone Slider - Hide if Locked */}
+                                                            {!isStyleLocked && (
+                                                                <div className="flex-1 flex flex-col gap-3">
+                                                                    <div className="flex items-center justify-between px-1">
+                                                                        <div className="flex items-center gap-1.5">
+                                                                            <span className="text-[8px] font-black text-[#666666] uppercase tracking-[0.2em]">トーン</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div className="relative px-1 pt-1 pb-2">
+                                                                        <div className="absolute top-[6px] left-1 right-1 h-[1.5px] bg-white/10" />
+                                                                        <div className="relative flex justify-between items-center h-3">
+                                                                            {TONES.map((t) => {
+                                                                                const isActive = tone === t.id;
+                                                                                return (
+                                                                                    <button
+                                                                                        key={t.id}
+                                                                                        onClick={() => onToneChange(t.id)}
+                                                                                        className="relative z-10 flex flex-col items-center group w-full first:items-start last:items-end"
+                                                                                    >
+                                                                                        <div className={`w-3 h-3 rounded-full border-2 transition-all duration-300 ${isActive ? 'bg-[var(--pop-violet-main)] border-[var(--pop-violet-main)] scale-110' : 'bg-[#2B2B2F] border-white/20'}`} />
+                                                                                        <span className={`absolute -bottom-4 text-[8px] font-black transition-colors duration-300 whitespace-nowrap ${isActive ? 'text-[var(--pop-violet-main)]' : 'text-[#666666]'}`}>
+                                                                                            {t.label}
+                                                                                        </span>
+                                                                                    </button>
+                                                                                );
+                                                                            })}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            )}
+
+                                                            {/* Length Slider */}
+                                                            {!isX && (
+                                                                <div className="flex-1 flex flex-col gap-3">
+                                                                    <div className="flex items-center justify-between px-1">
+                                                                        <span className="text-[8px] font-black text-[#666666] uppercase tracking-[0.2em]">長さ</span>
+                                                                    </div>
+                                                                    <div className="relative px-1 pt-1 pb-2">
+                                                                        <div className="absolute top-[6px] left-1 right-1 h-[1.5px] bg-white/10" />
+                                                                        <div className="relative flex justify-between items-center h-3">
+                                                                            {LENGTHS.map((l) => {
+                                                                                const isActive = length === l.id;
+                                                                                return (
+                                                                                    <button
+                                                                                        key={l.id}
+                                                                                        onClick={() => onLengthChange(l.id)}
+                                                                                        className="relative z-10 flex flex-col items-center group w-full first:items-start last:items-end"
+                                                                                    >
+                                                                                        <div className={`w-3 h-3 rounded-full border-2 transition-all duration-300 ${isActive ? 'bg-[var(--pop-violet-main)] border-[var(--pop-violet-main)] scale-110' : 'bg-[#2B2B2F] border-white/20'}`} />
+                                                                                        <span className={`absolute -bottom-4 text-[8px] font-black transition-colors duration-300 whitespace-nowrap ${isActive ? 'text-[var(--pop-violet-main)]' : 'text-[#666666]'}`}>
+                                                                                            {l.label}
+                                                                                        </span>
+                                                                                    </button>
+                                                                                );
+                                                                            })}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                        </div>
+
+                                                        {/* Store Supplement removed from here - now appears after Custom Prompt */}
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            )}
-                            {mobileStep === 'result' && (
-                                <div className="flex-1 overflow-y-auto pb-4 animate-in fade-in slide-in-from-bottom-10 duration-700 px-0">
-                                    <PostResultTabs
-                                        results={generatedResults}
-                                        activeTab={activeResultTab}
-                                        onTabChange={onResultTabChange!}
-                                        onManualEdit={onManualEdit!}
-                                        onToggleFooter={onToggleFooter!}
-                                        onRefine={onRefine!}
-                                        onRegenerateSingle={onRegenerateSingle!}
-                                        onShare={onShare!}
-                                        getShareButtonLabel={getShareButtonLabel!}
-                                        storeProfile={storeProfile}
-                                        refiningKey={refiningKey!}
-                                        onRefineToggle={onRefineToggle!}
-                                        refineText={refineText!}
-                                        onRefineTextChange={onRefineTextChange!}
-                                        onPerformRefine={onPerformRefine!}
-                                        isRefining={isRefining!}
-                                        includeFooter={includeFooter!}
-                                        onIncludeFooterChange={onIncludeFooterChange!}
-                                        onAutoFormat={onAutoFormat!}
-                                        isAutoFormatting={isAutoFormatting!}
-                                        onCopy={onCopy!}
-                                    />
-                                </div>
-                            )}
-                        </div>
+                                )}
+                                {mobileStep === 'result' && (
+                                    <div className="flex-1 overflow-y-auto pb-4 animate-in fade-in slide-in-from-bottom-10 duration-700 px-0">
+                                        <PostResultTabs
+                                            results={generatedResults}
+                                            activeTab={activeResultTab}
+                                            onTabChange={onResultTabChange!}
+                                            onManualEdit={onManualEdit!}
+                                            onToggleFooter={onToggleFooter!}
+                                            onRefine={onRefine!}
+                                            onRegenerateSingle={onRegenerateSingle!}
+                                            onShare={onShare!}
+                                            getShareButtonLabel={getShareButtonLabel!}
+                                            storeProfile={storeProfile}
+                                            refiningKey={refiningKey!}
+                                            onRefineToggle={onRefineToggle!}
+                                            refineText={refineText!}
+                                            onRefineTextChange={onRefineTextChange!}
+                                            onPerformRefine={onPerformRefine!}
+                                            isRefining={isRefining!}
+                                            includeFooter={includeFooter!}
+                                            onIncludeFooterChange={onIncludeFooterChange!}
+                                            onAutoFormat={onAutoFormat!}
+                                            isAutoFormatting={isAutoFormatting!}
+                                            onCopy={onCopy!}
+                                        />
+                                    </div>
+                                )}
+                            </div>
 
-                        {/* Step 3 Sticky Action Area - Fixed for Hitbox and Layout accuracy */}
-                        {mobileStep === 'confirm' && (
-                            <div className="absolute bottom-0 left-0 right-0 z-[120] flex flex-col items-center">
-                                {/* Gradient Fade Border */}
-                                {/* Gradient fade removed */}
+                            {/* Step 3 Sticky Action Area - Fixed for Hitbox and Layout accuracy */}
+                            {mobileStep === 'confirm' && (
+                                <div className="absolute bottom-0 left-0 right-0 z-[120] flex flex-col items-center">
+                                    {/* Gradient Fade Border */}
+                                    {/* Gradient fade removed */}
 
-                                {/* Opaque Background with Content */}
-                                <div className="w-full bg-[#FAFAFA] px-8 pt-4 pb-[24px] flex flex-col items-center gap-4">
-                                    <button
-                                        onClick={onGenerate}
-                                        disabled={isGenerating}
-                                        className={`
+                                    {/* Opaque Background with Content */}
+                                    <div className="w-full bg-[#1E1E24] px-8 pt-4 pb-[24px] flex flex-col items-center gap-4">
+                                        <button
+                                            onClick={onGenerate}
+                                            disabled={isGenerating}
+                                            className={`
                                             w-full group relative overflow-hidden rounded-[32px] py-6
                                             flex items-center justify-center
                                             transition-all duration-500 active:scale-95
-                                            ${isGenerating ? 'bg-stone-300 cursor-not-allowed' : 'bg-gradient-to-br from-[var(--brand-highlight)] via-[#f3e336] to-[#f2e018] shadow-[0_15px_45px_rgba(242,224,24,0.3)]'}
+                                            ${isGenerating ? 'bg-white/10 cursor-not-allowed' : 'bg-gradient-to-br from-[var(--pop-violet-accent-a)] via-[var(--pop-violet-accent-b)] to-[var(--pop-violet-main)] shadow-[0_15px_45px_rgba(255,122,89,0.3)]'}
                                         `}
-                                    >
-                                        <div className="relative flex items-center justify-center gap-3">
-                                            {isGenerating ? (
-                                                <div className="w-6 h-6 border-3 border-white/20 border-t-[#122646] rounded-full animate-spin" />
-                                            ) : (
-                                                <span className="text-[var(--brand-text)] text-base font-black uppercase tracking-[0.3em] drop-shadow-sm">
-                                                    投稿案を作成する
-                                                </span>
-                                            )}
-                                        </div>
-                                    </button>
-                                    <p className="text-center text-[10px] font-bold text-[#999999] uppercase tracking-widest pointer-events-none">
-                                        あなたの想いを、AIが最高の文章に仕上げます
-                                    </p>
+                                        >
+                                            <div className="relative flex items-center justify-center gap-3">
+                                                {isGenerating ? (
+                                                    <div className="w-6 h-6 border-3 border-white/20 border-t-white rounded-full animate-spin" />
+                                                ) : (
+                                                    <span className="text-white text-base font-black uppercase tracking-[0.3em] drop-shadow-sm">
+                                                        投稿案を作成する
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </button>
+                                        <p className="text-center text-[10px] font-bold text-[#666666] uppercase tracking-widest pointer-events-none">
+                                            あなたの想いを、AIが最高の文章に仕上げます
+                                        </p>
+                                    </div>
                                 </div>
-                            </div>
-                        )}
+                            )}
+                        </div>
                     </div>
-                </div>
-            )}
-        </div>
+                )
+            }
+        </div >
     );
 };
