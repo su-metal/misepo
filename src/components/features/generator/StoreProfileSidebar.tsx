@@ -45,30 +45,58 @@ export const StoreProfileSidebar: React.FC<StoreProfileSidebarProps> = ({ storeP
                     ))}
                 </div>
 
-                {/* Stats / Parameters */}
-                <div className="grid grid-cols-2 gap-3 relative z-10">
-                    <div className="p-3 bg-white rounded-2xl border border-[#122646]/10 shadow-sm">
-                        <div className="flex items-center gap-1.5 mb-1 text-[#122646]/60">
-                            <UserCircleIcon className="w-3 h-3" />
-                            <span className="text-[9px] font-black uppercase">Role</span>
+                {/* Plan & Usage Integrated Card */}
+                <div className="flex flex-col gap-3 relative z-10">
+                    <div className="p-5 bg-[#122646] text-white rounded-[28px] shadow-lg flex flex-col gap-4 border border-white/5 relative overflow-hidden group/card text-left">
+                        {/* Decorative Background Glows */}
+                        <div className="absolute -top-10 -right-10 w-32 h-32 bg-indigo-500/20 rounded-full blur-[30px] pointer-events-none group-hover/card:bg-indigo-500/30 transition-colors duration-700" />
+
+                        <div className="flex justify-between items-start relative z-10">
+                            <div className="flex flex-col gap-0.5">
+                                <div className="flex items-center gap-1.5 mb-1 text-white/40">
+                                    <CrownIcon className="w-3 h-3" />
+                                    <span className="text-[9px] font-black uppercase tracking-wider">Current Plan</span>
+                                </div>
+                                <div className="text-sm font-black text-white">
+                                    {plan.plan === 'entry' ? 'Entry' :
+                                        plan.plan === 'standard' ? 'Standard' :
+                                            plan.plan === 'professional' ? 'Professional' :
+                                                plan.plan === 'pro' || plan.plan === 'monthly' || plan.plan === 'yearly' ? 'Pro' :
+                                                    plan.plan === 'premium' ? 'Premium' :
+                                                        plan.plan || 'Free'}
+                                </div>
+                            </div>
+                            {plan?.plan !== 'professional' && (
+                                <a
+                                    href="/start?upgrade=true"
+                                    className="px-3 py-1.5 rounded-xl bg-white text-[#122646] hover:bg-[#f2e018] transition-all text-[9px] font-black uppercase tracking-widest shadow-lg active:scale-95"
+                                >
+                                    Upgrade
+                                </a>
+                            )}
                         </div>
-                        <div className="text-xs font-bold text-[#122646] truncate">
-                            Owner
-                        </div>
-                    </div>
-                    <div className="p-3 bg-white rounded-2xl border border-[#122646]/10 shadow-sm">
-                        <div className="flex items-center gap-1.5 mb-1 text-[#122646]/60">
-                            <CrownIcon className="w-3 h-3" />
-                            <span className="text-[9px] font-black uppercase">Plan</span>
-                        </div>
-                        <div className="text-xs font-bold text-[#122646] truncate">
-                            {plan.plan === 'entry' ? 'Entry' :
-                                plan.plan === 'standard' ? 'Standard' :
-                                    plan.plan === 'professional' ? 'Professional' :
-                                        plan.plan === 'pro' || plan.plan === 'monthly' || plan.plan === 'yearly' ? 'Pro' :
-                                            plan.plan === 'premium' ? 'Premium' :
-                                                plan.plan || 'Free'}
-                        </div>
+
+                        {/* Credits Gauge */}
+                        {typeof plan.usage !== 'undefined' && typeof plan.limit !== 'undefined' && (
+                            <div className="space-y-2 relative z-10">
+                                <div className="flex justify-between items-end">
+                                    <div className="flex items-center gap-1.5 text-white/40">
+                                        <ActivityIcon className="w-3 h-3" />
+                                        <span className="text-[9px] font-black uppercase tracking-widest">Usage</span>
+                                    </div>
+                                    <div className="text-xs font-black flex items-baseline gap-1">
+                                        <span className="text-[#f2e018]"> {Math.max(0, plan.limit - plan.usage)}</span>
+                                        <span className="text-[10px] text-white/40">/ {plan.limit}</span>
+                                    </div>
+                                </div>
+                                <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+                                    <div
+                                        className="h-full bg-gradient-to-r from-[#f2e018] to-yellow-300 shadow-[0_0_10px_rgba(242,224,24,0.3)] transition-all duration-1000"
+                                        style={{ width: `${(Math.max(0, plan.limit - plan.usage) / plan.limit) * 100}%` }}
+                                    />
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

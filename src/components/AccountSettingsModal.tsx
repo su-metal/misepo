@@ -153,9 +153,9 @@ const AccountSettingsModal: React.FC<AccountSettingsModalProps> = ({ user, plan,
                                     </div>
                                 </div>
 
-                                {!isPaid && !isTrial && (
-                                    <a href="/pricing" className="px-5 py-2.5 text-[10px] font-black rounded-full transition-all uppercase tracking-widest shrink-0 shadow-lg bg-[#7F5AF0] text-white hover:bg-[#6c4bd6] hover:scale-105 active:scale-95">
-                                        Upgrade
+                                {plan?.plan !== 'professional' && (
+                                    <a href="/start?upgrade=true" className="px-5 py-2.5 text-[10px] font-black rounded-full transition-all uppercase tracking-widest shrink-0 shadow-lg bg-[#7F5AF0] text-white hover:bg-[#6c4bd6] hover:scale-105 active:scale-95">
+                                        {plan?.plan === 'free' || plan?.plan === 'trial' ? 'Upgrade' : 'Plan UP'}
                                     </a>
                                 )}
                             </div>
