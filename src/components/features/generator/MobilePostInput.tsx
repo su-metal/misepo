@@ -539,7 +539,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             relative rounded-[20px] overflow-hidden cursor-pointer border transition-all duration-500 group
                                             ${bentoClass}
                                              ${isActive
-                                                ? 'bg-gradient-to-br from-[var(--pop-violet-main)] via-[#4f46e5] to-[#7c3aed] border-white/20 shadow-[0_15px_35px_rgba(24,35,255,0.3)] scale-[0.98] animate-tactile-pop ring-2 ring-white/10'
+                                                ? 'bg-[#f9cd61] border-[#f9cd61] shadow-[0_15px_35px_rgba(249,205,97,0.4)] scale-[0.98] animate-tactile-pop ring-2 ring-white/10'
                                                 : `bg-[var(--pop-violet-card)] border-white/5 shadow-[0_4px_12px_rgba(0,0,0,0.2)] hover:border-white/20 hover:shadow-lg active:scale-[0.98]`
                                             }
                                         `}
@@ -549,7 +549,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             <div className="flex justify-between items-start">
                                                 <div className={`
                                                     transition-all duration-300
-                                                     ${isActive ? 'text-white' : 'text-[#A0A0A0] group-hover:text-white'}
+                                                     ${isActive ? 'text-[#1E1E24]' : 'text-[#A0A0A0] group-hover:text-white'}
                                                 `}>
                                                     {details.icon}
                                                 </div>
@@ -559,9 +559,9 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                         e.stopPropagation();
                                                         handlePlatformSelect(p);
                                                     }}
-                                                    className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 active:scale-90 shadow-lg ${isActive ? 'bg-white' : 'bg-white/10 text-white shadow-[0_4px_10px_rgba(0,0,0,0.2)]'}`}
+                                                    className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 active:scale-90 shadow-lg ${isActive ? 'bg-[#1E1E24]' : 'bg-white/10 text-white shadow-[0_4px_10px_rgba(0,0,0,0.2)]'}`}
                                                 >
-                                                    <ChevronRightIcon className={`w-5 h-5 ${isActive ? 'text-[var(--pop-violet-main)]' : 'text-white'}`} />
+                                                    <ChevronRightIcon className={`w-5 h-5 ${isActive ? 'text-[#f9cd61]' : 'text-white'}`} />
                                                 </div>
                                             </div>
 
@@ -572,10 +572,10 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                 </span>
                                                 */}
                                                 <div className="flex flex-col leading-tight">
-                                                    <h3 className={`font-black tracking-tighter text-xl transition-colors duration-500 ${isActive ? 'text-white' : 'text-white'}`} style={{ fontFamily: 'Inter, sans-serif' }}>
+                                                    <h3 className={`font-black tracking-tighter text-xl transition-colors duration-500 ${isActive ? 'text-[#1E1E24]' : 'text-white'}`} style={{ fontFamily: 'Inter, sans-serif' }}>
                                                         {details.name}
                                                     </h3>
-                                                    <p className={`text-[11px] font-medium transition-opacity ${isActive ? 'text-white/60' : 'text-[#A0A0A0]'}`}>
+                                                    <p className={`text-[11px] font-medium transition-opacity ${isActive ? 'text-[#1E1E24]/70' : 'text-[#A0A0A0]'}`}>
                                                         {details.sub}
                                                     </p>
                                                 </div>
