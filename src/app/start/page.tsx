@@ -110,16 +110,6 @@ function StartPageContent() {
           </div>
         )}
 
-        {(isSwitch || isLoggedIn) && (
-          <div className="mb-10 w-full max-w-2xl text-center bg-white/70 backdrop-blur-md border border-white/60 shadow-sm rounded-2xl px-6 py-4">
-            <p className="text-[11px] font-black text-slate-600 uppercase tracking-[0.2em]">
-              別アカウントでログインする場合は、下のボタンからログインしてください。
-            </p>
-            <p className="mt-2 text-[10px] font-bold text-slate-500 tracking-widest">
-              Google で既に別アカウントが選択されている場合は、アカウント選択画面で切り替えてください。
-            </p>
-          </div>
-        )}
 
         <div className="w-full max-w-3xl space-y-12">
           {/* Direct Trial Entry for Eligible Users */}

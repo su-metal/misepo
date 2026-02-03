@@ -46,7 +46,7 @@ export async function POST() {
       const subId = entitlement?.billing_reference_id;
       if (!subId)
         return NextResponse.json(
-          { ok: false, error: "no_subscription" },
+          { ok: false, error: "no_active_subscription" },
           { status: 400 }
         );
 

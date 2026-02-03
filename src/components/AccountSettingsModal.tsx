@@ -16,7 +16,7 @@ interface AccountSettingsModalProps {
 const AccountSettingsModal: React.FC<AccountSettingsModalProps> = ({ user, plan, onClose, onLogout }) => {
     if (typeof document === 'undefined') return null;
 
-    const isPaid = plan?.status === 'active' && plan?.plan !== 'free';
+    const isPaid = plan?.status === 'active' && !['free', 'trial'].includes(plan?.plan || '');
     const isTrial = !!plan?.trial_ends_at && new Date(plan.trial_ends_at).getTime() > Date.now();
     const isPro = isPaid || isTrial;
 
@@ -38,6 +38,8 @@ const AccountSettingsModal: React.FC<AccountSettingsModalProps> = ({ user, plan,
             const data = await res.json();
             if (data.ok && data.url) {
                 window.location.href = data.url;
+            } else if (data.error === 'no_active_subscription') {
+                alert('トライアル中、または有効なサブスクリプションがないため、管理ポータルを開けません。プランの変更や解約は有料プラン移行後に可能になります。');
             } else {
                 alert('ポータルの起動に失敗しました。');
             }
@@ -179,7 +181,9 @@ const AccountSettingsModal: React.FC<AccountSettingsModalProps> = ({ user, plan,
                                 </div>
                                 <div className="text-left">
                                     <p className="text-sm font-black text-slate-800 group-hover:text-indigo-600 transition-colors">サブスクリプション管理</p>
-                                    <p className="text-[10px] font-bold text-slate-400">プラン確認・変更・履歴</p>
+                                    <p className="text-[10px] font-bold text-slate-400">
+                                        {!isPaid ? '有料プラン移行後に利用可能' : 'プラン確認・変更・履歴'}
+                                    </p>
                                 </div>
                             </div>
                             <ExternalLinkIcon className="w-4 h-4 text-slate-300 group-hover:text-indigo-400 group-hover:translate-x-1 transition-all" />
