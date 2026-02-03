@@ -118,10 +118,10 @@ const SortablePresetRow = ({
       className={`
         group flex items-center gap-3 p-4 rounded-2xl transition-all duration-300 border
         ${isSelected
-          ? 'bg-[#1f29fc] border-[#1f29fc] shadow-[0_8px_30px_rgb(0,113,185,0.2)]'
-          : 'bg-white/40 border-stone-100 hover:bg-white hover:border-[#1f29fc]/10 hover:shadow-sm'
+          ? 'bg-[var(--brand-primary)] border-[var(--brand-primary)] shadow-[0_8px_30px_rgba(24,35,255,0.2)]'
+          : 'bg-white/40 border-stone-100 hover:bg-white hover:border-[var(--brand-primary)]/10 hover:shadow-sm'
         }
-        ${isDragging ? 'opacity-50 ring-2 ring-[#1f29fc]' : ''}
+        ${isDragging ? 'opacity-50 ring-2 ring-[var(--brand-primary)]' : ''}
       `}
     >
       <div
@@ -138,7 +138,7 @@ const SortablePresetRow = ({
         <div className={`font-black text-[15px] truncate mb-0.5 ${isSelected ? 'text-white' : 'text-[#122646]'}`}>
           {preset.name}
         </div>
-        <div className={`text-[11px] font-black uppercase tracking-widest truncate ${isSelected ? 'text-white/70' : 'text-[#1f29fc]'}`}>
+        <div className={`text-[11px] font-black uppercase tracking-widest truncate ${isSelected ? 'text-white/70' : 'text-[var(--brand-primary)]'}`}>
           分身プロフィール
         </div>
       </button>
@@ -247,11 +247,11 @@ const SampleSlider = ({
           {samples.map((item) => (
             <div
               key={item.id}
-              className="snap-center shrink-0 w-full group p-8 md:p-12 bg-white border border-[#122646]/5 rounded-[2rem] shadow-sm hover:shadow-md hover:border-[#1f29fc]/10 transition-all flex flex-col justify-between min-h-[180px] relative overflow-hidden"
+              className="snap-center shrink-0 w-full group p-8 md:p-12 bg-white border border-[#122646]/5 rounded-[2rem] shadow-sm hover:shadow-md hover:border-[var(--brand-primary)]/10 transition-all flex flex-col justify-between min-h-[180px] relative overflow-hidden"
             >
               <div className="space-y-5">
                 <div className="flex items-center justify-between">
-                  <span className={`text-[9px] font-black px-2.5 py-1 rounded-lg uppercase tracking-widest ${mode === 'sns' ? 'bg-[#d8e9f4] text-[#1f29fc]' : 'bg-[#00b900]/10 text-[#00b900]'}`}>
+                  <span className={`text-[9px] font-black px-2.5 py-1 rounded-lg uppercase tracking-widest ${mode === 'sns' ? 'bg-[var(--brand-primary)]/10 text-[var(--brand-primary)]' : 'bg-[#00b900]/10 text-[#00b900]'}`}>
                     {mode === 'sns' ? 'SNS投稿例' : 'マップ返信例'}
                   </span>
                   <span className="text-[10px] font-black text-stone-300 uppercase tracking-widest">
@@ -266,7 +266,7 @@ const SampleSlider = ({
               <div className="mt-8 flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0">
                 <button
                   onClick={() => onEdit(item)}
-                  className="p-3 text-[#1f29fc]/50 hover:text-[#1f29fc] hover:bg-[#d8e9f4]/50 rounded-2xl transition-all border border-transparent hover:border-[#1f29fc]/10"
+                  className="p-3 text-[var(--brand-primary)]/50 hover:text-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/10 rounded-2xl transition-all border border-transparent hover:border-[var(--brand-primary)]/10"
                   title="詳細を表示"
                 >
                   <BookOpenIcon className="w-5 h-5" />
@@ -735,10 +735,10 @@ const PresetModal: React.FC<PresetModalProps> = ({
         <div className="shrink-0 flex flex-col items-center gap-2">
           <button
             onClick={() => setIsIconSelectorOpen(!isIconSelectorOpen)}
-            className="w-16 h-16 rounded-2xl bg-[#d8e9f4]/30 border border-[#1f29fc]/10 flex items-center justify-center text-[#1f29fc] shadow-sm hover:shadow-md transition-all active:scale-95 group relative"
+            className="w-16 h-16 rounded-2xl bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/10 flex items-center justify-center text-[var(--brand-primary)] shadow-sm hover:shadow-md transition-all active:scale-95 group relative"
           >
             <div className="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none">
-              <div className="absolute inset-0 bg-gradient-to-br from-[#1f29fc]/0 to-[#1f29fc]/5 group-hover:to-[#1f29fc]/10 transition-all" />
+              <div className="absolute inset-0 bg-gradient-to-br from-[var(--brand-primary)]/0 to-[var(--brand-primary)]/5 group-hover:to-[var(--brand-primary)]/10 transition-all" />
             </div>
             <div className="relative transform group-hover:scale-110 transition-transform">
               {renderAvatarIcon(avatar, "w-8 h-8")}
@@ -771,7 +771,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
       </div>
 
       {isIconSelectorOpen && (
-        <div className="p-5 bg-[#d8e9f4]/20 rounded-[2.5rem] border border-[#1f29fc]/10 animate-in zoom-in-95 duration-300">
+        <div className="p-5 bg-[var(--brand-primary)]/5 rounded-[2.5rem] border border-[var(--brand-primary)]/10 animate-in zoom-in-95 duration-300">
           <div className="grid grid-cols-6 sm:grid-cols-8 gap-2">
             {AVATAR_OPTIONS.map(opt => (
               <button

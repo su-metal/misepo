@@ -234,7 +234,13 @@ export async function POST(req: Request) {
         }
       }
 
-      return generateContent(profile, config, true, learningSamples);
+      const generatedResult = await generateContent(profile, config, true, learningSamples);
+      
+      // CRITICAL: Add platform information to each result for history reconstruction
+      return {
+        ...generatedResult,
+        platform: config.platform, // Explicitly add platform to ensure it's preserved in history
+      };
     }));
 
     // --- History & Counter Update ---
@@ -251,7 +257,8 @@ export async function POST(req: Request) {
 
       if (!runError && runData) {
         savedRunId = runData.id;
-        // Batch record save (combined results)
+        // Batch record save - save results array directly (not nested)
+        // This ensures consistency with history fetch logic
         await supabaseAdmin
           .from("ai_run_records")
           .insert({
@@ -259,7 +266,7 @@ export async function POST(req: Request) {
             app_id: APP_ID,
             user_id: userId,
             input: { profile, configs },
-            output: { results },
+            output: results, // Save results array directly with platform info
           });
       }
     }

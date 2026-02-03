@@ -58,13 +58,29 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
 }) => {
     const [previewState, setPreviewState] = React.useState<{ isOpen: boolean, platform: Platform, text: string, gIdx: number, iIdx: number } | null>(null);
 
+    // Debug: Log results structure when component receives data
+    React.useEffect(() => {
+        if (results && results.length > 0 && process.env.NODE_ENV === 'development') {
+            console.group('📊 PostResultTabs - Results Data');
+            console.log('Total results:', results.length);
+            console.log('Results structure:', results.map((r, idx) => ({
+                index: idx,
+                platform: r.platform,
+                dataCount: r.data?.length || 0,
+                dataSample: r.data?.[0]?.substring(0, 50) + '...'
+            })));
+            console.log('Active tab:', activeTab);
+            console.groupEnd();
+        }
+    }, [results, activeTab]);
+
     const getPlatformTheme = (platform: Platform) => {
         switch (platform) {
             case Platform.X:
                 return {
                     icon: <div className="w-10 h-10 bg-[var(--plexo-dark-gray)] rounded-xl flex items-center justify-center text-[var(--plexo-yellow)] text-xl font-black shadow-sm border border-[var(--plexo-dark-gray)]">𝕏</div>,
                     label: 'X',
-                    actionColor: "bg-[#1f29fc] text-white shadow-[0_8px_20px_rgba(31,41,252,0.15)]",
+                    actionColor: "bg-[var(--brand-primary)] text-white shadow-[0_8px_20px_rgba(24,35,255,0.15)]",
                     actionLabel: "Xで投稿する",
                     contentClasses: "text-[16px] text-[var(--plexo-black)] font-bold leading-relaxed tracking-tight",
                     wrapperClass: "max-w-[375px]",
@@ -96,7 +112,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                             <span className="font-bold">店舗情報を含める</span>
                         </button>
                     ),
-                    actionColor: "bg-[#1f29fc] text-white shadow-[0_8px_25px_rgba(31,41,252,0.15)]",
+                    actionColor: "bg-[var(--brand-primary)] text-white shadow-[0_8px_25px_rgba(24,35,255,0.15)]",
                     actionLabel: "Instagramを起動",
                     contentClasses: "text-[15px] text-[#111111] font-medium leading-relaxed",
                     wrapperClass: "max-w-[340px]",
@@ -115,7 +131,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                         </div>
                     ),
                     label: 'Google Maps',
-                    actionColor: 'bg-[#1f29fc] text-white hover:opacity-90 shadow-[0_8px_20px_rgba(31,41,252,0.15)] border-none',
+                    actionColor: 'bg-[var(--brand-primary)] text-white hover:opacity-90 shadow-[0_8px_20px_rgba(24,35,255,0.15)] border-none',
                     actionLabel: "Googleマップで返信する",
                     contentClasses: "text-[15px] text-[#111111] font-medium leading-relaxed",
                     wrapperClass: "max-w-[325px]",
@@ -132,7 +148,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                         </div>
                     ),
                     label: 'LINE',
-                    actionColor: "bg-[#1f29fc] text-white shadow-[0_8px_20px_rgba(31,41,252,0.15)]",
+                    actionColor: "bg-[var(--brand-primary)] text-white shadow-[0_8px_20px_rgba(24,35,255,0.15)]",
                     actionLabel: "LINEで送る",
                     contentClasses: "text-[15px] text-[#111111] font-medium leading-relaxed",
                     wrapperClass: "max-w-full sm:max-w-[400px]",
@@ -146,7 +162,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                 return {
                     icon: null,
                     label: platform,
-                    actionColor: "bg-[#1f29fc] text-white shadow-[0_8px_20px_rgba(31,41,252,0.15)]",
+                    actionColor: "bg-[var(--brand-primary)] text-white shadow-[0_8px_20px_rgba(24,35,255,0.15)]",
                     actionLabel: "投稿する",
                     contentClasses: "text-base text-[#111111] font-black",
                     brandTextColor: "text-[#111111]",
@@ -213,7 +229,11 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
             ) : (
                 <div className={`space-y-8 animate-in fade-in duration-700 ${results.length === 0 ? 'hidden md:block' : ''}`}>
                     {/* Main Results Container - Premium Layout */}
-                    <div className="text-primary flex flex-col min-h-[600px] overflow-visible group/main transition-all duration-700 w-full max-w-6xl mx-auto bg-white rounded-[48px] border border-[#F0F0F0] shadow-[0_20px_50px_rgba(0,0,0,0.04)]">
+                    <div className="text-primary flex flex-col min-h-[600px] overflow-visible group/main transition-all duration-700 w-full max-w-6xl mx-auto bg-white/70 backdrop-blur-xl rounded-[54px] border border-white/40 shadow-premium relative overflow-hidden">
+
+                        {/* Background Decor in Container */}
+                        <div className="absolute -top-24 -right-24 w-64 h-64 bg-[var(--brand-primary)]/5 rounded-full blur-[60px] pointer-events-none" />
+                        <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-purple-500/5 rounded-full blur-[60px] pointer-events-none" />
 
                         {/* Integrated Tab Navigation Header (Premium Light) */}
                         {results.length > 0 && (
@@ -247,23 +267,31 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                         {/* Results Content Area */}
                         <div className="flex-1">
                             {results.length === 0 ? (
-                                <div className="p-12 h-full flex flex-col items-center justify-center text-center space-y-8 animate-in fade-in duration-1000">
-                                    <h2 className="text-3xl tracking-[0.25em] text-center font-black text-[#111111] uppercase">プレビュー</h2>
-                                    <div className="space-y-6 max-w-sm">
-                                        <div className="w-24 h-24 rounded-[32px] bg-[#FAFAFA] border-[3px] border-[#111111] shadow-[4px_4px_0px_0px_#111111] flex items-center justify-center text-[#111111]/20 mx-auto">
-                                            <SparklesIcon className="w-12 h-12" />
+                                <div className="p-12 h-full flex flex-col items-center justify-center text-center space-y-10 animate-in fade-in zoom-in-95 duration-1000">
+                                    <div className="relative">
+                                        <div className="w-32 h-32 rounded-[42px] bg-gradient-mesh flex items-center justify-center text-[var(--brand-primary)] mx-auto relative z-10 border border-[var(--brand-primary)]/10">
+                                            <SparklesIcon className="w-16 h-16 animate-pulse-gentle" />
                                         </div>
-                                        <h3 className="text-xl tracking-widest font-black text-[#111111] uppercase">入力待ち</h3>
-                                        <p className="text-[#999999] text-sm font-bold leading-relaxed">
-                                            左側のフォームに内容やアイデアを入力して、<br />プロフェッショナルな投稿を瞬時に生成しましょう。
+                                        <div className="absolute inset-0 bg-[var(--brand-primary)]/20 blur-[40px] rounded-full animate-pulse-slow scale-150 -z-10" />
+                                    </div>
+                                    <div className="space-y-4 max-w-sm">
+                                        <h2 className="text-xs tracking-[0.4em] font-black text-[var(--brand-primary)] uppercase">Ready to Shine</h2>
+                                        <h3 className="text-3xl font-black text-[#111111] tracking-tighter">AIが最高の投稿を<br />準備しています</h3>
+                                        <p className="text-slate-400 text-sm font-medium leading-relaxed">
+                                            左側のフォームを入力して、<br />魔法のようなコンテンツを生成しましょう。
                                         </p>
                                     </div>
                                 </div>
                             ) : (
                                 results.map((res, gIdx) => {
                                     const theme = getPlatformTheme(res.platform);
+                                    const isActive = Number(activeTab) === Number(gIdx);
                                     return (
-                                        <div key={res.platform} className={activeTab === gIdx ? 'block animate-in fade-in duration-700' : 'hidden'}>
+                                        <div
+                                            key={`${res.platform}-${gIdx}`}
+                                            style={{ display: isActive ? 'block' : 'none' }}
+                                            className={isActive ? 'animate-in fade-in duration-700' : ''}
+                                        >
                                             <div className="divide-y border-[#F0F0F0]">
                                                 {res.data.map((text, iIdx) => (
                                                     <div key={iIdx} className="py-12 px-8 lg:px-12 flex flex-col relative text-left transition-colors duration-700">
@@ -298,14 +326,14 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                                 <div className="flex items-center gap-2">
                                                                     <button
                                                                         onClick={() => onCopy(text)}
-                                                                        className="flex items-center justify-center w-12 h-12 rounded-2xl bg-white text-[#949594] border border-[#F0F0F0] hover:bg-[#F9F9FB] hover:text-[#111111] transition-all active:scale-95 shadow-sm"
+                                                                        className="flex items-center justify-center w-12 h-12 rounded-2xl bg-white text-[#949594] border border-[#F0F0F0] hover:bg-white hover:text-[var(--brand-primary)] hover:border-[var(--brand-primary)]/20 hover:shadow-lg hover:shadow-[var(--brand-primary)]/5 transition-all active:scale-[0.92] shadow-sm"
                                                                         title="コピー"
                                                                     >
                                                                         <CopyIcon className="w-5 h-5" />
                                                                     </button>
                                                                     <button
                                                                         onClick={() => setPreviewState({ isOpen: true, platform: res.platform, text, gIdx, iIdx })}
-                                                                        className="flex items-center justify-center w-12 h-12 rounded-2xl bg-white text-[#949594] border border-[#F0F0F0] hover:bg-[#F9F9FB] hover:text-[#111111] transition-all active:scale-95 shadow-sm"
+                                                                        className="flex items-center justify-center w-12 h-12 rounded-2xl bg-white text-[#949594] border border-[#F0F0F0] hover:bg-white hover:text-[var(--brand-primary)] hover:border-[var(--brand-primary)]/20 hover:shadow-lg hover:shadow-[var(--brand-primary)]/5 transition-all active:scale-[0.92] shadow-sm"
                                                                         title="プレビュー"
                                                                     >
                                                                         <EyeIcon className="w-5 h-5" />
@@ -316,9 +344,10 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                             <div className="flex flex-col gap-4">
                                                                 <button
                                                                     onClick={() => onRefineToggle(gIdx, iIdx)}
-                                                                    className="flex items-center justify-center gap-3 py-5 rounded-full text-[13px] font-bold transition-all duration-300 relative group bg-white text-[#949594] border border-[#F0F0F0] active:scale-[0.98] shadow-sm hover:bg-[#F9F9FB]"
+                                                                    className="flex items-center justify-center gap-3 py-5 rounded-full text-[13px] font-black tracking-widest transition-all duration-300 relative group bg-white text-[#949594] border border-[#F0F0F0] active:scale-[0.98] shadow-sm hover:border-[var(--brand-primary)]/20 hover:text-[var(--brand-primary)] overflow-hidden"
                                                                 >
-                                                                    <MagicWandIcon className="w-5 h-5 transition-transform" />
+                                                                    <div className="absolute inset-0 bg-gradient-shine opacity-0 group-hover:opacity-10 group-hover:animate-shine pointer-events-none" />
+                                                                    <MagicWandIcon className="w-5 h-5 transition-transform group-hover:rotate-12" />
                                                                     <span>AIで内容を微調整する</span>
                                                                 </button>
 
@@ -332,9 +361,10 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                                             onShare(res.platform, text);
                                                                         }
                                                                     }}
-                                                                    className={`flex items-center justify-center gap-3 py-5 rounded-full font-bold text-[14px] transition-all duration-300 group mt-1 relative overflow-hidden active:scale-[0.98] ${theme.actionColor}`}
+                                                                    className={`flex items-center justify-center gap-3 py-5 rounded-full font-black text-[14px] uppercase tracking-[0.2em] transition-all duration-500 group mt-1 relative overflow-hidden active:scale-[0.98] shadow-xl ${theme.actionColor} shadow-[var(--brand-primary)]/20`}
                                                                 >
-                                                                    <span className="relative z-10">{theme.actionLabel}</span>
+                                                                    <div className="absolute inset-0 bg-gradient-shine opacity-20 group-hover:animate-shine pointer-events-none" />
+                                                                    <span className="relative z-10 drop-shadow-sm">{theme.actionLabel}</span>
                                                                     <ExternalLinkIcon className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform relative z-10" />
                                                                 </button>
                                                             </div>

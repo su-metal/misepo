@@ -528,8 +528,8 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             relative rounded-[20px] overflow-hidden cursor-pointer border transition-all duration-500 group
                                             ${bentoClass}
                                              ${isActive
-                                                ? 'bg-[#1f29fc] border-[#1f29fc] shadow-xl scale-[0.98] animate-tactile-pop'
-                                                : `bg-[#f5f7fa] border-slate-200 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:border-slate-300 hover:shadow-md active:scale-[0.98]`
+                                                ? 'bg-gradient-to-br from-[var(--brand-primary)] via-[#4f46e5] to-[#7c3aed] border-white/20 shadow-[0_15px_35px_rgba(24,35,255,0.3)] scale-[0.98] animate-tactile-pop ring-2 ring-white/10'
+                                                : `bg-[#f8fafc] border-slate-200 shadow-[0_4px_12px_rgba(0,0,0,0.03)] hover:border-[var(--brand-primary)]/20 hover:shadow-lg active:scale-[0.98]`
                                             }
                                         `}
                                     >
@@ -550,7 +550,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                     }}
                                                     className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 active:scale-90 shadow-lg ${isActive ? 'bg-white' : 'bg-white shadow-[0_4px_10px_rgba(0,0,0,0.05)]'}`}
                                                 >
-                                                    <ChevronRightIcon className={`w-5 h-5 ${isActive ? 'text-[#1f29fc]' : 'text-slate-300'}`} />
+                                                    <ChevronRightIcon className={`w-5 h-5 ${isActive ? 'text-[var(--brand-primary)]' : 'text-slate-300'}`} />
                                                 </div>
                                             </div>
 
@@ -584,11 +584,11 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                 relative group transition-all duration-700 my-1
                                 rounded-[32px] overflow-hidden
                                 ${!isGoogleMaps ? 'cursor-pointer active:scale-95' : 'cursor-not-allowed opacity-60 grayscale'}
-                                ${isOmakaseLoading ? 'scale-[0.98]' : (!isGoogleMaps ? 'hover:scale-[1.02] hover:-translate-y-1.5' : '')}
-                                ${!isGoogleMaps ? 'shadow-[0_10px_30px_rgba(0,113,185,0.08)] hover:shadow-[0_25px_50px_rgba(0,113,185,0.18)]' : 'shadow-sm border border-stone-200'}
+                                ${isOmakaseLoading ? 'scale-[0.98]' : (!isGoogleMaps ? 'hover:scale-[1.02] hover:-translate-y-2' : '')}
+                                ${!isGoogleMaps ? 'shadow-[0_15px_40px_rgba(24,35,255,0.1)] hover:shadow-[0_25px_60px_rgba(24,35,255,0.2)]' : 'shadow-sm border border-stone-200'}
                             `}
                             style={{
-                                backgroundColor: !isGoogleMaps ? '#d8e9f4' : '#f3f4f6',
+                                backgroundColor: !isGoogleMaps ? 'var(--brand-secondary)' : '#f3f4f6',
                                 clipPath: 'polygon(0% 0%, 100% 0%, 100% 35%, 98% 40%, 98% 60%, 100% 65%, 100% 100%, 0% 100%, 0% 65%, 2% 60%, 2% 40%, 0% 35%)'
                             }}
                         >
@@ -600,23 +600,24 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             {/* Decorative Background Glows */}
                             {!isGoogleMaps && (
                                 <>
-                                    <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/30 rounded-full blur-[40px] pointer-events-none group-hover:bg-white/50 transition-colors duration-700" />
-                                    <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-[#1f29fc]/5 rounded-full blur-[30px] pointer-events-none" />
+                                    <div className="absolute -top-10 -right-10 w-40 h-40 bg-[var(--brand-primary)]/10 rounded-full blur-[40px] pointer-events-none group-hover:bg-[var(--brand-primary)]/20 transition-colors duration-700" />
+                                    <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-[var(--brand-primary)]/5 rounded-full blur-[30px] pointer-events-none" />
+                                    <div className="absolute inset-0 bg-gradient-shine opacity-10 group-hover:animate-shine pointer-events-none" />
                                 </>
                             )}
 
                             <div className="relative p-5 pl-10 pr-6 flex items-center justify-between">
                                 {/* Left Content */}
                                 <div className="relative z-10 flex flex-col gap-6">
-                                    <div className={`self-start inline-flex px-4 py-1.5 rounded-full ${!isGoogleMaps ? 'bg-[#1f29fc]' : 'bg-stone-400'} text-[9px] font-black text-white uppercase tracking-[0.2em] shadow-sm`}>
+                                    <div className={`self-start inline-flex px-4 py-1.5 rounded-full ${!isGoogleMaps ? 'bg-[var(--brand-primary)]' : 'bg-stone-400'} text-[9px] font-black text-white uppercase tracking-[0.2em] shadow-lg shadow-[var(--brand-primary)]/20`}>
                                         {isGoogleMaps ? '利用不可' : 'AIが自動提案'}
                                     </div>
                                     <div className="space-y-1">
                                         <div className="flex items-center gap-2">
-                                            <h4 className={`text-[24px] font-black tracking-tighter leading-none whitespace-nowrap ${!isGoogleMaps ? 'text-[#1f29fc]' : 'text-stone-400'}`}>
+                                            <h4 className={`text-[24px] font-black tracking-[0.05em] leading-none whitespace-nowrap ${!isGoogleMaps ? 'text-[var(--brand-primary)]' : 'text-stone-400'}`}>
                                                 AIおまかせ生成
                                             </h4>
-                                            {!isGoogleMaps && <SparklesIcon className="w-5 h-5 text-[#1f29fc] animate-pulse" />}
+                                            {!isGoogleMaps && <SparklesIcon className="w-5 h-5 text-[var(--brand-primary)] animate-pulse" />}
                                         </div>
                                         <p className="text-[11px] text-stone-500 font-bold leading-relaxed">
                                             {isGoogleMaps ? (
@@ -634,13 +635,13 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                 {/* Right Action "Ticket" Button */}
                                 <div className="relative z-10 flex items-center justify-center">
                                     <div className={`
-                                        w-14 h-14 rounded-2xl flex items-center justify-center shadow-xl transition-all duration-500
-                                        ${isOmakaseLoading ? 'bg-white scale-90' : (!isGoogleMaps ? 'bg-white group-hover:bg-[#1f29fc] group-hover:scale-110 group-active:scale-95 group-hover:rotate-6' : 'bg-stone-200 shadow-none')}
+                                        w-14 h-14 rounded-2xl flex items-center justify-center shadow-2xl transition-all duration-500
+                                        ${isOmakaseLoading ? 'bg-white scale-90' : (!isGoogleMaps ? 'bg-white group-hover:bg-[var(--brand-primary)] group-hover:scale-110 group-active:scale-95 group-hover:rotate-6 shadow-indigo-200' : 'bg-stone-200 shadow-none')}
                                     `}>
                                         {isOmakaseLoading ? (
-                                            <div className="w-5 h-5 border-2 border-[#1f29fc]/20 border-t-[#1f29fc] rounded-full animate-spin" />
+                                            <div className="w-5 h-5 border-2 border-[var(--brand-primary)]/20 border-t-[var(--brand-primary)] rounded-full animate-spin" />
                                         ) : (
-                                            <ChevronRightIcon className={`w-6 h-6 ${!isGoogleMaps ? 'text-[#1f29fc] group-hover:text-white' : 'text-stone-400'} transition-colors duration-500 ${!isGoogleMaps ? 'animate-arrow-flow' : ''}`} />
+                                            <ChevronRightIcon className={`w-6 h-6 ${!isGoogleMaps ? 'text-[var(--brand-primary)]' : 'text-stone-400'} transition-colors duration-500 ${!isGoogleMaps ? 'animate-arrow-flow' : ''}`} />
                                         )}
                                     </div>
 
@@ -1146,14 +1147,14 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             w-full group relative overflow-hidden rounded-[32px] py-6
                                             flex items-center justify-center
                                             transition-all duration-500 active:scale-95
-                                            ${isGenerating ? 'bg-stone-300 cursor-not-allowed' : 'bg-[#f2e018] shadow-[0_10px_30px_rgba(0,113,185,0.2)]'}
+                                            ${isGenerating ? 'bg-stone-300 cursor-not-allowed' : 'bg-gradient-to-br from-[var(--brand-highlight)] via-[#f3e336] to-[#f2e018] shadow-[0_15px_45px_rgba(242,224,24,0.3)]'}
                                         `}
                                     >
                                         <div className="relative flex items-center justify-center gap-3">
                                             {isGenerating ? (
                                                 <div className="w-6 h-6 border-3 border-white/20 border-t-[#122646] rounded-full animate-spin" />
                                             ) : (
-                                                <span className="text-[#122646] text-base font-black uppercase tracking-[0.3em]">
+                                                <span className="text-[var(--brand-text)] text-base font-black uppercase tracking-[0.3em] drop-shadow-sm">
                                                     投稿案を作成する
                                                 </span>
                                             )}
