@@ -126,7 +126,7 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
 
                                 {/* Upgrade Promotion Card */}
                                 {plan?.plan === 'trial' && (
-                                    <div className="bg-gradient-to-br from-[#0071b9] to-[#7F5AF0] rounded-[2.5rem] p-7 text-white shadow-2xl shadow-indigo-200 relative overflow-hidden group">
+                                    <div className="bg-gradient-to-br from-[#1f29fc] to-[#7F5AF0] rounded-[2.5rem] p-7 text-white shadow-2xl shadow-indigo-200 relative overflow-hidden group">
                                         {/* Decorative backgrounds */}
                                         <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl group-hover:scale-125 transition-transform duration-700 pointer-events-none" />
                                         <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-accent/20 rounded-full blur-2xl pointer-events-none" />
@@ -149,7 +149,7 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
 
                                             <button
                                                 onClick={() => { router.push('/start?upgrade=true'); toggleOpen(); }}
-                                                className="w-full py-4 bg-white text-[#0071b9] rounded-[1.25rem] font-black text-xs uppercase tracking-[0.15em] hover:bg-accent hover:text-white transition-all active:scale-95 shadow-xl shadow-black/10 flex items-center justify-center gap-2"
+                                                className="w-full py-4 bg-white text-[#1f29fc] rounded-[1.25rem] font-black text-xs uppercase tracking-[0.15em] hover:bg-accent hover:text-white transition-all active:scale-95 shadow-xl shadow-black/10 flex items-center justify-center gap-2"
                                             >
                                                 Subscribe to Pro
                                                 <ChevronDownIcon className="w-4 h-4 -rotate-90" />
@@ -163,7 +163,7 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
                                     className="group w-full p-1 bg-white border border-stone-100 rounded-[2rem] shadow-sm hover:shadow-md hover:border-indigo-100 transition-all duration-300 text-left"
                                 >
                                     <div className="p-5 flex items-center gap-4">
-                                        <div className="w-16 h-16 rounded-2xl bg-[#0071b9] flex items-center justify-center text-2xl font-black text-white shadow-lg shadow-slate-200">
+                                        <div className="w-16 h-16 rounded-2xl bg-[#1f29fc] flex items-center justify-center text-2xl font-black text-white shadow-lg shadow-slate-200">
                                             {(storeProfile?.name?.[0] || 'U').toUpperCase()}
                                         </div>
                                         <div className="flex-1 min-w-0">

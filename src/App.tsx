@@ -169,6 +169,16 @@ function App() {
     setPresets([]);
     setTrainingItems([]);
 
+    // Force reset all modal/UI states to prevent them from persisting across sessions
+    setShowOnboarding(false);
+    setShowFeatureIntro(false);
+    setShowGuide(false);
+    setShowGuestDemo(false);
+    setIsSidebarOpen(false);
+    setIsSettingsOpen(false);
+    setActiveHistoryItem(null);
+    setShowAccountSettings(false);
+
     const init = async () => {
       console.log('[App] Fetching data for user:', user?.id || 'Guest');
 

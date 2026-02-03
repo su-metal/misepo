@@ -19,7 +19,7 @@ import { ReviewResponseSection } from './landing-page/ReviewResponseSection';
 import { Footer } from './landing-page/Footer';
 
 export default function LandingPage() {
-  const { loginWithGoogle } = useAuth();
+  const { user, loginWithGoogle } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const demoScenarios = [
@@ -145,7 +145,7 @@ LINE友だち限定で、このホットチョコドーナツが
 
   return (
     <div className="min-h-screen bg-[#f0eae4] text-[#282d32] font-inter selection:bg-[#1823ff] selection:text-white">
-      <Header scrolled={scrolled} isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} loginWithGoogle={loginWithGoogle} />
+      <Header scrolled={scrolled} isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} loginWithGoogle={loginWithGoogle} user={user} />
       <HeroSection />
       <ExperienceSection isMobile={isMobile} />
       <AppScreensSection isMobile={isMobile} />

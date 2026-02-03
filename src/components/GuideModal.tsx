@@ -27,7 +27,7 @@ const GuideModal: React.FC<GuideModalProps> = ({ isOpen, onClose }) => {
         {/* Header */}
         <div className="px-8 py-6 md:py-8 flex items-center justify-between sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-slate-100">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-[#d8e9f4] text-[#0071b9] shadow-sm">
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-[#d8e9f4] text-[#1f29fc] shadow-sm">
               <MagicWandIcon className="w-6 h-6" />
             </div>
             <div>
@@ -51,14 +51,14 @@ const GuideModal: React.FC<GuideModalProps> = ({ isOpen, onClose }) => {
           {/* SECTION 1: 3-STEP FLOW */}
           <section>
             <div className="flex items-center gap-3 mb-8">
-              <span className="bg-[#d8e9f4] text-[#0071b9] text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider">Basic</span>
+              <span className="bg-[#d8e9f4] text-[#1f29fc] text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider">Basic</span>
               <h3 className="text-lg font-black text-slate-800">基本の3ステップ</h3>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Step 1 */}
               <div className="flex flex-row md:flex-col items-center md:items-start gap-5 p-6 rounded-[28px] bg-white border border-[#122646]/5 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all">
-                <div className="w-10 h-10 rounded-xl bg-[#d8e9f4] flex items-center justify-center text-[#0071b9] shrink-0 font-black text-lg">
+                <div className="w-10 h-10 rounded-xl bg-[#d8e9f4] flex items-center justify-center text-[#1f29fc] shrink-0 font-black text-lg">
                   1
                 </div>
                 <div>
@@ -69,7 +69,7 @@ const GuideModal: React.FC<GuideModalProps> = ({ isOpen, onClose }) => {
 
               {/* Step 2 */}
               <div className="flex flex-row md:flex-col items-center md:items-start gap-5 p-6 rounded-[28px] bg-white border border-[#122646]/5 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all">
-                <div className="w-10 h-10 rounded-xl bg-[#d8e9f4] flex items-center justify-center text-[#0071b9] shrink-0 font-black text-lg">
+                <div className="w-10 h-10 rounded-xl bg-[#d8e9f4] flex items-center justify-center text-[#1f29fc] shrink-0 font-black text-lg">
                   2
                 </div>
                 <div>
@@ -80,7 +80,7 @@ const GuideModal: React.FC<GuideModalProps> = ({ isOpen, onClose }) => {
 
               {/* Step 3 */}
               <div className="relative group p-[2px] rounded-[30px] transition-all">
-                <div className="relative flex flex-row md:flex-col items-center md:items-start gap-5 p-6 rounded-[28px] bg-[#0071b9] overflow-hidden shadow-lg shadow-[#0071b9]/20 hover:-translate-y-1 transition-all">
+                <div className="relative flex flex-row md:flex-col items-center md:items-start gap-5 p-6 rounded-[28px] bg-[#1f29fc] overflow-hidden shadow-lg shadow-[#1f29fc]/20 hover:-translate-y-1 transition-all">
                   <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:opacity-20 transition-opacity">
                     <AutoSparklesIcon className="w-20 h-20 text-white" />
                   </div>
@@ -99,16 +99,16 @@ const GuideModal: React.FC<GuideModalProps> = ({ isOpen, onClose }) => {
           {/* SECTION 2: ADVANCED FEATURES */}
           <section>
             <div className="flex items-center gap-3 mb-8">
-              <span className="bg-[#d8e9f4] text-[#0071b9] text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider">Pro Tips</span>
+              <span className="bg-[#d8e9f4] text-[#1f29fc] text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider">Pro Tips</span>
               <h3 className="text-lg font-black text-slate-800">便利な機能・設定</h3>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
 
               {/* Feature: Profile Settings */}
-              <div className="group rounded-[28px] p-6 bg-stone-50/40 border border-[#122646]/5 hover:bg-white hover:border-[#0071b9]/20 hover:shadow-md hover:-translate-y-1 transition-all">
+              <div className="group rounded-[28px] p-6 bg-stone-50/40 border border-[#122646]/5 hover:bg-white hover:border-[#1f29fc]/20 hover:shadow-md hover:-translate-y-1 transition-all">
                 <div className="flex items-start gap-5">
-                  <div className="w-11 h-11 rounded-2xl bg-white shadow-sm flex items-center justify-center text-[#0071b9] shrink-0 group-hover:scale-110 transition-transform">
+                  <div className="w-11 h-11 rounded-2xl bg-white shadow-sm flex items-center justify-center text-[#1f29fc] shrink-0 group-hover:scale-110 transition-transform">
                     <MagicWandIcon className="w-6 h-6" />
                   </div>
                   <div>
@@ -121,9 +121,9 @@ const GuideModal: React.FC<GuideModalProps> = ({ isOpen, onClose }) => {
               </div>
 
               {/* Feature: Presets */}
-              <div className="group rounded-[28px] p-6 bg-stone-50/40 border border-[#122646]/5 hover:bg-white hover:border-[#0071b9]/20 hover:shadow-md hover:-translate-y-1 transition-all">
+              <div className="group rounded-[28px] p-6 bg-stone-50/40 border border-[#122646]/5 hover:bg-white hover:border-[#1f29fc]/20 hover:shadow-md hover:-translate-y-1 transition-all">
                 <div className="flex items-start gap-5">
-                  <div className="w-11 h-11 rounded-2xl bg-white shadow-sm flex items-center justify-center text-[#0071b9] shrink-0 group-hover:scale-110 transition-transform">
+                  <div className="w-11 h-11 rounded-2xl bg-white shadow-sm flex items-center justify-center text-[#1f29fc] shrink-0 group-hover:scale-110 transition-transform">
                     <BookOpenIcon className="w-6 h-6" />
                   </div>
                   <div>
@@ -136,9 +136,9 @@ const GuideModal: React.FC<GuideModalProps> = ({ isOpen, onClose }) => {
               </div>
 
               {/* Feature: History */}
-              <div className="group rounded-[28px] p-6 bg-stone-50/40 border border-[#122646]/5 hover:bg-white hover:border-[#0071b9]/20 hover:shadow-md hover:-translate-y-1 transition-all">
+              <div className="group rounded-[28px] p-6 bg-stone-50/40 border border-[#122646]/5 hover:bg-white hover:border-[#1f29fc]/20 hover:shadow-md hover:-translate-y-1 transition-all">
                 <div className="flex items-start gap-5">
-                  <div className="w-11 h-11 rounded-2xl bg-white shadow-sm flex items-center justify-center text-[#0071b9] shrink-0 group-hover:scale-110 transition-transform">
+                  <div className="w-11 h-11 rounded-2xl bg-white shadow-sm flex items-center justify-center text-[#1f29fc] shrink-0 group-hover:scale-110 transition-transform">
                     <ClockIcon className="w-6 h-6" />
                   </div>
                   <div>
@@ -151,9 +151,9 @@ const GuideModal: React.FC<GuideModalProps> = ({ isOpen, onClose }) => {
               </div>
 
               {/* Feature: Tone & Length */}
-              <div className="group rounded-[28px] p-6 bg-stone-50/40 border border-[#122646]/5 hover:bg-white hover:border-[#0071b9]/20 hover:shadow-md hover:-translate-y-1 transition-all">
+              <div className="group rounded-[28px] p-6 bg-stone-50/40 border border-[#122646]/5 hover:bg-white hover:border-[#1f29fc]/20 hover:shadow-md hover:-translate-y-1 transition-all">
                 <div className="flex items-start gap-5">
-                  <div className="w-11 h-11 rounded-2xl bg-white shadow-sm flex items-center justify-center text-[#0071b9] shrink-0 group-hover:scale-110 transition-transform">
+                  <div className="w-11 h-11 rounded-2xl bg-white shadow-sm flex items-center justify-center text-[#1f29fc] shrink-0 group-hover:scale-110 transition-transform">
                     <AutoSparklesIcon className="w-6 h-6" />
                   </div>
                   <div>
@@ -172,7 +172,7 @@ const GuideModal: React.FC<GuideModalProps> = ({ isOpen, onClose }) => {
           <div className="pt-8 pb-4 text-center">
             <button
               onClick={onClose}
-              className="w-full sm:w-auto px-12 py-4 font-black text-sm transition-all active:scale-95 rounded-[20px] bg-[#122646] text-white shadow-xl shadow-[#122646]/10 hover:bg-[#0071b9] hover:shadow-[#0071b9]/20 hover:-translate-y-1 active:translate-y-0 uppercase tracking-[0.2em]"
+              className="w-full sm:w-auto px-12 py-4 font-black text-sm transition-all active:scale-95 rounded-[20px] bg-[#122646] text-white shadow-xl shadow-[#122646]/10 hover:bg-[#1f29fc] hover:shadow-[#1f29fc]/20 hover:-translate-y-1 active:translate-y-0 uppercase tracking-[0.2em]"
             >
               理解した
             </button>

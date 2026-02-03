@@ -3,13 +3,13 @@ import React from 'react';
 
 export const MobileJourney = () => {
     return (
-        <section className="relative bg-[#0071b9] text-white overflow-hidden">
+        <section className="relative bg-[#1f29fc] text-white overflow-hidden">
             {/* Top Curve */}
             <div className="absolute top-0 left-0 right-0 h-24 bg-[#b2d4ea] rounded-b-[50%] transform scale-x-150 -translate-y-1/2"></div>
 
             {/* Mascot at the top */}
             <div className="relative z-10 flex justify-center -mt-8 mb-12">
-                <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center border-4 border-[#0071b9] shadow-xl overflow-hidden">
+                <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center border-4 border-[#1f29fc] shadow-xl overflow-hidden">
                     {/* Placeholder for Dog Mascot */}
                     <span className="text-4xl">🐶</span>
                 </div>
