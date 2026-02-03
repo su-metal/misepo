@@ -38,9 +38,9 @@ export const LinePreview: React.FC<LinePreviewProps> = ({ text, storeProfile, on
                     </span>
                     <div className="flex items-end gap-1.5 text-left">
                         {/* Bubble */}
-                        <div className="relative bg-[#111111] text-white px-3 sm:px-4 py-2 sm:py-2.5 rounded-[18px] rounded-tl-none shadow-sm border border-[#111111] text-left">
+                        <div className="relative bg-[#06C755] text-white px-3 sm:px-4 py-2 sm:py-2.5 rounded-[18px] rounded-tl-none shadow-sm border border-[#06C755] text-left">
                             {/* Triangle hook */}
-                            <div className="absolute top-0 -left-[7px] w-0 h-0 border-t-[8px] border-t-[#111111] border-l-[8px] border-l-transparent text-left" />
+                            <div className="absolute top-0 -left-[7px] w-0 h-0 border-t-[8px] border-t-[#06C755] border-l-[8px] border-l-transparent text-left" />
 
                             <div className="text-[15px] leading-relaxed font-medium w-[15em] max-w-full text-left">
                                 <AutoResizingTextarea

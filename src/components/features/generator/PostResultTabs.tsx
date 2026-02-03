@@ -135,7 +135,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                     actionColor: "bg-[#1f29fc] text-white shadow-[0_8px_20px_rgba(31,41,252,0.15)]",
                     actionLabel: "LINEで送る",
                     contentClasses: "text-[15px] text-[#111111] font-medium leading-relaxed",
-                    wrapperClass: "max-w-[400px]",
+                    wrapperClass: "max-w-full sm:max-w-[400px]",
                     brandTextColor: "text-[#06C755]",
                     brandBgColor: "bg-[#06C755]/5",
                     brandBorderColor: "border-[#06C755]/20",
@@ -213,7 +213,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
             ) : (
                 <div className={`space-y-8 animate-in fade-in duration-700 ${results.length === 0 ? 'hidden md:block' : ''}`}>
                     {/* Main Results Container - Premium Layout */}
-                    <div className="text-primary flex flex-col min-h-[600px] overflow-hidden group/main transition-all duration-700 w-full max-w-6xl mx-auto bg-white rounded-[48px] border border-[#F0F0F0] shadow-[0_20px_50px_rgba(0,0,0,0.04)]">
+                    <div className="text-primary flex flex-col min-h-[600px] overflow-visible group/main transition-all duration-700 w-full max-w-6xl mx-auto bg-white rounded-[48px] border border-[#F0F0F0] shadow-[0_20px_50px_rgba(0,0,0,0.04)]">
 
                         {/* Integrated Tab Navigation Header (Premium Light) */}
                         {results.length > 0 && (
@@ -272,7 +272,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                                                 <AutoResizingTextarea
                                                                     value={text}
                                                                     onChange={(e) => onManualEdit(gIdx, iIdx, e.target.value)}
-                                                                    className={`w-full bg-transparent focus:outline-none resize-none placeholder:text-[#CCCCCC] whitespace-pre-wrap overflow-hidden ${theme.contentClasses || 'text-base text-[#111111] font-bold'}`}
+                                                                    className={`w-full bg-transparent focus:outline-none resize-none placeholder:text-[#CCCCCC] whitespace-pre-wrap overflow-visible ${theme.contentClasses || 'text-base text-[#111111] font-bold'}`}
                                                                     trigger={activeTab}
                                                                 />
                                                             ) : (
