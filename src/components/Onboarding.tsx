@@ -45,6 +45,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
   const [instagramFooter, setInstagramFooter] = useState<string>('');
   const [googlePlaceId, setGooglePlaceId] = useState<string>('');
   const [aiAnalysis, setAiAnalysis] = useState<string>('');
+  const [tailoredTopics, setTailoredTopics] = useState<any[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
   const [showDetails, setShowDetails] = useState<boolean>(false);
   const [suggestions, setSuggestions] = useState<any[]>([]);
@@ -69,7 +70,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
       setInstagramFooter(initialProfile.instagramFooter || '');
       setGooglePlaceId(initialProfile.googlePlaceId || '');
       setAiAnalysis(initialProfile.aiAnalysis || '');
-      setAiAnalysis(initialProfile.aiAnalysis || '');
+      setTailoredTopics(initialProfile.tailoredTopics || []);
       if (initialProfile.targetAudience) {
         setTargetAudiences(initialProfile.targetAudience.split(',').map(s => s.trim()));
       }
@@ -90,6 +91,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
       instagramFooter: instagramFooter.trim(),
       googlePlaceId: googlePlaceId,
       aiAnalysis: aiAnalysis,
+      tailoredTopics: tailoredTopics,
       targetAudience: targetAudiences.join(', ')
     });
   };
@@ -151,9 +153,10 @@ const Onboarding: React.FC<OnboardingProps> = ({
         async (details: any, status: any) => {
           if (status === 'OK' && details) {
             // 0. Auto-detect industry
+            let currentDetected = industry;
             if (details.types) {
-              const detected = detectIndustryFromTypes(details.types);
-              setIndustry(detected);
+              currentDetected = detectIndustryFromTypes(details.types);
+              setIndustry(currentDetected);
             }
 
             // 1. Auto-fill Instagram Footer
@@ -200,6 +203,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
+                  industry: currentDetected,
                   placeData: {
                     name: place.structured_formatting.main_text,
                     editorial_summary: details.editorial_summary?.overview,
@@ -213,6 +217,9 @@ const Onboarding: React.FC<OnboardingProps> = ({
                 setAiAnalysis(data.aiAnalysis);
                 if (data.description) {
                   setDescription(data.description);
+                }
+                if (data.tailoredTopics) {
+                  setTailoredTopics(data.tailoredTopics);
                 }
               }
             } catch (err) {

@@ -73,6 +73,18 @@ function StartPageContent() {
         {isLoggedIn ? "Back to Dashboard" : "Back to Home"}
       </Link>
 
+      {/* Sign In Button (Top Right) */}
+      {!isLoggedIn && (
+        <button
+          onClick={() => startGoogleLogin("login", initialPlan)}
+          disabled={loading}
+          className="fixed top-8 right-8 z-30 inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-[#1823ff] hover:text-[#282d32] transition-colors group px-6 py-3 bg-white/50 backdrop-blur-md rounded-full border border-white/50 shadow-sm shadow-indigo-500/10"
+        >
+          {loading ? "..." : "Sign In"}
+          <Icons.ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+        </button>
+      )}
+
       <div className="w-full max-w-4xl relative z-10 animate-in fade-in slide-in-from-bottom-8 duration-1000 flex flex-col items-center">
 
         <div className="text-center mb-16 pt-2">
@@ -138,9 +150,20 @@ function StartPageContent() {
                     </>
                   )}
                 </button>
-                <div className="mt-8 flex items-center justify-center gap-8 text-[11px] font-black uppercase tracking-widest opacity-70">
-                  <span className="flex items-center gap-2"><Icons.Check size={16} strokeWidth={4} /> No Card Required</span>
-                  <span className="flex items-center gap-2"><Icons.Check size={16} strokeWidth={4} /> 1 Day 5 Generations</span>
+                <div className="mt-8 flex flex-col items-center gap-4">
+                  <div className="flex items-center justify-center gap-8 text-[11px] font-black uppercase tracking-widest opacity-70">
+                    <span className="flex items-center gap-2"><Icons.Check size={16} strokeWidth={4} /> No Card Required</span>
+                    <span className="flex items-center gap-2"><Icons.Check size={16} strokeWidth={4} /> 1 Day 5 Generations</span>
+                  </div>
+
+                  {!isLoggedIn && (
+                    <button
+                      onClick={() => startGoogleLogin("login", initialPlan)}
+                      className="text-[10px] font-black text-white/60 hover:text-white uppercase tracking-[0.2em] transition-colors border-b border-white/20 pb-0.5"
+                    >
+                      すでにアカウントをお持ちの方
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
