@@ -25,7 +25,7 @@ export const Header = ({ scrolled, isMenuOpen, setIsMenuOpen, loginWithGoogle, u
                     </div>
                     <nav className="hidden md:flex items-center space-x-12">
                         {['お悩み', '機能', 'デモ', '料金', 'FAQ'].map((item, i) => (
-                            <a key={item} href={['#problem', '#features', '#demo', '#pricing', '#faq'][i]} className="text-[14px] font-black text-slate-400 hover:text-[#1823ff] transition-colors relative group tracking-[0.2em] uppercase">
+                            <a key={item} href={['#problem', '#features', '#demo', '#pricing', '#faq'][i]} className="text-[10px] font-black text-slate-400 hover:text-[#1823ff] transition-colors relative group tracking-[0.2em] uppercase">
                                 {item}
                             </a>
                         ))}
@@ -45,7 +45,7 @@ export const Header = ({ scrolled, isMenuOpen, setIsMenuOpen, loginWithGoogle, u
                                     <button onClick={() => loginWithGoogle('login')} className="text-[10px] font-black text-[#282d32] px-6 py-3 rounded-full border border-slate-200 hover:bg-slate-50 transition-all tracking-[0.2em]">サインイン</button>
                                     <button onClick={() => window.location.href = '/start'} className="bg-[#1823ff] text-white px-8 py-3 rounded-full text-[10px] font-black shadow-2xl shadow-[#1823ff]/20 hover:scale-[1.02] transition-all tracking-[0.2em]">7日間無料で試す</button>
                                 </div>
-                                <span className="text-[10px] text-slate-500 tracking-widest">別アカウントでログインする場合はGoogle側で一度サインアウトしてください。</span>
+                                {/* <span className="text-[10px] text-slate-500 tracking-widest">別アカウントでログインする場合はGoogle側で一度サインアウトしてください。</span> */}
                             </>
                         )}
                     </div>
@@ -73,7 +73,7 @@ export const Header = ({ scrolled, isMenuOpen, setIsMenuOpen, loginWithGoogle, u
                                 <>
                                     <button onClick={() => loginWithGoogle('login')} className="w-full bg-white border border-slate-200 text-[#282d32] px-5 py-3 rounded-xl text-xs font-black hover:bg-slate-50 transition-all shadow-sm">サインイン</button>
                                     <button onClick={() => window.location.href = '/start'} className="w-full bg-[#1823ff] text-white px-5 py-4 rounded-xl text-xs font-black shadow-lg shadow-[#1823ff]/30 transition-all">7日間無料で試す</button>
-                                    <span className="text-[10px] text-slate-500 tracking-widest text-center">別アカウントでログインする場合はGoogle側で一度サインアウトしてください。</span>
+                                    {/* <span className="text-[10px] text-slate-500 tracking-widest text-center">別アカウントでログインする場合はGoogle側で一度サインアウトしてください。</span> */}
                                 </>
                             )}
                         </div>
