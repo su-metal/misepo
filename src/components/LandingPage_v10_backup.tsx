@@ -18,7 +18,7 @@ import { CTASection } from './landing-page/CTASection';
 import { Footer } from './landing-page/Footer';
 
 export default function LandingPage() {
-  const { loginWithGoogle } = useAuth();
+  const { loginWithGoogle, user } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const demoScenarios = [
@@ -172,7 +172,7 @@ open11:00-close 17:00
 
   return (
     <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-[#F5CC6D]">
-      <Header scrolled={scrolled} isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} loginWithGoogle={loginWithGoogle} />
+      <Header scrolled={scrolled} isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} loginWithGoogle={loginWithGoogle} user={user} />
       <HeroSection />
       <ProblemSection problems={problems} isMobile={isMobile} />
       <UnifiedFlowSection />
