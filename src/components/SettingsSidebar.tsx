@@ -69,12 +69,11 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
     }) => (
         <button
             onClick={() => { onClick(); toggleOpen(); }}
-            className={`
-        w-full p-4 rounded-2xl border border-stone-100 flex items-center gap-4 transition-all duration-300
+        className={`
+        w-full p-4 rounded-2xl border border-slate-200 bg-white/90 shadow-lg shadow-slate-900/5 flex items-center gap-4 transition-all duration-300
         hover:bg-indigo-50/50 hover:border-indigo-100/50 active:scale-[0.98]
-        ${variant === "white" ? "bg-white shadow-sm" : ""}
-        ${variant === "lavender" ? "bg-indigo-50/30" : ""}
-        ${variant === "stone" ? "bg-stone-50" : ""}
+        ${variant === "lavender" ? "bg-indigo-50/60 border-indigo-100 shadow-indigo-100/30" : ""}
+        ${variant === "stone" ? "bg-stone-50 border-stone-200 shadow-stone-400/10" : ""}
       `}
         >
             <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${variant === 'lavender' ? 'bg-indigo-100 text-indigo-600' : 'bg-stone-100 text-stone-500'}`}>
@@ -160,7 +159,7 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
 
                                 <button
                                     onClick={() => { onOpenStoreProfile(); toggleOpen(); }}
-                                    className="group w-full p-1 bg-white border border-stone-100 rounded-[2rem] shadow-sm hover:shadow-md hover:border-indigo-100 transition-all duration-300 text-left"
+                                    className="group w-full p-1 bg-white/90 border border-slate-200 rounded-[2rem] shadow-lg shadow-slate-900/5 hover:shadow-xl hover:border-indigo-100 transition-all duration-300 text-left"
                                 >
                                     <div className="p-5 flex items-center gap-4">
                                         <div className="w-16 h-16 rounded-2xl bg-[var(--brand-primary)] flex items-center justify-center text-2xl font-black text-white shadow-lg shadow-indigo-100">
@@ -206,7 +205,7 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
                                             <MessageSquareIcon className="w-4 h-4 text-stone-400" />
                                             <span className="text-[10px] font-black uppercase tracking-[.2em] text-stone-400">Feedback</span>
                                         </div>
-                                        <div className="bg-stone-50 rounded-2xl p-4 border border-stone-100">
+                                        <div className="bg-white/90 rounded-2xl p-4 border border-slate-200 shadow-lg shadow-slate-900/5">
                                             <Feedback mode="sidebar" />
                                         </div>
                                     </div>
@@ -240,7 +239,7 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
                         <div className="mb-8">
                             <button
                                 onClick={() => { onLogout(); toggleOpen(); }}
-                                className="w-full py-4 rounded-2xl bg-stone-50 text-stone-400 font-black text-[10px] uppercase tracking-[0.2em] hover:bg-rose-50 hover:text-rose-500 transition-all duration-300 border border-stone-100 flex items-center justify-center gap-3"
+                                className="w-full py-4 rounded-2xl bg-white/90 text-stone-400 font-black text-[10px] uppercase tracking-[0.2em] hover:bg-rose-50 hover:text-rose-500 transition-all duration-300 border border-slate-200 shadow-lg shadow-slate-900/10 flex items-center justify-center gap-3"
                             >
                                 <LogOutIcon className="w-4 h-4" />
                                 Sign Out

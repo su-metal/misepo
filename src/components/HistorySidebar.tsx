@@ -96,9 +96,9 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
             onSelect(item);
             toggleOpen();
           }}
-          className={`w-full text-left rounded-[28px] transition-all duration-500 relative overflow-hidden flex flex-col gap-3 hover:-translate-y-1 active:scale-[0.98] ${item.isPinned
+          className={`w-full text-left rounded-[28px] transition-all duration-500 relative overflow-hidden flex flex-col gap-3 hover:-translate-y-1 active:scale-[0.98] shadow-[0_20px_45px_rgba(9,13,43,0.05)] ${item.isPinned
             ? 'bg-[var(--brand-primary)]/5 p-[1.5px] shadow-md shadow-[var(--brand-primary)]/5 ring-1 ring-[var(--brand-primary)]/20'
-            : 'bg-white p-6 border border-[#122646]/5 shadow-sm hover:shadow-xl hover:shadow-blue-900/5 hover:border-[var(--brand-primary)]/20'
+            : 'bg-white/90 p-6 border border-slate-200 shadow-lg shadow-slate-900/5 hover:border-[var(--brand-primary)]/30'
             }`}
         >
           {/* Subtle Inner Glow for Pinned */}
