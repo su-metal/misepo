@@ -38,14 +38,25 @@ export const InspirationDeck: React.FC<InspirationDeckProps> = ({ storeProfile, 
             setLoading(true);
             try {
                 const industry = storeProfile.industry || 'その他';
-                const pool = INDUSTRY_TOPIC_POOL[industry] || INDUSTRY_TOPIC_POOL['その他'];
+                const basePool = INDUSTRY_TOPIC_POOL[industry] || INDUSTRY_TOPIC_POOL['その他'];
+                const tailoredPool = storeProfile.tailoredTopics || [];
 
-                // 1. Pick 5 cards from local pool (Shuffle)
-                const localTemplates = [...pool]
+                // 1. Pick 5 cards by mixing (Tailored wins priority, then fill with Base)
+                // Mix: Up to 3 from tailored, others from Base to ensure variety
+                const selectedTailored = [...tailoredPool].sort(() => Math.random() - 0.5).slice(0, 3);
+                const remainingCount = 5 - selectedTailored.length;
+
+                // Avoid duplicates by filtering out base items that were used for tailoring (by title if they match exactly)
+                const tailoredTitles = new Set(selectedTailored.map(t => t.title));
+                const filteredBase = basePool.filter(t => !tailoredTitles.has(t.title));
+                const selectedBase = [...filteredBase].sort(() => Math.random() - 0.5).slice(0, remainingCount);
+
+                const mixedPool = [...selectedTailored, ...selectedBase];
+
+                const localTemplates = mixedPool
                     .sort(() => Math.random() - 0.5)
-                    .slice(0, 5)
                     .map((t, idx) => ({
-                        id: `local-${idx}-${refreshKey}`,
+                        id: `local-${t.title}-${idx}-${refreshKey}`,
                         type: 'variety' as const,
                         title: t.title,
                         description: t.description,
@@ -86,12 +97,17 @@ export const InspirationDeck: React.FC<InspirationDeckProps> = ({ storeProfile, 
                 console.error("Failed to fetch inspiration:", error);
                 // Fallback strictly to local pool
                 const industry = storeProfile.industry || 'その他';
-                const pool = INDUSTRY_TOPIC_POOL[industry] || INDUSTRY_TOPIC_POOL['その他'];
-                const shuffled = [...pool]
+                const basePool = INDUSTRY_TOPIC_POOL[industry] || INDUSTRY_TOPIC_POOL['その他'];
+                const tailoredPool = storeProfile.tailoredTopics || [];
+
+                const selectedTailored = [...tailoredPool].sort(() => Math.random() - 0.5).slice(0, 3);
+                const remainingCount = 6 - selectedTailored.length;
+                const selectedBase = [...basePool].sort(() => Math.random() - 0.5).slice(0, remainingCount);
+
+                const shuffled = [...selectedTailored, ...selectedBase]
                     .sort(() => Math.random() - 0.5)
-                    .slice(0, 6)
                     .map((t, idx) => ({
-                        id: `temp-${idx}-${refreshKey}`,
+                        id: `temp-${t.title}-${idx}-${refreshKey}`,
                         type: 'variety' as const,
                         title: t.title,
                         description: t.description,

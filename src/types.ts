@@ -57,6 +57,7 @@ export interface StoreProfile {
   instagramFooter?: string;
   googlePlaceId?: string;
   aiAnalysis?: string; // AI generated context for the store
+  tailoredTopics?: TopicTemplate[]; // AI-optimized variety topics
 }
 
 // Configuration for a single API generation call
