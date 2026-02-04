@@ -258,28 +258,28 @@ const Onboarding: React.FC<OnboardingProps> = ({
           <div className="relative z-10 flex flex-col h-auto md:h-full">
             <div className="mb-6 md:mb-10 animate-in slide-in-from-top-4 duration-700">
               <div className="flex items-center gap-2 mb-2 md:mb-3">
-                <div className="w-2 h-2 rounded-full bg-[#eb714f] shadow-[0_0_10px_rgba(127,90,240,0.5)] animate-pulse"></div>
-                <span className="text-[9px] md:text-[10px] font-black tracking-[0.3em] text-slate-400 uppercase">Hospitality Assistant</span>
+                <div className="w-1.5 h-1.5 rounded-full bg-[#2b2b2f] animate-pulse"></div>
+                <span className="text-[10px] font-black tracking-[0.3em] text-slate-400 uppercase">Hospitality Assistant</span>
               </div>
-              <h1 className="text-3xl md:text-5xl tracking-tighter leading-none font-black text-slate-800">
+              <h1 className="text-3xl md:text-5xl tracking-tighter leading-none font-black text-[#2b2b2f]">
                 MisePo
               </h1>
             </div>
 
             <div className="space-y-4 md:space-y-6 mb-6 md:mb-12 flex-1">
-              <h2 className="text-lg md:text-3xl leading-tight animate-in slide-in-from-left-4 duration-700 delay-100 font-extrabold text-slate-800">
+              <h2 className="text-lg md:text-3xl tracking-tight animate-in slide-in-from-left-4 duration-700 delay-100 font-black text-[#2b2b2f] leading-tight">
                 {isEditMode ? 'Settings & Profile' : 'AIが提案する、\n次世代の集客。'}
               </h2>
-              <p className="text-slate-500 text-sm font-medium leading-relaxed animate-in slide-in-from-left-4 duration-700 delay-200">
+              <p className="text-slate-400 text-[13px] font-bold leading-relaxed animate-in slide-in-from-left-4 duration-700 delay-200">
                 {isEditMode
                   ? '設定を変更することで、AIの文章トーンや提案内容がよりお店らしく進化します。'
-                  : 'お店のこだわりや特徴を入力してください。AIがあなたの専任の広報担当者工なります。'}
+                  : 'お店のこだわりや特徴を入力してください。AIがあなたの専任の広報担当者になります。'}
               </p>
 
               {/* Status Pill */}
-              <div className="md:inline-flex items-center gap-2 rounded-full px-4 py-2 animate-in zoom-in-95 duration-700 delay-300 bg-white shadow-md ring-1 ring-slate-100 hidden">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse box-shadow-[0_0_8px_rgba(52,211,153,0.6)]"></span>
-                <span className="text-[10px] font-black uppercase tracking-widest text-slate-600">AI Engine Ready</span>
+              <div className="md:inline-flex items-center gap-2 rounded-full px-4 py-2 animate-in zoom-in-95 duration-700 delay-300 bg-white shadow-sm border border-slate-100 hidden">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-[#2b2b2f]/60">AI Engine Ready</span>
               </div>
             </div>
 
@@ -308,16 +308,16 @@ const Onboarding: React.FC<OnboardingProps> = ({
 
               <div className="space-y-3">
                 {[
-                  { title: '個性学習エンジン', desc: '業種やコンセプトを深く理解し、常に「らしい」表現を維持。', icon: 'M13 2L3 14h9l-1 8 10-12h-9l1-8z', color: 'text-yellow-500', bg: 'bg-yellow-50' },
-                  { title: 'マルチプラットフォーム', desc: '投稿先ごとの特性を考慮し、一貫性のある発信を自動化。', icon: 'M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z', color: 'text-purple-500', bg: 'bg-purple-50' }
+                  { title: '個性学習エンジン', desc: '業種やコンセプトを深く理解し、常に「らしい」表現を維持。', icon: 'M13 2L3 14h9l-1 8 10-12h-9l1-8z', color: 'text-[#2b2b2f]', bg: 'bg-slate-100' },
+                  { title: 'マルチプラットフォーム', desc: '投稿先ごとの特性を考慮し、一貫性のある発信を自動化。', icon: 'M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z', color: 'text-[#2b2b2f]', bg: 'bg-slate-100' }
                 ].map((feat, i) => (
-                  <div key={i} className="flex items-start gap-4 p-5 rounded-[24px] transition-all cursor-default bg-white/60 backdrop-blur-sm border border-white/50 shadow-sm hover:shadow-md hover:bg-white hover:-translate-y-0.5">
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-all duration-300 ${feat.bg} ${feat.color}`}>
+                  <div key={i} className="flex items-start gap-4 p-5 rounded-[24px] transition-all cursor-default bg-white/80 backdrop-blur-sm border border-slate-100 shadow-sm hover:shadow-md hover:bg-white hover:-translate-y-0.5 group">
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-all duration-300 ${feat.bg} ${feat.color} group-hover:bg-[#2b2b2f] group-hover:text-white`}>
                       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d={feat.icon} /></svg>
                     </div>
                     <div>
-                      <h3 className="font-extrabold text-xs text-slate-800 uppercase tracking-widest">{feat.title}</h3>
-                      <p className="text-[10px] text-slate-500 mt-1.5 leading-relaxed font-medium">{feat.desc}</p>
+                      <h3 className="font-black text-[11px] text-[#2b2b2f] uppercase tracking-widest">{feat.title}</h3>
+                      <p className="text-[10px] text-slate-400 mt-1.5 leading-relaxed font-bold">{feat.desc}</p>
                     </div>
                   </div>
                 ))}
@@ -334,7 +334,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
             <div className="grid grid-cols-1 gap-10">
               <div className="space-y-3">
                 <div className="flex items-center gap-2 pl-1">
-                  <label className="text-xs font-black text-slate-700 uppercase tracking_widest">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
                     店舗名・ブランド名
                   </label>
                 </div>
@@ -345,10 +345,10 @@ const Onboarding: React.FC<OnboardingProps> = ({
                     onChange={(e) => handleNameChange(e.target.value)}
                     onBlur={() => { if (name.trim().length > 1) setShowDetails(true); }}
                     placeholder="例：焼きたてパンの店 アン"
-                    className="w-full px-6 py-5 rounded-[20px] transition-all text-lg text-slate-800 font-bold tracking-tight placeholder:text-slate-300 outline-none bg-slate-50 border border-slate-200 focus:bg-white focus:shadow-lg focus:shadow-slate-100/50 focus:ring-2 focus:ring-[#7F5AF0]/10"
+                    className="w-full px-6 py-5 rounded-[20px] transition-all text-lg text-[#2b2b2f] font-black tracking-tight placeholder:text-slate-200 outline-none bg-slate-50 border border-slate-100 focus:bg-white focus:shadow-xl focus:shadow-slate-200/50 focus:border-[#2b2b2f]/10"
                     required
                   />
-                  <div className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#7F5AF0] transition-colors">
+                  <div className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#2b2b2f] transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
                   </div>
 
@@ -399,10 +399,10 @@ const Onboarding: React.FC<OnboardingProps> = ({
                           key={ind}
                           type="button"
                           onClick={() => setIndustry(ind)}
-                          className={`px-5 py-2.5 rounded-full text-[11px] font-black transition-all duration-200 border border-transparent
+                          className={`px-5 py-2.5 rounded-full text-[11px] font-black transition-all duration-200 border
                               ${industry === ind
-                              ? 'bg-[#1f29fc] text-white shadow-lg shadow-stone-200 scale-105'
-                              : 'bg-slate-50 text-slate-500 hover:bg-slate-100'
+                              ? 'bg-[#2b2b2f] text-white border-[#2b2b2f] shadow-lg shadow-slate-200 scale-105'
+                              : 'bg-slate-50 text-slate-400 border-transparent hover:bg-slate-100'
                             }`}
                         >
                           {ind}
@@ -430,10 +430,10 @@ const Onboarding: React.FC<OnboardingProps> = ({
                                 setTargetAudiences(prev => [...prev, target]);
                               }
                             }}
-                            className={`px-4 py-2 rounded-full text-[11px] font-bold transition-all duration-200 border
+                            className={`px-4 py-2 rounded-full text-[11px] font-black transition-all duration-200 border
                                 ${isSelected
-                                ? 'bg-[#122646] text-[#f2e018] border-[#122646] shadow-md scale-105'
-                                : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                                ? 'bg-[#2b2b2f] text-white border-[#2b2b2f] shadow-md scale-105'
+                                : 'bg-white text-slate-400 border-slate-200 hover:border-slate-300 hover:bg-slate-50'
                               }`}
                           >
                             {isSelected && <span className="mr-1">✓</span>}
@@ -446,7 +446,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
 
                   <div className="space-y-3">
                     <div className="flex items-center gap-2 pl-1">
-                      <label className="text-xs font-black text-slate-700 uppercase tracking_widest">
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
                         活動地域（例：横浜市、目黒区）
                       </label>
                     </div>
@@ -456,9 +456,9 @@ const Onboarding: React.FC<OnboardingProps> = ({
                         value={region}
                         onChange={(e) => setRegion(e.target.value)}
                         placeholder="地名を入れるとより親しみやすい文章になります"
-                        className="w-full px-6 py-5 rounded-[20px] transition-all text-lg text-slate-800 font-bold tracking-tight placeholder:text-slate-300 outline-none bg-slate-50 border border-slate-200 focus:bg-white focus:shadow-lg focus:shadow-slate-100/50 focus:ring-2 focus:ring-[#7F5AF0]/10"
+                        className="w-full px-6 py-5 rounded-[20px] transition-all text-lg text-[#2b2b2f] font-black tracking-tight placeholder:text-slate-200 outline-none bg-slate-50 border border-slate-100 focus:bg-white focus:shadow-xl focus:shadow-slate-200/50 focus:border-[#2b2b2f]/10"
                       />
-                      <div className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#7F5AF0] transition-colors">
+                      <div className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#2b2b2f] transition-colors">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
                       </div>
                     </div>
@@ -479,42 +479,41 @@ const Onboarding: React.FC<OnboardingProps> = ({
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
                       placeholder="例：創業100年の老舗です。全客室から海が見渡せます。地元の新鮮な魚介類を使った料理が自慢です..."
-                      className="w-full px-6 py-5 rounded-[24px] transition-all resize-none text-base text-slate-800 font-medium leading-relaxed placeholder:text-slate-300 outline-none bg-slate-50 border border-slate-200 focus:bg-white focus:shadow-lg focus:shadow-slate-100/50 focus:ring-2 focus:ring-[#7F5AF0]/10 min-h-[120px]"
+                      className="w-full px-6 py-5 rounded-[24px] transition-all resize-none text-base text-[#2b2b2f] font-bold leading-relaxed placeholder:text-slate-200 outline-none bg-slate-50 border border-slate-100 focus:bg-white focus:shadow-xl focus:shadow-slate-200/50 focus:border-[#2b2b2f]/10 min-h-[120px]"
                     />
                   </div>
 
                   {/* Instagram Footer: Info Card */}
-                  <div className="bg-slate-50/50 rounded-[24px] p-4 md:p-6 space-y-4 border border-slate-100 transition-all hover:bg-white hover:shadow-md group">
+                  <div className="bg-slate-50 rounded-[28px] p-6 md:p-8 space-y-6 border border-slate-100 transition-all hover:bg-white hover:shadow-xl group">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 flex items-center justify-center text-white shadow-sm">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5" /><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" /><line x1="17.5" x2="17.51" y2="6.5" y1="6.5" /></svg>
+                        <div className="w-10 h-10 rounded-[12px] bg-slate-100 flex items-center justify-center text-[#2b2b2f] shadow-sm group-hover:bg-[#2b2b2f] group-hover:text-white transition-colors">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5" /><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" /><line x1="17.5" x2="17.51" y2="6.5" y1="6.5" /></svg>
                         </div>
                         <div className="flex flex-col">
-                          <h4 className="text-[10px] font-black text-slate-700 uppercase tracking_widest">Instagram 定型文</h4>
+                          <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Instagram 定型文</h4>
                           {aiAnalysis && (
-                            <span className="text-[8px] font-bold text-emerald-500 flex items-center gap-1">
-                              <svg className="w-2.5 h-2.5" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" /></svg>
-                              AIによる店舗背景の解析が完了しました
+                            <span className="text-[9px] font-black text-emerald-500 flex items-center gap-1.5 mt-1">
+                              <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" /></svg>
+                              AI解析完了
                             </span>
                           )}
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
                         {isAnalyzing && (
-                          <div className="flex items-center gap-1.5 px-2 py-1 bg-blue-50 rounded-full">
-                            <div className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
-                            <span className="text-[8px] font-black text-blue-500 uppercase tracking_widest">AI Analyzing...</span>
+                          <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[#2b2b2f]/5 rounded-full">
+                            <div className="w-1.5 h-1.5 rounded-full bg-[#2b2b2f] animate-pulse" />
+                            <span className="text-[9px] font-black text-[#2b2b2f] uppercase tracking-widest">AI Analyzing</span>
                           </div>
                         )}
-                        <span className="text-[9px] font-black text-slate-400 bg-white border border-slate-200 px-3 py-1 rounded-full uppercase tracking_widest">Option</span>
                       </div>
                     </div>
                     <AutoResizingTextarea
                       value={instagramFooter}
                       onChange={(e) => setInstagramFooter(e.target.value)}
                       placeholder="📍 アクセス情報や営業時間をセット..."
-                      className="w-full px-4 md:px-5 py-4 rounded-xl transition-all resize-none text-sm text-slate-700 leading-relaxed placeholder_slate-300 font-medium min-h-[100px] outline-none bg-white border border-slate-200 focus:border-[#E1306C]/50 focus:ring-2 focus:ring-[#E1306C]/10"
+                      className="w-full px-6 py-5 rounded-[20px] transition-all resize-none text-[15px] text-[#2b2b2f] leading-relaxed placeholder:text-slate-200 font-bold min-h-[120px] outline-none bg-white border border-slate-100 focus:shadow-xl focus:shadow-slate-200/50"
                     />
                   </div>
                 </div>
@@ -534,22 +533,12 @@ const Onboarding: React.FC<OnboardingProps> = ({
               )}
               <button
                 type="submit"
-                disabled={name.trim().length < 2}
-                className="flex-[2] relative group rounded-[20px] transition-all duration-300 disabled:opacity-50 disabled:pointer-events-none hover:-translate-y-1 active:scale-95 active:translate-y-0 p-[1.5px] overflow-hidden"
+                disabled={name.trim().length < 2 || isAnalyzing}
+                className="flex-[2] relative group rounded-[24px] transition-all duration-500 disabled:opacity-50 disabled:pointer-events-none hover:-translate-y-1 active:scale-95 active:translate-y-0 overflow-hidden"
               >
-                {/* 1. Radiant Aura Container (Clipped Background) */}
-                <div className="absolute inset-0 rounded-[20px] overflow-hidden">
-                  <div
-                    className="absolute inset-0 opacity-0 group-hover:opacity-100 blur-sm transition-opacity duration-500"
-                    style={{
-                      background: 'linear-gradient(45deg, #22D3EE, #FACC15, #F472B6)'
-                    }}
-                  />
-                </div>
-
-                {/* 2. Content Layer */}
-                <div className="relative z-10 w-full h-full bg-[#122646] text-white rounded-[19px] py-4 flex items-center justify-center gap-3 shadow-xl">
-                  <span className="text-xs font-black tracking-[0.2em]">{isEditMode ? '設定を保存する' : '設定を完了してはじめる'}</span>
+                <div className="relative z-10 w-full h-full bg-[#2b2b2f] text-white rounded-[24px] py-5 flex items-center justify-center gap-3 shadow-xl group-hover:bg-black transition-colors">
+                  <div className="absolute inset-0 bg-gradient-shine opacity-10 group-hover:animate-shine pointer-events-none" />
+                  <span className="text-[13px] font-black tracking-[0.2em] uppercase">{isEditMode ? 'Settings Save' : 'Start with AI'}</span>
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-1 transition-transform"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
                 </div>
               </button>

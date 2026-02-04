@@ -4,8 +4,8 @@
 
 :root {
   /* Pop Violet Palette */
-  /* Pop Violet Palette -> Premium Light Transition */
-  --pop-violet-bg: #F8FAFC;
+  /* Premium Light Stage */
+  --pop-violet-bg: #E2E8F0;
   --pop-violet-card: #FFFFFF;
   --pop-violet-main: #2b2b2f;
   --pop-violet-accent-a: #7F5AF0; /* Lavender */
@@ -82,7 +82,8 @@ body {
 }
 
 .shadow-premium {
-  box-shadow: 0 32px 64px -16px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.12), 
+              0 10px 40px -10px rgba(0, 0, 0, 0.08);
 }
 
 /* Gradient Utilities - More Vibrant & High Contrast */
@@ -121,8 +122,8 @@ body {
 }
 
 .bg-pattern-dots {
-  background-image: radial-gradient(#e2e8f0 1.5px, transparent 1.5px);
-  background-size: 48px 48px;
+  background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px);
+  background-size: 64px 64px;
 }
 
 .bg-typo-giant {
