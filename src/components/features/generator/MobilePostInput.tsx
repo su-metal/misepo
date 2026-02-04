@@ -379,7 +379,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     const secondaryAudienceList = TARGET_AUDIENCES.filter(t => !primaryAudienceList.includes(t));
 
     return (
-        <div className="flex flex-col h-full relative overflow-hidden font-inter bg-[#f2f4f7]">
+        <div className="flex flex-col h-full relative overflow-hidden font-inter bg-white" style={{ backgroundColor: 'white' }}>
 
             {/* Step 1: Home (Platform Grid) */}
             <div className={`flex flex-col h-full overflow-hidden relative transition-all duration-500 ${isStepDrawerOpen ? 'blur-md scale-[0.98] opacity-60' : 'opacity-100'}`}>
@@ -431,7 +431,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             {/* High-Contrast Credit Design with Gauge */}
                             {plan && typeof plan.usage !== 'undefined' && typeof plan.limit !== 'undefined' && (
                                 <div className="flex flex-col items-end gap-1 scale-90 origin-right">
-                                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white text-[#2b2b2f] border border-slate-100 shadow-sm overflow-hidden relative">
+                                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#edeff1] text-[#2b2b2f] border border-slate-100 shadow-sm overflow-hidden relative">
                                         <span className="text-[8px] font-black text-[#2b2b2f]/40 uppercase tracking-widest mr-1">CREDITS</span>
                                         <span className="text-sm font-black text-[#2b2b2f] leading-none">
                                             {Math.max(0, plan.limit - plan.usage)}
@@ -471,7 +471,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                         </div>
 
                         {/* Simultaneous Generation Toggle */}
-                        <div className="flex items-center gap-3 bg-white px-4 py-2 rounded-2xl border border-slate-100 shadow-sm active:scale-95 transition-all cursor-pointer select-none"
+                        <div className="flex items-center gap-3 bg-[#edeff1] px-4 py-2 rounded-2xl border border-slate-100 shadow-sm active:scale-95 transition-all cursor-pointer select-none"
                             onClick={onToggleMultiGen}>
                             <div className="flex flex-col items-end">
                                 <span className={`text-[9px] font-black tracking-widest uppercase leading-none mb-0.5 ${isMultiGen ? 'text-[#2b2b2f]' : 'text-[#A0A0A0]'}`}>
@@ -481,7 +481,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             </div>
                             <div className={`
                                 relative w-10 h-5 rounded-full transition-all duration-300
-                                ${isMultiGen ? 'bg-[#2b2b2f]' : 'bg-slate-100'}
+                                ${isMultiGen ? 'bg-[#2b2b2f]' : 'bg-[#edeff1]'}
                             `}>
                                 <div className={`
                                     absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform duration-300 shadow-sm
@@ -539,10 +539,10 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         p === Platform.Line ? '#06C755' :
                                             p === Platform.GoogleMaps ? '#4285F4' : '#2b2b2f';
 
-                                const brandBg = p === Platform.Instagram ? 'bg-pink-50/50' :
-                                    p === Platform.X ? 'bg-slate-50/50' :
-                                        p === Platform.Line ? 'bg-emerald-50/50' :
-                                            p === Platform.GoogleMaps ? 'bg-blue-50/50' : 'bg-white';
+                                const brandBg = p === Platform.Instagram ? 'bg-pink-100' :
+                                    p === Platform.X ? 'bg-slate-100' :
+                                        p === Platform.Line ? 'bg-emerald-100' :
+                                            p === Platform.GoogleMaps ? 'bg-blue-100' : 'bg-white';
 
                                 return (
                                     <div
@@ -553,7 +553,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             ${bentoClass}
                                              ${isActive
                                                 ? `${brandBg} scale-[1.02] border-[2.5px]`
-                                                : `bg-white border-slate-100 shadow-sm hover:border-slate-300 active:scale-[0.98]`
+                                                : `bg-[#edeff1] border-slate-100 shadow-sm hover:border-slate-300 active:scale-[0.98]`
                                             }
                                         `}
                                         style={isActive ? {
@@ -576,7 +576,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                         e.stopPropagation();
                                                         handlePlatformSelect(p);
                                                     }}
-                                                    className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-500 active:scale-90 shadow-sm ${isActive ? 'text-white' : 'bg-slate-100 text-[#2b2b2f]'}`}
+                                                    className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-500 active:scale-90 shadow-sm ${isActive ? 'text-white' : 'bg-[#e2e4e6] text-[#2b2b2f]'}`}
                                                     style={isActive ? { backgroundColor: brandColor } : {}}
                                                 >
                                                     {isActive ? (
@@ -612,7 +612,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             onClick={!isGoogleMaps ? handleOmakaseStart : undefined}
                             className={`
                                 relative group transition-all duration-700 my-1
-                                rounded-[32px] overflow-hidden bg-white border border-slate-100
+                                rounded-[32px] overflow-hidden bg-[#edeff1] border border-slate-100
                                 ${!isGoogleMaps ? 'cursor-pointer active:scale-95 shadow-sm hover:shadow-md' : 'cursor-not-allowed opacity-60 grayscale'}
                                 ${isOmakaseLoading ? 'scale-[0.98]' : (!isGoogleMaps ? 'hover:scale-[1.01]' : '')}
                             `}
@@ -622,7 +622,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
                             <div className="relative p-5 pl-10 pr-6 flex items-center justify-between">
                                 {/* Left Content */}
-                                <div className="relative z-10 flex flex-col gap-6">
+                                <div className="relative z-10 flex flex-col gap-4">
                                     <div className={`self-start inline-flex px-4 py-1.5 rounded-full bg-gradient-to-r from-[#80CAFF] via-[#C084FC] to-[#F87171] text-[9px] font-black text-white uppercase tracking-[0.2em] shadow-sm`}>
                                         {isGoogleMaps ? '利用不可' : 'POPULAR'}
                                     </div>
@@ -813,7 +813,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                     </p>
                                                 </div>
                                                 {question && (
-                                                    <div className="mb-6 p-6 bg-slate-50 border border-slate-100 rounded-[32px] animate-in slide-in-from-top-4 duration-500">
+                                                    <div className="mb-6 p-6 bg-[#edeff1] border border-slate-100 rounded-[32px] animate-in slide-in-from-top-4 duration-500">
                                                         <div className="flex gap-3 items-start">
                                                             <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#80CAFF] via-[#C084FC] to-[#F87171] flex items-center justify-center flex-shrink-0 mt-0.5">
                                                                 <SparklesIcon className="w-4 h-4 text-white" />
@@ -832,13 +832,13 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                     value={inputText}
                                                     onChange={(e) => onInputTextChange(e.target.value)}
                                                     placeholder={question ? "こちらの質問への答えを短く入力してください..." : (isGoogleMaps ? "こちらにお客様からの口コミを貼り付けてください。丁寧な返信案をいくつか作成します。" : "「旬の食材が入荷した」「雨の日限定の割引をする」など、短いメモ書きでも大丈夫ですよ。")}
-                                                    className="w-full min-h-[220px] p-8 bg-slate-50 border border-slate-100 rounded-[40px] text-lg font-bold leading-relaxed focus:outline-none focus:border-slate-200 transition-all placeholder:text-slate-300 text-[#2b2b2f] resize-none overflow-hidden"
+                                                    className="w-full min-h-[220px] p-8 bg-[#edeff1] border border-slate-100 rounded-[40px] text-lg font-bold leading-relaxed focus:outline-none focus:border-slate-200 transition-all placeholder:text-slate-300 text-[#2b2b2f] resize-none overflow-hidden"
                                                 />
 
                                                 {isGoogleMaps && (
                                                     <button
                                                         onClick={toggleVoiceInput}
-                                                        className={`absolute bottom-6 left-6 w-12 h-12 rounded-full flex items-center justify-center transition-all shadow-md ${isListening ? 'bg-[#4338CA] text-white animate-pulse' : 'bg-slate-100 text-[#2b2b2f]'}`}
+                                                        className={`absolute bottom-6 left-6 w-12 h-12 rounded-full flex items-center justify-center transition-all shadow-md ${isListening ? 'bg-[#4338CA] text-white animate-pulse' : 'bg-[#edeff1] text-[#2b2b2f]'}`}
                                                     >
                                                         <MicIcon className="w-6 h-6" />
                                                     </button>
@@ -847,7 +847,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                 {inputText && (
                                                     <button
                                                         onClick={() => onInputTextChange("")}
-                                                        className="absolute bottom-6 right-6 w-12 h-12 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center shadow-md active:scale-95 transition-all text-slate-400 hover:text-[#2b2b2f]"
+                                                        className="absolute bottom-6 right-6 w-12 h-12 rounded-full bg-[#edeff1] border border-slate-100 flex items-center justify-center shadow-md active:scale-95 transition-all text-slate-400 hover:text-[#2b2b2f]"
                                                         title="入力をクリア"
                                                     >
                                                         <EraserIcon className="w-6 h-6" />
@@ -867,7 +867,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                     disabled={!inputText.trim()}
                                                     className={`w-full py-5 rounded-[28px] font-black text-sm uppercase tracking-[0.2em] shadow-xl active:scale-95 transition-all flex items-center justify-center gap-2 ${inputText.trim()
                                                         ? 'bg-[#2b2b2f] text-white'
-                                                        : 'bg-slate-50 text-slate-300 cursor-not-allowed shadow-none'
+                                                        : 'bg-[#edeff1] text-slate-300 cursor-not-allowed shadow-none'
                                                         }`}
                                                 >
                                                     確認画面へ
@@ -884,7 +884,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         <div className="absolute inset-0 overflow-y-auto px-8 py-4 pb-[240px] space-y-4 no-scrollbar scrollbar-hide">
                                             <div className="flex flex-col gap-4">
                                                 {/* Preview Box - Brand Style */}
-                                                <div className="bg-slate-50 border border-slate-100 rounded-[40px] p-8 min-h-[180px] relative shadow-sm overflow-hidden group">
+                                                <div className="bg-[#edeff1] border border-slate-100 rounded-[40px] p-8 min-h-[180px] relative shadow-sm overflow-hidden group">
                                                     <div className="absolute top-0 right-0 w-32 h-32 bg-[#80CAFF]/10 rounded-full blur-3xl -mr-16 -mt-16" />
                                                     <div className="flex items-center justify-between mb-6">
                                                         <div className="flex gap-1.5">
@@ -920,7 +920,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                         </div>
                                                     )}
 
-                                                    <button onClick={() => setMobileStep('input')} className="absolute bottom-6 right-8 w-11 h-11 bg-slate-100 border border-slate-200 rounded-2xl text-slate-400 hover:text-[#2b2b2f] transition-all flex items-center justify-center active:scale-95 shadow-sm">
+                                                    <button onClick={() => setMobileStep('input')} className="absolute bottom-6 right-8 w-11 h-11 bg-[#e2e4e6] border border-slate-200 rounded-2xl text-slate-400 hover:text-[#2b2b2f] transition-all flex items-center justify-center active:scale-95 shadow-sm">
                                                         <RotateCcwIcon className="w-5 h-5" />
                                                     </button>
                                                 </div>
@@ -1020,7 +1020,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                     <div className="flex overflow-x-auto gap-3 pb-2 pt-2 -mx-2 px-3 no-scrollbar scrollbar-hide">
                                                         <button
                                                             onClick={() => onApplyPreset({ id: 'plain-ai' } as any)}
-                                                            className={`flex-shrink-0 px-8 py-3 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] transition-all duration-500 shadow-sm border ${activePresetId === 'plain-ai' ? 'bg-[#2b2b2f] text-white border-[#2b2b2f] scale-105 active:scale-95 shadow-black/10' : 'bg-slate-50 border-slate-100 text-slate-400 hover:text-[#2b2b2f]'}`}
+                                                            className={`flex-shrink-0 px-8 py-3 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] transition-all duration-500 shadow-sm border ${activePresetId === 'plain-ai' ? 'bg-[#2b2b2f] text-white border-[#2b2b2f] scale-105 active:scale-95 shadow-black/10' : 'bg-[#edeff1] border-slate-100 text-slate-400 hover:text-[#2b2b2f]'}`}
                                                         >
                                                             AI標準
                                                         </button>
@@ -1030,7 +1030,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                                 <button
                                                                     key={p.id}
                                                                     onClick={() => onApplyPreset(p)}
-                                                                    className={`flex-shrink-0 px-8 py-3 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] transition-all duration-500 shadow-sm border truncate max-w-[160px] ${isSelected ? 'bg-[#2b2b2f] text-white border-[#2b2b2f] scale-105 active:scale-95 shadow-black/10' : 'bg-slate-50 border-slate-100 text-slate-400 hover:text-[#2b2b2f]'}`}
+                                                                    className={`flex-shrink-0 px-8 py-3 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] transition-all duration-500 shadow-sm border truncate max-w-[160px] ${isSelected ? 'bg-[#2b2b2f] text-white border-[#2b2b2f] scale-105 active:scale-95 shadow-black/10' : 'bg-[#edeff1] border-slate-100 text-slate-400 hover:text-[#2b2b2f]'}`}
                                                                 >
                                                                     {p.name}
                                                                 </button>
@@ -1041,7 +1041,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
                                                 {/* Custom Prompt (Always Visible) */}
                                                 <div className="my-2">
-                                                    <div className="bg-slate-50 px-6 py-4 rounded-[32px] border border-slate-100 flex flex-col gap-2 shadow-sm active:border-slate-200 transition-colors">
+                                                    <div className="bg-[#edeff1] px-6 py-4 rounded-[32px] border border-slate-100 flex flex-col gap-2 shadow-sm active:border-slate-200 transition-colors">
                                                         <div className="flex items-center gap-1.5">
                                                             <AutoSparklesIcon className="w-3 h-3 text-[var(--pop-violet-main)]" />
                                                             <span className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">追加指示（任意）</span>
@@ -1058,7 +1058,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                 {/* Store Supplement (Google Maps Only) - Moved here after Custom Prompt */}
                                                 {isGoogleMaps && (
                                                     <div className="my-2">
-                                                        <div className="bg-slate-50 px-6 py-4 rounded-[32px] border border-slate-100 flex flex-col gap-2 shadow-sm">
+                                                        <div className="bg-[#edeff1] px-6 py-4 rounded-[32px] border border-slate-100 flex flex-col gap-2 shadow-sm">
                                                             <span className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">補足情報 / 当日の事情</span>
                                                             <AutoResizingTextarea
                                                                 value={storeSupplement}
