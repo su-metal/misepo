@@ -370,6 +370,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
   const isSavingRef = useRef(false);
   const [tempNewSamples, setTempNewSamples] = useState<TrainingItem[]>([]);
   const [isAnalyzingScreenshot, setIsAnalyzingScreenshot] = useState(false);
+  const [snsPreviewPlatform, setSnsPreviewPlatform] = useState<Platform>(Platform.X);
+  const [showDebugPrompts, setShowDebugPrompts] = useState(false);
 
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -445,20 +447,28 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
 
   const performPersonaAnalysis = async (overrideSamples?: TrainingItem[] | { content: string, platform: string }[]): Promise<any> => {
-    // Current target platform based on tab mode
-    const targetKey = learningMode === 'maps' ? Platform.GoogleMaps : 'General';
+    // Collect source samples
+    let sourceItems: (TrainingItem | { content: string, platform: string })[];
+    if (overrideSamples) {
+      sourceItems = overrideSamples;
+    } else {
+      // Use items for the current profile (handle new profile case 'temp-new')
+      if (selectedPresetId) {
+        sourceItems = trainingItems.filter(item => item.presetId === selectedPresetId);
+      } else {
+        sourceItems = tempNewSamples;
+      }
+    }
 
-    // Filter samples relevant to the current mode
-    // SNS mode: Includes X, Instagram, Line, General
-    // Maps mode: Includes GoogleMaps
-    const samplesToUse = (overrideSamples || trainingItems
+    // Filter by learningMode (SNS vs Maps)
+    const samplesToUse = sourceItems
       .filter(item => {
-        const p = item.presetId === (selectedPresetId || 'omakase');
-        const plats = item.platform.split(',').map(s => s.trim());
+        const platformStr = item.platform || '';
+        const plats = platformStr.split(',').map(s => s.trim());
         const isMaps = plats.includes(Platform.GoogleMaps);
-        if (learningMode === 'maps') return p && isMaps;
-        return p && !isMaps;
-      }))
+        if (learningMode === 'maps') return isMaps;
+        return !isMaps;
+      })
       .map(item => ({
         content: item.content,
         platform: item.platform
@@ -482,43 +492,56 @@ const PresetModal: React.FC<PresetModalProps> = ({
       });
       const data = await res.json();
       if (data.instruction) {
-        let instruction = data.instruction;
+        const parsed = typeof data.instruction === 'string' && data.instruction.trim().startsWith('{')
+          ? JSON.parse(data.instruction)
+          : data.instruction;
+
         const newPrompts = { ...customPrompts };
+        let updated = false;
 
-        // Helper to extract string content
-        let contentToApply = '';
-
-        if (typeof instruction === 'string' && !instruction.trim().startsWith('{')) {
-          contentToApply = instruction;
-        } else {
-          try {
-            const parsed = typeof instruction === 'string' ? JSON.parse(instruction) : instruction;
-            if (learningMode === 'sns') {
-              contentToApply = parsed.General || (typeof instruction === 'string' ? instruction : JSON.stringify(instruction));
-            } else {
-              contentToApply = parsed.GoogleMaps || (typeof instruction === 'string' ? instruction : JSON.stringify(instruction));
+        if (typeof parsed === 'object' && parsed !== null) {
+          // Map all platform keys found in response
+          const platforms = [Platform.X, Platform.Instagram, Platform.Line, Platform.GoogleMaps];
+          platforms.forEach(p => {
+            if (parsed[p]) {
+              newPrompts[p] = parsed[p].trim();
+              updated = true;
             }
-          } catch (e) {
-            contentToApply = typeof instruction === 'string' ? instruction : JSON.stringify(instruction);
+          });
+
+          // Special handling for SNS 'General' alias
+          if (learningMode === 'sns') {
+            if (parsed.General) {
+              newPrompts['General'] = parsed.General.trim();
+              updated = true;
+            } else if (parsed[Platform.X]) {
+              newPrompts['General'] = parsed[Platform.X].trim();
+              updated = true;
+            }
           }
         }
 
-        // Apply to Targets
-        if (learningMode === 'sns') {
-          newPrompts['General'] = contentToApply;
-          newPrompts[Platform.X] = contentToApply;
-          newPrompts[Platform.Instagram] = contentToApply;
-          newPrompts[Platform.Line] = contentToApply;
-        } else {
-          newPrompts[Platform.GoogleMaps] = contentToApply;
+        // Fallback for plain text response
+        if (!updated && typeof data.instruction === 'string' && !data.instruction.trim().startsWith('{')) {
+          const text = data.instruction.trim();
+          if (learningMode === 'sns') {
+            newPrompts['General'] = text;
+            newPrompts[Platform.X] = text;
+            newPrompts[Platform.Instagram] = text;
+            newPrompts[Platform.Line] = text;
+          } else {
+            newPrompts[Platform.GoogleMaps] = text;
+          }
+          updated = true;
         }
 
-        setCustomPrompts(newPrompts);
-
-        // Update cache
-        setLastAnalyzedState(prev => ({ ...prev, [learningMode]: samplesKey }));
-
-        return newPrompts;
+        if (updated) {
+          setCustomPrompts(newPrompts);
+          // Update cache
+          setLastAnalyzedState(prev => ({ ...prev, [learningMode]: samplesKey }));
+          return newPrompts;
+        }
+        return null;
       } else {
         throw new Error(data.error || 'Failed to analyze persona');
       }
@@ -721,11 +744,19 @@ const PresetModal: React.FC<PresetModalProps> = ({
       }
 
       // Construct optimistic samples for immediate analysis
-      let newSamples = presetId
-        ? trainingItems.filter(item => item.presetId === presetId).map(item => ({ content: item.content, platform: item.platform }))
-        : tempNewSamples.map(item => ({ content: item.content, platform: item.platform }));
+      let baseItems = presetId
+        ? trainingItems.filter(item => item.presetId === presetId)
+        : [...tempNewSamples];
 
-      newSamples.push({ content: normalizedText, platform: platformString });
+      // Filter out the one we are editing to avoid duplicates
+      if (viewingSampleId) {
+        baseItems = baseItems.filter(it => it.id !== viewingSampleId);
+      }
+
+      const newSamples = [
+        ...baseItems.map(item => ({ content: item.content, platform: item.platform })),
+        { content: normalizedText, platform: platformString }
+      ];
 
       // Trigger Auto-Analysis while still in overlay for feedback
       setIsAnalyzingPersona(true);
@@ -759,6 +790,17 @@ const PresetModal: React.FC<PresetModalProps> = ({
         method: 'DELETE',
       });
       if (!res.ok) throw new Error('Failed to reset learning');
+
+      // Clear local style instructions
+      const nextPrompts = { ...customPrompts };
+      if (mode === 'sns') {
+        const snsPlatforms = [Platform.X, Platform.Instagram, Platform.Line, 'General'];
+        snsPlatforms.forEach(p => delete nextPrompts[p]);
+      } else {
+        delete nextPrompts[Platform.GoogleMaps];
+      }
+      setCustomPrompts(nextPrompts);
+      setLastAnalyzedState(prev => ({ ...prev, [mode]: '' }));
 
       if (onRefreshTraining) await onRefreshTraining();
     } catch (err) {
@@ -906,7 +948,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
           }}
         />
 
-        {samples.length > 0 && (
+        {/* Show Reset button if there are samples OR AI style prompts to clear */}
+        {(samples.length > 0 || (mode === 'sns' ? (customPrompts[Platform.X] || customPrompts[Platform.Instagram] || customPrompts[Platform.Line]) : customPrompts[Platform.GoogleMaps])) && (
           <div className="flex justify-center pt-2">
             <button
               onClick={() => handleResetLearningForMode(mode)}
@@ -919,6 +962,81 @@ const PresetModal: React.FC<PresetModalProps> = ({
         )}
       </div>
     );
+
+    const renderStyleInstructionSection = (mode: 'sns' | 'maps') => {
+      // Hide AI Styles by default unless debug mode is enabled
+      if (!showDebugPrompts) return null;
+
+      const targetPlatform = mode === 'sns' ? snsPreviewPlatform : Platform.GoogleMaps;
+      const instruction = customPrompts[targetPlatform] || '';
+
+      if (!instruction && currentPresetSamples.length === 0) return null;
+
+      return (
+        <div className="mt-8 p-8 bg-white rounded-[2.5rem] border border-slate-200 shadow-sm space-y-6 animate-in fade-in slide-in-from-top-2 duration-500">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-2">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600">
+                <SparklesIcon className="w-5 h-5" />
+              </div>
+              <div className="space-y-0.5">
+                <label className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] block">AI Analysis Result</label>
+                <h4 className="font-black text-[#2b2b2f] tracking-tighter text-lg">学習済みスタイルプロンプト</h4>
+              </div>
+            </div>
+
+            {mode === 'sns' && (
+              <div className="flex p-1 bg-slate-50 rounded-xl border border-slate-100 shadow-inner">
+                {[Platform.X, Platform.Instagram, Platform.Line].map((p) => (
+                  <button
+                    key={p}
+                    onClick={() => setSnsPreviewPlatform(p)}
+                    className={`px-4 py-1.5 rounded-lg text-[10px] font-black tracking-widest transition-all ${snsPreviewPlatform === p ? 'bg-[#2b2b2f] text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                  >
+                    {p === Platform.X ? 'X' : p === Platform.Instagram ? 'INSTA' : 'LINE'}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="bg-slate-50 rounded-3xl p-6 border border-slate-100 relative group">
+            <div className="absolute top-4 right-6 flex items-center gap-2">
+              <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">
+                {targetPlatform === Platform.X ? 'X (Twitter)' : targetPlatform === Platform.Instagram ? 'Instagram' : targetPlatform === Platform.Line ? 'LINE' : 'Google Maps'} Style
+              </span>
+            </div>
+
+            <textarea
+              value={instruction}
+              onChange={(e) => {
+                const newVal = e.target.value;
+                const next = { ...customPrompts };
+                next[targetPlatform] = newVal;
+                // If we are changing X, maybe sync to General for general posts? 
+                if (targetPlatform === Platform.X) next['General'] = newVal;
+
+                setCustomPrompts(next);
+                setNeedsReanalysis(true);
+              }}
+              placeholder="AIが学習したスタイルがここに表示されます..."
+              className="w-full min-h-[160px] bg-transparent outline-none text-[#2b2b2f] font-bold leading-relaxed placeholder-slate-300 resize-none no-scrollbar text-[14px]"
+            />
+
+            {!instruction && (
+              <div className="py-8 text-center space-y-2">
+                <p className="text-xs font-bold text-slate-400">現在、{targetPlatform}のスタイルは解析されていません</p>
+                <p className="text-[10px] text-slate-300">「学習データを保存」するとAIがこの媒体向けにスタイルを抽出します</p>
+              </div>
+            )}
+          </div>
+
+          <p className="text-[11px] text-slate-400 font-bold px-4 leading-relaxed">
+            ※AIが媒体ごとに抽出した指示内容を直接編集できます。こだわりがある場合はここを書き換えて保存してください。
+          </p>
+        </div>
+      );
+    };
 
     return (
       <div className="space-y-12">
@@ -943,29 +1061,45 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
         <div className="animate-in fade-in duration-500">
           {learningMode === 'sns' ? (
-            renderSampleSection(
-              'SNS Identity',
-              snsSamples,
-              'sns',
-              <SparklesIcon className="w-4 h-4" />,
-              'border-indigo-100/50',
-              'bg-[#d8e9f4]'
-            )
+            <>
+              {renderSampleSection(
+                'SNS Identity',
+                snsSamples,
+                'sns',
+                <SparklesIcon className="w-4 h-4" />,
+                'border-indigo-100/50',
+                'bg-[#d8e9f4]'
+              )}
+              {renderStyleInstructionSection('sns')}
+            </>
           ) : (
-            renderSampleSection(
-              'Maps Replies',
-              mapsSamples,
-              'maps',
-              <GoogleMapsIcon className="w-4 h-4" />,
-              'border-teal-100/50',
-              'bg-[#d8e9f4]'
-            )
+            <>
+              {renderSampleSection(
+                'Maps Replies',
+                mapsSamples,
+                'maps',
+                <GoogleMapsIcon className="w-4 h-4" />,
+                'border-teal-100/50',
+                'bg-[#d8e9f4]'
+              )}
+              {renderStyleInstructionSection('maps')}
+            </>
           )}
+        </div>
+
+        {/* Debug Mode Toggle */}
+        <div className="flex justify-center pt-4">
+          <button
+            onClick={() => setShowDebugPrompts(!showDebugPrompts)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-full text-[9px] font-black uppercase tracking-widest transition-all ${showDebugPrompts ? 'bg-indigo-50 text-indigo-400 border border-indigo-100' : 'text-slate-300 hover:text-slate-400'}`}
+          >
+            <SparklesIcon className="w-3 h-3" />
+            <span>{showDebugPrompts ? 'Debug Mode: ON' : 'Debug Mode: OFF'}</span>
+          </button>
         </div>
       </div>
     );
   };
-
 
   const modalBody = (
     <div className="flex h-full bg-slate-50 overflow-hidden text-slate-900 font-inter">
@@ -1079,13 +1213,13 @@ const PresetModal: React.FC<PresetModalProps> = ({
               }
             `}
           >
-            {isInternalSaving ? (
+            {isSaving ? (
               <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
             ) : (
               <SaveIcon className="w-5 h-5" />
             )}
             <span className="text-[14px] font-black uppercase tracking-[0.2em]">
-              {isInternalSaving ? '解析中...' : '保存（AI再解析）'}
+              {isSaving ? '解析中...' : '保存（AI再解析）'}
             </span>
           </button>
 
