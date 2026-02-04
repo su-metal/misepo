@@ -39,7 +39,7 @@ export const StoreProfileSidebar: React.FC<StoreProfileSidebarProps> = ({ storeP
                 <div className="flex gap-1 py-2 relative z-10">
                     {[...Array(6)].map((_, i) => (
                         <div key={i} className="h-1 flex-1 rounded-full bg-slate-100 overflow-hidden">
-                            <div className="h-full bg-gradient-to-r from-[#80CAFF] via-[#C084FC] to-[#F87171] opacity-60 w-full animate-pulse" style={{ animationDelay: `${i * 100}ms` }} />
+                            <div className="h-full bg-slate-300 w-full animate-pulse" style={{ animationDelay: `${i * 100}ms` }} />
                         </div>
                     ))}
                 </div>
