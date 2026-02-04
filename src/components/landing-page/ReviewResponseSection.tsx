@@ -26,7 +26,7 @@ export const ReviewResponseSection = () => {
                         </span>
                         <h2 className="text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter leading-[0.9] text-[#282d32] mb-8">
                             口コミ返信も、<br />
-                            <span className="text-[#1823ff]">AIにおまかせ。</span>
+                            <span className="text-gradient-primary">AIにおまかせ。</span>
                         </h2>
                         <p className="text-xl md:text-2xl font-bold text-slate-400 leading-tight mb-12">
                             「何て返せばいいか分からない」を解消。<br />

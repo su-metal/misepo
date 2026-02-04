@@ -249,11 +249,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
         {/* LEFT PANEL: Rich Info (Always visible on desktop, compact on mobile) */}
         <div className="w-full md:w-[42%] lg:w-[480px] shrink-0 bg-slate-50 relative p-8 md:p-14 flex flex-col">
 
-          {/* Decorative gradients */}
-          <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-40">
-            <div className="absolute top-[-20%] left-[-20%] w-[80%] h-[80%] bg-purple-200/40 rounded-full blur-[100px]" />
-            <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-blue-200/40 rounded-full blur-[80px]" />
-          </div>
+
 
           <div className="relative z-10 flex flex-col h-auto md:h-full">
             <div className="mb-6 md:mb-10 animate-in slide-in-from-top-4 duration-700">
