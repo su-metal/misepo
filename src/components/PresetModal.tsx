@@ -61,7 +61,7 @@ interface PresetModalProps {
   isSaving?: boolean;
   onReorder?: () => Promise<Preset[] | void>;
   trainingItems: TrainingItem[];
-  onToggleTraining: (text: string, platform: Platform, presetId: string | null, replaceId?: string, source?: 'generated' | 'manual') => Promise<void>;
+  onToggleTraining: (text: string, platform: Platform, presetId: string | null, replaceId?: string, source?: 'generated' | 'manual') => Promise<string | null>;
 }
 
 const AVATAR_OPTIONS = [
@@ -180,12 +180,14 @@ const SampleSlider = ({
   samples,
   mode,
   onEdit,
-  onDelete
+  onDelete,
+  onPlatformToggle
 }: {
   samples: TrainingItem[],
   mode: 'sns' | 'maps',
   onEdit: (item: TrainingItem) => void,
-  onDelete: (item: TrainingItem) => void
+  onDelete: (item: TrainingItem) => void,
+  onPlatformToggle?: (item: TrainingItem, platform: Platform) => void
 }) => {
   const scrollRef = React.useRef<HTMLDivElement>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -263,21 +265,54 @@ const SampleSlider = ({
                 </p>
               </div>
 
-              <div className="mt-8 flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0">
-                <button
-                  onClick={() => onEdit(item)}
-                  className="p-3 text-[#2b2b2f]/50 hover:text-[#2b2b2f] hover:bg-slate-100 rounded-2xl transition-all border border-transparent hover:border-slate-200"
-                  title="詳細を表示"
-                >
-                  <BookOpenIcon className="w-5 h-5" />
-                </button>
-                <button
-                  onClick={() => onDelete(item)}
-                  className="p-3 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-2xl transition-all border border-transparent hover:border-rose-100"
-                  title="削除"
-                >
-                  <TrashIcon className="w-5 h-5" />
-                </button>
+              <div className="mt-8 flex items-center justify-between gap-3">
+                {/* Platform Toggles */}
+                <div className="flex items-center gap-4">
+                  {mode === 'sns' ? (
+                    <>
+                      {[Platform.X, Platform.Instagram, Platform.Line].map((p) => {
+                        let platforms = item.platform.split(',').map(s => s.trim());
+                        if (platforms.includes(Platform.General)) {
+                          platforms = [Platform.X, Platform.Instagram, Platform.Line];
+                        }
+                        const isActive = platforms.includes(p);
+                        const Icon = p === Platform.X ? XIcon : p === Platform.Instagram ? InstagramIcon : LineIcon;
+                        return (
+                          <button
+                            key={p}
+                            onClick={() => onPlatformToggle?.(item, p)}
+                            className="flex items-center justify-center transition-colors"
+                            title={`${p}に適用`}
+                          >
+                            <Icon className={`w-6 h-6 ${isActive ? 'text-[#2b2b2f]' : 'text-slate-300 hover:text-slate-400'}`} />
+                          </button>
+                        );
+                      })}
+                    </>
+                  ) : (
+                    <div className="px-3 py-1.5 text-[10px] font-black text-[#00b900] uppercase tracking-widest flex items-center gap-1.5">
+                      <GoogleMapsIcon className="w-3.5 h-3.5" />
+                      G-MAPS
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0">
+                  <button
+                    onClick={() => onEdit(item)}
+                    className="p-3 text-[#2b2b2f]/50 hover:text-[#2b2b2f] hover:bg-slate-100 rounded-2xl transition-all border border-transparent hover:border-slate-200"
+                    title="詳細を表示"
+                  >
+                    <BookOpenIcon className="w-5 h-5" />
+                  </button>
+                  <button
+                    onClick={() => onDelete(item)}
+                    className="p-3 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-2xl transition-all border border-transparent hover:border-rose-100"
+                    title="削除"
+                  >
+                    <TrashIcon className="w-5 h-5" />
+                  </button>
+                </div>
               </div>
             </div>
           ))}
@@ -331,9 +366,12 @@ const PresetModal: React.FC<PresetModalProps> = ({
   const [isResetting, setIsResetting] = useState(false);
   const [viewingSampleId, setViewingSampleId] = useState<string | null>(null);
   const [lastAnalyzedState, setLastAnalyzedState] = useState<{ [key: string]: string }>({});
+  const [needsReanalysis, setNeedsReanalysis] = useState(false);
   const isSavingRef = useRef(false);
   const [tempNewSamples, setTempNewSamples] = useState<TrainingItem[]>([]);
   const [isAnalyzingScreenshot, setIsAnalyzingScreenshot] = useState(false);
+  const [snsPreviewPlatform, setSnsPreviewPlatform] = useState<Platform>(Platform.X);
+  const [showDebugPrompts, setShowDebugPrompts] = useState(false);
 
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -348,52 +386,45 @@ const PresetModal: React.FC<PresetModalProps> = ({
     if (selectedPresetId) {
       const preset = presets.find(p => p.id === selectedPresetId);
       if (preset) {
-        setName(preset.name);
-        setAvatar(preset.avatar || 'shop');
+        if (preset.id === 'omakase') {
+          setName('おまかせプロファイル');
+          setAvatar('sparkles');
+          setCustomPrompts({});
+        } else {
+          setName(preset.name || '');
+          setAvatar(preset.avatar || 'user');
+          try {
+            if (preset.custom_prompt) {
+              if (preset.custom_prompt.trim().startsWith('{')) {
+                const parsed = JSON.parse(preset.custom_prompt);
+                const flattened = flattenPrompts(parsed);
+                setCustomPrompts(flattened);
 
-        try {
-          if (preset.custom_prompt) {
-            if (preset.custom_prompt.trim().startsWith('{')) {
-              const parsed = JSON.parse(preset.custom_prompt);
-              setCustomPrompts(parsed);
-
-              if (parsed['General']) {
-                const updated = { ...parsed };
+                if (flattened['General']) {
+                  const updated = { ...flattened };
+                  [Platform.X, Platform.Instagram, Platform.Line, Platform.GoogleMaps].forEach(p => {
+                    if (!updated[p]) updated[p] = flattened['General'];
+                  });
+                  delete updated['General'];
+                  setCustomPrompts(updated);
+                }
+              } else {
+                const legacyVal = preset.custom_prompt;
+                const initialPrompts: { [key: string]: string } = {};
                 [Platform.X, Platform.Instagram, Platform.Line, Platform.GoogleMaps].forEach(p => {
-                  if (!updated[p]) updated[p] = parsed['General'];
+                  initialPrompts[p] = legacyVal;
                 });
-                delete updated['General'];
-                setCustomPrompts(updated);
+                setCustomPrompts(initialPrompts);
               }
             } else {
-              const legacyVal = preset.custom_prompt;
-              const initialPrompts: { [key: string]: string } = {};
-              [Platform.X, Platform.Instagram, Platform.Line, Platform.GoogleMaps].forEach(p => {
-                initialPrompts[p] = legacyVal;
-              });
-              setCustomPrompts(initialPrompts);
+              setCustomPrompts({});
             }
-          } else {
+          } catch (e) {
+            console.error('[PresetModal] Error parsing custom_prompt:', e);
             setCustomPrompts({});
           }
-        } catch (e) {
-          const legacyVal = preset.custom_prompt || '';
-          const initialPrompts: { [key: string]: string } = {};
-          [Platform.X, Platform.Instagram, Platform.Line, Platform.GoogleMaps].forEach(p => {
-            initialPrompts[p] = legacyVal;
-          });
-          setCustomPrompts(initialPrompts);
         }
-      } else {
-        setCustomPrompts({});
-        setLastAnalyzedState({});
       }
-    } else {
-      setName('');
-      setAvatar('shop');
-      setCustomPrompts({});
-      setLastAnalyzedState({});
-      setTempNewSamples([]);
     }
   }, [selectedPresetId, presets]);
 
@@ -406,22 +437,68 @@ const PresetModal: React.FC<PresetModalProps> = ({
     setMobileView('edit');
   };
 
+  // --- Helpers ---
+  const flattenPrompts = (obj: any): { [key: string]: string } => {
+    const result: { [key: string]: string } = {};
+    if (!obj || typeof obj !== 'object') return result;
 
-  const performPersonaAnalysis = async (overrideSamples?: TrainingItem[] | { content: string, platform: string }[]): Promise<any> => {
-    // Current target platform based on tab mode
-    const targetKey = learningMode === 'maps' ? Platform.GoogleMaps : 'General';
+    Object.entries(obj).forEach(([key, val]) => {
+      if (typeof val === 'string' && val.trim().startsWith('{')) {
+        try {
+          const nested = JSON.parse(val);
+          if (typeof nested === 'object' && nested !== null) {
+            // If it's a nested object, check if it has a key matching the current key or other platforms
+            const platforms = [Platform.X, Platform.Instagram, Platform.Line, Platform.GoogleMaps, 'General'];
+            let found = false;
+            platforms.forEach(p => {
+              if (nested[p] && typeof nested[p] === 'string') {
+                result[p] = nested[p];
+                found = true;
+              }
+            });
+            if (!found) result[key] = val; // fallback
+          } else {
+            result[key] = val;
+          }
+        } catch (e) {
+          result[key] = val;
+        }
+      } else if (typeof val === 'string') {
+        result[key] = val;
+      }
+    });
+    return result;
+  };
 
-    // Filter samples relevant to the current mode
-    // SNS mode: Includes X, Instagram, Line, General
-    // Maps mode: Includes GoogleMaps
-    const samplesToUse = (overrideSamples || trainingItems
+  const performPersonaAnalysis = async (
+    overrideSamples?: TrainingItem[] | { content: string, platform: string }[],
+    targetMode?: 'sns' | 'maps',
+    currentPromptsBase?: { [key: string]: string }
+  ): Promise<any> => {
+    const modeToUse = targetMode || learningMode;
+
+    // Collect source samples
+    let sourceItems: (TrainingItem | { content: string, platform: string })[];
+    if (overrideSamples) {
+      sourceItems = overrideSamples;
+    } else {
+      // Use items for the current profile (handle new profile case 'temp-new')
+      if (selectedPresetId) {
+        sourceItems = trainingItems.filter(item => item.presetId === selectedPresetId);
+      } else {
+        sourceItems = tempNewSamples;
+      }
+    }
+
+    // Filter by modeToUse (SNS vs Maps)
+    const samplesToUse = sourceItems
       .filter(item => {
-        const p = item.presetId === (selectedPresetId || 'omakase');
-        const plats = item.platform.split(',').map(s => s.trim());
+        const platformStr = item.platform || '';
+        const plats = platformStr.split(',').map(s => s.trim());
         const isMaps = plats.includes(Platform.GoogleMaps);
-        if (learningMode === 'maps') return p && isMaps;
-        return p && !isMaps;
-      }))
+        if (modeToUse === 'maps') return isMaps;
+        return !isMaps;
+      })
       .map(item => ({
         content: item.content,
         platform: item.platform
@@ -431,8 +508,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
     // Skip if samples haven't changed for this mode
     const samplesKey = JSON.stringify(samplesToUse);
-    if (lastAnalyzedState[learningMode] === samplesKey) {
-      console.log(`Skipping analysis for ${learningMode}: samples unchanged.`);
+    if (lastAnalyzedState[modeToUse] === samplesKey) {
+      console.log(`Skipping analysis for ${modeToUse}: samples unchanged.`);
       return null;
     }
 
@@ -445,43 +522,58 @@ const PresetModal: React.FC<PresetModalProps> = ({
       });
       const data = await res.json();
       if (data.instruction) {
-        let instruction = data.instruction;
-        const newPrompts = { ...customPrompts };
+        const rawParsed = typeof data.instruction === 'string' && data.instruction.trim().startsWith('{')
+          ? JSON.parse(data.instruction)
+          : data.instruction;
 
-        // Helper to extract string content
-        let contentToApply = '';
+        const parsed = flattenPrompts(rawParsed);
 
-        if (typeof instruction === 'string' && !instruction.trim().startsWith('{')) {
-          contentToApply = instruction;
-        } else {
-          try {
-            const parsed = typeof instruction === 'string' ? JSON.parse(instruction) : instruction;
-            if (learningMode === 'sns') {
-              contentToApply = parsed.General || (typeof instruction === 'string' ? instruction : JSON.stringify(instruction));
-            } else {
-              contentToApply = parsed.GoogleMaps || (typeof instruction === 'string' ? instruction : JSON.stringify(instruction));
+        const newPrompts = { ...(currentPromptsBase || customPrompts) };
+        let updated = false;
+
+        if (typeof parsed === 'object' && parsed !== null) {
+          // Map all platform keys found in response
+          const platforms = [Platform.X, Platform.Instagram, Platform.Line, Platform.GoogleMaps];
+          platforms.forEach(p => {
+            if (parsed[p]) {
+              newPrompts[p] = parsed[p].trim();
+              updated = true;
             }
-          } catch (e) {
-            contentToApply = typeof instruction === 'string' ? instruction : JSON.stringify(instruction);
+          });
+
+          // Special handling for SNS 'General' alias
+          if (modeToUse === 'sns') {
+            if (parsed.General) {
+              newPrompts['General'] = parsed.General.trim();
+              updated = true;
+            } else if (parsed[Platform.X]) {
+              newPrompts['General'] = parsed[Platform.X].trim();
+              updated = true;
+            }
           }
         }
 
-        // Apply to Targets
-        if (learningMode === 'sns') {
-          newPrompts['General'] = contentToApply;
-          newPrompts[Platform.X] = contentToApply;
-          newPrompts[Platform.Instagram] = contentToApply;
-          newPrompts[Platform.Line] = contentToApply;
-        } else {
-          newPrompts[Platform.GoogleMaps] = contentToApply;
+        // Fallback for plain text response
+        if (!updated && typeof data.instruction === 'string' && !data.instruction.trim().startsWith('{')) {
+          const text = data.instruction.trim();
+          if (modeToUse === 'sns') {
+            newPrompts['General'] = text;
+            newPrompts[Platform.X] = text;
+            newPrompts[Platform.Instagram] = text;
+            newPrompts[Platform.Line] = text;
+          } else {
+            newPrompts[Platform.GoogleMaps] = text;
+          }
+          updated = true;
         }
 
-        setCustomPrompts(newPrompts);
-
-        // Update cache
-        setLastAnalyzedState(prev => ({ ...prev, [learningMode]: samplesKey }));
-
-        return newPrompts;
+        if (updated) {
+          setCustomPrompts(newPrompts);
+          // Update cache
+          setLastAnalyzedState(prev => ({ ...prev, [modeToUse]: samplesKey }));
+          return newPrompts;
+        }
+        return null;
       } else {
         throw new Error(data.error || 'Failed to analyze persona');
       }
@@ -493,14 +585,17 @@ const PresetModal: React.FC<PresetModalProps> = ({
     }
   };
 
-  const handleSave = async (overridePrompts?: { [key: string]: string }) => {
+  const handleSave = async (overridePrompts?: { [key: string]: string }, overrideId?: string) => {
     if (!name.trim()) return;
     if (isSavingRef.current) return;
 
     isSavingRef.current = true;
     setIsInternalSaving(true);
     try {
-      let finalCustomPrompts = overridePrompts ? { ...customPrompts, ...overridePrompts } : { ...customPrompts };
+      // FIX: Use overridePrompts directly if provided, otherwise fallback to current state.
+      // Merging { ...customPrompts, ...overridePrompts } was re-introducing deleted keys
+      // because customPrompts (the state) might not have updated yet due to React's async nature.
+      let finalCustomPrompts = overridePrompts ? { ...overridePrompts } : { ...customPrompts };
 
       // Compute relatedItems first for analysis
       const relatedItems = selectedPresetId
@@ -509,12 +604,15 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
       // Auto-analyze during save if manual update
       if (!overridePrompts) {
-        const newStyle = await performPersonaAnalysis(relatedItems);
-        if (newStyle) {
-          finalCustomPrompts = { ...finalCustomPrompts, ...newStyle };
-        }
+        // Analyze SNS
+        const snsStyle = await performPersonaAnalysis(relatedItems, 'sns', finalCustomPrompts);
+        if (snsStyle) finalCustomPrompts = { ...finalCustomPrompts, ...snsStyle };
+
+        // Analyze Maps (passing potentially updated finalCustomPrompts)
+        const mapsStyle = await performPersonaAnalysis(relatedItems, 'maps', finalCustomPrompts);
+        if (mapsStyle) finalCustomPrompts = { ...finalCustomPrompts, ...mapsStyle };
       }
-      const currentPresetId = selectedPresetId || 'omakase';
+      const currentPresetId = overrideId || selectedPresetId || 'omakase';
 
       const newPostSamples: { [key in Platform]?: string } = {};
 
@@ -533,15 +631,22 @@ const PresetModal: React.FC<PresetModalProps> = ({
       Object.entries(finalCustomPrompts).forEach(([k, v]) => {
         if (v && v.trim()) cleanedPrompts[k] = v.trim();
       });
-      const customPromptJSON = Object.keys(cleanedPrompts).length > 0 ? JSON.stringify(cleanedPrompts) : null;
+      const customPromptJSON = Object.keys(cleanedPrompts).length > 0 ? JSON.stringify(cleanedPrompts) : '{}';
+
+      // Find the existing persona_yaml to preserve it
+      const targetId = overrideId || selectedPresetId;
+      const existingPreset = presets.find(p => p.id === targetId);
+      const personaYamlToSave = existingPreset?.persona_yaml || '';
 
       const result = await onSave({
-        id: selectedPresetId || undefined,
+        id: targetId || undefined,
         name,
         avatar,
         custom_prompt: customPromptJSON,
-        persona_yaml: null,
-        post_samples: newPostSamples,
+        persona_yaml: personaYamlToSave,
+        // Only update post_samples if NOT in overridePrompts (reset) mode, 
+        // because trainingItems prop might be stale during a reset.
+        post_samples: overridePrompts ? undefined : newPostSamples,
       }) as any;
 
       if (result && result.ok) {
@@ -579,6 +684,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
         }
 
         setShowSuccessToast(true);
+        setNeedsReanalysis(false);
         setTimeout(() => setShowSuccessToast(false), 3000);
       } else {
         // Step 1 failed
@@ -653,6 +759,17 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
     const platformString = platforms.join(', ') as any;
 
+    // Check if anything actually changed for existing items to skip redundant processing
+    if (presetId) {
+      const existing = trainingItems.find(it => it.id === viewingSampleId);
+      if (existing && existing.content.trim() === normalizedText && existing.platform === platformString) {
+        setExpandingPlatform(null);
+        setModalText('');
+        setViewingSampleId(null);
+        return;
+      }
+    }
+
     setIsTrainingLoading(true);
     try {
       if (presetId) {
@@ -671,41 +788,37 @@ const PresetModal: React.FC<PresetModalProps> = ({
         // Also simulate optimistic update in parent if needed, but here we just use tempNewSamples
       }
 
-      // Close overlay immediately for better UX
+      // Construct optimistic samples for immediate analysis
+      let baseItems = presetId
+        ? trainingItems.filter(item => item.presetId === presetId)
+        : [...tempNewSamples];
+
+      // Filter out the one we are editing to avoid duplicates
+      if (viewingSampleId) {
+        baseItems = baseItems.filter(it => it.id !== viewingSampleId);
+      }
+
+      const newSamples = [
+        ...baseItems.map(item => ({ content: item.content, platform: item.platform })),
+        { content: normalizedText, platform: platformString }
+      ];
+
+      // Close overlay AFTER saving the data
       setExpandingPlatform(null);
       setModalText('');
-
-      // Construct optimistic samples for immediate analysis
-      let newSamples = presetId
-        ? trainingItems.filter(item => item.presetId === presetId).map(item => ({ content: item.content, platform: item.platform }))
-        : tempNewSamples.map(item => ({ content: item.content, platform: item.platform }));
-
-      newSamples.push({ content: normalizedText, platform: platformString });
-
-      // Trigger Auto-Analysis
-      setIsAnalyzingPersona(true); // Show spinner immediately
-      const newStyle = await performPersonaAnalysis(newSamples);
-
-      if (newStyle && name.trim()) {
-        // Auto-save the new style to the preset if we have a name
-        // We pass the newStyle as overridePrompts to handleSave
-        // Note: handleSave expects {[key:string]: string}.
-        // performPersonaAnalysis returns object or string. We normalized it to return object above.
-        await handleSave(newStyle as any);
-      }
+      setViewingSampleId(null);
+      setNeedsReanalysis(true);
 
     } catch (err: any) {
       alert(`保存に失敗しました: ${err.message}`);
     } finally {
       setIsTrainingLoading(false);
-      setIsAnalyzingPersona(false);
     }
   };
 
   const handleResetLearningForMode = async (mode: 'sns' | 'maps') => {
     const presetId = selectedPresetId || 'omakase';
     if (!confirm(`${mode === 'sns' ? 'SNS投稿' : 'マップ返信'}の全学習データを削除してもよろしいですか？この操作は取り消せません。`)) return;
-
     setIsResetting(true);
     try {
       const platform = mode === 'sns' ? 'sns_all' : Platform.GoogleMaps;
@@ -714,7 +827,39 @@ const PresetModal: React.FC<PresetModalProps> = ({
       });
       if (!res.ok) throw new Error('Failed to reset learning');
 
-      if (onRefreshTraining) await onRefreshTraining();
+      // Clear local style instructions
+      const nextPrompts = { ...customPrompts };
+
+      if (mode === 'sns') {
+        const snsPlatforms = [Platform.X, Platform.Instagram, Platform.Line, 'General'];
+        snsPlatforms.forEach(p => delete nextPrompts[p]);
+      } else {
+        delete nextPrompts[Platform.GoogleMaps];
+      }
+
+      // Re-flatten to ensure no nested SNS data remains hidden in other keys
+      const finalCleanPrompts = flattenPrompts(nextPrompts);
+
+      // Explicitly delete mode-specific keys again after flattening just in case
+      if (mode === 'sns') {
+        [Platform.X, Platform.Instagram, Platform.Line, 'General'].forEach(p => delete finalCleanPrompts[p]);
+      } else {
+        delete finalCleanPrompts[Platform.GoogleMaps];
+      }
+
+      setCustomPrompts(finalCleanPrompts);
+      setLastAnalyzedState(prev => ({ ...prev, [mode]: '' }));
+
+      // Persist the cleared prompts to the database immediately
+      // CRITICAL: Pass captured presetId to prevent race conditions during profile switching
+      await handleSave(finalCleanPrompts, presetId);
+
+      // Force clear internal saving state if handleSave was skipped or finished
+      setIsInternalSaving(false);
+
+      if (onRefreshTraining) {
+        await onRefreshTraining();
+      }
     } catch (err) {
       console.error('Failed to reset learning:', err);
       alert('リセットに失敗しました。');
@@ -809,9 +954,9 @@ const PresetModal: React.FC<PresetModalProps> = ({
                 setModalText('');
                 setLearningMode(mode);
                 setExpandingPlatform(mode === 'sns' ? Platform.General : Platform.GoogleMaps);
-                setSelectedPlatforms(mode === 'sns' ? [Platform.General] : [Platform.GoogleMaps]);
+                setSelectedPlatforms([]); // Start with no selection for new entries
               }}
-              className={`flex items-center gap-2 px-6 py-3 border text-white rounded-2xl font-black text-[11px] uppercase tracking-widest transition-all shadow-lg active:scale-95 ${mode === 'sns' ? 'bg-[#eb714f] border-[#eb714f] hover:bg-[#eb714f]/80 hover:border-[#eb714f]/80 shadow-[#d8e9f4]' : 'bg-[#00b900] border-[#00b900] hover:bg-[#00b900]/80 hover:border-[#00b900]/80 shadow-[#d8e9f4]'}`}
+              className={`flex items-center gap-2 px-6 py-3 border text-white rounded-2xl font-black text-[11px] uppercase tracking-widest transition-all shadow-lg active:scale-95 ${mode === 'sns' ? 'bg-[#eb714f] border-[#eb714f] hover:bg-[#eb714f]/80 hover:border-[#eb714f]/80 shadow-[#d8e9f4]' : 'bg-[#00b900] border-[#00b900] hover:bg-[#00b900]/80 hover:border-[#00b900]/80 shadow-[#d8e9f4]'} `}
             >
               <PlusIcon className="w-4 h-4" />
               <span>データを追加</span>
@@ -827,11 +972,41 @@ const PresetModal: React.FC<PresetModalProps> = ({
             setLearningMode(mode);
             setViewingSampleId(item.id);
             setExpandingPlatform(item.platform as any);
+
+            // Sync platforms state with normalization
+            let platforms = item.platform.split(',').map(s => s.trim()) as Platform[];
+            if (mode === 'sns' && platforms.includes(Platform.General)) {
+              platforms = [Platform.X, Platform.Instagram, Platform.Line];
+            }
+            setSelectedPlatforms(platforms);
           }}
           onDelete={(item) => onToggleTraining(item.content, item.platform as any, item.presetId, undefined, 'manual')}
+          onPlatformToggle={async (item, clickedPlatform) => {
+            let currentPlatforms = item.platform.split(',').map(s => s.trim()) as Platform[];
+
+            // Normalize if we have General
+            if (currentPlatforms.includes(Platform.General)) {
+              currentPlatforms = [Platform.X, Platform.Instagram, Platform.Line];
+            }
+
+            let newPlatforms: Platform[];
+            if (currentPlatforms.includes(clickedPlatform)) {
+              if (currentPlatforms.length <= 1) return; // Prevent empty
+              newPlatforms = currentPlatforms.filter(p => p !== clickedPlatform);
+            } else {
+              newPlatforms = [...currentPlatforms, clickedPlatform];
+            }
+
+            const newPlatformString = newPlatforms.join(', ') as any;
+
+            // For existing items, update in parent (Optimistic)
+            await onToggleTraining(item.content, newPlatformString, item.presetId, item.id, item.source || 'manual');
+            setNeedsReanalysis(true);
+          }}
         />
 
-        {samples.length > 0 && (
+        {/* Show Reset button if there are samples OR AI style prompts to clear */}
+        {(samples.length > 0 || (mode === 'sns' ? (customPrompts[Platform.X] || customPrompts[Platform.Instagram] || customPrompts[Platform.Line]) : customPrompts[Platform.GoogleMaps])) && (
           <div className="flex justify-center pt-2">
             <button
               onClick={() => handleResetLearningForMode(mode)}
@@ -845,6 +1020,81 @@ const PresetModal: React.FC<PresetModalProps> = ({
       </div>
     );
 
+    const renderStyleInstructionSection = (mode: 'sns' | 'maps') => {
+      // Hide AI Styles by default unless debug mode is enabled
+      if (!showDebugPrompts) return null;
+
+      const targetPlatform = mode === 'sns' ? snsPreviewPlatform : Platform.GoogleMaps;
+      const instruction = customPrompts[targetPlatform] || '';
+
+      if (!instruction && currentPresetSamples.length === 0) return null;
+
+      return (
+        <div className="mt-8 p-8 bg-white rounded-[2.5rem] border border-slate-200 shadow-sm space-y-6 animate-in fade-in slide-in-from-top-2 duration-500">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-2">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600">
+                <SparklesIcon className="w-5 h-5" />
+              </div>
+              <div className="space-y-0.5">
+                <label className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] block">AI Analysis Result</label>
+                <h4 className="font-black text-[#2b2b2f] tracking-tighter text-lg">学習済みスタイルプロンプト</h4>
+              </div>
+            </div>
+
+            {mode === 'sns' && (
+              <div className="flex p-1 bg-slate-50 rounded-xl border border-slate-100 shadow-inner">
+                {[Platform.X, Platform.Instagram, Platform.Line].map((p) => (
+                  <button
+                    key={p}
+                    onClick={() => setSnsPreviewPlatform(p)}
+                    className={`px-4 py-1.5 rounded-lg text-[10px] font-black tracking-widest transition-all ${snsPreviewPlatform === p ? 'bg-[#2b2b2f] text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'} `}
+                  >
+                    {p === Platform.X ? 'X' : p === Platform.Instagram ? 'INSTA' : 'LINE'}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="bg-slate-50 rounded-3xl p-6 border border-slate-100 relative group">
+            <div className="absolute top-4 right-6 flex items-center gap-2">
+              <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">
+                {targetPlatform === Platform.X ? 'X (Twitter)' : targetPlatform === Platform.Instagram ? 'Instagram' : targetPlatform === Platform.Line ? 'LINE' : 'Google Maps'} Style
+              </span>
+            </div>
+
+            <textarea
+              value={instruction}
+              onChange={(e) => {
+                const newVal = e.target.value;
+                const next = { ...customPrompts };
+                next[targetPlatform] = newVal;
+                // If we are changing X, maybe sync to General for general posts? 
+                if (targetPlatform === Platform.X) next['General'] = newVal;
+
+                setCustomPrompts(next);
+                setNeedsReanalysis(true);
+              }}
+              placeholder="AIが学習したスタイルがここに表示されます..."
+              className="w-full min-h-[160px] bg-transparent outline-none text-[#2b2b2f] font-bold leading-relaxed placeholder-slate-300 resize-none no-scrollbar text-[14px]"
+            />
+
+            {!instruction && (
+              <div className="py-8 text-center space-y-2">
+                <p className="text-xs font-bold text-slate-400">現在、{targetPlatform}のスタイルは解析されていません</p>
+                <p className="text-[10px] text-slate-300">「学習データを保存」するとAIがこの媒体向けにスタイルを抽出します</p>
+              </div>
+            )}
+          </div>
+
+          <p className="text-[11px] text-slate-400 font-bold px-4 leading-relaxed">
+            ※AIが媒体ごとに抽出した指示内容を直接編集できます。こだわりがある場合はここを書き換えて保存してください。
+          </p>
+        </div>
+      );
+    };
+
     return (
       <div className="space-y-12">
         <div className="flex flex-col items-start gap-4 px-1">
@@ -853,13 +1103,13 @@ const PresetModal: React.FC<PresetModalProps> = ({
           <div className="flex p-1.5 bg-slate-100 rounded-full border border-slate-200 shadow-inner overflow-hidden self-start">
             <button
               onClick={() => setLearningMode('sns')}
-              className={`px-8 py-2.5 rounded-full text-[12px] font-black tracking-widest transition-all ${learningMode === 'sns' ? 'bg-[#2b2b2f] text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+              className={`px-8 py-2.5 rounded-full text-[12px] font-black tracking-widest transition-all ${learningMode === 'sns' ? 'bg-[#2b2b2f] text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'} `}
             >
               SNS
             </button>
             <button
               onClick={() => setLearningMode('maps')}
-              className={`px-8 py-2.5 rounded-full text-[12px] font-black tracking-widest transition-all ${learningMode === 'maps' ? 'bg-[#2b2b2f] text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+              className={`px-8 py-2.5 rounded-full text-[12px] font-black tracking-widest transition-all ${learningMode === 'maps' ? 'bg-[#2b2b2f] text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'} `}
             >
               G-MAPS
             </button>
@@ -868,34 +1118,50 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
         <div className="animate-in fade-in duration-500">
           {learningMode === 'sns' ? (
-            renderSampleSection(
-              'SNS Identity',
-              snsSamples,
-              'sns',
-              <SparklesIcon className="w-4 h-4" />,
-              'border-indigo-100/50',
-              'bg-[#d8e9f4]'
-            )
+            <>
+              {renderSampleSection(
+                'SNS Identity',
+                snsSamples,
+                'sns',
+                <SparklesIcon className="w-4 h-4" />,
+                'border-indigo-100/50',
+                'bg-[#d8e9f4]'
+              )}
+              {renderStyleInstructionSection('sns')}
+            </>
           ) : (
-            renderSampleSection(
-              'Maps Replies',
-              mapsSamples,
-              'maps',
-              <GoogleMapsIcon className="w-4 h-4" />,
-              'border-teal-100/50',
-              'bg-[#d8e9f4]'
-            )
+            <>
+              {renderSampleSection(
+                'Maps Replies',
+                mapsSamples,
+                'maps',
+                <GoogleMapsIcon className="w-4 h-4" />,
+                'border-teal-100/50',
+                'bg-[#d8e9f4]'
+              )}
+              {renderStyleInstructionSection('maps')}
+            </>
           )}
+        </div>
+
+        {/* Debug Mode Toggle */}
+        <div className="flex justify-center pt-4">
+          <button
+            onClick={() => setShowDebugPrompts(!showDebugPrompts)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-full text-[9px] font-black uppercase tracking-widest transition-all ${showDebugPrompts ? 'bg-indigo-50 text-indigo-400 border border-indigo-100' : 'text-slate-300 hover:text-slate-400'} `}
+          >
+            <SparklesIcon className="w-3 h-3" />
+            <span>{showDebugPrompts ? 'Debug Mode: ON' : 'Debug Mode: OFF'}</span>
+          </button>
         </div>
       </div>
     );
   };
 
-
   const modalBody = (
     <div className="flex h-full bg-slate-50 overflow-hidden text-slate-900 font-inter">
       {/* SIDEBAR */}
-      <div className={`w-full md:w-[320px] lg:w-[380px] shrink-0 bg-slate-50 border-r border-slate-200 flex flex-col ${mobileView === 'list' ? 'flex' : 'hidden md:flex'}`}>
+      <div className={`w-full md:w-[320px] lg:w-[380px] shrink-0 bg-slate-50 border-r border-slate-200 flex flex-col ${mobileView === 'list' ? 'flex' : 'hidden md:flex'} `}>
         <div className="px-8 py-8 flex items-center justify-between">
           <div className="space-y-1">
             <h2 className="text-2xl font-black tracking-tight text-[#2b2b2f] leading-none uppercase">Style</h2>
@@ -956,7 +1222,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
       </div>
 
       {/* MAIN VIEW */}
-      <div className={`flex-1 flex flex-col bg-white overflow-hidden shadow-2xl relative z-10 ${mobileView === 'edit' ? 'flex' : 'hidden md:flex'}`}>
+      <div className={`flex-1 flex flex-col bg-white overflow-hidden shadow-2xl relative z-10 ${mobileView === 'edit' ? 'flex' : 'hidden md:flex'} `}>
         {/* Header */}
         <div className="bg-white/80 backdrop-blur-md relative z-10 shrink-0 border-b border-stone-100 flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-3">
@@ -997,22 +1263,31 @@ const PresetModal: React.FC<PresetModalProps> = ({
             onClick={() => handleSave()}
             disabled={isSaving || !name.trim()}
             className={`
-              w-full py-5 rounded-2xl flex items-center justify-center gap-4 transition-all duration-500
+    w-full py-5 rounded-2xl flex items-center justify-center gap-4 transition-all duration-500
               ${isSaving || !name.trim()
                 ? 'bg-slate-100 text-slate-300 cursor-not-allowed'
                 : 'bg-[#2b2b2f] text-white shadow-xl shadow-black/10 hover:bg-black hover:-translate-y-1 active:scale-95'
               }
-            `}
+    `}
           >
-            {isInternalSaving ? (
+            {isSaving ? (
               <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
             ) : (
               <SaveIcon className="w-5 h-5" />
             )}
             <span className="text-[14px] font-black uppercase tracking-[0.2em]">
-              {isInternalSaving ? '解析中...' : '保存（AI再解析）'}
+              {isSaving ? '解析中...' : '保存（AI再解析）'}
             </span>
           </button>
+
+          {needsReanalysis && (
+            <div className="flex items-center justify-center gap-2 text-rose-500 animate-in fade-in slide-in-from-top-1 duration-300">
+              <SparklesIcon className="w-3.5 h-3.5" />
+              <span className="text-[11px] font-black uppercase tracking-widest leading-none">
+                変更を反映するため、再解析（保存）をおすすめします
+              </span>
+            </div>
+          )}
         </div>
 
         {showSuccessToast && (
@@ -1087,10 +1362,79 @@ const PresetModal: React.FC<PresetModalProps> = ({
                   {learningMode === 'sns' ? 'X, Instagram, LINEなどの投稿をそのまま貼り付けてください。' : 'Googleマップでの口コミへの返信文を貼り付けてください。'}
                 </p>
               </div>
-              <span className={`text-[11px] font-black px-3 py-1 rounded-full uppercase tracking-widest ${learningMode === 'sns' ? 'bg-slate-100 text-[#2b2b2f]' : 'bg-[#00b900] text-white'}`}>
+              <span className={`text-[11px] font-black px-3 py-1 rounded-full uppercase tracking-widest ${learningMode === 'sns' ? 'bg-slate-100 text-[#2b2b2f]' : 'bg-[#00b900] text-white'} `}>
                 {learningMode === 'sns' ? 'SNS用' : 'マップ返信用'}
               </span>
             </div>
+
+            {learningMode === 'sns' && (
+              <div className="flex flex-col gap-3 p-6 bg-slate-50 rounded-3xl border border-slate-100">
+                <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">適用対象のSNSを選択</p>
+                <div className="flex gap-2">
+                  {[Platform.X, Platform.Instagram, Platform.Line].map((p) => {
+                    const isActive = selectedPlatforms.includes(p);
+                    const Icon = p === Platform.X ? XIcon : p === Platform.Instagram ? InstagramIcon : LineIcon;
+                    return (
+                      <button
+                        key={p}
+                        onClick={async () => {
+                          if (viewingSampleId) {
+                            const item = trainingItems.find(it => it.id === viewingSampleId) || tempNewSamples.find(it => it.id === viewingSampleId);
+                            if (item) {
+                              let currentPlatforms = item.platform.split(',').map(s => s.trim()) as Platform[];
+                              if (currentPlatforms.includes(Platform.General)) {
+                                currentPlatforms = [Platform.X, Platform.Instagram, Platform.Line];
+                              }
+
+                              let newPlatforms: Platform[];
+                              if (currentPlatforms.includes(p)) {
+                                if (currentPlatforms.length <= 1) return;
+                                newPlatforms = currentPlatforms.filter(plat => plat !== p);
+                              } else {
+                                newPlatforms = [...currentPlatforms, p];
+                              }
+
+                              const newPlatformString = newPlatforms.join(', ') as any;
+                              const newId = await onToggleTraining(item.content, newPlatformString, item.presetId, item.id, item.source || 'manual');
+                              setNeedsReanalysis(true);
+                              setSelectedPlatforms(newPlatforms);
+                              if (newId) {
+                                setViewingSampleId(newId);
+                              }
+                            }
+                          } else {
+                            // New item logic
+                            let currentPlats = [...selectedPlatforms];
+                            let newPlatforms: Platform[];
+                            if (currentPlats.includes(p)) {
+                              if (currentPlats.length <= 1) return;
+                              newPlatforms = currentPlats.filter(sp => sp !== p);
+                            } else {
+                              newPlatforms = [...currentPlats, p];
+                            }
+                            setSelectedPlatforms(newPlatforms);
+                          }
+                        }}
+                        className={`flex-1 py-4 px-6 rounded-2xl border-2 transition-all flex items-center justify-center gap-3 font-black text-[13px] ${isActive ? 'bg-white border-[#2b2b2f] shadow-[0_10px_25px_rgba(0,0,0,0.1)]' : 'bg-white border-slate-100 hover:border-slate-300'} `}
+                      >
+                        {p === Platform.Line ? (
+                          <LineIcon
+                            className={`w-5 h-5 ${isActive ? 'text-[#2b2b2f]' : 'text-slate-300'}`}
+                            isActive={isActive}
+                            textFill="#ffffff"
+                            color={isActive ? '#2b2b2f' : '#d1d5db'}
+                            activeTextFill="#ffffff"
+                          />
+                        ) : (
+                          <Icon className={`w-5 h-5 ${isActive ? 'text-[#2b2b2f]' : 'text-slate-300'}`} />
+                        )}
+                        <span className={`${isActive ? 'text-[#2b2b2f]' : 'text-slate-400'}`}>{p === Platform.X ? 'X' : p === Platform.Instagram ? 'Insta' : 'LINE'}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="space-y-4 pt-2">
@@ -1164,7 +1508,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
           ) : (
             <button
               onClick={() => handleToggleTrainingInternal(modalText, selectedPlatforms)}
-              disabled={isTrainingLoading || !modalText.trim()}
+              disabled={isTrainingLoading || !modalText.trim() || selectedPlatforms.length === 0}
               className="w-full md:w-auto px-12 py-5 bg-[#2b2b2f] text-white rounded-[2rem] font-black text-[14px] tracking-[0.2em] shadow-xl hover:bg-black active:scale-95 transition-all disabled:opacity-30 flex items-center justify-center gap-3"
             >
               {isTrainingLoading ? <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <SaveIcon className="w-5 h-5" />}
