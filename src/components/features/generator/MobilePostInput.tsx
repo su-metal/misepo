@@ -410,7 +410,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                 {plan?.plan !== 'professional' && plan?.plan !== 'monthly' && plan?.plan !== 'yearly' && plan?.plan !== 'pro' && (
                                     <a
                                         href="/start?upgrade=true"
-                                        className="xl:hidden h-8 px-5 rounded-full bg-gradient-to-r from-[#78C2F3] via-[#D676C3] to-[#FF9066] text-white text-[9px] font-black uppercase tracking-[0.15em] shadow-lg shadow-orange-500/20 active:scale-95 transition-all flex items-center gap-1.5 border border-white/20"
+                                        className="xl:hidden h-8 px-5 rounded-full bg-gradient-to-r from-[#7DD3FC] via-[#C986D3] to-[#FF8E62] text-white text-[9px] font-black uppercase tracking-[0.15em] shadow-lg shadow-orange-500/25 active:scale-95 transition-all flex items-center gap-1.5 border border-white/20"
                                     >
                                         <SparklesIcon className="w-2.5 h-2.5" />
                                         {plan?.plan === 'free' || plan?.plan === 'trial' ? 'GO PRO' : 'UPGRADE'}
@@ -620,7 +620,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             <div className="relative p-5 pl-10 pr-6 flex items-center justify-between">
                                 {/* Left Content */}
                                 <div className="relative z-10 flex flex-col gap-6">
-                                    <div className={`self-start inline-flex px-4 py-1.5 rounded-full ${!isGoogleMaps ? 'bg-gradient-to-r from-[#78C2F3] via-[#D676C3] to-[#FF9066]' : 'bg-stone-400'} text-[9px] font-black text-white uppercase tracking-[0.2em] shadow-lg shadow-orange-500/10`}>
+                                    <div className={`self-start inline-flex px-4 py-1.5 rounded-full ${!isGoogleMaps ? 'bg-gradient-to-r from-[#7DD3FC] via-[#C986D3] to-[#FF8E62]' : 'bg-stone-400'} text-[9px] font-black text-white uppercase tracking-[0.2em] shadow-lg shadow-orange-500/20`}>
                                         {isGoogleMaps ? '利用不可' : 'Popular Mode'}
                                     </div>
                                     <div className="space-y-1">
