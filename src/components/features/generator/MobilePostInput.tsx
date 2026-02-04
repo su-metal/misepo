@@ -494,7 +494,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                     {/* Standard 2x2 Grid Platform Selection */}
                     <div className="grid grid-cols-2 gap-3 px-1 mt-2">
                         {(() => {
-                            const getPlatformDetails = (platform: Platform) => {
+                            const getPlatformDetails = (platform: Platform, isActive: boolean) => {
                                 switch (platform) {
                                     case Platform.Instagram: return {
                                         name: 'Instagram',
@@ -514,7 +514,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         name: 'LINE',
                                         tagline: 'Messages',
                                         sub: 'リピーター獲得',
-                                        icon: <LineIcon className="w-7 h-7" isActive={false} activeTextFill="#2b2b2f" textFill="#06C755" />,
+                                        icon: <LineIcon className="w-7 h-7" isActive={isActive} activeTextFill="#06C755" textFill={isActive ? '#06C755' : '#ffffff'} />,
                                         color: 'from-green-500/10 to-emerald-500/10'
                                     };
                                     case Platform.GoogleMaps: return {
@@ -530,7 +530,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
                             return [Platform.Instagram, Platform.X, Platform.Line, Platform.GoogleMaps].map((p, idx) => {
                                 const isActive = platforms.includes(p);
-                                const details = getPlatformDetails(p);
+                                const details = getPlatformDetails(p, isActive);
                                 const bentoClass = 'h-[110px]';
 
                                 // Map brand colors
@@ -730,7 +730,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         {/* Forward Step (To Results) - Matches Back Button Style */}
                                         {generatedResults.length > 0 && mobileStep !== 'result' && (
                                             <button
-                                                onClick={() => setMobileStep('result')}
+                                                onClick={() => setMobileStep(mobileStep === 'input' ? 'confirm' : 'result')}
                                                 className="w-12 h-12 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center shadow-sm active:scale-90 transition-all"
                                             >
                                                 <ChevronRightIcon className="w-6 h-6 text-[#2b2b2f]" />
@@ -951,7 +951,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                                             type="checkbox"
                                                                             checked={isDefaultAudienceEnabled}
                                                                             onChange={(e) => setIsDefaultAudienceEnabled(e.target.checked)}
-                                                                            className="peer appearance-none w-3.5 h-3.5 rounded border border-stone-300 checked:bg-[#1f29fc] checked:border-[#1f29fc] transition-all"
+                                                                            className="peer appearance-none w-3.5 h-3.5 rounded border border-stone-300 checked:bg-[#2b2b2f] checked:border-[#2b2b2f] transition-all"
                                                                         />
                                                                         <svg className="absolute w-2.5 h-2.5 text-white opacity-0 peer-checked:opacity-100 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="4">
                                                                             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
@@ -962,22 +962,22 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                             </div>
                                                             <span className="text-[9px] font-bold text-stone-400">※複数選択可</span>
                                                         </div>
-                                                        <div className="flex overflow-x-auto gap-2 pb-2 pt-2 -mx-2 px-3 no-scrollbar scrollbar-hide">
-                                                            {primaryAudienceList.map(target => (
-                                                                <button
-                                                                    key={target}
-                                                                    onClick={() => handleTargetAudienceToggle(target)}
-                                                                    className={`
-                                                                    flex-shrink-0 px-4 py-2 rounded-xl font-bold text-[11px] transition-all active:scale-95 border whitespace-nowrap
-                                                                    ${targetAudiences?.includes(target)
-                                                                            ? 'bg-[#2b2b2f] text-white border-[#2b2b2f] shadow-md'
-                                                                            : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300'
-                                                                        }
-                                                                `}
-                                                                >
-                                                                    {target}
-                                                                </button>
-                                                            ))}
+                                                <div className="flex overflow-x-auto gap-2 pb-2 pt-2 -mx-2 px-3 no-scrollbar scrollbar-hide">
+                                                    {primaryAudienceList.map(target => (
+                                                        <button
+                                                            key={target}
+                                                            onClick={() => handleTargetAudienceToggle(target)}
+                                                            className={`
+                                                            flex-shrink-0 px-4 py-2 rounded-xl font-bold text-[11px] transition-all active:scale-95 border whitespace-nowrap
+                                                            ${targetAudiences?.includes(target)
+                                                                    ? 'bg-[#2b2b2f] text-white border-[#2b2b2f] shadow-md'
+                                                                    : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300'
+                                                                }
+                                                        `}
+                                                        >
+                                                            {target}
+                                                        </button>
+                                                    ))}
 
                                                             {/* Show All Toggle or Secondary List */}
                                                             {secondaryAudienceList.length > 0 && (
@@ -990,20 +990,20 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                                             <span>＋ 他のターゲット</span>
                                                                         </button>
                                                                     ) : (
-                                                                        secondaryAudienceList.map(target => (
-                                                                            <button
-                                                                                key={target}
-                                                                                onClick={() => handleTargetAudienceToggle(target)}
-                                                                                className={`
-                                                                                flex-shrink-0 px-4 py-2 rounded-xl font-bold text-[11px] transition-all active:scale-95 border bg-white text-stone-500 border-stone-200 hover:border-stone-300 opacity-80 whitespace-nowrap
-                                                                            `}
-                                                                            >
-                                                                                {target}
-                                                                            </button>
-                                                                        ))
-                                                                    )}
-                                                                </>
-                                                            )}
+                                                                secondaryAudienceList.map(target => (
+                                                                    <button
+                                                                        key={target}
+                                                                        onClick={() => handleTargetAudienceToggle(target)}
+                                                                        className="
+                                                                            flex-shrink-0 px-4 py-2 rounded-xl font-bold text-[11px] transition-all active:scale-95 border bg-white text-stone-500 border-stone-200 hover:border-stone-300 opacity-80 whitespace-nowrap
+                                                                        "
+                                                                    >
+                                                                        {target}
+                                                                    </button>
+                                                                ))
+                                                                )}
+                                                            </>
+                                                        )}
                                                         </div>
                                                     </div>
                                                 )}
