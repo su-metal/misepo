@@ -175,6 +175,43 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
                             <CustomHome active={activeTab === 'home'} />
                             <span className={`
                                 text-[9px] font-black uppercase tracking-[0.1em] transition-all
+                                ${activeTab === 'home' ? 'text-[#2b2b2f]' : 'text-slate-400'}
+                            `}>Home</span>
+                        </button>
+                        <button
+                            onClick={() => onTabChange('learning')}
+                            className={`flex flex-col items-center gap-1.5 transition-all active:scale-95 ${isConfirmStep ? 'opacity-40 grayscale pointer-events-none' : ''}`}
+                        >
+                            <CustomAvatar active={activeTab === 'learning'} />
+                            <span className={`
+                                text-[9px] font-black uppercase tracking-[0.1em] transition-all
+                                ${activeTab === 'learning' ? 'text-[#2b2b2f]' : 'text-slate-400'}
+                            `}>分身</span>
+                        </button>
+                    </div>
+
+                    {/* Spacer for Center Notch (Invisible) */}
+                    <div className="w-[80px]" />
+
+                    {/* Right Side Items */}
+                    <div className="flex items-center justify-center gap-8 w-[120px]">
+                        <button
+                            onClick={() => onTabChange('history')}
+                            className={`flex flex-col items-center gap-1.5 transition-all active:scale-95 ${isConfirmStep ? 'opacity-40 grayscale pointer-events-none' : ''}`}
+                        >
+                            <CustomHistory active={activeTab === 'history'} />
+                            <span className={`
+                                text-[9px] font-black uppercase tracking-[0.1em] transition-all
+                                ${activeTab === 'history' ? 'text-[#2b2b2f]' : 'text-slate-400'}
+                            `}>History</span>
+                        </button>
+                        <button
+                            onClick={() => onTabChange('settings')}
+                            className={`flex flex-col items-center gap-1.5 transition-all active:scale-95 ${isConfirmStep ? 'opacity-40 grayscale pointer-events-none' : ''}`}
+                        >
+                            <CustomSettings active={activeTab === 'settings'} />
+                            <span className={`
+                                text-[9px] font-black uppercase tracking-[0.1em] transition-all
                                 ${activeTab === 'settings' ? 'text-[#2b2b2f]' : 'text-slate-400'}
                             `}>Setting</span>
                         </button>
