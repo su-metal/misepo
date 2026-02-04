@@ -607,63 +607,67 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                     </div>
 
                     {/* Bottom Section - Promotional Card (AI Omakase Mode Redesign) */}
-                    <div className="mt-4 md:mt-6">
+                    <div className="mt-4 md:mt-6 px-2">
                         <div
                             onClick={!isGoogleMaps ? handleOmakaseStart : undefined}
                             className={`
-                                relative group transition-all duration-700 my-1
-                                rounded-[32px] overflow-hidden bg-[#edeff1] border border-slate-100
-                                ${!isGoogleMaps ? 'cursor-pointer active:scale-95 shadow-sm hover:shadow-md' : 'cursor-not-allowed opacity-60 grayscale'}
-                                ${isOmakaseLoading ? 'scale-[0.98]' : (!isGoogleMaps ? 'hover:scale-[1.01]' : '')}
+                                relative group transition-all duration-500
+                                ${!isGoogleMaps ? 'cursor-pointer active:scale-[0.98]' : 'cursor-not-allowed grayscale opacity-70'}
                             `}
                         >
-                            {/* Texture & Glass Layer - Subtle for Light Theme */}
-                            {!isGoogleMaps && <div className="absolute inset-0 bg-[#f8fafc]/50 backdrop-blur-[2px] opacity-30 pointer-events-none" />}
+                            {/* 1. Gradient Border Wrapper (No Glow, Clean Cut) */}
+                            <div className="relative p-[1.5px] rounded-[32px] bg-gradient-to-r from-[#80CAFF] via-[#C084FC] to-[#F87171] bg-[length:200%_200%] animate-gradient-flow shadow-sm">
 
-                            <div className="relative p-5 pl-10 pr-6 flex items-center justify-between">
-                                {/* Left Content */}
-                                <div className="relative z-10 flex flex-col gap-4">
-                                    <div className={`self-start inline-flex px-4 py-1.5 rounded-full bg-gradient-to-r from-[#80CAFF] via-[#C084FC] to-[#F87171] text-[9px] font-black text-white uppercase tracking-[0.2em] shadow-sm`}>
-                                        {isGoogleMaps ? '利用不可' : 'POPULAR'}
-                                    </div>
-                                    <div className="space-y-1">
-                                        <div className="flex items-center gap-2">
-                                            <h4 className={`text-[22px] font-black tracking-[0.05em] leading-none whitespace-nowrap ${!isGoogleMaps ? 'text-[#2b2b2f]' : 'text-[#A0A0A0]'}`}>
-                                                AIおまかせ生成
-                                            </h4>
-                                            {!isGoogleMaps && <SparklesIcon className="w-5 h-5 text-[#80CAFF]" />}
+                                {/* 2. Main Card Background */}
+                                <div className="relative bg-white rounded-[30.5px] h-full overflow-hidden">
+
+                                    {/* Iridescent Sheen Effect (Subtle Top Highlight) */}
+                                    <div className="absolute inset-0 bg-gradient-to-br from-white via-slate-50 to-slate-100 opacity-90" />
+                                    <div className="absolute -top-[100px] -left-[100px] w-[200px] h-[200px] bg-gradient-to-br from-[#80CAFF]/20 to-transparent rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+
+                                    <div className="relative rounded-[28px] px-5 py-5 flex items-center justify-between">
+
+                                        {/* Left Content */}
+                                        <div className="flex flex-col gap-3 relative z-10 py-1">
+                                            {/* Badge */}
+                                            <div className="self-start inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#2b2b2f] text-white shadow-md">
+                                                <SparklesIcon className="w-2.5 h-2.5 text-[#C084FC]" />
+                                                <span className="text-[9px] font-black uppercase tracking-[0.15em] leading-none pt-[1px]">
+                                                    {isGoogleMaps ? 'Not Available' : 'Special Feature'}
+                                                </span>
+                                            </div>
+
+                                            <div className="space-y-1.5">
+                                                <h4 className="text-xl font-black text-[#2b2b2f] tracking-tight leading-none bg-clip-text text-transparent bg-gradient-to-r from-[#2b2b2f] to-[#666666]">
+                                                    AIおまかせ生成
+                                                </h4>
+                                                <p className="text-[10px] text-[#A0A0A0] font-bold leading-relaxed tracking-wide">
+                                                    {isGoogleMaps ? 'Googleマップでは利用できません' : '迷ったらここから。プロ級の投稿を1タップで。'}
+                                                </p>
+                                            </div>
                                         </div>
-                                        <p className="text-[11px] text-[#b0b0b0] font-bold leading-relaxed">
-                                            {isGoogleMaps ? (
-                                                'Googleマップ選択時は利用できません'
-                                            ) : (
-                                                <>
-                                                    迷ったらここから。<br />
-                                                    AIと一緒に魅力的な発信を始めましょう。
-                                                </>
-                                            )}
-                                        </p>
-                                    </div>
-                                </div>
 
-                                {/* Right Action "Ticket" Button */}
-                                <div className="relative z-10 flex items-center justify-center">
-                                    <div className={`
-                                        w-14 h-14 rounded-2xl flex items-center justify-center shadow-sm transition-all duration-500
-                                        ${isOmakaseLoading ? 'bg-white scale-90' : (!isGoogleMaps ? 'bg-[#2b2b2f] text-white group-hover:scale-110 active:scale-95' : 'bg-slate-50 shadow-none')}
-                                    `}>
-                                        {isOmakaseLoading ? (
-                                            <div className="w-5 h-5 border-2 border-[#2b2b2f]/20 border-t-[#2b2b2f] rounded-full animate-spin" />
-                                        ) : (
-                                            <ChevronRightIcon className={`w-6 h-6 transition-colors duration-500`} />
-                                        )}
+                                        {/* Right Action Button */}
+                                        <div className="relative z-10 flex-shrink-0 ml-4">
+                                            <div className={`
+                                                w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-all duration-500
+                                                ${isOmakaseLoading
+                                                    ? 'bg-white scale-90'
+                                                    : (!isGoogleMaps
+                                                        ? 'bg-gradient-to-br from-[#2b2b2f] to-[#4b4b55] text-white group-hover:scale-110 group-active:scale-95 group-hover:shadow-xl group-hover:shadow-purple-500/20'
+                                                        : 'bg-slate-200 shadow-none')
+                                                }
+                                            `}>
+                                                {isOmakaseLoading ? (
+                                                    <div className="w-5 h-5 border-2 border-[#C084FC] border-t-transparent rounded-full animate-spin" />
+                                                ) : (
+                                                    <ChevronRightIcon className="w-5 h-5" />
+                                                )}
+                                            </div>
+                                        </div>
                                     </div>
-
                                 </div>
                             </div>
-
-                            {/* Ticket Perforation Line (Visual Only) */}
-                            <div className={`absolute top-[8%] bottom-[8%] right-[25%] w-px border-r-2 border-dotted ${!isGoogleMaps ? 'border-slate-100' : 'border-slate-50'} pointer-events-none`} />
                         </div>
                     </div>
                 </div>
