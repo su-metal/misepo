@@ -12,12 +12,11 @@
   --ichizen-navy: #282d32;         /* テキストカラー (Dark Gray) */
   --ichizen-orange: #eb714f;       
   --ichizen-yellow: #f2e018;       
-  
   --ichizen-white: #ffffff;
   
   /* セマンティックマッピング */
-  --brand-primary: var(--ichizen-blue);
-  --brand-secondary: var(--ichizen-blue-light);
+  --brand-primary: #2b2b2f;
+  --brand-secondary: #f4f6f9;
   --brand-accent: var(--ichizen-green);
   --brand-bg: var(--ichizen-beige);
   --brand-text: var(--ichizen-navy);
@@ -84,7 +83,7 @@ body {
 
 /* Gradient Utilities - More Vibrant & High Contrast */
 .text-gradient-primary {
-  background: linear-gradient(135deg, #1823ff 0%, #7c3aed 50%, #00d2ff 100%);
+  background: linear-gradient(135deg, #2b2b2f 0%, #444449 50%, #66666e 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -92,7 +91,7 @@ body {
 }
 
 .bg-gradient-primary {
-  background: linear-gradient(135deg, #1823ff 0%, #4f46e5 100%);
+  background: linear-gradient(135deg, #2b2b2f 0%, #444449 100%);
 }
 
 .bg-gradient-mesh {

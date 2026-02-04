@@ -80,7 +80,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                 return {
                     icon: <div className="w-10 h-10 bg-[var(--plexo-dark-gray)] rounded-xl flex items-center justify-center text-[var(--plexo-yellow)] text-xl font-black shadow-sm border border-[var(--plexo-dark-gray)]">𝕏</div>,
                     label: 'X',
-                    actionColor: "bg-[var(--brand-primary)] text-white shadow-[0_8px_20px_rgba(24,35,255,0.15)]",
+                    actionColor: "bg-[var(--brand-primary)] text-white shadow-[0_8px_20px_rgba(0,0,0,0.1)]",
                     actionLabel: "Xで投稿する",
                     contentClasses: "text-[16px] text-[var(--plexo-black)] font-bold leading-relaxed tracking-tight",
                     wrapperClass: "max-w-[375px]",
@@ -112,7 +112,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                             <span className="font-bold">店舗情報を含める</span>
                         </button>
                     ),
-                    actionColor: "bg-[var(--brand-primary)] text-white shadow-[0_8px_25px_rgba(24,35,255,0.15)]",
+                    actionColor: "bg-[var(--brand-primary)] text-white shadow-[0_8px_25px_rgba(0,0,0,0.1)]",
                     actionLabel: "Instagramを起動",
                     contentClasses: "text-[15px] text-[#111111] font-medium leading-relaxed",
                     wrapperClass: "max-w-[340px]",
@@ -131,7 +131,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                         </div>
                     ),
                     label: 'Google Maps',
-                    actionColor: 'bg-[var(--brand-primary)] text-white hover:opacity-90 shadow-[0_8px_20px_rgba(24,35,255,0.15)] border-none',
+                    actionColor: 'bg-[var(--brand-primary)] text-white hover:opacity-90 shadow-[0_8px_20px_rgba(0,0,0,0.1)] border-none',
                     actionLabel: "Googleマップで返信する",
                     contentClasses: "text-[15px] text-[#111111] font-medium leading-relaxed",
                     wrapperClass: "max-w-[325px]",
@@ -148,7 +148,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                         </div>
                     ),
                     label: 'LINE',
-                    actionColor: "bg-[var(--brand-primary)] text-white shadow-[0_8px_20px_rgba(24,35,255,0.15)]",
+                    actionColor: "bg-[var(--brand-primary)] text-white shadow-[0_8px_20px_rgba(0,0,0,0.1)]",
                     actionLabel: "LINEで送る",
                     contentClasses: "text-[15px] text-[#111111] font-medium leading-relaxed",
                     wrapperClass: "max-w-full sm:max-w-[400px]",
@@ -162,7 +162,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                 return {
                     icon: null,
                     label: platform,
-                    actionColor: "bg-[var(--brand-primary)] text-white shadow-[0_8px_20px_rgba(24,35,255,0.15)]",
+                    actionColor: "bg-[var(--brand-primary)] text-white shadow-[0_8px_20px_rgba(0,0,0,0.1)]",
                     actionLabel: "投稿する",
                     contentClasses: "text-base text-[#111111] font-black",
                     brandTextColor: "text-[#111111]",

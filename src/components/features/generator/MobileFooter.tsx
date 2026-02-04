@@ -140,8 +140,8 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
                         absolute -top-[36px] left-1/2 -translate-x-1/2 w-[68px] h-[68px] rounded-full flex items-center justify-center z-20 
                         transition-all duration-300 border-[4px]
                         ${isConfirmStep
-                            ? 'bg-gradient-to-br from-[var(--brand-highlight)] via-[#f3e336] to-[#f2e018] border-white text-black rotate-0 scale-110 shadow-[0_20px_45px_rgba(242,224,24,0.5)]'
-                            : 'bg-gradient-to-br from-[var(--brand-highlight)] via-[#f3e336] to-[#f2e018] border-white text-black rotate-180 scale-100 hover:scale-105 shadow-xl'
+                            ? 'bg-[var(--brand-primary)] border-white text-white rotate-0 scale-110 shadow-[0_20px_45px_rgba(0,0,0,0.2)]'
+                            : 'bg-[var(--brand-primary)] border-white text-white rotate-180 scale-100 hover:scale-105 shadow-xl'
                         }
                     `}
                     aria-label={isConfirmStep ? "Generate Post" : "New Post"}
@@ -151,14 +151,14 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
                             width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
                             className={`absolute transition-all duration-300 ease-out ${isConfirmStep ? 'opacity-0 scale-50 rotate-90' : 'opacity-100 scale-100 rotate-0'}`}
                         >
-                            <path d="M12 5V19M5 12H19" stroke="black" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                            <path d="M12 5V19M5 12H19" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
 
                         <div className={`absolute transition-all duration-300 ease-out ${isConfirmStep ? 'opacity-100 scale-100 rotate-0' : 'opacity-0 scale-50 -rotate-90'}`}>
                             {isGenerating ? (
-                                <div className="w-7 h-7 border-3 border-black/30 border-t-black rounded-full animate-spin" />
+                                <div className="w-7 h-7 border-3 border-white/30 border-t-white rounded-full animate-spin" />
                             ) : (
-                                <SparklesIcon className="w-7 h-7 text-black" />
+                                <SparklesIcon className="w-7 h-7 text-white" />
                             )}
                         </div>
                     </div>
