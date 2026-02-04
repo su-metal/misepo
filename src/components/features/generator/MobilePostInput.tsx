@@ -624,7 +624,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                     {/* Watermark Texture */}
                                     <SparklesIcon className="absolute -bottom-6 -right-6 w-32 h-32 text-[#2b2b2f]/[0.03] -rotate-12 pointer-events-none" />
 
-                                    <div className="relative rounded-[28px] px-5 py-5 flex items-center justify-between">
+                                    <div className="relative rounded-[28px] px-5 py-4 flex items-center justify-between">
 
                                         {/* Left Content */}
                                         <div className="flex flex-col gap-3 relative z-10 py-1">
