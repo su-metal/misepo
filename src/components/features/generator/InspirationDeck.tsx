@@ -142,8 +142,8 @@ export const InspirationDeck: React.FC<InspirationDeckProps> = ({ storeProfile, 
         return (
             <div className="w-full h-32 flex items-center justify-center bg-stone-50/50 rounded-2xl mb-4 border border-stone-100/50">
                 <div className="flex flex-col items-center gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-[#1f29fc] animate-ping" />
-                    <span className="text-[9px] font-black text-[#1f29fc]/50 tracking-widest uppercase">Sommelier is thinking...</span>
+                    <div className="w-1.5 h-1.5 rounded-full bg-[#2b2b2f] animate-ping" />
+                    <span className="text-[9px] font-black text-[#2b2b2f]/50 tracking-widest uppercase">Sommelier is thinking...</span>
                 </div>
             </div>
         );
@@ -162,8 +162,8 @@ export const InspirationDeck: React.FC<InspirationDeckProps> = ({ storeProfile, 
                     onClick={() => setRefreshKey(prev => prev + 1)}
                     className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#f5f7fa] border border-slate-200 active:scale-95 transition-all group"
                 >
-                    <RotateCcwIcon className="w-3 h-3 text-slate-500 group-hover:text-[#1f29fc] transition-colors" />
-                    <span className="text-[9px] font-black text-slate-500 group-hover:text-[#1f29fc] tracking-wider uppercase">Shuffle</span>
+                    <RotateCcwIcon className="w-3 h-3 text-slate-500 group-hover:text-[#2b2b2f] transition-colors" />
+                    <span className="text-[9px] font-black text-slate-500 group-hover:text-[#2b2b2f] tracking-wider uppercase">Shuffle</span>
                 </button>
             </div>
 
@@ -173,13 +173,13 @@ export const InspirationDeck: React.FC<InspirationDeckProps> = ({ storeProfile, 
                         <button
                             key={card.id}
                             onClick={() => onSelect(card.prompt, card.question)}
-                            className="flex items-center gap-2.5 px-5 py-3 bg-white rounded-full border border-stone-100 shadow-sm transition-all hover:scale-[1.02] active:scale-95 hover:border-[#1f29fc]/30 group shrink-0 whitespace-nowrap"
+                            className="flex items-center gap-2.5 px-5 py-3 bg-white rounded-full border border-stone-100 shadow-sm transition-all hover:scale-[1.02] active:scale-95 hover:border-[#2b2b2f]/30 group shrink-0 whitespace-nowrap"
                         >
                             <span className="text-xl leading-none">{card.icon}</span>
                             <div className="flex flex-col items-start leading-tight">
-                                <h4 className="text-[13px] font-bold text-[#111111] group-hover:text-[#1f29fc] transition-colors">{card.title}</h4>
+                                <h4 className="text-[13px] font-bold text-[#111111] group-hover:text-[#2b2b2f] transition-colors">{card.title}</h4>
                                 <span className={`text-[8px] font-black uppercase tracking-tighter ${card.type === 'trend' || card.type === 'web'
-                                    ? 'text-[#1f29fc]'
+                                    ? 'text-[#C986D3]'
                                     : 'text-stone-400'
                                     }`}>
                                     {card.type === 'trend' ? 'TREND' : card.type === 'web' ? 'WEB TREND' : 'NEW IDEA'}

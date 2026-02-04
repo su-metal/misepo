@@ -621,7 +621,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                 {/* Left Content */}
                                 <div className="relative z-10 flex flex-col gap-6">
                                     <div className={`self-start inline-flex px-4 py-1.5 rounded-full ${!isGoogleMaps ? 'bg-gradient-to-r from-[#7DD3FC] via-[#C986D3] to-[#FF8E62]' : 'bg-stone-400'} text-[9px] font-black text-white uppercase tracking-[0.2em] shadow-lg shadow-orange-500/20`}>
-                                        {isGoogleMaps ? '利用不可' : 'Popular Mode'}
+                                        {isGoogleMaps ? '利用不可' : 'Popular'}
                                     </div>
                                     <div className="space-y-1">
                                         <div className="flex items-center gap-2">
