@@ -392,10 +392,10 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                 misepo <span className="bg-slate-900/10 px-1 rounded text-[8px] tracking-normal text-slate-500">HUB</span>
                             </span>
                             <div className="flex items-center gap-3 select-none">
-                                <span className="text-[3.5rem] font-black text-slate-900 tracking-tighter leading-[0.8]">{day}</span>
+                                <span className="text-[3.5rem] font-black text-white tracking-tighter leading-[0.8]">{day}</span>
                                 <div className="flex flex-col justify-center gap-0.5 pt-1">
-                                    <span className="text-sm font-black text-slate-900 uppercase tracking-widest leading-none">{month}</span>
-                                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] leading-none">{weekday}</span>
+                                    <span className="text-sm font-black text-white uppercase tracking-widest leading-none">{month}</span>
+                                    <span className="text-[10px] font-bold text-[var(--pop-violet-sub-light)] uppercase tracking-[0.2em] leading-none">{weekday}</span>
                                 </div>
                             </div>
                             <div className="inline-flex items-center gap-1 px-3 py-1 bg-[#2b2b2f]/10 rounded-full mt-2 ml-1 self-start">
@@ -469,13 +469,13 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                         </div>
 
                         {/* Simultaneous Generation Toggle */}
-                        <div className="flex items-center gap-3 bg-slate-50 px-4 py-2 rounded-2xl border border-slate-100 shadow-sm active:scale-95 transition-all cursor-pointer select-none"
+                        <div className="flex items-center gap-3 bg-[var(--pop-violet-card)] px-4 py-2 rounded-2xl border border-white/10 shadow-sm active:scale-95 transition-all cursor-pointer select-none"
                             onClick={onToggleMultiGen}>
                             <div className="flex flex-col items-end">
                                 <span className={`text-[9px] font-black tracking-widest uppercase leading-none mb-0.5 ${isMultiGen ? 'text-[#7F5AF0]' : 'text-slate-400'}`}>
                                     {isMultiGen ? 'ON' : 'OFF'}
                                 </span>
-                                <span className="text-[8px] font-bold text-slate-500 leading-none whitespace-nowrap">同時生成</span>
+                                <span className="text-[8px] font-bold text-[#A0A0A0] leading-none whitespace-nowrap">同時生成</span>
                             </div>
                             <div className={`
                                 relative w-10 h-5 rounded-full transition-all duration-300
@@ -604,7 +604,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             }}
                         >
                             {/* Texture & Glass Layer */}
-                            {!isGoogleMaps && <div className="absolute inset-0 bg-white/10 backdrop-blur-[2px] opacity-50 pointer-events-none" />}
+                            {!isGoogleMaps && <div className="absolute inset-0 bg-white/5 backdrop-blur-[2px] opacity-50 pointer-events-none" />}
 
                             {/* Shine Effect removed */}
 
@@ -630,7 +630,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             </h4>
                                             {!isGoogleMaps && <SparklesIcon className="w-5 h-5 text-[#7F5AF0] animate-pulse" />}
                                         </div>
-                                        <p className="text-[11px] text-stone-500 font-bold leading-relaxed">
+                                        <p className="text-[11px] text-[#A0A0A0] font-bold leading-relaxed">
                                             {isGoogleMaps ? (
                                                 'Googleマップ選択時は利用できません'
                                             ) : (
@@ -677,23 +677,24 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
             />
 
             {/* Bottom Sheet Drawer - Monochrome Style */}
-            {isStepDrawerOpen && (
-                <div className="absolute inset-0 z-[130] flex items-end">
-                    {/* Immersive Backdrop */}
-                    <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" onClick={() => {
-                        setIsStepDrawerOpen(false);
-                        // Reset step to platform when closing from input/confirm steps
-                        if (mobileStep !== 'result') {
-                            setMobileStep('platform');
-                        }
-                    }} />
+            {
+                isStepDrawerOpen && (
+                    <div className="absolute inset-0 z-[130] flex items-end">
+                        {/* Immersive Backdrop */}
+                        <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" onClick={() => {
+                            setIsStepDrawerOpen(false);
+                            // Reset step to platform when closing from input/confirm steps
+                            if (mobileStep !== 'result') {
+                                setMobileStep('platform');
+                            }
+                        }} />
 
-                    {/* Sliding Panel (Monochrome) */}
-                    <div className={`absolute bottom-0 left-0 right-0 bg-[#FAFAFA] border-t border-[#E5E5E5] rounded-t-[54px] shadow-[0_-20px_60px_rgba(0,0,0,0.1)] animate-nyoki flex flex-col ${mobileStep === 'platform' ? 'h-[88%]' : 'h-[96%]'} ${mobileStep === 'result' ? 'pb-8 safe-area-bottom' : 'pb-0'}`}>
-                        {/* Drag Handle */}
-                        <div className="w-full flex justify-center py-6">
-                            <div className="w-16 h-1.5 bg-[#E5E5E5] rounded-full" />
-                        </div>
+                        {/* Sliding Panel (Monochrome) */}
+                        <div className={`absolute bottom-0 left-0 right-0 bg-[#1E1E24] border-t border-white/10 rounded-t-[54px] shadow-[0_-20px_60px_rgba(0,0,0,0.3)] animate-nyoki flex flex-col ${mobileStep === 'platform' ? 'h-[88%]' : 'h-[96%]'} ${mobileStep === 'result' ? 'pb-8 safe-area-bottom' : 'pb-0'}`}>
+                            {/* Drag Handle */}
+                            <div className="w-full flex justify-center py-6">
+                                <div className="w-16 h-1.5 bg-white/10 rounded-full" />
+                            </div>
 
                         {/* Drawer Header - Hidden during AI Refinement */}
                         {!refiningKey && (
@@ -733,86 +734,61 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         >
                                             {getPlatformIcon(p, "w-5 h-5")}
                                         </div>
-                                    ))}
-                                    <button
-                                        onClick={() => {
-                                            setIsStepDrawerOpen(false);
-                                            // ALWAYS reset to platform to ensure footer contrast resets (Dark Mode)
-                                            setMobileStep('platform');
-                                        }}
-                                        className="w-10 h-10 rounded-full bg-white border border-[#E5E5E5] flex items-center justify-center shadow-sm active:scale-90 transition-all ml-2 z-20"
-                                    >
-                                        <CloseIcon className="w-5 h-5 text-[#111111]" />
-                                    </button>
+                                    </div>
+                                    <div className="flex -space-x-2">
+                                        {platforms.map(p => (
+                                            <div key={p} className="w-10 h-10 rounded-full bg-[#2B2B2F] border-2 border-[#1E1E24] flex items-center justify-center shadow-sm z-10">
+                                                {getPlatformIcon(p, "w-5 h-5")}
+                                            </div>
+                                        ))}
+                                        <button
+                                            onClick={() => {
+                                                setIsStepDrawerOpen(false);
+                                                // ALWAYS reset to platform to ensure footer contrast resets (Dark Mode)
+                                                setMobileStep('platform');
+                                            }}
+                                            className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center shadow-sm active:scale-90 transition-all ml-2 z-20"
+                                        >
+                                            <CloseIcon className="w-5 h-5 text-white" />
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                        )}
+                            )}
 
-                        {/* Drawer Content - Redesigned for Sticky Actions */}
-                        <div className="flex-1 flex flex-col min-h-0 overflow-hidden relative">
-                            {mobileStep === 'input' && (
-                                <div className="flex-1 flex flex-col min-h-0 animate-in fade-in zoom-in-95 duration-700">
+                            {/* Drawer Content - Redesigned for Sticky Actions */}
+                            <div className="flex-1 flex flex-col min-h-0 overflow-hidden relative">
+                                {mobileStep === 'input' && (
+                                    <div className="flex-1 flex flex-col min-h-0 animate-in fade-in zoom-in-95 duration-700">
 
-                                    {/* 1. Top Fixed Header Section */}
-                                    {!isGoogleMaps && (
-                                        <div className="flex-shrink-0 flex justify-center py-4 bg-[#FAFAFA] z-10 border-b border-stone-100">
-                                            <button
-                                                onClick={toggleVoiceInput}
-                                                className={`relative w-28 h-28 rounded-full flex-shrink-0 flex items-center justify-center transition-all duration-700 ${isListening ? 'scale-110' : 'hover:scale-105'}`}
-                                            >
-                                                {/* Animated Rings for Listening - Monochrome */}
-                                                {isListening && (
-                                                    <>
-                                                        <div className="absolute inset-0 rounded-full bg-[#111111] opacity-10 animate-ping [animation-duration:2s]" />
-                                                        <div className="absolute inset-4 rounded-full bg-[#111111] opacity-10 animate-pulse [animation-duration:1s]" />
-                                                    </>
-                                                )}
-                                                <div className={`w-full h-full rounded-full flex flex-col items-center justify-center transition-all duration-500 shadow-xl border border-white/40 ${isListening ? 'bg-[#111111] text-white' : 'bg-white text-[#111111] border-[#E5E5E5]'}`}>
-                                                    {isListening ? (
-                                                        <div className="flex gap-1.5 h-6 items-center">
-                                                            <div className="w-1 h-5 bg-white rounded-full animate-bounce [animation-delay:0s]" />
-                                                            <div className="w-1 h-7 bg-white rounded-full animate-bounce [animation-delay:0.1s]" />
-                                                            <div className="w-1 h-5 bg-white rounded-full animate-bounce [animation-delay:0.2s]" />
-                                                        </div>
-                                                    ) : (
-                                                        <MicIcon className="w-10 h-10 text-[#111111]" />
+                                        {/* 1. Top Fixed Header Section */}
+                                        {!isGoogleMaps && (
+                                            <div className="flex-shrink-0 flex justify-center py-4 bg-[#1E1E24] z-10 border-b border-white/5">
+                                                <button
+                                                    onClick={toggleVoiceInput}
+                                                    className={`relative w-28 h-28 rounded-full flex-shrink-0 flex items-center justify-center transition-all duration-700 ${isListening ? 'scale-110' : 'hover:scale-105'}`}
+                                                >
+                                                    {/* Animated Rings for Listening - Monochrome */}
+                                                    {isListening && (
+                                                        <>
+                                                            <div className="absolute inset-0 rounded-full bg-white/20 opacity-10 animate-ping [animation-duration:2s]" />
+                                                            <div className="absolute inset-4 rounded-full bg-white/20 opacity-10 animate-pulse [animation-duration:1s]" />
+                                                        </>
                                                     )}
-                                                    <span className={`mt-1.5 text-[8px] font-black uppercase tracking-[0.2em] ${isListening ? 'text-white' : 'text-[#999999]'}`}>
-                                                        {isListening ? '聞き取り中...' : '音声入力'}
-                                                    </span>
-                                                </div>
-                                            </button>
-                                        </div>
-                                    )}
-
-                                    {/* 2. Middle Scrollable Area (Main Text inputs) */}
-                                    <div className="flex-1 overflow-y-auto px-8 py-2">
-                                        <div className="w-full relative py-2 mb-4">
-                                            {/* AI Inspiration Deck for "AI Standard" */}
-                                            <InspirationDeck
-                                                storeProfile={storeProfile}
-                                                // Show if OmakaseMode AND plain-ai AND (empty input OR default omakase prompt)
-                                                isVisible={
-                                                    isOmakaseMode &&
-                                                    activePresetId === 'plain-ai' &&
-                                                    (!inputText || inputText.startsWith("✨ AIおまかせ生成")) &&
-                                                    !isGoogleMaps
-                                                }
-                                                cachedCards={cachedInspirationCards}
-                                                onCardsLoaded={setCachedInspirationCards}
-                                                onSelect={(prompt, q) => {
-                                                    onInputTextChange(""); // Clear for user answer
-                                                    if (onQuestionChange) onQuestionChange(q);
-                                                    if (onTopicPromptChange) onTopicPromptChange(prompt);
-                                                    setIsPromptExpanded(false);
-                                                }}
-                                            />
-
-                                            <div className="text-center space-y-2 mb-6">
-                                                <h4 className="text-xl font-bold text-[#111111]">{isGoogleMaps ? 'Review Reply' : 'New Post'}</h4>
-                                                <p className="text-sm text-[#666666]">
-                                                    {isGoogleMaps ? 'Googleマップの口コミを貼り付けてください' : '今日はどんなことを伝えますか？'}
-                                                </p>
+                                                    <div className={`w-full h-full rounded-full flex flex-col items-center justify-center transition-all duration-500 shadow-xl border border-white/10 ${isListening ? 'bg-white text-[var(--pop-violet-main)]' : 'bg-[#2B2B2F] text-white'}`}>
+                                                        {isListening ? (
+                                                            <div className="flex gap-1.5 h-6 items-center">
+                                                                <div className="w-1 h-5 bg-[var(--pop-violet-main)] rounded-full animate-bounce [animation-delay:0s]" />
+                                                                <div className="w-1 h-7 bg-[var(--pop-violet-main)] rounded-full animate-bounce [animation-delay:0.1s]" />
+                                                                <div className="w-1 h-5 bg-[var(--pop-violet-main)] rounded-full animate-bounce [animation-delay:0.2s]" />
+                                                            </div>
+                                                        ) : (
+                                                            <MicIcon className="w-10 h-10 text-white" />
+                                                        )}
+                                                        <span className={`mt-1.5 text-[8px] font-black uppercase tracking-[0.2em] ${isListening ? 'text-[var(--pop-violet-main)]' : 'text-[#A0A0A0]'}`}>
+                                                            {isListening ? '聞き取り中...' : '音声入力'}
+                                                        </span>
+                                                    </div>
+                                                </button>
                                             </div>
                                             {question && (
                                                 <div className="mb-6 p-6 bg-stone-50 border border-stone-100 rounded-[32px] animate-in slide-in-from-top-4 duration-500">
@@ -827,26 +803,57 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                             </p>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            )}
+                                                )}
 
-                                            <AutoResizingTextarea
-                                                value={inputText}
-                                                onChange={(e) => onInputTextChange(e.target.value)}
-                                                placeholder={question ? "こちらの質問への答えを短く入力してください..." : (isGoogleMaps ? "こちらにお客様からの口コミを貼り付けてください。丁寧な返信案をいくつか作成します。" : "「旬の食材が入荷した」「雨の日限定の割引をする」など、短いメモ書きでも大丈夫ですよ。")}
-                                                className="w-full min-h-[220px] p-8 bg-white border border-[#E5E5E5] rounded-[40px] text-lg font-bold leading-relaxed focus:outline-none focus:border-[#111111] transition-all placeholder:text-[#CCCCCC] text-[#111111] resize-none overflow-hidden"
-                                            />
+                                                <AutoResizingTextarea
+                                                    value={inputText}
+                                                    onChange={(e) => onInputTextChange(e.target.value)}
+                                                    placeholder={question ? "こちらの質問への答えを短く入力してください..." : (isGoogleMaps ? "こちらにお客様からの口コミを貼り付けてください。丁寧な返信案をいくつか作成します。" : "「旬の食材が入荷した」「雨の日限定の割引をする」など、短いメモ書きでも大丈夫ですよ。")}
+                                                    className="w-full min-h-[220px] p-8 bg-[#2B2B2F] border border-white/10 rounded-[40px] text-lg font-bold leading-relaxed focus:outline-none focus:border-[var(--pop-violet-main)] transition-all placeholder:text-[#666666] text-white resize-none overflow-hidden"
+                                                />
 
-                                            {isGoogleMaps && (
+                                                {isGoogleMaps && (
+                                                    <button
+                                                        onClick={toggleVoiceInput}
+                                                        className={`absolute bottom-6 left-6 w-12 h-12 rounded-full flex items-center justify-center transition-all shadow-md ${isListening ? 'bg-[var(--pop-violet-main)] text-white animate-pulse' : 'bg-white/10 text-white'}`}
+                                                    >
+                                                        <MicIcon className="w-6 h-6" />
+                                                    </button>
+                                                )}
+
+                                                {inputText && (
+                                                    <button
+                                                        onClick={() => onInputTextChange("")}
+                                                        className="absolute bottom-6 right-6 w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center shadow-md active:scale-95 transition-all text-[#A0A0A0] hover:text-white"
+                                                        title="入力をクリア"
+                                                    >
+                                                        <EraserIcon className="w-6 h-6" />
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        {/* 3. Sticky Action Footer */}
+                                        <div className="p-6 pb-12 safe-area-bottom border-t border-white/5 flex-shrink-0 bg-[#1E1E24] flex flex-col gap-4 shadow-[0_-10px_30px_rgba(0,0,0,0.2)] z-20">
+
+                                            {!isListening && (
                                                 <button
-                                                    onClick={toggleVoiceInput}
-                                                    className={`absolute bottom-6 left-6 w-12 h-12 rounded-full flex items-center justify-center transition-all shadow-md ${isListening ? 'bg-[#111111] text-white animate-pulse' : 'bg-[#F5F5F5] text-[#111111]'}`}
+                                                    onClick={() => {
+                                                        setMobileStep('confirm');
+                                                    }}
+                                                    disabled={!inputText.trim()}
+                                                    className={`w-full py-5 rounded-[28px] font-black text-sm uppercase tracking-[0.2em] shadow-xl active:scale-95 transition-all flex items-center justify-center gap-2 ${inputText.trim()
+                                                        ? 'bg-[var(--pop-violet-main)] text-white'
+                                                        : 'bg-white/10 text-[#666666] cursor-not-allowed shadow-none'
+                                                        }`}
                                                 >
-                                                    <MicIcon className="w-6 h-6" />
+                                                    確認画面へ
+                                                    <ChevronRightIcon className="w-5 h-5" />
                                                 </button>
                                             )}
                                         </div>
                                     </div>
+                                )}
 
                                     {/* 3. Sticky Action Footer */}
                                     <div className="p-6 pb-12 safe-area-bottom border-t border-[#E5E5E5]/50 flex-shrink-0 bg-[#FAFAFA] flex flex-col gap-4 shadow-[0_-10px_30px_rgba(0,0,0,0.02)] z-20">
@@ -896,31 +903,51 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                         <div className="flex gap-2">
                                                             {[1, 2, 3, 4, 5].map((star) => (
                                                                 <button
-                                                                    key={star}
-                                                                    onClick={() => onStarRatingChange(star)}
-                                                                    className="transition-transform active:scale-95"
+                                                                    key={target}
+                                                                    onClick={() => handleTargetAudienceToggle(target)}
+                                                                    className={`
+                                                                    flex-shrink-0 px-4 py-2 rounded-xl font-bold text-[11px] transition-all active:scale-95 border whitespace-nowrap
+                                                                    ${targetAudiences?.includes(target)
+                                                                            ? 'bg-[#122646] text-white border-[#122646] shadow-md'
+                                                                            : 'bg-white text-stone-500 border-stone-200 hover:border-stone-300'
+                                                                        }
+                                                                `}
                                                                 >
-                                                                    <StarIcon
-                                                                        className={`w-7 h-7 transition-all ${star <= (starRating || 0)
-                                                                            ? 'text-[#f2e018] fill-[#f2e018] drop-shadow-sm'
-                                                                            : 'text-[#E5E5E5]'
-                                                                            }`}
-                                                                    />
+                                                                    {target}
                                                                 </button>
                                                             ))}
+
+                                                            {/* Show All Toggle or Secondary List */}
+                                                            {secondaryAudienceList.length > 0 && (
+                                                                <>
+                                                                    {!isAudienceExpanded ? (
+                                                                        <button
+                                                                            onClick={() => setIsAudienceExpanded(true)}
+                                                                            className="flex-shrink-0 px-3 py-2 rounded-xl font-bold text-[10px] bg-stone-100 text-stone-400 border border-stone-100 hover:bg-stone-200 transition-colors flex items-center gap-1 whitespace-nowrap"
+                                                                        >
+                                                                            <span>＋ 他のターゲット</span>
+                                                                        </button>
+                                                                    ) : (
+                                                                        secondaryAudienceList.map(target => (
+                                                                            <button
+                                                                                key={target}
+                                                                                onClick={() => handleTargetAudienceToggle(target)}
+                                                                                className={`
+                                                                                flex-shrink-0 px-4 py-2 rounded-xl font-bold text-[11px] transition-all active:scale-95 border bg-white text-stone-500 border-stone-200 hover:border-stone-300 opacity-80 whitespace-nowrap
+                                                                            `}
+                                                                            >
+                                                                                {target}
+                                                                            </button>
+                                                                        ))
+                                                                    )}
+                                                                </>
+                                                            )}
                                                         </div>
                                                     </div>
                                                 )}
 
-                                                <button onClick={() => setMobileStep('input')} className="absolute bottom-6 right-8 w-11 h-11 bg-white border border-[#E5E5E5] rounded-2xl text-[#999999] hover:text-[#111111] transition-all flex items-center justify-center active:scale-95 shadow-sm">
-                                                    <RotateCcwIcon className="w-5 h-5" />
-                                                </button>
-                                            </div>
-
-
-                                            {/* Target Audience - Horizontal Scroll for Compactness - Hidden for Google Maps */}
-                                            {!isGoogleMaps && targetAudiences && (
-                                                <div className="flex flex-col gap-3">
+                                                {/* Style Selection - Horizontal Pill Style (Monochrome) */}
+                                                <div className="flex flex-col gap-4">
                                                     <div className="flex items-center justify-between px-2">
                                                         <div className="flex items-center gap-3">
                                                             <span className="text-[11px] font-black text-[#2b2b2f] uppercase tracking-[0.2em]">ターゲット設定</span>
@@ -936,7 +963,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                                                                     </svg>
                                                                 </div>
-                                                                <span className="text-[9px] font-bold text-stone-400 group-hover/label:text-stone-600 transition-colors">デフォルトに設定</span>
+                                                                <span className="text-[9px] font-bold text-[#A0A0A0] group-hover/label:text-white transition-colors">デフォルトに設定</span>
                                                             </label>
                                                         </div>
                                                         <span className="text-[9px] font-bold text-stone-400">※複数選択可</span>
@@ -1045,13 +1072,14 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                         className="bg-transparent text-sm font-bold text-[#2b2b2f] focus:outline-none resize-none min-h-[32px] placeholder:text-stone-300 w-full"
                                                     />
                                                 </div>
-                                            </div>
 
-                                            {/* Store Supplement (Google Maps Only) - Moved here after Custom Prompt */}
-                                            {isGoogleMaps && (
+                                                {/* Custom Prompt (Always Visible) */}
                                                 <div className="my-2">
-                                                    <div className="bg-[#f5f7fa] px-6 py-4 rounded-[32px] border border-stone-200 flex flex-col gap-2 shadow-sm">
-                                                        <span className="text-[11px] font-black text-stone-500 uppercase tracking-[0.2em]">補足情報 / 当日の事情</span>
+                                                    <div className="bg-[#2B2B2F] px-6 py-4 rounded-[32px] border border-white/10 flex flex-col gap-2 shadow-sm active:border-[var(--pop-violet-main)]/30 transition-colors">
+                                                        <div className="flex items-center gap-1.5">
+                                                            <AutoSparklesIcon className="w-3 h-3 text-[var(--pop-violet-main)]" />
+                                                            <span className="text-[11px] font-black text-[#A0A0A0] uppercase tracking-[0.2em]">追加指示（任意）</span>
+                                                        </div>
                                                         <AutoResizingTextarea
                                                             value={storeSupplement}
                                                             onChange={(e) => onStoreSupplementChange(e.target.value)}
@@ -1060,19 +1088,34 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                         />
                                                     </div>
                                                 </div>
-                                            )}
 
-                                            {/* Fine-tuning Settings (Tone, Length, Supplement) */}
-                                            {(!isStyleLocked || !isX) && (
-                                                <div className="mt-8 px-2 space-y-8">
-                                                    {/* Settings Grid - Monochrome */}
-                                                    <div className="flex gap-8 mb-4">
-                                                        {/* Tone Slider - Hide if Locked */}
-                                                        {!isStyleLocked && (
-                                                            <div className="flex-1 flex flex-col gap-3">
-                                                                <div className="flex items-center justify-between px-1">
-                                                                    <div className="flex items-center gap-1.5">
-                                                                        <span className="text-[8px] font-black text-stone-400 uppercase tracking-[0.2em]">トーン</span>
+                                                {/* Store Supplement (Google Maps Only) - Moved here after Custom Prompt */}
+                                                {isGoogleMaps && (
+                                                    <div className="my-2">
+                                                        <div className="bg-[#2B2B2F] px-6 py-4 rounded-[32px] border border-white/10 flex flex-col gap-2 shadow-sm">
+                                                            <span className="text-[11px] font-black text-[#A0A0A0] uppercase tracking-[0.2em]">補足情報 / 当日の事情</span>
+                                                            <AutoResizingTextarea
+                                                                value={storeSupplement}
+                                                                onChange={(e) => onStoreSupplementChange(e.target.value)}
+                                                                placeholder="例：急な欠勤でお待たせした、感謝を伝えたい等"
+                                                                className="bg-transparent text-sm font-bold text-white focus:outline-none resize-none min-h-[40px] placeholder:text-[#666666]"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                )}
+
+                                                {/* Fine-tuning Settings (Tone, Length, Supplement) */}
+                                                {(!isStyleLocked || !isX) && (
+                                                    <div className="mt-8 px-2 space-y-8">
+                                                        {/* Settings Grid - Monochrome */}
+                                                        <div className="flex gap-8 mb-4">
+                                                            {/* Tone Slider - Hide if Locked */}
+                                                            {!isStyleLocked && (
+                                                                <div className="flex-1 flex flex-col gap-3">
+                                                                    <div className="flex items-center justify-between px-1">
+                                                                        <div className="flex items-center gap-1.5">
+                                                                            <span className="text-[8px] font-black text-[#666666] uppercase tracking-[0.2em]">トーン</span>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                                 <div className="relative px-1 pt-1 pb-2">
@@ -1095,8 +1138,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                                         })}
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                        )}
+                                                            )}
 
                                                         {/* Length Slider */}
                                                         {!isX && (
@@ -1124,58 +1166,57 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                                         })}
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                        )}
-                                                    </div>
+                                                            )}
+                                                        </div>
 
-                                                    {/* Store Supplement removed from here - now appears after Custom Prompt */}
-                                                </div>
-                                            )}
+                                                        {/* Store Supplement removed from here - now appears after Custom Prompt */}
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            )}
-                            {mobileStep === 'result' && (
-                                <div className="flex-1 overflow-y-auto pb-4 animate-in fade-in slide-in-from-bottom-10 duration-700 px-0">
-                                    <PostResultTabs
-                                        results={generatedResults}
-                                        activeTab={activeResultTab}
-                                        onTabChange={onResultTabChange!}
-                                        onManualEdit={onManualEdit!}
-                                        onToggleFooter={onToggleFooter!}
-                                        onRefine={onRefine!}
-                                        onRegenerateSingle={onRegenerateSingle!}
-                                        onShare={onShare!}
-                                        getShareButtonLabel={getShareButtonLabel!}
-                                        storeProfile={storeProfile}
-                                        refiningKey={refiningKey!}
-                                        onRefineToggle={onRefineToggle!}
-                                        refineText={refineText!}
-                                        onRefineTextChange={onRefineTextChange!}
-                                        onPerformRefine={onPerformRefine!}
-                                        isRefining={isRefining!}
-                                        includeFooter={includeFooter!}
-                                        onIncludeFooterChange={onIncludeFooterChange!}
-                                        onAutoFormat={onAutoFormat!}
-                                        isAutoFormatting={isAutoFormatting!}
-                                        onCopy={onCopy!}
-                                    />
-                                </div>
-                            )}
-                        </div>
+                                )}
+                                {mobileStep === 'result' && (
+                                    <div className="flex-1 overflow-y-auto pb-4 animate-in fade-in slide-in-from-bottom-10 duration-700 px-0">
+                                        <PostResultTabs
+                                            results={generatedResults}
+                                            activeTab={activeResultTab}
+                                            onTabChange={onResultTabChange!}
+                                            onManualEdit={onManualEdit!}
+                                            onToggleFooter={onToggleFooter!}
+                                            onRefine={onRefine!}
+                                            onRegenerateSingle={onRegenerateSingle!}
+                                            onShare={onShare!}
+                                            getShareButtonLabel={getShareButtonLabel!}
+                                            storeProfile={storeProfile}
+                                            refiningKey={refiningKey!}
+                                            onRefineToggle={onRefineToggle!}
+                                            refineText={refineText!}
+                                            onRefineTextChange={onRefineTextChange!}
+                                            onPerformRefine={onPerformRefine!}
+                                            isRefining={isRefining!}
+                                            includeFooter={includeFooter!}
+                                            onIncludeFooterChange={onIncludeFooterChange!}
+                                            onAutoFormat={onAutoFormat!}
+                                            isAutoFormatting={isAutoFormatting!}
+                                            onCopy={onCopy!}
+                                        />
+                                    </div>
+                                )}
+                            </div>
 
-                        {/* Step 3 Sticky Action Area - Fixed for Hitbox and Layout accuracy */}
-                        {mobileStep === 'confirm' && (
-                            <div className="absolute bottom-0 left-0 right-0 z-[120] flex flex-col items-center">
-                                {/* Gradient Fade Border */}
-                                {/* Gradient fade removed */}
+                            {/* Step 3 Sticky Action Area - Fixed for Hitbox and Layout accuracy */}
+                            {mobileStep === 'confirm' && (
+                                <div className="absolute bottom-0 left-0 right-0 z-[120] flex flex-col items-center">
+                                    {/* Gradient Fade Border */}
+                                    {/* Gradient fade removed */}
 
-                                {/* Opaque Background with Content */}
-                                <div className="w-full bg-[#FAFAFA] px-8 pt-4 pb-[24px] flex flex-col items-center gap-4">
-                                    <button
-                                        onClick={onGenerate}
-                                        disabled={isGenerating}
-                                        className={`
+                                    {/* Opaque Background with Content */}
+                                    <div className="w-full bg-[#1E1E24] px-8 pt-4 pb-[24px] flex flex-col items-center gap-4">
+                                        <button
+                                            onClick={onGenerate}
+                                            disabled={isGenerating}
+                                            className={`
                                             w-full group relative overflow-hidden rounded-[32px] py-6
                                             flex items-center justify-center
                                             transition-all duration-500 active:scale-95
@@ -1196,11 +1237,11 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         あなたの想いを、AIが最高の文章に仕上げます
                                     </p>
                                 </div>
-                            </div>
-                        )}
+                            )}
+                        </div>
                     </div>
-                </div>
-            )}
-        </div>
+                )
+            }
+        </div >
     );
 };
