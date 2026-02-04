@@ -96,22 +96,22 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
             onSelect(item);
             toggleOpen();
           }}
-          className={`w-full text-left rounded-[28px] transition-all duration-500 relative overflow-hidden flex flex-col gap-3 hover:-translate-y-1 active:scale-[0.98] shadow-[0_20px_45px_rgba(9,13,43,0.05)] ${item.isPinned
-            ? 'bg-[var(--brand-primary)]/5 p-[1.5px] shadow-md shadow-[var(--brand-primary)]/5 ring-1 ring-[var(--brand-primary)]/20'
-            : 'bg-white/90 p-6 border border-slate-200 shadow-lg shadow-slate-900/5 hover:border-[var(--brand-primary)]/30'
+          className={`w-full text-left rounded-[28px] transition-all duration-500 relative overflow-hidden flex flex-col gap-3 active:scale-[0.98] ${item.isPinned
+            ? 'bg-white p-[1.5px] shadow-[0_15px_40px_rgba(128,202,255,0.12)] ring-1 ring-[#80CAFF]/30'
+            : 'bg-white p-6 border border-slate-300/80 shadow-[0_20px_50px_rgba(0,0,0,0.06)] md:border-slate-200/60 md:shadow-[0_10px_30px_rgba(0,0,0,0.04)] md:hover:-translate-y-1 md:hover:border-slate-300/80 md:hover:shadow-[0_20px_50px_rgba(0,0,0,0.06)]'
             }`}
         >
           {/* Subtle Inner Glow for Pinned */}
           {item.isPinned && (
-            <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-white/40 to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-tr from-[#80CAFF]/5 via-[#C084FC]/5 to-[#F87171]/5 pointer-events-none" />
           )}
 
           <div className={`relative w-full h-full flex flex-col gap-4 ${item.isPinned ? 'bg-white rounded-[27px] p-6' : ''}`}>
             <div className="flex items-center justify-between">
               <div className="flex -space-x-2">
                 {item.config.platforms.map((p, pIdx) => (
-                  <div key={`${p}-${pIdx}`} className="w-8 h-8 rounded-full flex items-center justify-center bg-white border border-[#122646]/5 shadow-sm group-hover:border-[var(--brand-primary)]/20 transition-colors">
-                    {getPlatformIcon(p, "w-3.5 h-3.5 text-slate-400 group-hover:text-[var(--brand-primary)] transition-colors")}
+                  <div key={`${p}-${pIdx}`} className="w-8 h-8 rounded-full flex items-center justify-center bg-white border border-slate-100 shadow-sm group-hover:border-slate-200 transition-colors">
+                    {getPlatformIcon(p, "w-3.5 h-3.5 text-slate-400 group-hover:text-[#2b2b2f] transition-colors")}
                   </div>
                 ))}
               </div>
@@ -120,7 +120,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
               </span>
             </div>
 
-            <p className="text-sm text-[#122646] font-bold tracking-tight line-clamp-2 leading-relaxed transition-colors group-hover:text-[var(--brand-primary)] pr-12">
+            <p className="text-sm text-black font-bold tracking-tight line-clamp-2 leading-relaxed transition-colors md:text-[#2b2b2f] md:group-hover:text-black pr-12">
               {previewText}
             </p>
           </div>
@@ -131,8 +131,8 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
           <button
             onClick={(e) => { e.stopPropagation(); onTogglePin(item.id, !item.isPinned); }}
             className={`w-8.5 h-8.5 flex items-center justify-center transition-all ${item.isPinned
-              ? 'text-[var(--brand-accent)]'
-              : 'text-slate-200 hover:text-[var(--brand-primary)] hover:scale-110'
+              ? 'text-[#C084FC]'
+              : 'text-slate-200 hover:text-[#2b2b2f] hover:scale-110'
               }`}
             title={item.isPinned ? "ピン留めを解除" : "ピン留めして保護"}
           >
@@ -153,7 +153,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
 
         {/* Pinned Accent Bar */}
         {item.isPinned && (
-          <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-1 h-8 bg-[var(--brand-primary)] rounded-r-full shadow-[2px_0_10px_rgba(24,35,255,0.3)] z-20" />
+          <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-1 h-8 bg-gradient-to-b from-[#80CAFF] via-[#C084FC] to-[#F87171] rounded-r-full shadow-[2px_0_10px_rgba(192,132,252,0.3)] z-20" />
         )}
       </div>
     );
@@ -174,10 +174,10 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
         className={`fixed top-0 right-0 h-full w-[85vw] sm:w-[400px] md:w-[440px] transform transition-all duration-500 cubic-bezier(0.2, 0.8, 0.2, 1) z-[9999] flex flex-col overflow-hidden bg-white shadow-2xl ring-1 ring-black/5 ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
       >
         {/* Header */}
-        <div className="px-8 py-6 md:py-8 flex items-center justify-between border-b border-[#122646]/5 bg-white/80 backdrop-blur-md sticky top-0 z-10">
+        <div className="px-8 py-6 md:py-8 flex items-center justify-between border-b border-slate-100 bg-white/80 backdrop-blur-md sticky top-0 z-10">
           <div>
-            <h2 className="font-black text-[#122646] text-xl md:text-2xl tracking-tight uppercase leading-none">生成履歴</h2>
-            <p className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em] mt-2 opacity-60">過去に作成した全ての投稿案</p>
+            <h2 className="font-black text-[#2b2b2f] text-xl md:text-2xl tracking-tight uppercase leading-none">生成履歴</h2>
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-2 opacity-60">過去に作成した全ての投稿案</p>
           </div>
           <button
             onClick={toggleOpen}
@@ -189,16 +189,16 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
         </div>
 
         {/* Content Segment: History */}
-        <div className="flex-1 overflow-y-auto overscroll-contain p-6 md:p-8 space-y-8 no-scrollbar bg-slate-50/20">
+        <div className="flex-1 overflow-y-auto overscroll-contain p-6 md:p-8 space-y-8 no-scrollbar bg-slate-50">
           <div className="flex items-center justify-between px-2">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-white border border-[#122646]/5 flex items-center justify-center text-[#122646] shadow-sm">
+              <div className="w-12 h-12 rounded-2xl bg-white border border-slate-100 flex items-center justify-center text-[#2b2b2f] shadow-sm">
                 <HistoryIcon className="w-6 h-6 opacity-80" />
               </div>
               <div className="flex flex-col">
                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Saved Results</span>
                 {isLoggedIn && (
-                  <span className="text-sm font-black text-[#122646] tracking-tighter">
+                  <span className="text-sm font-black text-[#2b2b2f] tracking-tighter">
                     {history.length} <span className="text-[10px] opacity-40 ml-1">件の履歴</span>
                   </span>
                 )}
@@ -213,8 +213,8 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                   <div className="w-24 h-24 mb-6 bg-white rounded-[32px] flex items-center justify-center text-slate-100 shadow-sm ring-1 ring-slate-100/50">
                     <HistoryIcon className="w-10 h-10" />
                   </div>
-                  <h5 className="text-sm font-black text-[#122646] mb-2">まだ履歴がありません</h5>
-                  <p className="text-[11px] text-stone-500 font-medium leading-relaxed">
+                  <h5 className="text-sm font-black text-[#2b2b2f] mb-2">まだ履歴がありません</h5>
+                  <p className="text-[11px] text-slate-400 font-medium leading-relaxed">
                     作成した投稿案は、ここに自動で保存されます。<br />
                     いつでも見返したり、再編集したりできますよ。
                   </p>
@@ -225,8 +225,8 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                   {displayHistory.some(i => i.isPinned) && (
                     <div className="space-y-5">
                       <div className="flex items-center gap-3 px-3">
-                        <div className="w-1.5 h-1.5 rounded-full bg-[var(--brand-primary)]"></div>
-                        <span className="text-[11px] font-black text-[var(--brand-primary)] uppercase tracking-[0.25em]">お気に入り</span>
+                        <div className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-[#80CAFF] to-[#C084FC]"></div>
+                        <span className="text-[11px] font-black bg-gradient-to-r from-[#80CAFF] via-[#C084FC] to-[#F87171] bg-clip-text text-transparent uppercase tracking-[0.25em]">お気に入り</span>
                       </div>
                       <div className="space-y-4">
                         {displayHistory.filter(i => i.isPinned).map((item, idx) => renderHistoryItem(item, idx))}
@@ -251,13 +251,13 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                 <div className="w-24 h-24 bg-white rounded-[40px] shadow-sm flex items-center justify-center mb-10 ring-1 ring-slate-100">
                   <LockIcon className="w-10 h-10 text-slate-100" />
                 </div>
-                <h3 className="font-black text-slate-800 text-xl md:text-2xl mb-3 tracking-tight">ログインが必要です</h3>
+                <h3 className="font-black text-[#2b2b2f] text-xl md:text-2xl mb-3 tracking-tight">ログインが必要です</h3>
                 <p className="text-sm font-bold text-slate-400 mb-10 max-w-[240px] leading-relaxed">
                   履歴を安全に保存・同期するには、アカウントへのログインが必要です。
                 </p>
                 <button
                   onClick={() => { onOpenLogin(); toggleOpen(); }}
-                  className="w-full py-5 bg-[#122646] text-white rounded-[20px] shadow-xl shadow-slate-100 font-black text-xs uppercase tracking-[0.2em] hover:bg-[#1f29fc] active:scale-95 transition-all"
+                  className="w-full py-5 bg-[#2b2b2f] text-white rounded-[20px] shadow-xl shadow-black/5 font-black text-xs uppercase tracking-[0.2em] hover:bg-black active:scale-95 transition-all"
                 >
                   ログイン / 新規登録
                 </button>
@@ -268,7 +268,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
 
         {/* Footer */}
         <div className="p-8 border-t border-slate-50 bg-white">
-          <p className="text-[9px] font-black text-[#122646]/30 text-center uppercase tracking-[0.4em]">© 2026 {UI.name}</p>
+          <p className="text-[9px] font-black text-[#2b2b2f]/30 text-center uppercase tracking-[0.4em]">© 2026 {UI.name}</p>
         </div>
       </div>
     </>
