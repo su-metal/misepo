@@ -379,7 +379,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     const secondaryAudienceList = TARGET_AUDIENCES.filter(t => !primaryAudienceList.includes(t));
 
     return (
-        <div className="flex flex-col h-full relative overflow-hidden font-inter bg-[#c6d3ca]">
+        <div className="flex flex-col h-full relative overflow-hidden font-inter bg-[#f2f4f7]">
 
             {/* Step 1: Home (Platform Grid) */}
             <div className={`flex flex-col h-full overflow-hidden relative transition-all duration-500 ${isStepDrawerOpen ? 'blur-md scale-[0.98] opacity-60' : 'opacity-100'}`}>
@@ -388,19 +388,19 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                     <div className="flex items-start justify-between mb-4 px-1">
                         {/* Typography Date Display - Interactive Trigger */}
                         <div className="flex flex-col cursor-pointer active:scale-95 transition-transform" onClick={() => setIsCalendarOpen(true)}>
-                            <span className="text-[9px] font-black text-[var(--pop-violet-accent-b)] uppercase tracking-[0.4em] ml-1 mb-1 z-10 relative flex items-center gap-1">
-                                misepo <span className="bg-white/10 px-1 rounded text-[8px] tracking-normal text-[var(--pop-violet-sub-light)]">HUB</span>
+                            <span className="text-[10px] font-black text-[#2b2b2f]/60 uppercase tracking-[0.4em] ml-1 mb-1 z-10 relative flex items-center gap-1">
+                                misepo <span className="bg-[#2b2b2f]/5 px-1 rounded text-[8px] tracking-normal text-[#2b2b2f]/80">HUB</span>
                             </span>
                             <div className="flex items-center gap-3 select-none">
-                                <span className="text-[3.5rem] font-black text-white tracking-tighter leading-[0.8]">{day}</span>
+                                <span className="text-[3.5rem] font-black text-[#2b2b2f] tracking-tighter leading-[0.8]">{day}</span>
                                 <div className="flex flex-col justify-center gap-0.5 pt-1">
-                                    <span className="text-sm font-black text-white uppercase tracking-widest leading-none">{month}</span>
-                                    <span className="text-[10px] font-bold text-[var(--pop-violet-sub-light)] uppercase tracking-[0.2em] leading-none">{weekday}</span>
+                                    <span className="text-sm font-black text-[#2b2b2f] uppercase tracking-widest leading-none">{month}</span>
+                                    <span className="text-[10px] font-bold text-[#b0b0b0] uppercase tracking-[0.2em] leading-none">{weekday}</span>
                                 </div>
                             </div>
-                            <div className="inline-flex items-center gap-1 px-3 py-1 bg-white/10 rounded-full mt-2 ml-1 self-start">
-                                <p className="text-[10px] font-black text-white tracking-tight select-none flex items-center gap-1">
-                                    カレンダー見る <ChevronRightIcon className="w-3 h-3" />
+                            <div className="inline-flex items-center gap-1 px-3 py-1 bg-[#2b2b2f]/5 rounded-full mt-2 ml-1 self-start">
+                                <p className="text-[10px] font-black text-[#2b2b2f] tracking-tight select-none flex items-center gap-1">
+                                    カレンダー見る <ChevronRightIcon className="w-3 h-3 text-[#2b2b2f]" />
                                 </p>
                             </div>
                         </div>
@@ -429,18 +429,18 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             {/* High-Contrast Credit Design with Gauge */}
                             {plan && typeof plan.usage !== 'undefined' && typeof plan.limit !== 'undefined' && (
                                 <div className="flex flex-col items-end gap-1 scale-90 origin-right">
-                                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--pop-violet-card)] text-white backdrop-blur-xl border border-white/20 shadow-xl overflow-hidden relative">
-                                        <span className="text-[8px] font-black text-white/60 uppercase tracking-widest mr-1">CREDITS</span>
-                                        <span className="text-sm font-black text-[#f86957] leading-none">
+                                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white text-[#2b2b2f] border border-slate-100 shadow-sm overflow-hidden relative">
+                                        <span className="text-[8px] font-black text-[#2b2b2f]/40 uppercase tracking-widest mr-1">CREDITS</span>
+                                        <span className="text-sm font-black text-[#2b2b2f] leading-none">
                                             {Math.max(0, plan.limit - plan.usage)}
                                         </span>
-                                        <span className="text-[10px] font-bold text-white/60 leading-none">/ {plan.limit}</span>
+                                        <span className="text-[10px] font-bold text-[#b0b0b0] leading-none">/ {plan.limit}</span>
 
                                         {/* Subtle Gauge Background */}
-                                        <div className="absolute bottom-0 left-0 h-[2px] bg-white/10 w-full" />
+                                        <div className="absolute bottom-0 left-0 h-[2px] bg-slate-100 w-full" />
                                         {/* Active Gauge Fill */}
                                         <div
-                                            className="absolute bottom-0 left-0 h-[2px] bg-[#f86957] shadow-[0_0_10px_rgba(248,105,87,0.5)] transition-all duration-1000"
+                                            className="absolute bottom-0 left-0 h-[2px] bg-[#2b2b2f] transition-all duration-1000"
                                             style={{ width: `${(Math.max(0, plan.limit - plan.usage) / plan.limit) * 100}%` }}
                                         />
                                     </div>
@@ -450,8 +450,8 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                 <div
                                                     key={i}
                                                     className={`h-[3px] w-5 rounded-full transition-colors duration-500 ${((plan.limit - plan.usage) / plan.limit) * 5 > i
-                                                        ? 'bg-[#f86957]'
-                                                        : 'bg-white/10'
+                                                        ? 'bg-[#2b2b2f]'
+                                                        : 'bg-slate-200'
                                                         }`}
                                                 />
                                             ))}
@@ -464,22 +464,22 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
                     <div className="flex items-center justify-between px-2 mt-2 mb-0">
                         <div className="flex flex-col gap-0.5 items-start">
-                            <h2 className="text-[12px] font-black text-white tracking-tight">投稿先を選択</h2>
-                            <p className="text-[11px] text-[var(--pop-violet-sub-light)] font-bold uppercase tracking-[0.2em]">Select your canvas</p>
+                            <h2 className="text-[13px] font-black text-[#2b2b2f] tracking-tight">投稿先を選択</h2>
+                            <p className="text-[10px] text-[#b0b0b0] font-bold uppercase tracking-[0.2em]">Select your canvas</p>
                         </div>
 
                         {/* Simultaneous Generation Toggle */}
-                        <div className="flex items-center gap-3 bg-[var(--pop-violet-card)] px-4 py-2 rounded-2xl border border-white/10 shadow-sm active:scale-95 transition-all cursor-pointer select-none"
+                        <div className="flex items-center gap-3 bg-white px-4 py-2 rounded-2xl border border-slate-100 shadow-sm active:scale-95 transition-all cursor-pointer select-none"
                             onClick={onToggleMultiGen}>
                             <div className="flex flex-col items-end">
-                                <span className={`text-[9px] font-black tracking-widest uppercase leading-none mb-0.5 ${isMultiGen ? 'text-[#FFD166]' : 'text-[#A0A0A0]'}`}>
+                                <span className={`text-[9px] font-black tracking-widest uppercase leading-none mb-0.5 ${isMultiGen ? 'text-[#2b2b2f]' : 'text-[#A0A0A0]'}`}>
                                     {isMultiGen ? 'ON' : 'OFF'}
                                 </span>
                                 <span className="text-[8px] font-bold text-[#A0A0A0] leading-none whitespace-nowrap">同時生成</span>
                             </div>
                             <div className={`
                                 relative w-10 h-5 rounded-full transition-all duration-300
-                                ${isMultiGen ? 'bg-[var(--pop-violet-accent-b)]' : 'bg-white/10'}
+                                ${isMultiGen ? 'bg-[#2b2b2f]' : 'bg-slate-100'}
                             `}>
                                 <div className={`
                                     absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform duration-300 shadow-sm
@@ -512,7 +512,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         name: 'LINE',
                                         tagline: 'Messages',
                                         sub: 'リピーター獲得',
-                                        icon: <LineIcon className="w-7 h-7" isActive={platforms.includes(Platform.Line)} activeTextFill="#1f29fc" />,
+                                        icon: <LineIcon className="w-7 h-7" isActive={false} activeTextFill="#2b2b2f" />,
                                         color: 'from-green-500/10 to-emerald-500/10'
                                     };
                                     case Platform.GoogleMaps: return {
@@ -539,17 +539,18 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             relative rounded-[20px] overflow-hidden cursor-pointer border transition-all duration-500 group
                                             ${bentoClass}
                                              ${isActive
-                                                ? 'bg-[#f86957] border-[#f86957] shadow-[0_15px_35px_rgba(249,205,97,0.4)] scale-[0.98] animate-tactile-pop ring-2 ring-white/10'
-                                                : `bg-[var(--pop-violet-card)] border-white/5 shadow-[0_4px_12px_rgba(0,0,0,0.2)] hover:border-white/20 hover:shadow-lg active:scale-[0.98]`
+                                                ? `bg-white scale-[0.98] animate-tactile-pop shadow-md`
+                                                : `bg-white border-slate-100 shadow-sm hover:border-slate-300 active:scale-[0.98]`
                                             }
                                         `}
+                                        style={isActive ? { borderColor: p === Platform.Instagram ? '#E1306C' : p === Platform.X ? '#2b2b2f' : p === Platform.Line ? '#06C755' : p === Platform.GoogleMaps ? '#4285F4' : '#2b2b2f', borderWidth: '2px' } : {}}
                                     >
                                         {/* Bento Card Content */}
                                         <div className="absolute inset-0 p-5 flex flex-col justify-between">
                                             <div className="flex justify-between items-start">
                                                 <div className={`
                                                     transition-all duration-300
-                                                     ${isActive ? 'text-[#1E1E24]' : 'text-[#A0A0A0] group-hover:text-white'}
+                                                     text-[#2b2b2f]
                                                 `}>
                                                     {details.icon}
                                                 </div>
@@ -559,23 +560,18 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                         e.stopPropagation();
                                                         handlePlatformSelect(p);
                                                     }}
-                                                    className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 active:scale-90 shadow-lg ${isActive ? 'bg-[#1E1E24]' : 'bg-white/10 text-white shadow-[0_4px_10px_rgba(0,0,0,0.2)]'}`}
+                                                    className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 active:scale-90 shadow-sm ${isActive ? 'bg-[#2b2b2f] text-white' : 'bg-slate-100 text-[#2b2b2f]'}`}
                                                 >
-                                                    <ChevronRightIcon className={`w-5 h-5 ${isActive ? 'text-[#f86957]' : 'text-white'}`} />
+                                                    <ChevronRightIcon className={`w-5 h-5`} />
                                                 </div>
                                             </div>
 
                                             <div className="flex flex-col">
-                                                {/* 
-                                                <span className={`text-[9px] font-black uppercase tracking-[0.15em] transition-all duration-300 mb-1 ${isActive ? 'text-black/40' : 'text-white/40'}`}>
-                                                    {details.tagline}
-                                                </span>
-                                                */}
                                                 <div className="flex flex-col leading-tight">
-                                                    <h3 className={`font-black tracking-tighter text-xl transition-colors duration-500 ${isActive ? 'text-[#1E1E24]' : 'text-white'}`} style={{ fontFamily: 'Inter, sans-serif' }}>
+                                                    <h3 className={`font-black tracking-tighter text-xl transition-colors duration-500 text-[#2b2b2f]`} style={{ fontFamily: 'Inter, sans-serif' }}>
                                                         {details.name}
                                                     </h3>
-                                                    <p className={`text-[11px] font-medium transition-opacity ${isActive ? 'text-[#1E1E24]/70' : 'text-[#A0A0A0]'}`}>
+                                                    <p className={`text-[11px] font-medium text-[#b0b0b0]`}>
                                                         {details.sub}
                                                     </p>
                                                 </div>
@@ -593,44 +589,28 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             onClick={!isGoogleMaps ? handleOmakaseStart : undefined}
                             className={`
                                 relative group transition-all duration-700 my-1
-                                rounded-[32px] overflow-hidden
-                                ${!isGoogleMaps ? 'cursor-pointer active:scale-95' : 'cursor-not-allowed opacity-60 grayscale'}
-                                ${isOmakaseLoading ? 'scale-[0.98]' : (!isGoogleMaps ? 'hover:scale-[1.02] hover:-translate-y-2' : '')}
-                                ${!isGoogleMaps ? 'shadow-[0_15px_40px_rgba(24,35,255,0.1)] hover:shadow-[0_25px_60px_rgba(24,35,255,0.2)]' : 'shadow-sm border border-stone-200'}
+                                rounded-[32px] overflow-hidden bg-white border border-slate-100
+                                ${!isGoogleMaps ? 'cursor-pointer active:scale-95 shadow-sm hover:shadow-md' : 'cursor-not-allowed opacity-60 grayscale'}
+                                ${isOmakaseLoading ? 'scale-[0.98]' : (!isGoogleMaps ? 'hover:scale-[1.01]' : '')}
                             `}
-                            style={{
-                                background: !isGoogleMaps ? 'var(--pop-violet-card)' : '#2B2B2F',
-                                clipPath: 'polygon(0% 0%, 100% 0%, 100% 35%, 98% 40%, 98% 60%, 100% 65%, 100% 100%, 0% 100%, 0% 65%, 2% 60%, 2% 40%, 0% 35%)'
-                            }}
                         >
-                            {/* Texture & Glass Layer */}
-                            {!isGoogleMaps && <div className="absolute inset-0 bg-white/5 backdrop-blur-[2px] opacity-50 pointer-events-none" />}
-
-                            {/* Shine Effect removed */}
-
-                            {/* Decorative Background Glows */}
-                            {!isGoogleMaps && (
-                                <>
-                                    <div className="absolute -top-10 -right-10 w-40 h-40 bg-[var(--pop-violet-main)]/20 rounded-full blur-[40px] pointer-events-none group-hover:bg-[var(--pop-violet-main)]/30 transition-colors duration-700" />
-                                    <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-[var(--pop-violet-accent-a)]/10 rounded-full blur-[30px] pointer-events-none" />
-                                    <div className="absolute inset-0 bg-gradient-shine opacity-10 group-hover:animate-shine pointer-events-none" />
-                                </>
-                            )}
+                            {/* Texture & Glass Layer - Subtle for Light Theme */}
+                            {!isGoogleMaps && <div className="absolute inset-0 bg-[#f8fafc]/50 backdrop-blur-[2px] opacity-30 pointer-events-none" />}
 
                             <div className="relative p-5 pl-10 pr-6 flex items-center justify-between">
                                 {/* Left Content */}
                                 <div className="relative z-10 flex flex-col gap-6">
-                                    <div className={`self-start inline-flex px-4 py-1.5 rounded-full ${!isGoogleMaps ? 'bg-[var(--pop-violet-main)]' : 'bg-white/10'} text-[9px] font-black text-white uppercase tracking-[0.2em] shadow-lg shadow-[var(--pop-violet-main)]/20`}>
-                                        {isGoogleMaps ? '利用不可' : 'AIが自動提案'}
+                                    <div className={`self-start inline-flex px-4 py-1.5 rounded-full bg-gradient-to-r from-[#80CAFF] via-[#C084FC] to-[#F87171] text-[9px] font-black text-white uppercase tracking-[0.2em] shadow-sm`}>
+                                        {isGoogleMaps ? '利用不可' : 'POPULAR'}
                                     </div>
                                     <div className="space-y-1">
                                         <div className="flex items-center gap-2">
-                                            <h4 className={`text-[24px] font-black tracking-[0.05em] leading-none whitespace-nowrap ${!isGoogleMaps ? 'text-white' : 'text-[#A0A0A0]'}`}>
+                                            <h4 className={`text-[22px] font-black tracking-[0.05em] leading-none whitespace-nowrap ${!isGoogleMaps ? 'text-[#2b2b2f]' : 'text-[#A0A0A0]'}`}>
                                                 AIおまかせ生成
                                             </h4>
-                                            {!isGoogleMaps && <SparklesIcon className="w-5 h-5 text-[#FFD166] animate-pulse" />}
+                                            {!isGoogleMaps && <SparklesIcon className="w-5 h-5 text-[#80CAFF]" />}
                                         </div>
-                                        <p className="text-[11px] text-[#A0A0A0] font-bold leading-relaxed">
+                                        <p className="text-[11px] text-[#b0b0b0] font-bold leading-relaxed">
                                             {isGoogleMaps ? (
                                                 'Googleマップ選択時は利用できません'
                                             ) : (
@@ -646,13 +626,13 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                 {/* Right Action "Ticket" Button */}
                                 <div className="relative z-10 flex items-center justify-center">
                                     <div className={`
-                                        w-14 h-14 rounded-2xl flex items-center justify-center shadow-2xl transition-all duration-500
-                                        ${isOmakaseLoading ? 'bg-white scale-90' : (!isGoogleMaps ? 'bg-white group-hover:bg-[var(--pop-violet-main)] group-hover:scale-110 group-active:scale-95 group-hover:rotate-6 shadow-[var(--pop-violet-main)]/20' : 'bg-white/5 shadow-none')}
+                                        w-14 h-14 rounded-2xl flex items-center justify-center shadow-sm transition-all duration-500
+                                        ${isOmakaseLoading ? 'bg-white scale-90' : (!isGoogleMaps ? 'bg-[#2b2b2f] text-white group-hover:scale-110 active:scale-95' : 'bg-slate-50 shadow-none')}
                                     `}>
                                         {isOmakaseLoading ? (
-                                            <div className="w-5 h-5 border-2 border-[var(--pop-violet-main)]/20 border-t-[var(--pop-violet-main)] rounded-full animate-spin" />
+                                            <div className="w-5 h-5 border-2 border-[#2b2b2f]/20 border-t-[#2b2b2f] rounded-full animate-spin" />
                                         ) : (
-                                            <ChevronRightIcon className={`w-6 h-6 ${!isGoogleMaps ? 'text-[var(--pop-violet-main)] group-hover:text-white' : 'text-[#A0A0A0]'} transition-colors duration-500 ${!isGoogleMaps ? 'animate-arrow-flow' : ''}`} />
+                                            <ChevronRightIcon className={`w-6 h-6 transition-colors duration-500`} />
                                         )}
                                     </div>
 
@@ -660,7 +640,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             </div>
 
                             {/* Ticket Perforation Line (Visual Only) */}
-                            <div className={`absolute top-[8%] bottom-[8%] right-[25%] w-px border-r-2 border-dotted ${!isGoogleMaps ? 'border-white/10' : 'border-white/5'} pointer-events-none`} />
+                            <div className={`absolute top-[8%] bottom-[8%] right-[25%] w-px border-r-2 border-dotted ${!isGoogleMaps ? 'border-slate-100' : 'border-slate-50'} pointer-events-none`} />
                         </div>
                     </div>
                 </div>
