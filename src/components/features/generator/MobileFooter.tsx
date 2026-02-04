@@ -132,43 +132,46 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
                     </div>
                 </div>
 
-                {/* The Central Plus/Generate Button - Independent & Floating */}
-                <button
-                    onClick={onPlusClick}
-                    disabled={isGenerating}
-                    className={`
-                        absolute -top-[40px] left-1/2 -translate-x-1/2 w-[72px] h-[72px] rounded-full flex items-center justify-center z-20 
-                        transition-all duration-300 border-[6px] border-white
-                        ${isConfirmStep
-                            ? 'bg-sunset text-white rotate-0 scale-110 shadow-[0_20px_40px_rgba(255,107,107,0.3)]'
-                            : 'bg-sunset text-white rotate-0 scale-100 hover:scale-105 shadow-[0_15px_30px_rgba(255,107,107,0.2)]'
-                        }
-                    `}
-                    aria-label={isConfirmStep ? "Generate Post" : "New Post"}
-                >
-                    {/* Inner Shine for Glass-like effect */}
-                    <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-white/20 to-transparent pointer-events-none" />
+                {/* The Central Plus/Generate Button - Wrapped for Centering Stability */}
+                <div className="absolute -top-[40px] left-1/2 -translate-x-1/2 z-20 pointer-events-none">
+                    <button
+                        onClick={onPlusClick}
+                        disabled={isGenerating}
+                        className={`
+                            relative w-[72px] h-[72px] rounded-full flex items-center justify-center pointer-events-auto
+                            transition-all duration-500 border-[6px] border-white overflow-hidden
+                            ${isConfirmStep
+                                ? 'bg-sunset-flow text-white scale-110 shadow-[0_20px_40px_rgba(255,107,107,0.3)]'
+                                : 'bg-sunset-flow text-white animate-premium-button shadow-[0_15px_30px_rgba(255,107,107,0.2)]'
+                            }
+                        `}
+                        aria-label={isConfirmStep ? "Generate Post" : "New Post"}
+                    >
+                        {/* Living Background & Shimmer */}
+                        <div className="shimmer-layer" />
+                        <div className="absolute inset-0 bg-gradient-to-tr from-white/20 to-transparent pointer-events-none" />
 
-                    <div className="relative w-full h-full flex items-center justify-center">
-                        <div className={`absolute transition-all duration-300 ease-out ${isConfirmStep ? 'opacity-0 scale-50 rotate-90' : 'opacity-100 scale-100 rotate-0'}`}>
-                            <div className="flex items-center justify-center">
-                                {/* Pencil / Edit Icon instead of Plus */}
-                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                                    <path d="M18.5 2.5C18.8978 2.10217 19.4374 1.87868 20 1.87868C20.5626 1.87868 21.1022 2.10218 21.5 2.5C21.8978 2.89782 22.1213 3.43739 22.1213 4C22.1213 4.56261 21.8978 5.10218 21.5 5.5L12 15L8 16L9 12L18.5 2.5Z" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                                </svg>
+                        <div className="relative w-full h-full flex items-center justify-center">
+                            <div className={`absolute transition-all duration-300 ease-out ${isConfirmStep ? 'opacity-0 scale-50 rotate-90' : 'opacity-100 scale-100 rotate-0'}`}>
+                                <div className="flex items-center justify-center">
+                                    {/* Pencil / Edit Icon instead of Plus */}
+                                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                                        <path d="M18.5 2.5C18.8978 2.10217 19.4374 1.87868 20 1.87868C20.5626 1.87868 21.1022 2.10218 21.5 2.5C21.8978 2.89782 22.1213 3.43739 22.1213 4C22.1213 4.56261 21.8978 5.10218 21.5 5.5L12 15L8 16L9 12L18.5 2.5Z" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <div className={`absolute transition-all duration-300 ease-out ${isConfirmStep ? 'opacity-100 scale-100 rotate-0' : 'opacity-0 scale-50 -rotate-90'}`}>
+                                {isGenerating ? (
+                                    <div className="w-7 h-7 border-3 border-white/30 border-t-white rounded-full animate-spin" />
+                                ) : (
+                                    <SparklesIcon className="w-7 h-7 text-white" />
+                                )}
                             </div>
                         </div>
-
-                        <div className={`absolute transition-all duration-300 ease-out ${isConfirmStep ? 'opacity-100 scale-100 rotate-0' : 'opacity-0 scale-50 -rotate-90'}`}>
-                            {isGenerating ? (
-                                <div className="w-7 h-7 border-3 border-white/30 border-t-white rounded-full animate-spin" />
-                            ) : (
-                                <SparklesIcon className="w-7 h-7 text-white" />
-                            )}
-                        </div>
-                    </div>
-                </button>
+                    </button>
+                </div>
 
                 {/* Navigation Items Container */}
                 <div className="absolute inset-0 flex items-center justify-between px-6 pt-1">

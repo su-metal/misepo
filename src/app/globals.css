@@ -381,6 +381,46 @@ html {
     animation: pulse-gentle 2s ease-in-out infinite;
 }
 
+@keyframes fluid-breathe {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-4px) scale(1.03); }
+}
+
+@keyframes shimmer-sweep {
+  0% { transform: translateX(-150%) skewX(-20deg); }
+  50%, 100% { transform: translateX(150%) skewX(-20deg); }
+}
+
+@keyframes gradient-flow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-premium-button {
+  animation: fluid-breathe 4s ease-in-out infinite;
+}
+
+.shimmer-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  animation: shimmer-sweep 3s ease-in-out infinite;
+}
+
+.bg-sunset-flow {
+  background: linear-gradient(135deg, #FF6B6B, #FF9E64, #FF6B6B);
+  background-size: 200% 200%;
+  animation: gradient-flow 6s ease infinite;
+}
 @keyframes pulse-slow {
     0%, 100% { opacity: 1; transform: scale(1); }
     50% { opacity: 0.9; transform: scale(1.02); }
