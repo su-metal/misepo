@@ -294,7 +294,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                         >
                                             <div className="divide-y border-slate-100">
                                                 {res.data.map((text, iIdx) => (
-                                                    <div key={iIdx} className="py-12 px-8 lg:px-12 flex flex-col relative text-left transition-colors duration-700">
+                                                    <div key={iIdx} className="py-12 px-12 lg:px-12 flex flex-col relative text-left transition-colors duration-700">
                                                         <div className={`mb-2 relative group/textarea ${theme.wrapperClass || ''}`}>
                                                             {text ? (
                                                                 <AutoResizingTextarea

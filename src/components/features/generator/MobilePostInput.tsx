@@ -607,7 +607,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                     </div>
 
                     {/* Bottom Section - Promotional Card (AI Omakase Mode Redesign) */}
-                    <div className="mt-4 md:mt-6 px-2">
+                    <div className="mt-4 md:mt-6">
                         <div
                             onClick={!isGoogleMaps ? handleOmakaseStart : undefined}
                             className={`
@@ -615,63 +615,80 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                 ${!isGoogleMaps ? 'cursor-pointer active:scale-[0.98]' : 'cursor-not-allowed grayscale opacity-70'}
                             `}
                         >
-                            {/* 1. Gradient Border Wrapper (No Glow, Clean Cut) */}
-                            <div className="relative p-[3px] rounded-[32px] bg-gradient-to-r from-[#80CAFF] via-[#C084FC] to-[#F87171] bg-[length:200%_200%] animate-gradient-flow shadow-sm">
+                            {/* Main Card with Ticket Shape */}
+                            <div className="relative rounded-[24px] overflow-visible bg-gradient-to-br from-[#f3f9ff] via-[#faf5ff] to-[#fff0f3] shadow-md border-2 border-[#d0e0f0]">
 
-                                {/* 2. Main Card Background (Pastel Mesh) */}
-                                <div className="relative rounded-[30.5px] h-full overflow-hidden bg-gradient-to-br from-[#f3f9ff] via-[#faf5ff] to-[#fff0f3]">
+                                {/* Left Notch (Trapezoid Cutout) */}
+                                <div className="absolute left-[-3px] top-1/2 -translate-y-1/2 w-[14px] h-[24px] pointer-events-none z-20">
+                                    <svg width="14" height="24" viewBox="0 0 14 24" fill="none" className="absolute left-0 top-0">
+                                        <path d="M0 0 L10 4 L10 20 L0 24 Z" fill="white" />
+                                        <path d="M-1 -1 L10 4 L10 20 L-1 25" stroke="#d0e0f0" strokeWidth="2" strokeLinejoin="round" fill="none" />
+                                    </svg>
+                                </div>
 
-                                    {/* Watermark Texture */}
-                                    <SparklesIcon className="absolute -bottom-6 -right-6 w-32 h-32 text-[#2b2b2f]/[0.03] -rotate-12 pointer-events-none" />
+                                {/* Right Notch (Trapezoid Cutout) */}
+                                <div className="absolute right-[-3px] top-1/2 -translate-y-1/2 w-[14px] h-[24px] pointer-events-none z-20">
+                                    <svg width="14" height="24" viewBox="0 0 14 24" fill="none" className="absolute left-0 top-0">
+                                        <path d="M14 0 L4 4 L4 20 L14 24 Z" fill="white" />
+                                        <path d="M15 -1 L4 4 L4 20 L15 25" stroke="#d0e0f0" strokeWidth="2" strokeLinejoin="round" fill="none" />
+                                    </svg>
+                                </div>
 
-                                    <div className="relative rounded-[28px] px-5 py-4 flex items-center justify-between">
+                                {/* Watermark Texture */}
+                                <SparklesIcon className="absolute -bottom-6 -right-6 w-32 h-32 text-[#2b2b2f]/[0.03] -rotate-12 pointer-events-none" />
 
-                                        {/* Left Content */}
-                                        <div className="flex flex-col gap-3 relative z-10 py-1">
-                                            {/* Badge */}
-                                            <div className="self-start inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#2b2b2f] text-white shadow-sm ring-1 ring-white/50">
-                                                <SparklesIcon className="w-2.5 h-2.5 text-[#C084FC]" />
-                                                <span className="text-[9px] font-black uppercase tracking-[0.15em] leading-none pt-[1px]">
-                                                    {isGoogleMaps ? 'NOT AVAILABLE' : 'SPECIAL'}
-                                                </span>
-                                            </div>
+                                {/* Content Container */}
+                                <div className="relative px-5 py-4 flex items-center justify-between">
 
-                                            <div className="space-y-1 mt-1">
-                                                <h4 className="text-[22px] font-black tracking-tight leading-none text-[#2b2b2f]">
-                                                    AIおまかせ生成
-                                                </h4>
-                                                <p className="text-[11px] text-slate-500 font-bold leading-relaxed tracking-wide">
-                                                    迷ったらここから。<br />
-                                                    プロ級の投稿を1タップで。
-                                                </p>
-                                            </div>
+                                    {/* Left Content */}
+                                    <div className="flex flex-col gap-3 relative z-10 py-1">
+                                        {/* Badge */}
+                                        <div className="self-start inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#2b2b2f] text-white shadow-sm ring-1 ring-white/50">
+                                            <SparklesIcon className="w-2.5 h-2.5 text-[#C084FC]" />
+                                            <span className="text-[9px] font-black uppercase tracking-[0.15em] leading-none pt-[1px]">
+                                                {isGoogleMaps ? 'NOT AVAILABLE' : 'SPECIAL'}
+                                            </span>
                                         </div>
 
-                                        {/* Right Action Button */}
-                                        <div className="relative z-10 flex-shrink-0 ml-4">
-                                            <div className={`
+                                        <div className="space-y-1 mt-1">
+                                            <h4 className="text-[22px] font-black tracking-tight leading-none text-[#2b2b2f]">
+                                                AIおまかせ生成
+                                            </h4>
+                                            <p className="text-[11px] text-slate-500 font-bold leading-relaxed tracking-wide">
+                                                迷ったらここから。<br />
+                                                プロ級の投稿を1タップで。
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {/* Right Action Button */}
+                                    <div className="relative z-10 flex-shrink-0 ml-4">
+                                        <div className={`
                                                 w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-transform duration-500
                                                 ${isOmakaseLoading
-                                                    ? 'bg-white scale-90'
-                                                    : (!isGoogleMaps
-                                                        ? 'bg-gradient-to-br from-[#2b2b2f] to-[#555] group-hover:scale-110 group-active:scale-95'
-                                                        : 'bg-slate-200 shadow-none')
-                                                }
+                                                ? 'bg-white scale-90'
+                                                : (!isGoogleMaps
+                                                    ? 'bg-gradient-to-br from-[#2b2b2f] to-[#555] group-hover:scale-110 group-active:scale-95'
+                                                    : 'bg-slate-200 shadow-none')
+                                            }
                                             `}>
-                                                {/* Button Inner Gradient Ring */}
-                                                {!isGoogleMaps && !isOmakaseLoading && (
-                                                    <div className="absolute inset-[2px] rounded-full bg-gradient-to-br from-white/20 to-transparent pointer-events-none" />
-                                                )}
+                                            {/* Button Inner Gradient Ring */}
+                                            {!isGoogleMaps && !isOmakaseLoading && (
+                                                <div className="absolute inset-[2px] rounded-full bg-gradient-to-br from-white/20 to-transparent pointer-events-none" />
+                                            )}
 
-                                                {isOmakaseLoading ? (
-                                                    <div className="w-6 h-6 border-[2.5px] border-[#C084FC] border-t-transparent rounded-full animate-spin" />
-                                                ) : (
-                                                    <ChevronRightIcon className="w-6 h-6 text-white" />
-                                                )}
-                                            </div>
+                                            {isOmakaseLoading ? (
+                                                <div className="w-6 h-6 border-[2.5px] border-[#C084FC] border-t-transparent rounded-full animate-spin" />
+                                            ) : (
+                                                <ChevronRightIcon className="w-6 h-6 text-white" />
+                                            )}
                                         </div>
                                     </div>
                                 </div>
+
+                                {/* Ticket Perforation Line (Visual Only) */}
+                                <div className={`absolute top-[8%] bottom-[8%] right-[25%] w-px border-r-2 border-dotted ${!isGoogleMaps ? 'border-slate-200' : 'border-slate-100'} pointer-events-none`} />
+
                             </div>
                         </div>
                     </div>
