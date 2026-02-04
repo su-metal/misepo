@@ -400,7 +400,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             </div>
                             <div className="inline-flex items-center gap-1 px-3 py-1 bg-[#1f29fc]/10 rounded-full mt-2 ml-1 self-start">
                                 <p className="text-[10px] font-black text-[#1f29fc] tracking-tight select-none flex items-center gap-1">
-                                    カレンダー見る <ChevronRightIcon className="w-3 h-3" />
+                                    カレンダーを見る <ChevronRightIcon className="w-3 h-3" />
                                 </p>
                             </div>
                         </div>
