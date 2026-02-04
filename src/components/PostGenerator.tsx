@@ -147,7 +147,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
   };
 
   return (
-    <div className="min-h-screen w-full relative bg-gradient-mesh-soft flex flex-col items-center justify-center overflow-hidden">
+    <div className="min-h-screen w-full relative bg-[#7477ff] flex flex-col items-center justify-center overflow-hidden">
 
       {/* Background Orbs to match LP */}
       <div className="glow-orb w-[600px] h-[600px] bg-[var(--brand-primary)] -top-48 -left-48 opacity-[0.25] animate-float-slow" />
