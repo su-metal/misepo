@@ -531,7 +531,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             return [Platform.Instagram, Platform.X, Platform.Line, Platform.GoogleMaps].map((p, idx) => {
                                 const isActive = platforms.includes(p);
                                 const details = getPlatformDetails(p);
-                                const bentoClass = 'h-[124px]';
+                                const bentoClass = 'h-[110px]';
 
                                 // Map brand colors
                                 const brandColor = p === Platform.Instagram ? '#E1306C' :
@@ -539,29 +539,30 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         p === Platform.Line ? '#06C755' :
                                             p === Platform.GoogleMaps ? '#4285F4' : '#2b2b2f';
 
-                                const brandBg = p === Platform.Instagram ? 'bg-pink-100' :
-                                    p === Platform.X ? 'bg-slate-100' :
-                                        p === Platform.Line ? 'bg-emerald-100' :
-                                            p === Platform.GoogleMaps ? 'bg-blue-100' : 'bg-white';
+                                const subtleBrandBg = p === Platform.Instagram ? 'rgba(225,48,108,0.08)' :
+                                    p === Platform.X ? 'rgba(17,24,39,0.08)' :
+                                        p === Platform.Line ? 'rgba(6,199,85,0.08)' :
+                                            p === Platform.GoogleMaps ? 'rgba(66,133,244,0.08)' : 'rgba(43,43,47,0.08)';
 
                                 return (
-                                    <div
-                                        key={p}
-                                        onClick={() => onPlatformToggle(p)}
-                                        className={`
-                                            relative rounded-[24px] overflow-hidden cursor-pointer border transition-all duration-500 group
-                                            ${bentoClass}
-                                            ${isActive
-                                                ? `bg-white scale-[1.02] border-[2.5px] shadow-sm`
+                                        <div
+                                            key={p}
+                                            onClick={() => onPlatformToggle(p)}
+                                            className={`
+                                                relative rounded-[24px] overflow-hidden cursor-pointer border transition-all duration-500 group
+                                                ${bentoClass}
+                                                ${isActive
+                                                ? `scale-[1.02] border-[2.5px] shadow-sm`
                                                 : `bg-[#edeff1] border-slate-100 shadow-sm hover:border-slate-300 active:scale-[0.98]`
                                             }
                                         `}
                                         style={isActive ? {
                                             borderColor: brandColor,
+                                            backgroundColor: subtleBrandBg,
                                         } : {}}
-                                    >
+                                        >
                                         {/* Bento Card Content */}
-                                        <div className="absolute inset-0 p-5 flex flex-col justify-between">
+                                        <div className="absolute inset-0 px-5 py-4 flex flex-col justify-between">
                                             <div className="flex justify-between items-start">
                                                 <div
                                                     className={`
@@ -628,7 +629,9 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         </div>
 
                                         <div className="flex items-center gap-4">
-                                            <div className="relative w-14 h-14 rounded-full bg-gradient-to-br from-blue-400 via-blue-500 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/30">
+                                        <div className="relative w-14 h-14 rounded-full flex items-center justify-center shadow-lg shadow-blue-500/30"
+                                            style={{ background: 'linear-gradient(135deg, #8fd8ff 0%, #9f8dff 50%, #ff9084 100%)' }}
+                                        >
                                                 <div className="absolute inset-0 rounded-full bg-white/20 blur-sm" />
                                                 <MagicWandIcon className="w-7 h-7 text-white relative z-10" />
                                             </div>
