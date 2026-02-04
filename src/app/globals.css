@@ -5,7 +5,7 @@
 :root {
   /* Pop Violet Palette */
   /* Premium Light Stage - Refined Palette */
-  --pop-violet-bg: #E5E7EB; /* Slightly darker slate for better contrast */
+  --pop-violet-bg: #e2e8f0; /* Clear slate for high contrast */
   --pop-violet-card: #FFFFFF;
   --pop-violet-main: #111827; /* Near black navy */
   --pop-violet-accent-a: #4338CA; /* Deep Royal Blue */
@@ -83,8 +83,42 @@ body {
 }
 
 .shadow-premium {
-  box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.12), 
-              0 10px 40px -10px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.08), 
+              0 10px 40px -10px rgba(0, 0, 0, 0.04);
+}
+
+.bg-studio-stage {
+  background: radial-gradient(circle at 50% 50%, #f1f5f9 0%, #cbd5e1 100%);
+}
+
+.bg-pattern-grid-magazine {
+  background-image: 
+    linear-gradient(to right, rgba(0,0,0,0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0,0,0,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.vertical-text-edge {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
+
+@keyframes scroll-up {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
+
+@keyframes scroll-down {
+  0% { transform: translateY(-50%); }
+  100% { transform: translateY(0); }
+}
+
+.animate-scroll-up {
+  animation: scroll-up 40s linear infinite;
+}
+
+.animate-scroll-down {
+  animation: scroll-down 40s linear infinite;
 }
 
 /* Gradient Utilities - More Vibrant & High Contrast */

@@ -68,21 +68,23 @@ export default function RootLayout({
       </head>
       <body className="relative">
         {/* Global Atmosphere Background */}
-        <div className="fixed inset-0 -z-50 overflow-hidden pointer-events-none select-none">
+        <div className="fixed inset-0 -z-50 overflow-hidden pointer-events-none select-none bg-studio-stage">
+          {/* Subtle Vignette */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,transparent_20%,rgba(0,0,0,0.08)_100%)]" />
+
           {/* Base Dot Pattern */}
           <div className="absolute inset-0 bg-pattern-dots opacity-[0.4]" />
 
           {/* Giant Decorative Typography */}
-          <div className="absolute top-[5%] -left-[5%] font-montserrat font-black tracking-tighter text-slate-400/10 text-[25vw] rotate-[-5deg]">
+          <div className="absolute top-[5%] -left-[5%] font-montserrat font-black tracking-tighter text-slate-600/10 text-[25vw] rotate-[-5deg]">
             MISE
           </div>
-          <div className="absolute bottom-[10%] -right-[5%] font-montserrat font-black tracking-tighter text-slate-400/10 text-[20vw] rotate-[3deg]">
+          <div className="absolute bottom-[10%] -right-[5%] font-montserrat font-black tracking-tighter text-slate-600/10 text-[20vw] rotate-[3deg]">
             PO
           </div>
-          <div className="absolute top-[40%] right-[10%] font-montserrat font-black tracking-tighter text-slate-300/20 text-[10vw] uppercase">
+          <div className="absolute top-[40%] right-[10%] font-montserrat font-black tracking-tighter text-slate-500/10 text-[10vw] uppercase">
             AI Creative
           </div>
-
         </div>
 
         <div id="root" className="relative z-10">{children}</div>
