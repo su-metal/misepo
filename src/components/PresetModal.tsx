@@ -386,43 +386,47 @@ const PresetModal: React.FC<PresetModalProps> = ({
     if (selectedPresetId) {
       const preset = presets.find(p => p.id === selectedPresetId);
       if (preset) {
-        setName(preset.name);
-        setAvatar(preset.avatar || 'shop');
+        if (preset.id === 'omakase') {
+          setName('おまかせプロファイル');
+          setAvatar('sparkles');
+          setCustomPrompts({});
+        } else {
+          setName(preset.name || '');
+          setAvatar(preset.avatar || 'user');
+          try {
+            if (preset.custom_prompt) {
+              if (preset.custom_prompt.trim().startsWith('{')) {
+                const parsed = JSON.parse(preset.custom_prompt);
+                const flattened = flattenPrompts(parsed);
+                setCustomPrompts(flattened);
 
-        try {
-          if (preset.custom_prompt) {
-            if (preset.custom_prompt.trim().startsWith('{')) {
-              const parsed = JSON.parse(preset.custom_prompt);
-              setCustomPrompts(parsed);
-
-              if (parsed['General']) {
-                const updated = { ...parsed };
+                if (flattened['General']) {
+                  const updated = { ...flattened };
+                  [Platform.X, Platform.Instagram, Platform.Line, Platform.GoogleMaps].forEach(p => {
+                    if (!updated[p]) updated[p] = flattened['General'];
+                  });
+                  delete updated['General'];
+                  setCustomPrompts(updated);
+                }
+              } else {
+                const legacyVal = preset.custom_prompt;
+                const initialPrompts: { [key: string]: string } = {};
                 [Platform.X, Platform.Instagram, Platform.Line, Platform.GoogleMaps].forEach(p => {
-                  if (!updated[p]) updated[p] = parsed['General'];
+                  initialPrompts[p] = legacyVal;
                 });
-                delete updated['General'];
-                setCustomPrompts(updated);
+                setCustomPrompts(initialPrompts);
               }
             } else {
-              const legacyVal = preset.custom_prompt;
-              const initialPrompts: { [key: string]: string } = {};
-              [Platform.X, Platform.Instagram, Platform.Line, Platform.GoogleMaps].forEach(p => {
-                initialPrompts[p] = legacyVal;
-              });
-              setCustomPrompts(initialPrompts);
+              setCustomPrompts({});
             }
-          } else {
+          } catch (e) {
+            console.error('[PresetModal] Error parsing custom_prompt:', e);
             setCustomPrompts({});
           }
-        } catch (e) {
-          const legacyVal = preset.custom_prompt || '';
-          const initialPrompts: { [key: string]: string } = {};
-          [Platform.X, Platform.Instagram, Platform.Line, Platform.GoogleMaps].forEach(p => {
-            initialPrompts[p] = legacyVal;
-          });
-          setCustomPrompts(initialPrompts);
         }
       } else {
+        setName('');
+        setAvatar('shop');
         setCustomPrompts({});
         setLastAnalyzedState({});
       }
@@ -445,6 +449,38 @@ const PresetModal: React.FC<PresetModalProps> = ({
     setMobileView('edit');
   };
 
+  // --- Helpers ---
+  const flattenPrompts = (obj: any): { [key: string]: string } => {
+    const result: { [key: string]: string } = {};
+    if (!obj || typeof obj !== 'object') return result;
+
+    Object.entries(obj).forEach(([key, val]) => {
+      if (typeof val === 'string' && val.trim().startsWith('{')) {
+        try {
+          const nested = JSON.parse(val);
+          if (typeof nested === 'object' && nested !== null) {
+            // If it's a nested object, check if it has a key matching the current key or other platforms
+            const platforms = [Platform.X, Platform.Instagram, Platform.Line, Platform.GoogleMaps, 'General'];
+            let found = false;
+            platforms.forEach(p => {
+              if (nested[p] && typeof nested[p] === 'string') {
+                result[p] = nested[p];
+                found = true;
+              }
+            });
+            if (!found) result[key] = val; // fallback
+          } else {
+            result[key] = val;
+          }
+        } catch (e) {
+          result[key] = val;
+        }
+      } else if (typeof val === 'string') {
+        result[key] = val;
+      }
+    });
+    return result;
+  };
 
   const performPersonaAnalysis = async (
     overrideSamples?: TrainingItem[] | { content: string, platform: string }[],
@@ -498,9 +534,11 @@ const PresetModal: React.FC<PresetModalProps> = ({
       });
       const data = await res.json();
       if (data.instruction) {
-        const parsed = typeof data.instruction === 'string' && data.instruction.trim().startsWith('{')
+        const rawParsed = typeof data.instruction === 'string' && data.instruction.trim().startsWith('{')
           ? JSON.parse(data.instruction)
           : data.instruction;
+
+        const parsed = flattenPrompts(rawParsed);
 
         const newPrompts = { ...(currentPromptsBase || customPrompts) };
         let updated = false;
@@ -566,7 +604,10 @@ const PresetModal: React.FC<PresetModalProps> = ({
     isSavingRef.current = true;
     setIsInternalSaving(true);
     try {
-      let finalCustomPrompts = overridePrompts ? { ...customPrompts, ...overridePrompts } : { ...customPrompts };
+      // FIX: Use overridePrompts directly if provided, otherwise fallback to current state.
+      // Merging { ...customPrompts, ...overridePrompts } was re-introducing deleted keys
+      // because customPrompts (the state) might not have updated yet due to React's async nature.
+      let finalCustomPrompts = overridePrompts ? { ...overridePrompts } : { ...customPrompts };
 
       // Compute relatedItems first for analysis
       const relatedItems = selectedPresetId
@@ -602,14 +643,14 @@ const PresetModal: React.FC<PresetModalProps> = ({
       Object.entries(finalCustomPrompts).forEach(([k, v]) => {
         if (v && v.trim()) cleanedPrompts[k] = v.trim();
       });
-      const customPromptJSON = Object.keys(cleanedPrompts).length > 0 ? JSON.stringify(cleanedPrompts) : null;
+      const customPromptJSON = Object.keys(cleanedPrompts).length > 0 ? JSON.stringify(cleanedPrompts) : '{}';
 
       const result = await onSave({
         id: selectedPresetId || undefined,
         name,
         avatar,
         custom_prompt: customPromptJSON,
-        persona_yaml: null,
+        persona_yaml: '',
         post_samples: newPostSamples,
       }) as any;
 
@@ -794,16 +835,36 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
       // Clear local style instructions
       const nextPrompts = { ...customPrompts };
+
       if (mode === 'sns') {
         const snsPlatforms = [Platform.X, Platform.Instagram, Platform.Line, 'General'];
         snsPlatforms.forEach(p => delete nextPrompts[p]);
       } else {
         delete nextPrompts[Platform.GoogleMaps];
       }
-      setCustomPrompts(nextPrompts);
+
+      // Re-flatten to ensure no nested SNS data remains hidden in other keys
+      const finalCleanPrompts = flattenPrompts(nextPrompts);
+
+      // Explicitly delete mode-specific keys again after flattening just in case
+      if (mode === 'sns') {
+        [Platform.X, Platform.Instagram, Platform.Line, 'General'].forEach(p => delete finalCleanPrompts[p]);
+      } else {
+        delete finalCleanPrompts[Platform.GoogleMaps];
+      }
+
+      setCustomPrompts(finalCleanPrompts);
       setLastAnalyzedState(prev => ({ ...prev, [mode]: '' }));
 
-      if (onRefreshTraining) await onRefreshTraining();
+      // Persist the cleared prompts to the database immediately
+      await handleSave(finalCleanPrompts);
+
+      // Force clear internal saving state if handleSave was skipped or finished
+      setIsInternalSaving(false);
+
+      if (onRefreshTraining) {
+        await onRefreshTraining();
+      }
     } catch (err) {
       console.error('Failed to reset learning:', err);
       alert('リセットに失敗しました。');
