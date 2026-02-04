@@ -33,7 +33,7 @@ export function useGeneratorFlow(props: {
   } = props;
 
   // --- State ---
-  const [platforms, setPlatforms] = useState<Platform[]>([Platform.Instagram]);
+  const [platforms, setPlatforms] = useState<Platform[]>([]);
   const [isMultiGenMode, setIsMultiGenMode] = useState<boolean>(false);
   const [postPurpose, setPostPurpose] = useState<PostPurpose>(PostPurpose.Auto);
   const [gmapPurpose, setGmapPurpose] = useState<GoogleMapPurpose>(GoogleMapPurpose.Auto);
@@ -230,39 +230,41 @@ export function useGeneratorFlow(props: {
   };
 
   const handlePlatformToggle = (p: Platform) => {
+    // If clicking a platform that's already selected, deselect it
+    if (platforms.includes(p)) {
+      const nextPlatforms = platforms.filter(x => x !== p);
+      setPlatforms(nextPlatforms);
+      
+      // If we're down to 0 or 1 platforms, MultiGen mode should be false
+      if (nextPlatforms.length <= 1) {
+        setIsMultiGenMode(false);
+      }
+      return;
+    }
+
+    // Special logic for Google Maps (Mutually Exclusive)
     if (p === Platform.GoogleMaps) {
       setPlatforms([Platform.GoogleMaps]);
       setIsMultiGenMode(false);
       setIncludeEmojis(false);
       setIncludeSymbols(false);
-      // setCustomPrompt(loadedPresetPrompts[Platform.GoogleMaps] || '');
       return;
     }
 
+    // If currently on Google Maps, switch to the new one (as others can't coexist with GMap)
     if (platforms.includes(Platform.GoogleMaps)) {
       setPlatforms([p]);
       setIsMultiGenMode(false);
-      // setCustomPrompt(loadedPresetPrompts[p] || '');
       return;
     }
 
+    // Normal platform selection
     if (isMultiGenMode) {
-      if (platforms.includes(p)) {
-        if (platforms.length > 1) {
-          const nextPlatforms = platforms.filter(x => x !== p);
-          setPlatforms(nextPlatforms);
-          if (nextPlatforms.length === 1) {
-             setIsMultiGenMode(false);
-             // Switched to single mode, update prompt
-             // setCustomPrompt(loadedPresetPrompts[nextPlatforms[0]] || '');
-          }
-        }
-      } else {
-        setPlatforms(prev => [...prev, p]);
-      }
+      // Add to existing selection (max handled by UI but here we just append)
+      setPlatforms(prev => [...prev, p]);
     } else {
+      // Switch or Start selection
       setPlatforms([p]);
-      // setCustomPrompt(loadedPresetPrompts[p] || '');
     }
   };
 

@@ -574,7 +574,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                 <div
                                                     onClick={(e) => {
                                                         e.stopPropagation();
-                                                        handlePlatformSelect(p);
+                                                        onPlatformToggle(p);
                                                     }}
                                                     className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-500 active:scale-90 shadow-sm ${isActive ? 'text-white' : 'bg-[#e2e4e6] text-[#2b2b2f]'}`}
                                                     style={isActive ? { backgroundColor: brandColor } : {}}
