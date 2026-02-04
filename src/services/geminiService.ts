@@ -317,8 +317,8 @@ export const generateContent = async (
     - **ROLE DEFINITION**:
       - Use **<persona_rules>** (YAML) to define the **Core Personality** (Dialect, Tone, Spirit).
       - Use **<learning_samples>** to define the **Structural Format** (Line breaks, Emoji density, Footer style).
+- **Tone & Rhythm**: Mimic the sentence endings and tone. **CRITICAL**: Use ONLY the sentence endings and nuances found in the samples or <persona_rules>. Do NOT add generic "marketing-style" endings (e.g., "〜なの", "〜だわ", "〜してね") or feminine sentence endings if they are not explicitly present in the source materials.
       - **CRITICAL LENGTH RULE**: **Length** is determined by **Volume Control** below, NOT by the samples. If the samples are long but the user asks for 'Short', you MUST write a short post in the *style* of the samples.
-    - **Tone & Rhythm**: Mimic the sentence endings and tone. For line breaks/whitespace, follow the **Volume Control** setting (especially if Short).
     - **Volume Control**: Strictly follow the requested **Length: ${config.length}**. 
       - **Target Character Counts**:
         - **Short**: **Concise but Sufficient** (Range: ${targets.short.target} chars).
@@ -774,7 +774,7 @@ Original Platform: ${config.platform}
 ${hasPersona ? `
 **CRITICAL: PERSONA PRESERVATION MODE**
 Maintain the original "Voice" (slang, sentence endings, rhythm) 100%. 
-ONLY apply the user's specific instruction.
+ONLY apply the user's specific instruction. **STRICT RULE**: Do NOT add generic marketing-style endings or feminine particles (e.g., "〜の") if they are not present in the original content or samples.
 Reference Style: "${sampleText}"
 ` : `
 **Role**: Minimal interference editor. 
@@ -1222,6 +1222,7 @@ Values must be the style guide string (plain text with bullet points).
 **Content Guidelines for each value:**
 - **Tone & Voice**: Analyze the specific emotion (e.g., "Manic energy", "Calm professional", "Cynical humor").
 - **Keywords & Slang**: List specific words or phrases the user tends to use.
+- **Sentence Endings (語尾)**: Analyze specific sentence endings (e.g., "です・ます", "だ・である", conversational forms, specific particles like "〜じゃん", "〜なのだ"). **CRITICAL**: Note only what is present. Explicitly state if certain common endings are NOT used.
 - **Micro-Habits**: (e.g., "Uses half-width spaces between sentences", "Ends with '...' often", "Uses specific emojis like 🥺").
 - **Structure**: (e.g., "Short bursts of text", "Long storytelling format").
 
@@ -1229,7 +1230,7 @@ Values must be the style guide string (plain text with bullet points).
 - Content MUST be **Natural Japanese**.
 - Start each value with 【文体指示書】.
 - Use bullet points for readability.
-- **Formality Capture**: Accurately capture the level of formality. If the samples are casual/friendly (e.g., using '〜だね', '〜です♪', or specific emojis), the guide MUST explicitly instruct to maintain that casualness. DO NOT default to business formal unless indicated.
+- **Formality & Ending Capture**: Accurately capture the level of formality and specific sentence endings. If the samples are casual/friendly, the guide MUST explicitly instruct to maintain that casualness. **STRICT RULE**: Do NOT suggest or imply sentence endings that are not found in the samples. If the samples don't use soft/feminine endings (like "〜なの", "〜だわ"), you MUST NOT use them in the guide.
 - **Emoji Patterns**: Note the frequency and specific types of emojis used.
 - **CRITICAL:** If samples are provided for a platform, you **MUST** generate a guide for it. Do not skip it.
 - **CRITICAL:** The value for "X (Twitter)" must ONLY reflect the X samples. Do NOT mix styles.
