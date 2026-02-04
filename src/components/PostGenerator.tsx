@@ -149,10 +149,6 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
   return (
     <div className="min-h-screen w-full relative flex flex-col items-center justify-center overflow-hidden">
 
-      {/* Background Orbs - complementary to global ones */}
-      <div className="glow-orb w-[600px] h-[600px] bg-[#80CAFF]/10 -top-48 -left-48 animate-float-slow" />
-      <div className="glow-orb w-[500px] h-[500px] bg-[#C084FC]/10 -bottom-24 -right-24 animate-float-slow" style={{ animationDelay: '-3s' }} />
-
       {/* Main Layout Grid */}
       <div className="flex flex-row items-center justify-center gap-6 xl:gap-12 w-full max-w-[1600px] px-0 sm:px-4 relative z-10">
 

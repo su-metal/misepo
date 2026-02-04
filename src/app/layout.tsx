@@ -83,10 +83,6 @@ export default function RootLayout({
             AI Creative
           </div>
 
-          {/* Premium Floating Orbs */}
-          <div className="absolute top-[-10%] right-[-10%] w-[60vw] h-[60vw] bg-[#80CAFF]/10 rounded-full blur-[120px] animate-pulse-slow" />
-          <div className="absolute bottom-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-[#C084FC]/10 rounded-full blur-[100px] animate-pulse-slow" style={{ animationDelay: '1.5s' }} />
-          <div className="absolute top-[30%] left-[20%] w-[30vw] h-[30vw] bg-[#F87171]/5 rounded-full blur-[80px] animate-pulse-slow" style={{ animationDelay: '3s' }} />
         </div>
 
         <div id="root" className="relative z-10">{children}</div>
