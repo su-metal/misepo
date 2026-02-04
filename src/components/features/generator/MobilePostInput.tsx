@@ -567,9 +567,8 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                     className={`
                                                         transition-all duration-500 transform
                                                          ${isActive ? 'scale-110' : 'scale-100'}
-                                                         text-[#2b2b2f]
                                                     `}
-                                                    style={isActive ? { color: brandColor } : {}}
+                                                    style={{ color: brandColor }}
                                                 >
                                                     {details.icon}
                                                 </div>
@@ -579,8 +578,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                         e.stopPropagation();
                                                         onPlatformToggle(p);
                                                     }}
-                                                    className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-500 active:scale-90 shadow-sm ${isActive ? 'text-white' : 'bg-[#e2e4e6] text-[#2b2b2f]'}`}
-                                                    style={isActive ? { backgroundColor: brandColor } : {}}
+                                                    className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-500 active:scale-90 shadow-sm ${isActive ? 'bg-[#2b2b2f] text-white' : 'bg-[#e2e4e6] text-[#2b2b2f]'}`}
                                                 >
                                                     {isActive ? (
                                                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="animate-in zoom-in-50 duration-300">
@@ -619,7 +617,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             `}
                         >
                             {/* Main Card with Ticket Shape */}
-                            <div className="relative rounded-[32px] overflow-visible bg-gradient-to-br from-[#f3f9ff] via-[#faf5ff] to-[#fff0f3] shadow-md border-2 border-[#d0e0f0]">
+                            <div className="relative rounded-[32px] overflow-visible bg-gradient-to-br from-white via-white to-[#f7f2ff] shadow-[0_12px_30px_rgba(0,0,0,0.08)] border border-[#e5e7eb]">
 
                                 {/* Left Notch (Trapezoid Cutout) */}
                                 <div className="absolute left-[-3px] top-1/2 -translate-y-1/2 w-[18px] h-[32px] pointer-events-none z-20">
@@ -646,8 +644,8 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                     {/* Left Content */}
                                     <div className="flex flex-col gap-3 relative z-10 py-1">
                                         {/* Badge */}
-                                        <div className="self-start inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#2b2b2f] text-white shadow-sm ring-1 ring-white/50">
-                                            <SparklesIcon className="w-2.5 h-2.5 text-[#C084FC]" />
+                                        <div className="self-start inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-[#7BB8FF] to-[#FF8B5A] text-white shadow-sm ring-1 ring-white/70">
+                                            <SparklesIcon className="w-2.5 h-2.5 text-white" />
                                             <span className="text-[9px] font-black uppercase tracking-[0.15em] leading-none pt-[1px]">
                                                 {isGoogleMaps ? 'NOT AVAILABLE' : 'SPECIAL'}
                                             </span>
@@ -671,19 +669,19 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                 ${isOmakaseLoading
                                                 ? 'bg-white scale-90'
                                                 : (!isGoogleMaps
-                                                    ? 'bg-gradient-to-br from-[#2b2b2f] to-[#555] group-hover:scale-110 group-active:scale-95'
+                                                    ? 'bg-white border border-slate-200 text-slate-700 group-hover:scale-110 group-active:scale-95'
                                                     : 'bg-slate-200 shadow-none')
                                             }
                                             `}>
-                                            {/* Button Inner Gradient Ring */}
+                                            {/* Button Inner Ring */}
                                             {!isGoogleMaps && !isOmakaseLoading && (
-                                                <div className="absolute inset-[2px] rounded-full bg-gradient-to-br from-white/20 to-transparent pointer-events-none" />
+                                                <div className="absolute inset-[2px] rounded-full border border-slate-200 pointer-events-none" />
                                             )}
 
                                             {isOmakaseLoading ? (
                                                 <div className="w-6 h-6 border-[2.5px] border-[#C084FC] border-t-transparent rounded-full animate-spin" />
                                             ) : (
-                                                <ChevronRightIcon className="w-6 h-6 text-white" />
+                                                <ChevronRightIcon className="w-6 h-6 text-[#2b2b2f]" />
                                             )}
                                         </div>
                                     </div>
