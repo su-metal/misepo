@@ -567,9 +567,8 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                     className={`
                                                         transition-all duration-500 transform
                                                          ${isActive ? 'scale-110' : 'scale-100'}
-                                                         text-[#2b2b2f]
                                                     `}
-                                                    style={isActive ? { color: brandColor } : {}}
+                                                    style={{ color: brandColor }}
                                                 >
                                                     {details.icon}
                                                 </div>
@@ -579,8 +578,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                         e.stopPropagation();
                                                         onPlatformToggle(p);
                                                     }}
-                                                    className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-500 active:scale-90 shadow-sm ${isActive ? 'text-white' : 'bg-[#e2e4e6] text-[#2b2b2f]'}`}
-                                                    style={isActive ? { backgroundColor: brandColor } : {}}
+                                                    className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-500 active:scale-90 shadow-sm ${isActive ? 'bg-[#2b2b2f] text-white' : 'bg-[#e2e4e6] text-[#2b2b2f]'}`}
                                                 >
                                                     {isActive ? (
                                                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="animate-in zoom-in-50 duration-300">
@@ -594,7 +592,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
                                             <div className="flex flex-col">
                                                 <div className="flex flex-col leading-tight">
-                                                    <h3 className={`font-black tracking-tighter text-xl transition-colors duration-500 text-[#2b2b2f]`} style={{ fontFamily: 'Inter, sans-serif' }}>
+                                                    <h3 className={`font-black tracking-tighter text-xl transition-colors duration-500 text-[#2b2b2f] whitespace-nowrap`} style={{ fontFamily: 'Inter, sans-serif' }}>
                                                         {details.name}
                                                     </h3>
                                                     <p className={`text-[11px] font-medium ${isActive ? 'text-[#2b2b2f]/60' : 'text-[#b0b0b0]'}`}>
@@ -609,7 +607,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                         })()}
                     </div>
 
-                    {/* Bottom Section - Promotional Card (AI Omakase Mode Redesign) */}
+                    {/* Bottom Section - AI Omakase Card (Glass + Metallic) */}
                     <div className="mt-4 md:mt-6">
                         <div
                             onClick={!isGoogleMaps ? handleOmakaseStart : undefined}
@@ -618,80 +616,68 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                 ${!isGoogleMaps ? 'cursor-pointer active:scale-[0.98]' : 'cursor-not-allowed grayscale opacity-70'}
                             `}
                         >
-                            {/* Main Card with Ticket Shape */}
-                            <div className="relative rounded-[32px] overflow-visible bg-gradient-to-br from-[#f3f9ff] via-[#faf5ff] to-[#fff0f3] shadow-md border-2 border-[#d0e0f0]">
-
-                                {/* Left Notch (Trapezoid Cutout) */}
-                                <div className="absolute left-[-3px] top-1/2 -translate-y-1/2 w-[18px] h-[32px] pointer-events-none z-20">
-                                    <svg width="18" height="32" viewBox="0 0 18 32" fill="none" className="absolute left-0 top-0">
-                                        <path d="M0 0 L14 4 L14 28 L0 32 Z" fill="white" />
-                                        <path d="M-1 -1 L14 4 L14 28 L-1 33" stroke="#d0e0f0" strokeWidth="2" strokeLinejoin="round" fill="none" />
-                                    </svg>
-                                </div>
-
-                                {/* Right Notch (Trapezoid Cutout) */}
-                                <div className="absolute right-[-3px] top-1/2 -translate-y-1/2 w-[18px] h-[32px] pointer-events-none z-20">
-                                    <svg width="18" height="32" viewBox="0 0 18 32" fill="none" className="absolute left-0 top-0">
-                                        <path d="M18 0 L4 4 L4 28 L18 32 Z" fill="white" />
-                                        <path d="M19 -1 L4 4 L4 28 L19 33" stroke="#d0e0f0" strokeWidth="2" strokeLinejoin="round" fill="none" />
-                                    </svg>
-                                </div>
-
-                                {/* Watermark Texture */}
-                                <SparklesIcon className="absolute -bottom-6 -right-6 w-32 h-32 text-[#2b2b2f]/[0.03] -rotate-12 pointer-events-none" />
-
-                                {/* Content Container */}
-                                <div className="relative px-8 py-6 flex items-center justify-between">
-
-                                    {/* Left Content */}
-                                    <div className="flex flex-col gap-3 relative z-10 py-1">
-                                        {/* Badge */}
-                                        <div className="self-start inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#2b2b2f] text-white shadow-sm ring-1 ring-white/50">
-                                            <SparklesIcon className="w-2.5 h-2.5 text-[#C084FC]" />
-                                            <span className="text-[9px] font-black uppercase tracking-[0.15em] leading-none pt-[1px]">
-                                                {isGoogleMaps ? 'NOT AVAILABLE' : 'SPECIAL'}
+                            <div className="relative overflow-hidden rounded-[24px] bg-white/70 backdrop-blur-xl border border-white/70 shadow-[0_16px_40px_rgba(15,23,42,0.12)]">
+                                <div className="absolute -top-24 -left-24 w-48 h-48 bg-blue-500/10 rounded-full blur-[80px]" />
+                                <div className="flex">
+                                    <div className="flex-1 p-6 flex flex-col gap-4">
+                                        <div className="flex items-center gap-3 px-1">
+                                            <SparklesIcon className="w-4 h-4 text-slate-500/60" />
+                                            <span className="text-slate-500/70 text-[10px] font-bold tracking-[0.25em] uppercase">
+                                                Premium Tier Feature
                                             </span>
                                         </div>
 
-                                        <div className="space-y-1 mt-1">
-                                            <h4 className="text-[22px] font-black tracking-tight leading-none text-[#2b2b2f]">
-                                                AIおまかせ生成
-                                            </h4>
-                                            <p className="text-[11px] text-slate-500 font-bold leading-relaxed tracking-wide">
-                                                迷ったらここから。<br />
-                                                プロ級の投稿を1タップで。
+                                        <div className="flex items-center gap-4">
+                                            <div className="relative w-14 h-14 rounded-full bg-gradient-to-br from-blue-400 via-blue-500 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/30">
+                                                <div className="absolute inset-0 rounded-full bg-white/20 blur-sm" />
+                                                <MagicWandIcon className="w-7 h-7 text-white relative z-10" />
+                                            </div>
+                                            <div className="flex flex-col">
+                                                <h4 className="text-[20px] font-black tracking-tight leading-tight text-[#1e293b]">
+                                                    AIおまかせ生成
+                                                </h4>
+                                                <div className="flex items-center gap-1.5 mt-0.5">
+                                                    <span className="flex h-2 w-2 rounded-full bg-blue-600" />
+                                                    <span className="text-slate-500/70 text-[9px] font-black uppercase tracking-tight">
+                                                        Ultra High Performance
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <p className="text-slate-700/90 text-[12px] font-medium leading-relaxed">
+                                                迷ったらここから。高性能AIが最適な投稿文を一気に生成します。
                                             </p>
+                                            <div className="flex flex-wrap gap-2 pt-1">
+                                                <span className="px-2 py-1 rounded-full bg-slate-100/80 border border-slate-200/60 text-[9px] text-slate-600 font-bold">
+                                                    3D Textures
+                                                </span>
+                                                <span className="px-2 py-1 rounded-full bg-slate-100/80 border border-slate-200/60 text-[9px] text-slate-600 font-bold">
+                                                    Frosted Glass
+                                                </span>
+                                                <span className="px-2 py-1 rounded-full bg-slate-100/80 border border-slate-200/60 text-[9px] text-slate-600 font-bold">
+                                                    Metallic
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
 
-                                    {/* Right Action Button */}
-                                    <div className="relative z-10 flex-shrink-0 ml-4">
-                                        <div className={`
-                                                w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-transform duration-500
-                                                ${isOmakaseLoading
-                                                ? 'bg-white scale-90'
-                                                : (!isGoogleMaps
-                                                    ? 'bg-gradient-to-br from-[#2b2b2f] to-[#555] group-hover:scale-110 group-active:scale-95'
-                                                    : 'bg-slate-200 shadow-none')
-                                            }
-                                            `}>
-                                            {/* Button Inner Gradient Ring */}
-                                            {!isGoogleMaps && !isOmakaseLoading && (
-                                                <div className="absolute inset-[2px] rounded-full bg-gradient-to-br from-white/20 to-transparent pointer-events-none" />
-                                            )}
-
+                                    <div className="w-16 flex flex-col items-center justify-center border-l border-slate-200/60 bg-white/40 hover:bg-white/70 transition-colors">
+                                        <span className="[writing-mode:vertical-lr] text-slate-500/70 text-[9px] font-black uppercase tracking-[0.25em] mb-4 group-hover:text-slate-700">
+                                            Generate
+                                        </span>
+                                        <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all shadow-sm ${isOmakaseLoading
+                                            ? 'bg-white'
+                                            : (!isGoogleMaps ? 'bg-slate-900/5 group-hover:bg-blue-600' : 'bg-slate-200')}`}>
                                             {isOmakaseLoading ? (
-                                                <div className="w-6 h-6 border-[2.5px] border-[#C084FC] border-t-transparent rounded-full animate-spin" />
+                                                <div className="w-5 h-5 border-[2.5px] border-blue-500 border-t-transparent rounded-full animate-spin" />
                                             ) : (
-                                                <ChevronRightIcon className="w-6 h-6 text-white" />
+                                                <ChevronRightIcon className={`w-5 h-5 ${!isGoogleMaps ? 'text-slate-700 group-hover:text-white group-hover:translate-x-0.5' : 'text-slate-400'} transition-all`} />
                                             )}
                                         </div>
                                     </div>
                                 </div>
-
-                                {/* Ticket Perforation Line (Visual Only) */}
-                                <div className={`absolute top-[8%] bottom-[8%] right-[30%] w-px border-r-2 border-dotted ${!isGoogleMaps ? 'border-slate-200' : 'border-slate-100'} pointer-events-none`} />
-
                             </div>
                         </div>
                     </div>
