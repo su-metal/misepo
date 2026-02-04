@@ -114,7 +114,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                     ),
                     actionColor: "bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888] text-white shadow-[0_8px_25px_rgba(220,39,67,0.2)]",
                     actionLabel: "Instagramを起動",
-                    contentClasses: "text-[16px] text-[#2b2b2f] font-medium leading-relaxed",
+                    contentClasses: "text-[16px] text-[#2b2b2f] font-bold leading-relaxed tracking-tight",
                     wrapperClass: "max-w-[340px]",
                     brandTextColor: "text-[#E1306C]",
                     brandBgColor: "bg-[#E1306C]/10",
@@ -133,7 +133,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                     label: 'Google Maps',
                     actionColor: 'bg-[#4285F4] text-white hover:opacity-90 shadow-[0_8px_20px_rgba(66,133,244,0.2)] border-none',
                     actionLabel: "Googleマップで返信する",
-                    contentClasses: "text-[16px] text-[#2b2b2f] font-medium leading-relaxed",
+                    contentClasses: "text-[16px] text-[#2b2b2f] font-bold leading-relaxed tracking-tight",
                     wrapperClass: "max-w-[325px]",
                     brandTextColor: "text-[#4285F4]",
                     brandBgColor: "bg-[#4285F4]/5",
@@ -150,7 +150,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                     label: 'LINE',
                     actionColor: "bg-[#06C755] text-white shadow-[0_8px_20px_rgba(6,199,85,0.2)]",
                     actionLabel: "LINEで送る",
-                    contentClasses: "text-[16px] text-[#2b2b2f] font-medium leading-relaxed",
+                    contentClasses: "text-[16px] text-[#2b2b2f] font-bold leading-relaxed tracking-tight",
                     wrapperClass: "max-w-full sm:max-w-[400px]",
                     brandTextColor: "text-[#06C755]",
                     brandBgColor: "bg-[#06C755]/5",
@@ -229,7 +229,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
             ) : (
                 <div className={`space-y-8 animate-in fade-in duration-700 ${results.length === 0 ? 'hidden md:block' : ''}`}>
                     {/* Main Results Container - Premium Layout */}
-                    <div className="text-[#2b2b2f] flex flex-col min-h-[600px] overflow-visible group/main transition-all duration-700 w-full max-w-6xl mx-auto bg-white rounded-[54px] border border-slate-100 shadow-premium relative overflow-hidden">
+                    <div className="text-[#2b2b2f] flex flex-col min-h-[600px] group/main transition-all duration-700 w-full max-w-6xl mx-auto bg-white md:rounded-[54px] rounded-none md:border border-slate-100 md:shadow-premium relative overflow-hidden">
 
                         {/* Background Decor in Container */}
                         <div className="absolute -top-24 -right-24 w-64 h-64 bg-[#80CAFF]/5 rounded-full blur-[60px] pointer-events-none" />

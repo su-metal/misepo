@@ -50,30 +50,34 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
                 onClick={onClose}
             />
 
-            <div className="relative w-full max-w-lg h-[90vh] bg-[#1E1E24] rounded-[48px] overflow-hidden animate-in zoom-in-95 duration-300 border border-white/10 shadow-[0_30px_80px_rgba(0,0,0,0.5)] flex flex-col">
-                <div className="flex items-center justify-between p-7 sm:p-9 bg-[#1E1E24] border-b border-white/5 sticky top-0 z-10">
+            <div className="relative w-full max-w-lg h-[90vh] bg-white rounded-[48px] overflow-hidden animate-in zoom-in-95 duration-300 border border-slate-100 shadow-[0_30px_80px_rgba(0,0,0,0.15)] flex flex-col">
+                {/* Background Decor */}
+                <div className="absolute -top-24 -right-24 w-64 h-64 bg-[#80CAFF]/5 rounded-full blur-[60px] pointer-events-none" />
+                <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-[#F87171]/5 rounded-full blur-[60px] pointer-events-none" />
+
+                <div className="flex items-center justify-between p-7 sm:p-9 bg-slate-50 border-b border-slate-100 sticky top-0 z-10">
                     <div className="flex items-center gap-4 text-left">
-                        <div className="w-10 h-10 rounded-2xl bg-[#2B2B2F] flex items-center justify-center border border-white/10">
+                        <div className="w-10 h-10 rounded-2xl bg-white flex items-center justify-center border border-slate-100 shadow-sm text-[#2b2b2f]">
                             {getPlatformIcon(platform)}
                         </div>
                         <div>
-                            <h3 className="text-[14px] font-bold text-white leading-tight">
-                                プレビュー表示
+                            <h3 className="text-[14px] font-black text-[#2b2b2f] leading-tight uppercase tracking-tight">
+                                プレビュー
                             </h3>
-                            <p className="text-[10px] text-[#A0A0A0] font-medium mt-1">Platform Preview</p>
+                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em] mt-1">Platform Preview</p>
                         </div>
                     </div>
                     <button
                         onClick={onClose}
-                        className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 text-white transition-all active:scale-90"
+                        className="w-10 h-10 flex items-center justify-center rounded-full bg-white border border-slate-200 text-slate-400 hover:text-[#2b2b2f] hover:bg-slate-50 transition-all active:scale-90 shadow-sm"
                     >
-                        <CloseIcon className="w-5 h-5 opacity-60 group-hover:opacity-100 transition-opacity" />
+                        <CloseIcon className="w-5 h-5" />
                     </button>
                 </div>
 
-                <div className="flex-1 bg-[#1E1E24] overflow-y-auto no-scrollbar">
+                <div className="flex-1 bg-white overflow-y-auto no-scrollbar relative z-10">
                     {/* Platform Specific Preview */}
-                    <div className="flex justify-center px-4 py-10">
+                    <div className="flex justify-center px-4 py-12">
 
                         {/* Instagram Preview */}
                         {platform === Platform.Instagram && (
@@ -117,7 +121,7 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
 
                                     <div className="text-xs font-black text-black mb-4">1,234 likes</div>
 
-                                    <div className="text-[16px] text-black font-medium leading-relaxed">
+                                    <div className="text-[14px] text-black font-medium leading-relaxed">
                                         <span className="font-black mr-2">{storeProfile.name || 'your_account'}</span>
                                         <AutoResizingTextarea
                                             value={text}
@@ -147,7 +151,7 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
                                             <MoreHorizontalIcon className="w-5 h-5 text-[#CCCCCC]" />
                                         </div>
 
-                                        <div className="text-[16px] text-black font-medium leading-tight mb-4">
+                                        <div className="text-[15px] text-black font-medium leading-tight mb-4">
                                             <AutoResizingTextarea
                                                 value={text}
                                                 onChange={(e) => onChange?.(e.target.value)}
@@ -203,7 +207,7 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
                                             </div>
                                         </div>
 
-                                        <div className="text-[16px] text-black font-medium leading-relaxed">
+                                        <div className="text-[14px] text-black font-medium leading-relaxed">
                                             <AutoResizingTextarea
                                                 value={text}
                                                 onChange={(e) => onChange?.(e.target.value)}
@@ -225,15 +229,16 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
                     </div>
                 </div>
 
-                <div className="p-8 bg-[#1E1E24] border-t border-white/5 mt-auto">
+                <div className="p-8 bg-slate-50 border-t border-slate-100 mt-auto relative z-10">
                     <button
                         onClick={onClose}
-                        className="w-full py-5 rounded-full font-bold text-[14px] transition-all active:scale-[0.98] shadow-sm bg-[var(--pop-violet-main)] text-white hover:opacity-90 relative overflow-hidden group"
+                        className="w-full py-5 rounded-[20px] font-black text-[14px] uppercase tracking-[0.2em] transition-all active:scale-[0.98] shadow-xl bg-[#2b2b2f] text-white hover:bg-black relative overflow-hidden group"
                     >
+                        <div className="absolute inset-0 bg-gradient-shine opacity-10 group-hover:animate-shine pointer-events-none" />
                         <div className="relative z-10">保存して閉じる</div>
                     </button>
-                    <p className="mt-4 text-[10px] font-bold text-[#A0A0A0] text-center leading-relaxed opacity-60">
-                        プレビュー画面は実際の見え方と異なる場合があります。
+                    <p className="mt-4 text-[10px] font-black text-slate-400 text-center uppercase tracking-widest leading-relaxed opacity-60">
+                        ※ 実際の表示結果とは多少異なる場合があります
                     </p>
                 </div>
             </div>

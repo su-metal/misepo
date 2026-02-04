@@ -4,12 +4,14 @@
 
 :root {
   /* Pop Violet Palette */
-  --pop-violet-bg: #6F78FF;
-  --pop-violet-card: #2B2B2F;
-  --pop-violet-main: #6F78FF;
-  --pop-violet-accent-a: #FF7A59; /* Coral */
-  --pop-violet-accent-b: #FFD166; /* Yellow */
-  --pop-violet-sub-light: #F3F4FF;
+  /* Premium Light Stage - Refined Palette */
+  --pop-violet-bg: #E5E7EB; /* Slightly darker slate for better contrast */
+  --pop-violet-card: #FFFFFF;
+  --pop-violet-main: #111827; /* Near black navy */
+  --pop-violet-accent-a: #4338CA; /* Deep Royal Blue */
+  --pop-violet-accent-b: #F59E0B; /* Amber/Gold */
+  --pop-violet-sub-light: #F9FAFB;
+  --sunset-gradient: linear-gradient(135deg, #FF6B6B 0%, #FF9E64 100%);
 
   /* Legacy Colors (Keep for safety, but remapped where appropriate) */
   --ichizen-white: #ffffff;
@@ -57,9 +59,10 @@
 body {
   font-family: 'Inter', 'Noto Sans JP', sans-serif;
   background-color: var(--brand-bg);
-  color: var(--brand-text);
+  color: #2b2b2f;
   min-height: 100vh;
   overscroll-behavior-y: none;
+  overflow-x: hidden;
 }
 
 .font-montserrat {
@@ -80,7 +83,8 @@ body {
 }
 
 .shadow-premium {
-  box-shadow: 0 32px 64px -16px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.12), 
+              0 10px 40px -10px rgba(0, 0, 0, 0.08);
 }
 
 /* Gradient Utilities - More Vibrant & High Contrast */
@@ -114,8 +118,23 @@ body {
 }
 
 .bg-gradient-shine {
-  background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.2) 50%, transparent 70%);
+  background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.4) 50%, transparent 70%);
   background-size: 200% 100%;
+}
+
+.bg-pattern-dots {
+  background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px);
+  background-size: 64px 64px;
+}
+
+/* Soft UI Badges */
+.badge-soft-blue { @apply bg-blue-50 text-blue-600 border border-blue-100; }
+.badge-soft-green { @apply bg-emerald-50 text-emerald-600 border border-emerald-100; }
+.badge-soft-pink { @apply bg-pink-50 text-pink-600 border border-pink-100; }
+.badge-soft-amber { @apply bg-amber-50 text-amber-700 border border-amber-100; }
+
+.bg-sunset {
+  background: var(--sunset-gradient);
 }
 
 .glow-orb {
@@ -284,7 +303,7 @@ html {
   background: transparent;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #1823ff;
+  background: #cbd5e1;
   border-radius: 10px;
 }
 
@@ -362,6 +381,46 @@ html {
     animation: pulse-gentle 2s ease-in-out infinite;
 }
 
+@keyframes fluid-breathe {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-4px) scale(1.03); }
+}
+
+@keyframes shimmer-sweep {
+  0% { transform: translateX(-150%) skewX(-20deg); }
+  50%, 100% { transform: translateX(150%) skewX(-20deg); }
+}
+
+@keyframes gradient-flow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-premium-button {
+  animation: fluid-breathe 4s ease-in-out infinite;
+}
+
+.shimmer-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  animation: shimmer-sweep 3s ease-in-out infinite;
+}
+
+.bg-sunset-flow {
+  background: linear-gradient(135deg, #FF6B6B, #FF9E64, #FF6B6B);
+  background-size: 200% 200%;
+  animation: gradient-flow 6s ease infinite;
+}
 @keyframes pulse-slow {
     0%, 100% { opacity: 1; transform: scale(1); }
     50% { opacity: 0.9; transform: scale(1.02); }

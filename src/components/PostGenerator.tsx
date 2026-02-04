@@ -147,11 +147,11 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
   };
 
   return (
-    <div className="min-h-screen w-full relative bg-[#7477ff] flex flex-col items-center justify-center overflow-hidden">
+    <div className="min-h-screen w-full relative flex flex-col items-center justify-center overflow-hidden">
 
-      {/* Background Orbs to match LP */}
-      <div className="glow-orb w-[600px] h-[600px] bg-[var(--brand-primary)] -top-48 -left-48 opacity-[0.25] animate-float-slow" />
-      <div className="glow-orb w-[500px] h-[500px] bg-purple-500 -bottom-24 -right-24 opacity-[0.2] animate-float-slow" style={{ animationDelay: '-3s' }} />
+      {/* Background Orbs - complementary to global ones */}
+      <div className="glow-orb w-[600px] h-[600px] bg-[#80CAFF]/10 -top-48 -left-48 animate-float-slow" />
+      <div className="glow-orb w-[500px] h-[500px] bg-[#C084FC]/10 -bottom-24 -right-24 animate-float-slow" style={{ animationDelay: '-3s' }} />
 
       {/* Main Layout Grid */}
       <div className="flex flex-row items-center justify-center gap-6 xl:gap-12 w-full max-w-[1600px] px-0 sm:px-4 relative z-10">
@@ -162,7 +162,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
         </div>
 
         {/* App Shell Container */}
-        <div className="relative w-full h-[100dvh] sm:h-[90vh] sm:max-h-[900px] sm:w-[414px] shrink-0 bg-white sm:rounded-[54px] shadow-premium overflow-hidden border-0 sm:border-[12px] sm:border-white sm:ring-2 sm:ring-[var(--brand-primary)]/10 flex flex-col isolate z-10 transition-all duration-500">
+        <div className="relative w-full h-[100dvh] sm:h-[90vh] sm:max-h-[900px] sm:w-[414px] shrink-0 bg-white sm:rounded-[54px] shadow-premium overflow-hidden border-0 sm:border-[12px] sm:border-white sm:ring-4 sm:ring-[#2b2b2f]/5 flex flex-col isolate z-10 transition-all duration-500">
 
           {/* Mobile Content Area */}
           <div className="flex-1 w-full relative overflow-hidden bg-white">

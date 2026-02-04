@@ -410,18 +410,20 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                 {plan?.plan !== 'professional' && plan?.plan !== 'monthly' && plan?.plan !== 'yearly' && plan?.plan !== 'pro' && (
                                     <a
                                         href="/start?upgrade=true"
-                                        className="xl:hidden h-8 px-4 rounded-full bg-gradient-to-r from-[#1f29fc] to-[#7f5af0] text-white text-[9px] font-black uppercase tracking-[0.1em] shadow-lg shadow-indigo-500/20 active:scale-95 transition-all flex items-center gap-1.5 border border-white/20"
+                                        className="xl:hidden h-8 px-4 rounded-full bg-sunset text-white text-[9px] font-black uppercase tracking-[0.1em] shadow-lg shadow-orange-500/20 active:scale-95 transition-all flex items-center gap-1.5 border border-white/20"
                                     >
                                         <SparklesIcon className="w-2.5 h-2.5" />
                                         {plan?.plan === 'free' || plan?.plan === 'trial' ? 'Go Pro' : 'Upgrade'}
                                     </a>
                                 )}
 
-                                {/* Decorative Avatar (No Name) */}
+                                {/* Decorative Avatar (Dynamic Store Initial) */}
                                 <div className="relative group cursor-pointer" onClick={onOpenOnboarding}>
                                     <div className="absolute inset-0 bg-[#7F5AF0] rounded-full blur-[10px] opacity-20 group-hover:opacity-40 transition-opacity" />
                                     <div className="relative w-10 h-10 rounded-full bg-white flex items-center justify-center overflow-hidden shadow-md border-[2px] border-slate-100">
-                                        <span className="text-[var(--plexo-black)] font-black text-lg" style={{ transform: 'rotate(-10deg)', marginTop: '2px' }}>ミ</span>
+                                        <span className="text-[#2b2b2f] font-black text-lg" style={{ transform: 'rotate(-10deg)', marginTop: '2px' }}>
+                                            {storeProfile?.name?.charAt(0) || 'M'}
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -440,7 +442,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         <div className="absolute bottom-0 left-0 h-[2px] bg-slate-100 w-full" />
                                         {/* Active Gauge Fill */}
                                         <div
-                                            className="absolute bottom-0 left-0 h-[2px] bg-[#2b2b2f] transition-all duration-1000"
+                                            className="absolute bottom-0 left-0 h-[2px] bg-[#4338CA] transition-all duration-1000"
                                             style={{ width: `${(Math.max(0, plan.limit - plan.usage) / plan.limit) * 100}%` }}
                                         />
                                     </div>
@@ -531,25 +533,40 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                 const details = getPlatformDetails(p);
                                 const bentoClass = 'h-[124px]';
 
+                                // Map brand colors
+                                const brandColor = p === Platform.Instagram ? '#E1306C' :
+                                    p === Platform.X ? '#111827' :
+                                        p === Platform.Line ? '#06C755' :
+                                            p === Platform.GoogleMaps ? '#4285F4' : '#2b2b2f';
+
+                                const brandBg = p === Platform.Instagram ? 'bg-pink-50/50' :
+                                    p === Platform.X ? 'bg-slate-50/50' :
+                                        p === Platform.Line ? 'bg-emerald-50/50' :
+                                            p === Platform.GoogleMaps ? 'bg-blue-50/50' : 'bg-white';
+
                                 return (
                                     <div
                                         key={p}
                                         onClick={() => onPlatformToggle(p)}
                                         className={`
-                                            relative rounded-[20px] overflow-hidden cursor-pointer border transition-all duration-500 group
+                                            relative rounded-[24px] overflow-hidden cursor-pointer border transition-all duration-500 group
                                             ${bentoClass}
                                              ${isActive
-                                                ? `bg-white scale-[0.98] animate-tactile-pop shadow-md`
+                                                ? `${brandBg} scale-[1.02] border-[2.5px]`
                                                 : `bg-white border-slate-100 shadow-sm hover:border-slate-300 active:scale-[0.98]`
                                             }
                                         `}
-                                        style={isActive ? { borderColor: p === Platform.Instagram ? '#E1306C' : p === Platform.X ? '#2b2b2f' : p === Platform.Line ? '#06C755' : p === Platform.GoogleMaps ? '#4285F4' : '#2b2b2f', borderWidth: '2px' } : {}}
+                                        style={isActive ? {
+                                            borderColor: brandColor,
+                                            boxShadow: `0 10px 30px -10px ${brandColor}40`
+                                        } : {}}
                                     >
                                         {/* Bento Card Content */}
                                         <div className="absolute inset-0 p-5 flex flex-col justify-between">
                                             <div className="flex justify-between items-start">
                                                 <div className={`
-                                                    transition-all duration-300
+                                                    transition-all duration-500 transform
+                                                     ${isActive ? 'scale-110' : 'scale-100'}
                                                      text-[#2b2b2f]
                                                 `}>
                                                     {details.icon}
@@ -560,9 +577,16 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                         e.stopPropagation();
                                                         handlePlatformSelect(p);
                                                     }}
-                                                    className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 active:scale-90 shadow-sm ${isActive ? 'bg-[#2b2b2f] text-white' : 'bg-slate-100 text-[#2b2b2f]'}`}
+                                                    className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-500 active:scale-90 shadow-sm ${isActive ? 'text-white' : 'bg-slate-100 text-[#2b2b2f]'}`}
+                                                    style={isActive ? { backgroundColor: brandColor } : {}}
                                                 >
-                                                    <ChevronRightIcon className={`w-5 h-5`} />
+                                                    {isActive ? (
+                                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="animate-in zoom-in-50 duration-300">
+                                                            <polyline points="20 6 9 17 4 12" />
+                                                        </svg>
+                                                    ) : (
+                                                        <ChevronRightIcon className={`w-5 h-5`} />
+                                                    )}
                                                 </div>
                                             </div>
 
@@ -571,7 +595,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                     <h3 className={`font-black tracking-tighter text-xl transition-colors duration-500 text-[#2b2b2f]`} style={{ fontFamily: 'Inter, sans-serif' }}>
                                                         {details.name}
                                                     </h3>
-                                                    <p className={`text-[11px] font-medium text-[#b0b0b0]`}>
+                                                    <p className={`text-[11px] font-medium ${isActive ? 'text-[#2b2b2f]/60' : 'text-[#b0b0b0]'}`}>
                                                         {details.sub}
                                                     </p>
                                                 </div>
@@ -803,7 +827,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                 {isGoogleMaps && (
                                                     <button
                                                         onClick={toggleVoiceInput}
-                                                        className={`absolute bottom-6 left-6 w-12 h-12 rounded-full flex items-center justify-center transition-all shadow-md ${isListening ? 'bg-[#2b2b2f] text-white animate-pulse' : 'bg-slate-100 text-[#2b2b2f]'}`}
+                                                        className={`absolute bottom-6 left-6 w-12 h-12 rounded-full flex items-center justify-center transition-all shadow-md ${isListening ? 'bg-[#4338CA] text-white animate-pulse' : 'bg-slate-100 text-[#2b2b2f]'}`}
                                                     >
                                                         <MicIcon className="w-6 h-6" />
                                                     </button>
@@ -1109,7 +1133,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                     </div>
                                 )}
                                 {mobileStep === 'result' && (
-                                    <div className="flex-1 overflow-y-auto pb-4 animate-in fade-in slide-in-from-bottom-10 duration-700 px-0">
+                                    <div className="flex-1 overflow-x-hidden overflow-y-auto pb-4 animate-in fade-in slide-in-from-bottom-10 duration-700 px-0">
                                         <PostResultTabs
                                             results={generatedResults}
                                             activeTab={activeResultTab}
