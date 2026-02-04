@@ -267,7 +267,7 @@ const SampleSlider = ({
 
               <div className="mt-8 flex items-center justify-between gap-3">
                 {/* Platform Toggles */}
-                <div className="flex items-center gap-6">
+                <div className="flex items-center gap-4">
                   {mode === 'sns' ? (
                     <>
                       {[Platform.X, Platform.Instagram, Platform.Line].map((p) => {
