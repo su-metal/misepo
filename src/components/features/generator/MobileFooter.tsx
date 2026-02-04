@@ -140,14 +140,14 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
                         absolute -top-[40px] left-1/2 -translate-x-1/2 w-[72px] h-[72px] rounded-full flex items-center justify-center z-20 
                         transition-all duration-300 border-[6px] border-white
                         ${isConfirmStep
-                            ? 'bg-[#2b2b2f] text-white rotate-0 scale-110 shadow-[0_20px_40px_rgba(0,0,0,0.2)]'
-                            : 'bg-[#2b2b2f] text-white rotate-0 scale-100 hover:scale-105 shadow-[0_15px_30px_rgba(0,0,0,0.15)]'
+                            ? 'bg-sunset text-white rotate-0 scale-110 shadow-[0_20px_40px_rgba(255,107,107,0.3)]'
+                            : 'bg-sunset text-white rotate-0 scale-100 hover:scale-105 shadow-[0_15px_30px_rgba(255,107,107,0.2)]'
                         }
                     `}
                     aria-label={isConfirmStep ? "Generate Post" : "New Post"}
                 >
-                    {/* Background Glow */}
-                    <div className="absolute inset-0 rounded-full bg-sunset opacity-20 blur-xl group-hover:opacity-40 transition-opacity" />
+                    {/* Inner Shine for Glass-like effect */}
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-white/20 to-transparent pointer-events-none" />
 
                     <div className="relative w-full h-full flex items-center justify-center">
                         <div className={`absolute transition-all duration-300 ease-out ${isConfirmStep ? 'opacity-0 scale-50 rotate-90' : 'opacity-100 scale-100 rotate-0'}`}>
