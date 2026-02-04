@@ -424,19 +424,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
             setCustomPrompts({});
           }
         }
-      } else {
-        setName('');
-        setAvatar('shop');
-        setCustomPrompts({});
-        setLastAnalyzedState({});
       }
-    } else {
-      setName('');
-      setAvatar('shop');
-      setCustomPrompts({});
-      setLastAnalyzedState({});
-      setTempNewSamples([]);
-      setNeedsReanalysis(false);
     }
   }, [selectedPresetId, presets]);
 
@@ -597,7 +585,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
     }
   };
 
-  const handleSave = async (overridePrompts?: { [key: string]: string }) => {
+  const handleSave = async (overridePrompts?: { [key: string]: string }, overrideId?: string) => {
     if (!name.trim()) return;
     if (isSavingRef.current) return;
 
@@ -624,7 +612,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
         const mapsStyle = await performPersonaAnalysis(relatedItems, 'maps', finalCustomPrompts);
         if (mapsStyle) finalCustomPrompts = { ...finalCustomPrompts, ...mapsStyle };
       }
-      const currentPresetId = selectedPresetId || 'omakase';
+      const currentPresetId = overrideId || selectedPresetId || 'omakase';
 
       const newPostSamples: { [key in Platform]?: string } = {};
 
@@ -645,13 +633,20 @@ const PresetModal: React.FC<PresetModalProps> = ({
       });
       const customPromptJSON = Object.keys(cleanedPrompts).length > 0 ? JSON.stringify(cleanedPrompts) : '{}';
 
+      // Find the existing persona_yaml to preserve it
+      const targetId = overrideId || selectedPresetId;
+      const existingPreset = presets.find(p => p.id === targetId);
+      const personaYamlToSave = existingPreset?.persona_yaml || '';
+
       const result = await onSave({
-        id: selectedPresetId || undefined,
+        id: targetId || undefined,
         name,
         avatar,
         custom_prompt: customPromptJSON,
-        persona_yaml: '',
-        post_samples: newPostSamples,
+        persona_yaml: personaYamlToSave,
+        // Only update post_samples if NOT in overridePrompts (reset) mode, 
+        // because trainingItems prop might be stale during a reset.
+        post_samples: overridePrompts ? undefined : newPostSamples,
       }) as any;
 
       if (result && result.ok) {
@@ -824,7 +819,6 @@ const PresetModal: React.FC<PresetModalProps> = ({
   const handleResetLearningForMode = async (mode: 'sns' | 'maps') => {
     const presetId = selectedPresetId || 'omakase';
     if (!confirm(`${mode === 'sns' ? 'SNS投稿' : 'マップ返信'}の全学習データを削除してもよろしいですか？この操作は取り消せません。`)) return;
-
     setIsResetting(true);
     try {
       const platform = mode === 'sns' ? 'sns_all' : Platform.GoogleMaps;
@@ -857,7 +851,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
       setLastAnalyzedState(prev => ({ ...prev, [mode]: '' }));
 
       // Persist the cleared prompts to the database immediately
-      await handleSave(finalCleanPrompts);
+      // CRITICAL: Pass captured presetId to prevent race conditions during profile switching
+      await handleSave(finalCleanPrompts, presetId);
 
       // Force clear internal saving state if handleSave was skipped or finished
       setIsInternalSaving(false);
@@ -961,7 +956,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                 setExpandingPlatform(mode === 'sns' ? Platform.General : Platform.GoogleMaps);
                 setSelectedPlatforms([]); // Start with no selection for new entries
               }}
-              className={`flex items-center gap-2 px-6 py-3 border text-white rounded-2xl font-black text-[11px] uppercase tracking-widest transition-all shadow-lg active:scale-95 ${mode === 'sns' ? 'bg-[#eb714f] border-[#eb714f] hover:bg-[#eb714f]/80 hover:border-[#eb714f]/80 shadow-[#d8e9f4]' : 'bg-[#00b900] border-[#00b900] hover:bg-[#00b900]/80 hover:border-[#00b900]/80 shadow-[#d8e9f4]'}`}
+              className={`flex items-center gap-2 px-6 py-3 border text-white rounded-2xl font-black text-[11px] uppercase tracking-widest transition-all shadow-lg active:scale-95 ${mode === 'sns' ? 'bg-[#eb714f] border-[#eb714f] hover:bg-[#eb714f]/80 hover:border-[#eb714f]/80 shadow-[#d8e9f4]' : 'bg-[#00b900] border-[#00b900] hover:bg-[#00b900]/80 hover:border-[#00b900]/80 shadow-[#d8e9f4]'} `}
             >
               <PlusIcon className="w-4 h-4" />
               <span>データを追加</span>
@@ -1053,7 +1048,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                   <button
                     key={p}
                     onClick={() => setSnsPreviewPlatform(p)}
-                    className={`px-4 py-1.5 rounded-lg text-[10px] font-black tracking-widest transition-all ${snsPreviewPlatform === p ? 'bg-[#2b2b2f] text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                    className={`px-4 py-1.5 rounded-lg text-[10px] font-black tracking-widest transition-all ${snsPreviewPlatform === p ? 'bg-[#2b2b2f] text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'} `}
                   >
                     {p === Platform.X ? 'X' : p === Platform.Instagram ? 'INSTA' : 'LINE'}
                   </button>
@@ -1108,13 +1103,13 @@ const PresetModal: React.FC<PresetModalProps> = ({
           <div className="flex p-1.5 bg-slate-100 rounded-full border border-slate-200 shadow-inner overflow-hidden self-start">
             <button
               onClick={() => setLearningMode('sns')}
-              className={`px-8 py-2.5 rounded-full text-[12px] font-black tracking-widest transition-all ${learningMode === 'sns' ? 'bg-[#2b2b2f] text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+              className={`px-8 py-2.5 rounded-full text-[12px] font-black tracking-widest transition-all ${learningMode === 'sns' ? 'bg-[#2b2b2f] text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'} `}
             >
               SNS
             </button>
             <button
               onClick={() => setLearningMode('maps')}
-              className={`px-8 py-2.5 rounded-full text-[12px] font-black tracking-widest transition-all ${learningMode === 'maps' ? 'bg-[#2b2b2f] text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+              className={`px-8 py-2.5 rounded-full text-[12px] font-black tracking-widest transition-all ${learningMode === 'maps' ? 'bg-[#2b2b2f] text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'} `}
             >
               G-MAPS
             </button>
@@ -1153,7 +1148,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
         <div className="flex justify-center pt-4">
           <button
             onClick={() => setShowDebugPrompts(!showDebugPrompts)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-full text-[9px] font-black uppercase tracking-widest transition-all ${showDebugPrompts ? 'bg-indigo-50 text-indigo-400 border border-indigo-100' : 'text-slate-300 hover:text-slate-400'}`}
+            className={`flex items-center gap-2 px-4 py-2 rounded-full text-[9px] font-black uppercase tracking-widest transition-all ${showDebugPrompts ? 'bg-indigo-50 text-indigo-400 border border-indigo-100' : 'text-slate-300 hover:text-slate-400'} `}
           >
             <SparklesIcon className="w-3 h-3" />
             <span>{showDebugPrompts ? 'Debug Mode: ON' : 'Debug Mode: OFF'}</span>
@@ -1166,7 +1161,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
   const modalBody = (
     <div className="flex h-full bg-slate-50 overflow-hidden text-slate-900 font-inter">
       {/* SIDEBAR */}
-      <div className={`w-full md:w-[320px] lg:w-[380px] shrink-0 bg-slate-50 border-r border-slate-200 flex flex-col ${mobileView === 'list' ? 'flex' : 'hidden md:flex'}`}>
+      <div className={`w-full md:w-[320px] lg:w-[380px] shrink-0 bg-slate-50 border-r border-slate-200 flex flex-col ${mobileView === 'list' ? 'flex' : 'hidden md:flex'} `}>
         <div className="px-8 py-8 flex items-center justify-between">
           <div className="space-y-1">
             <h2 className="text-2xl font-black tracking-tight text-[#2b2b2f] leading-none uppercase">Style</h2>
@@ -1227,7 +1222,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
       </div>
 
       {/* MAIN VIEW */}
-      <div className={`flex-1 flex flex-col bg-white overflow-hidden shadow-2xl relative z-10 ${mobileView === 'edit' ? 'flex' : 'hidden md:flex'}`}>
+      <div className={`flex-1 flex flex-col bg-white overflow-hidden shadow-2xl relative z-10 ${mobileView === 'edit' ? 'flex' : 'hidden md:flex'} `}>
         {/* Header */}
         <div className="bg-white/80 backdrop-blur-md relative z-10 shrink-0 border-b border-stone-100 flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-3">
@@ -1268,12 +1263,12 @@ const PresetModal: React.FC<PresetModalProps> = ({
             onClick={() => handleSave()}
             disabled={isSaving || !name.trim()}
             className={`
-              w-full py-5 rounded-2xl flex items-center justify-center gap-4 transition-all duration-500
+    w-full py-5 rounded-2xl flex items-center justify-center gap-4 transition-all duration-500
               ${isSaving || !name.trim()
                 ? 'bg-slate-100 text-slate-300 cursor-not-allowed'
                 : 'bg-[#2b2b2f] text-white shadow-xl shadow-black/10 hover:bg-black hover:-translate-y-1 active:scale-95'
               }
-            `}
+    `}
           >
             {isSaving ? (
               <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -1367,7 +1362,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                   {learningMode === 'sns' ? 'X, Instagram, LINEなどの投稿をそのまま貼り付けてください。' : 'Googleマップでの口コミへの返信文を貼り付けてください。'}
                 </p>
               </div>
-              <span className={`text-[11px] font-black px-3 py-1 rounded-full uppercase tracking-widest ${learningMode === 'sns' ? 'bg-slate-100 text-[#2b2b2f]' : 'bg-[#00b900] text-white'}`}>
+              <span className={`text-[11px] font-black px-3 py-1 rounded-full uppercase tracking-widest ${learningMode === 'sns' ? 'bg-slate-100 text-[#2b2b2f]' : 'bg-[#00b900] text-white'} `}>
                 {learningMode === 'sns' ? 'SNS用' : 'マップ返信用'}
               </span>
             </div>
@@ -1420,7 +1415,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                             setSelectedPlatforms(newPlatforms);
                           }
                         }}
-                        className={`flex-1 py-4 px-6 rounded-2xl border-2 transition-all flex items-center justify-center gap-3 font-black text-[13px] ${isActive ? 'bg-[#2b2b2f] border-[#2b2b2f] text-white shadow-lg' : 'bg-white border-slate-100 text-slate-300 hover:border-slate-200'}`}
+                        className={`flex-1 py-4 px-6 rounded-2xl border-2 transition-all flex items-center justify-center gap-3 font-black text-[13px] ${isActive ? 'bg-[#2b2b2f] border-[#2b2b2f] text-white shadow-lg' : 'bg-white border-slate-100 text-slate-300 hover:border-slate-200'} `}
                       >
                         <Icon className="w-5 h-5" />
                         <span>{p === Platform.X ? 'X' : p === Platform.Instagram ? 'Insta' : 'LINE'}</span>
@@ -1503,7 +1498,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
           ) : (
             <button
               onClick={() => handleToggleTrainingInternal(modalText, selectedPlatforms)}
-              disabled={isTrainingLoading || !modalText.trim() || !name.trim() || selectedPlatforms.length === 0}
+              disabled={isTrainingLoading || !modalText.trim() || selectedPlatforms.length === 0}
               className="w-full md:w-auto px-12 py-5 bg-[#2b2b2f] text-white rounded-[2rem] font-black text-[14px] tracking-[0.2em] shadow-xl hover:bg-black active:scale-95 transition-all disabled:opacity-30 flex items-center justify-center gap-3"
             >
               {isTrainingLoading ? <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <SaveIcon className="w-5 h-5" />}
