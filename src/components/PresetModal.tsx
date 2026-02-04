@@ -61,7 +61,7 @@ interface PresetModalProps {
   isSaving?: boolean;
   onReorder?: () => Promise<Preset[] | void>;
   trainingItems: TrainingItem[];
-  onToggleTraining: (text: string, platform: Platform, presetId: string | null, replaceId?: string, source?: 'generated' | 'manual') => Promise<void>;
+  onToggleTraining: (text: string, platform: Platform, presetId: string | null, replaceId?: string, source?: 'generated' | 'manual') => Promise<string | null>;
 }
 
 const AVATAR_OPTIONS = [
@@ -180,12 +180,14 @@ const SampleSlider = ({
   samples,
   mode,
   onEdit,
-  onDelete
+  onDelete,
+  onPlatformToggle
 }: {
   samples: TrainingItem[],
   mode: 'sns' | 'maps',
   onEdit: (item: TrainingItem) => void,
-  onDelete: (item: TrainingItem) => void
+  onDelete: (item: TrainingItem) => void,
+  onPlatformToggle?: (item: TrainingItem, platform: Platform) => void
 }) => {
   const scrollRef = React.useRef<HTMLDivElement>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -263,21 +265,54 @@ const SampleSlider = ({
                 </p>
               </div>
 
-              <div className="mt-8 flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0">
-                <button
-                  onClick={() => onEdit(item)}
-                  className="p-3 text-[#2b2b2f]/50 hover:text-[#2b2b2f] hover:bg-slate-100 rounded-2xl transition-all border border-transparent hover:border-slate-200"
-                  title="詳細を表示"
-                >
-                  <BookOpenIcon className="w-5 h-5" />
-                </button>
-                <button
-                  onClick={() => onDelete(item)}
-                  className="p-3 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-2xl transition-all border border-transparent hover:border-rose-100"
-                  title="削除"
-                >
-                  <TrashIcon className="w-5 h-5" />
-                </button>
+              <div className="mt-8 flex items-center justify-between gap-3">
+                {/* Platform Toggles */}
+                <div className="flex items-center gap-1.5 bg-slate-50 p-1.5 rounded-2xl border border-slate-100">
+                  {mode === 'sns' ? (
+                    <>
+                      {[Platform.X, Platform.Instagram, Platform.Line].map((p) => {
+                        let platforms = item.platform.split(',').map(s => s.trim());
+                        if (platforms.includes(Platform.General)) {
+                          platforms = [Platform.X, Platform.Instagram, Platform.Line];
+                        }
+                        const isActive = platforms.includes(p);
+                        const Icon = p === Platform.X ? XIcon : p === Platform.Instagram ? InstagramIcon : LineIcon;
+                        return (
+                          <button
+                            key={p}
+                            onClick={() => onPlatformToggle?.(item, p)}
+                            className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${isActive ? 'bg-[#2b2b2f] text-white shadow-sm' : 'bg-white text-slate-300 hover:text-slate-400 border border-slate-100'}`}
+                            title={`${p}に適用`}
+                          >
+                            <Icon className="w-4.5 h-4.5" />
+                          </button>
+                        );
+                      })}
+                    </>
+                  ) : (
+                    <div className="px-3 py-1.5 text-[10px] font-black text-[#00b900] uppercase tracking-widest flex items-center gap-1.5">
+                      <GoogleMapsIcon className="w-3.5 h-3.5" />
+                      G-MAPS
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0">
+                  <button
+                    onClick={() => onEdit(item)}
+                    className="p-3 text-[#2b2b2f]/50 hover:text-[#2b2b2f] hover:bg-slate-100 rounded-2xl transition-all border border-transparent hover:border-slate-200"
+                    title="詳細を表示"
+                  >
+                    <BookOpenIcon className="w-5 h-5" />
+                  </button>
+                  <button
+                    onClick={() => onDelete(item)}
+                    className="p-3 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-2xl transition-all border border-transparent hover:border-rose-100"
+                    title="削除"
+                  >
+                    <TrashIcon className="w-5 h-5" />
+                  </button>
+                </div>
               </div>
             </div>
           ))}
@@ -331,6 +366,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
   const [isResetting, setIsResetting] = useState(false);
   const [viewingSampleId, setViewingSampleId] = useState<string | null>(null);
   const [lastAnalyzedState, setLastAnalyzedState] = useState<{ [key: string]: string }>({});
+  const [needsReanalysis, setNeedsReanalysis] = useState(false);
   const isSavingRef = useRef(false);
   const [tempNewSamples, setTempNewSamples] = useState<TrainingItem[]>([]);
   const [isAnalyzingScreenshot, setIsAnalyzingScreenshot] = useState(false);
@@ -394,6 +430,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
       setCustomPrompts({});
       setLastAnalyzedState({});
       setTempNewSamples([]);
+      setNeedsReanalysis(false);
     }
   }, [selectedPresetId, presets]);
 
@@ -579,6 +616,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
         }
 
         setShowSuccessToast(true);
+        setNeedsReanalysis(false);
         setTimeout(() => setShowSuccessToast(false), 3000);
       } else {
         // Step 1 failed
@@ -809,7 +847,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                 setModalText('');
                 setLearningMode(mode);
                 setExpandingPlatform(mode === 'sns' ? Platform.General : Platform.GoogleMaps);
-                setSelectedPlatforms(mode === 'sns' ? [Platform.General] : [Platform.GoogleMaps]);
+                setSelectedPlatforms(mode === 'sns' ? [Platform.X, Platform.Instagram, Platform.Line] : [Platform.GoogleMaps]);
               }}
               className={`flex items-center gap-2 px-6 py-3 border text-white rounded-2xl font-black text-[11px] uppercase tracking-widest transition-all shadow-lg active:scale-95 ${mode === 'sns' ? 'bg-[#eb714f] border-[#eb714f] hover:bg-[#eb714f]/80 hover:border-[#eb714f]/80 shadow-[#d8e9f4]' : 'bg-[#00b900] border-[#00b900] hover:bg-[#00b900]/80 hover:border-[#00b900]/80 shadow-[#d8e9f4]'}`}
             >
@@ -827,8 +865,37 @@ const PresetModal: React.FC<PresetModalProps> = ({
             setLearningMode(mode);
             setViewingSampleId(item.id);
             setExpandingPlatform(item.platform as any);
+
+            // Sync platforms state with normalization
+            let platforms = item.platform.split(',').map(s => s.trim()) as Platform[];
+            if (mode === 'sns' && platforms.includes(Platform.General)) {
+              platforms = [Platform.X, Platform.Instagram, Platform.Line];
+            }
+            setSelectedPlatforms(platforms);
           }}
           onDelete={(item) => onToggleTraining(item.content, item.platform as any, item.presetId, undefined, 'manual')}
+          onPlatformToggle={async (item, clickedPlatform) => {
+            let currentPlatforms = item.platform.split(',').map(s => s.trim()) as Platform[];
+
+            // Normalize if we have General
+            if (currentPlatforms.includes(Platform.General)) {
+              currentPlatforms = [Platform.X, Platform.Instagram, Platform.Line];
+            }
+
+            let newPlatforms: Platform[];
+            if (currentPlatforms.includes(clickedPlatform)) {
+              if (currentPlatforms.length <= 1) return; // Prevent empty
+              newPlatforms = currentPlatforms.filter(p => p !== clickedPlatform);
+            } else {
+              newPlatforms = [...currentPlatforms, clickedPlatform];
+            }
+
+            const newPlatformString = newPlatforms.join(', ') as any;
+
+            // For existing items, update in parent (Optimistic)
+            await onToggleTraining(item.content, newPlatformString, item.presetId, item.id, item.source || 'manual');
+            setNeedsReanalysis(true);
+          }}
         />
 
         {samples.length > 0 && (
@@ -1013,6 +1080,15 @@ const PresetModal: React.FC<PresetModalProps> = ({
               {isInternalSaving ? '解析中...' : '保存（AI再解析）'}
             </span>
           </button>
+
+          {needsReanalysis && (
+            <div className="flex items-center justify-center gap-2 text-rose-500 animate-in fade-in slide-in-from-top-1 duration-300">
+              <SparklesIcon className="w-3.5 h-3.5" />
+              <span className="text-[11px] font-black uppercase tracking-widest leading-none">
+                変更を反映するため、再解析（保存）をおすすめします
+              </span>
+            </div>
+          )}
         </div>
 
         {showSuccessToast && (
@@ -1091,6 +1167,65 @@ const PresetModal: React.FC<PresetModalProps> = ({
                 {learningMode === 'sns' ? 'SNS用' : 'マップ返信用'}
               </span>
             </div>
+
+            {learningMode === 'sns' && (
+              <div className="flex flex-col gap-3 p-6 bg-slate-50 rounded-3xl border border-slate-100">
+                <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">適用対象のSNSを選択</p>
+                <div className="flex gap-2">
+                  {[Platform.X, Platform.Instagram, Platform.Line].map((p) => {
+                    const isActive = selectedPlatforms.includes(p);
+                    const Icon = p === Platform.X ? XIcon : p === Platform.Instagram ? InstagramIcon : LineIcon;
+                    return (
+                      <button
+                        key={p}
+                        onClick={async () => {
+                          if (viewingSampleId) {
+                            const item = trainingItems.find(it => it.id === viewingSampleId) || tempNewSamples.find(it => it.id === viewingSampleId);
+                            if (item) {
+                              let currentPlatforms = item.platform.split(',').map(s => s.trim()) as Platform[];
+                              if (currentPlatforms.includes(Platform.General)) {
+                                currentPlatforms = [Platform.X, Platform.Instagram, Platform.Line];
+                              }
+
+                              let newPlatforms: Platform[];
+                              if (currentPlatforms.includes(p)) {
+                                if (currentPlatforms.length <= 1) return;
+                                newPlatforms = currentPlatforms.filter(plat => plat !== p);
+                              } else {
+                                newPlatforms = [...currentPlatforms, p];
+                              }
+
+                              const newPlatformString = newPlatforms.join(', ') as any;
+                              const newId = await onToggleTraining(item.content, newPlatformString, item.presetId, item.id, item.source || 'manual');
+                              setNeedsReanalysis(true);
+                              setSelectedPlatforms(newPlatforms);
+                              if (newId) {
+                                setViewingSampleId(newId);
+                              }
+                            }
+                          } else {
+                            // New item logic
+                            let currentPlats = [...selectedPlatforms];
+                            let newPlatforms: Platform[];
+                            if (currentPlats.includes(p)) {
+                              if (currentPlats.length <= 1) return;
+                              newPlatforms = currentPlats.filter(sp => sp !== p);
+                            } else {
+                              newPlatforms = [...currentPlats, p];
+                            }
+                            setSelectedPlatforms(newPlatforms);
+                          }
+                        }}
+                        className={`flex-1 py-4 px-6 rounded-2xl border-2 transition-all flex items-center justify-center gap-3 font-black text-[13px] ${isActive ? 'bg-[#2b2b2f] border-[#2b2b2f] text-white shadow-lg' : 'bg-white border-slate-100 text-slate-300 hover:border-slate-200'}`}
+                      >
+                        <Icon className="w-5 h-5" />
+                        <span>{p === Platform.X ? 'X' : p === Platform.Instagram ? 'Insta' : 'LINE'}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="space-y-4 pt-2">

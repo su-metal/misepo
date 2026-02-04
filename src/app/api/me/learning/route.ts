@@ -57,13 +57,21 @@ export async function POST(req: NextRequest) {
       }, { status: 409 });
     }
 
-    // Atomic replacement if replaceId provided
+    // In-place update if replaceId provided
     if (replaceId) {
-      await supabase
+      const { error: updateError } = await supabase
         .from('learning_sources')
-        .delete()
+        .update({
+          content: content.trim(),
+          platform,
+          preset_id: presetId,
+          source
+        })
         .eq('user_id', user.id)
         .eq('id', replaceId);
+
+      if (updateError) throw updateError;
+      return NextResponse.json({ ok: true, id: replaceId, message: 'Updated training data' });
     }
 
     const { data, error } = await supabase

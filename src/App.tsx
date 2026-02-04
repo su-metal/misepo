@@ -302,15 +302,15 @@ function App() {
 
           setTrainingItems(prev => prev.map(item =>
             item.id === existing.id
-              ? { ...item, id: data.id, platform: newPlatforms as any } // Update with NEW ID and new platforms
+              ? { ...item, id: data.id, platform: newPlatforms as any }
               : item
           ));
-          return;
+          return data.id;
 
         } catch (err) {
           console.error('Smart delete failed:', err);
           alert('更新に失敗しました');
-          return;
+          return null;
         }
       }
 
@@ -326,7 +326,7 @@ function App() {
         console.error('Delete training failed:', err);
         setTrainingItems(prev => [...prev, existing]);
       }
-      return;
+      return null;
     }
 
     // Add / Replace Logic
@@ -373,21 +373,21 @@ function App() {
 
       if (replaceId) {
         setTrainingItems(prev => {
-          // Remove both the old replaceId AND any accidental duplicate of the new data.id
           const filtered = prev.filter(item => item.id !== replaceId && item.id !== data.id);
           return [...filtered, newItem];
         });
         setReplacementModal(prev => ({ ...prev, isOpen: false }));
       } else {
         setTrainingItems(prev => {
-          // Prevent adding the same ID twice (can happen if backend returns "Already exists")
           if (prev.some(item => item.id === data.id)) return prev;
           return [...prev, newItem];
         });
       }
+      return data.id; // Return the new ID
     } catch (err) {
       console.error('Training toggle failed:', err);
       alert(`更新に失敗しました: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      return null;
     }
   };
 
