@@ -174,7 +174,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
         className={`fixed top-0 right-0 h-full w-[85vw] sm:w-[400px] md:w-[440px] transform transition-all duration-500 cubic-bezier(0.2, 0.8, 0.2, 1) z-[9999] flex flex-col overflow-hidden bg-white shadow-2xl ring-1 ring-black/5 ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
       >
         {/* Header */}
-        <div className="px-8 py-6 md:py-8 flex items-center justify-between border-b border-slate-100 bg-white/80 backdrop-blur-md sticky top-0 z-10">
+        <div className="px-8 py-6 md:py-8 flex items-center justify-between border-b border-slate-100 bg-white/80 backdrop-blur-md z-10">
           <div>
             <h2 className="font-black text-[#2b2b2f] text-xl md:text-2xl tracking-tight uppercase leading-none">生成履歴</h2>
             <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-2 opacity-60">過去に作成した全ての投稿案</p>

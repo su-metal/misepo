@@ -32,7 +32,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     onShare, getShareButtonLabel, refiningKey, onRefineToggle,
     refineText, onRefineTextChange, onPerformRefine, isRefining,
     includeFooter, onIncludeFooterChange, onAutoFormat,
-    isAutoFormatting, onCopy, onMobileResultOpen, restoreId,
+    isAutoFormatting, onCopy, onMobileResultOpen, restoreTrigger,
     onStepChange, closeDrawerTrigger, openDrawerTrigger, onOpenOnboarding,
     onOpenSettings,
     targetAudiences, onTargetAudiencesChange,
@@ -100,11 +100,11 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
     // Handle Restore from History
     React.useEffect(() => {
-        if (restoreId) {
+        if (restoreTrigger && restoreTrigger > 0) {
             setMobileStep('result');
             setIsStepDrawerOpen(true);
         }
-    }, [restoreId]);
+    }, [restoreTrigger]);
 
     // Handle Reset from parent
     React.useEffect(() => {
@@ -714,6 +714,15 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                 {mobileStep === 'input' ? 'STEP 2 / 3' : mobileStep === 'confirm' ? 'STEP 3 / 3' : 'SUCCESS!'}
                                             </span>
                                         </div>
+                                        {/* Forward Step (To Results) - Matches Back Button Style */}
+                                        {generatedResults.length > 0 && mobileStep !== 'result' && (
+                                            <button
+                                                onClick={() => setMobileStep('result')}
+                                                className="w-12 h-12 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center shadow-sm active:scale-90 transition-all"
+                                            >
+                                                <ChevronRightIcon className="w-6 h-6 text-[#2b2b2f]" />
+                                            </button>
+                                        )}
                                     </div>
                                     <div className="flex -space-x-2">
                                         {platforms.map(p => (
@@ -721,6 +730,9 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                 {getPlatformIcon(p, "w-5 h-5")}
                                             </div>
                                         ))}
+
+
+
                                         <button
                                             onClick={() => {
                                                 setIsStepDrawerOpen(false);
