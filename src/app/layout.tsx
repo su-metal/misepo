@@ -73,13 +73,13 @@ export default function RootLayout({
           <div className="absolute inset-0 bg-pattern-dots opacity-[0.4]" />
 
           {/* Giant Decorative Typography */}
-          <div className="absolute top-[5%] -left-[5%] bg-typo-giant text-slate-400/10 text-[25vw] rotate-[-5deg]">
+          <div className="absolute top-[5%] -left-[5%] font-montserrat font-black tracking-tighter text-slate-400/10 text-[25vw] rotate-[-5deg]">
             MISE
           </div>
-          <div className="absolute bottom-[10%] -right-[5%] bg-typo-giant text-slate-400/10 text-[20vw] rotate-[3deg]">
+          <div className="absolute bottom-[10%] -right-[5%] font-montserrat font-black tracking-tighter text-slate-400/10 text-[20vw] rotate-[3deg]">
             PO
           </div>
-          <div className="absolute top-[40%] right-[10%] bg-typo-giant text-slate-300/20 text-[10vw] uppercase">
+          <div className="absolute top-[40%] right-[10%] font-montserrat font-black tracking-tighter text-slate-300/20 text-[10vw] uppercase">
             AI Creative
           </div>
 

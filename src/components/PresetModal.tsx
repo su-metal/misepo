@@ -119,7 +119,7 @@ const SortablePresetRow = ({
         group flex items-center gap-3 p-4 rounded-2xl transition-all duration-500 border
         ${isSelected
           ? 'bg-[#2b2b2f] border-[#2b2b2f] shadow-[0_15px_35px_rgba(0,0,0,0.15)]'
-          : 'bg-white border-slate-100 hover:bg-slate-50 hover:border-slate-200 hover:shadow-sm'
+          : 'bg-white border-slate-200 hover:bg-slate-50 hover:border-slate-300 hover:shadow-sm'
         }
         ${isDragging ? 'opacity-50 ring-2 ring-[#2b2b2f]' : ''}
       `}
@@ -139,7 +139,7 @@ const SortablePresetRow = ({
           {preset.name}
         </div>
         <div className={`text-[12px] font-black uppercase tracking-widest truncate ${isSelected ? 'text-white/80' : 'text-slate-400'}`}>
-          分身プロフィール
+          Style Profile
         </div>
       </button>
 
@@ -755,14 +755,14 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
         <div className="flex-1 min-w-0 space-y-1">
           <div className="flex items-center justify-between">
-            <h4 className="text-[12px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Profile Name</h4>
+            <h4 className="text-[13px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">Profile Name</h4>
           </div>
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="例: 店長（公式）, SNS担当スタッフ"
-            className="w-full px-5 py-4 bg-slate-50 border border-slate-100 focus:bg-white focus:border-slate-300 focus:ring-4 focus:ring-slate-50 outline-none rounded-2xl text-[#2b2b2f] font-bold placeholder-slate-300 transition-all shadow-sm text-[16px]"
+            className="w-full px-5 py-4 bg-slate-50 border border-slate-200 focus:bg-white focus:border-slate-300 focus:ring-4 focus:ring-slate-50 outline-none rounded-2xl text-[#2b2b2f] font-bold placeholder:text-slate-200 transition-all shadow-sm text-[16px]"
           />
           <p className="text-[11px] text-slate-400 pl-1 font-bold">
             ※誰が投稿しているか分かりやすい名前をつけましょう
@@ -794,12 +794,12 @@ const PresetModal: React.FC<PresetModalProps> = ({
     const mapsSamples = currentPresetSamples.filter(item => item.platform.includes(Platform.GoogleMaps));
 
     const renderSampleSection = (title: string, samples: TrainingItem[], mode: 'sns' | 'maps', icon: React.ReactNode, accentClass: string, bgClass: string) => (
-      <div className={`p-8 bg-slate-50 rounded-[2.5rem] border border-slate-100 space-y-6 relative overflow-hidden group`}>
+      <div className={`p-8 bg-slate-50 rounded-[2.5rem] border border-slate-200 space-y-6 relative overflow-hidden group shadow-sm`}>
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-2">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <div className="text-[#2b2b2f]">{icon}</div>
-              <label className="text-[12px] font-black text-[#2b2b2f] uppercase tracking-[0.2em] block">学習カテゴリ</label>
+              <label className="text-[13px] font-black text-slate-600 uppercase tracking-[0.2em] block">学習カテゴリ</label>
             </div>
             <h4 className="font-black text-slate-900 tracking-tighter text-xl">{title}</h4>
           </div>
@@ -895,10 +895,10 @@ const PresetModal: React.FC<PresetModalProps> = ({
   const modalBody = (
     <div className="flex h-full bg-slate-50 overflow-hidden text-slate-900 font-inter">
       {/* SIDEBAR */}
-      <div className={`w-full md:w-[320px] lg:w-[380px] shrink-0 bg-slate-50 border-r border-slate-100 flex flex-col ${mobileView === 'list' ? 'flex' : 'hidden md:flex'}`}>
+      <div className={`w-full md:w-[320px] lg:w-[380px] shrink-0 bg-slate-50 border-r border-slate-200 flex flex-col ${mobileView === 'list' ? 'flex' : 'hidden md:flex'}`}>
         <div className="px-8 py-8 flex items-center justify-between">
           <div className="space-y-1">
-            <h2 className="text-2xl font-black tracking-tight text-[#2b2b2f] leading-none">分身</h2>
+            <h2 className="text-2xl font-black tracking-tight text-[#2b2b2f] leading-none uppercase">Style</h2>
             <p className="text-[12px] font-bold text-slate-400 uppercase tracking-[0.2em]">Profiles</p>
           </div>
           <button
@@ -910,7 +910,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
         </div>
 
         <div className="px-8 pb-4 flex items-center justify-between">
-          <label className="text-[12px] font-black text-slate-400 uppercase tracking-widest">プロフィールを選択</label>
+          <label className="text-[13px] font-black text-slate-500 uppercase tracking-widest">プロフィールを選択</label>
           <button
             onClick={handleStartNew}
             className="flex items-center gap-1.5 text-[12px] font-black text-[#2b2b2f] hover:text-black transition-colors uppercase tracking-widest"
@@ -948,7 +948,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
               <h5 className="text-[15px] font-black text-[#2b2b2f] mb-2">まだプロフィールがありません</h5>
               <p className="text-[12px] text-slate-500 font-medium leading-relaxed">
                 まずは「新規作成」から、あなたのお店専用の<br />
-                「分身」プロフィールを作ってみましょう。
+                「自分らしい」スタイルを作ってみましょう。
               </p>
             </div>
           )}
@@ -970,7 +970,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
             )}
 
             <div className="flex items-center gap-3">
-              <span className="text-[11px] font-black text-[#1f29fc] uppercase tracking-[0.2em] block leading-none">プロフィールの編集</span>
+              <span className="text-[13px] font-black text-[#2b2b2f] uppercase tracking-[0.2em] block leading-none">プロフィールの編集</span>
             </div>
           </div>
 
@@ -1035,10 +1035,10 @@ const PresetModal: React.FC<PresetModalProps> = ({
   const mainPortal = createPortal(
     <div className="fixed inset-0 z-[9995] flex items-center justify-center p-0 md:p-8 pointer-events-auto">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-stone-950/20 backdrop-blur-md animate-in fade-in duration-500" onClick={onClose} />
+      <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-md animate-in fade-in duration-500" onClick={onClose} />
 
       {/* Container - Modal look on desktop */}
-      <div className="w-full h-full md:max-w-7xl md:max-h-[850px] bg-white md:rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-10 duration-700 relative z-10 flex flex-col border border-stone-100">
+      <div className="w-full h-full md:max-w-7xl md:max-h-[850px] bg-white md:rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-10 duration-700 relative z-10 flex flex-col border border-stone-200">
         {modalBody}
       </div>
     </div>,
@@ -1048,9 +1048,9 @@ const PresetModal: React.FC<PresetModalProps> = ({
   // Focus Mode Overlay (Learning Editor)
   const focusModeOverlay = expandingPlatform && createPortal(
     <div className="fixed inset-0 z-[10001] flex items-center justify-center p-0 md:p-8 pointer-events-auto">
-      <div className="absolute inset-0 bg-indigo-950/20 backdrop-blur-xl animate-in fade-in duration-500" onClick={() => setExpandingPlatform(null)} />
+      <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-xl animate-in fade-in duration-500" onClick={() => setExpandingPlatform(null)} />
 
-      <div className="w-full h-full md:max-w-7xl md:max-h-[850px] bg-white md:rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-500 relative z-10 flex flex-col border border-stone-100">
+      <div className="w-full h-full md:max-w-7xl md:max-h-[850px] bg-white md:rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-500 relative z-10 flex flex-col border border-stone-200">
         {/* Header */}
         <div className="p-8 md:p-10 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
           <div className="flex items-center gap-4">
@@ -1061,7 +1061,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
               <h3 className="font-black text-xl text-[#2b2b2f] tracking-tight">
                 {viewingSampleId ? '学習データの詳細' : '新しい学習データ'}
               </h3>
-              <p className="text-[12px] font-bold text-slate-400 uppercase tracking-widest">スタイルの学習</p>
+              <p className="text-[13px] font-bold text-slate-500 uppercase tracking-widest">スタイルの学習</p>
             </div>
           </div>
           <button
@@ -1124,7 +1124,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
               )}
             </div>
 
-            <div className="bg-slate-50 border border-slate-100 rounded-[2.5rem] p-8 relative overflow-hidden shadow-inner">
+            <div className="bg-slate-50 border border-slate-200 rounded-[2.5rem] p-8 relative overflow-hidden shadow-inner">
               {isAnalyzingScreenshot && (
                 <div className="absolute inset-0 z-10 bg-white/60 backdrop-blur-sm flex items-center justify-center animate-in fade-in duration-300">
                   <div className="flex flex-col items-center gap-4">
