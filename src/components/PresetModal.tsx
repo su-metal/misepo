@@ -446,7 +446,13 @@ const PresetModal: React.FC<PresetModalProps> = ({
   };
 
 
-  const performPersonaAnalysis = async (overrideSamples?: TrainingItem[] | { content: string, platform: string }[]): Promise<any> => {
+  const performPersonaAnalysis = async (
+    overrideSamples?: TrainingItem[] | { content: string, platform: string }[],
+    targetMode?: 'sns' | 'maps',
+    currentPromptsBase?: { [key: string]: string }
+  ): Promise<any> => {
+    const modeToUse = targetMode || learningMode;
+
     // Collect source samples
     let sourceItems: (TrainingItem | { content: string, platform: string })[];
     if (overrideSamples) {
@@ -460,13 +466,13 @@ const PresetModal: React.FC<PresetModalProps> = ({
       }
     }
 
-    // Filter by learningMode (SNS vs Maps)
+    // Filter by modeToUse (SNS vs Maps)
     const samplesToUse = sourceItems
       .filter(item => {
         const platformStr = item.platform || '';
         const plats = platformStr.split(',').map(s => s.trim());
         const isMaps = plats.includes(Platform.GoogleMaps);
-        if (learningMode === 'maps') return isMaps;
+        if (modeToUse === 'maps') return isMaps;
         return !isMaps;
       })
       .map(item => ({
@@ -478,8 +484,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
     // Skip if samples haven't changed for this mode
     const samplesKey = JSON.stringify(samplesToUse);
-    if (lastAnalyzedState[learningMode] === samplesKey) {
-      console.log(`Skipping analysis for ${learningMode}: samples unchanged.`);
+    if (lastAnalyzedState[modeToUse] === samplesKey) {
+      console.log(`Skipping analysis for ${modeToUse}: samples unchanged.`);
       return null;
     }
 
@@ -496,7 +502,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
           ? JSON.parse(data.instruction)
           : data.instruction;
 
-        const newPrompts = { ...customPrompts };
+        const newPrompts = { ...(currentPromptsBase || customPrompts) };
         let updated = false;
 
         if (typeof parsed === 'object' && parsed !== null) {
@@ -510,7 +516,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
           });
 
           // Special handling for SNS 'General' alias
-          if (learningMode === 'sns') {
+          if (modeToUse === 'sns') {
             if (parsed.General) {
               newPrompts['General'] = parsed.General.trim();
               updated = true;
@@ -524,7 +530,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
         // Fallback for plain text response
         if (!updated && typeof data.instruction === 'string' && !data.instruction.trim().startsWith('{')) {
           const text = data.instruction.trim();
-          if (learningMode === 'sns') {
+          if (modeToUse === 'sns') {
             newPrompts['General'] = text;
             newPrompts[Platform.X] = text;
             newPrompts[Platform.Instagram] = text;
@@ -538,7 +544,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
         if (updated) {
           setCustomPrompts(newPrompts);
           // Update cache
-          setLastAnalyzedState(prev => ({ ...prev, [learningMode]: samplesKey }));
+          setLastAnalyzedState(prev => ({ ...prev, [modeToUse]: samplesKey }));
           return newPrompts;
         }
         return null;
@@ -569,10 +575,13 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
       // Auto-analyze during save if manual update
       if (!overridePrompts) {
-        const newStyle = await performPersonaAnalysis(relatedItems);
-        if (newStyle) {
-          finalCustomPrompts = { ...finalCustomPrompts, ...newStyle };
-        }
+        // Analyze SNS
+        const snsStyle = await performPersonaAnalysis(relatedItems, 'sns', finalCustomPrompts);
+        if (snsStyle) finalCustomPrompts = { ...finalCustomPrompts, ...snsStyle };
+
+        // Analyze Maps (passing potentially updated finalCustomPrompts)
+        const mapsStyle = await performPersonaAnalysis(relatedItems, 'maps', finalCustomPrompts);
+        if (mapsStyle) finalCustomPrompts = { ...finalCustomPrompts, ...mapsStyle };
       }
       const currentPresetId = selectedPresetId || 'omakase';
 
@@ -758,24 +767,16 @@ const PresetModal: React.FC<PresetModalProps> = ({
         { content: normalizedText, platform: platformString }
       ];
 
-      // Trigger Auto-Analysis while still in overlay for feedback
-      setIsAnalyzingPersona(true);
-      const newStyle = await performPersonaAnalysis(newSamples);
-
-      if (newStyle && name.trim()) {
-        // Auto-save the new style to the preset if we have a name
-        await handleSave(newStyle as any);
-      }
-
-      // Close overlay AFTER everything is done
+      // Close overlay AFTER saving the data
       setExpandingPlatform(null);
       setModalText('');
+      setViewingSampleId(null);
+      setNeedsReanalysis(true);
 
     } catch (err: any) {
       alert(`保存に失敗しました: ${err.message}`);
     } finally {
       setIsTrainingLoading(false);
-      setIsAnalyzingPersona(false);
     }
   };
 
@@ -897,7 +898,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                 setModalText('');
                 setLearningMode(mode);
                 setExpandingPlatform(mode === 'sns' ? Platform.General : Platform.GoogleMaps);
-                setSelectedPlatforms(mode === 'sns' ? [Platform.X, Platform.Instagram, Platform.Line] : [Platform.GoogleMaps]);
+                setSelectedPlatforms([]); // Start with no selection for new entries
               }}
               className={`flex items-center gap-2 px-6 py-3 border text-white rounded-2xl font-black text-[11px] uppercase tracking-widest transition-all shadow-lg active:scale-95 ${mode === 'sns' ? 'bg-[#eb714f] border-[#eb714f] hover:bg-[#eb714f]/80 hover:border-[#eb714f]/80 shadow-[#d8e9f4]' : 'bg-[#00b900] border-[#00b900] hover:bg-[#00b900]/80 hover:border-[#00b900]/80 shadow-[#d8e9f4]'}`}
             >
@@ -1441,7 +1442,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
           ) : (
             <button
               onClick={() => handleToggleTrainingInternal(modalText, selectedPlatforms)}
-              disabled={isTrainingLoading || !modalText.trim() || !name.trim()}
+              disabled={isTrainingLoading || !modalText.trim() || !name.trim() || selectedPlatforms.length === 0}
               className="w-full md:w-auto px-12 py-5 bg-[#2b2b2f] text-white rounded-[2rem] font-black text-[14px] tracking-[0.2em] shadow-xl hover:bg-black active:scale-95 transition-all disabled:opacity-30 flex items-center justify-center gap-3"
             >
               {isTrainingLoading ? <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <SaveIcon className="w-5 h-5" />}
