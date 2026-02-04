@@ -110,7 +110,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
             <div className="flex items-center justify-between">
               <div className="flex -space-x-2">
                 {item.config.platforms.map((p, pIdx) => (
-                  <div key={`${p}-${pIdx}`} className="w-8 h-8 rounded-full flex items-center justify-center bg-white border border-[#122646]/5 shadow-sm group-hover:border-[var(--brand-primary)]/20 transition-colors">
+                  <div key={`${p}-${pIdx}`} className="w-8 h-8 rounded-full flex items-center justify-center bg-white border border-[#2b2b2f]/5 shadow-sm group-hover:border-[var(--brand-primary)]/20 transition-colors">
                     {getPlatformIcon(p, "w-3.5 h-3.5 text-slate-400 group-hover:text-[var(--brand-primary)] transition-colors")}
                   </div>
                 ))}
@@ -120,7 +120,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
               </span>
             </div>
 
-            <p className="text-sm text-[#122646] font-bold tracking-tight line-clamp-2 leading-relaxed transition-colors group-hover:text-[var(--brand-primary)] pr-12">
+            <p className="text-sm text-[#2b2b2f] font-bold tracking-tight line-clamp-2 leading-relaxed transition-colors group-hover:text-[var(--brand-primary)] pr-12">
               {previewText}
             </p>
           </div>
@@ -153,7 +153,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
 
         {/* Pinned Accent Bar */}
         {item.isPinned && (
-          <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-1 h-8 bg-[var(--brand-primary)] rounded-r-full shadow-[2px_0_10px_rgba(24,35,255,0.3)] z-20" />
+          <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-1 h-8 bg-[var(--brand-primary)] rounded-r-full shadow-[2px_0_10px_rgba(0,0,0,0.1)] z-20" />
         )}
       </div>
     );
@@ -174,9 +174,9 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
         className={`fixed top-0 right-0 h-full w-[85vw] sm:w-[400px] md:w-[440px] transform transition-all duration-500 cubic-bezier(0.2, 0.8, 0.2, 1) z-[9999] flex flex-col overflow-hidden bg-white shadow-2xl ring-1 ring-black/5 ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
       >
         {/* Header */}
-        <div className="px-8 py-6 md:py-8 flex items-center justify-between border-b border-[#122646]/5 bg-white/80 backdrop-blur-md sticky top-0 z-10">
+        <div className="px-8 py-6 md:py-8 flex items-center justify-between border-b border-[#2b2b2f]/5 bg-white/80 backdrop-blur-md sticky top-0 z-10">
           <div>
-            <h2 className="font-black text-[#122646] text-xl md:text-2xl tracking-tight uppercase leading-none">生成履歴</h2>
+            <h2 className="font-black text-[#2b2b2f] text-xl md:text-2xl tracking-tight uppercase leading-none">生成履歴</h2>
             <p className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em] mt-2 opacity-60">過去に作成した全ての投稿案</p>
           </div>
           <button
@@ -192,13 +192,13 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
         <div className="flex-1 overflow-y-auto overscroll-contain p-6 md:p-8 space-y-8 no-scrollbar bg-slate-50/20">
           <div className="flex items-center justify-between px-2">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-white border border-[#122646]/5 flex items-center justify-center text-[#122646] shadow-sm">
+              <div className="w-12 h-12 rounded-2xl bg-white border border-[#2b2b2f]/5 flex items-center justify-center text-[#2b2b2f] shadow-sm">
                 <HistoryIcon className="w-6 h-6 opacity-80" />
               </div>
               <div className="flex flex-col">
                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Saved Results</span>
                 {isLoggedIn && (
-                  <span className="text-sm font-black text-[#122646] tracking-tighter">
+                  <span className="text-sm font-black text-[#2b2b2f] tracking-tighter">
                     {history.length} <span className="text-[10px] opacity-40 ml-1">件の履歴</span>
                   </span>
                 )}
@@ -213,7 +213,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                   <div className="w-24 h-24 mb-6 bg-white rounded-[32px] flex items-center justify-center text-slate-100 shadow-sm ring-1 ring-slate-100/50">
                     <HistoryIcon className="w-10 h-10" />
                   </div>
-                  <h5 className="text-sm font-black text-[#122646] mb-2">まだ履歴がありません</h5>
+                  <h5 className="text-sm font-black text-[#2b2b2f] mb-2">まだ履歴がありません</h5>
                   <p className="text-[11px] text-stone-500 font-medium leading-relaxed">
                     作成した投稿案は、ここに自動で保存されます。<br />
                     いつでも見返したり、再編集したりできますよ。
@@ -257,7 +257,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                 </p>
                 <button
                   onClick={() => { onOpenLogin(); toggleOpen(); }}
-                  className="w-full py-5 bg-[#122646] text-white rounded-[20px] shadow-xl shadow-slate-100 font-black text-xs uppercase tracking-[0.2em] hover:bg-[#1f29fc] active:scale-95 transition-all"
+                  className="w-full py-5 bg-[#2b2b2f] text-white rounded-[20px] shadow-xl shadow-slate-100 font-black text-xs uppercase tracking-[0.2em] hover:bg-stone-800 active:scale-95 transition-all"
                 >
                   ログイン / 新規登録
                 </button>
@@ -268,7 +268,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
 
         {/* Footer */}
         <div className="p-8 border-t border-slate-50 bg-white">
-          <p className="text-[9px] font-black text-[#122646]/30 text-center uppercase tracking-[0.4em]">© 2026 {UI.name}</p>
+          <p className="text-[9px] font-black text-[#2b2b2f]/30 text-center uppercase tracking-[0.4em]">© 2026 {UI.name}</p>
         </div>
       </div>
     </>
