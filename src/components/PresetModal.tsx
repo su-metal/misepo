@@ -277,14 +277,15 @@ const SampleSlider = ({
                         }
                         const isActive = platforms.includes(p);
                         const Icon = p === Platform.X ? XIcon : p === Platform.Instagram ? InstagramIcon : LineIcon;
+                        const iconColor = isActive ? 'text-[#2b2b2f]' : 'text-slate-300';
                         return (
                           <button
                             key={p}
                             onClick={() => onPlatformToggle?.(item, p)}
-                            className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${isActive ? 'bg-[#2b2b2f] text-white shadow-sm' : 'bg-white text-slate-300 hover:text-slate-400 border border-slate-100'}`}
+                            className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all  ${isActive ? 'border-[#2b2b2f] shadow-[0_10px_20px_rgba(0,0,0,0.15)]' : 'border-slate-200'} bg-white`}
                             title={`${p}に適用`}
                           >
-                            <Icon className="w-4.5 h-4.5" />
+                            <Icon className={`w-4.5 h-4.5 ${iconColor}`} />
                           </button>
                         );
                       })}
@@ -1415,10 +1416,20 @@ const PresetModal: React.FC<PresetModalProps> = ({
                             setSelectedPlatforms(newPlatforms);
                           }
                         }}
-                        className={`flex-1 py-4 px-6 rounded-2xl border-2 transition-all flex items-center justify-center gap-3 font-black text-[13px] ${isActive ? 'bg-[#2b2b2f] border-[#2b2b2f] text-white shadow-lg' : 'bg-white border-slate-100 text-slate-300 hover:border-slate-200'} `}
+                        className={`flex-1 py-4 px-6 rounded-2xl border-2 transition-all flex items-center justify-center gap-3 font-black text-[13px] ${isActive ? 'bg-white border-[#2b2b2f] shadow-[0_10px_25px_rgba(0,0,0,0.1)]' : 'bg-white border-slate-100 hover:border-slate-300'} `}
                       >
-                        <Icon className="w-5 h-5" />
-                        <span>{p === Platform.X ? 'X' : p === Platform.Instagram ? 'Insta' : 'LINE'}</span>
+                        {p === Platform.Line ? (
+                          <LineIcon
+                            className={`w-5 h-5 ${isActive ? 'text-[#2b2b2f]' : 'text-slate-300'}`}
+                            isActive={isActive}
+                            textFill={isActive ? '#2b2b2f' : '#d1d5db'}
+                            color={isActive ? '#2b2b2f' : '#d1d5db'}
+                            activeTextFill="#2b2b2f"
+                          />
+                        ) : (
+                          <Icon className={`w-5 h-5 ${isActive ? 'text-[#2b2b2f]' : 'text-slate-300'}`} />
+                        )}
+                        <span className={`${isActive ? 'text-[#2b2b2f]' : 'text-slate-400'}`}>{p === Platform.X ? 'X' : p === Platform.Instagram ? 'Insta' : 'LINE'}</span>
                       </button>
                     );
                   })}
