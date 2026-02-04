@@ -124,11 +124,11 @@ body {
 /* Gradient Utilities - More Vibrant & High Contrast */
 /* Gradient Utilities - Pop Violet Theme */
 .text-gradient-primary {
-  background: linear-gradient(135deg, #FFFFFF 0%, #F3F4FF 100%);
+  background: linear-gradient(135deg, #1823ff 0%, #7c3aed 50%, #FF6B6B 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  text-fill-color: transparent;
 }
 
 .bg-gradient-primary {
