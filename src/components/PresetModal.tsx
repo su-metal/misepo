@@ -1052,16 +1052,16 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
       <div className="w-full h-full md:max-w-7xl md:max-h-[850px] bg-white md:rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-500 relative z-10 flex flex-col border border-stone-100">
         {/* Header */}
-        <div className="p-8 md:p-10 border-b border-stone-100 flex items-center justify-between bg-stone-50/50">
+        <div className="p-8 md:p-10 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-[#d8e9f4] text-white flex items-center justify-center shadow-lg shadow-indigo-100">
+            <div className="w-12 h-12 rounded-2xl bg-slate-100 text-[#2b2b2f] flex items-center justify-center shadow-sm">
               {viewingSampleId ? <BookOpenIcon className="w-6 h-6" /> : <MagicWandIcon className="w-6 h-6" />}
             </div>
             <div>
-              <h3 className="font-black text-xl text-stone-900 tracking-tight">
+              <h3 className="font-black text-xl text-[#2b2b2f] tracking-tight">
                 {viewingSampleId ? '学習データの詳細' : '新しい学習データ'}
               </h3>
-              <p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">スタイルの学習</p>
+              <p className="text-[12px] font-bold text-slate-400 uppercase tracking-widest">スタイルの学習</p>
             </div>
           </div>
           <button
@@ -1080,14 +1080,14 @@ const PresetModal: React.FC<PresetModalProps> = ({
           <div className="space-y-4">
             <div className="flex items-center justify-between px-2">
               <div className="space-y-1">
-                <h4 className="font-black text-stone-900 tracking-tight text-sm">
+                <h4 className="font-black text-[#2b2b2f] tracking-tight text-[16px]">
                   {learningMode === 'sns' ? '普段の投稿文を入力' : '過去の返信内容を入力'}
                 </h4>
-                <p className="text-[10px] text-stone-500 font-medium">
+                <p className="text-[12px] text-slate-500 font-bold">
                   {learningMode === 'sns' ? 'X, Instagram, LINEなどの投稿をそのまま貼り付けてください。' : 'Googleマップでの口コミへの返信文を貼り付けてください。'}
                 </p>
               </div>
-              <span className={`text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-widest ${learningMode === 'sns' ? 'bg-[#1f29fc]-50 text-[#1f29fc]-500' : 'bg-teal-50 text-teal-600'}`}>
+              <span className={`text-[11px] font-black px-3 py-1 rounded-full uppercase tracking-widest ${learningMode === 'sns' ? 'bg-slate-100 text-[#2b2b2f]' : 'bg-[#00b900] text-white'}`}>
                 {learningMode === 'sns' ? 'SNS用' : 'マップ返信用'}
               </span>
             </div>
@@ -1101,7 +1101,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                   <button
                     onClick={() => fileInputRef.current?.click()}
                     disabled={isAnalyzingScreenshot}
-                    className="flex items-center gap-2.5 text-xs font-black text-[#1f29fc] hover:opacity-70 disabled:opacity-50"
+                    className="flex items-center gap-2.5 text-[13px] font-black text-[#2b2b2f] hover:opacity-70 disabled:opacity-50"
                   >
                     <TieIcon className="w-4 h-4" />
                     スクショ解析
@@ -1115,7 +1115,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                       setIsSanitizing(false);
                     }}
                     disabled={isSanitizing || !modalText.trim() || isAnalyzingScreenshot}
-                    className="flex items-center gap-2.5 text-xs font-black text-[#1f29fc] hover:opacity-70 disabled:opacity-30"
+                    className="flex items-center gap-2.5 text-[13px] font-black text-[#2b2b2f] hover:opacity-70 disabled:opacity-30"
                   >
                     <SparklesIcon className="w-4 h-4" />
                     AI伏せ字
@@ -1124,12 +1124,12 @@ const PresetModal: React.FC<PresetModalProps> = ({
               )}
             </div>
 
-            <div className="bg-stone-50 border border-stone-100 rounded-[2.5rem] p-8 relative overflow-hidden">
+            <div className="bg-slate-50 border border-slate-100 rounded-[2.5rem] p-8 relative overflow-hidden shadow-inner">
               {isAnalyzingScreenshot && (
                 <div className="absolute inset-0 z-10 bg-white/60 backdrop-blur-sm flex items-center justify-center animate-in fade-in duration-300">
                   <div className="flex flex-col items-center gap-4">
-                    <div className="w-8 h-8 border-4 border-stone-100 border-t-[#1f29fc] rounded-full animate-spin shadow-xl" />
-                    <span className="text-xs font-black text-stone-900 tracking-widest uppercase bg-white px-6 py-2 rounded-full shadow-sm border border-stone-100">
+                    <div className="w-8 h-8 border-4 border-slate-100 border-t-[#2b2b2f] rounded-full animate-spin shadow-xl" />
+                    <span className="text-xs font-black text-[#2b2b2f] tracking-widest uppercase bg-white px-6 py-2 rounded-full shadow-sm border border-slate-100">
                       スクショ解析中...
                     </span>
                   </div>
@@ -1143,20 +1143,20 @@ const PresetModal: React.FC<PresetModalProps> = ({
                 placeholder={learningMode === 'sns'
                   ? "ここに過去のInstagramやXの投稿文を貼り付けてください。\n\nAIがあなたの言葉遣いや「お店らしさ」を学習し、より自然な提案ができるようになります。"
                   : "過去にGoogleマップで返信した文章を貼り付けてください。\n\nお客様への丁寧な言葉遣いや、大切にしている想いをAIが学習します。"}
-                className="w-full min-h-[300px] bg-transparent outline-none text-stone-800 font-bold leading-relaxed placeholder-stone-300 resize-none no-scrollbar text-lg"
+                className="w-full min-h-[300px] bg-transparent outline-none text-[#2b2b2f] font-bold leading-relaxed placeholder-slate-300 resize-none no-scrollbar text-[18px]"
               />
             </div>
           </div>
         </div>
 
-        <div className="p-8 border-t border-stone-100 flex justify-end">
+        <div className="p-8 border-t border-slate-100 flex justify-end bg-white">
           {viewingSampleId ? (
             <button
               onClick={() => {
                 setExpandingPlatform(null);
                 setViewingSampleId(null);
               }}
-              className="w-full md:w-auto px-12 py-5 bg-stone-900 text-white rounded-[2rem] font-black text-sm tracking-[0.2em] shadow-xl hover:bg-stone-800 active:scale-95 transition-all flex items-center justify-center gap-3"
+              className="w-full md:w-auto px-12 py-5 bg-[#2b2b2f] text-white rounded-[2rem] font-black text-[14px] tracking-[0.2em] shadow-xl hover:bg-black active:scale-95 transition-all flex items-center justify-center gap-3"
             >
               <CloseIcon className="w-5 h-5" />
               <span>閉じる</span>
@@ -1165,7 +1165,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
             <button
               onClick={() => handleToggleTrainingInternal(modalText, selectedPlatforms)}
               disabled={isTrainingLoading || !modalText.trim()}
-              className="w-full md:w-auto px-12 py-5 bg-stone-900 text-white rounded-[2rem] font-black text-sm tracking-[0.2em] shadow-xl hover:bg-indigo-600 active:scale-95 transition-all disabled:opacity-30 flex items-center justify-center gap-3"
+              className="w-full md:w-auto px-12 py-5 bg-[#2b2b2f] text-white rounded-[2rem] font-black text-[14px] tracking-[0.2em] shadow-xl hover:bg-black active:scale-95 transition-all disabled:opacity-30 flex items-center justify-center gap-3"
             >
               {isTrainingLoading ? <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <SaveIcon className="w-5 h-5" />}
               <span>学習データを保存</span>
