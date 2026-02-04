@@ -4,12 +4,13 @@
 
 :root {
   /* Pop Violet Palette */
-  --pop-violet-bg: #6F78FF;
-  --pop-violet-card: #2B2B2F;
-  --pop-violet-main: #6F78FF;
-  --pop-violet-accent-a: #FF7A59; /* Coral */
+  /* Pop Violet Palette -> Premium Light Transition */
+  --pop-violet-bg: #F8FAFC;
+  --pop-violet-card: #FFFFFF;
+  --pop-violet-main: #2b2b2f;
+  --pop-violet-accent-a: #7F5AF0; /* Lavender */
   --pop-violet-accent-b: #FFD166; /* Yellow */
-  --pop-violet-sub-light: #F3F4FF;
+  --pop-violet-sub-light: #F1F5F9;
 
   /* Legacy Colors (Keep for safety, but remapped where appropriate) */
   --ichizen-white: #ffffff;
@@ -57,9 +58,10 @@
 body {
   font-family: 'Inter', 'Noto Sans JP', sans-serif;
   background-color: var(--brand-bg);
-  color: var(--brand-text);
+  color: #2b2b2f;
   min-height: 100vh;
   overscroll-behavior-y: none;
+  overflow-x: hidden;
 }
 
 .font-montserrat {
@@ -114,8 +116,22 @@ body {
 }
 
 .bg-gradient-shine {
-  background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.2) 50%, transparent 70%);
+  background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.4) 50%, transparent 70%);
   background-size: 200% 100%;
+}
+
+.bg-pattern-dots {
+  background-image: radial-gradient(#e2e8f0 1.5px, transparent 1.5px);
+  background-size: 48px 48px;
+}
+
+.bg-typo-giant {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  line-height: 0.8;
+  pointer-events: none;
+  user-select: none;
 }
 
 .glow-orb {
@@ -284,7 +300,7 @@ html {
   background: transparent;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #1823ff;
+  background: #cbd5e1;
   border-radius: 10px;
 }
 
