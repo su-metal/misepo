@@ -410,7 +410,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                 {plan?.plan !== 'professional' && plan?.plan !== 'monthly' && plan?.plan !== 'yearly' && plan?.plan !== 'pro' && (
                                     <a
                                         href="/start?upgrade=true"
-                                        className="xl:hidden h-8 px-4 rounded-full bg-gradient-to-r from-[#1f29fc] to-[#7f5af0] text-white text-[9px] font-black uppercase tracking-[0.1em] shadow-lg shadow-indigo-500/20 active:scale-95 transition-all flex items-center gap-1.5 border border-white/20"
+                                        className="xl:hidden h-8 px-4 rounded-full bg-sunset text-white text-[9px] font-black uppercase tracking-[0.1em] shadow-lg shadow-orange-500/20 active:scale-95 transition-all flex items-center gap-1.5 border border-white/20"
                                     >
                                         <SparklesIcon className="w-2.5 h-2.5" />
                                         {plan?.plan === 'free' || plan?.plan === 'trial' ? 'Go Pro' : 'Upgrade'}
@@ -442,7 +442,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         <div className="absolute bottom-0 left-0 h-[2px] bg-slate-100 w-full" />
                                         {/* Active Gauge Fill */}
                                         <div
-                                            className="absolute bottom-0 left-0 h-[2px] bg-[#2b2b2f] transition-all duration-1000"
+                                            className="absolute bottom-0 left-0 h-[2px] bg-[#4338CA] transition-all duration-1000"
                                             style={{ width: `${(Math.max(0, plan.limit - plan.usage) / plan.limit) * 100}%` }}
                                         />
                                     </div>
@@ -805,7 +805,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                 {isGoogleMaps && (
                                                     <button
                                                         onClick={toggleVoiceInput}
-                                                        className={`absolute bottom-6 left-6 w-12 h-12 rounded-full flex items-center justify-center transition-all shadow-md ${isListening ? 'bg-[#2b2b2f] text-white animate-pulse' : 'bg-slate-100 text-[#2b2b2f]'}`}
+                                                        className={`absolute bottom-6 left-6 w-12 h-12 rounded-full flex items-center justify-center transition-all shadow-md ${isListening ? 'bg-[#4338CA] text-white animate-pulse' : 'bg-slate-100 text-[#2b2b2f]'}`}
                                                     >
                                                         <MicIcon className="w-6 h-6" />
                                                     </button>
