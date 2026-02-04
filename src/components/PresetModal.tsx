@@ -267,7 +267,7 @@ const SampleSlider = ({
 
               <div className="mt-8 flex items-center justify-between gap-3">
                 {/* Platform Toggles */}
-                <div className="flex items-center gap-1.5 bg-slate-50 p-1.5 rounded-2xl border border-slate-100">
+                <div className="flex items-center gap-6">
                   {mode === 'sns' ? (
                     <>
                       {[Platform.X, Platform.Instagram, Platform.Line].map((p) => {
@@ -277,15 +277,14 @@ const SampleSlider = ({
                         }
                         const isActive = platforms.includes(p);
                         const Icon = p === Platform.X ? XIcon : p === Platform.Instagram ? InstagramIcon : LineIcon;
-                        const iconColor = isActive ? 'text-[#2b2b2f]' : 'text-slate-300';
                         return (
                           <button
                             key={p}
                             onClick={() => onPlatformToggle?.(item, p)}
-                            className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all  ${isActive ? 'border-[#2b2b2f] shadow-[0_10px_20px_rgba(0,0,0,0.15)]' : 'border-slate-200'} bg-white`}
+                            className="flex items-center justify-center transition-colors"
                             title={`${p}に適用`}
                           >
-                            <Icon className={`w-4.5 h-4.5 ${iconColor}`} />
+                            <Icon className={`w-6 h-6 ${isActive ? 'text-[#2b2b2f]' : 'text-slate-300 hover:text-slate-400'}`} />
                           </button>
                         );
                       })}
@@ -1422,9 +1421,9 @@ const PresetModal: React.FC<PresetModalProps> = ({
                           <LineIcon
                             className={`w-5 h-5 ${isActive ? 'text-[#2b2b2f]' : 'text-slate-300'}`}
                             isActive={isActive}
-                            textFill={isActive ? '#2b2b2f' : '#d1d5db'}
+                            textFill="#ffffff"
                             color={isActive ? '#2b2b2f' : '#d1d5db'}
-                            activeTextFill="#2b2b2f"
+                            activeTextFill="#ffffff"
                           />
                         ) : (
                           <Icon className={`w-5 h-5 ${isActive ? 'text-[#2b2b2f]' : 'text-slate-300'}`} />
