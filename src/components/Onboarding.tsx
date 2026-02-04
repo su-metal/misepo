@@ -242,9 +242,9 @@ const Onboarding: React.FC<OnboardingProps> = ({
   return createPortal(
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-0 md:p-8 animate-in fade-in duration-500 pointer-events-auto">
       {/* VisionOS Style Backdrop */}
-      <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-md" onClick={onCancel} />
+      <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-md" onClick={onCancel} />
 
-      <div className="bg-white w-full h-full md:max-w-7xl md:max-h-[90vh] md:rounded-[3rem] shadow-2xl flex flex-col md:flex-row animate-in zoom-in-95 duration-500 relative overflow-hidden border border-stone-100">
+      <div className="bg-white w-full h-full md:max-w-7xl md:max-h-[90vh] md:rounded-[3rem] shadow-2xl flex flex-col md:flex-row animate-in zoom-in-95 duration-500 relative overflow-hidden border border-slate-200">
 
         {/* LEFT PANEL: Rich Info (Always visible on desktop, compact on mobile) */}
         <div className="w-full md:w-[42%] lg:w-[480px] shrink-0 bg-slate-50 relative p-8 md:p-14 flex flex-col">
@@ -334,7 +334,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
             <div className="grid grid-cols-1 gap-10">
               <div className="space-y-3">
                 <div className="flex items-center gap-2 pl-1">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
+                  <label className="text-[12px] font-black text-slate-500 uppercase tracking-[0.2em]">
                     店舗名・ブランド名
                   </label>
                 </div>
@@ -390,8 +390,8 @@ const Onboarding: React.FC<OnboardingProps> = ({
                   {/* Category Selection */}
                   <div className="space-y-6">
                     <div className="flex items-center justify-between">
-                      <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">カテゴリー</h3>
-                      {!isEditMode && <span className="bg-slate-100 text-slate-500 text-[8px] font-black px-2 py-1 rounded-full tracking-widest uppercase">Required</span>}
+                      <h3 className="text-[12px] font-black text-slate-500 uppercase tracking-[0.3em]">カテゴリー</h3>
+                      {!isEditMode && <span className="bg-slate-100 text-slate-500 text-[10px] font-black px-2 py-1 rounded-full tracking-widest uppercase">Required</span>}
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {INDUSTRIES.filter(ind => ind !== '旅館・ホテル').map((ind) => (
@@ -414,7 +414,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
                   {/* Target Audience Selection */}
                   <div className="space-y-6">
                     <div className="flex items-center justify-between">
-                      <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">主な客層（複数選択可）</h3>
+                      <h3 className="text-[12px] font-black text-slate-500 uppercase tracking-[0.3em]">主な客層（複数選択可）</h3>
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {TARGET_AUDIENCES.map((target) => {
@@ -446,7 +446,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
 
                   <div className="space-y-3">
                     <div className="flex items-center gap-2 pl-1">
-                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
+                      <label className="text-[12px] font-black text-slate-500 uppercase tracking-[0.2em]">
                         活動地域（例：横浜市、目黒区）
                       </label>
                     </div>
@@ -456,7 +456,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
                         value={region}
                         onChange={(e) => setRegion(e.target.value)}
                         placeholder="地名を入れるとより親しみやすい文章になります"
-                        className="w-full px-6 py-5 rounded-[20px] transition-all text-lg text-[#2b2b2f] font-black tracking-tight placeholder:text-slate-200 outline-none bg-slate-50 border border-slate-100 focus:bg-white focus:shadow-xl focus:shadow-slate-200/50 focus:border-[#2b2b2f]/10"
+                        className="w-full px-6 py-5 rounded-[20px] transition-all text-lg text-[#2b2b2f] font-black tracking-tight placeholder:text-slate-200 outline-none bg-slate-50 border border-slate-200 focus:bg-white focus:shadow-xl focus:shadow-slate-200/50 focus:border-[#2b2b2f]/20"
                       />
                       <div className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#2b2b2f] transition-colors">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
@@ -467,7 +467,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
                   {/* Description */}
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">施設の特徴・こだわり</h3>
+                      <h3 className="text-[12px] font-black text-slate-500 uppercase tracking-[0.3em]">施設の特徴・こだわり</h3>
                       {isAnalyzing && (
                         <div className="flex items-center gap-1.5 px-2 py-1 bg-blue-50 rounded-full animate-in fade-in zoom-in duration-300">
                           <div className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
@@ -479,19 +479,19 @@ const Onboarding: React.FC<OnboardingProps> = ({
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
                       placeholder="例：創業100年の老舗です。全客室から海が見渡せます。地元の新鮮な魚介類を使った料理が自慢です..."
-                      className="w-full px-6 py-5 rounded-[24px] transition-all resize-none text-base text-[#2b2b2f] font-bold leading-relaxed placeholder:text-slate-200 outline-none bg-slate-50 border border-slate-100 focus:bg-white focus:shadow-xl focus:shadow-slate-200/50 focus:border-[#2b2b2f]/10 min-h-[120px]"
+                      className="w-full px-6 py-5 rounded-[24px] transition-all resize-none text-base text-[#2b2b2f] font-bold leading-relaxed placeholder:text-slate-200 outline-none bg-slate-50 border border-slate-200 focus:bg-white focus:shadow-xl focus:shadow-slate-200/50 focus:border-[#2b2b2f]/20 min-h-[120px]"
                     />
                   </div>
 
                   {/* Instagram Footer: Info Card */}
-                  <div className="bg-slate-50 rounded-[28px] p-6 md:p-8 space-y-6 border border-slate-100 transition-all hover:bg-white hover:shadow-xl group">
+                  <div className="bg-slate-50 rounded-[28px] p-6 md:p-8 space-y-6 border border-slate-200 transition-all hover:bg-white hover:shadow-xl group">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-[12px] bg-slate-100 flex items-center justify-center text-[#2b2b2f] shadow-sm group-hover:bg-[#2b2b2f] group-hover:text-white transition-colors">
                           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5" /><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" /><line x1="17.5" x2="17.51" y2="6.5" y1="6.5" /></svg>
                         </div>
                         <div className="flex flex-col">
-                          <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Instagram 定型文</h4>
+                          <h4 className="text-[12px] font-black text-slate-500 uppercase tracking-[0.2em]">Instagram 定型文</h4>
                           {aiAnalysis && (
                             <span className="text-[9px] font-black text-emerald-500 flex items-center gap-1.5 mt-1">
                               <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" /></svg>
@@ -538,7 +538,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
               >
                 <div className="relative z-10 w-full h-full bg-[#2b2b2f] text-white rounded-[24px] py-5 flex items-center justify-center gap-3 shadow-xl group-hover:bg-black transition-colors">
                   <div className="absolute inset-0 bg-gradient-shine opacity-10 group-hover:animate-shine pointer-events-none" />
-                  <span className="text-[13px] font-black tracking-[0.2em] uppercase">{isEditMode ? 'Settings Save' : 'Start with AI'}</span>
+                  <span className="text-[14px] font-black tracking-widest">{isEditMode ? '設定を保存する' : 'AIとはじめる'}</span>
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-1 transition-transform"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
                 </div>
               </button>

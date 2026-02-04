@@ -558,7 +558,6 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         `}
                                         style={isActive ? {
                                             borderColor: brandColor,
-                                            boxShadow: `0 10px 30px -10px ${brandColor}40`
                                         } : {}}
                                     >
                                         {/* Bento Card Content */}
