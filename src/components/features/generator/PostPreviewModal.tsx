@@ -50,34 +50,34 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
                 onClick={onClose}
             />
 
-            <div className="relative w-full max-w-lg h-[90vh] bg-white rounded-[48px] overflow-hidden animate-in zoom-in-95 duration-300 border border-[#F0F0F0] shadow-[0_30px_80px_rgba(0,0,0,0.15)] flex flex-col">
-                <div className="flex items-center justify-between p-7 sm:p-9 bg-white border-b border-[#F0F0F0] sticky top-0 z-10">
+            <div className="relative w-full max-w-lg h-[90vh] bg-[#1E1E24] rounded-[48px] overflow-hidden animate-in zoom-in-95 duration-300 border border-white/10 shadow-[0_30px_80px_rgba(0,0,0,0.5)] flex flex-col">
+                <div className="flex items-center justify-between p-7 sm:p-9 bg-[#1E1E24] border-b border-white/5 sticky top-0 z-10">
                     <div className="flex items-center gap-4 text-left">
-                        <div className="w-10 h-10 rounded-2xl bg-[#F9F9FB] flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-2xl bg-[#2B2B2F] flex items-center justify-center border border-white/10">
                             {getPlatformIcon(platform)}
                         </div>
                         <div>
-                            <h3 className="text-[14px] font-bold text-[#111111] leading-tight">
+                            <h3 className="text-[14px] font-bold text-white leading-tight">
                                 プレビュー表示
                             </h3>
-                            <p className="text-[10px] text-[#949594] font-medium mt-1">Platform Preview</p>
+                            <p className="text-[10px] text-[#A0A0A0] font-medium mt-1">Platform Preview</p>
                         </div>
                     </div>
                     <button
                         onClick={onClose}
-                        className="w-10 h-10 flex items-center justify-center rounded-full bg-[#F9F9FB] hover:bg-[#F0F0F0] text-[#111111] transition-all active:scale-90"
+                        className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 text-white transition-all active:scale-90"
                     >
-                        <CloseIcon className="w-5 h-5 opacity-40 group-hover:opacity-100 transition-opacity" />
+                        <CloseIcon className="w-5 h-5 opacity-60 group-hover:opacity-100 transition-opacity" />
                     </button>
                 </div>
 
-                <div className="flex-1 bg-white overflow-y-auto no-scrollbar">
+                <div className="flex-1 bg-[#1E1E24] overflow-y-auto no-scrollbar">
                     {/* Platform Specific Preview */}
                     <div className="flex justify-center px-4 py-10">
 
                         {/* Instagram Preview */}
                         {platform === Platform.Instagram && (
-                            <div className="w-full max-w-[400px] overflow-hidden text-left">
+                            <div className="w-full max-w-[400px] overflow-hidden text-left bg-white rounded-[32px] shadow-lg border border-white/5">
                                 {/* Header */}
                                 <div className="flex items-center justify-between p-4 border-b border-[#F5F5F5]">
                                     <div className="flex items-center gap-3">
@@ -117,7 +117,7 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
 
                                     <div className="text-xs font-black text-black mb-4">1,234 likes</div>
 
-                                    <div className="text-[14px] text-black font-medium leading-relaxed">
+                                    <div className="text-[16px] text-black font-medium leading-relaxed">
                                         <span className="font-black mr-2">{storeProfile.name || 'your_account'}</span>
                                         <AutoResizingTextarea
                                             value={text}
@@ -132,7 +132,7 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
 
                         {/* X (Twitter) Preview */}
                         {platform === Platform.X && (
-                            <div className="w-full px-4 py-5 max-w-[475px] text-left">
+                            <div className="w-full px-4 py-5 max-w-[475px] text-left bg-white rounded-[32px] shadow-lg border border-white/5">
                                 <div className="flex gap-3">
                                     <div className="w-9 h-9 rounded-full bg-black flex items-center justify-center text-[12px] font-black text-white flex-shrink-0">
                                         {(storeProfile.name?.[0] || 'U').toUpperCase()}
@@ -147,7 +147,7 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
                                             <MoreHorizontalIcon className="w-5 h-5 text-[#CCCCCC]" />
                                         </div>
 
-                                        <div className="text-[15px] text-black font-medium leading-tight mb-4">
+                                        <div className="text-[16px] text-black font-medium leading-tight mb-4">
                                             <AutoResizingTextarea
                                                 value={text}
                                                 onChange={(e) => onChange?.(e.target.value)}
@@ -179,7 +179,7 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
 
                         {/* Google Maps Preview */}
                         {platform === Platform.GoogleMaps && (
-                            <div className="w-full p-8 max-w-[500px] text-left">
+                            <div className="w-full p-8 max-w-[500px] text-left bg-white rounded-[32px] shadow-lg border border-white/5">
                                 <div className="flex gap-4">
                                     {/* Left Border Line (Thread indicator) */}
                                     <div className="w-1 bg-[#F5F5F5] shrink-0 rounded-full" />
@@ -203,7 +203,7 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
                                             </div>
                                         </div>
 
-                                        <div className="text-[15px] text-black font-medium leading-relaxed">
+                                        <div className="text-[16px] text-black font-medium leading-relaxed">
                                             <AutoResizingTextarea
                                                 value={text}
                                                 onChange={(e) => onChange?.(e.target.value)}
@@ -225,14 +225,14 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
                     </div>
                 </div>
 
-                <div className="p-8 bg-white border-t border-[#F0F0F0] mt-auto">
+                <div className="p-8 bg-[#1E1E24] border-t border-white/5 mt-auto">
                     <button
                         onClick={onClose}
-                        className="w-full py-5 rounded-full font-bold text-[14px] transition-all active:scale-[0.98] shadow-sm bg-[#122646] text-white hover:opacity-90 relative overflow-hidden group"
+                        className="w-full py-5 rounded-full font-bold text-[14px] transition-all active:scale-[0.98] shadow-sm bg-[var(--pop-violet-main)] text-white hover:opacity-90 relative overflow-hidden group"
                     >
                         <div className="relative z-10">保存して閉じる</div>
                     </button>
-                    <p className="mt-4 text-[10px] font-bold text-[#949594] text-center leading-relaxed opacity-60">
+                    <p className="mt-4 text-[10px] font-bold text-[#A0A0A0] text-center leading-relaxed opacity-60">
                         プレビュー画面は実際の見え方と異なる場合があります。
                     </p>
                 </div>

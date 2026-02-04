@@ -87,7 +87,7 @@ export const DesktopPostInput: React.FC<PostInputFormProps> = ({
                                     };
                                     case Platform.Line: return {
                                         name: 'LINE', tagline: 'Messages', sub: 'リピーター獲得',
-                                        icon: <LineIcon className="w-7 h-7" isActive={platforms.includes(Platform.Line)} activeTextFill="#1f29fc" />,
+                                        icon: <LineIcon className="w-7 h-7" isActive={platforms.includes(Platform.Line)} activeTextFill="#2b2b2f" />,
                                     };
                                     case Platform.GoogleMaps: return {
                                         name: 'Google Maps', tagline: 'Local Search', sub: '店舗集客とMEO対策',
@@ -187,7 +187,7 @@ export const DesktopPostInput: React.FC<PostInputFormProps> = ({
                             <div className="flex items-center gap-2 mb-1.5 px-1">
                                 <h3 className="text-[10px] font-black text-[#999999]">トーン</h3>
                                 {isStyleLocked && (
-                                    <div className="flex items-center gap-1 bg-[#d8e9f4] px-1.5 py-0.5 rounded text-[8px] font-black text-[#1f29fc] uppercase tracking-wider">
+                                    <div className="flex items-center gap-1 bg-[#d8e9f4] px-1.5 py-0.5 rounded text-[8px] font-black text-[#2b2b2f] uppercase tracking-wider">
                                         <LockIcon className="w-2.5 h-2.5" />
                                         <span>AI学習適用中</span>
                                     </div>

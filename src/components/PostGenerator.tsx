@@ -163,184 +163,185 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
 
         {/* App Shell Container */}
         <div className="relative w-full h-[100dvh] sm:h-[90vh] sm:max-h-[900px] sm:w-[414px] shrink-0 bg-white sm:rounded-[54px] shadow-premium overflow-hidden border-0 sm:border-[12px] sm:border-white sm:ring-2 sm:ring-[#2b2b2f]/20 flex flex-col isolate z-10 transition-all duration-500">
+          <div className="relative w-full h-[100dvh] sm:h-[90vh] sm:max-h-[900px] sm:w-[414px] shrink-0 bg-white sm:rounded-[54px] shadow-premium overflow-hidden border-0 sm:border-[12px] sm:border-white sm:ring-2 sm:ring-[#2b2b2f]/40 flex flex-col isolate z-10 transition-all duration-500">
 
-          {/* Mobile Content Area */}
-          <div className="flex-1 w-full relative overflow-hidden bg-white">
-            <PostInputForm
-              storeProfile={storeProfile}
-              platforms={flow.platforms}
-              activePlatform={flow.platforms[0] || Platform.Instagram}
-              isMultiGen={flow.isMultiGenMode}
-              isStyleLocked={flow.isStyleLocked}
-              onPlatformToggle={flow.handlePlatformToggle}
-              onToggleMultiGen={flow.handleToggleMultiGen}
-              onSetActivePlatform={flow.handleSetActivePlatform}
-              platform={flow.platforms[0] || Platform.Instagram}
-              postPurpose={flow.postPurpose}
-              gmapPurpose={flow.gmapPurpose}
-              onPostPurposeChange={flow.setPostPurpose}
-              onGmapPurposeChange={flow.setGmapPurpose}
-              tone={flow.tone}
-              onToneChange={flow.setTone}
-              length={flow.length}
-              onLengthChange={flow.setLength}
-              inputText={flow.inputText}
-              onInputTextChange={flow.setInputText}
-              question={flow.question}
-              onQuestionChange={flow.setQuestion}
-              topicPrompt={flow.topicPrompt}
-              onTopicPromptChange={flow.setTopicPrompt}
-              starRating={flow.starRating}
-              onStarRatingChange={flow.onStarRatingChange}
-              includeEmojis={flow.includeEmojis}
-              onIncludeEmojisChange={flow.setIncludeEmojis}
-              includeSymbols={flow.includeSymbols}
-              onIncludeSymbolsChange={flow.setIncludeSymbols}
-              xConstraint140={flow.xConstraint140}
-              onXConstraint140Change={flow.setXConstraint140}
-              isGenerating={flow.loading}
-              onGenerate={handleGenerate}
-              generateButtonRef={buttonRef}
-              plan={plan}
-              presets={presets}
-              activePresetId={flow.activePresetId}
-              onApplyPreset={flow.handleApplyPreset}
-              onOpenPresetModal={() => setIsPresetModalOpen(true)}
-              customPrompt={flow.customPrompt}
-              onCustomPromptChange={flow.setCustomPrompt}
-              storeSupplement={flow.storeSupplement}
-              onStoreSupplementChange={flow.setStoreSupplement}
-              language={flow.language}
-              onLanguageChange={flow.setLanguage}
-              onOpenGuide={onOpenGuide}
-              onOpenSettings={onOpenSettings}
-              hasResults={flow.resultGroups.length > 0}
-              onReset={React.useCallback(() => {
-                flow.setInputText('');
-                setResetTrigger(prev => prev + 1);
-              }, [flow.setInputText])}
-              resetTrigger={resetTrigger}
-              generatedResults={flow.resultGroups}
-              activeResultTab={flow.activeTab}
-              onResultTabChange={flow.setActiveTab}
-              onManualEdit={flow.handleManualEdit}
-              onToggleFooter={flow.handleToggleFooter}
-              onRefine={flow.performRefine}
-              onRegenerateSingle={(platform) => flow.performGeneration([platform], true)}
-              onShare={flow.handleShare}
-              getShareButtonLabel={getShareButtonLabel}
-              refiningKey={flow.refiningKey}
-              onRefineToggle={flow.handleRefineToggle}
-              refineText={flow.refineText}
-              onRefineTextChange={flow.setRefineText}
-              onPerformRefine={flow.performRefine}
-              isRefining={flow.isRefining}
-              includeFooter={flow.includeFooter}
-              onIncludeFooterChange={flow.setIncludeFooter}
-              onAutoFormat={flow.handleAutoFormat}
-              isAutoFormatting={flow.isAutoFormatting}
-              onCopy={flow.handleCopy}
-              onMobileResultOpen={setIsMobileResultOpen}
-              onStepChange={setMobileStep}
-              restoreId={restorePost?.id}
-              closeDrawerTrigger={closeDrawerTrigger}
-              openDrawerTrigger={openDrawerTrigger}
-              onOpenOnboarding={() => setShowOnboarding(true)}
-              targetAudiences={flow.targetAudiences}
-              onTargetAudiencesChange={flow.setTargetAudiences}
-            />
+            {/* Mobile Content Area */}
+            <div className="flex-1 w-full relative overflow-hidden bg-white">
+              <PostInputForm
+                storeProfile={storeProfile}
+                platforms={flow.platforms}
+                activePlatform={flow.platforms[0] || Platform.Instagram}
+                isMultiGen={flow.isMultiGenMode}
+                isStyleLocked={flow.isStyleLocked}
+                onPlatformToggle={flow.handlePlatformToggle}
+                onToggleMultiGen={flow.handleToggleMultiGen}
+                onSetActivePlatform={flow.handleSetActivePlatform}
+                platform={flow.platforms[0] || Platform.Instagram}
+                postPurpose={flow.postPurpose}
+                gmapPurpose={flow.gmapPurpose}
+                onPostPurposeChange={flow.setPostPurpose}
+                onGmapPurposeChange={flow.setGmapPurpose}
+                tone={flow.tone}
+                onToneChange={flow.setTone}
+                length={flow.length}
+                onLengthChange={flow.setLength}
+                inputText={flow.inputText}
+                onInputTextChange={flow.setInputText}
+                question={flow.question}
+                onQuestionChange={flow.setQuestion}
+                topicPrompt={flow.topicPrompt}
+                onTopicPromptChange={flow.setTopicPrompt}
+                starRating={flow.starRating}
+                onStarRatingChange={flow.onStarRatingChange}
+                includeEmojis={flow.includeEmojis}
+                onIncludeEmojisChange={flow.setIncludeEmojis}
+                includeSymbols={flow.includeSymbols}
+                onIncludeSymbolsChange={flow.setIncludeSymbols}
+                xConstraint140={flow.xConstraint140}
+                onXConstraint140Change={flow.setXConstraint140}
+                isGenerating={flow.loading}
+                onGenerate={handleGenerate}
+                generateButtonRef={buttonRef}
+                plan={plan}
+                presets={presets}
+                activePresetId={flow.activePresetId}
+                onApplyPreset={flow.handleApplyPreset}
+                onOpenPresetModal={() => setIsPresetModalOpen(true)}
+                customPrompt={flow.customPrompt}
+                onCustomPromptChange={flow.setCustomPrompt}
+                storeSupplement={flow.storeSupplement}
+                onStoreSupplementChange={flow.setStoreSupplement}
+                language={flow.language}
+                onLanguageChange={flow.setLanguage}
+                onOpenGuide={onOpenGuide}
+                onOpenSettings={onOpenSettings}
+                hasResults={flow.resultGroups.length > 0}
+                onReset={React.useCallback(() => {
+                  flow.setInputText('');
+                  setResetTrigger(prev => prev + 1);
+                }, [flow.setInputText])}
+                resetTrigger={resetTrigger}
+                generatedResults={flow.resultGroups}
+                activeResultTab={flow.activeTab}
+                onResultTabChange={flow.setActiveTab}
+                onManualEdit={flow.handleManualEdit}
+                onToggleFooter={flow.handleToggleFooter}
+                onRefine={flow.performRefine}
+                onRegenerateSingle={(platform) => flow.performGeneration([platform], true)}
+                onShare={flow.handleShare}
+                getShareButtonLabel={getShareButtonLabel}
+                refiningKey={flow.refiningKey}
+                onRefineToggle={flow.handleRefineToggle}
+                refineText={flow.refineText}
+                onRefineTextChange={flow.setRefineText}
+                onPerformRefine={flow.performRefine}
+                isRefining={flow.isRefining}
+                includeFooter={flow.includeFooter}
+                onIncludeFooterChange={flow.setIncludeFooter}
+                onAutoFormat={flow.handleAutoFormat}
+                isAutoFormatting={flow.isAutoFormatting}
+                onCopy={flow.handleCopy}
+                onMobileResultOpen={setIsMobileResultOpen}
+                onStepChange={setMobileStep}
+                restoreId={restorePost?.id}
+                closeDrawerTrigger={closeDrawerTrigger}
+                openDrawerTrigger={openDrawerTrigger}
+                onOpenOnboarding={() => setShowOnboarding(true)}
+                targetAudiences={flow.targetAudiences}
+                onTargetAudiencesChange={flow.setTargetAudiences}
+              />
+            </div>
+
+            {/* Floating Mobile Footer Navigation - Only shown when results are NOT open */}
+            {!isMobileResultOpen && (
+              <MobileFooter
+                activeTab={mobileActiveTab}
+                currentStep={mobileStep}
+                isGenerating={flow.loading}
+                onTabChange={(tab) => {
+                  setMobileActiveTab(tab);
+                  if (tab === 'home') {
+                    setCloseDrawerTrigger(prev => prev + 1);
+                  } else if (tab === 'history') {
+                    if (onOpenHistory) onOpenHistory();
+                  } else if (tab === 'settings') {
+                    if (onOpenSettings) onOpenSettings();
+                  } else if (tab === 'learning') {
+                    setIsPresetModalOpen(true);
+                  }
+                }}
+                onPlusClick={mobileStep === 'confirm' ? handleGenerate : () => {
+                  setMobileActiveTab('home');
+                  flow.handleResetAll(true);
+                  setOpenDrawerTrigger(prev => prev + 1);
+                }}
+                onGenerate={handleGenerate}
+              />
+            )}
+
+            {/* Modal Container - Portals will render here, contained within App Shell */}
+            <div id="app-shell-modal-root" className="absolute inset-0 pointer-events-none" style={{ zIndex: 9999 }} />
           </div>
 
-          {/* Floating Mobile Footer Navigation - Only shown when results are NOT open */}
-          {!isMobileResultOpen && (
-            <MobileFooter
-              activeTab={mobileActiveTab}
-              currentStep={mobileStep}
-              isGenerating={flow.loading}
-              onTabChange={(tab) => {
-                setMobileActiveTab(tab);
-                if (tab === 'home') {
-                  setCloseDrawerTrigger(prev => prev + 1);
-                } else if (tab === 'history') {
-                  if (onOpenHistory) onOpenHistory();
-                } else if (tab === 'settings') {
-                  if (onOpenSettings) onOpenSettings();
-                } else if (tab === 'learning') {
-                  setIsPresetModalOpen(true);
-                }
-              }}
-              onPlusClick={mobileStep === 'confirm' ? handleGenerate : () => {
-                setMobileActiveTab('home');
-                flow.handleResetAll(true);
+          {/* Right Sidebar (PC Only) */}
+          <div className="hidden xl:block h-[85vh] max-h-[850px] shrink-0">
+            <TrendSidebar
+              onSelectEvent={(event) => {
+                const textToAdd = `【話題のネタ】\n${event.title}\n${event.prompt}`;
+                // Overwrite existing text
+                flow.setInputText(textToAdd);
+                setMobileStep('input');
+                // Trigger drawer open for Omakase flow
                 setOpenDrawerTrigger(prev => prev + 1);
               }}
-              onGenerate={handleGenerate}
+              industry={storeProfile.industry}
+              description={storeProfile.description}
+              isGoogleMaps={(flow.platforms[0] || Platform.Instagram) === Platform.GoogleMaps}
             />
-          )}
-
-          {/* Modal Container - Portals will render here, contained within App Shell */}
-          <div id="app-shell-modal-root" className="absolute inset-0 pointer-events-none" style={{ zIndex: 9999 }} />
-        </div>
-
-        {/* Right Sidebar (PC Only) */}
-        <div className="hidden xl:block h-[85vh] max-h-[850px] shrink-0">
-          <TrendSidebar
-            onSelectEvent={(event) => {
-              const textToAdd = `【話題のネタ】\n${event.title}\n${event.prompt}`;
-              // Overwrite existing text
-              flow.setInputText(textToAdd);
-              setMobileStep('input');
-              // Trigger drawer open for Omakase flow
-              setOpenDrawerTrigger(prev => prev + 1);
-            }}
-            industry={storeProfile.industry}
-            description={storeProfile.description}
-            isGoogleMaps={(flow.platforms[0] || Platform.Instagram) === Platform.GoogleMaps}
-          />
-        </div>
-      </div>
-
-      {/* Global Modals - Rendered outside App Shell */}
-      {isPresetModalOpen && (
-        <PresetModal
-          onClose={() => setIsPresetModalOpen(false)}
-          presets={presets}
-          onSave={handleSavePreset}
-          onDelete={handleDeletePreset}
-          initialPresetId={flow.activePresetId || undefined}
-          isSaving={isSavingPreset}
-          onReorder={props.refreshPresets}
-          trainingItems={trainingItems}
-          onToggleTraining={(text, platform, presetId, replaceId, source) => onToggleFavorite(text, platform, presetId, replaceId, source || 'manual')}
-          onRefreshTraining={onRefreshTraining}
-          onLogout={onLogout}
-        />
-      )}
-
-      {flow.toastMessage && (
-        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[110] animate-in slide-in-from-bottom-4 duration-300 pointer-events-none">
-          <div className="bg-stone-900/90 backdrop-blur text-white px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border border-stone-700/50">
-            <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
-            <span className="text-xs font-bold truncate">{flow.toastMessage}</span>
           </div>
         </div>
-      )}
 
-      <LoadingModal isOpen={flow.loading} />
+        {/* Global Modals - Rendered outside App Shell */}
+        {isPresetModalOpen && (
+          <PresetModal
+            onClose={() => setIsPresetModalOpen(false)}
+            presets={presets}
+            onSave={handleSavePreset}
+            onDelete={handleDeletePreset}
+            initialPresetId={flow.activePresetId || undefined}
+            isSaving={isSavingPreset}
+            onReorder={props.refreshPresets}
+            trainingItems={trainingItems}
+            onToggleTraining={(text, platform, presetId, replaceId, source) => onToggleFavorite(text, platform, presetId, replaceId, source || 'manual')}
+            onRefreshTraining={onRefreshTraining}
+            onLogout={onLogout}
+          />
+        )}
 
-      {showOnboarding && (
-        <Onboarding
-          initialProfile={storeProfile}
-          onSave={async (profile) => {
-            await onSaveProfile(profile);
-            setShowOnboarding(false);
-            if (onTaskComplete) onTaskComplete();
-          }}
-          onCancel={() => setShowOnboarding(false)}
-        />
-      )}
-    </div>
-  );
+        {flow.toastMessage && (
+          <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[110] animate-in slide-in-from-bottom-4 duration-300 pointer-events-none">
+            <div className="bg-stone-900/90 backdrop-blur text-white px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border border-stone-700/50">
+              <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
+              <span className="text-xs font-bold truncate">{flow.toastMessage}</span>
+            </div>
+          </div>
+        )}
+
+        <LoadingModal isOpen={flow.loading} />
+
+        {showOnboarding && (
+          <Onboarding
+            initialProfile={storeProfile}
+            onSave={async (profile) => {
+              await onSaveProfile(profile);
+              setShowOnboarding(false);
+              if (onTaskComplete) onTaskComplete();
+            }}
+            onCancel={() => setShowOnboarding(false)}
+          />
+        )}
+      </div>
+      );
 };
 
-export default PostGenerator;
+      export default PostGenerator;
