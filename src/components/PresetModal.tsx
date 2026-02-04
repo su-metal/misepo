@@ -691,6 +691,17 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
     const platformString = platforms.join(', ') as any;
 
+    // Check if anything actually changed for existing items to skip redundant processing
+    if (presetId) {
+      const existing = trainingItems.find(it => it.id === viewingSampleId);
+      if (existing && existing.content.trim() === normalizedText && existing.platform === platformString) {
+        setExpandingPlatform(null);
+        setModalText('');
+        setViewingSampleId(null);
+        return;
+      }
+    }
+
     setIsTrainingLoading(true);
     try {
       if (presetId) {
@@ -709,10 +720,6 @@ const PresetModal: React.FC<PresetModalProps> = ({
         // Also simulate optimistic update in parent if needed, but here we just use tempNewSamples
       }
 
-      // Close overlay immediately for better UX
-      setExpandingPlatform(null);
-      setModalText('');
-
       // Construct optimistic samples for immediate analysis
       let newSamples = presetId
         ? trainingItems.filter(item => item.presetId === presetId).map(item => ({ content: item.content, platform: item.platform }))
@@ -720,17 +727,18 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
       newSamples.push({ content: normalizedText, platform: platformString });
 
-      // Trigger Auto-Analysis
-      setIsAnalyzingPersona(true); // Show spinner immediately
+      // Trigger Auto-Analysis while still in overlay for feedback
+      setIsAnalyzingPersona(true);
       const newStyle = await performPersonaAnalysis(newSamples);
 
       if (newStyle && name.trim()) {
         // Auto-save the new style to the preset if we have a name
-        // We pass the newStyle as overridePrompts to handleSave
-        // Note: handleSave expects {[key:string]: string}.
-        // performPersonaAnalysis returns object or string. We normalized it to return object above.
         await handleSave(newStyle as any);
       }
+
+      // Close overlay AFTER everything is done
+      setExpandingPlatform(null);
+      setModalText('');
 
     } catch (err: any) {
       alert(`保存に失敗しました: ${err.message}`);
@@ -1299,7 +1307,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
           ) : (
             <button
               onClick={() => handleToggleTrainingInternal(modalText, selectedPlatforms)}
-              disabled={isTrainingLoading || !modalText.trim()}
+              disabled={isTrainingLoading || !modalText.trim() || !name.trim()}
               className="w-full md:w-auto px-12 py-5 bg-[#2b2b2f] text-white rounded-[2rem] font-black text-[14px] tracking-[0.2em] shadow-xl hover:bg-black active:scale-95 transition-all disabled:opacity-30 flex items-center justify-center gap-3"
             >
               {isTrainingLoading ? <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <SaveIcon className="w-5 h-5" />}
