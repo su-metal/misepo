@@ -551,8 +551,8 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         className={`
                                             relative rounded-[24px] overflow-hidden cursor-pointer border transition-all duration-500 group
                                             ${bentoClass}
-                                             ${isActive
-                                                ? `${brandBg} scale-[1.02] border-[2.5px]`
+                                            ${isActive
+                                                ? `bg-white scale-[1.02] border-[2.5px] shadow-sm`
                                                 : `bg-[#edeff1] border-slate-100 shadow-sm hover:border-slate-300 active:scale-[0.98]`
                                             }
                                         `}
@@ -563,11 +563,14 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         {/* Bento Card Content */}
                                         <div className="absolute inset-0 p-5 flex flex-col justify-between">
                                             <div className="flex justify-between items-start">
-                                                <div className={`
-                                                    transition-all duration-500 transform
-                                                     ${isActive ? 'scale-110' : 'scale-100'}
-                                                     text-[#2b2b2f]
-                                                `}>
+                                                <div
+                                                    className={`
+                                                        transition-all duration-500 transform
+                                                         ${isActive ? 'scale-110' : 'scale-100'}
+                                                         text-[#2b2b2f]
+                                                    `}
+                                                    style={isActive ? { color: brandColor } : {}}
+                                                >
                                                     {details.icon}
                                                 </div>
 
@@ -616,7 +619,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             `}
                         >
                             {/* Main Card with Ticket Shape */}
-                            <div className="relative rounded-[24px] overflow-visible bg-gradient-to-br from-[#f3f9ff] via-[#faf5ff] to-[#fff0f3] shadow-md border-2 border-[#d0e0f0]">
+                            <div className="relative rounded-[32px] overflow-visible bg-gradient-to-br from-[#f3f9ff] via-[#faf5ff] to-[#fff0f3] shadow-md border-2 border-[#d0e0f0]">
 
                                 {/* Left Notch (Trapezoid Cutout) */}
                                 <div className="absolute left-[-3px] top-1/2 -translate-y-1/2 w-[18px] h-[32px] pointer-events-none z-20">
@@ -638,7 +641,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                 <SparklesIcon className="absolute -bottom-6 -right-6 w-32 h-32 text-[#2b2b2f]/[0.03] -rotate-12 pointer-events-none" />
 
                                 {/* Content Container */}
-                                <div className="relative px-8 py-4 flex items-center justify-between">
+                                <div className="relative px-8 py-6 flex items-center justify-between">
 
                                     {/* Left Content */}
                                     <div className="flex flex-col gap-3 relative z-10 py-1">
