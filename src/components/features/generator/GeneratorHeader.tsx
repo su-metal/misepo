@@ -32,7 +32,7 @@ export const GeneratorHeader: React.FC<GeneratorHeaderProps> = ({
 
                     {/* Typography */}
                     <div className="flex flex-col">
-                        <span className="text-[10px] font-black text-[#AAAAAA] uppercase tracking-[0.2em] leading-none mb-1 group-hover:text-[#7F5AF0] transition-colors">Business Profile</span>
+                        <span className="text-[10px] font-black text-[#AAAAAA] uppercase tracking-[0.2em] leading-none mb-1 group-hover:text-[#2b2b2f] transition-colors">Business Profile</span>
                         <div className="flex items-end gap-2">
                             <span className="text-xl font-black text-[var(--plexo-black)] tracking-tight leading-none truncate max-w-[120px] sm:max-w-none">{storeProfile?.name || 'Store Admin'}</span>
                             {(plan?.plan === 'entry' || plan?.plan === 'standard' || plan?.plan === 'professional' || plan?.plan === 'pro' || plan?.plan === 'monthly' || plan?.plan === 'yearly') && (
