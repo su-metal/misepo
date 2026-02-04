@@ -514,7 +514,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         name: 'LINE',
                                         tagline: 'Messages',
                                         sub: 'リピーター獲得',
-                                        icon: <LineIcon className="w-7 h-7" isActive={false} activeTextFill="#2b2b2f" />,
+                                        icon: <LineIcon className="w-7 h-7" isActive={false} activeTextFill="#2b2b2f" textFill="#06C755" />,
                                         color: 'from-green-500/10 to-emerald-500/10'
                                     };
                                     case Platform.GoogleMaps: return {
@@ -539,11 +539,6 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         p === Platform.Line ? '#06C755' :
                                             p === Platform.GoogleMaps ? '#4285F4' : '#2b2b2f';
 
-                                const subtleBrandBg = p === Platform.Instagram ? 'rgba(225,48,108,0.08)' :
-                                    p === Platform.X ? 'rgba(17,24,39,0.08)' :
-                                        p === Platform.Line ? 'rgba(6,199,85,0.08)' :
-                                            p === Platform.GoogleMaps ? 'rgba(66,133,244,0.08)' : 'rgba(43,43,47,0.08)';
-
                                 return (
                                         <div
                                             key={p}
@@ -558,7 +553,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         `}
                                         style={isActive ? {
                                             borderColor: brandColor,
-                                            backgroundColor: subtleBrandBg,
+                                            backgroundColor: brandColor,
                                         } : {}}
                                         >
                                         {/* Bento Card Content */}
@@ -569,7 +564,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                         transition-all duration-500 transform
                                                          ${isActive ? 'scale-110' : 'scale-100'}
                                                     `}
-                                                    style={{ color: brandColor }}
+                                                    style={{ color: isActive ? '#ffffff' : brandColor }}
                                                 >
                                                     {details.icon}
                                                 </div>
@@ -593,10 +588,10 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
                                             <div className="flex flex-col">
                                                 <div className="flex flex-col leading-tight">
-                                                    <h3 className={`font-black tracking-tighter text-xl transition-colors duration-500 text-[#2b2b2f] whitespace-nowrap`} style={{ fontFamily: 'Inter, sans-serif' }}>
+                                                    <h3 className={`font-black tracking-tighter text-xl transition-colors duration-500 whitespace-nowrap ${isActive ? 'text-white' : 'text-[#2b2b2f]'}`} style={{ fontFamily: 'Inter, sans-serif' }}>
                                                         {details.name}
                                                     </h3>
-                                                    <p className={`text-[11px] font-medium ${isActive ? 'text-[#2b2b2f]/60' : 'text-[#b0b0b0]'}`}>
+                                                    <p className={`text-[11px] font-medium ${isActive ? 'text-white/80' : 'text-[#b0b0b0]'}`}>
                                                         {details.sub}
                                                     </p>
                                                 </div>
@@ -623,7 +618,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                     <div className="flex-1 p-6 flex flex-col gap-4">
                                         <div className="flex items-center gap-3 px-1">
                                             <SparklesIcon className="w-4 h-4 text-slate-500/60" />
-                                            <span className="text-slate-500/70 text-[10px] font-bold tracking-[0.25em] uppercase">
+                                            <span className="text-[10px] font-bold tracking-[0.25em] uppercase text-slate-500/70">
                                                 Premium Tier Feature
                                             </span>
                                         </div>
@@ -649,17 +644,17 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         </div>
 
                                         <div className="space-y-2">
-                                            <p className="text-slate-700/90 text-[12px] font-medium leading-relaxed">
+                                            <p className="text-[12px] font-medium leading-relaxed text-slate-700/90">
                                                 迷ったらここから。高性能AIが最適な投稿文を一気に生成します。
                                             </p>
                                             <div className="flex flex-wrap gap-2 pt-1">
-                                                <span className="px-2 py-1 rounded-full bg-slate-100/80 border border-slate-200/60 text-[9px] text-slate-600 font-bold">
+                                                <span className="px-2 py-1 rounded-full border border-slate-200/60 bg-slate-100/80 text-[9px] font-bold text-slate-600">
                                                     3D Textures
                                                 </span>
-                                                <span className="px-2 py-1 rounded-full bg-slate-100/80 border border-slate-200/60 text-[9px] text-slate-600 font-bold">
+                                                <span className="px-2 py-1 rounded-full border border-slate-200/60 bg-slate-100/80 text-[9px] font-bold text-slate-600">
                                                     Frosted Glass
                                                 </span>
-                                                <span className="px-2 py-1 rounded-full bg-slate-100/80 border border-slate-200/60 text-[9px] text-slate-600 font-bold">
+                                                <span className="px-2 py-1 rounded-full border border-slate-200/60 bg-slate-100/80 text-[9px] font-bold text-slate-600">
                                                     Metallic
                                                 </span>
                                             </div>
