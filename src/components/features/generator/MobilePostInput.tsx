@@ -494,7 +494,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                     {/* Standard 2x2 Grid Platform Selection */}
                     <div className="grid grid-cols-2 gap-3 px-1 mt-2">
                         {(() => {
-                            const getPlatformDetails = (platform: Platform) => {
+                            const getPlatformDetails = (platform: Platform, isActive: boolean) => {
                                 switch (platform) {
                                     case Platform.Instagram: return {
                                         name: 'Instagram',
@@ -514,7 +514,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         name: 'LINE',
                                         tagline: 'Messages',
                                         sub: 'リピーター獲得',
-                                        icon: <LineIcon className="w-7 h-7" isActive={false} activeTextFill="#2b2b2f" />,
+                                        icon: <LineIcon className="w-7 h-7" isActive={isActive} activeTextFill="#06C755" textFill={isActive ? '#06C755' : '#ffffff'} />,
                                         color: 'from-green-500/10 to-emerald-500/10'
                                     };
                                     case Platform.GoogleMaps: return {
@@ -530,7 +530,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
                             return [Platform.Instagram, Platform.X, Platform.Line, Platform.GoogleMaps].map((p, idx) => {
                                 const isActive = platforms.includes(p);
-                                const details = getPlatformDetails(p);
+                                const details = getPlatformDetails(p, isActive);
                                 const bentoClass = 'h-[110px]';
 
                                 // Map brand colors
@@ -538,11 +538,6 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                     p === Platform.X ? '#111827' :
                                         p === Platform.Line ? '#06C755' :
                                             p === Platform.GoogleMaps ? '#4285F4' : '#2b2b2f';
-
-                                const subtleBrandBg = p === Platform.Instagram ? 'rgba(225,48,108,0.08)' :
-                                    p === Platform.X ? 'rgba(17,24,39,0.08)' :
-                                        p === Platform.Line ? 'rgba(6,199,85,0.08)' :
-                                            p === Platform.GoogleMaps ? 'rgba(66,133,244,0.08)' : 'rgba(43,43,47,0.08)';
 
                                 return (
                                         <div
@@ -558,7 +553,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         `}
                                         style={isActive ? {
                                             borderColor: brandColor,
-                                            backgroundColor: subtleBrandBg,
+                                            backgroundColor: brandColor,
                                         } : {}}
                                         >
                                         {/* Bento Card Content */}
@@ -569,7 +564,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                         transition-all duration-500 transform
                                                          ${isActive ? 'scale-110' : 'scale-100'}
                                                     `}
-                                                    style={{ color: brandColor }}
+                                                    style={{ color: isActive ? '#ffffff' : brandColor }}
                                                 >
                                                     {details.icon}
                                                 </div>
@@ -593,10 +588,10 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
                                             <div className="flex flex-col">
                                                 <div className="flex flex-col leading-tight">
-                                                    <h3 className={`font-black tracking-tighter text-xl transition-colors duration-500 text-[#2b2b2f] whitespace-nowrap`} style={{ fontFamily: 'Inter, sans-serif' }}>
+                                                    <h3 className={`font-black tracking-tighter text-xl transition-colors duration-500 whitespace-nowrap ${isActive ? 'text-white' : 'text-[#2b2b2f]'}`} style={{ fontFamily: 'Inter, sans-serif' }}>
                                                         {details.name}
                                                     </h3>
-                                                    <p className={`text-[11px] font-medium ${isActive ? 'text-[#2b2b2f]/60' : 'text-[#b0b0b0]'}`}>
+                                                    <p className={`text-[11px] font-medium ${isActive ? 'text-white/80' : 'text-[#b0b0b0]'}`}>
                                                         {details.sub}
                                                     </p>
                                                 </div>
@@ -623,7 +618,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                     <div className="flex-1 p-6 flex flex-col gap-4">
                                         <div className="flex items-center gap-3 px-1">
                                             <SparklesIcon className="w-4 h-4 text-slate-500/60" />
-                                            <span className="text-slate-500/70 text-[10px] font-bold tracking-[0.25em] uppercase">
+                                            <span className="text-[10px] font-bold tracking-[0.25em] uppercase text-slate-500/70">
                                                 Premium Tier Feature
                                             </span>
                                         </div>
@@ -649,17 +644,17 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         </div>
 
                                         <div className="space-y-2">
-                                            <p className="text-slate-700/90 text-[12px] font-medium leading-relaxed">
+                                            <p className="text-[12px] font-medium leading-relaxed text-slate-700/90">
                                                 迷ったらここから。高性能AIが最適な投稿文を一気に生成します。
                                             </p>
                                             <div className="flex flex-wrap gap-2 pt-1">
-                                                <span className="px-2 py-1 rounded-full bg-slate-100/80 border border-slate-200/60 text-[9px] text-slate-600 font-bold">
+                                                <span className="px-2 py-1 rounded-full border border-slate-200/60 bg-slate-100/80 text-[9px] font-bold text-slate-600">
                                                     3D Textures
                                                 </span>
-                                                <span className="px-2 py-1 rounded-full bg-slate-100/80 border border-slate-200/60 text-[9px] text-slate-600 font-bold">
+                                                <span className="px-2 py-1 rounded-full border border-slate-200/60 bg-slate-100/80 text-[9px] font-bold text-slate-600">
                                                     Frosted Glass
                                                 </span>
-                                                <span className="px-2 py-1 rounded-full bg-slate-100/80 border border-slate-200/60 text-[9px] text-slate-600 font-bold">
+                                                <span className="px-2 py-1 rounded-full border border-slate-200/60 bg-slate-100/80 text-[9px] font-bold text-slate-600">
                                                     Metallic
                                                 </span>
                                             </div>
@@ -735,7 +730,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         {/* Forward Step (To Results) - Matches Back Button Style */}
                                         {generatedResults.length > 0 && mobileStep !== 'result' && (
                                             <button
-                                                onClick={() => setMobileStep('result')}
+                                                onClick={() => setMobileStep(mobileStep === 'input' ? 'confirm' : 'result')}
                                                 className="w-12 h-12 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center shadow-sm active:scale-90 transition-all"
                                             >
                                                 <ChevronRightIcon className="w-6 h-6 text-[#2b2b2f]" />
@@ -956,7 +951,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                                             type="checkbox"
                                                                             checked={isDefaultAudienceEnabled}
                                                                             onChange={(e) => setIsDefaultAudienceEnabled(e.target.checked)}
-                                                                            className="peer appearance-none w-3.5 h-3.5 rounded border border-stone-300 checked:bg-[#1f29fc] checked:border-[#1f29fc] transition-all"
+                                                                            className="peer appearance-none w-3.5 h-3.5 rounded border border-stone-300 checked:bg-[#2b2b2f] checked:border-[#2b2b2f] transition-all"
                                                                         />
                                                                         <svg className="absolute w-2.5 h-2.5 text-white opacity-0 peer-checked:opacity-100 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="4">
                                                                             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
@@ -967,22 +962,22 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                             </div>
                                                             <span className="text-[9px] font-bold text-stone-400">※複数選択可</span>
                                                         </div>
-                                                        <div className="flex overflow-x-auto gap-2 pb-2 pt-2 -mx-2 px-3 no-scrollbar scrollbar-hide">
-                                                            {primaryAudienceList.map(target => (
-                                                                <button
-                                                                    key={target}
-                                                                    onClick={() => handleTargetAudienceToggle(target)}
-                                                                    className={`
-                                                                    flex-shrink-0 px-4 py-2 rounded-xl font-bold text-[11px] transition-all active:scale-95 border whitespace-nowrap
-                                                                    ${targetAudiences?.includes(target)
-                                                                            ? 'bg-[#2b2b2f] text-white border-[#2b2b2f] shadow-md'
-                                                                            : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300'
-                                                                        }
-                                                                `}
-                                                                >
-                                                                    {target}
-                                                                </button>
-                                                            ))}
+                                                <div className="flex overflow-x-auto gap-2 pb-2 pt-2 -mx-2 px-3 no-scrollbar scrollbar-hide">
+                                                    {primaryAudienceList.map(target => (
+                                                        <button
+                                                            key={target}
+                                                            onClick={() => handleTargetAudienceToggle(target)}
+                                                            className={`
+                                                            flex-shrink-0 px-4 py-2 rounded-xl font-bold text-[11px] transition-all active:scale-95 border whitespace-nowrap
+                                                            ${targetAudiences?.includes(target)
+                                                                    ? 'bg-[#2b2b2f] text-white border-[#2b2b2f] shadow-md'
+                                                                    : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300'
+                                                                }
+                                                        `}
+                                                        >
+                                                            {target}
+                                                        </button>
+                                                    ))}
 
                                                             {/* Show All Toggle or Secondary List */}
                                                             {secondaryAudienceList.length > 0 && (
@@ -995,20 +990,20 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                                             <span>＋ 他のターゲット</span>
                                                                         </button>
                                                                     ) : (
-                                                                        secondaryAudienceList.map(target => (
-                                                                            <button
-                                                                                key={target}
-                                                                                onClick={() => handleTargetAudienceToggle(target)}
-                                                                                className={`
-                                                                                flex-shrink-0 px-4 py-2 rounded-xl font-bold text-[11px] transition-all active:scale-95 border bg-white text-stone-500 border-stone-200 hover:border-stone-300 opacity-80 whitespace-nowrap
-                                                                            `}
-                                                                            >
-                                                                                {target}
-                                                                            </button>
-                                                                        ))
-                                                                    )}
-                                                                </>
-                                                            )}
+                                                                secondaryAudienceList.map(target => (
+                                                                    <button
+                                                                        key={target}
+                                                                        onClick={() => handleTargetAudienceToggle(target)}
+                                                                        className="
+                                                                            flex-shrink-0 px-4 py-2 rounded-xl font-bold text-[11px] transition-all active:scale-95 border bg-white text-stone-500 border-stone-200 hover:border-stone-300 opacity-80 whitespace-nowrap
+                                                                        "
+                                                                    >
+                                                                        {target}
+                                                                    </button>
+                                                                ))
+                                                                )}
+                                                            </>
+                                                        )}
                                                         </div>
                                                     </div>
                                                 )}
