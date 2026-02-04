@@ -42,7 +42,7 @@ export const LinePreview: React.FC<LinePreviewProps> = ({ text, storeProfile, on
                             {/* Triangle hook */}
                             <div className="absolute top-0 -left-[7px] w-0 h-0 border-t-[8px] border-t-white border-l-[8px] border-l-transparent text-left" />
 
-                            <div className="text-[16px] leading-relaxed font-medium w-[15em] max-w-full text-left">
+                            <div className="text-[15px] leading-relaxed font-medium w-[15em] max-w-full text-left">
                                 <AutoResizingTextarea
                                     value={text}
                                     onChange={(e) => onChange?.(e.target.value)}
