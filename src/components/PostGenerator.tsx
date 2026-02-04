@@ -162,7 +162,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
         </div>
 
         {/* App Shell Container */}
-        <div className="relative w-full h-[100dvh] sm:h-[90vh] sm:max-h-[900px] sm:w-[414px] shrink-0 bg-white sm:rounded-[54px] shadow-premium overflow-hidden border-0 sm:border-[12px] sm:border-white sm:ring-2 sm:ring-[var(--brand-primary)]/10 flex flex-col isolate z-10 transition-all duration-500">
+        <div className="relative w-full h-[100dvh] sm:h-[90vh] sm:max-h-[900px] sm:w-[414px] shrink-0 bg-white sm:rounded-[54px] shadow-premium overflow-hidden border-0 sm:border-[12px] sm:border-white sm:ring-2 sm:ring-[#2b2b2f]/20 flex flex-col isolate z-10 transition-all duration-500">
 
           {/* Mobile Content Area */}
           <div className="flex-1 w-full relative overflow-hidden bg-white">
