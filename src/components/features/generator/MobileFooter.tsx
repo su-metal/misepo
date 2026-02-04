@@ -18,35 +18,35 @@ interface MobileFooterProps {
 const CustomHome = ({ active }: { active: boolean }) => (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="transition-all duration-300">
         <path d="M3 10L12 3L21 10V20C21 20.5523 20.5523 21 20 21H15V14H9V21H4C3.44772 21 3 20.5523 3 20V10Z"
-            stroke={active ? "var(--brand-primary)" : "#64748B"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
-            fill={active ? "var(--brand-primary)" : "none"} fillOpacity={active ? 0.2 : 0} />
+            stroke={active ? "#2b2b2f" : "#64748B"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+            fill={active ? "#2b2b2f" : "none"} fillOpacity={active ? 0.2 : 0} />
     </svg>
 );
 
 const CustomHistory = ({ active }: { active: boolean }) => (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="transition-all duration-300">
         <path d="M3 12C3 16.9706 7.02944 21 12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C9.5 3 7.25 4.01 5.6 5.6"
-            stroke={active ? "var(--brand-primary)" : "#64748B"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M5.6 1.6V5.6H1.6" stroke={active ? "var(--brand-primary)" : "#64748B"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M12 7V12L15 15" stroke={active ? "var(--brand-primary)" : "#64748B"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+            stroke={active ? "#2b2b2f" : "#64748B"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M5.6 1.6V5.6H1.6" stroke={active ? "#2b2b2f" : "#64748B"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M12 7V12L15 15" stroke={active ? "#2b2b2f" : "#64748B"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
 );
 
 const CustomAvatar = ({ active }: { active: boolean }) => (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="transition-all duration-300">
-        <circle cx="12" cy="7" r="4" stroke={active ? "var(--brand-primary)" : "#64748B"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill={active ? "var(--brand-primary)" : "none"} fillOpacity={active ? 0.2 : 0} />
+        <circle cx="12" cy="7" r="4" stroke={active ? "#2b2b2f" : "#64748B"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill={active ? "#2b2b2f" : "none"} fillOpacity={active ? 0.2 : 0} />
         <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21"
-            stroke={active ? "var(--brand-primary)" : "#64748B"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+            stroke={active ? "#2b2b2f" : "#64748B"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
 );
 
 const CustomSettings = ({ active }: { active: boolean }) => (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="transition-all duration-300">
         <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.1a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.1a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"
-            stroke={active ? "var(--brand-primary)" : "#64748B"}
+            stroke={active ? "#2b2b2f" : "#64748B"}
             strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
         <circle cx="12" cy="12" r="3"
-            stroke={active ? "var(--brand-primary)" : "#64748B"}
+            stroke={active ? "#2b2b2f" : "#64748B"}
             strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
 );
@@ -126,7 +126,7 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
 
                 {/* Generate Label Tooltip */}
                 <div className={`absolute top-[-85px] left-1/2 -translate-x-1/2 z-[160] transition-all duration-300 ${isConfirmStep ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
-                    <div className="px-3 py-1.5 bg-[var(--brand-primary)] text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-full shadow-xl whitespace-nowrap flex items-center gap-1.5 animate-bounce border border-white/20">
+                    <div className="px-3 py-1.5 bg-[#2b2b2f] text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-full shadow-xl whitespace-nowrap flex items-center gap-1.5 animate-bounce border border-white/20">
                         <span>Tap to Generate</span>
                         <SparklesIcon className="w-3 h-3 text-white" />
                     </div>
@@ -140,8 +140,8 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
                         absolute -top-[36px] left-1/2 -translate-x-1/2 w-[68px] h-[68px] rounded-full flex items-center justify-center z-20 
                         transition-all duration-300 border-[4px]
                         ${isConfirmStep
-                            ? 'bg-gradient-to-br from-[var(--brand-highlight)] via-[#f3e336] to-[#f2e018] border-white text-black rotate-0 scale-110 shadow-[0_20px_45px_rgba(242,224,24,0.5)]'
-                            : 'bg-gradient-to-br from-[var(--brand-highlight)] via-[#f3e336] to-[#f2e018] border-white text-black rotate-180 scale-100 hover:scale-105 shadow-xl'
+                            ? 'bg-[#2b2b2f] border-white text-white rotate-0 scale-110 shadow-[0_20px_45px_rgba(0,0,0,0.2)]'
+                            : 'bg-[#2b2b2f] border-white text-white rotate-180 scale-100 hover:scale-105 shadow-xl'
                         }
                     `}
                     aria-label={isConfirmStep ? "Generate Post" : "New Post"}
@@ -151,14 +151,14 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
                             width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
                             className={`absolute transition-all duration-300 ease-out ${isConfirmStep ? 'opacity-0 scale-50 rotate-90' : 'opacity-100 scale-100 rotate-0'}`}
                         >
-                            <path d="M12 5V19M5 12H19" stroke="black" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                            <path d="M12 5V19M5 12H19" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
 
                         <div className={`absolute transition-all duration-300 ease-out ${isConfirmStep ? 'opacity-100 scale-100 rotate-0' : 'opacity-0 scale-50 -rotate-90'}`}>
                             {isGenerating ? (
-                                <div className="w-7 h-7 border-3 border-black/30 border-t-black rounded-full animate-spin" />
+                                <div className="w-7 h-7 border-3 border-white/30 border-t-white rounded-full animate-spin" />
                             ) : (
-                                <SparklesIcon className="w-7 h-7 text-black" />
+                                <SparklesIcon className="w-7 h-7 text-white" />
                             )}
                         </div>
                     </div>
@@ -175,7 +175,7 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
                             <CustomHome active={activeTab === 'home'} />
                             <span className={`
                                 text-[9px] font-black uppercase tracking-[0.1em] transition-all
-                                ${activeTab === 'home' ? 'text-[var(--brand-primary)]' : 'text-slate-500'}
+                                ${activeTab === 'home' ? 'text-[#2b2b2f]' : 'text-slate-500'}
                             `}>Home</span>
                         </button>
                         <button
@@ -185,7 +185,7 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
                             <CustomAvatar active={activeTab === 'learning'} />
                             <span className={`
                                 text-[9px] font-black uppercase tracking-[0.1em] transition-all
-                                ${activeTab === 'learning' ? 'text-[var(--brand-primary)]' : 'text-slate-500'}
+                                ${activeTab === 'learning' ? 'text-[#2b2b2f]' : 'text-slate-500'}
                             `}>分身</span>
                         </button>
                     </div>
@@ -202,7 +202,7 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
                             <CustomHistory active={activeTab === 'history'} />
                             <span className={`
                                 text-[9px] font-black uppercase tracking-[0.1em] transition-all
-                                ${activeTab === 'history' ? 'text-[var(--brand-primary)]' : 'text-slate-500'}
+                                ${activeTab === 'history' ? 'text-[#2b2b2f]' : 'text-slate-500'}
                             `}>History</span>
                         </button>
                         <button
@@ -212,7 +212,7 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
                             <CustomSettings active={activeTab === 'settings'} />
                             <span className={`
                                 text-[9px] font-black uppercase tracking-[0.1em] transition-all
-                                ${activeTab === 'settings' ? 'text-[var(--brand-primary)]' : 'text-slate-500'}
+                                ${activeTab === 'settings' ? 'text-[#2b2b2f]' : 'text-slate-500'}
                             `}>Setting</span>
                         </button>
                     </div>
