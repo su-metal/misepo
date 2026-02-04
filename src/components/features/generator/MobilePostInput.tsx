@@ -700,8 +700,22 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                         {!refiningKey && (
                             <div className="px-8 pb-4 flex items-center justify-between animate-in fade-in duration-300">
                                 <div className="flex items-center gap-4">
-                                    <button onClick={handleBackStep} className="w-12 h-12 rounded-full bg-white border border-[#E5E5E5] flex items-center justify-center shadow-sm active:scale-90 transition-all">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#111111" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
+                                    <button
+                                        onClick={handleBackStep}
+                                        className="w-12 h-12 rounded-full bg-white border border-[#E5E5E5] flex items-center justify-center shadow-sm active:scale-90 transition-all"
+                                    >
+                                        <svg
+                                            width="24"
+                                            height="24"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="#111111"
+                                            strokeWidth="2.5"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                        >
+                                            <path d="M15 18l-6-6 6-6" />
+                                        </svg>
                                     </button>
                                     <div className="flex flex-col">
                                         <h3 className="text-[17px] font-black text-[#2b2b2f] tracking-tight leading-none mb-1">
@@ -713,8 +727,11 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                     </div>
                                 </div>
                                 <div className="flex -space-x-2">
-                                    {platforms.map(p => (
-                                        <div key={p} className="w-10 h-10 rounded-full bg-white border-2 border-[#FAFAFA] flex items-center justify-center shadow-sm z-10">
+                                    {platforms.map((p) => (
+                                        <div
+                                            key={p}
+                                            className="w-10 h-10 rounded-full bg-white border-2 border-[#FAFAFA] flex items-center justify-center shadow-sm z-10"
+                                        >
                                             {getPlatformIcon(p, "w-5 h-5")}
                                         </div>
                                     </div>
