@@ -533,25 +533,40 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                 const details = getPlatformDetails(p);
                                 const bentoClass = 'h-[124px]';
 
+                                // Map brand colors
+                                const brandColor = p === Platform.Instagram ? '#E1306C' :
+                                    p === Platform.X ? '#111827' :
+                                        p === Platform.Line ? '#06C755' :
+                                            p === Platform.GoogleMaps ? '#4285F4' : '#2b2b2f';
+
+                                const brandBg = p === Platform.Instagram ? 'bg-pink-50/50' :
+                                    p === Platform.X ? 'bg-slate-50/50' :
+                                        p === Platform.Line ? 'bg-emerald-50/50' :
+                                            p === Platform.GoogleMaps ? 'bg-blue-50/50' : 'bg-white';
+
                                 return (
                                     <div
                                         key={p}
                                         onClick={() => onPlatformToggle(p)}
                                         className={`
-                                            relative rounded-[20px] overflow-hidden cursor-pointer border transition-all duration-500 group
+                                            relative rounded-[24px] overflow-hidden cursor-pointer border transition-all duration-500 group
                                             ${bentoClass}
                                              ${isActive
-                                                ? `bg-white scale-[0.98] animate-tactile-pop shadow-md`
+                                                ? `${brandBg} scale-[1.02] border-[2.5px]`
                                                 : `bg-white border-slate-100 shadow-sm hover:border-slate-300 active:scale-[0.98]`
                                             }
                                         `}
-                                        style={isActive ? { borderColor: p === Platform.Instagram ? '#E1306C' : p === Platform.X ? '#2b2b2f' : p === Platform.Line ? '#06C755' : p === Platform.GoogleMaps ? '#4285F4' : '#2b2b2f', borderWidth: '2px' } : {}}
+                                        style={isActive ? {
+                                            borderColor: brandColor,
+                                            boxShadow: `0 10px 30px -10px ${brandColor}40`
+                                        } : {}}
                                     >
                                         {/* Bento Card Content */}
                                         <div className="absolute inset-0 p-5 flex flex-col justify-between">
                                             <div className="flex justify-between items-start">
                                                 <div className={`
-                                                    transition-all duration-300
+                                                    transition-all duration-500 transform
+                                                     ${isActive ? 'scale-110' : 'scale-100'}
                                                      text-[#2b2b2f]
                                                 `}>
                                                     {details.icon}
@@ -562,9 +577,16 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                         e.stopPropagation();
                                                         handlePlatformSelect(p);
                                                     }}
-                                                    className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 active:scale-90 shadow-sm ${isActive ? 'bg-[#2b2b2f] text-white' : 'bg-slate-100 text-[#2b2b2f]'}`}
+                                                    className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-500 active:scale-90 shadow-sm ${isActive ? 'text-white' : 'bg-slate-100 text-[#2b2b2f]'}`}
+                                                    style={isActive ? { backgroundColor: brandColor } : {}}
                                                 >
-                                                    <ChevronRightIcon className={`w-5 h-5`} />
+                                                    {isActive ? (
+                                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="animate-in zoom-in-50 duration-300">
+                                                            <polyline points="20 6 9 17 4 12" />
+                                                        </svg>
+                                                    ) : (
+                                                        <ChevronRightIcon className={`w-5 h-5`} />
+                                                    )}
                                                 </div>
                                             </div>
 
@@ -573,7 +595,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                     <h3 className={`font-black tracking-tighter text-xl transition-colors duration-500 text-[#2b2b2f]`} style={{ fontFamily: 'Inter, sans-serif' }}>
                                                         {details.name}
                                                     </h3>
-                                                    <p className={`text-[11px] font-medium text-[#b0b0b0]`}>
+                                                    <p className={`text-[11px] font-medium ${isActive ? 'text-[#2b2b2f]/60' : 'text-[#b0b0b0]'}`}>
                                                         {details.sub}
                                                     </p>
                                                 </div>
