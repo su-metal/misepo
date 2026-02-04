@@ -64,6 +64,14 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
   const [mobileStep, setMobileStep] = React.useState<'platform' | 'input' | 'confirm' | 'result'>('platform');
   const [closeDrawerTrigger, setCloseDrawerTrigger] = React.useState(0);
   const [openDrawerTrigger, setOpenDrawerTrigger] = React.useState(0);
+  const [selectionTrigger, setSelectionTrigger] = React.useState(0);
+
+  // Track platform selection changes to trigger footer reaction
+  React.useEffect(() => {
+    if (flow.platforms.length > 0) {
+      setSelectionTrigger(prev => prev + 1);
+    }
+  }, [flow.platforms]);
   const [resetTrigger, setResetTrigger] = React.useState(0);
   const [isMobileResultOpen, setIsMobileResultOpen] = React.useState(false);
   const [showOnboarding, setShowOnboarding] = React.useState(false);
@@ -268,10 +276,15 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
               }}
               onPlusClick={mobileStep === 'confirm' ? handleGenerate : () => {
                 setMobileActiveTab('home');
-                flow.handleResetAll(true);
+                // Ensure at least one platform is selected to avoid dead end
+                if (flow.platforms.length === 0) {
+                  flow.handleSetActivePlatform(Platform.Instagram);
+                }
                 setOpenDrawerTrigger(prev => prev + 1);
               }}
               onGenerate={handleGenerate}
+              isPlatformSelected={flow.platforms.length > 0}
+              selectionTrigger={selectionTrigger}
             />
           )}
 
