@@ -82,7 +82,7 @@ export interface PostInputFormProps {
     onCopy?: (text: string) => void;
     onMobileResultOpen?: (isOpen: boolean) => void;
     onStepChange?: (step: 'platform' | 'input' | 'confirm' | 'result') => void;
-    restoreId?: string;
+    restoreTrigger?: number;
     onOpenOnboarding?: () => void;
     onOpenSettings?: () => void;
     targetAudiences?: string[];

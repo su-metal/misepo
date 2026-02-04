@@ -35,6 +35,7 @@ function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [activeHistoryItem, setActiveHistoryItem] = useState<GeneratedPost | null>(null);
+  const [restoreTrigger, setRestoreTrigger] = useState(0);
   const [showAccountSettings, setShowAccountSettings] = useState(false);
   const [initDone, setInitDone] = useState(false);
 
@@ -425,6 +426,7 @@ function App() {
         history={history}
         onSelect={(post) => {
           setActiveHistoryItem(post);
+          setRestoreTrigger(Date.now()); // Unique trigger for each selection
           setIsSidebarOpen(false);
         }}
         onDelete={handleDeleteHistory}
@@ -515,6 +517,7 @@ function App() {
               onLogout={logout}
               plan={plan}
               refreshPlan={refreshPlan}
+              restoreTrigger={restoreTrigger}
             />
           )}
         </main>
