@@ -379,7 +379,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     const secondaryAudienceList = TARGET_AUDIENCES.filter(t => !primaryAudienceList.includes(t));
 
     return (
-        <div className="flex flex-col h-full relative overflow-hidden font-inter bg-white">
+        <div className="flex flex-col h-full relative overflow-hidden font-inter bg-white" style={{ backgroundColor: 'white' }}>
 
             {/* Step 1: Home (Platform Grid) */}
             <div className={`flex flex-col h-full overflow-hidden relative transition-all duration-500 ${isStepDrawerOpen ? 'blur-md scale-[0.98] opacity-60' : 'opacity-100'}`}>
@@ -471,7 +471,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                         </div>
 
                         {/* Simultaneous Generation Toggle */}
-                        <div className="flex items-center gap-3 bg-white px-4 py-2 rounded-2xl border border-slate-100 shadow-sm active:scale-95 transition-all cursor-pointer select-none"
+                        <div className="flex items-center gap-3 bg-[#edeff1] px-4 py-2 rounded-2xl border border-slate-100 shadow-sm active:scale-95 transition-all cursor-pointer select-none"
                             onClick={onToggleMultiGen}>
                             <div className="flex flex-col items-end">
                                 <span className={`text-[9px] font-black tracking-widest uppercase leading-none mb-0.5 ${isMultiGen ? 'text-[#2b2b2f]' : 'text-[#A0A0A0]'}`}>
@@ -539,10 +539,10 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         p === Platform.Line ? '#06C755' :
                                             p === Platform.GoogleMaps ? '#4285F4' : '#2b2b2f';
 
-                                const brandBg = p === Platform.Instagram ? 'bg-pink-50/50' :
-                                    p === Platform.X ? 'bg-slate-50/50' :
-                                        p === Platform.Line ? 'bg-emerald-50/50' :
-                                            p === Platform.GoogleMaps ? 'bg-blue-50/50' : 'bg-white';
+                                const brandBg = p === Platform.Instagram ? 'bg-pink-100' :
+                                    p === Platform.X ? 'bg-slate-100' :
+                                        p === Platform.Line ? 'bg-emerald-100' :
+                                            p === Platform.GoogleMaps ? 'bg-blue-100' : 'bg-white';
 
                                 return (
                                     <div
