@@ -229,7 +229,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
             ) : (
                 <div className={`space-y-8 animate-in fade-in duration-700 ${results.length === 0 ? 'hidden md:block' : ''}`}>
                     {/* Main Results Container - Premium Layout */}
-                    <div className="text-[#2b2b2f] flex flex-col min-h-[600px] overflow-visible group/main transition-all duration-700 w-full max-w-6xl mx-auto bg-white rounded-[54px] border border-slate-100 shadow-premium relative overflow-hidden">
+                    <div className="text-[#2b2b2f] flex flex-col min-h-[600px] group/main transition-all duration-700 w-full max-w-6xl mx-auto bg-white md:rounded-[54px] rounded-none md:border border-slate-100 md:shadow-premium relative overflow-hidden">
 
                         {/* Background Decor in Container */}
                         <div className="absolute -top-24 -right-24 w-64 h-64 bg-[#80CAFF]/5 rounded-full blur-[60px] pointer-events-none" />

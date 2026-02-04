@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { usePathname } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
-import { CloseIcon, SendIcon, StarIcon, MessageCircleIcon } from './Icons';
+import { CloseIcon, SendIcon, StarIcon, MessageSquareIcon, ChevronDownIcon } from './Icons';
 
 
 export const Feedback = ({ mode = 'floating' }: { mode?: 'floating' | 'sidebar' }) => {
@@ -90,11 +90,17 @@ export const Feedback = ({ mode = 'floating' }: { mode?: 'floating' | 'sidebar' 
             {mode === 'sidebar' && (
                 <button
                     onClick={() => setIsOpen(true)}
-                    className="flex flex-col items-center gap-1.5 p-3 rounded-2xl transition-all group w-full h-full bg-white shadow-sm ring-1 ring-slate-100 hover:shadow-md hover:bg-slate-50 active:scale-95"
+                    className="w-full p-4 rounded-2xl border border-slate-200 bg-white/90 shadow-lg shadow-slate-900/5 flex items-center gap-4 transition-all duration-300 hover:bg-slate-50 hover:border-slate-300 active:scale-[0.98] group"
                     title="フィードバック"
                 >
-                    <MessageCircleIcon className="w-4 h-4 text-slate-400 group-hover:text-[#7F5AF0] group-hover:scale-110 transition-all" />
-                    <span className="text-[8px] font-black text-slate-400 tracking-widest uppercase group-hover:text-slate-600">Feedback</span>
+                    <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-500 flex items-center justify-center shrink-0 group-hover:bg-slate-200 group-hover:text-[#2b2b2f] transition-colors">
+                        <MessageSquareIcon className="w-5 h-5" />
+                    </div>
+                    <div className="text-left flex-1 min-w-0">
+                        <p className="text-[15px] font-black text-[#2b2b2f] tracking-tight">フィードバック</p>
+                        <p className="text-[12px] font-bold text-slate-400 truncate tracking-wide">アプリへの改善依頼・感想はこちら</p>
+                    </div>
+                    <ChevronDownIcon className="w-4 h-4 text-slate-300 -rotate-90 group-hover:text-[#2b2b2f] transition-colors" />
                 </button>
             )}
             {/* Floating button hidden as per user request */}
@@ -208,7 +214,7 @@ export const Feedback = ({ mode = 'floating' }: { mode?: 'floating' | 'sidebar' 
                                         </div>
 
                                         {/* 2. Content Layer */}
-                                        <div className="relative z-10 w-full h-full bg-[#111111] text-white rounded-[19px] py-5 flex items-center justify-center gap-3 shadow-xl shadow-slate-200 group-hover:shadow-2xl">
+                                        <div className="relative z-10 w-full h-full bg-[#2b2b2f] text-white rounded-[19px] py-5 flex items-center justify-center gap-3 shadow-xl shadow-slate-200 group-hover:shadow-2xl">
                                             {isSubmitting ? (
                                                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                                             ) : (

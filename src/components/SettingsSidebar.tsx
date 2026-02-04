@@ -69,21 +69,21 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
     }) => (
         <button
             onClick={() => { onClick(); toggleOpen(); }}
-        className={`
+            className={`
         w-full p-4 rounded-2xl border border-slate-200 bg-white/90 shadow-lg shadow-slate-900/5 flex items-center gap-4 transition-all duration-300
-        hover:bg-indigo-50/50 hover:border-indigo-100/50 active:scale-[0.98]
-        ${variant === "lavender" ? "bg-indigo-50/60 border-indigo-100 shadow-indigo-100/30" : ""}
-        ${variant === "stone" ? "bg-stone-50 border-stone-200 shadow-stone-400/10" : ""}
+        hover:bg-slate-50 hover:border-slate-300 active:scale-[0.98]
+        ${variant === "lavender" ? "bg-slate-50 border-slate-200" : ""}
+        ${variant === "stone" ? "bg-slate-50 border-slate-200" : ""}
       `}
         >
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${variant === 'lavender' ? 'bg-indigo-100 text-indigo-600' : 'bg-stone-100 text-stone-500'}`}>
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${variant === 'lavender' ? 'bg-slate-100 text-[#2b2b2f]' : 'bg-slate-100 text-slate-500'}`}>
                 <Icon className="w-5 h-5" />
             </div>
             <div className="text-left flex-1 min-w-0">
-                <p className="text-sm font-bold text-stone-800 tracking-tight">{label}</p>
-                {subLabel && <p className="text-[10px] font-medium text-stone-400 truncate tracking-wide">{subLabel}</p>}
+                <p className="text-[15px] font-bold text-[#2b2b2f] tracking-tight">{label}</p>
+                {subLabel && <p className="text-[12px] font-medium text-slate-400 truncate tracking-wide">{subLabel}</p>}
             </div>
-            <ChevronDownIcon className="w-4 h-4 text-stone-300 -rotate-90 group-hover:text-indigo-300" />
+            <ChevronDownIcon className="w-4 h-4 text-slate-300 -rotate-90 group-hover:text-[#2b2b2f]" />
         </button>
     );
 
@@ -98,17 +98,17 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
             )}
 
             <div
-                className={`fixed top-0 right-0 h-full bg-stone-50 w-[85vw] sm:w-[400px] md:w-[440px] transform transition-all duration-500 cubic-bezier(0.2, 0.8, 0.2, 1) z-[9999] flex flex-col overflow-hidden ${isOpen ? 'translate-x-0 shadow-2xl' : 'translate-x-full shadow-none'}`}
+                className={`fixed top-0 right-0 h-full bg-slate-50 w-[85vw] sm:w-[400px] md:w-[440px] transform transition-all duration-500 cubic-bezier(0.2, 0.8, 0.2, 1) z-[9999] flex flex-col overflow-hidden ${isOpen ? 'translate-x-0 shadow-2xl' : 'translate-x-full shadow-none'}`}
             >
                 {/* Header */}
-                <div className="p-6 md:p-8 flex items-center justify-between border-b border-stone-100 bg-white">
+                <div className="p-6 md:p-8 flex items-center justify-between border-b border-slate-100 bg-white">
                     <div>
-                        <h2 className="font-black text-stone-900 text-2xl tracking-tight">Settings</h2>
-                        <p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest mt-0.5">Application Settings</p>
+                        <h2 className="font-black text-[#2b2b2f] text-2xl tracking-tight">Settings</h2>
+                        <p className="text-[12px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Application Settings</p>
                     </div>
                     <button
                         onClick={toggleOpen}
-                        className="w-10 h-10 flex items-center justify-center rounded-xl transition-all active:scale-90 bg-stone-50 text-stone-400 hover:bg-stone-100 hover:text-stone-600"
+                        className="w-10 h-10 flex items-center justify-center rounded-xl transition-all active:scale-90 bg-slate-50 text-slate-400 hover:bg-slate-100 hover:text-[#2b2b2f]"
                     >
                         <CloseIcon className="w-5 h-5" />
                     </button>
@@ -121,34 +121,33 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
                         <>
                             {/* Profile Section */}
                             <section className="space-y-4">
-                                <span className="px-1 text-[10px] font-black uppercase tracking-[.2em] text-stone-400">Profile & Plan</span>
+                                <span className="px-1 text-[12px] font-black uppercase tracking-[.2em] text-slate-400">Profile & Plan</span>
 
                                 { /* Upgrade Promotion Card */}
                                 {plan?.plan === 'trial' && (
-                                    <div className="bg-gradient-mesh rounded-[2.5rem] p-7 text-white shadow-2xl shadow-[var(--brand-primary)]/10 relative overflow-hidden group border border-[var(--brand-primary)]/10">
+                                    <div className="bg-white rounded-[2.5rem] p-7 text-[#2b2b2f] shadow-xl border border-slate-100 relative overflow-hidden group">
                                         {/* Decorative backgrounds */}
-                                        <div className="absolute -top-10 -right-10 w-40 h-40 bg-[var(--brand-primary)]/10 rounded-full blur-3xl group-hover:scale-125 transition-transform duration-700 pointer-events-none" />
-                                        <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-purple-500/20 rounded-full blur-2xl pointer-events-none" />
+                                        <div className="absolute -top-10 -right-10 w-40 h-40 bg-gradient-to-br from-[#80CAFF]/5 via-[#C084FC]/5 to-[#F87171]/5 rounded-full blur-3xl group-hover:scale-125 transition-transform duration-700 pointer-events-none" />
 
                                         <div className="relative z-10">
                                             <div className="flex items-center gap-2 mb-4">
-                                                <div className="p-1.5 rounded-lg bg-white/20 backdrop-blur-md">
-                                                    <SparklesIcon className="w-4 h-4 text-accent" />
+                                                <div className="p-1.5 rounded-lg bg-slate-50 text-[#2b2b2f]">
+                                                    <SparklesIcon className="w-4 h-4" />
                                                 </div>
-                                                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-black/80">Premium Access</span>
+                                                <span className="text-[12px] font-black uppercase tracking-[0.2em] text-[#2b2b2f]">Premium Access</span>
                                             </div>
 
-                                            <h3 className="text-xl font-black text-black/80 leading-tight mb-3 tracking-tighter">
+                                            <h3 className="text-xl font-black text-[#2b2b2f] leading-tight mb-3 tracking-tighter">
                                                 上位プランで<br />生成枠を拡大
                                             </h3>
 
-                                            <p className="text-[11px] font-bold text-black/80 mb-6 leading-relaxed">
+                                            <p className="text-[12px] font-bold text-slate-500 mb-6 leading-relaxed">
                                                 生成回数の上限を大幅に増やして、<br />集客をさらに加速させましょう。
                                             </p>
 
                                             <button
                                                 onClick={() => { router.push('/start?upgrade=true'); toggleOpen(); }}
-                                                className="w-full py-4 bg-white text-[var(--brand-primary)] rounded-[1.25rem] font-black text-xs uppercase tracking-[0.15em] hover:bg-[var(--brand-primary)] hover:text-white transition-all active:scale-95 shadow-xl shadow-black/10 flex items-center justify-center gap-2"
+                                                className="w-full py-4 bg-[#2b2b2f] text-white rounded-[1.25rem] font-black text-xs uppercase tracking-[0.15em] hover:bg-black transition-all active:scale-95 shadow-lg shadow-black/10 flex items-center justify-center gap-2"
                                             >
                                                 Subscribe to Pro
                                                 <ChevronDownIcon className="w-4 h-4 -rotate-90" />
@@ -159,23 +158,23 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
 
                                 <button
                                     onClick={() => { onOpenStoreProfile(); toggleOpen(); }}
-                                    className="group w-full p-1 bg-white/90 border border-slate-200 rounded-[2rem] shadow-lg shadow-slate-900/5 hover:shadow-xl hover:border-indigo-100 transition-all duration-300 text-left"
+                                    className="group w-full p-1 bg-white/90 border border-slate-200 rounded-[2rem] shadow-lg shadow-slate-900/5 hover:shadow-xl hover:border-slate-300 transition-all duration-300 text-left"
                                 >
                                     <div className="p-5 flex items-center gap-4">
-                                        <div className="w-16 h-16 rounded-2xl bg-[var(--brand-primary)] flex items-center justify-center text-2xl font-black text-white shadow-lg shadow-indigo-100">
+                                        <div className="w-16 h-16 rounded-2xl bg-[#2b2b2f] flex items-center justify-center text-2xl font-black text-white shadow-lg shadow-black/10">
                                             {(storeProfile?.name?.[0] || 'U').toUpperCase()}
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <h3 className="font-bold text-stone-900 text-lg tracking-tight truncate">{storeProfile?.name || 'Store Name'}</h3>
+                                            <h3 className="font-bold text-[#2b2b2f] text-lg tracking-tight truncate">{storeProfile?.name || 'Store Name'}</h3>
                                             <div className="flex flex-wrap items-center gap-2 mt-1">
-                                                <span className="px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-600 text-[9px] font-bold uppercase tracking-wider border border-indigo-100/50">
+                                                <span className="px-2 py-0.5 rounded-full bg-slate-100 text-[#2b2b2f] text-[10px] font-bold uppercase tracking-wider border border-slate-200/50">
                                                     {plan?.plan === 'entry' ? 'Entry Plan' :
                                                         plan?.plan === 'standard' ? 'Standard Plan' :
                                                             plan?.plan === 'professional' ? 'Professional Plan' :
                                                                 plan?.plan === 'trial' ? 'Trial Plan' :
                                                                     'Free Plan'}
                                                 </span>
-                                                <span className="text-[10px] font-medium text-stone-400 group-hover:text-indigo-400 transition-colors">Edit Store Profile</span>
+                                                <span className="text-[12px] font-medium text-slate-400 group-hover:text-[#2b2b2f] transition-colors font-bold">Edit Store Profile</span>
                                             </div>
                                         </div>
                                     </div>
@@ -184,7 +183,7 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
 
                             {/* Menu Grid */}
                             <section className="space-y-4">
-                                <span className="px-1 text-[10px] font-black uppercase tracking-[.2em] text-stone-400">Preferences</span>
+                                <span className="px-1 text-[12px] font-black uppercase tracking-[.2em] text-slate-400">Preferences</span>
 
                                 <div className="space-y-3">
                                     <MenuItem
@@ -201,13 +200,7 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
                                     />
 
                                     <div className="pt-2">
-                                        <div className="flex items-center gap-2 px-1 mb-4">
-                                            <MessageSquareIcon className="w-4 h-4 text-stone-400" />
-                                            <span className="text-[10px] font-black uppercase tracking-[.2em] text-stone-400">Feedback</span>
-                                        </div>
-                                        <div className="bg-white/90 rounded-2xl p-4 border border-slate-200 shadow-lg shadow-slate-900/5">
-                                            <Feedback mode="sidebar" />
-                                        </div>
+                                        <Feedback mode="sidebar" />
                                     </div>
                                 </div>
                             </section>
@@ -215,16 +208,16 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
                         </>
                     ) : (
                         <div className="flex flex-col items-center justify-center py-12 text-center">
-                            <div className="w-20 h-20 bg-white border border-stone-100 rounded-[2.5rem] flex items-center justify-center mb-6 shadow-sm">
-                                <UserCircleIcon className="w-10 h-10 text-stone-200" />
+                            <div className="w-20 h-20 bg-white border border-slate-100 rounded-[2.5rem] flex items-center justify-center mb-6 shadow-sm">
+                                <UserCircleIcon className="w-10 h-10 text-slate-200" />
                             </div>
-                            <h3 className="font-bold text-stone-900 text-xl mb-2">ログインが必要です</h3>
-                            <p className="text-xs font-medium text-stone-400 mb-8 max-w-[200px]">
+                            <h3 className="font-bold text-[#2b2b2f] text-xl mb-2">ログインが必要です</h3>
+                            <p className="text-[12px] font-bold text-slate-400 mb-8 max-w-[200px] leading-relaxed">
                                 設定を変更するにはログイン、または新規登録を行ってください。
                             </p>
                             <button
                                 onClick={() => { onOpenLogin(); toggleOpen(); }}
-                                className="w-full py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-2xl shadow-lg shadow-indigo-100 font-bold uppercase tracking-widest hover:opacity-90 active:scale-[0.98] transition-all"
+                                className="w-full py-5 bg-[#2b2b2f] text-white rounded-2xl shadow-xl shadow-black/5 font-black uppercase tracking-widest hover:bg-black active:scale-[0.98] transition-all"
                             >
                                 Login / Register
                             </button>
@@ -233,13 +226,13 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
                 </div>
 
                 {/* Footer: Legal & Logic */}
-                <div className="p-8 border-t border-stone-100 bg-white shadow-[0_-10px_30px_rgba(0,0,0,0.02)] relative z-20">
+                <div className="p-8 border-t border-slate-100 bg-white shadow-[0_-10px_30px_rgba(0,0,0,0.02)] relative z-20">
                     {/* Sign Out Button - Sticky in Footer */}
                     {isLoggedIn && (
                         <div className="mb-8">
                             <button
                                 onClick={() => { onLogout(); toggleOpen(); }}
-                                className="w-full py-4 rounded-2xl bg-white/90 text-stone-400 font-black text-[10px] uppercase tracking-[0.2em] hover:bg-rose-50 hover:text-rose-500 transition-all duration-300 border border-slate-200 shadow-lg shadow-slate-900/10 flex items-center justify-center gap-3"
+                                className="w-full py-4 rounded-2xl bg-white/90 text-slate-400 font-black text-[11px] uppercase tracking-[0.2em] hover:bg-rose-50 hover:text-rose-500 transition-all duration-300 border border-slate-200 shadow-lg shadow-slate-900/10 flex items-center justify-center gap-3"
                             >
                                 <LogOutIcon className="w-4 h-4" />
                                 Sign Out
@@ -248,11 +241,11 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
                     )}
 
                     <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 mb-6">
-                        <a href="/terms" className="text-[10px] font-bold text-stone-400 hover:text-indigo-500 transition-colors uppercase tracking-widest">Terms</a>
-                        <a href="/privacy" className="text-[10px] font-bold text-stone-400 hover:text-indigo-500 transition-colors uppercase tracking-widest">Privacy</a>
-                        <a href="/commercial-law" className="text-[10px] font-bold text-stone-400 hover:text-indigo-500 transition-colors uppercase tracking-widest">Legal Notice</a>
+                        <a href="/terms" className="text-[11px] font-bold text-slate-400 hover:text-[#2b2b2f] transition-colors uppercase tracking-widest">Terms</a>
+                        <a href="/privacy" className="text-[11px] font-bold text-slate-400 hover:text-[#2b2b2f] transition-colors uppercase tracking-widest">Privacy</a>
+                        <a href="/commercial-law" className="text-[11px] font-bold text-slate-400 hover:text-[#2b2b2f] transition-colors uppercase tracking-widest">Legal Notice</a>
                     </div>
-                    <p className="text-[9px] font-bold text-stone-300 text-center uppercase tracking-[0.4em]">© 2026 {UI.name}</p>
+                    <p className="text-[10px] font-bold text-slate-300 text-center uppercase tracking-[0.4em]">© 2026 {UI.name}</p>
                 </div>
             </div>
         </>
