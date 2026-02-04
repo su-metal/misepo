@@ -619,18 +619,18 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             <div className="relative rounded-[24px] overflow-visible bg-gradient-to-br from-[#f3f9ff] via-[#faf5ff] to-[#fff0f3] shadow-md border-2 border-[#d0e0f0]">
 
                                 {/* Left Notch (Trapezoid Cutout) */}
-                                <div className="absolute left-[-3px] top-1/2 -translate-y-1/2 w-[14px] h-[24px] pointer-events-none z-20">
-                                    <svg width="14" height="24" viewBox="0 0 14 24" fill="none" className="absolute left-0 top-0">
-                                        <path d="M0 0 L10 4 L10 20 L0 24 Z" fill="white" />
-                                        <path d="M-1 -1 L10 4 L10 20 L-1 25" stroke="#d0e0f0" strokeWidth="2" strokeLinejoin="round" fill="none" />
+                                <div className="absolute left-[-3px] top-1/2 -translate-y-1/2 w-[18px] h-[24px] pointer-events-none z-20">
+                                    <svg width="18" height="24" viewBox="0 0 18 24" fill="none" className="absolute left-0 top-0">
+                                        <path d="M0 0 L14 4 L14 20 L0 24 Z" fill="white" />
+                                        <path d="M-1 -1 L14 4 L14 20 L-1 25" stroke="#d0e0f0" strokeWidth="2" strokeLinejoin="round" fill="none" />
                                     </svg>
                                 </div>
 
                                 {/* Right Notch (Trapezoid Cutout) */}
-                                <div className="absolute right-[-3px] top-1/2 -translate-y-1/2 w-[14px] h-[24px] pointer-events-none z-20">
-                                    <svg width="14" height="24" viewBox="0 0 14 24" fill="none" className="absolute left-0 top-0">
-                                        <path d="M14 0 L4 4 L4 20 L14 24 Z" fill="white" />
-                                        <path d="M15 -1 L4 4 L4 20 L15 25" stroke="#d0e0f0" strokeWidth="2" strokeLinejoin="round" fill="none" />
+                                <div className="absolute right-[-3px] top-1/2 -translate-y-1/2 w-[18px] h-[24px] pointer-events-none z-20">
+                                    <svg width="18" height="24" viewBox="0 0 18 24" fill="none" className="absolute left-0 top-0">
+                                        <path d="M18 0 L4 4 L4 20 L18 24 Z" fill="white" />
+                                        <path d="M19 -1 L4 4 L4 20 L19 25" stroke="#d0e0f0" strokeWidth="2" strokeLinejoin="round" fill="none" />
                                     </svg>
                                 </div>
 
@@ -638,7 +638,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                 <SparklesIcon className="absolute -bottom-6 -right-6 w-32 h-32 text-[#2b2b2f]/[0.03] -rotate-12 pointer-events-none" />
 
                                 {/* Content Container */}
-                                <div className="relative px-5 py-4 flex items-center justify-between">
+                                <div className="relative px-8 py-4 flex items-center justify-between">
 
                                     {/* Left Content */}
                                     <div className="flex flex-col gap-3 relative z-10 py-1">
@@ -687,7 +687,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                 </div>
 
                                 {/* Ticket Perforation Line (Visual Only) */}
-                                <div className={`absolute top-[8%] bottom-[8%] right-[25%] w-px border-r-2 border-dotted ${!isGoogleMaps ? 'border-slate-200' : 'border-slate-100'} pointer-events-none`} />
+                                <div className={`absolute top-[8%] bottom-[8%] right-[30%] w-px border-r-2 border-dotted ${!isGoogleMaps ? 'border-slate-200' : 'border-slate-100'} pointer-events-none`} />
 
                             </div>
                         </div>
