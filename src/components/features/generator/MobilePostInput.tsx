@@ -616,33 +616,33 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             `}
                         >
                             {/* 1. Gradient Border Wrapper (No Glow, Clean Cut) */}
-                            <div className="relative p-[1.5px] rounded-[32px] bg-gradient-to-r from-[#80CAFF] via-[#C084FC] to-[#F87171] bg-[length:200%_200%] animate-gradient-flow shadow-sm">
+                            <div className="relative p-[3px] rounded-[32px] bg-gradient-to-r from-[#80CAFF] via-[#C084FC] to-[#F87171] bg-[length:200%_200%] animate-gradient-flow shadow-sm">
 
-                                {/* 2. Main Card Background */}
-                                <div className="relative bg-white rounded-[30.5px] h-full overflow-hidden">
+                                {/* 2. Main Card Background (Pastel Mesh) */}
+                                <div className="relative rounded-[30.5px] h-full overflow-hidden bg-gradient-to-br from-[#f3f9ff] via-[#faf5ff] to-[#fff0f3]">
 
-                                    {/* Iridescent Sheen Effect (Subtle Top Highlight) */}
-                                    <div className="absolute inset-0 bg-gradient-to-br from-white via-slate-50 to-slate-100 opacity-90" />
-                                    <div className="absolute -top-[100px] -left-[100px] w-[200px] h-[200px] bg-gradient-to-br from-[#80CAFF]/20 to-transparent rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                                    {/* Watermark Texture */}
+                                    <SparklesIcon className="absolute -bottom-6 -right-6 w-32 h-32 text-[#2b2b2f]/[0.03] -rotate-12 pointer-events-none" />
 
-                                    <div className="relative rounded-[28px] px-5 py-5 flex items-center justify-between">
+                                    <div className="relative rounded-[28px] px-5 py-4 flex items-center justify-between">
 
                                         {/* Left Content */}
                                         <div className="flex flex-col gap-3 relative z-10 py-1">
                                             {/* Badge */}
-                                            <div className="self-start inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#2b2b2f] text-white shadow-md">
+                                            <div className="self-start inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#2b2b2f] text-white shadow-sm ring-1 ring-white/50">
                                                 <SparklesIcon className="w-2.5 h-2.5 text-[#C084FC]" />
                                                 <span className="text-[9px] font-black uppercase tracking-[0.15em] leading-none pt-[1px]">
-                                                    {isGoogleMaps ? 'Not Available' : 'Special Feature'}
+                                                    {isGoogleMaps ? 'NOT AVAILABLE' : 'SPECIAL'}
                                                 </span>
                                             </div>
 
-                                            <div className="space-y-1.5">
-                                                <h4 className="text-xl font-black text-[#2b2b2f] tracking-tight leading-none bg-clip-text text-transparent bg-gradient-to-r from-[#2b2b2f] to-[#666666]">
+                                            <div className="space-y-1 mt-1">
+                                                <h4 className="text-[22px] font-black tracking-tight leading-none text-[#2b2b2f]">
                                                     AIおまかせ生成
                                                 </h4>
-                                                <p className="text-[10px] text-[#A0A0A0] font-bold leading-relaxed tracking-wide">
-                                                    {isGoogleMaps ? 'Googleマップでは利用できません' : '迷ったらここから。プロ級の投稿を1タップで。'}
+                                                <p className="text-[11px] text-slate-500 font-bold leading-relaxed tracking-wide">
+                                                    迷ったらここから。<br />
+                                                    プロ級の投稿を1タップで。
                                                 </p>
                                             </div>
                                         </div>
@@ -650,18 +650,23 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         {/* Right Action Button */}
                                         <div className="relative z-10 flex-shrink-0 ml-4">
                                             <div className={`
-                                                w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-all duration-500
+                                                w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-transform duration-500
                                                 ${isOmakaseLoading
                                                     ? 'bg-white scale-90'
                                                     : (!isGoogleMaps
-                                                        ? 'bg-gradient-to-br from-[#2b2b2f] to-[#4b4b55] text-white group-hover:scale-110 group-active:scale-95 group-hover:shadow-xl group-hover:shadow-purple-500/20'
+                                                        ? 'bg-gradient-to-br from-[#2b2b2f] to-[#555] group-hover:scale-110 group-active:scale-95'
                                                         : 'bg-slate-200 shadow-none')
                                                 }
                                             `}>
+                                                {/* Button Inner Gradient Ring */}
+                                                {!isGoogleMaps && !isOmakaseLoading && (
+                                                    <div className="absolute inset-[2px] rounded-full bg-gradient-to-br from-white/20 to-transparent pointer-events-none" />
+                                                )}
+
                                                 {isOmakaseLoading ? (
-                                                    <div className="w-5 h-5 border-2 border-[#C084FC] border-t-transparent rounded-full animate-spin" />
+                                                    <div className="w-6 h-6 border-[2.5px] border-[#C084FC] border-t-transparent rounded-full animate-spin" />
                                                 ) : (
-                                                    <ChevronRightIcon className="w-5 h-5" />
+                                                    <ChevronRightIcon className="w-6 h-6 text-white" />
                                                 )}
                                             </div>
                                         </div>
