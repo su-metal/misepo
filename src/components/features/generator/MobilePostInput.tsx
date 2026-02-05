@@ -223,6 +223,14 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
         }
     }, [mobileStep, targetAudiences, onTargetAudiencesChange]);
 
+    // Ensure '全般' stays exclusive; remove it when other audiences are already selected
+    React.useEffect(() => {
+        if (targetAudiences && targetAudiences.length > 1 && targetAudiences.includes('全般')) {
+            const filtered = targetAudiences.filter(t => t !== '全般');
+            onTargetAudiencesChange(filtered);
+        }
+    }, [targetAudiences, onTargetAudiencesChange]);
+
     // Reset target audiences to plain state for Google Maps
     React.useEffect(() => {
         if (mobileStep === 'confirm' && isGoogleMaps && targetAudiences && targetAudiences.length > 0) {
