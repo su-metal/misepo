@@ -343,7 +343,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
         // Brief delay for "Thinking" feel
         setTimeout(() => {
             setIsOmakaseLoading(false);
-            setMobileStep('confirm');
+            setMobileStep('input');
             setIsStepDrawerOpen(true);
             // Always reset and pre-fill with a magic prompt for Omakase Mode
             onInputTextChange("✨ AIおまかせ生成：今日のおすすめやお店の雰囲気に合わせて、魅力的な文章を考えて！");
