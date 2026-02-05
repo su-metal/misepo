@@ -8,6 +8,13 @@ interface StoreProfileSidebarProps {
 }
 
 export const StoreProfileSidebar: React.FC<StoreProfileSidebarProps> = ({ storeProfile, plan }) => {
+    const allTargetTags = storeProfile.targetAudience
+        ? storeProfile.targetAudience.split(',').map(tag => tag.trim()).filter(Boolean)
+        : [];
+    const MAX_VISIBLE_TARGET_TAGS = 8;
+    const visibleTargetTags = allTargetTags.slice(0, MAX_VISIBLE_TARGET_TAGS);
+    const hasMoreTargetTags = allTargetTags.length > MAX_VISIBLE_TARGET_TAGS;
+
     return (
         <div className="w-[280px] h-full flex flex-col gap-6 animate-in slide-in-from-left duration-700">
             {/* AI Monitor Card */}
@@ -107,7 +114,7 @@ export const StoreProfileSidebar: React.FC<StoreProfileSidebarProps> = ({ storeP
                     <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#2b2b2f]/40">Context Data</span>
                 </div>
 
-                <div className="space-y-4 relative z-10">
+                <div className="space-y-4 relative z-10 flex-1 flex flex-col min-h-0">
                     {/* Description Block */}
                     <div className="space-y-2">
                         <h4 className="text-[10px] font-bold text-[#b0b0b0] uppercase tracking-wider">店舗の特徴</h4>
@@ -118,14 +125,24 @@ export const StoreProfileSidebar: React.FC<StoreProfileSidebarProps> = ({ storeP
 
                     {/* Target Block */}
                     <div className="space-y-2">
-                        <h4 className="text-[10px] font-bold text-[#b0b0b0] uppercase tracking-wider">ターゲット層</h4>
-                        <div className="flex flex-wrap gap-2">
-                            {storeProfile.targetAudience ? (
-                                storeProfile.targetAudience.split(',').map((tag, i) => (
-                                    <span key={i} className="text-xs font-bold text-[#2b2b2f] bg-white px-3 py-1.5 rounded-lg border border-slate-100 shadow-sm">
-                                        {tag.trim()}
-                                    </span>
-                                ))
+                        <div className="flex items-center justify-between">
+                            <h4 className="text-[10px] font-bold text-[#b0b0b0] uppercase tracking-wider">ターゲット層</h4>
+                            <span className="text-[9px] text-[#b0b0b0]/60 uppercase tracking-[0.3em]">scroll</span>
+                        </div>
+                        <div className="flex flex-wrap gap-2 max-h-[160px] overflow-y-auto scrollbar-hide pr-1">
+                            {visibleTargetTags.length > 0 ? (
+                                <>
+                            {visibleTargetTags.map((tag, i) => (
+                                <span key={i} className="inline-flex items-center text-[10px] font-bold text-[#2b2b2f] bg-white px-3 py-1 rounded-full border border-slate-100 shadow-sm whitespace-nowrap">
+                                    {tag}
+                                </span>
+                            ))}
+                                    {hasMoreTargetTags && (
+                                        <span className="inline-flex items-center text-[10px] font-bold text-[#7c5dcb] bg-[#f1f5ff] px-3 py-1 rounded-full border border-[#e0e7ff] shadow-sm whitespace-nowrap">
+                                            etc...
+                                        </span>
+                                    )}
+                                </>
                             ) : (
                                 <span className="text-[10px] text-[#2b2b2f]/40 italic">未設定</span>
                             )}

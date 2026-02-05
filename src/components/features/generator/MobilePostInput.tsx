@@ -223,6 +223,14 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
         }
     }, [mobileStep, targetAudiences, onTargetAudiencesChange]);
 
+    // Ensure '全般' stays exclusive; remove it when other audiences are already selected
+    React.useEffect(() => {
+        if (targetAudiences && targetAudiences.length > 1 && targetAudiences.includes('全般')) {
+            const filtered = targetAudiences.filter(t => t !== '全般');
+            onTargetAudiencesChange(filtered);
+        }
+    }, [targetAudiences, onTargetAudiencesChange]);
+
     // Reset target audiences to plain state for Google Maps
     React.useEffect(() => {
         if (mobileStep === 'confirm' && isGoogleMaps && targetAudiences && targetAudiences.length > 0) {
@@ -606,11 +614,11 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                     {/* Bottom Section - AI Omakase Card (Glass + Metallic) */}
                     <div className="mt-4 md:mt-6">
                         <div
-                            onClick={!isGoogleMaps ? handleOmakaseStart : undefined}
-                            className={`
-                                relative group transition-all duration-500
-                                ${!isGoogleMaps ? 'cursor-pointer active:scale-[0.98]' : 'cursor-not-allowed grayscale opacity-70'}
-                            `}
+            onClick={!isGoogleMaps && platforms.length > 0 ? handleOmakaseStart : undefined}
+            className={`
+                relative group transition-all duration-500
+                ${!isGoogleMaps && platforms.length > 0 ? 'cursor-pointer active:scale-[0.98]' : 'cursor-not-allowed grayscale opacity-70'}
+            `}
                         >
                             <div className="relative overflow-hidden rounded-[24px] bg-white/70 backdrop-blur-xl border border-white/70 shadow-[0_16px_40px_rgba(15,23,42,0.12)]">
                                 <div className="absolute -top-24 -left-24 w-48 h-48 bg-blue-500/10 rounded-full blur-[80px]" />

@@ -181,7 +181,7 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
                 <div className="absolute -top-[40px] left-1/2 -translate-x-1/2 z-20 pointer-events-none">
                     <button
                         onClick={onPlusClick}
-                        disabled={isGenerating}
+                        disabled={!isPlatformSelected || isGenerating}
                         className={`
                             relative w-[72px] h-[72px] rounded-full flex items-center justify-center pointer-events-auto
                             transition-all duration-300 border-[6px] border-white overflow-hidden
@@ -191,6 +191,7 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
                             }
                             ${isPopping ? 'animate-elastic-bounce' : ''}
                             ${isBreathing && !isPopping ? 'animate-pulse-gentle' : ''}
+                            ${(!isPlatformSelected || isGenerating) ? 'opacity-40 cursor-not-allowed' : ''}
                         `}
                         aria-label={isConfirmStep ? "Generate Post" : "New Post"}
                     >
