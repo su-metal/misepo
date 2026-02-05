@@ -1,9 +1,13 @@
 import { NextResponse } from "next/server";
 import { generateInspirationCards } from "@/services/geminiService";
+import { validateAiAccess } from "@/lib/api/aiHelper";
 
 export const maxDuration = 30; // 30 seconds timeout for AI generation
 
 export async function POST(req: Request) {
+  const { errorResponse } = await validateAiAccess('inspiration');
+  if (errorResponse) return errorResponse;
+
   try {
     const { date, storeProfile, reviews, trend, seed, templates, mode } = await req.json();
 

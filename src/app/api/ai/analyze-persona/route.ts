@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { analyzePersona } from "@/services/geminiService";
+import { validateAiAccess } from "@/lib/api/aiHelper";
 
 export async function POST(req: NextRequest) {
+  const { entitlement, errorResponse } = await validateAiAccess('analysis');
+  if (errorResponse) return errorResponse;
+
   try {
     const { samples } = await req.json();
 
@@ -9,8 +13,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid samples" }, { status: 400 });
     }
 
-    // Default to true (Pro model) for persona analysis to get better results
-    const instruction = await analyzePersona(samples as { content: string, platform: string }[], true);
+    // Use Pro model based on plan
+    const isProPlan = entitlement.plan === 'professional' || entitlement.plan === 'pro' || entitlement.plan === 'standard';
+    const instruction = await analyzePersona(samples as { content: string, platform: string }[], isProPlan);
 
     return NextResponse.json({ instruction });
   } catch (error) {

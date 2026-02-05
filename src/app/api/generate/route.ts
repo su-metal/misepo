@@ -20,6 +20,17 @@ export async function POST(req: Request) {
     error: authError,
   } = await supabase.auth.getUser();
 
+  if (authError) {
+    console.error("[GENERATE API] Auth error:", authError);
+    return NextResponse.json({ ok: false, error: "Authentication failed" }, { status: 500 });
+  }
+
+  if (!user) {
+    return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+  }
+
+  const userId = user.id;
+
   let body: Record<string, unknown>;
   try {
     body = await req.json();
@@ -28,11 +39,6 @@ export async function POST(req: Request) {
       { ok: false, error: "Invalid JSON body" },
       { status: 400 }
     );
-  }
-
-  const userId = user?.id ?? null;
-  if (!userId) {
-    return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
   }
 
   let effectiveEnt: any = null;
@@ -128,15 +134,18 @@ export async function POST(req: Request) {
       .select("run_type, created_at")
       .eq("user_id", userId)
       .eq("app_id", APP_ID)
+      .in("run_type", ["generation", "multi-gen"])
       .gte("created_at", startOfMonth);
 
     if (countErr) {
         console.error("[LIMIT CHECK] Query error:", countErr);
-    } else {
-        const totalMonthCredits = recentRuns.reduce((sum, run) => sum + (run.run_type === 'multi-gen' ? 2 : 1), 0);
-        const totalTodayCredits = recentRuns
-            .filter(run => run.created_at >= startOfToday)
-            .reduce((sum, run) => sum + (run.run_type === 'multi-gen' ? 2 : 1), 0);
+        return NextResponse.json({ ok: false, error: "Failed to verify credits" }, { status: 500 });
+    }
+
+    const totalMonthCredits = recentRuns.reduce((sum, run) => sum + (run.run_type === 'multi-gen' ? 2 : 1), 0);
+    const totalTodayCredits = recentRuns
+        .filter(run => run.created_at >= startOfToday)
+        .reduce((sum, run) => sum + (run.run_type === 'multi-gen' ? 2 : 1), 0);
         
         // Plan-based limits
         const planName = effectiveEnt?.plan;
@@ -168,9 +177,24 @@ export async function POST(req: Request) {
             }
         }
     }
+
+  // --- Record usage (Capture cost before potentially long generation) ---
+  const { data: runData, error: runError } = await supabaseAdmin
+    .from("ai_runs")
+    .insert({
+      app_id: APP_ID,
+      user_id: userId,
+      run_type: runType, // 'generation' or 'multi-gen'
+    })
+    .select("id")
+    .single();
+
+  if (runError || !runData) {
+    console.error("[GENERATE] Failed to create run record:", runError);
+    return NextResponse.json({ ok: false, error: "Failed to record generation" }, { status: 500 });
   }
 
-  let savedRunId: string | null = null;
+  const savedRunId = runData.id;
 
   // Extract presetId from body (it's passed as part of generation context)
   const presetId = body.presetId as string | undefined;
@@ -204,17 +228,11 @@ export async function POST(req: Request) {
       const hasLearningSamples = learningSamples.length > 0;
 
       // FALLBACK LOGIC: 
-      // If we have a presetId but NO learning samples for this specific platform config,
-      // we treat it as "Omakase" (Default) mode for this platform.
-      // This means we IGNORE the preset's system prompt and persona_yaml.
-      // We ONLY keep the user's manual customPrompt.
       if (presetId && !hasLearningSamples) {
           console.log(`[LEARNING] Fallback to Omakase for ${config.platform} (No learning data)`);
           config.presetPrompt = undefined;
           config.persona_yaml = null;
-          // config.customPrompt remains as is (User's manual instruction)
       } else {
-          // Normal Case: Combine Preset Prompt + User Prompt
           if (config.presetPrompt) {
               if (config.customPrompt) {
                   config.customPrompt = `${config.presetPrompt}\n\n---\n\n【今回の追加指示】\n${config.customPrompt}`;
@@ -224,8 +242,8 @@ export async function POST(req: Request) {
           }
       }
 
-      // Apply persona_yaml (Only if not fell back)
-      if (userId && presetId && config.persona_yaml !== null) { // Check null explicit
+      // Apply persona_yaml
+      if (userId && presetId && config.persona_yaml !== null) {
         const { data: presetData } = await supabase
           .from("user_presets")
           .select("persona_yaml")
@@ -239,39 +257,27 @@ export async function POST(req: Request) {
 
       const generatedResult = await generateContent(profile, config, true, learningSamples);
       
-      // CRITICAL: Add platform information to each result for history reconstruction
       return {
         ...generatedResult,
-        platform: config.platform, // Explicitly add platform to ensure it's preserved in history
+        platform: config.platform,
       };
     }));
 
-    // --- History & Counter Update ---
-    if (userId && body.save_history !== false) {
-      const { data: runData, error: runError } = await supabaseAdmin
-        .from("ai_runs")
-        .insert({
-          app_id: APP_ID,
-          user_id: userId,
-          run_type: runType, // 'generation' or 'multi-gen'
-        })
-        .select("id")
-        .single();
+    // --- Save Output History ---
+    const { error: recordError } = await supabaseAdmin
+      .from("ai_run_records")
+      .insert({
+        run_id: savedRunId,
+        app_id: APP_ID,
+        user_id: userId,
+        input: { profile, configs },
+        output: results,
+      });
 
-      if (!runError && runData) {
-        savedRunId = runData.id;
-        // Batch record save - save results array directly (not nested)
-        // This ensures consistency with history fetch logic
-        await supabaseAdmin
-          .from("ai_run_records")
-          .insert({
-            run_id: runData.id,
-            app_id: APP_ID,
-            user_id: userId,
-            input: { profile, configs },
-            output: results, // Save results array directly with platform info
-          });
-      }
+    if (recordError) {
+      console.error("[GENERATE] Record insert error, rolling back run:", recordError);
+      await supabaseAdmin.from("ai_runs").delete().eq("id", savedRunId);
+      return NextResponse.json({ ok: false, error: "Failed to save generation history" }, { status: 500 });
     }
 
     return NextResponse.json({
@@ -281,6 +287,10 @@ export async function POST(req: Request) {
     });
   } catch (e: any) {
     console.error("Generation error:", e);
+    // ROLLBACK: Cleanup the run record if actual AI generation failed
+    if (savedRunId) {
+      await supabaseAdmin.from("ai_runs").delete().eq("id", savedRunId);
+    }
     return NextResponse.json(
       { ok: false, error: e.message || "Internal Server Error" },
       { status: 500 }

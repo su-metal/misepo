@@ -425,7 +425,6 @@ export function useGeneratorFlow(props: {
         body: JSON.stringify({
           profile: storeProfile,
           configs: batchConfigs, // Sent as array
-          save_history: true,
           presetId: activePresetId
         }),
       });
@@ -436,7 +435,7 @@ export function useGeneratorFlow(props: {
       if (!res.ok || !data.ok) {
         if (res.status === 403) {
             if (data.error === 'daily_limit_reached') {
-                alert(`本日の生成制限（10回）に達しました。明日またご利用いただけます。`);
+                alert(`本日の生成制限（5回）に達しました。明日またご利用いただけます。`);
             } else if (data.error === 'monthly_limit_reached') {
                 if (confirm(`今月の生成制限（${data.limit || '規定'}回）に達しました。プランをアップグレードしてすぐに制限を解除しますか？`)) {
                     window.location.href = '/start?upgrade=true';
