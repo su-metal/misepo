@@ -182,7 +182,7 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
 
 
                 {/* Navigation Items Container */}
-                <div className="absolute inset-0 flex items-center justify-between px-6 pt-1">
+                <div className={`absolute inset-0 flex items-center justify-between px-6 pt-1 ${isDrawerOpen ? 'pointer-events-none' : 'pointer-events-auto'}`}>
                     {/* Left Side Items */}
                     <div className="flex items-center justify-center gap-6 w-[130px]">
                         <button

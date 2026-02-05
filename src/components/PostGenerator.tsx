@@ -258,7 +258,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
           </div>
 
           {/* Floating Mobile Footer Navigation - Only shown when results are NOT open */}
-          {!isMobileResultOpen && (
+          {!isMobileResultOpen && mobileStep === 'platform' && (
             <MobileFooter
               activeTab={mobileActiveTab}
               currentStep={mobileStep}

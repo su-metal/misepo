@@ -880,7 +880,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
                                         {/* 3. Sticky Action Footer */}
                                         <div
-                                            className="px-6 py-8 safe-area-bottom border-t border-slate-50 flex-shrink-0 flex flex-col gap-4 shadow-[0_-10px_30px_rgba(0,0,0,0.02)] z-[210]"
+                                            className="px-6 py-8 safe-area-bottom border-t border-slate-50 flex-shrink-0 flex flex-col gap-4 shadow-[0_-10px_30px_rgba(0,0,0,0.02)] z-[210] relative"
                                             style={{
                                                 backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.05) 5%, rgba(255,255,255,0.8) 30%, rgba(255,255,255,1) 70%)'
                                             }}
