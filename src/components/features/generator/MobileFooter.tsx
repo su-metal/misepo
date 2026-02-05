@@ -183,7 +183,7 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
                             onClick={onPlusClick}
                             disabled={!isPlatformSelected || isGenerating}
                             className={`
-                                relative w-14 h-14 rounded-2xl flex items-center justify-center 
+                                relative w-14 h-14 rounded-full flex items-center justify-center 
                                 transition-all duration-300 shadow-lg border-4 border-white
                                 ${isConfirmStep ? 'bg-sunset text-white scale-110' : 'bg-sunset text-white'}
                                 ${isPopping ? 'animate-elastic-bounce' : ''}
