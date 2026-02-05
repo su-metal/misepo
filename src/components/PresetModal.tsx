@@ -946,7 +946,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                 setModalText('');
                 setLearningMode(mode);
                 setExpandingPlatform(mode === 'sns' ? Platform.General : Platform.GoogleMaps);
-                setSelectedPlatforms([]); // Start with no selection for new entries
+                setSelectedPlatforms(mode === 'maps' ? [Platform.GoogleMaps] : []); // Start with no selection for new entries (maps gets Google Maps by default)
               }}
               className={`flex items-center gap-2 px-6 py-3 border text-white rounded-2xl font-black text-[11px] uppercase tracking-widest transition-all shadow-lg active:scale-95 ${mode === 'sns' ? 'bg-[#eb714f] border-[#eb714f] hover:bg-[#eb714f]/80 hover:border-[#eb714f]/80 shadow-[#d8e9f4]' : 'bg-[#00b900] border-[#00b900] hover:bg-[#00b900]/80 hover:border-[#00b900]/80 shadow-[#d8e9f4]'} `}
             >
@@ -1311,6 +1311,9 @@ const PresetModal: React.FC<PresetModalProps> = ({
     portalTarget
   );
 
+  const activeTrainingPlatforms = learningMode === 'maps' ? [Platform.GoogleMaps] : selectedPlatforms;
+  const isPlatformSelectionReady = learningMode === 'maps' || activeTrainingPlatforms.length > 0;
+
   // Focus Mode Overlay (Learning Editor)
   const focusModeOverlay = expandingPlatform && createPortal(
     <div className="fixed inset-0 z-[10001] flex items-center justify-center p-0 md:p-8 pointer-events-auto">
@@ -1498,8 +1501,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
             </button>
           ) : (
             <button
-              onClick={() => handleToggleTrainingInternal(modalText, selectedPlatforms)}
-              disabled={isTrainingLoading || !modalText.trim() || selectedPlatforms.length === 0}
+              onClick={() => handleToggleTrainingInternal(modalText, activeTrainingPlatforms)}
+              disabled={isTrainingLoading || !modalText.trim() || !isPlatformSelectionReady}
               className="w-full md:w-auto px-12 py-5 bg-[#2b2b2f] text-white rounded-[2rem] font-black text-[14px] tracking-[0.2em] shadow-xl hover:bg-black active:scale-95 transition-all disabled:opacity-30 flex items-center justify-center gap-3"
             >
               {isTrainingLoading ? <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <SaveIcon className="w-5 h-5" />}
