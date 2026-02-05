@@ -130,7 +130,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
             setIsOmakaseMode(false);
             if (onQuestionChange) onQuestionChange('');
             if (onTopicPromptChange) onTopicPromptChange('');
-            setMobileStep('confirm');
+            setMobileStep(targetStep === 'confirm' ? 'confirm' : 'input');
             setIsStepDrawerOpen(true);
         }
     }, [openDrawerTrigger]);

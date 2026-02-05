@@ -205,31 +205,40 @@ export function useGeneratorFlow(props: {
   };
 
   const handleSetActivePlatform = (p: Platform) => {
+    const wasGMap = platforms.includes(Platform.GoogleMaps);
+    const isGMap = p === Platform.GoogleMaps;
+
+    // Reset if crossing the GMap boundary
+    if (wasGMap !== isGMap) {
+      setInputText('');
+      setCustomPrompt('');
+      setQuestion(undefined);
+      setTopicPrompt(undefined);
+      setStoreSupplement('');
+      setStarRating(null);
+    }
+
     if (isMultiGenMode) {
-      if (p === Platform.GoogleMaps) {
+      if (isGMap) {
         setPlatforms([Platform.GoogleMaps]);
         setIsMultiGenMode(false);
         setIncludeEmojis(false);
         setIncludeSymbols(false);
-        // Switch prompt to GMap specific
-        // setCustomPrompt(loadedPresetPrompts[Platform.GoogleMaps] || '');
       } else {
-        // If it's X, Instagram, or LINE and we're in multi-gen, keep current multi platforms
         setPlatforms(platforms);
       }
     } else {
       setPlatforms([p]);
-      if (p === Platform.GoogleMaps) {
+      if (isGMap) {
         setIncludeEmojis(false);
         setIncludeSymbols(false);
       }
-      
-      // Update customPrompt for single platform selection mode
-      // setCustomPrompt(loadedPresetPrompts[p] || '');
     }
   };
 
   const handlePlatformToggle = (p: Platform) => {
+    const wasGMap = platforms.includes(Platform.GoogleMaps);
+    
     // If clicking a platform that's already selected, deselect it
     if (platforms.includes(p)) {
       const nextPlatforms = platforms.filter(x => x !== p);
@@ -244,6 +253,15 @@ export function useGeneratorFlow(props: {
 
     // Special logic for Google Maps (Mutually Exclusive)
     if (p === Platform.GoogleMaps) {
+      // Clear if switching TO GMap
+      if (!wasGMap) {
+        setInputText('');
+        setCustomPrompt('');
+        setQuestion(undefined);
+        setTopicPrompt(undefined);
+        setStoreSupplement('');
+        setStarRating(null);
+      }
       setPlatforms([Platform.GoogleMaps]);
       setIsMultiGenMode(false);
       setIncludeEmojis(false);
@@ -252,7 +270,15 @@ export function useGeneratorFlow(props: {
     }
 
     // If currently on Google Maps, switch to the new one (as others can't coexist with GMap)
-    if (platforms.includes(Platform.GoogleMaps)) {
+    if (wasGMap) {
+      // Clear if switching FROM GMap
+      setInputText('');
+      setCustomPrompt('');
+      setQuestion(undefined);
+      setTopicPrompt(undefined);
+      setStoreSupplement('');
+      setStarRating(null);
+
       setPlatforms([p]);
       setIsMultiGenMode(false);
       return;
