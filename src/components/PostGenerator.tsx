@@ -275,7 +275,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
                   setIsPresetModalOpen(true);
                 }
               }}
-              onPlusClick={mobileStep === 'confirm' ? handleGenerate : () => {
+              onPlusClick={() => {
                 setMobileActiveTab('home');
                 // Ensure at least one platform is selected to avoid dead end
                 if (flow.platforms.length === 0) {
