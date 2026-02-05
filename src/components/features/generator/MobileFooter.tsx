@@ -160,7 +160,7 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
                 </svg>
 
                 {/* Generate Label Tooltip (Step 3) - Fixed layout to avoid button overlap */}
-                <div className={`absolute top-[-72px] left-1/2 -translate-x-1/2 z-[160] transition-all duration-300 ${isConfirmStep ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
+                <div className={`absolute top-[-72px] left-1/2 -translate-x-1/2 z-[220] transition-all duration-300 ${isConfirmStep ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
                     <div className="px-3 py-1.5 bg-[#2b2b2f] text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-full shadow-xl whitespace-nowrap flex items-center gap-1.5 animate-bounce border border-white/20">
                         <span>Tap to Generate</span>
                         <SparklesIcon className="w-3 h-3 text-white" />
@@ -170,7 +170,7 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
 
 
                 {/* Input Guidance Tooltip (Step 1) */}
-                <div className={`absolute top-[-85px] left-1/2 -translate-x-1/2 z-[160] transition-all duration-500 ${isPlatformStep && showGuidance && isPlatformSelected ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
+                <div className={`absolute top-[-85px] left-1/2 -translate-x-1/2 z-[220] transition-all duration-500 ${isPlatformStep && showGuidance && isPlatformSelected ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
                     <div className="px-5 py-2.5 bg-[#2b2b2f] text-white rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,0.2)] whitespace-nowrap flex flex-col items-center gap-0.5 border border-white/10 relative">
                         <span className="text-[11px] font-black tracking-tight">内容を入力する</span>
                         <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest leading-none">Tap to Start</span>
