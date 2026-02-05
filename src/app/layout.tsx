@@ -69,22 +69,28 @@ export default function RootLayout({
       <body className="relative">
         {/* Global Atmosphere Background */}
         <div className="fixed inset-0 -z-50 overflow-hidden pointer-events-none select-none bg-studio-stage">
-          {/* Subtle Vignette */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,transparent_20%,rgba(0,0,0,0.08)_100%)]" />
+          {/* Subtle Studio Grid */}
+          <div className="absolute inset-0 bg-pattern-grid-magazine opacity-[0.05]" />
+          <div className="absolute inset-0 bg-pattern-dots opacity-[0.2]" />
 
-          {/* Base Dot Pattern */}
-          <div className="absolute inset-0 bg-pattern-dots opacity-[0.4]" />
+          {/* Dynamic Glow Orbs */}
+          <div className="absolute top-[-10%] left-[-10%] w-[60vw] h-[60vw] bg-gradient-to-br from-[#80CAFF]/20 to-transparent rounded-full blur-[120px] animate-pulse-slow" />
+          <div className="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] bg-gradient-to-br from-[#F87171]/10 to-transparent rounded-full blur-[100px] animate-pulse-slow" style={{ animationDelay: '1s' }} />
+          <div className="absolute top-[20%] right-[10%] w-[30vw] h-[30vw] bg-gradient-to-br from-[#C084FC]/15 to-transparent rounded-full blur-[80px] animate-pulse-slow" style={{ animationDelay: '2s' }} />
 
-          {/* Giant Decorative Typography */}
-          <div className="absolute top-[5%] -left-[5%] font-montserrat font-black tracking-tighter text-slate-600/10 text-[25vw] rotate-[-5deg]">
-            MISE
+          {/* Minimal Status Edge Labels */}
+          <div className="absolute left-8 top-1/2 -translate-y-1/2 vertical-text-edge hidden xl:flex items-center gap-4 opacity-20 transition-opacity hover:opacity-100 duration-700">
+            <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#2b2b2f]">MisePo AI Studio v2.4.0</span>
+            <div className="h-24 w-[1px] bg-[#2b2b2f]" />
           </div>
-          <div className="absolute bottom-[10%] -right-[5%] font-montserrat font-black tracking-tighter text-slate-600/10 text-[20vw] rotate-[3deg]">
-            PO
+
+          <div className="absolute right-8 top-1/2 -translate-y-1/2 vertical-text-edge hidden xl:flex items-center gap-4 opacity-20 transition-opacity hover:opacity-100 duration-700">
+            <div className="h-24 w-[1px] bg-[#2b2b2f]" />
+            <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#2b2b2f]">Creative Flow State</span>
           </div>
-          <div className="absolute top-[40%] right-[10%] font-montserrat font-black tracking-tighter text-slate-500/10 text-[10vw] uppercase">
-            AI Creative
-          </div>
+
+          {/* Subtle Vignette Overlay */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,transparent_40%,rgba(0,0,0,0.03)_100%)]" />
         </div>
 
         <div id="root" className="relative z-10">{children}</div>
