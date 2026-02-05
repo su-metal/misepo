@@ -403,7 +403,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
             <div className={`flex flex-col h-full overflow-hidden relative transition-all duration-500 ${isStepDrawerOpen ? 'blur-md scale-[0.98] opacity-60' : 'opacity-100'}`}>
                 <div className="flex-1 flex flex-col p-4 pt-[max(1.5rem,env(safe-area-inset-top))] pb-32 safe-area-bottom overflow-y-auto no-scrollbar">
                     {/* High-Design Header - Magazine Style Date & Minimal Avatar */}
-                    <div className="flex items-start justify-between mb-4 px-1">
+                    <div className="flex items-start justify-between mb-6 px-1">
                         {/* Typography Date Display - Interactive Trigger */}
                         <div className="flex flex-col cursor-pointer active:scale-95 transition-transform" onClick={() => setIsCalendarOpen(true)}>
                             <span className="text-[10px] font-black text-[#2b2b2f]/60 uppercase tracking-[0.4em] ml-1 mb-1 z-10 relative flex items-center gap-1">
@@ -482,7 +482,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                         </div>
                     </div>
 
-                    <div className="flex items-center justify-between px-2 mt-2 mb-0">
+                    <div className="flex items-center justify-between px-2 mt-4 mb-0">
                         <div className="flex flex-col gap-0.5 items-start">
                             <h2 className="text-[13px] font-black text-[#2b2b2f] tracking-tight">投稿先を選択</h2>
                             <p className="text-[10px] text-[#b0b0b0] font-bold uppercase tracking-[0.2em]">Select your canvas</p>
@@ -509,66 +509,9 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                         </div>
                     </div>
 
-                    {/* Compact Horizontal Premium AI Omakase Card */}
-                    <div className="mt-5 mb-6">
-                        <motion.div
-                            onClick={!isGoogleMaps && platforms.length > 0 ? handleOmakaseStart : undefined}
-                            whileTap={{ scale: 0.98 }}
-                            className={`
-                                relative group overflow-hidden rounded-[28px] bg-white border border-slate-100 p-4 flex items-center gap-4 transition-all duration-500
-                                ${!isGoogleMaps && platforms.length > 0 ? 'cursor-pointer hover:shadow-lg hover:border-slate-200' : 'cursor-not-allowed grayscale opacity-80'}
-                            `}
-                        >
-                            {/* Left: Icon Box */}
-                            <div className="shrink-0 w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-md shadow-purple-100">
-                                <SparklesIcon className="w-7 h-7 text-white" />
-                            </div>
-
-                            {/* Center: Texts & Badge */}
-                            <div className="flex-1 min-w-0 flex flex-col justify-center">
-                                <div className="flex items-center gap-2 mb-0.5">
-                                    <h4 className="text-[17px] font-black tracking-tight text-[#1a1a1a]">
-                                        AIおまかせ生成
-                                    </h4>
-                                    <div className="px-2 py-0.5 rounded-md bg-blue-50 border border-blue-100">
-                                        <span className="text-[8px] font-black text-blue-500 uppercase tracking-wider">
-                                            SPECIAL
-                                        </span>
-                                    </div>
-                                </div>
-                                <p className="text-[11px] font-bold text-slate-400 truncate">
-                                    最新のAIが最適な構成を自動で提案
-                                </p>
-                            </div>
-
-                            {/* Right: Action Button */}
-                            <div className="shrink-0">
-                                <div className={`
-                                    w-12 h-12 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center shadow-sm group-hover:bg-white group-hover:scale-105 group-hover:border-slate-200 transition-all duration-300
-                                    ${isOmakaseLoading ? 'animate-pulse' : ''}
-                                `}>
-                                    {isOmakaseLoading ? (
-                                        <div className="w-5 h-5 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
-                                    ) : (
-                                        <StarIcon className="w-6 h-6 text-indigo-500" />
-                                    )}
-                                </div>
-                            </div>
-
-                            {/* Loading Progress Overlays */}
-                            {isOmakaseLoading && (
-                                <motion.div
-                                    initial={{ x: "-100%" }}
-                                    animate={{ x: "100%" }}
-                                    transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-                                    className="absolute bottom-0 left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-indigo-500 to-transparent"
-                                />
-                            )}
-                        </motion.div>
-                    </div>
 
                     {/* Standard 2x2 Grid Platform Selection */}
-                    <div className="grid grid-cols-2 gap-3 px-1 mt-2">
+                    <div className="grid grid-cols-2 gap-3 px-1 mt-4">
                         {(() => {
                             const getPlatformDetails = (platform: Platform, isActive: boolean) => {
                                 switch (platform) {
@@ -685,6 +628,79 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                 );
                             });
                         })()}
+                    </div>
+
+                    {/* Compact Horizontal Premium AI Omakase Card - Champagne & Bronze Edition */}
+                    <div className="mt-6 mb-4">
+                        <div className="relative p-[1.5px] group overflow-hidden rounded-[29px]">
+                            {/* Golden Border Beam - Subtle rotating light */}
+                            <motion.div
+                                animate={{
+                                    rotate: [0, 360],
+                                }}
+                                transition={{
+                                    duration: 8,
+                                    repeat: Infinity,
+                                    ease: "linear",
+                                }}
+                                className="absolute inset-[-100%] bg-[conic-gradient(from_0deg,transparent_0deg,transparent_300deg,#D4AF37_360deg)] opacity-40 group-hover:opacity-100 transition-opacity duration-1000"
+                            />
+
+                            <motion.div
+                                onClick={!isGoogleMaps && platforms.length > 0 ? handleOmakaseStart : undefined}
+                                whileTap={{ scale: 0.98 }}
+                                className={`
+                                    relative overflow-hidden rounded-[28px] bg-[#FFFAF5] p-5 flex items-center gap-5 transition-all duration-500
+                                    ${!isGoogleMaps && platforms.length > 0 ? 'cursor-pointer hover:shadow-[0_20px_50px_rgba(163,123,81,0.15)]' : 'cursor-not-allowed grayscale opacity-80'}
+                                `}
+                            >
+                                {/* Left: Icon Box (Warm Bronze to Modern Gold) */}
+                                <div className="shrink-0 w-14 h-14 rounded-2xl bg-gradient-to-br from-[#A37B51] via-[#C5A079] to-[#D4AF37] flex items-center justify-center shadow-lg shadow-yellow-900/10">
+                                    <SparklesIcon className="w-8 h-8 text-white" />
+                                </div>
+
+                                {/* Center: Texts & Gold Badge */}
+                                <div className="flex-1 min-w-0 flex flex-col justify-center">
+                                    <div className="flex items-center gap-2.5 mb-1">
+                                        <h4 className="text-[18px] font-black tracking-tight text-[#3E2723]">
+                                            AIおまかせ生成
+                                        </h4>
+                                        <div className="px-2 py-0.5 rounded-full bg-white border border-[#D4AF37]/30 shadow-sm">
+                                            <span className="text-[8px] font-black text-[#8D6E63] uppercase tracking-[0.15em]">
+                                                SPECIAL
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <p className="text-[11px] font-bold text-[#A37B51]/70 truncate">
+                                        独自の美学を持つAIが最適な構成を提案
+                                    </p>
+                                </div>
+
+                                {/* Right: Action Button (Champagne Minimal) */}
+                                <div className="shrink-0">
+                                    <div className={`
+                                        w-12 h-12 rounded-full bg-white border border-[#D4AF37]/20 flex items-center justify-center shadow-md group-hover:scale-110 group-hover:border-[#D4AF37]/50 transition-all duration-500
+                                        ${isOmakaseLoading ? 'animate-pulse' : ''}
+                                    `}>
+                                        {isOmakaseLoading ? (
+                                            <div className="w-5 h-5 border-2 border-[#A37B51] border-t-transparent rounded-full animate-spin" />
+                                        ) : (
+                                            <StarIcon className="w-6 h-6 text-[#A37B51]" />
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* Loading Progress Line (Gold) */}
+                                {isOmakaseLoading && (
+                                    <motion.div
+                                        initial={{ x: "-100%" }}
+                                        animate={{ x: "100%" }}
+                                        transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+                                        className="absolute bottom-0 left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent"
+                                    />
+                                )}
+                            </motion.div>
+                        </div>
                     </div>
 
                 </div>
