@@ -37,6 +37,7 @@ export function useStartFlow() {
 
   const goCheckout = useCallback(async (plan: "entry" | "standard" | "professional" = initialPlan) => {
     setIsRedirecting(true);
+    setIntent("login"); // Reset intent to prevent automatic re-triggering loop
     const res = await fetch("/api/billing/checkout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -91,8 +92,21 @@ export function useStartFlow() {
   };
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
+    const handleFocus = () => {
+      setIsRedirecting(false);
+      setLoading(false);
+    };
+
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
+  }, []);
+
+  useEffect(() => {
     if (intent === null) return;
 
+    setIsRedirecting(false); // Reset on every update to catch return from redirect
     let cancelled = false;
     (async () => {
       try {
