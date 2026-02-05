@@ -35,7 +35,7 @@ export const TrendSidebar: React.FC<TrendSidebarProps> = ({
         setTrendCache([]);
         setHasFetched(false);
         setFailedMonths(new Set());
-    }, [industry, description]);
+    }, [industry]);
 
     const fetchTrends = async (year: number, month: number, force: boolean = false) => {
         const monthKey = `${year}-${month}`;
