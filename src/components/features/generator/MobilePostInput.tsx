@@ -509,7 +509,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         tagline: 'Visual Story',
                                         sub: '世界観と統一感',
                                         icon: <InstagramIcon className="w-7 h-7" />,
-                                        color: 'from-purple-500/10 to-pink-500/10'
+                                        color: 'from-purple-400/10 to-pink-400/10'
                                     };
                                     case Platform.X: return {
                                         name: 'X',
@@ -522,15 +522,15 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         name: 'LINE',
                                         tagline: 'Messages',
                                         sub: 'リピーター獲得',
-                                        icon: <LineIcon className="w-7 h-7" isActive={isActive} activeTextFill="#06C755" textFill={isActive ? '#06C755' : '#ffffff'} />,
-                                        color: 'from-green-500/10 to-emerald-500/10'
+                                        icon: <LineIcon className="w-7 h-7" isActive={isActive} activeTextFill="#56A67A" textFill={isActive ? '#56A67A' : '#ffffff'} />,
+                                        color: 'from-green-400/10 to-emerald-400/10'
                                     };
                                     case Platform.GoogleMaps: return {
                                         name: 'Google Maps',
                                         tagline: 'Local Search',
                                         sub: '店舗集客とMEO対策',
                                         icon: <GoogleMapsIcon className="w-7 h-7" />,
-                                        color: 'from-blue-500/10 to-red-500/10'
+                                        color: 'from-blue-400/10 to-red-400/10'
                                     };
                                     default: return { name: '', tagline: '', sub: '', icon: null, color: '' };
                                 }
@@ -542,10 +542,10 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                 const bentoClass = 'h-[110px]';
 
                                 // Map brand colors
-                                const brandColor = p === Platform.Instagram ? '#E1306C' :
+                                const brandColor = p === Platform.Instagram ? '#C26A86' :
                                     p === Platform.X ? '#111827' :
-                                        p === Platform.Line ? '#06C755' :
-                                            p === Platform.GoogleMaps ? '#4285F4' : '#2b2b2f';
+                                        p === Platform.Line ? '#56A67A' :
+                                            p === Platform.GoogleMaps ? '#6C8DB8' : '#2b2b2f';
 
                                 return (
                                     <div
