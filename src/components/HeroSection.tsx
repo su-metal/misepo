@@ -96,7 +96,7 @@ export default function HeroSection() {
                     <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start w-full relative z-10">
                         <button
                             onClick={() => window.location.href = '/start'}
-                            className="group relative px-10 py-5 bg-gradient-primary text-white font-black rounded-full shadow-[0_20px_50px_rgba(24,35,255,0.3)] hover:scale-[1.02] active:scale-95 transition-all text-lg flex items-center justify-center gap-3 overflow-hidden"
+                            className="group relative px-10 py-5 bg-gradient-primary text-white font-black rounded-full shadow-[0_20px_50px_rgba(99,102,241,0.2)] hover:scale-[1.02] active:scale-95 transition-all text-lg flex items-center justify-center gap-3 overflow-hidden"
                         >
                             <div className="absolute inset-0 bg-gradient-shine opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-ticket-shine" />
                             <Icons.Sparkles size={20} className="text-yellow-300 relative z-10" />
