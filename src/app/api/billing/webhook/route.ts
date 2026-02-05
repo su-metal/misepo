@@ -88,7 +88,8 @@ export async function POST(req: Request) {
 
       const priceId = sub.items.data[0]?.price?.id;
       const subPlanFromPrice = getPlanFromPriceId(priceId);
-      const plan = session?.metadata?.plan || sub?.metadata?.plan || subPlanFromPrice || "entry";
+      // ✅ ALWAYS prioritize Price ID over metadata
+      const plan = subPlanFromPrice || session?.metadata?.plan || sub?.metadata?.plan || "entry";
 
       await upsertEntitlement({
         userId,
@@ -142,7 +143,8 @@ export async function POST(req: Request) {
 
       const priceId = sub.items.data[0]?.price?.id;
       const subPlanFromPrice = getPlanFromPriceId(priceId);
-      const plan = sub?.metadata?.plan || subPlanFromPrice || "entry";
+      // ✅ ALWAYS prioritize Price ID over metadata
+      const plan = subPlanFromPrice || sub?.metadata?.plan || "entry";
 
       await upsertEntitlement({
         userId,
