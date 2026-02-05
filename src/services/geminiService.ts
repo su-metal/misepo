@@ -1202,16 +1202,26 @@ export const generateStyleInstruction = async (
   samples.forEach(s => {
     const platforms = s.platform.split(',').map(p => p.trim());
     platforms.forEach(p => {
-        let cleanPlatform = p;
-        if (p === 'X' || p === 'Twitter') cleanPlatform = 'X (Twitter)';
-        else if (p === 'Line') cleanPlatform = 'LINE';
         if (s.content.includes('【文体指示書】')) {
-            console.warn(`[Gemini] Skipped learning sample for ${p} because it appears to be a Style Guide.`);
+            console.warn(`[Gemini] Skipped learning sample because it appears to be a Style Guide.`);
             return;
         }
+
         // Force trim and TRUNCATE inputs to avoid massive garbage data or repetition triggers
         const truncatedContent = s.content.trim().substring(0, 1000);
-        normalizedSamples.push({ content: truncatedContent, platform: cleanPlatform });
+
+        // Platform mapping & distribution
+        if (p === Platform.General || p === 'General') {
+            // General samples are distributed to all 3 primary SNS platforms (NOT Google Maps)
+            [Platform.X, Platform.Instagram, Platform.Line].forEach(snsPlat => {
+                normalizedSamples.push({ content: truncatedContent, platform: snsPlat });
+            });
+        } else {
+            let cleanPlatform = p;
+            if (p === 'X' || p === 'Twitter') cleanPlatform = Platform.X;
+            else if (p === 'Line') cleanPlatform = Platform.Line;
+            normalizedSamples.push({ content: truncatedContent, platform: cleanPlatform });
+        }
     });
   });
 
