@@ -16,7 +16,7 @@ export async function GET() {
   } = await supabase.auth.getUser();
 
   if (error || !user) {
-    return NextResponse.json({ ok: false, error: "unauthorized" });
+    return NextResponse.json({ ok: false, error: "unauthorized" }, { status: 401 });
   }
 
   const { data: ent, error: entErr } = await supabaseAdmin
@@ -69,6 +69,7 @@ export async function GET() {
     .select("id, run_type, created_at, is_pinned, ai_run_records(input, output)")
     .eq("app_id", APP_ID)
     .eq("user_id", user.id)
+    .in("run_type", ["generation", "multi-gen"])
     .order("created_at", { ascending: false })
     .limit(100); // Fetch a safe buffer
 
@@ -244,6 +245,9 @@ export async function POST(req: Request) {
     });
 
   if (recordError) {
+    console.error("[HISTORY SAVE] Record insert error, rolling back run:", recordError);
+    // Manual rollback: delete the orphan run record
+    await supabaseAdmin.from("ai_runs").delete().eq("id", runData.id);
     return NextResponse.json({ ok: false, error: recordError.message }, { status: 500 });
   }
 

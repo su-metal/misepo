@@ -128,6 +128,7 @@ export async function POST(req: Request) {
       .select("run_type, created_at")
       .eq("user_id", userId)
       .eq("app_id", APP_ID)
+      .in("run_type", ["generation", "multi-gen"])
       .gte("created_at", startOfMonth);
 
     if (countErr) {
@@ -262,7 +263,7 @@ export async function POST(req: Request) {
         savedRunId = runData.id;
         // Batch record save - save results array directly (not nested)
         // This ensures consistency with history fetch logic
-        await supabaseAdmin
+        const { error: recordError } = await supabaseAdmin
           .from("ai_run_records")
           .insert({
             run_id: runData.id,
@@ -271,6 +272,15 @@ export async function POST(req: Request) {
             input: { profile, configs },
             output: results, // Save results array directly with platform info
           });
+
+        if (recordError) {
+          console.error("[GENERATE] Record insert error, rolling back run:", recordError);
+          // Manual rollback
+          await supabaseAdmin.from("ai_runs").delete().eq("id", runData.id);
+          savedRunId = null;
+          // We continue to return the results to user even if history save failed, 
+          // but we log it. Or we could throw error. Returning results is more UX friendly.
+        }
       }
     }
 
