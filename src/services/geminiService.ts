@@ -126,10 +126,19 @@ const TONE_INDUSTRY_ADJUSTMENTS: Record<string, Record<Tone, string>> = {
 const GMAP_PURPOSE_PROMPTS: Record<string, string> = {
   [GoogleMapPurpose.Auto]: "口コミの内容に応じて、感謝、謝罪、または説明を適切に組み合わせてください。",
   [GoogleMapPurpose.Thanks]: "来店への感謝を述べ、再来店を歓迎する意向を含めてください。",
-  [GoogleMapPurpose.Apology]: "不手際やご不快な思いをさせた点について、事実を認め、謝罪と改善の意向を含めてください。",
+  [GoogleMapPurpose.Apology]: "不手際やご不快な思いをさせた点について、事実を認め、言い訳をせずに誠実に謝罪し、具体的な改善の意向を含めてください。",
   [GoogleMapPurpose.Clarify]: "事実誤認や誤解がある点について、事実に基づいた補足と説明を行ってください。",
   [GoogleMapPurpose.Info]: "口コミへの返信の中に、営業時間やサービス内容などの最新情報を盛り込んでください。"
 };
+
+const GMAP_NEGATIVE_CONSTRAINTS = `
+- **免責表現の禁止**: 以下の表現、またはそれに類する「許しを請う」「言い訳をする」ような表現は**絶対に**使用しないでください。
+  - 「何卒ご容赦いただけますようお願い申し上げます」
+  - 「何卒ご容赦ください」
+  - 「ご了承いただけますと幸いです」
+  - 「あしからずご了承ください」
+- **潔い対応**: ミスや不手際があった場合は、言い訳をせずに潔く謝罪し、改善への意欲や、次回の来店時に挽回したいという前向きな姿勢を誠実に伝えてください。
+`;
 
 const POST_PURPOSE_PROMPTS: Record<string, string> = {
   [PostPurpose.Auto]: "入力された内容に基づいて、最も魅力的な投稿を作成してください。",
@@ -299,8 +308,15 @@ export const generateContent = async (
 <system_instruction>
   <role>
     You are the "Ghostwriter" for the store owner of "${profile.name}".
+    ${hasPersona ? `
+    **STYLE HIERARCHY**:
+    1. **MAX PRIORITY**: <important_user_instruction> (Style Instruction Guide) and <learning_samples>.
+    2. **BACKGROUND ONLY**: Industry standards and general personality.
+    3. **FORBIDDEN**: AI's standard "polite" or "friendly" biases (e.g. adding generic ~です, ~だよ, ~ねっ).
+    ` : `
     ${industryRole}
     ${industryToneAdjust ? `TONE_SPECIFIC_INSTRUCTION: ${industryToneAdjust}` : ""}
+    `}
     ${profile.description ? `<store_dna>
     SOURCE_MATERIAL:
     ${profile.description}
@@ -317,8 +333,15 @@ export const generateContent = async (
     - **ROLE DEFINITION**:
       - Use **<persona_rules>** (YAML) to define the **Core Personality** (Dialect, Tone, Spirit).
       - Use **<learning_samples>** to define the **Structural Format** (Line breaks, Emoji density, Footer style).
+- **Tone & Rhythm**: Mimic the sentence endings and tone. 
+      - **STRICT RATIO ADHERENCE**: If the style guide specifies a ratio (e.g., "A represents 10%, B represents 60%"), you MUST mathematically reflect this. If a pattern is 10%, use it only once per 10 sentences. Do NOT over-apply a signature ending.
+      - **NEGATIVE CONSTRAINTS**: If the guide states a form is "NOT used" (e.g., "ですます調は一切見られない"), you MUST NOT use it. One violation makes the output invalid.
+      - **NO SUFFIX HALLUCINATION**: Do NOT append casual suffixes (like "〜っ") to every sentence just to mimic the "vibe". Only use them where they naturally occur in the samples.
+      - **AI BIAS REMOVAL**: **EXTERMINATE** the AI's natural tendency to be polite, helpful, or friendly (e.g., adding "〜ねっ", "〜よ〜", "〜😊"). If the samples are rough, blunt, or eccentric, YOU must be rough, blunt, or eccentric.
+      - **CRITICAL**: Use ONLY the sentence endings and nuances found in the samples or <persona_rules>. Do NOT add generic "marketing-style" or feminine endings if not explicitly present.
+      - **Structure & Flow**: Follow the sequence and **CTA (Call to Action)** style analyzed in the style guide.
+      - **Variety & Repetition**: Avoid repetitive patterns unless noted as a habit. Maintain emoji density as described.
       - **CRITICAL LENGTH RULE**: **Length** is determined by **Volume Control** below, NOT by the samples. If the samples are long but the user asks for 'Short', you MUST write a short post in the *style* of the samples.
-    - **Tone & Rhythm**: Mimic the sentence endings and tone. For line breaks/whitespace, follow the **Volume Control** setting (especially if Short).
     - **Volume Control**: Strictly follow the requested **Length: ${config.length}**. 
       - **Target Character Counts**:
         - **Short**: **Concise but Sufficient** (Range: ${targets.short.target} chars).
@@ -342,8 +365,8 @@ export const generateContent = async (
     - **Emojis & Symbols**: 
       ${isGMap ? 
         (hasPersona ? 
-          '- **Emojis**: Strictly follow the frequency and style from <learning_samples> or <persona_rules>. If the owner uses emojis in their replies, you MUST reproduce them to maintain their natural voice.\n      - **Symbols**: Reproduce the specific markers and punctuation patterns from the samples.' :
-          '- **Emojis**: Basically, DO NOT use emojis for Google Maps as it is a professional public space. Maintain a calm, text-only appearance unless specified otherwise.\n      - **Symbols**: Use standard Japanese punctuation. Avoid decorative symbols.'
+          '- **Emojis**: Strictly follow the frequency and style from <learning_samples> or <persona_rules>. If the owner uses emojis in their replies, you MUST reproduce them to maintain their natural voice.\n      - **Symbols**: Reproduce the specific markers and punctuation patterns from the samples.\n      ${GMAP_NEGATIVE_CONSTRAINTS}' :
+          '- **Emojis**: Basically, DO NOT use emojis for Google Maps as it is a professional public space. Maintain a calm, text-only appearance unless specified otherwise.\n      - **Symbols**: Use standard Japanese punctuation. Avoid decorative symbols.\n      ${GMAP_NEGATIVE_CONSTRAINTS}'
         ) : 
         `- **Emojis**: ${hasPersona ? 'Strictly follow patterns from samples.' : (config.includeEmojis ? `Select emojis that perfectly match the post's content and the industry (${profile.industry}). Prioritize variety and situational relevance (e.g., seasonal items, specific products, or relevant activities) over generic symbols to ensure a natural and engaging selection.` : 'DO NOT use any emojis.')}
     - **Symbols**: ${hasPersona && !config.includeSymbols ? 'Strictly follow patterns from samples.' : (config.includeSymbols ? `From the **Aesthetic Palette**:
@@ -470,6 +493,7 @@ DO NOT use stiff business boilerplate like "誠にありがとうございます
   ${activePersonaYaml ? `
   <persona_rules>
     The following rules represent the owner's "Style DNA" specifically for ${config.platform}.
+    ${hasPersona ? "**NOTE**: Treat these as secondary personality traits. <important_user_instruction> and <learning_samples> ALWAYS override these if there is a conflict." : ""}
     Strictly follow the **core_voice** defined here:
     ${activePersonaYaml}
   </persona_rules>
@@ -494,7 +518,7 @@ DO NOT use stiff business boilerplate like "誠にありがとうございます
     - Length: ${config.length} (Target: ${t.target} chars. Min: ${t.min} chars)
     - Tone: ${config.tone} (${TONE_RULES[config.tone] || TONE_RULES[Tone.Standard]})
     ${(isGMap && !hasPersona) ? `- Industry Specific Tone: ${TONE_INDUSTRY_ADJUSTMENTS[profile.industry]?.[config.tone] || TONE_INDUSTRY_ADJUSTMENTS['その他']?.[config.tone] || ""}` : ""}
-    - Features: ${isInstagram ? 'Visual focus.' : ''}${isX ? 'Under 140 chars.' : ''}${isGMap ? 'NO hashtags. Focus on maintaining the owner\'s personality in the reply.' : ''}${isLine ? 'Direct marketing style. NO hashtags. Focus on clear messaging.' : ''}
+    - Features: ${isInstagram ? 'Visual focus.' : ''}${isX ? 'Under 140 chars.' : ''}${isGMap ? `NO hashtags. Focus on maintaining the owner's personality in the reply. ${GMAP_NEGATIVE_CONSTRAINTS}` : ''}${isLine ? 'Direct marketing style. NO hashtags. Focus on clear messaging.' : ''}
     - Target Audience: ${config.targetAudience || profile.targetAudience || 'General Audience'}
     - Emojis: ${isGMap ? (hasPersona ? 'Strictly prioritize mimicking the samples\' frequency.' : 'Prohibited by default to maintain a formal public tone.') : (config.includeEmojis ? `Select emojis that are highly relevant to the industry (${profile.industry}) and current topic. Prioritize contextual variety (e.g., specific items, seasonal symbols, or mood-appropriate faces) and avoid repetition or over-reliance on specific characters.` : "DO NOT use any emojis (emoticons, icons, pictograms) under any circumstances. Keep it plain text only regarding emojis.")}
     - Special Characters: ${config.includeSymbols ? `From the **Aesthetic Palette**:
@@ -774,7 +798,7 @@ Original Platform: ${config.platform}
 ${hasPersona ? `
 **CRITICAL: PERSONA PRESERVATION MODE**
 Maintain the original "Voice" (slang, sentence endings, rhythm) 100%. 
-ONLY apply the user's specific instruction.
+ONLY apply the user's specific instruction. **STRICT RULE**: Do NOT add generic marketing-style endings or feminine particles (e.g., "〜の") if they are not present in the original content or samples.
 Reference Style: "${sampleText}"
 ` : `
 **Role**: Minimal interference editor. 
@@ -1191,10 +1215,18 @@ export const generateStyleInstruction = async (
     });
   });
 
-  const samplesByPlatform = normalizedSamples.reduce((acc, s) => {
-    acc[s.platform] = (acc[s.platform] || '') + `<sample>\n${s.content}\n</sample>\n`;
+  // IMPROVED: Group by platform FIRST to ensure each platform has visibility regardless of volume in others
+  const samplesByPlatformGrouped = (normalizedSamples || []).reduce((acc, s) => {
+    if (!acc[s.platform]) acc[s.platform] = [];
+    acc[s.platform].push(s.content);
     return acc;
-  }, {} as Record<string, string>);
+  }, {} as Record<string, string[]>);
+
+  // Take latest 10 samples per platform for balance and to prevent token overflow
+  const samplesByPlatform: Record<string, string> = {};
+  Object.entries(samplesByPlatformGrouped).forEach(([plat, posts]) => {
+    samplesByPlatform[plat] = posts.slice(0, 10).map((c, i) => `<sample id="${i+1}">\n${c}\n</sample>`).join("\n");
+  });
 
 const styleGuideSchema = {
     type: Type.OBJECT,
@@ -1208,32 +1240,30 @@ const styleGuideSchema = {
 };
 
   const systemInstruction = `
-You are an expert linguistic analyst specialized in Japanese social media nuances.
-Your task is to analyze social media posts and write a "Style Instruction Guide" (文体指示書) for each platform.
+あなたはプロの言語アナリストです。提供されたSNS投稿サンプルを深く分析し、その「文体（Voice）」を100%再現するための「文体指示書」をプラットフォームごとに作成してください。
 
-**Goal:**
-Create a **detailed, high-resolution** analysis of the writer's voice.
-Do NOT just be generic. You must capture the specific "quirks", "vocabulary", "sentence rhythm", and "emotional tone" of the user.
+**分析の目的:**
+単なる要約ではなく、執筆者固有の「癖」「リズム」「語彙」「絵文字の使い方」をキャプチャし、AIが完璧に模倣できるようにすることです。
 
-**Output Structure:**
-Return a JSON object where the keys are strictly: "${Platform.X}", "${Platform.Instagram}", "${Platform.Line}", "${Platform.GoogleMaps}".
-Values must be the style guide string (plain text with bullet points).
+**各文体指示書に含めるべき内容:**
+1. **文章の展開と構成**: 
+   - どのような順序で情報が伝えられているか（例：「キャッチコピー → 詳細内容 → CTA」など）。
+   - 最後に行動を促す流れ（CTAの形式）を具体的に分析してください。
+2. **語尾とリズム**: 
+   - 文末の傾向（ですます調、体言止め、記号のみ等）と、主要なパターンの出現比率を分析してください（例：○○調が7割など）。
+   - 文章の長さや、リズム感（短いフレーズの連用など）についても記述してください。
+3. **絵文字・記号の密度と使い方**: 
+   - 全体的な密度（例：全フレーズの半分で絵文字を使用）と、挿入される場所や特定の組み合わせを分析してください。
+4. **独自の語彙とトーン**: 
+   - 頻出するユニークな単語、言い回し、全体的な感情トーンを記述してください。
 
-**Content Guidelines for each value:**
-- **Tone & Voice**: Analyze the specific emotion (e.g., "Manic energy", "Calm professional", "Cynical humor").
-- **Keywords & Slang**: List specific words or phrases the user tends to use.
-- **Micro-Habits**: (e.g., "Uses half-width spaces between sentences", "Ends with '...' often", "Uses specific emojis like 🥺").
-- **Structure**: (e.g., "Short bursts of text", "Long storytelling format").
-
-**Rules:**
-- Content MUST be **Natural Japanese**.
-- Start each value with 【文体指示書】.
-- Use bullet points for readability.
-- **Formality Capture**: Accurately capture the level of formality. If the samples are casual/friendly (e.g., using '〜だね', '〜です♪', or specific emojis), the guide MUST explicitly instruct to maintain that casualness. DO NOT default to business formal unless indicated.
-- **Emoji Patterns**: Note the frequency and specific types of emojis used.
-- **CRITICAL:** If samples are provided for a platform, you **MUST** generate a guide for it. Do not skip it.
-- **CRITICAL:** The value for "X (Twitter)" must ONLY reflect the X samples. Do NOT mix styles.
-- **CRITICAL:** Do NOT use headers like "【Google Maps】" inside the value strings.
+**厳守事項:**
+- 各プラットフォームの解析結果（Value）は、箇条書きで分かりやすく記述し、必ず「【文体指示書】」で始めてください。
+- **再現性**: サンプルにない表現（例：特定のキャラクター付け、女性的な語尾など）を勝手に推測して追加しないでください。
+- **異常出力の禁止**: 「〜してね」「〜してください」といった一般的なアドバイスや、このシステムプロンプト自体のコピーを回答に含めないでください。純粋な「分析結果」のみを出力してください。
+- サークルや宣伝用の定型文をAIの判断で混入させず、サンプルの事実に徹してください。
+- サンプルがない場合は「該当サンプルなし」のみを返し、余計な説明や謝罪を省いてください。
+- 回答は純粋なJSONオブジェクトのみとし、前後に解説文などを一切含めないでください。
 `;
 
   const userPrompt = `Deeply analyze these samples and return the platform-specific Style Instruction Guides in JSON format.\nIf a platform has samples, you must provide a detailed analysis for it.\n\n${
@@ -1291,69 +1321,46 @@ Values must be the style guide string (plain text with bullet points).
         parsed = JSON.parse(rawText);
     } catch (parseError) {
         console.warn("[Gemini] JSON parsing failed. Attempting robust regex recovery...", parseError);
-        // Robust Fallback: Extract keys using Regex
-        // This allows us to save X and GoogleMaps even if LINE is truncated at the end.
         parsed = {};
-        const platforms = ['X (Twitter)', 'Instagram', 'LINE', 'Google Maps'];
+        const platforms = [Platform.X, Platform.Instagram, Platform.Line, Platform.GoogleMaps];
         
         platforms.forEach(p => {
-            // Regex to find: "PlatformName": "Content"
-            // We use [\s\S]*? lazy match to capture content until the next quote-comma or end
-            // This is tricky for nested quotes, but usually sufficient for simple text blocks.
-            // A safer bet is looking for the specific key and capturing until the next key or end of string.
+            const keyPattern = new RegExp(`"${p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"\\s*:\\s*"`, 'i');
+            const match = rawText.match(keyPattern);
             
-            // Matches: "Key": "Value..." (handling escaped quotes is hard in simple regex, but we try)
-            // We look for the key, then the colon, then opening quote.
-            const keyPattern = `"${p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"\\s*:\\s*"`;
-            const startIndex = rawText.search(new RegExp(keyPattern));
-            
-            if (startIndex !== -1) {
-                const contentStart = startIndex + rawText.match(new RegExp(keyPattern))![0].length;
-                // Find the end of this value. It usually ends with `",` or `"\n}` or just `"` if truncated.
-                // We'll walk forward counting backslashes to ensure we don't stop at escaped quotes.
-                let contentEnd = -1;
-                let i = contentStart;
+            if (match) {
+                const head = match[0];
+                const startIndex = rawText.indexOf(head) + head.length;
+                let content = "";
+                let i = startIndex;
                 while (i < rawText.length) {
                     if (rawText[i] === '"' && rawText[i-1] !== '\\') {
-                        // Potential end. Check if it's followed by comma or close brace or newline (heuristic)
-                        // Or just extract it.
-                        contentEnd = i;
-                        // Determine if this is really the end key. 
-                        // If the next char is non-whitespace and not comma/brace/newline, maybe we stopped early?
-                        // But standard JSON strings end at unescaped quote.
-                        // We check if the next significant char is a comma or other key?
-                        // For recovery, taking the first unescaped quote is usually correct unless the AI put unescaped quotes inside.
                         break;
                     }
+                    content += rawText[i];
                     i++;
                 }
 
-                if (contentEnd !== -1) {
-                    let extracted = rawText.substring(contentStart, contentEnd);
-                    // Unescape standard JSON escapes
-                    try {
-                        extracted = JSON.parse(`"${extracted}"`);
-                    } catch (e) {
-                         // Fallback unescape if simple parse fails (e.g. newlines)
-                         extracted = extracted.replace(/\\n/g, '\n').replace(/\\"/g, '"');
+                if (content.trim()) {
+                    let unescaped = content
+                        .replace(/\\n/g, '\n')
+                        .replace(/\\"/g, '"')
+                        .replace(/\\\\/g, '\\');
+                    
+                    if (unescaped.length > 3000) unescaped = unescaped.substring(0, 3000) + "...";
+                    parsed[p] = unescaped.trim();
+                    if (i === rawText.length) {
+                        parsed[p] += "\n\n(※解析データが途中で途切れたため、一部のみ復元しました)";
                     }
-                    parsed[p] = extracted;
                 } else {
-                     // If no end quote found (truncated), take everything until max length
-                     console.warn(`[Gemini] Value for ${p} appears truncated. Taking simplified substring.`);
-                     let extracted = rawText.substring(contentStart);
-                     // Limit length
-                     if (extracted.length > 2000) extracted = extracted.substring(0, 2000);
-                     parsed[p] = extracted; // Raw text, might include garbage at end
+                    parsed[p] = "解析中にエラーが発生しました（出力の欠落）";
                 }
             }
         });
-        
+
         if (Object.keys(parsed).length === 0) {
              console.error("[Gemini] Regex recovery failed. Returning empty object.");
-             return {};
-        } else {
-             console.log("[Gemini] Successfully recovered partial data keys:", Object.keys(parsed));
+             parsed = {};
         }
     }
     // Output Sanitation

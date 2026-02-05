@@ -816,17 +816,11 @@ const PresetModal: React.FC<PresetModalProps> = ({
     }
   };
 
-  const handleResetLearningForMode = async (mode: 'sns' | 'maps') => {
+  const handleResetStyleForMode = async (mode: 'sns' | 'maps') => {
     const presetId = selectedPresetId || 'omakase';
-    if (!confirm(`${mode === 'sns' ? 'SNS投稿' : 'マップ返信'}の全学習データを削除してもよろしいですか？この操作は取り消せません。`)) return;
+    if (!confirm(`AIが解析した${mode === 'sns' ? 'SNS投稿' : 'マップ返信'}の文体指示書をリセットしてもよろしいですか？（※学習済みの投稿データは削除されません）`)) return;
     setIsResetting(true);
     try {
-      const platform = mode === 'sns' ? 'sns_all' : Platform.GoogleMaps;
-      const res = await fetch(`/api/me/learning?presetId=${presetId}&platform=${platform}`, {
-        method: 'DELETE',
-      });
-      if (!res.ok) throw new Error('Failed to reset learning');
-
       // Clear local style instructions
       const nextPrompts = { ...customPrompts };
 
@@ -851,17 +845,15 @@ const PresetModal: React.FC<PresetModalProps> = ({
       setLastAnalyzedState(prev => ({ ...prev, [mode]: '' }));
 
       // Persist the cleared prompts to the database immediately
-      // CRITICAL: Pass captured presetId to prevent race conditions during profile switching
       await handleSave(finalCleanPrompts, presetId);
 
-      // Force clear internal saving state if handleSave was skipped or finished
       setIsInternalSaving(false);
 
       if (onRefreshTraining) {
         await onRefreshTraining();
       }
     } catch (err) {
-      console.error('Failed to reset learning:', err);
+      console.error('Failed to reset style:', err);
       alert('リセットに失敗しました。');
     } finally {
       setIsResetting(false);
@@ -954,7 +946,7 @@ const PresetModal: React.FC<PresetModalProps> = ({
                 setModalText('');
                 setLearningMode(mode);
                 setExpandingPlatform(mode === 'sns' ? Platform.General : Platform.GoogleMaps);
-                setSelectedPlatforms([]); // Start with no selection for new entries
+                setSelectedPlatforms(mode === 'maps' ? [Platform.GoogleMaps] : []); // Start with no selection for new entries (maps gets Google Maps by default)
               }}
               className={`flex items-center gap-2 px-6 py-3 border text-white rounded-2xl font-black text-[11px] uppercase tracking-widest transition-all shadow-lg active:scale-95 ${mode === 'sns' ? 'bg-[#eb714f] border-[#eb714f] hover:bg-[#eb714f]/80 hover:border-[#eb714f]/80 shadow-[#d8e9f4]' : 'bg-[#00b900] border-[#00b900] hover:bg-[#00b900]/80 hover:border-[#00b900]/80 shadow-[#d8e9f4]'} `}
             >
@@ -1005,18 +997,6 @@ const PresetModal: React.FC<PresetModalProps> = ({
           }}
         />
 
-        {/* Show Reset button if there are samples OR AI style prompts to clear */}
-        {(samples.length > 0 || (mode === 'sns' ? (customPrompts[Platform.X] || customPrompts[Platform.Instagram] || customPrompts[Platform.Line]) : customPrompts[Platform.GoogleMaps])) && (
-          <div className="flex justify-center pt-2">
-            <button
-              onClick={() => handleResetLearningForMode(mode)}
-              className="flex items-center gap-2 px-6 py-3 text-stone-400 hover:text-rose-500 hover:bg-rose-50 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] transition-all active:scale-95"
-            >
-              <RotateCcwIcon className="w-3.5 h-3.5" />
-              <span>Reset {mode.toUpperCase()} Data</span>
-            </button>
-          </div>
-        )}
       </div>
     );
 
@@ -1091,6 +1071,17 @@ const PresetModal: React.FC<PresetModalProps> = ({
           <p className="text-[11px] text-slate-400 font-bold px-4 leading-relaxed">
             ※AIが媒体ごとに抽出した指示内容を直接編集できます。こだわりがある場合はここを書き換えて保存してください。
           </p>
+
+          <div className="flex justify-center pt-2">
+            <button
+              onClick={() => handleResetStyleForMode(mode)}
+              disabled={isResetting}
+              className="flex items-center gap-2 px-6 py-3 text-slate-300 hover:text-rose-400 hover:bg-rose-50/50 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] transition-all active:scale-95 disabled:opacity-30"
+            >
+              <RotateCcwIcon className={`w-3.5 h-3.5 ${isResetting ? 'animate-spin' : ''}`} />
+              <span>解析結果をリセット</span>
+            </button>
+          </div>
         </div>
       );
     };
@@ -1320,6 +1311,9 @@ const PresetModal: React.FC<PresetModalProps> = ({
     portalTarget
   );
 
+  const activeTrainingPlatforms = learningMode === 'maps' ? [Platform.GoogleMaps] : selectedPlatforms;
+  const isPlatformSelectionReady = learningMode === 'maps' || activeTrainingPlatforms.length > 0;
+
   // Focus Mode Overlay (Learning Editor)
   const focusModeOverlay = expandingPlatform && createPortal(
     <div className="fixed inset-0 z-[10001] flex items-center justify-center p-0 md:p-8 pointer-events-auto">
@@ -1507,8 +1501,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
             </button>
           ) : (
             <button
-              onClick={() => handleToggleTrainingInternal(modalText, selectedPlatforms)}
-              disabled={isTrainingLoading || !modalText.trim() || selectedPlatforms.length === 0}
+              onClick={() => handleToggleTrainingInternal(modalText, activeTrainingPlatforms)}
+              disabled={isTrainingLoading || !modalText.trim() || !isPlatformSelectionReady}
               className="w-full md:w-auto px-12 py-5 bg-[#2b2b2f] text-white rounded-[2rem] font-black text-[14px] tracking-[0.2em] shadow-xl hover:bg-black active:scale-95 transition-all disabled:opacity-30 flex items-center justify-center gap-3"
             >
               {isTrainingLoading ? <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <SaveIcon className="w-5 h-5" />}
