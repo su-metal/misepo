@@ -7,6 +7,7 @@ export default function manifest(): MetadataRoute.Manifest {
     description: '店舗向けAI投稿作成アシスタント',
     start_url: '/generate',
     display: 'standalone',
+    scope: '/',
     background_color: '#000000',
     theme_color: '#000000',
     icons: [

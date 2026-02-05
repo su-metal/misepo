@@ -25,6 +25,7 @@ export const TrendSidebar: React.FC<TrendSidebarProps> = ({
     const [isLoading, setIsLoading] = React.useState(false);
     const [hasFetched, setHasFetched] = React.useState(false);
     const [selectedDate, setSelectedDate] = React.useState<string | null>(null);
+    const [failedMonths, setFailedMonths] = React.useState<Set<string>>(new Set());
 
     const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
     const startDay = new Date(currentYear, currentMonth, 1).getDay();
@@ -33,20 +34,25 @@ export const TrendSidebar: React.FC<TrendSidebarProps> = ({
     React.useEffect(() => {
         setTrendCache([]);
         setHasFetched(false);
+        setFailedMonths(new Set());
     }, [industry, description]);
 
     const fetchTrends = async (year: number, month: number, force: boolean = false) => {
+        const monthKey = `${year}-${month}`;
         setIsLoading(true);
         try {
-            const params = new URLSearchParams({
-                year: year.toString(),
-                month: (month + 1).toString(),
-                duration: '3',
-                force: force ? 'true' : 'false',
-                industry: industry || '',
-                description: description || ''
+            const res = await fetch(`/api/trends`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    year: year,
+                    month: month + 1,
+                    duration: 3,
+                    force: force,
+                    industry: industry || '',
+                    description: description || ''
+                })
             });
-            const res = await fetch(`/api/trends?${params.toString()}`);
             if (!res.ok) throw new Error("Failed to fetch");
             const data = await res.json();
 
@@ -58,8 +64,15 @@ export const TrendSidebar: React.FC<TrendSidebarProps> = ({
                     return Array.from(trendMap.values());
                 });
             }
+            // If success, remove from failed if it was there
+            setFailedMonths(prev => {
+                const next = new Set(prev);
+                next.delete(monthKey);
+                return next;
+            });
         } catch (e) {
             console.error(e);
+            setFailedMonths(prev => new Set(prev).add(monthKey));
         } finally {
             setIsLoading(false);
             setHasFetched(true);
@@ -67,18 +80,21 @@ export const TrendSidebar: React.FC<TrendSidebarProps> = ({
     };
 
     React.useEffect(() => {
-        if (!hasFetched) {
+        const monthKey = `${currentYear}-${currentMonth}`;
+        if (!hasFetched && !failedMonths.has(monthKey)) {
             fetchTrends(currentYear, currentMonth);
         }
-    }, [hasFetched, currentYear, currentMonth]);
+    }, [hasFetched, currentYear, currentMonth, failedMonths]);
 
     React.useEffect(() => {
         const targetPrefix = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`;
         const hasDataForMonth = trendCache.some(t => t.date.startsWith(targetPrefix));
-        if (!hasDataForMonth && !isLoading) {
+        const monthKey = `${currentYear}-${currentMonth}`;
+
+        if (!hasDataForMonth && !isLoading && !failedMonths.has(monthKey)) {
             fetchTrends(currentYear, currentMonth);
         }
-    }, [currentYear, currentMonth, trendCache, isLoading]);
+    }, [currentYear, currentMonth, trendCache, isLoading, failedMonths]);
 
     const handlePrevMonth = () => {
         let newMonth = currentMonth - 1;
