@@ -12,6 +12,7 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 import { getJSTDateRange } from "@/lib/dateUtils";
+import { getPlanFromPriceId } from "@/lib/billing/plans";
 
 export async function GET() {
   const cookieStore = await cookies();
@@ -112,7 +113,7 @@ export async function GET() {
   }
 
   // --- SELF-HEALING: Check for Stripe ---
-  if (ent.stripe_customer_id && (!ent.billing_reference_id || (ent.status === 'inactive' || ent.status === 'trialing'))) {
+  if (ent.stripe_customer_id) {
     try {
       const subs = await stripe.subscriptions.list({
         customer: ent.stripe_customer_id,
@@ -122,9 +123,13 @@ export async function GET() {
 
       if (subs.data.length > 0) {
         const sub: any = subs.data[0];
-        const subPlan = sub.metadata.plan || "entry";
+        const priceId = sub.items.data[0]?.price?.id;
+        const subPlanFromPrice = getPlanFromPriceId(priceId);
+        const subPlan = sub.metadata.plan || subPlanFromPrice || "entry";
         
-        if (sub.status !== ent.status || subPlan !== ent.plan) {
+        // Always heal if there's a status mismatch or a plan mismatch
+        if (!ent.billing_reference_id || sub.status !== ent.status || subPlan !== ent.plan) {
+          console.log(`[PlanAPI] Healing triggered: DB(${ent.plan}/${ent.status}) -> Stripe(${subPlan}/${sub.status})`);
           const newExpiresAt = sub.cancel_at ? new Date(sub.cancel_at * 1000).toISOString() : 
                                sub.current_period_end ? new Date(sub.current_period_end * 1000).toISOString() : 
                                null;
@@ -151,6 +156,7 @@ export async function GET() {
       console.error("[PlanAPI] Stripe healing failed:", e);
     }
   }
+
 
   const nowMs = Date.now();
   const trialEndsMs = ent.trial_ends_at ? new Date(ent.trial_ends_at).getTime() : null;

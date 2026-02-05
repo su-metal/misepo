@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { env } from "@/lib/env";
+import { getPlanFromPriceId } from "@/lib/billing/plans";
 
 // ✅ CHANGE: Buffer を確実に使えるよう Node runtime 固定
 export const runtime = "nodejs";
@@ -85,10 +86,14 @@ export async function POST(req: Request) {
               ? sub.customer
               : sub?.customer?.id ?? null);
 
+      const priceId = sub.items.data[0]?.price?.id;
+      const subPlanFromPrice = getPlanFromPriceId(priceId);
+      const plan = session?.metadata?.plan || sub?.metadata?.plan || subPlanFromPrice || "entry";
+
       await upsertEntitlement({
         userId,
         appId,
-        plan: session?.metadata?.plan || sub?.metadata?.plan || "pro",
+        plan,
         status: sub?.status ?? "inactive",
         expiresAt: getExpiresAt(sub),
         trialEndsAt: getTrialEndsAt(sub),
@@ -135,10 +140,14 @@ export async function POST(req: Request) {
           ? sub.customer
           : sub?.customer?.id ?? null;
 
+      const priceId = sub.items.data[0]?.price?.id;
+      const subPlanFromPrice = getPlanFromPriceId(priceId);
+      const plan = sub?.metadata?.plan || subPlanFromPrice || "entry";
+
       await upsertEntitlement({
         userId,
         appId,
-        plan: sub?.metadata?.plan || "pro",
+        plan,
         status: sub?.status ?? "inactive",
         expiresAt: getExpiresAt(sub),
         trialEndsAt: getTrialEndsAt(sub),
