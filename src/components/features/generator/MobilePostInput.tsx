@@ -633,13 +633,14 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                         <div
                             onClick={!isGoogleMaps && platforms.length > 0 ? handleOmakaseStart : undefined}
                             className={`
-                relative group transition-all duration-500
+                relative group transition-all duration-500 rounded-[24px] overflow-hidden
                 ${!isGoogleMaps && platforms.length > 0
-                                ? 'cursor-pointer active:scale-[0.98] hover:-translate-y-1 hover:shadow-[0_25px_45px_rgba(37,99,235,0.25)]'
+                                ? 'cursor-pointer active:scale-[0.98]'
                                 : 'cursor-not-allowed grayscale opacity-70'}
             `}
                         >
-                            <div className="relative overflow-hidden rounded-[24px] bg-white/70 backdrop-blur-xl border border-white/70 shadow-[0_16px_40px_rgba(15,23,42,0.12)]">
+                            <div className="relative overflow-hidden rounded-[24px] border border-white/70 shadow-[0_16px_40px_rgba(15,23,42,0.12)] transition-all duration-500 group-hover:-translate-y-1 group-hover:shadow-[0_25px_45px_rgba(37,99,235,0.25)]"
+                                style={{ background: 'linear-gradient(160deg, rgba(236,248,255,0.95) 0%, rgba(255,255,255,0.92) 45%, rgba(217,237,255,0.92) 100%)' }}>
                                 <div className="absolute -top-24 -left-24 w-48 h-48 bg-blue-500/10 rounded-full blur-[80px]" />
                                 <div className="flex">
                                     <div className="flex-1 p-6 flex flex-col gap-4">
