@@ -16,6 +16,15 @@ import {
 import { TARGET_AUDIENCES } from '../../../constants';
 import { PostResultTabs } from './PostResultTabs';
 
+const hexToRgba = (hex: string, alpha: number) => {
+    const sanitized = hex.replace('#', '');
+    const bigint = parseInt(sanitized, 16);
+    const r = (bigint >> 16) & 255;
+    const g = (bigint >> 8) & 255;
+    const b = bigint & 255;
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};
+
 export const MobilePostInput: React.FC<PostInputFormProps> = ({
     platforms, activePlatform, isMultiGen, onPlatformToggle, onToggleMultiGen, onSetActivePlatform,
     platform, postPurpose, gmapPurpose, onPostPurposeChange, onGmapPurposeChange,
@@ -509,7 +518,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         tagline: 'Visual Story',
                                         sub: '世界観と統一感',
                                         icon: <InstagramIcon className="w-7 h-7" />,
-                                        color: 'from-purple-400/10 to-pink-400/10'
+                                        color: 'from-purple-500/10 to-pink-500/10'
                                     };
                                     case Platform.X: return {
                                         name: 'X',
@@ -522,15 +531,15 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         name: 'LINE',
                                         tagline: 'Messages',
                                         sub: 'リピーター獲得',
-                                        icon: <LineIcon className="w-7 h-7" isActive={isActive} activeTextFill="#56A67A" textFill={isActive ? '#56A67A' : '#ffffff'} />,
-                                        color: 'from-green-400/10 to-emerald-400/10'
+                                        icon: <LineIcon className="w-7 h-7" isActive={isActive} activeTextFill="#1FA14D" textFill={isActive ? '#1FA14D' : '#ffffff'} />,
+                                        color: 'from-green-500/10 to-emerald-500/10'
                                     };
                                     case Platform.GoogleMaps: return {
                                         name: 'Google Maps',
                                         tagline: 'Local Search',
                                         sub: '店舗集客とMEO対策',
                                         icon: <GoogleMapsIcon className="w-7 h-7" />,
-                                        color: 'from-blue-400/10 to-red-400/10'
+                                        color: 'from-blue-500/10 to-red-500/10'
                                     };
                                     default: return { name: '', tagline: '', sub: '', icon: null, color: '' };
                                 }
@@ -542,27 +551,34 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                 const bentoClass = 'h-[110px]';
 
                                 // Map brand colors
-                                const brandColor = p === Platform.Instagram ? '#C26A86' :
+                                const brandColor = p === Platform.Instagram ? '#D23877' :
                                     p === Platform.X ? '#111827' :
-                                        p === Platform.Line ? '#56A67A' :
-                                            p === Platform.GoogleMaps ? '#6C8DB8' : '#2b2b2f';
+                                        p === Platform.Line ? '#1FA14D' :
+                                            p === Platform.GoogleMaps ? '#3F76DF' : '#2b2b2f';
+
+                                const cardClasses = `
+                                                relative rounded-[24px] overflow-hidden cursor-pointer border transition-all duration-200 ease-out group focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-2 focus-visible:ring-offset-white
+                                                ${bentoClass}
+                                                ${isActive
+                                                ? 'scale-[1.02] border-[2.5px] shadow-none'
+                                                : 'bg-[#f6f6f8] border-slate-200 shadow-[0_10px_30px_rgba(15,23,42,0.1)] hover:-translate-y-0.5 hover:shadow-[0_18px_45px_rgba(15,23,42,0.15)] active:translate-y-[1px] active:shadow-none'
+                                            }
+                                        `;
+
+                                const cardStyle = isActive ? {
+                                    borderColor: brandColor,
+                                    backgroundColor: brandColor,
+                                    boxShadow: `0 0 0 3px ${hexToRgba(brandColor, 0.35)}, 0 20px 45px rgba(15,23,42,0.25)`
+                                } : {};
+
+                                const ctaTextColor = isActive ? 'text-white/80' : 'text-[#2b2b2f]/70';
 
                                 return (
                                     <div
                                         key={p}
                                         onClick={() => onPlatformToggle(p)}
-                                        className={`
-                                                relative rounded-[24px] overflow-hidden cursor-pointer border transition-all duration-500 group
-                                                ${bentoClass}
-                                                ${isActive
-                                                ? `scale-[1.02] border-[2.5px] shadow-sm`
-                                                : `bg-[#edeff1] border-slate-100 shadow-sm hover:border-slate-300 active:scale-[0.98]`
-                                            }
-                                        `}
-                                        style={isActive ? {
-                                            borderColor: brandColor,
-                                            backgroundColor: brandColor,
-                                        } : {}}
+                                        className={cardClasses}
+                                        style={cardStyle}
                                     >
                                         {/* Bento Card Content */}
                                         <div className="absolute inset-0 px-5 py-4 flex flex-col justify-between">
@@ -596,7 +612,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             </div>
 
                                             <div className="flex flex-col">
-                                                <div className="flex flex-col leading-tight">
+                                                <div className="flex flex-col leading-tight gap-1">
                                                     <h3 className={`font-black tracking-tighter text-xl transition-colors duration-500 whitespace-nowrap ${isActive ? 'text-white' : 'text-[#2b2b2f]'}`} style={{ fontFamily: 'Inter, sans-serif' }}>
                                                         {details.name}
                                                     </h3>
@@ -618,7 +634,9 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             onClick={!isGoogleMaps && platforms.length > 0 ? handleOmakaseStart : undefined}
                             className={`
                 relative group transition-all duration-500
-                ${!isGoogleMaps && platforms.length > 0 ? 'cursor-pointer active:scale-[0.98]' : 'cursor-not-allowed grayscale opacity-70'}
+                ${!isGoogleMaps && platforms.length > 0
+                                ? 'cursor-pointer active:scale-[0.98] hover:-translate-y-1 hover:shadow-[0_25px_45px_rgba(37,99,235,0.25)]'
+                                : 'cursor-not-allowed grayscale opacity-70'}
             `}
                         >
                             <div className="relative overflow-hidden rounded-[24px] bg-white/70 backdrop-blur-xl border border-white/70 shadow-[0_16px_40px_rgba(15,23,42,0.12)]">
@@ -674,13 +692,15 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         <span className="[writing-mode:vertical-lr] text-slate-500/70 text-[9px] font-black uppercase tracking-[0.25em] mb-4 group-hover:text-slate-700">
                                             Generate
                                         </span>
-                                        <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all shadow-sm ${isOmakaseLoading
-                                            ? 'bg-white'
-                                            : (!isGoogleMaps ? 'bg-slate-900/5 group-hover:bg-blue-600' : 'bg-slate-200')}`}>
+                                        <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-200 ${isOmakaseLoading
+                                            ? 'bg-white border border-slate-200 shadow-[0_12px_35px_rgba(15,23,42,0.18)]'
+                                            : (!isGoogleMaps
+                                                ? 'bg-blue-600 text-white shadow-[0_14px_40px_rgba(37,99,235,0.45)] group-hover:bg-blue-700'
+                                                : 'bg-slate-200 text-slate-400 shadow-sm')}`}>
                                             {isOmakaseLoading ? (
                                                 <div className="w-5 h-5 border-[2.5px] border-blue-500 border-t-transparent rounded-full animate-spin" />
                                             ) : (
-                                                <ChevronRightIcon className={`w-5 h-5 ${!isGoogleMaps ? 'text-slate-700 group-hover:text-white group-hover:translate-x-0.5' : 'text-slate-400'} transition-all`} />
+                                                <ChevronRightIcon className={`w-5 h-5 transition-all ${!isGoogleMaps ? 'text-white' : 'text-slate-400'}`} />
                                             )}
                                         </div>
                                     </div>
