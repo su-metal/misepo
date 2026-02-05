@@ -15,7 +15,12 @@ export async function GET() {
     error,
   } = await supabase.auth.getUser();
 
-  if (error || !user) {
+  if (error) {
+    console.error("[HISTORY API] Auth error:", error);
+    return NextResponse.json({ ok: false, error: "Authentication failed" }, { status: 500 });
+  }
+
+  if (!user) {
     return NextResponse.json({ ok: false, error: "unauthorized" }, { status: 401 });
   }
 
@@ -149,7 +154,12 @@ export async function POST(req: Request) {
     error,
   } = await supabase.auth.getUser();
 
-  if (error || !user) {
+  if (error) {
+    console.error("[HISTORY API POST] Auth error:", error);
+    return NextResponse.json({ ok: false, error: "Authentication failed" }, { status: 500 });
+  }
+
+  if (!user) {
     return NextResponse.json({ ok: false, error: "unauthorized" }, { status: 401 });
   }
 

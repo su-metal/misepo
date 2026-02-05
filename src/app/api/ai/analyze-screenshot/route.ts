@@ -1,23 +1,17 @@
 import { NextResponse } from "next/server";
 import { extractPostFromImage } from "@/services/geminiService";
-import { createClient } from "@/lib/supabase/server";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { env } from "@/lib/env";
-import { computeCanUseApp } from "@/lib/entitlements/canUseApp";
 import { getJSTDateRange } from "@/lib/dateUtils";
 import { Platform } from "@/types";
+import { validateAiAccess } from "@/lib/api/aiHelper";
 
 const APP_ID = env.APP_ID;
 
 export async function POST(req: Request) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
-  }
+  // We skip automatic insert to check the specific loose limit (50) first
+  const { user, entitlement, errorResponse } = await validateAiAccess('extract', { skipInsert: true });
+  if (errorResponse) return errorResponse;
 
   const userId = user.id;
 
@@ -36,40 +30,20 @@ export async function POST(req: Request) {
         return NextResponse.json({ ok: false, error: "Invalid platform" }, { status: 400 });
     }
 
-    // --- Entitlement Check ---
-    const { data: ent, error: entErr } = await supabaseAdmin
-      .from("entitlements")
-      .select("plan,status,expires_at,trial_ends_at")
-      .eq("app_id", APP_ID)
-      .eq("user_id", userId)
-      .maybeSingle();
-
-    if (entErr) return NextResponse.json({ ok: false, error: entErr.message }, { status: 500 });
-    
-    let effectiveEnt = ent ?? null;
-    if (!effectiveEnt) {
-      const { data: created, error: createErr } = await supabaseAdmin
-        .from("entitlements")
-        .upsert({ app_id: APP_ID, user_id: userId, plan: "free", status: "inactive" }, { onConflict: "user_id,app_id" })
-        .select("plan,status,expires_at,trial_ends_at")
-        .single();
-      if (createErr) return NextResponse.json({ ok: false, error: createErr.message }, { status: 500 });
-      effectiveEnt = created;
-    }
-
-    if (!computeCanUseApp(effectiveEnt)) {
-      return NextResponse.json({ ok: false, error: "access_denied" }, { status: 403 });
-    }
-
     // --- Usage tracking (Relaxed limit for UX) ---
     const { startOfToday } = getJSTDateRange();
-    const { data: todayRuns } = await supabaseAdmin
+    const { data: todayRuns, error: countErr } = await supabaseAdmin
       .from("ai_runs")
       .select("run_type")
       .eq("user_id", userId)
       .eq("app_id", APP_ID)
       .eq("run_type", "extract")
       .gte("created_at", startOfToday);
+
+    if (countErr) {
+        console.error(`[SCREENSHOT API] Failed to count daily usage for user ${userId}:`, countErr);
+        return NextResponse.json({ ok: false, error: "Failed to check usage limits" }, { status: 500 });
+    }
 
     const extractCount = todayRuns?.length || 0;
     
@@ -79,13 +53,18 @@ export async function POST(req: Request) {
     }
 
     // Record usage
-    await supabaseAdmin.from("ai_runs").insert({
+    const { error: runError } = await supabaseAdmin.from("ai_runs").insert({
       app_id: APP_ID,
       user_id: userId,
       run_type: 'extract',
     });
 
-    const isProPlan = effectiveEnt.plan === 'professional' || effectiveEnt.plan === 'pro' || effectiveEnt.plan === 'standard';
+    if (runError) {
+        console.error(`[SCREENSHOT API] Failed to record usage (extract) for user ${userId}:`, runError);
+        return NextResponse.json({ ok: false, error: "Failed to record usage" }, { status: 500 });
+    }
+
+    const isProPlan = entitlement.plan === 'professional' || entitlement.plan === 'pro' || entitlement.plan === 'standard';
     const extractedText = await extractPostFromImage(
       image,
       mimeType,
@@ -100,7 +79,7 @@ export async function POST(req: Request) {
   } catch (error: any) {
     console.error("Screenshot analysis error:", error);
     return NextResponse.json(
-      { ok: false, error: "Internal Server Error" },
+      { ok: false, error: error.message || "Internal Server Error" },
       { status: 500 }
     );
   }

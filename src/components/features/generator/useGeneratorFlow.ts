@@ -425,7 +425,6 @@ export function useGeneratorFlow(props: {
         body: JSON.stringify({
           profile: storeProfile,
           configs: batchConfigs, // Sent as array
-          save_history: true,
           presetId: activePresetId
         }),
       });
