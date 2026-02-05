@@ -1,8 +1,12 @@
 
+import { Suspense } from 'react';
+
 import App from '../../App';
 
 export default function GeneratePage() {
     return (
-        <App />
+        <Suspense fallback={null}>
+            <App />
+        </Suspense>
     );
 }
