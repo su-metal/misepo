@@ -916,7 +916,7 @@ const trendSchema = {
                     hashtags: { type: Type.ARRAY, items: { type: Type.STRING } },
                     isRecommended: { type: Type.BOOLEAN }
                 },
-                required: ["date", "title", "icon", "description", "hashtags", "isRecommended"]
+                required: ["date", "title", "icon", "description", "prompt", "hashtags", "isRecommended"]
             }
         }
     },

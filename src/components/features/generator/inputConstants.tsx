@@ -59,6 +59,7 @@ export interface PostInputFormProps {
     resetTrigger?: number;
     closeDrawerTrigger?: number; // New prop for closing drawer without reset
     openDrawerTrigger?: number; // New prop for opening drawer explicitly
+    targetStep?: 'platform' | 'input' | 'confirm' | 'result'; // New prop for specifying initial step
     // Result related props
     generatedResults?: any[]; // Using any[] here to avoid circular or complex import issues if needed, but GeneratedResult is better.
     activeResultTab?: number;

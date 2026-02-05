@@ -34,7 +34,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     includeFooter, onIncludeFooterChange, onAutoFormat,
     isAutoFormatting, onCopy, onMobileResultOpen, restoreTrigger,
     onStepChange, closeDrawerTrigger, openDrawerTrigger, onOpenOnboarding,
-    onOpenSettings,
+    onOpenSettings, targetStep,
     targetAudiences, onTargetAudiencesChange,
     question, onQuestionChange,
     topicPrompt, onTopicPromptChange
@@ -75,7 +75,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
         if (onTopicPromptChange) onTopicPromptChange('');
         setTimeout(() => {
             setIsOmakaseLoading(false);
-            setMobileStep('input');
+            setMobileStep('confirm');
             setIsStepDrawerOpen(true);
             // Pre-fill context
             const strategyPrompt = `✨ ${event.title} (${event.date}) の生成指示：\n${event.prompt}\n\nおすすめハッシュタグ: ${event.hashtags.join(' ')}`;
@@ -130,7 +130,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
             setIsOmakaseMode(false);
             if (onQuestionChange) onQuestionChange('');
             if (onTopicPromptChange) onTopicPromptChange('');
-            setMobileStep('input');
+            setMobileStep('confirm');
             setIsStepDrawerOpen(true);
         }
     }, [openDrawerTrigger]);
@@ -283,7 +283,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
         if (onQuestionChange) onQuestionChange('');
         if (onTopicPromptChange) onTopicPromptChange('');
         onSetActivePlatform(p);
-        setMobileStep('input');
+        setMobileStep('confirm');
         setIsStepDrawerOpen(true);
     };
 
@@ -343,7 +343,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
         // Brief delay for "Thinking" feel
         setTimeout(() => {
             setIsOmakaseLoading(false);
-            setMobileStep('input');
+            setMobileStep('confirm');
             setIsStepDrawerOpen(true);
             // Always reset and pre-fill with a magic prompt for Omakase Mode
             onInputTextChange("✨ AIおまかせ生成：今日のおすすめやお店の雰囲気に合わせて、魅力的な文章を考えて！");

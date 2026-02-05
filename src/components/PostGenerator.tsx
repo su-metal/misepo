@@ -253,6 +253,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
               onOpenOnboarding={() => setShowOnboarding(true)}
               targetAudiences={flow.targetAudiences}
               onTargetAudiencesChange={flow.setTargetAudiences}
+              targetStep={mobileStep}
             />
           </div>
 
@@ -299,7 +300,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
               const textToAdd = `【話題のネタ】\n${event.title}\n${event.prompt}`;
               // Overwrite existing text
               flow.setInputText(textToAdd);
-              setMobileStep('input');
+              setMobileStep('confirm');
               // Trigger drawer open for Omakase flow
               setOpenDrawerTrigger(prev => prev + 1);
             }}
