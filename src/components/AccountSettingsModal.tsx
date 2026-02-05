@@ -128,40 +128,44 @@ const AccountSettingsModal: React.FC<AccountSettingsModalProps> = ({ user, plan,
                                 </div>
                             )}
 
-                            <div className={`relative ${isPro ? 'bg-white/95 backdrop-blur-xl rounded-[31px]' : ''} p-6 flex items-center justify-between`}>
-                                <div className="flex items-center gap-4">
-                                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-sm transition-all duration-500 ${isPro ? 'bg-indigo-50 text-[#7F5AF0]' : 'bg-white text-slate-300'}`}>
-                                        <StarIcon className="w-6 h-6 fill-current" />
-                                    </div>
-                                    <div>
-                                        <div className="flex items-center gap-2 mb-0.5">
-                                            <span className={`text-lg font-black tracking-tight ${isPro ? 'text-slate-800' : 'text-slate-700'}`}>
-                                                {plan?.plan === 'entry' ? 'Entry Plan' :
-                                                    plan?.plan === 'standard' ? 'Standard Plan' :
-                                                        plan?.plan === 'professional' ? 'Professional Plan' :
-                                                            isTrial ? 'Trial Plan' :
-                                                                'Free Plan'}
-                                            </span>
-                                            {isPro && (
-                                                <span className="text-[9px] px-2 py-0.5 rounded-full font-black uppercase tracking-widest bg-indigo-50 text-[#7F5AF0]">
-                                                    {isTrial ? 'Trialing' : 'Active'}
-                                                </span>
-                                            )}
+                            <div className={`relative ${isPro ? 'bg-white/95 backdrop-blur-xl rounded-[31px]' : ''} p-6 flex flex-col gap-5`}>
+                                <div className="flex items-start justify-between">
+                                    <div className="flex items-center gap-4">
+                                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-sm transition-all duration-500 ${isPro ? 'bg-indigo-50 text-[#7F5AF0]' : 'bg-white text-slate-300'}`}>
+                                            <StarIcon className="w-6 h-6 fill-current" />
                                         </div>
-                                        <p className={`text-xs font-bold ${isPro ? 'text-slate-500' : 'text-slate-400'}`}>
-                                            {isTrial
-                                                ? `残り ${getTrialRemainingDays()} 日`
-                                                : isPaid
-                                                    ? '全ての機能が利用可能です'
-                                                    : '制限付きプラン'}
-                                        </p>
+                                        <div>
+                                            <div className="flex items-center gap-2 mb-0.5">
+                                                <span className={`text-lg font-black tracking-tight ${isPro ? 'text-slate-800' : 'text-slate-700'}`}>
+                                                    {plan?.plan === 'entry' ? 'Entry Plan' :
+                                                        plan?.plan === 'standard' ? 'Standard Plan' :
+                                                            plan?.plan === 'professional' ? 'Professional Plan' :
+                                                                isTrial ? 'Trial Plan' :
+                                                                    'Free Plan'}
+                                                </span>
+                                                {isPro && (
+                                                    <span className="text-[9px] px-2 py-0.5 rounded-full font-black uppercase tracking-widest bg-indigo-50 text-[#7F5AF0]">
+                                                        {isTrial ? 'Trialing' : 'Active'}
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <p className={`text-xs font-bold ${isPro ? 'text-slate-500' : 'text-slate-400'}`}>
+                                                {isTrial
+                                                    ? `残り ${getTrialRemainingDays()} 日`
+                                                    : isPaid
+                                                        ? '全ての機能が利用可能です'
+                                                        : '制限付きプラン'}
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
 
                                 {plan?.plan !== 'professional' && plan?.plan !== 'monthly' && plan?.plan !== 'yearly' && plan?.plan !== 'pro' && (
-                                    <a href="/start?upgrade=true" className="px-5 py-2.5 text-[10px] font-black rounded-full transition-all uppercase tracking-widest shrink-0 shadow-lg bg-[#7F5AF0] text-white hover:bg-[#6c4bd6] hover:scale-105 active:scale-95">
-                                        {plan?.plan === 'free' || plan?.plan === 'trial' ? 'Upgrade' : 'Plan UP'}
-                                    </a>
+                                    <div className="flex justify-start">
+                                        <a href="/start?upgrade=true" className="px-6 py-2.5 text-[10px] font-black rounded-full transition-all uppercase tracking-widest shadow-lg bg-[#7F5AF0] text-white hover:bg-[#6c4bd6] hover:scale-105 active:scale-95">
+                                            {plan?.plan === 'free' || plan?.plan === 'trial' ? 'Upgrade' : 'Plan UP'}
+                                        </a>
+                                    </div>
                                 )}
                             </div>
                         </div>

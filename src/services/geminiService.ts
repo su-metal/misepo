@@ -222,8 +222,10 @@ export const generateContent = async (
   
   // No longer using legacy config.post_samples (reset to ensure consistency with UI list)
   const hasLearningSamples = learningSamples && learningSamples.length > 0;
-  // If we have persona_yaml, the primary persona is active even without raw samples
-  const hasPersona = !!(config.customPrompt && config.customPrompt.trim()) || hasLearningSamples || !!config.persona_yaml;
+  // hasPersona is true ONLY if we have raw learning samples OR a generated persona YAML.
+  // We EXCLUDE customPrompt (user's manual instructions) from this check to ensure 
+  // "Omakase" mode remains active unless there's an actual style to mimic.
+  const hasPersona = hasLearningSamples || !!config.persona_yaml;
   console.debug("[LEARNING] hasPersona:", hasPersona, "hasLearningSamples:", !!hasLearningSamples, "hasYaml:", !!config.persona_yaml);
 
   const buildSystemInstruction = () => {

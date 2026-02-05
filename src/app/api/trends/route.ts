@@ -31,7 +31,7 @@ async function handleTrendsRequest(params: {
         currentYear += 1;
       }
       
-      const monthData = await getCachedTrends(currentYear, currentMonth, industry, description);
+      const monthData = await getCachedTrends(currentYear, currentMonth, industry);
       
       if (monthData) {
         cachedTrends = [...cachedTrends, ...monthData];
@@ -49,7 +49,7 @@ async function handleTrendsRequest(params: {
 
   console.log(`[API/Trends] Cache MISS. Generating fresh trends...`);
   const trends = await generateTrendCalendar(year, month, duration, industry, description);
-  saveTrendsToCache(trends, industry, description).catch(err => console.error("Cache write error:", err));
+  saveTrendsToCache(trends, industry).catch(err => console.error("Cache write error:", err));
   
   return { trends };
 }

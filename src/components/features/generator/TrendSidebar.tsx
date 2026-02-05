@@ -35,7 +35,7 @@ export const TrendSidebar: React.FC<TrendSidebarProps> = ({
         setTrendCache([]);
         setHasFetched(false);
         setFailedMonths(new Set());
-    }, [industry, description]);
+    }, [industry]);
 
     const fetchTrends = async (year: number, month: number, force: boolean = false) => {
         const monthKey = `${year}-${month}`;
@@ -218,6 +218,24 @@ export const TrendSidebar: React.FC<TrendSidebarProps> = ({
                         })
                     )}
                 </div>
+
+                {/* Guide Text - Shown when nothing is selected */}
+                {!currentEvent && (
+                    <div className="flex-1 flex flex-col items-center justify-center p-4 text-center animate-in fade-in slide-in-from-bottom-2 duration-1000">
+                        <div className="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center mb-4 transition-transform group-hover:scale-110 duration-700">
+                            <SparklesIcon className="w-6 h-6 text-[#80CAFF]/30" />
+                        </div>
+                        <h3 className="text-xs font-black text-[#2b2b2f]/80 mb-2">カレンダーを活用する</h3>
+                        <p className="text-[11px] font-bold text-[#b0b0b0] leading-relaxed max-w-[200px]">
+                            カレンダーの日付を選択すると、その時期に合わせた話題やトレンドを提案します。
+                        </p>
+                        <div className="mt-6 flex gap-1">
+                            {[...Array(3)].map((_, i) => (
+                                <div key={i} className="w-1 h-1 rounded-full bg-slate-100" />
+                            ))}
+                        </div>
+                    </div>
+                )}
 
                 {/* Selected Event Card */}
                 <div className={`mt-auto transition-all duration-300 transform ${currentEvent ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0 pointer-events-none'}`}>

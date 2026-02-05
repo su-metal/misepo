@@ -9,7 +9,10 @@ import {
   LockIcon,
   TrashIcon,
   HistoryIcon,
-  PinIcon
+  PinIcon,
+  UserCircleIcon,
+  MessageSquareIcon,
+  SparklesIcon
 } from './Icons';
 import { UI } from '../constants';
 
@@ -80,6 +83,19 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
     }
   };
 
+  const toneLabels: Record<string, string> = {
+    formal: 'きっちり',
+    standard: '標準',
+    friendly: '親しみ',
+    casual: 'もっと親しみ'
+  };
+
+  const lengthLabels: Record<string, string> = {
+    short: '短め',
+    medium: '普通',
+    long: '長め'
+  };
+
   const renderHistoryItem = (item: GeneratedPost, idx: number) => {
     const firstResult = pickFirstText(item);
     const previewText = (firstResult && firstResult.trim()) || item.config.inputText || "...";
@@ -115,14 +131,40 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                   </div>
                 ))}
               </div>
-              <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em]">
-                {dateLabel}
-              </span>
+              <div className="flex items-center gap-2">
+                {item.config.customPrompt && (
+                  <div className="flex items-center gap-1 px-2 py-0.5 bg-amber-50 rounded-full border border-amber-100/50" title="追加指示あり">
+                    <SparklesIcon className="w-2.5 h-2.5 text-amber-500" />
+                  </div>
+                )}
+                <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em]">
+                  {dateLabel}
+                </span>
+              </div>
             </div>
 
-            <p className="text-sm text-black font-bold tracking-tight line-clamp-2 leading-relaxed transition-colors md:text-[#2b2b2f] md:group-hover:text-black pr-12">
-              {previewText}
-            </p>
+            <div className="flex flex-col gap-2">
+              <p className="text-sm text-black font-bold tracking-tight line-clamp-2 leading-relaxed transition-colors md:text-[#2b2b2f] md:group-hover:text-black pr-12">
+                {previewText}
+              </p>
+
+              <div className="flex flex-wrap items-center gap-2 mt-1">
+                {item.profile?.name && (
+                  <div className="flex items-center gap-1 text-[10px] font-bold text-slate-400 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-100/50">
+                    <UserCircleIcon className="w-2.5 h-2.5" />
+                    <span className="truncate max-w-[80px]">{item.profile.name}</span>
+                  </div>
+                )}
+                <div className="flex items-center gap-1 text-[10px] font-bold text-slate-400 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-100/50">
+                  <span className="opacity-50">口調:</span>
+                  <span>{toneLabels[item.config.tone] || item.config.tone}</span>
+                </div>
+                <div className="flex items-center gap-1 text-[10px] font-bold text-slate-400 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-100/50">
+                  <span className="opacity-50">長さ:</span>
+                  <span>{lengthLabels[item.config.length] || item.config.length}</span>
+                </div>
+              </div>
+            </div>
           </div>
         </button>
 

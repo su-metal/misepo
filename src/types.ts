@@ -104,7 +104,8 @@ export interface GeneratedPost {
   timestamp: number;
   config: Omit<GenerationConfig, 'platform'> & { platforms: Platform[] };
   results: GeneratedResult[];
-  isPinned: boolean; 
+  isPinned: boolean;
+  profile?: StoreProfile; // Snapshot of the profile used at generation time
 }
 
 export interface TrainingItem {
