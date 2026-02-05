@@ -113,6 +113,7 @@ export async function GET() {
         timestamp: new Date(row.created_at).getTime(),
         isPinned: row.is_pinned,
         config: storedConfig,
+        profile: rec?.input?.profile, // Snapshot of the profile
         results: rec?.output ?? [],
       };
       

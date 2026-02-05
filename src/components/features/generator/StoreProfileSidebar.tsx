@@ -11,8 +11,9 @@ export const StoreProfileSidebar: React.FC<StoreProfileSidebarProps> = ({ storeP
     const allTargetTags = storeProfile.targetAudience
         ? storeProfile.targetAudience.split(',').map(tag => tag.trim()).filter(Boolean)
         : [];
-    const MAX_VISIBLE_TARGET_TAGS = 8;
+    const MAX_VISIBLE_TARGET_TAGS = 6;
     const visibleTargetTags = allTargetTags.slice(0, MAX_VISIBLE_TARGET_TAGS);
+    const remainingCount = allTargetTags.length - MAX_VISIBLE_TARGET_TAGS;
     const hasMoreTargetTags = allTargetTags.length > MAX_VISIBLE_TARGET_TAGS;
 
     return (
@@ -115,31 +116,32 @@ export const StoreProfileSidebar: React.FC<StoreProfileSidebarProps> = ({ storeP
                 </div>
 
                 <div className="space-y-4 relative z-10 flex-1 flex flex-col min-h-0">
-                    {/* Description Block */}
-                    <div className="space-y-2">
+                    {/* Description Block - Expanded to fill available space */}
+                    <div className="space-y-2 flex-1 flex flex-col min-h-0">
                         <h4 className="text-[10px] font-bold text-[#b0b0b0] uppercase tracking-wider">店舗の特徴</h4>
-                        <p className="text-xs font-medium text-[#2b2b2f] leading-relaxed bg-[#f8fafc] p-3 rounded-xl border border-slate-100">
-                            {storeProfile.description || '特徴が設定されていません。プロファイル設定から入力してください。'}
-                        </p>
+                        <div className="flex-1 overflow-y-auto scrollbar-hide bg-[#f8fafc] p-4 rounded-2xl border border-slate-100 shadow-inner">
+                            <p className="text-xs font-medium text-[#2b2b2f] leading-relaxed">
+                                {storeProfile.description || '特徴が設定されていません。プロファイル設定から入力してください。'}
+                            </p>
+                        </div>
                     </div>
 
-                    {/* Target Block */}
-                    <div className="space-y-2">
+                    {/* Target Block - Pinned to bottom */}
+                    <div className="space-y-2 mt-auto pt-2">
                         <div className="flex items-center justify-between">
                             <h4 className="text-[10px] font-bold text-[#b0b0b0] uppercase tracking-wider">ターゲット層</h4>
-                            <span className="text-[9px] text-[#b0b0b0]/60 uppercase tracking-[0.3em]">scroll</span>
                         </div>
-                        <div className="flex flex-wrap gap-2 max-h-[160px] overflow-y-auto scrollbar-hide pr-1">
+                        <div className="flex flex-wrap gap-2 pr-1">
                             {visibleTargetTags.length > 0 ? (
                                 <>
-                            {visibleTargetTags.map((tag, i) => (
-                                <span key={i} className="inline-flex items-center text-[10px] font-bold text-[#2b2b2f] bg-white px-3 py-1 rounded-full border border-slate-100 shadow-sm whitespace-nowrap">
-                                    {tag}
-                                </span>
-                            ))}
+                                    {visibleTargetTags.map((tag, i) => (
+                                        <span key={i} className="inline-flex items-center text-[10px] font-bold text-[#2b2b2f] bg-white px-3 py-1 rounded-full border border-slate-100 shadow-sm whitespace-nowrap">
+                                            {tag}
+                                        </span>
+                                    ))}
                                     {hasMoreTargetTags && (
                                         <span className="inline-flex items-center text-[10px] font-bold text-[#7c5dcb] bg-[#f1f5ff] px-3 py-1 rounded-full border border-[#e0e7ff] shadow-sm whitespace-nowrap">
-                                            etc...
+                                            +{remainingCount} etc...
                                         </span>
                                     )}
                                 </>

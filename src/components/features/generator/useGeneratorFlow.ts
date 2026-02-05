@@ -625,6 +625,8 @@ export function useGeneratorFlow(props: {
       setLength(restorePost.config.length);
       setInputText(restorePost.config.inputText);
       setStarRating(restorePost.config.starRating ?? null);
+      setCustomPrompt(restorePost.config.customPrompt || '');
+      setActivePresetId(restorePost.config.presetId || 'plain-ai');
       // Set includeFooter to false since restored results already have footer embedded
       setIncludeFooter(false);
       
