@@ -46,8 +46,9 @@ export async function POST(req: Request) {
     const userId = data.user.id;
     const userEmail = data.user.email; // Get user email
     const appId = APP_ID;
-    const successUrl = `${process.env.NEXT_PUBLIC_APP_URL}/billing/success`;
-    const cancelUrl = `${process.env.NEXT_PUBLIC_APP_URL}/billing/cancel`;
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "");
+    const successUrl = `${baseUrl}/generate?pwa=true&success=1`;
+    const cancelUrl = `${baseUrl}/billing/cancel?pwa=true`;
 
     // ---- load entitlement (DB is source of truth)
     const entRes = await supabaseAdmin

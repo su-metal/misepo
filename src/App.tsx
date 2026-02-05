@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { StoreProfile, GeneratedPost, Preset } from './types';
 import { useAuth } from './hooks/useAuth';
 import { usePlan } from './hooks/usePlan';
@@ -196,6 +196,22 @@ function App() {
     };
     init();
   }, [authLoading, user?.id, fetchProfile, fetchHistory, fetchPresets, fetchTrainingItems]);
+
+  // --- Success Message Handling ---
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    if (searchParams.get('success') === '1') {
+      // Small timeout to ensure the UI is ready
+      setTimeout(() => {
+        alert('決済が完了しました！全ての機能がご利用いただけます。');
+        // Clean up URL without refreshing
+        const newUrl = window.location.pathname;
+        window.history.replaceState({}, '', newUrl);
+        // Refresh plan to reflect new status
+        refreshPlan();
+      }, 500);
+    }
+  }, [searchParams, refreshPlan]);
 
   // REMOVED: legacy redirect to /start when plan expires. 
   // We now handle this by showing the TrialEndedBarrier on the dashboard.

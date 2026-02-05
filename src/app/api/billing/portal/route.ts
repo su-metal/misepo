@@ -23,7 +23,7 @@ const getSafeReturnUrl = async (request: Request) => {
     // Ignore invalid JSON and fall back to BASE_URL.
   }
 
-  if (!candidate) return `${BASE_URL}/`;
+  if (!candidate) return `${BASE_URL}/generate?pwa=true`;
 
   if (candidate.startsWith("/")) {
     return `${BASE_URL}${candidate}`;
@@ -39,7 +39,7 @@ const getSafeReturnUrl = async (request: Request) => {
     // Ignore invalid URLs and fall back to BASE_URL.
   }
 
-  return `${BASE_URL}/`;
+  return `${BASE_URL}/generate?pwa=true`;
 };
 
 export async function POST(request: Request) {
