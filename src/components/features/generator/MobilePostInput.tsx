@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Platform, PostPurpose, GoogleMapPurpose } from '../../../types';
 import { AutoResizingTextarea } from './AutoResizingTextarea';
 import { getPlatformIcon } from './utils';
@@ -508,6 +509,64 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                         </div>
                     </div>
 
+                    {/* Compact Horizontal Premium AI Omakase Card */}
+                    <div className="mt-5 mb-6">
+                        <motion.div
+                            onClick={!isGoogleMaps && platforms.length > 0 ? handleOmakaseStart : undefined}
+                            whileTap={{ scale: 0.98 }}
+                            className={`
+                                relative group overflow-hidden rounded-[28px] bg-white border border-slate-100 p-4 flex items-center gap-4 transition-all duration-500
+                                ${!isGoogleMaps && platforms.length > 0 ? 'cursor-pointer hover:shadow-lg hover:border-slate-200' : 'cursor-not-allowed grayscale opacity-80'}
+                            `}
+                        >
+                            {/* Left: Icon Box */}
+                            <div className="shrink-0 w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-md shadow-purple-100">
+                                <SparklesIcon className="w-7 h-7 text-white" />
+                            </div>
+
+                            {/* Center: Texts & Badge */}
+                            <div className="flex-1 min-w-0 flex flex-col justify-center">
+                                <div className="flex items-center gap-2 mb-0.5">
+                                    <h4 className="text-[17px] font-black tracking-tight text-[#1a1a1a]">
+                                        AIおまかせ生成
+                                    </h4>
+                                    <div className="px-2 py-0.5 rounded-md bg-blue-50 border border-blue-100">
+                                        <span className="text-[8px] font-black text-blue-500 uppercase tracking-wider">
+                                            SPECIAL
+                                        </span>
+                                    </div>
+                                </div>
+                                <p className="text-[11px] font-bold text-slate-400 truncate">
+                                    最新のAIが最適な構成を自動で提案
+                                </p>
+                            </div>
+
+                            {/* Right: Action Button */}
+                            <div className="shrink-0">
+                                <div className={`
+                                    w-12 h-12 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center shadow-sm group-hover:bg-white group-hover:scale-105 group-hover:border-slate-200 transition-all duration-300
+                                    ${isOmakaseLoading ? 'animate-pulse' : ''}
+                                `}>
+                                    {isOmakaseLoading ? (
+                                        <div className="w-5 h-5 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+                                    ) : (
+                                        <StarIcon className="w-6 h-6 text-indigo-500" />
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Loading Progress Overlays */}
+                            {isOmakaseLoading && (
+                                <motion.div
+                                    initial={{ x: "-100%" }}
+                                    animate={{ x: "100%" }}
+                                    transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+                                    className="absolute bottom-0 left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-indigo-500 to-transparent"
+                                />
+                            )}
+                        </motion.div>
+                    </div>
+
                     {/* Standard 2x2 Grid Platform Selection */}
                     <div className="grid grid-cols-2 gap-3 px-1 mt-2">
                         {(() => {
@@ -560,9 +619,9 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                 relative rounded-[24px] overflow-hidden cursor-pointer border transition-all duration-200 ease-out group focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-2 focus-visible:ring-offset-white
                                                 ${bentoClass}
                                                 ${isActive
-                                                ? 'scale-[1.02] border-[2.5px] shadow-none'
-                                                : 'bg-[#f6f6f8] border-slate-200 shadow-[0_10px_30px_rgba(15,23,42,0.1)] hover:-translate-y-0.5 hover:shadow-[0_18px_45px_rgba(15,23,42,0.15)] active:translate-y-[1px] active:shadow-none'
-                                            }
+                                        ? 'scale-[1.02] border-[2.5px] shadow-none'
+                                        : 'bg-[#f6f6f8] border-slate-200 shadow-[0_10px_30px_rgba(15,23,42,0.1)] hover:-translate-y-0.5 hover:shadow-[0_18px_45px_rgba(15,23,42,0.15)] active:translate-y-[1px] active:shadow-none'
+                                    }
                                         `;
 
                                 const cardStyle = isActive ? {
@@ -628,91 +687,11 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                         })()}
                     </div>
 
-                    {/* Bottom Section - AI Omakase Card (Glass + Metallic) */}
-                    <div className="mt-4 md:mt-6">
-                        <div
-                            onClick={!isGoogleMaps && platforms.length > 0 ? handleOmakaseStart : undefined}
-                            className={`
-                relative group transition-all duration-500
-                ${!isGoogleMaps && platforms.length > 0
-                                ? 'cursor-pointer active:scale-[0.98] hover:-translate-y-1 hover:shadow-[0_25px_45px_rgba(37,99,235,0.25)]'
-                                : 'cursor-not-allowed grayscale opacity-70'}
-            `}
-                        >
-                            <div className="relative overflow-hidden rounded-[24px] bg-white/70 backdrop-blur-xl border border-white/70 shadow-[0_16px_40px_rgba(15,23,42,0.12)]">
-                                <div className="absolute -top-24 -left-24 w-48 h-48 bg-blue-500/10 rounded-full blur-[80px]" />
-                                <div className="flex">
-                                    <div className="flex-1 p-6 flex flex-col gap-4">
-                                        <div className="flex items-center gap-3 px-1">
-                                            <SparklesIcon className="w-4 h-4 text-slate-500/60" />
-                                            <span className="text-[10px] font-bold tracking-[0.25em] uppercase text-slate-500/70">
-                                                Premium Tier Feature
-                                            </span>
-                                        </div>
-
-                                        <div className="flex items-center gap-4">
-                                            <div className="relative w-14 h-14 rounded-full flex items-center justify-center shadow-lg shadow-blue-500/30"
-                                                style={{ background: 'linear-gradient(135deg, #8fd8ff 0%, #9f8dff 50%, #ff9084 100%)' }}
-                                            >
-                                                <div className="absolute inset-0 rounded-full bg-white/20 blur-sm" />
-                                                <MagicWandIcon className="w-7 h-7 text-white relative z-10" />
-                                            </div>
-                                            <div className="flex flex-col">
-                                                <h4 className="text-[20px] font-black tracking-tight leading-tight text-[#1e293b]">
-                                                    AIおまかせ生成
-                                                </h4>
-                                                <div className="flex items-center gap-1.5 mt-0.5">
-                                                    <span className="flex h-2 w-2 rounded-full bg-blue-600" />
-                                                    <span className="text-slate-500/70 text-[9px] font-black uppercase tracking-tight">
-                                                        Ultra High Performance
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div className="space-y-2">
-                                            <p className="text-[12px] font-medium leading-relaxed text-slate-700/90">
-                                                迷ったらここから。高性能AIが最適な投稿文を一気に生成します。
-                                            </p>
-                                            <div className="flex flex-wrap gap-2 pt-1">
-                                                <span className="px-2 py-1 rounded-full border border-slate-200/60 bg-slate-100/80 text-[9px] font-bold text-slate-600">
-                                                    3D Textures
-                                                </span>
-                                                <span className="px-2 py-1 rounded-full border border-slate-200/60 bg-slate-100/80 text-[9px] font-bold text-slate-600">
-                                                    Frosted Glass
-                                                </span>
-                                                <span className="px-2 py-1 rounded-full border border-slate-200/60 bg-slate-100/80 text-[9px] font-bold text-slate-600">
-                                                    Metallic
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="w-16 flex flex-col items-center justify-center border-l border-slate-200/60 bg-white/40 hover:bg-white/70 transition-colors">
-                                        <span className="[writing-mode:vertical-lr] text-slate-500/70 text-[9px] font-black uppercase tracking-[0.25em] mb-4 group-hover:text-slate-700">
-                                            Generate
-                                        </span>
-                                        <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-200 ${isOmakaseLoading
-                                            ? 'bg-white border border-slate-200 shadow-[0_12px_35px_rgba(15,23,42,0.18)]'
-                                            : (!isGoogleMaps
-                                                ? 'bg-blue-600 text-white shadow-[0_14px_40px_rgba(37,99,235,0.45)] group-hover:bg-blue-700'
-                                                : 'bg-slate-200 text-slate-400 shadow-sm')}`}>
-                                            {isOmakaseLoading ? (
-                                                <div className="w-5 h-5 border-[2.5px] border-blue-500 border-t-transparent rounded-full animate-spin" />
-                                            ) : (
-                                                <ChevronRightIcon className={`w-5 h-5 transition-all ${!isGoogleMaps ? 'text-white' : 'text-slate-400'}`} />
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
 
             {/* Trend Calendar Overlay */}
-            <MobileCalendarOverlay
+            < MobileCalendarOverlay
                 isOpen={isCalendarOpen}
                 onClose={() => setIsCalendarOpen(false)}
                 onSelectEvent={handleTrendStrategy}
@@ -1258,8 +1237,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             )}
                         </div>
                     </div>
-                )
-            }
-        </div >
+                )}
+        </div>
     );
 };

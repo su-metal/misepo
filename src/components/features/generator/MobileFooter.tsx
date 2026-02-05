@@ -182,7 +182,7 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
 
 
                 {/* Navigation Items Container */}
-                <div className={`absolute inset-0 flex items-center justify-between px-6 pt-1 ${isDrawerOpen ? 'pointer-events-none' : 'pointer-events-auto'}`}>
+                <div className={`absolute inset-0 flex items-center px-6 pt-1 ${isDrawerOpen ? 'pointer-events-none' : 'pointer-events-auto'}`}>
                     {/* Left Side Items */}
                     <div className="flex items-center justify-center gap-6 w-[130px]">
                         <button
@@ -207,11 +207,10 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
                         </button>
                     </div>
 
-                    {/* Spacer for Center Notch (Invisible) - Increased width to push icons out */}
-                    <div className="w-[100px]" />
+                    <div className="flex-1 min-w-[100px]" />
 
                     {/* Right Side Items */}
-                    <div className="flex items-center justify-center gap-6 w-[130px]">
+                    <div className="flex items-center justify-end gap-2 w-[150px]">
                         <button
                             onClick={() => onTabChange('history')}
                             className={`flex flex-col items-center gap-1.5 transition-all active:scale-95 ${isConfirmStep ? 'opacity-40 grayscale pointer-events-none' : ''}`}
