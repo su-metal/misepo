@@ -482,7 +482,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                         </div>
                     </div>
 
-                    <div className="flex items-center justify-between px-2 mt-4 mb-0">
+                    <div className="flex items-center justify-between px-2 mt-2 mb-0">
                         <div className="flex flex-col gap-0.5 items-start">
                             <h2 className="text-[13px] font-black text-[#2b2b2f] tracking-tight">投稿先を選択</h2>
                             <p className="text-[10px] text-[#b0b0b0] font-bold uppercase tracking-[0.2em]">Select your canvas</p>
@@ -554,6 +554,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                     const details = getPlatformDetails(p, isActive);
                                     let bentoClass = '';
                                     if (p === Platform.Instagram) bentoClass = 'row-span-2 h-[235px]';
+                                    else if (p === Platform.GoogleMaps) bentoClass = 'col-span-2 h-[111px]';
                                     else bentoClass = 'h-[111px]';
 
                                     const brandColor = p === Platform.Instagram ? '#D23877' :
@@ -573,7 +574,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             key={p}
                                             layout
                                             onClick={() => onPlatformToggle(p)}
-                                            className={`relative rounded-[30px] overflow-hidden cursor-pointer border transition-all duration-300 ease-out group ${bentoClass} ${isActive ? 'border-white ring-2 ring-offset-2' : 'bg-white border-slate-200 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_30px_rgba(0,0,0,0.08)] active:scale-[0.98]'}`}
+                                            className={`relative rounded-[30px] overflow-hidden cursor-pointer border transition-all duration-300 ease-out group ${bentoClass} ${isActive ? 'border-white ring-2 ring-offset-2' : 'bg-[#edeff1] border-slate-200 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_30px_rgba(0,0,0,0.08)] active:scale-[0.98]'}`}
                                             style={cardStyle}
                                             whileHover={{ y: -2 }}
                                         >
@@ -608,28 +609,28 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                 }),
                                 <motion.div
                                     key="ai_omakase"
-                                    className="relative rounded-[30px] overflow-hidden cursor-pointer border border-violet-100 bg-gradient-to-br from-violet-50/50 to-white h-[111px] transition-all duration-300 group hover:shadow-[0_12px_30px_rgba(139,92,246,0.1)] active:scale-[0.98]"
+                                    className="relative rounded-[30px] col-span-2 overflow-hidden cursor-pointer border border-violet-100 bg-gradient-to-br from-violet-50/50 to-white h-[80px] transition-all duration-300 group hover:shadow-[0_12px_30px_rgba(139,92,246,0.1)] active:scale-[0.98]"
                                     onClick={handleOmakaseStart}
                                     whileTap={{ scale: 0.96 }}
                                     whileHover={{ y: -2 }}
                                 >
                                     <div className="absolute inset-0 border border-violet-200/50 rounded-[30px] pointer-events-none" />
-                                    <div className="absolute inset-0 px-5 py-4 flex flex-col justify-between">
-                                        <div className="flex justify-between items-start">
-                                            <div className="p-1.5 bg-violet-600 rounded-xl shadow-lg shadow-violet-200 transition-transform duration-500 group-hover:rotate-12">
+                                    <div className="absolute inset-0 px-5 py-3 flex items-center justify-between">
+                                        <div className="flex items-center gap-4">
+                                            <div className="p-2 bg-violet-600 rounded-xl shadow-lg shadow-violet-200 transition-transform duration-500 group-hover:rotate-12">
                                                 <SparklesIcon className="w-4 h-4 text-white" />
                                             </div>
+                                            <div className="flex flex-col">
+                                                <div className="text-[9px] font-black text-violet-500 uppercase tracking-[0.2em] leading-none mb-1">
+                                                    AI PRESET
+                                                </div>
+                                                <div className="text-base font-black text-slate-800 leading-none tracking-tight">
+                                                    AIおまかせ生成
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div className="space-y-0.5">
-                                            <div className="text-[9px] font-black text-violet-500 uppercase tracking-[0.2em] mb-0.5">
-                                                AI PRESET
-                                            </div>
-                                            <div className="text-sm font-black text-slate-800 leading-none tracking-tight">
-                                                AIおまかせ生成
-                                            </div>
-                                            <div className="text-[8px] font-bold text-slate-400 tracking-tight">
-                                                最適な投稿をAIが提案
-                                            </div>
+                                        <div className="text-[10px] font-bold text-slate-400 tracking-tight pr-2">
+                                            最適な投稿をAIが提案
                                         </div>
                                     </div>
                                 </motion.div>
