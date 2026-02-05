@@ -115,20 +115,14 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
         return () => window.removeEventListener('resize', updateWidth);
     }, [isDrawerOpen]); // Re-calculate when drawer state changes to ensure correct rendering
 
-    // Curve parameters
+    // Simplified curved background constants
     const footerHeight = 84;
-    const notchDepth = 40;
-    const notchWidth = 138; // Balanced width to follow the ~72px button 
     const cornerRadius = 42;
 
-    const center = width / 2;
-    // Calculate path with optimized handles to follow a circular arc more naturally
+    // Simplified curved background path
     const path = `
         M 0 ${cornerRadius}
         Q 0 0 ${cornerRadius} 0
-        L ${center - notchWidth / 2} 0
-        C ${center - notchWidth / 3.5} 0 ${center - notchWidth / 4} ${notchDepth} ${center} ${notchDepth}
-        C ${center + notchWidth / 4} ${notchDepth} ${center + notchWidth / 3.5} 0 ${center + notchWidth / 2} 0
         L ${width - cornerRadius} 0
         Q ${width} 0 ${width} ${cornerRadius}
         L ${width} ${footerHeight - cornerRadius}
@@ -145,134 +139,90 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
         >
             <div className="relative w-full h-[84px] pointer-events-auto">
 
-                {/* SVG Background Shape */}
+                {/* SVG Background Shape (Simple curved rectangle) */}
                 <svg width="100%" height={footerHeight} viewBox={`0 0 ${width} ${footerHeight}`} className="absolute inset-0 w-full h-full overflow-visible">
                     <defs>
-                        <linearGradient id="navGradient" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#FFFFFF" stopOpacity="1" />
-                            <stop offset="100%" stopColor="#FFFFFF" stopOpacity="1" />
-                        </linearGradient>
                         <filter id="navShadow" x="-20%" y="-20%" width="140%" height="140%">
                             <feDropShadow dx="0" dy="4" stdDeviation="15" floodOpacity="0.08" />
                         </filter>
                     </defs>
-                    <path d={path} fill="url(#navGradient)" stroke="rgba(0,0,0,0.04)" strokeWidth="1.5" filter="url(#navShadow)" />
+                    <path d={path} fill="#FFFFFF" stroke="rgba(0,0,0,0.04)" strokeWidth="1.5" filter="url(#navShadow)" />
                 </svg>
 
-                {/* Generate Label Tooltip (Step 3) - Fixed layout to avoid button overlap */}
-                <div className={`absolute top-[-72px] left-1/2 -translate-x-1/2 z-[220] transition-all duration-300 ${isConfirmStep ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
-                    <div className="px-3 py-1.5 bg-[#2b2b2f] text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-full shadow-xl whitespace-nowrap flex items-center gap-1.5 animate-bounce border border-white/20">
-                        <span>Tap to Generate</span>
-                        <SparklesIcon className="w-3 h-3 text-white" />
-                    </div>
-                </div>
+                {/* Navigation Items Container (5 Tabs) */}
+                <div className={`absolute inset-0 flex items-center justify-between px-2 pt-1 ${isDrawerOpen ? 'pointer-events-none' : 'pointer-events-auto'}`}>
 
-
-
-                {/* Input Guidance Tooltip (Step 1) */}
-                <div className={`absolute top-[-85px] left-1/2 -translate-x-1/2 z-[220] transition-all duration-500 ${isPlatformStep && showGuidance && isPlatformSelected ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
-                    <div className="px-5 py-2.5 bg-[#2b2b2f] text-white rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,0.2)] whitespace-nowrap flex flex-col items-center gap-0.5 border border-white/10 relative">
-                        <span className="text-[11px] font-black tracking-tight">内容を入力する</span>
-                        <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest leading-none">Tap to Start</span>
-                        {/* Tooltip Arrow */}
-                        <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-[#2b2b2f] rotate-45 border-r border-b border-white/10" />
-                    </div>
-                </div>
-
-
-
-                {/* Navigation Items Container */}
-                <div className={`absolute inset-0 flex items-center px-6 pt-1 ${isDrawerOpen ? 'pointer-events-none' : 'pointer-events-auto'}`}>
-                    {/* Left Side Items */}
-                    <div className="flex items-center justify-center gap-6 w-[130px]">
-                        <button
-                            onClick={() => onTabChange('home')}
-                            className={`flex flex-col items-center gap-1.5 transition-all active:scale-95 ${isConfirmStep ? 'opacity-40 grayscale pointer-events-none' : ''}`}
-                        >
-                            <CustomHome active={activeTab === 'home'} />
-                            <span className={`
-                                text-[9px] font-black uppercase tracking-[0.1em] transition-all
-                                ${activeTab === 'home' ? 'text-[#2b2b2f]' : 'text-slate-400'}
-                            `}>Home</span>
-                        </button>
-                        <button
-                            onClick={() => onTabChange('learning')}
-                            className={`flex flex-col items-center gap-1.5 transition-all active:scale-95 ${isConfirmStep ? 'opacity-40 grayscale pointer-events-none' : ''}`}
-                        >
-                            <CustomAvatar active={activeTab === 'learning'} />
-                            <span className={`
-                                text-[9px] font-black uppercase tracking-[0.1em] transition-all
-                                ${activeTab === 'learning' ? 'text-[#2b2b2f]' : 'text-slate-400'}
-                            `}>Style</span>
-                        </button>
-                    </div>
-
-                    <div className="flex-1 min-w-[100px]" />
-
-                    {/* Right Side Items */}
-                    <div className="flex items-center justify-end gap-2 w-[150px]">
-                        <button
-                            onClick={() => onTabChange('history')}
-                            className={`flex flex-col items-center gap-1.5 transition-all active:scale-95 ${isConfirmStep ? 'opacity-40 grayscale pointer-events-none' : ''}`}
-                        >
-                            <CustomHistory active={activeTab === 'history'} />
-                            <span className={`
-                                text-[9px] font-black uppercase tracking-[0.1em] transition-all
-                                ${activeTab === 'history' ? 'text-[#2b2b2f]' : 'text-slate-400'}
-                            `}>History</span>
-                        </button>
-                        <button
-                            onClick={() => onTabChange('settings')}
-                            className={`flex flex-col items-center gap-1.5 transition-all active:scale-95 ${isConfirmStep ? 'opacity-40 grayscale pointer-events-none' : ''}`}
-                        >
-                            <CustomSettings active={activeTab === 'settings'} />
-                            <span className={`
-                                text-[9px] font-black uppercase tracking-[0.1em] transition-all
-                                ${activeTab === 'settings' ? 'text-[#2b2b2f]' : 'text-slate-400'}
-                            `}>Settings</span>
-                        </button>
-                    </div>
-                </div>
-
-                {/* The Central Plus/Generate Button - Wrapped for Centering Stability, moved to end of DOM for best layering */}
-                <div className="absolute -top-[40px] left-1/2 -translate-x-1/2 z-[200] pointer-events-none">
+                    {/* 1. Home */}
                     <button
-                        onClick={onPlusClick}
-                        disabled={!isPlatformSelected || isGenerating}
-                        className={`
-                            relative w-[72px] h-[72px] rounded-full flex items-center justify-center pointer-events-auto
-                            transition-all duration-300 border-[6px] border-white overflow-hidden
-                            ${isConfirmStep
-                                ? 'bg-sunset text-white scale-110 shadow-xl'
-                                : 'bg-sunset text-white shadow-lg'
-                            }
-                            ${isPopping ? 'animate-elastic-bounce' : ''}
-                            ${isBreathing && !isPopping ? 'animate-pulse-gentle' : ''}
-                            ${(!isPlatformSelected || isGenerating) ? 'opacity-40 cursor-not-allowed' : ''}
-                        `}
-                        aria-label={isConfirmStep ? "Generate Post" : "New Post"}
+                        onClick={() => onTabChange('home')}
+                        className="flex-1 flex flex-col items-center gap-1.5 transition-all active:scale-95"
                     >
-                        <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent pointer-events-none" />
+                        <CustomHome active={activeTab === 'home'} />
+                        <span className={`text-[9px] font-black uppercase tracking-[0.1em] ${activeTab === 'home' ? 'text-[#2b2b2f]' : 'text-slate-400'}`}>Home</span>
+                    </button>
 
-                        <div className="relative w-full h-full flex items-center justify-center">
-                            <div className={`absolute transition-all duration-300 ease-out ${isConfirmStep ? 'opacity-0 scale-50 rotate-90' : 'opacity-100 scale-100 rotate-0'}`}>
-                                <div className="flex items-center justify-center">
-                                    {/* Pencil / Edit Icon instead of Plus */}
-                                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    {/* 2. Style */}
+                    <button
+                        onClick={() => onTabChange('learning')}
+                        className="flex-1 flex flex-col items-center gap-1.5 transition-all active:scale-95"
+                    >
+                        <CustomAvatar active={activeTab === 'learning'} />
+                        <span className={`text-[9px] font-black uppercase tracking-[0.1em] ${activeTab === 'learning' ? 'text-[#2b2b2f]' : 'text-slate-400'}`}>Style</span>
+                    </button>
+
+                    {/* 3. Central Action (Pencil) */}
+                    <div className="flex-1 flex flex-col items-center justify-center relative -mt-6">
+                        {/* Guidance Tooltip */}
+                        <div className={`absolute top-[-50px] left-1/2 -translate-x-1/2 z-[220] transition-all duration-500 ${isPlatformStep && showGuidance && isPlatformSelected ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
+                            <div className="px-3 py-1.5 bg-[#2b2b2f] text-white text-[9px] font-black uppercase tracking-[0.15em] rounded-xl shadow-xl whitespace-nowrap border border-white/10">
+                                <span>内容入力</span>
+                            </div>
+                        </div>
+
+                        <button
+                            onClick={onPlusClick}
+                            disabled={!isPlatformSelected || isGenerating}
+                            className={`
+                                relative w-14 h-14 rounded-2xl flex items-center justify-center 
+                                transition-all duration-300 shadow-lg border-4 border-white
+                                ${isConfirmStep ? 'bg-sunset text-white scale-110' : 'bg-sunset text-white'}
+                                ${isPopping ? 'animate-elastic-bounce' : ''}
+                                ${isBreathing && !isPopping ? 'animate-pulse-gentle' : ''}
+                                ${(!isPlatformSelected || isGenerating) ? 'opacity-40 grayscale' : ''}
+                            `}
+                        >
+                            <div className="absolute inset-0 bg-gradient-to-tr from-white/20 to-transparent" />
+                            <div className="relative">
+                                {isGenerating ? (
+                                    <div className="w-6 h-6 border-3 border-white/30 border-t-white rounded-full animate-spin" />
+                                ) : isConfirmStep ? (
+                                    <SparklesIcon className="w-7 h-7" />
+                                ) : (
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                                         <path d="M18.5 2.5C18.8978 2.10217 19.4374 1.87868 20 1.87868C20.5626 1.87868 21.1022 2.10218 21.5 2.5C21.8978 2.89782 22.1213 3.43739 22.1213 4C22.1213 4.56261 21.8978 5.10218 21.5 5.5L12 15L8 16L9 12L18.5 2.5Z" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                                     </svg>
-                                </div>
-                            </div>
-
-                            <div className={`absolute transition-all duration-300 ease-out ${isConfirmStep ? 'opacity-100 scale-100 rotate-0' : 'opacity-0 scale-50 -rotate-90'}`}>
-                                {isGenerating ? (
-                                    <div className="w-7 h-7 border-3 border-white/30 border-t-white rounded-full animate-spin" />
-                                ) : (
-                                    <SparklesIcon className="w-7 h-7 text-white" />
                                 )}
                             </div>
-                        </div>
+                        </button>
+                    </div>
+
+                    {/* 4. History */}
+                    <button
+                        onClick={() => onTabChange('history')}
+                        className="flex-1 flex flex-col items-center gap-1.5 transition-all active:scale-95"
+                    >
+                        <CustomHistory active={activeTab === 'history'} />
+                        <span className={`text-[9px] font-black uppercase tracking-[0.1em] ${activeTab === 'history' ? 'text-[#2b2b2f]' : 'text-slate-400'}`}>History</span>
+                    </button>
+
+                    {/* 5. Settings */}
+                    <button
+                        onClick={() => onTabChange('settings')}
+                        className="flex-1 flex flex-col items-center gap-1.5 transition-all active:scale-95"
+                    >
+                        <CustomSettings active={activeTab === 'settings'} />
+                        <span className={`text-[9px] font-black uppercase tracking-[0.1em] ${activeTab === 'settings' ? 'text-[#2b2b2f]' : 'text-slate-400'}`}>Settings</span>
                     </button>
                 </div>
             </div>
