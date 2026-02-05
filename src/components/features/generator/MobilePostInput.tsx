@@ -879,7 +879,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         </div>
 
                                         {/* 3. Sticky Action Footer */}
-                                        <div className="p-6 pb-12 safe-area-bottom border-t border-slate-50 flex-shrink-0 bg-white flex flex-col gap-4 shadow-[0_-10px_30px_rgba(0,0,0,0.02)] z-[210]">
+                                        <div className="px-6 py-8  safe-area-bottom border-t border-slate-50 flex-shrink-0 bg-white flex flex-col gap-4 shadow-[0_-10px_30px_rgba(0,0,0,0.02)] z-[210]">
 
                                             {!isListening && (
                                                 <button
@@ -1201,7 +1201,13 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                     {/* Gradient fade removed */}
 
                                     {/* Opaque Background with Content */}
-                                    <div className="w-full bg-white px-8 pt-4 pb-[24px] flex flex-col items-center gap-4">
+                                    <div
+                                        className="w-full px-8 pt-12 pb-[24px] flex flex-col items-center gap-4 relative"
+                                        style={{
+                                            backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 4%, rgba(255,255,255,0.9) 20%, rgba(255,255,255,1) 50%)',
+                                            backgroundRepeat: 'no-repeat'
+                                        }}
+                                    >
                                         <button
                                             onClick={onGenerate}
                                             disabled={isGenerating}
@@ -1222,9 +1228,6 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                 )}
                                             </div>
                                         </button>
-                                        <p className="text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest pointer-events-none">
-                                            あなたの想いを、AIが最高の文章に仕上げます
-                                        </p>
                                     </div>
                                 </div>
                             )}
