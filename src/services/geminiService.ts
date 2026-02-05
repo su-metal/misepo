@@ -126,10 +126,19 @@ const TONE_INDUSTRY_ADJUSTMENTS: Record<string, Record<Tone, string>> = {
 const GMAP_PURPOSE_PROMPTS: Record<string, string> = {
   [GoogleMapPurpose.Auto]: "口コミの内容に応じて、感謝、謝罪、または説明を適切に組み合わせてください。",
   [GoogleMapPurpose.Thanks]: "来店への感謝を述べ、再来店を歓迎する意向を含めてください。",
-  [GoogleMapPurpose.Apology]: "不手際やご不快な思いをさせた点について、事実を認め、謝罪と改善の意向を含めてください。",
+  [GoogleMapPurpose.Apology]: "不手際やご不快な思いをさせた点について、事実を認め、言い訳をせずに誠実に謝罪し、具体的な改善の意向を含めてください。",
   [GoogleMapPurpose.Clarify]: "事実誤認や誤解がある点について、事実に基づいた補足と説明を行ってください。",
   [GoogleMapPurpose.Info]: "口コミへの返信の中に、営業時間やサービス内容などの最新情報を盛り込んでください。"
 };
+
+const GMAP_NEGATIVE_CONSTRAINTS = `
+- **免責表現の禁止**: 以下の表現、またはそれに類する「許しを請う」「言い訳をする」ような表現は**絶対に**使用しないでください。
+  - 「何卒ご容赦いただけますようお願い申し上げます」
+  - 「何卒ご容赦ください」
+  - 「ご了承いただけますと幸いです」
+  - 「あしからずご了承ください」
+- **潔い対応**: ミスや不手際があった場合は、言い訳をせずに潔く謝罪し、改善への意欲や、次回の来店時に挽回したいという前向きな姿勢を誠実に伝えてください。
+`;
 
 const POST_PURPOSE_PROMPTS: Record<string, string> = {
   [PostPurpose.Auto]: "入力された内容に基づいて、最も魅力的な投稿を作成してください。",
@@ -356,8 +365,8 @@ export const generateContent = async (
     - **Emojis & Symbols**: 
       ${isGMap ? 
         (hasPersona ? 
-          '- **Emojis**: Strictly follow the frequency and style from <learning_samples> or <persona_rules>. If the owner uses emojis in their replies, you MUST reproduce them to maintain their natural voice.\n      - **Symbols**: Reproduce the specific markers and punctuation patterns from the samples.' :
-          '- **Emojis**: Basically, DO NOT use emojis for Google Maps as it is a professional public space. Maintain a calm, text-only appearance unless specified otherwise.\n      - **Symbols**: Use standard Japanese punctuation. Avoid decorative symbols.'
+          '- **Emojis**: Strictly follow the frequency and style from <learning_samples> or <persona_rules>. If the owner uses emojis in their replies, you MUST reproduce them to maintain their natural voice.\n      - **Symbols**: Reproduce the specific markers and punctuation patterns from the samples.\n      ${GMAP_NEGATIVE_CONSTRAINTS}' :
+          '- **Emojis**: Basically, DO NOT use emojis for Google Maps as it is a professional public space. Maintain a calm, text-only appearance unless specified otherwise.\n      - **Symbols**: Use standard Japanese punctuation. Avoid decorative symbols.\n      ${GMAP_NEGATIVE_CONSTRAINTS}'
         ) : 
         `- **Emojis**: ${hasPersona ? 'Strictly follow patterns from samples.' : (config.includeEmojis ? `Select emojis that perfectly match the post's content and the industry (${profile.industry}). Prioritize variety and situational relevance (e.g., seasonal items, specific products, or relevant activities) over generic symbols to ensure a natural and engaging selection.` : 'DO NOT use any emojis.')}
     - **Symbols**: ${hasPersona && !config.includeSymbols ? 'Strictly follow patterns from samples.' : (config.includeSymbols ? `From the **Aesthetic Palette**:
@@ -509,7 +518,7 @@ DO NOT use stiff business boilerplate like "誠にありがとうございます
     - Length: ${config.length} (Target: ${t.target} chars. Min: ${t.min} chars)
     - Tone: ${config.tone} (${TONE_RULES[config.tone] || TONE_RULES[Tone.Standard]})
     ${(isGMap && !hasPersona) ? `- Industry Specific Tone: ${TONE_INDUSTRY_ADJUSTMENTS[profile.industry]?.[config.tone] || TONE_INDUSTRY_ADJUSTMENTS['その他']?.[config.tone] || ""}` : ""}
-    - Features: ${isInstagram ? 'Visual focus.' : ''}${isX ? 'Under 140 chars.' : ''}${isGMap ? 'NO hashtags. Focus on maintaining the owner\'s personality in the reply.' : ''}${isLine ? 'Direct marketing style. NO hashtags. Focus on clear messaging.' : ''}
+    - Features: ${isInstagram ? 'Visual focus.' : ''}${isX ? 'Under 140 chars.' : ''}${isGMap ? `NO hashtags. Focus on maintaining the owner's personality in the reply. ${GMAP_NEGATIVE_CONSTRAINTS}` : ''}${isLine ? 'Direct marketing style. NO hashtags. Focus on clear messaging.' : ''}
     - Target Audience: ${config.targetAudience || profile.targetAudience || 'General Audience'}
     - Emojis: ${isGMap ? (hasPersona ? 'Strictly prioritize mimicking the samples\' frequency.' : 'Prohibited by default to maintain a formal public tone.') : (config.includeEmojis ? `Select emojis that are highly relevant to the industry (${profile.industry}) and current topic. Prioritize contextual variety (e.g., specific items, seasonal symbols, or mood-appropriate faces) and avoid repetition or over-reliance on specific characters.` : "DO NOT use any emojis (emoticons, icons, pictograms) under any circumstances. Keep it plain text only regarding emojis.")}
     - Special Characters: ${config.includeSymbols ? `From the **Aesthetic Palette**:
