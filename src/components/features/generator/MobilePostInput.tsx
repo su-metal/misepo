@@ -403,7 +403,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
             <div className={`flex flex-col h-full overflow-hidden relative transition-all duration-500 ${isStepDrawerOpen ? 'blur-md scale-[0.98] opacity-60' : 'opacity-100'}`}>
                 <div className="flex-1 flex flex-col p-4 pt-[max(1.5rem,env(safe-area-inset-top))] pb-32 safe-area-bottom overflow-y-auto no-scrollbar">
                     {/* High-Design Header - Magazine Style Date & Minimal Avatar */}
-                    <div className="flex items-start justify-between mb-4 px-1">
+                    <div className="flex items-start justify-between mb-10 px-1">
                         {/* Typography Date Display - Interactive Trigger */}
                         <div className="flex flex-col cursor-pointer active:scale-95 transition-transform" onClick={() => setIsCalendarOpen(true)}>
                             <span className="text-[10px] font-black text-[#2b2b2f]/60 uppercase tracking-[0.4em] ml-1 mb-1 z-10 relative flex items-center gap-1">
@@ -482,7 +482,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                         </div>
                     </div>
 
-                    <div className="flex items-center justify-between px-2 mt-2 mb-0">
+                    <div className="flex items-center justify-between px-2 mt-6 mb-0">
                         <div className="flex flex-col gap-0.5 items-start">
                             <h2 className="text-[13px] font-black text-[#2b2b2f] tracking-tight">投稿先を選択</h2>
                             <p className="text-[10px] text-[#b0b0b0] font-bold uppercase tracking-[0.2em]">Select your canvas</p>
@@ -511,7 +511,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
 
                     {/* Standard 2x2 Grid Platform Selection */}
-                    <div className="grid grid-cols-2 gap-3 px-1 mt-2">
+                    <div className="grid grid-cols-2 gap-3 px-1 mt-6">
                         {(() => {
                             const getPlatformDetails = (platform: Platform, isActive: boolean) => {
                                 switch (platform) {
@@ -631,7 +631,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                     </div>
 
                     {/* Compact Horizontal Premium AI Omakase Card - Moved below grid */}
-                    <div className="mt-8 mb-4">
+                    <div className="mt-12 mb-4">
                         <motion.div
                             onClick={!isGoogleMaps && platforms.length > 0 ? handleOmakaseStart : undefined}
                             whileTap={{ scale: 0.98 }}
