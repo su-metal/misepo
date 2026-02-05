@@ -253,11 +253,12 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
               onOpenOnboarding={() => setShowOnboarding(true)}
               targetAudiences={flow.targetAudiences}
               onTargetAudiencesChange={flow.setTargetAudiences}
+              targetStep={mobileStep}
             />
           </div>
 
           {/* Floating Mobile Footer Navigation - Only shown when results are NOT open */}
-          {!isMobileResultOpen && (
+          {!isMobileResultOpen && mobileStep === 'platform' && (
             <MobileFooter
               activeTab={mobileActiveTab}
               currentStep={mobileStep}
@@ -274,7 +275,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
                   setIsPresetModalOpen(true);
                 }
               }}
-              onPlusClick={mobileStep === 'confirm' ? handleGenerate : () => {
+              onPlusClick={() => {
                 setMobileActiveTab('home');
                 // Ensure at least one platform is selected to avoid dead end
                 if (flow.platforms.length === 0) {
@@ -299,7 +300,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
               const textToAdd = `【話題のネタ】\n${event.title}\n${event.prompt}`;
               // Overwrite existing text
               flow.setInputText(textToAdd);
-              setMobileStep('input');
+              setMobileStep('confirm');
               // Trigger drawer open for Omakase flow
               setOpenDrawerTrigger(prev => prev + 1);
             }}
