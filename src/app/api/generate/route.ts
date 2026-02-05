@@ -180,7 +180,10 @@ export async function POST(req: Request) {
 
   try {
     // --- Batch Generation Execution ---
-    const results = await Promise.all(configs.map(async (config) => {
+    const results = await Promise.all(configs.map(async (originalConfig) => {
+      // Create an effective copy to avoid mutating the original (which is saved to history)
+      const config = { ...originalConfig };
+
       // Resolve Platform-Specific learning samples for this config
       let learningSamples: string[] = [];
       if (userId && presetId) {
