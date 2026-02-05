@@ -519,7 +519,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         name: 'Instagram',
                                         tagline: 'Visual Story',
                                         sub: '世界観と統一感',
-                                        icon: <InstagramIcon className="w-7 h-7" />,
+                                        icon: <InstagramIcon className="w-7 h-7" isActive={isActive} />,
                                         color: 'from-purple-500/10 to-pink-500/10'
                                     };
                                     case Platform.X: return {
@@ -540,7 +540,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         name: 'Google Maps',
                                         tagline: 'Local Search',
                                         sub: '店舗集客とMEO対策',
-                                        icon: <GoogleMapsIcon className="w-7 h-7" />,
+                                        icon: <GoogleMapsIcon className="w-7 h-7" isActive={isActive} />,
                                         color: 'from-blue-500/10 to-red-500/10'
                                     };
                                     default: return { name: '', tagline: '', sub: '', icon: null, color: '' };
@@ -550,90 +550,90 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             return [Platform.Instagram, Platform.X, Platform.Line, Platform.GoogleMaps].map((p, idx) => {
                                 const isActive = platforms.includes(p);
                                 const details = getPlatformDetails(p, isActive);
-                                const bentoClass = 'h-[110px]';
 
-                                // Map brand colors
+                                // Bento Layout Config
+                                let bentoClass = '';
+                                if (p === Platform.Instagram) bentoClass = 'row-span-2 h-[235px]';
+                                else if (p === Platform.GoogleMaps) bentoClass = 'col-span-2 h-[140px]';
+                                else bentoClass = 'h-[111px]';
+
                                 const brandColor = p === Platform.Instagram ? '#D23877' :
                                     p === Platform.X ? '#111827' :
                                         p === Platform.Line ? '#1FA14D' :
                                             p === Platform.GoogleMaps ? '#3F76DF' : '#2b2b2f';
 
                                 const cardClasses = `
-                                                relative rounded-[24px] overflow-hidden cursor-pointer border transition-all duration-200 ease-out group focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-2 focus-visible:ring-offset-white
-                                                ${bentoClass}
-                                                ${isActive
-                                        ? 'scale-[1.02] border-[2.5px] shadow-none'
-                                        : 'bg-[#f6f6f8] border-slate-200 shadow-[0_10px_30px_rgba(15,23,42,0.1)] hover:-translate-y-0.5 hover:shadow-[0_18px_45px_rgba(15,23,42,0.15)] active:translate-y-[1px] active:shadow-none'
+                                    relative rounded-[30px] overflow-hidden cursor-pointer border transition-all duration-300 ease-out group 
+                                    ${bentoClass}
+                                    ${isActive
+                                        ? 'border-white ring-2 ring-offset-2'
+                                        : 'bg-white border-slate-200 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_30px_rgba(0,0,0,0.08)] active:scale-[0.98]'
                                     }
-                                        `;
+                                `;
 
                                 const cardStyle = isActive ? {
-                                    borderColor: brandColor,
                                     backgroundColor: brandColor,
-                                    boxShadow: `0 0 0 3px ${hexToRgba(brandColor, 0.35)}, 0 20px 45px rgba(15,23,42,0.25)`
-                                } : {};
+                                    borderColor: 'white',
+                                    '--tw-ring-color': brandColor,
+                                    '--tw-ring-offset-color': '#ffffff',
+                                } : {} as React.CSSProperties;
 
-                                const ctaTextColor = isActive ? 'text-white/80' : 'text-[#2b2b2f]/70';
+                                const contentTextColor = isActive ? 'text-white' : 'text-[#2b2b2f]';
+                                const subTextColor = isActive ? 'text-white/80' : 'text-[#b0b0b0]';
+                                const badgeColor = isActive ? 'text-white/40' : 'text-[#b0b0b0]';
+                                const iconColor = isActive ? '#ffffff' : brandColor;
 
                                 return (
-                                    <div
+                                    <motion.div
                                         key={p}
+                                        layout
                                         onClick={() => onPlatformToggle(p)}
                                         className={cardClasses}
                                         style={cardStyle}
+                                        whileHover={{ y: -2 }}
                                     >
-                                        {/* Bento Card Content */}
+                                        {/* Content Wrapper */}
                                         <div className="absolute inset-0 px-5 py-4 flex flex-col justify-between">
+                                            {/* Top Section: Icon & Small Action */}
                                             <div className="flex justify-between items-start">
-                                                <div
-                                                    className={`
-                                                        transition-all duration-500 transform
-                                                         ${isActive ? 'scale-110' : 'scale-100'}
-                                                    `}
-                                                    style={{ color: isActive ? '#ffffff' : brandColor }}
-                                                >
+                                                <div className="transition-all duration-500 group-hover:scale-110" style={{ color: iconColor }}>
                                                     {details.icon}
                                                 </div>
-
-                                                <div
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        onPlatformToggle(p);
-                                                    }}
-                                                    className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-500 active:scale-90 shadow-sm"
-                                                    style={isActive ? { backgroundColor: '#ffffff', color: brandColor } : { backgroundColor: '#e2e4e6', color: '#2b2b2f' }}
-                                                >
-                                                    {isActive ? (
-                                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="animate-in zoom-in-50 duration-300">
-                                                            <polyline points="20 6 9 17 4 12" />
-                                                        </svg>
-                                                    ) : (
-                                                        <ChevronRightIcon className={`w-5 h-5`} />
-                                                    )}
-                                                </div>
+                                                <div />
                                             </div>
 
-                                            <div className="flex flex-col">
-                                                <div className="flex flex-col leading-tight gap-1">
-                                                    <h3 className={`font-black tracking-tighter text-xl transition-colors duration-500 whitespace-nowrap ${isActive ? 'text-white' : 'text-[#2b2b2f]'}`} style={{ fontFamily: 'Inter, sans-serif' }}>
-                                                        {details.name}
-                                                    </h3>
-                                                    <p className={`text-[11px] font-medium ${isActive ? 'text-white/80' : 'text-[#b0b0b0]'}`}>
-                                                        {details.sub}
-                                                    </p>
-                                                </div>
+                                            {/* Bottom Section: Labels */}
+                                            <div className="flex flex-col gap-0.5">
+                                                <span className={`text-[9.5px] font-black uppercase tracking-[0.2em] ${badgeColor}`}>
+                                                    {details.tagline}
+                                                </span>
+                                                <h3 className={`text-[20px] font-black tracking-tight leading-tight ${contentTextColor}`}>
+                                                    {details.name}
+                                                </h3>
+                                                <p className={`text-[11px] font-bold tracking-tight ${subTextColor}`}>
+                                                    {details.sub}
+                                                </p>
                                             </div>
                                         </div>
-                                    </div>
+
+                                        {/* Active State Checkmark (Top Right) */}
+                                        {isActive && (
+                                            <div className="absolute top-4 right-4 w-7 h-7 bg-white rounded-full flex items-center justify-center shadow-md animate-in zoom-in-50 duration-300">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={brandColor} strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+                                                    <polyline points="20 6 9 17 4 12" />
+                                                </svg>
+                                            </div>
+                                        )}
+                                    </motion.div>
                                 );
                             });
                         })()}
                     </div>
 
-                    {/* Compact Horizontal Premium AI Omakase Card - Champagne & Bronze Edition */}
+                    {/* Compact Horizontal Premium AI Omakase Card - Champagne & Bronze Edition (HIDDEN FOR NOW) */}
+                    {/* 
                     <div className="mt-6 mb-4">
                         <div className="relative p-[1.5px] group overflow-hidden rounded-[29px]">
-                            {/* Golden Border Beam - Subtle rotating light */}
                             <motion.div
                                 animate={{
                                     rotate: [0, 360],
@@ -654,12 +654,10 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                     ${!isGoogleMaps && platforms.length > 0 ? 'cursor-pointer hover:shadow-[0_20px_50px_rgba(163,123,81,0.15)]' : 'cursor-not-allowed grayscale opacity-80'}
                                 `}
                             >
-                                {/* Left: Icon Box (Warm Bronze to Modern Gold) */}
                                 <div className="shrink-0 w-14 h-14 rounded-2xl bg-gradient-to-br from-[#A37B51] via-[#C5A079] to-[#D4AF37] flex items-center justify-center shadow-lg shadow-yellow-900/10">
                                     <SparklesIcon className="w-8 h-8 text-white" />
                                 </div>
 
-                                {/* Center: Texts & Gold Badge */}
                                 <div className="flex-1 min-w-0 flex flex-col justify-center">
                                     <div className="flex items-center gap-2.5 mb-1">
                                         <h4 className="text-[18px] font-black tracking-tight text-[#3E2723]">
@@ -676,7 +674,6 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                     </p>
                                 </div>
 
-                                {/* Right: Action Button (Champagne Minimal) */}
                                 <div className="shrink-0">
                                     <div className={`
                                         w-12 h-12 rounded-full bg-white border border-[#D4AF37]/20 flex items-center justify-center shadow-md group-hover:scale-110 group-hover:border-[#D4AF37]/50 transition-all duration-500
@@ -690,7 +687,6 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                     </div>
                                 </div>
 
-                                {/* Loading Progress Line (Gold) */}
                                 {isOmakaseLoading && (
                                     <motion.div
                                         initial={{ x: "-100%" }}
@@ -702,6 +698,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             </motion.div>
                         </div>
                     </div>
+                    */}
 
                 </div>
             </div>
