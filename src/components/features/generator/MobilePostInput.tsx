@@ -879,7 +879,12 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         </div>
 
                                         {/* 3. Sticky Action Footer */}
-                                        <div className="px-6 py-8  safe-area-bottom border-t border-slate-50 flex-shrink-0 bg-white flex flex-col gap-4 shadow-[0_-10px_30px_rgba(0,0,0,0.02)] z-[210]">
+                                        <div
+                                            className="px-6 py-8 safe-area-bottom border-t border-slate-50 flex-shrink-0 flex flex-col gap-4 shadow-[0_-10px_30px_rgba(0,0,0,0.02)] z-[210]"
+                                            style={{
+                                                backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.05) 5%, rgba(255,255,255,0.8) 30%, rgba(255,255,255,1) 70%)'
+                                            }}
+                                        >
 
                                             {!isListening && (
                                                 <button
@@ -1202,9 +1207,9 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
                                     {/* Opaque Background with Content */}
                                     <div
-                                        className="w-full px-8 pt-12 pb-[24px] flex flex-col items-center gap-4 relative"
+                                        className="w-full px-8 pt-24 pb-[24px] flex flex-col items-center gap-4 relative"
                                         style={{
-                                            backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 4%, rgba(255,255,255,0.9) 20%, rgba(255,255,255,1) 50%)',
+                                            backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 30%, rgba(255,255,255,1) 60%)',
                                             backgroundRepeat: 'no-repeat'
                                         }}
                                     >
