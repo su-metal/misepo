@@ -1196,19 +1196,22 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
                             {/* Step 3 Sticky Action Area - Fixed for Hitbox and Layout accuracy */}
                             {mobileStep === 'confirm' && (
-                                <div className="absolute bottom-0 left-0 right-0 z-[120] flex flex-col items-center">
+                                <div className="absolute bottom-0 left-0 right-0 z-[210] flex flex-col items-center">
                                     {/* Gradient Fade Border */}
                                     {/* Gradient fade removed */}
 
                                     {/* Opaque Background with Content */}
-                                    <div className="w-full bg-white px-8 pt-4 pb-[24px] flex flex-col items-center gap-4">
+                                    <div className="w-full bg-white px-8 pt-6 pb-12 safe-area-bottom flex flex-col items-center gap-2">
+                                        <p className="text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest pointer-events-none mb-2">
+                                            あなたの想いを、AIが最高の文章に仕上げます
+                                        </p>
                                         <button
                                             onClick={onGenerate}
                                             disabled={isGenerating}
                                             className={`
                                             w-full group relative overflow-hidden rounded-[32px] py-6
                                             flex items-center justify-center
-                                            transition-all duration-500 active:scale-95
+                                            transition-all duration-500 active:scale-95 cursor-pointer
                                             ${isGenerating ? 'bg-slate-100 cursor-not-allowed' : 'bg-[#2b2b2f] shadow-[0_15px_45px_rgba(0,0,0,0.15)]'}
                                         `}
                                         >
@@ -1222,9 +1225,6 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                 )}
                                             </div>
                                         </button>
-                                        <p className="text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest pointer-events-none">
-                                            あなたの想いを、AIが最高の文章に仕上げます
-                                        </p>
                                     </div>
                                 </div>
                             )}
