@@ -125,7 +125,8 @@ export async function GET() {
         const sub: any = subs.data[0];
         const priceId = sub.items.data[0]?.price?.id;
         const subPlanFromPrice = getPlanFromPriceId(priceId);
-        const subPlan = sub.metadata.plan || subPlanFromPrice || "entry";
+        // ✅ ALWAYS prioritize Price ID over metadata as the source of truth for the paid plan
+        const subPlan = subPlanFromPrice || sub.metadata.plan || "entry";
         
         // Always heal if there's a status mismatch or a plan mismatch
         if (!ent.billing_reference_id || sub.status !== ent.status || subPlan !== ent.plan) {
