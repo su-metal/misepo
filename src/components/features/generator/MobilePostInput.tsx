@@ -1196,15 +1196,12 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
                             {/* Step 3 Sticky Action Area - Fixed for Hitbox and Layout accuracy */}
                             {mobileStep === 'confirm' && (
-                                <div className="absolute bottom-0 left-0 right-0 z-[210] flex flex-col items-center">
+                                <div className="absolute bottom-0 left-0 right-0 z-[150] flex flex-col items-center">
                                     {/* Gradient Fade Border */}
                                     {/* Gradient fade removed */}
 
                                     {/* Opaque Background with Content */}
-                                    <div className="w-full bg-white px-8 pt-6 pb-12 safe-area-bottom flex flex-col items-center gap-2">
-                                        <p className="text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest pointer-events-none mb-2">
-                                            あなたの想いを、AIが最高の文章に仕上げます
-                                        </p>
+                                    <div className="w-full bg-white px-8 pt-4 pb-[24px] flex flex-col items-center gap-4">
                                         <button
                                             onClick={onGenerate}
                                             disabled={isGenerating}
@@ -1225,6 +1222,9 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                 )}
                                             </div>
                                         </button>
+                                        <p className="text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest pointer-events-none">
+                                            あなたの想いを、AIが最高の文章に仕上げます
+                                        </p>
                                     </div>
                                 </div>
                             )}
