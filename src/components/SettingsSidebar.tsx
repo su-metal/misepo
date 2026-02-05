@@ -125,34 +125,47 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
 
                                 { /* Upgrade Promotion Card */}
                                 {plan?.plan === 'trial' && (
-                                    <div className="bg-white rounded-[2.5rem] p-7 text-[#2b2b2f] shadow-xl border border-slate-100 relative overflow-hidden group">
-                                        {/* Decorative backgrounds */}
-                                        <div className="absolute -top-10 -right-10 w-40 h-40 bg-gradient-to-br from-[#80CAFF]/5 via-[#C084FC]/5 to-[#F87171]/5 rounded-full blur-3xl group-hover:scale-125 transition-transform duration-700 pointer-events-none" />
-
+                                    <div className="bg-white rounded-[2rem] p-5 text-[#2b2b2f] shadow-xl border border-slate-100 relative overflow-hidden group">
                                         <div className="relative z-10">
-                                            <div className="flex items-center gap-2 mb-4">
-                                                <div className="p-1.5 rounded-lg bg-slate-50 text-[#2b2b2f]">
-                                                    <SparklesIcon className="w-4 h-4" />
+                                            <div className="flex justify-between items-center mb-3">
+                                                <div className="flex items-center gap-1.5 p-1 rounded-lg bg-slate-50">
+                                                    <SparklesIcon className="w-3.5 h-3.5 text-[#C084FC]" />
+                                                    <span className="text-[10px] font-black uppercase tracking-[0.1em] text-slate-500">Premium Access</span>
                                                 </div>
-                                                <span className="text-[12px] font-black uppercase tracking-[0.2em] text-[#2b2b2f]">Premium Access</span>
+                                                <button
+                                                    onClick={() => { router.push('/start?upgrade=true'); toggleOpen(); }}
+                                                    className="px-4 py-1.5 bg-[#2b2b2f] text-white rounded-full font-black text-[9px] uppercase tracking-wider hover:bg-black transition-all active:scale-95 shadow-md shadow-black/10 flex items-center gap-1.5"
+                                                >
+                                                    Upgrade
+                                                    <ChevronDownIcon className="w-3 h-3 -rotate-90" />
+                                                </button>
                                             </div>
 
-                                            <h3 className="text-xl font-black text-[#2b2b2f] leading-tight mb-3 tracking-tighter">
-                                                上位プランで<br />生成枠を拡大
-                                            </h3>
+                                            <div className="flex justify-between items-end mb-2">
+                                                <h3 className="text-[15px] font-black text-[#2b2b2f] leading-tight tracking-tight">
+                                                    上位プランで生成枠を拡大
+                                                </h3>
+                                                <div className="text-right">
+                                                    <div className="flex items-center justify-end gap-1 text-[10px] font-black text-slate-400 uppercase tracking-tighter mb-0.5">
+                                                        <span>CREDITS</span>
+                                                        <span className="text-[#2b2b2f] font-black">{Math.max(0, (plan.limit || 5) - (plan.usage || 0))}</span>
+                                                        <span>/</span>
+                                                        <span>{plan.limit || 5}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
 
-                                            <p className="text-[12px] font-bold text-slate-500 mb-6 leading-relaxed">
-                                                生成回数の上限を大幅に増やして、<br />集客をさらに加速させましょう。
-                                            </p>
-
-                                            <button
-                                                onClick={() => { router.push('/start?upgrade=true'); toggleOpen(); }}
-                                                className="w-full py-4 bg-[#2b2b2f] text-white rounded-[1.25rem] font-black text-xs uppercase tracking-[0.15em] hover:bg-black transition-all active:scale-95 shadow-lg shadow-black/10 flex items-center justify-center gap-2"
-                                            >
-                                                Subscribe to Pro
-                                                <ChevronDownIcon className="w-4 h-4 -rotate-90" />
-                                            </button>
+                                            {/* Usage Bar (Remaining Credits Logic) */}
+                                            <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                                <div
+                                                    className="h-full bg-gradient-to-r from-[#F87171] via-[#C084FC] to-[#60A5FA] rounded-full transition-all duration-1000"
+                                                    style={{ width: `${Math.max(0, Math.min((((plan.limit || 5) - (plan.usage || 0)) / (plan.limit || 5)) * 100, 100))}%` }}
+                                                />
+                                            </div>
                                         </div>
+
+                                        {/* Bottom Accent Bar */}
+                                        <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-[#F87171] via-[#C084FC] to-[#60A5FA] opacity-30" />
                                     </div>
                                 )}
 
