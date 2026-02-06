@@ -563,9 +563,9 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                     const isActive = platforms.includes(p);
                                     const details = getPlatformDetails(p, isActive);
                                     let bentoClass = '';
-                                    if (p === Platform.Instagram) bentoClass = 'row-span-2 min-h-[clamp(200px,30vh,300px)]';
-                                    else if (p === Platform.GoogleMaps) bentoClass = 'col-span-2 min-h-[clamp(120px,18vh,180px)]';
-                                    else bentoClass = 'min-h-[clamp(100px,14vh,150px)]';
+                                    if (p === Platform.Instagram) bentoClass = 'row-span-2 min-h-[clamp(210px,34vh,320px)] sm:min-h-[clamp(200px,30vh,300px)]';
+                                    else if (p === Platform.GoogleMaps) bentoClass = 'col-span-2 min-h-[clamp(130px,20vh,200px)] sm:min-h-[clamp(120px,18vh,180px)]';
+                                    else bentoClass = 'min-h-[clamp(110px,16vh,170px)] sm:min-h-[clamp(100px,14vh,150px)]';
 
                                     const brandColor = p === Platform.Instagram ? '#D23877' :
                                         p === Platform.X ? '#111827' :
