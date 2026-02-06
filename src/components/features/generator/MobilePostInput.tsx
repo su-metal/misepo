@@ -916,7 +916,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                                 if (onQuestionChange) onQuestionChange('');
                                                                 if (onTopicPromptChange) onTopicPromptChange('');
                                                             }}
-                                                            className="absolute top-4 right-4 w-7 h-7 rounded-full bg-white/80 border border-slate-200 flex items-center justify-center text-slate-400 hover:text-[#2b2b2f] shadow-sm transition-all opacity-100 active:scale-90"
+                                                            className="absolute top-4 right-4 w-10 h-10 -m-1.5 rounded-full bg-white/80 border border-slate-200 flex items-center justify-center text-slate-400 hover:text-[#2b2b2f] shadow-sm transition-all opacity-100 active:scale-90 z-20"
                                                             title="質問を閉じる"
                                                         >
                                                             <CloseIcon className="w-3.5 h-3.5" />
@@ -926,7 +926,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                                 <SparklesIcon className="w-4 h-4 text-white" />
                                                             </div>
                                                             <div className="flex flex-col gap-1">
-                                                                <span className="text-[10px] font-black text-[#C084FC] uppercase tracking-wider opacity-60">Sommelier Question</span>
+                                                                <span className="text-[10px] font-black text-[#C084FC] uppercase tracking-wider opacity-60 pointer-events-none">Sommelier Question</span>
                                                                 <p className="text-[15px] font-bold text-[#2b2b2f] leading-relaxed italic">
                                                                     「{question}」
                                                                 </p>
@@ -1288,7 +1288,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                         ) : (
                                                             <>
                                                                 <span className="text-white text-base font-black uppercase tracking-[0.3em]">
-                                                                    投稿プランを生成
+                                                                    投稿文を生成
                                                                 </span>
                                                             </>
                                                         )}
