@@ -168,7 +168,7 @@ export async function GET() {
                                sub.current_period_end ? new Date(sub.current_period_end * 1000).toISOString() : 
                                null;
           const newTrialEndsAt = sub.trial_end ? new Date(sub.trial_end * 1000).toISOString() : null;
-
+  
           const { data: updated } = await supabaseAdmin
             .from("entitlements")
             .update({
@@ -185,7 +185,24 @@ export async function GET() {
           
           if (updated) ent = updated;
         }
-      }
+      } else if (ent.plan !== 'free' && ent.plan !== 'trial' && (!ent.billing_reference_id || !ent.billing_reference_id.startsWith('promo_'))) {
+          // ✅ 有料プラン設定なのにStripeにサブスクがない場合、trialに引き戻す（手動付与プロモ等を除く）
+          console.log(`[PlanAPI] Resetting user ${userId} to trial (No Stripe sub found but DB says ${ent.plan})`);
+          const { data: reverted } = await supabaseAdmin
+            .from("entitlements")
+            .update({
+              plan: 'trial',
+              status: 'active',
+              expires_at: null,
+              billing_reference_id: null
+            })
+            .eq("user_id", userId)
+            .eq("app_id", APP_ID)
+            .select("plan,status,expires_at,trial_ends_at,billing_reference_id,stripe_customer_id")
+            .single();
+          
+          if (reverted) ent = reverted;
+        }
     } catch (e) {
       console.error("[PlanAPI] Stripe healing failed:", e);
     }
