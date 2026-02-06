@@ -51,6 +51,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     onAIStart
 }) => {
     const textareaRef = React.useRef<HTMLTextAreaElement>(null);
+    const questionContainerRef = React.useRef<HTMLDivElement>(null);
     const dateObj = new Date();
     const day = dateObj.getDate();
     const month = dateObj.toLocaleString('en-US', { month: 'short' }).toUpperCase();
@@ -101,6 +102,19 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
             onStepChange(mobileStep);
         }
     }, [mobileStep, onStepChange]);
+
+    // Auto-scroll to question when it appears
+    React.useEffect(() => {
+        if (question && questionContainerRef.current) {
+            // Wait a bit for animation to finish or DOM to stabilize
+            setTimeout(() => {
+                questionContainerRef.current?.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }, 300);
+        }
+    }, [question]);
 
     // Notify parent about result or calendar open state to hide footer
     React.useEffect(() => {
@@ -929,7 +943,10 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                     </div>
                                                 </div>
                                                 {question && (
-                                                    <div className="mb-6 p-6 bg-[#edeff1] border border-slate-100 rounded-[32px] animate-in slide-in-from-top-4 duration-500 relative group">
+                                                    <div
+                                                        ref={questionContainerRef}
+                                                        className="mb-6 p-6 bg-[#edeff1] border border-slate-100 rounded-[32px] animate-in slide-in-from-top-4 duration-500 relative group scroll-mt-4"
+                                                    >
                                                         {/* Individual Close Button for Question */}
                                                         <button
                                                             onClick={() => {
