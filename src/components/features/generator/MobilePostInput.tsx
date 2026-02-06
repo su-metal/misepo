@@ -407,11 +407,11 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     const secondaryAudienceList = TARGET_AUDIENCES.filter(t => !primaryAudienceList.includes(t));
 
     return (
-        <div className="flex flex-col h-full relative overflow-hidden font-inter bg-white" style={{ backgroundColor: 'white' }}>
+        <div className="flex flex-col min-h-screen h-full justify-between relative overflow-hidden font-inter bg-white" style={{ backgroundColor: 'white', minHeight: '100vh' }}>
 
             {/* Step 1: Home (Platform Grid) */}
-            <div className={`flex flex-col h-full overflow-hidden relative transition-all duration-500 ${isStepDrawerOpen ? 'blur-md scale-[0.98] opacity-60' : 'opacity-100'}`}>
-                <div className="flex-1 flex flex-col p-4 pt-[max(1.5rem,env(safe-area-inset-top))] pb-32 safe-area-bottom overflow-y-auto no-scrollbar">
+            <div className={`flex flex-col min-h-screen h-full overflow-hidden relative transition-all duration-500 ${isStepDrawerOpen ? 'blur-md scale-[0.98] opacity-60' : 'opacity-100'}`}>
+                <div className="flex-1 flex flex-col p-4 pt-[max(clamp(0.75rem,2vh,1.5rem),env(safe-area-inset-top))] pb-[calc(env(safe-area-inset-bottom)+160px)] safe-area-bottom overflow-y-auto no-scrollbar">
                     {/* High-Design Header - Magazine Style Date & Minimal Avatar */}
                     <div className="flex items-start justify-between mb-2 px-1">
                         {/* Typography Date Display - Interactive Trigger */}
@@ -492,7 +492,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                         </div>
                     </div>
 
-                    <div className="flex items-center justify-between px-2 mt-8 mb-0">
+                    <div className="flex items-center justify-between px-[clamp(0.75rem,3vw,1rem)] mt-[clamp(0.75rem,2.5vw,1.75rem)] mb-0">
                         <div className="flex flex-col gap-0.5 items-start">
                             <h2 className="text-[13px] font-black text-[#2b2b2f] tracking-tight">投稿先を選択</h2>
                             <p className="text-[10px] text-[#b0b0b0] font-bold uppercase tracking-[0.2em]">Select your canvas</p>
@@ -521,7 +521,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
 
                     {/* Standard 2x2 Grid Platform Selection */}
-                    <div className="grid grid-cols-2 gap-3 px-1 mt-4">
+                    <div className="grid grid-cols-2 gap-3 px-1 mt-4 auto-rows-min">
                         {(() => {
                             const getPlatformDetails = (platform: Platform, isActive: boolean) => {
                                 switch (platform) {
@@ -563,9 +563,9 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                     const isActive = platforms.includes(p);
                                     const details = getPlatformDetails(p, isActive);
                                     let bentoClass = '';
-                                    if (p === Platform.Instagram) bentoClass = 'row-span-2 h-[235px]';
-                                    else if (p === Platform.GoogleMaps) bentoClass = 'col-span-2 h-[126px]';
-                                    else bentoClass = 'h-[111px]';
+                                    if (p === Platform.Instagram) bentoClass = 'row-span-2 min-h-[clamp(210px,34vh,320px)] sm:min-h-[clamp(200px,30vh,300px)]';
+                                    else if (p === Platform.GoogleMaps) bentoClass = 'col-span-2 min-h-[clamp(130px,20vh,200px)] sm:min-h-[clamp(120px,18vh,180px)]';
+                                    else bentoClass = 'min-h-[clamp(110px,16vh,170px)] sm:min-h-[clamp(100px,14vh,150px)]';
 
                                     const brandColor = p === Platform.Instagram ? '#D23877' :
                                         p === Platform.X ? '#111827' :
