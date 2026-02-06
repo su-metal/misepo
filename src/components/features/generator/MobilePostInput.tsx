@@ -819,7 +819,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             {/* Drawer Content - Redesigned for Sticky Actions */}
                             <div className="flex-1 flex flex-col min-h-0 overflow-visible relative">
                                 {mobileStep === 'input' && (
-                                    <div className="flex-1 flex flex-col min-h-0 animate-in fade-in zoom-in-95 duration-700">
+                                    <div className="flex-1 relative flex flex-col min-h-0 animate-in fade-in zoom-in-95 duration-700">
 
                                         {/* 1. Top Fixed Header Section */}
                                         {!isGoogleMaps && (
@@ -854,7 +854,8 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         )}
 
                                         {/* 2. Middle Scrollable Area (Main Text inputs) */}
-                                        <div className="flex-1 min-h-0 overflow-y-auto px-8 py-2 pb-6 no-scrollbar scrollbar-hide">
+                                        {/* Keep extra bottom padding so content won't be hidden under the fixed action area. */}
+                                        <div className="flex-1 min-h-0 overflow-y-auto px-8 py-2 pb-[190px] no-scrollbar scrollbar-hide">
                                             <div className="w-full relative py-2 mb-4">
                                                 {/* AI Inspiration Deck for "AI Standard" */}
                                                 <InspirationDeck
@@ -961,20 +962,36 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                 )}
                                             </div>
 
-                                            {/* 3. Sticky Action Footer */}
-                                            <div className="sticky bottom-0 px-0 pt-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] border-t border-slate-100 flex flex-col gap-4 shadow-[0_-10px_40px_rgba(0,0,0,0.04)] z-[260] bg-white/95 backdrop-blur-xl">
+                                        </div>
+
+                                        {/* 3. Fixed Action Area (Bottom) */}
+                                        <div className="absolute bottom-0 left-0 right-0 z-[250] flex flex-col items-center pointer-events-auto">
+                                            <div
+                                                className="w-full px-8 pt-6 pb-[calc(env(safe-area-inset-bottom)+44px)] flex flex-col items-center gap-4 relative bg-white/95 backdrop-blur-xl border-t border-slate-100"
+                                                style={{
+                                                    backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.9) 45%, rgba(255,255,255,1) 100%)',
+                                                    backgroundRepeat: 'no-repeat'
+                                                }}
+                                            >
                                                 <button
-                                                    onClick={() => {
-                                                        setMobileStep('confirm');
-                                                    }}
+                                                    onClick={() => setMobileStep('confirm')}
                                                     disabled={isListening || !inputText.trim()}
-                                                    className={`w-full py-5 rounded-[28px] font-black text-sm uppercase tracking-[0.2em] shadow-xl active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer ${isListening || !inputText.trim()
-                                                        ? 'bg-[#edeff1] text-slate-300 cursor-not-allowed shadow-none'
-                                                        : 'bg-[#2b2b2f] text-white'
-                                                        }`}
+                                                    className={`
+                                                        w-full group relative overflow-hidden rounded-[32px] py-6
+                                                        flex items-center justify-center
+                                                        transition-all duration-500 active:scale-95 cursor-pointer
+                                                        ${isListening || !inputText.trim()
+                                                            ? 'bg-slate-100 cursor-not-allowed shadow-none text-slate-300'
+                                                            : 'bg-[#2b2b2f] shadow-[0_15px_45px_rgba(0,0,0,0.15)] text-white'
+                                                        }
+                                                    `}
                                                 >
-                                                    確認画面へ
-                                                    <ChevronRightIcon className="w-5 h-5" />
+                                                    <div className="relative flex items-center justify-center gap-3">
+                                                        <span className="text-base font-black uppercase tracking-[0.3em] drop-shadow-sm">
+                                                            確認画面へ
+                                                        </span>
+                                                        <ChevronRightIcon className="w-5 h-5" />
+                                                    </div>
                                                 </button>
                                             </div>
                                         </div>
@@ -984,7 +1001,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                 {mobileStep === 'confirm' && (
                                     <div className="flex-1 relative min-h-0 flex flex-col animate-in fade-in slide-in-from-bottom-10 duration-700">
                                         {/* Scrollable Preview and Settings */}
-                                        <div className="flex-1 overflow-y-auto px-8 py-4 pb-[120px] space-y-4 no-scrollbar scrollbar-hide">
+                                        <div className="flex-1 overflow-y-auto px-8 py-4 pb-[190px] space-y-4 no-scrollbar scrollbar-hide">
                                             <div className="flex flex-col gap-4">
                                                 {/* Preview Box - Brand Style */}
                                                 <div className="bg-[#edeff1] border border-slate-100 rounded-[40px] p-8 min-h-[180px] relative shadow-sm overflow-hidden group">
@@ -1246,7 +1263,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         {/* Step 3 Sticky Action Area - Fixed for Hitbox and Layout accuracy */}
                                         <div className="absolute bottom-0 left-0 right-0 z-[250] flex flex-col items-center pointer-events-auto">
                                             <div
-                                                className="w-full px-8 pt-6 pb-[max(1rem,env(safe-area-inset-bottom))] flex flex-col items-center gap-4 relative bg-white/95 backdrop-blur-xl border-t border-slate-100"
+                                                className="w-full px-8 pt-6 pb-[calc(env(safe-area-inset-bottom)+44px)] flex flex-col items-center gap-4 relative bg-white/95 backdrop-blur-xl border-t border-slate-100"
                                                 style={{
                                                     backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.9) 45%, rgba(255,255,255,1) 100%)',
                                                     backgroundRepeat: 'no-repeat'
