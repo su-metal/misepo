@@ -16,7 +16,7 @@ interface AccountSettingsModalProps {
 const AccountSettingsModal: React.FC<AccountSettingsModalProps> = ({ user, plan, onClose, onLogout }) => {
     if (typeof document === 'undefined') return null;
 
-    const isPaid = plan?.status === 'active' && !['free', 'trial'].includes(plan?.plan || '');
+    const isPaid = (plan?.status === 'active' || plan?.status === 'trialing') && plan?.plan !== 'trial';
     const isTrial = !!plan?.trial_ends_at && new Date(plan.trial_ends_at).getTime() > Date.now();
     const isPro = isPaid || isTrial;
 
@@ -140,8 +140,7 @@ const AccountSettingsModal: React.FC<AccountSettingsModalProps> = ({ user, plan,
                                                     {plan?.plan === 'entry' ? 'Entry Plan' :
                                                         plan?.plan === 'standard' ? 'Standard Plan' :
                                                             plan?.plan === 'professional' ? 'Professional Plan' :
-                                                                isTrial ? 'Trial Plan' :
-                                                                    'Free Plan'}
+                                                                'Trial Plan'}
                                                 </span>
                                                 {isPro && (
                                                     <span className="text-[9px] px-2 py-0.5 rounded-full font-black uppercase tracking-widest bg-indigo-50 text-[#7F5AF0]">
@@ -154,7 +153,7 @@ const AccountSettingsModal: React.FC<AccountSettingsModalProps> = ({ user, plan,
                                                     ? `残り ${getTrialRemainingDays()} 日`
                                                     : isPaid
                                                         ? '全ての機能が利用可能です'
-                                                        : '制限付きプラン'}
+                                                        : '利用期限が終了しています'}
                                             </p>
                                         </div>
                                     </div>
@@ -163,7 +162,7 @@ const AccountSettingsModal: React.FC<AccountSettingsModalProps> = ({ user, plan,
                                 {plan?.plan !== 'professional' && plan?.plan !== 'monthly' && plan?.plan !== 'yearly' && plan?.plan !== 'pro' && (
                                     <div className="flex justify-start">
                                         <a href="/start?upgrade=true" className="px-6 py-2.5 text-[10px] font-black rounded-full transition-all uppercase tracking-widest shadow-lg bg-[#7F5AF0] text-white hover:bg-[#6c4bd6] hover:scale-105 active:scale-95">
-                                            {plan?.plan === 'free' || plan?.plan === 'trial' ? 'Upgrade' : 'Plan UP'}
+                                            {plan?.plan === 'trial' ? 'Upgrade' : 'Plan UP'}
                                         </a>
                                     </div>
                                 )}

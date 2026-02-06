@@ -182,7 +182,6 @@ function StartPageContent() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {(() => {
                 const PLAN_LEVELS: Record<string, number> = {
-                  'free': 0,
                   'trial': 0,
                   'entry': 1,
                   'standard': 2,

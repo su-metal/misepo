@@ -73,19 +73,21 @@ export async function GET() {
 
   const isEligibleForTrial = !trialRedemption;
 
-  // 4. Auto-initialize Trial for new users (instead of returning 404 or creating 'free')
-  if (!ent && isEligibleForTrial) {
+  // 4. Auto-initialize Trial for all users (active if eligible, inactive otherwise)
+  if (!ent) {
     const trialDurationDays = 7;
     const finalTrialEndsAt = new Date(Date.now() + trialDurationDays * 24 * 60 * 60 * 1000).toISOString();
 
-    // Mark trial as redeemed
-    await supabaseAdmin
-      .from("promotion_redemptions")
-      .insert({
-        app_id: APP_ID,
-        user_id: userId,
-        promo_key: "trial_7days"
-      });
+    if (isEligibleForTrial) {
+      // Mark trial as redeemed
+      await supabaseAdmin
+        .from("promotion_redemptions")
+        .insert({
+          app_id: APP_ID,
+          user_id: userId,
+          promo_key: "trial_7days"
+        });
+    }
 
     const { data: created, error: createErr } = await supabaseAdmin
       .from("entitlements")
@@ -93,45 +95,41 @@ export async function GET() {
         app_id: APP_ID, 
         user_id: userId, 
         plan: "trial", 
-        status: "active", 
+        status: isEligibleForTrial ? "active" : "inactive", 
         expires_at: null, 
-        trial_ends_at: finalTrialEndsAt 
+        trial_ends_at: isEligibleForTrial ? finalTrialEndsAt : "2024-01-01T00:00:00Z" 
       }, { onConflict: "user_id,app_id" })
       .select("plan,status,expires_at,trial_ends_at,billing_reference_id,stripe_customer_id")
       .single();
 
     if (createErr) return NextResponse.json({ ok: false, error: createErr.message }, { status: 500, headers: NO_STORE_HEADERS });
     ent = created;
-    console.log(`[PlanAPI] Auto-initialized trial for new user ${userId}`);
+    console.log(`[PlanAPI] Auto-initialized trial for user ${userId} (eligible: ${isEligibleForTrial})`);
   }
 
-  // If still no entitlement (not eligible for trial and no record exists)
-  if (!ent) {
-    return NextResponse.json({ ok: false, error: "no_plan_selected" }, { status: 404, headers: NO_STORE_HEADERS });
-  }
-
-  // --- SELF-HEALING: Convert 'free' plan users to trial if eligible ---
-  if (ent.plan === 'free' && isEligibleForTrial) {
+  // --- SELF-HEALING: Convert 'free' plan users to trial if eligible (Legacy cleanup) ---
+  if (ent.plan === 'free') {
     console.log(`[PlanAPI] Healing 'free' user ${userId} to trial`);
-    const jstOffset = 9 * 60 * 60 * 1000;
-    const nowJST = new Date(Date.now() + jstOffset);
-    const endsAtJST = new Date(nowJST.getTime() + (7 * 24 * 60 * 60 * 1000));
-    const finalTrialEndsAt = new Date(endsAtJST.getTime() - jstOffset).toISOString();
+    const trialDurationDays = 7;
+    const finalTrialEndsAt = isEligibleForTrial 
+      ? new Date(Date.now() + trialDurationDays * 24 * 60 * 60 * 1000).toISOString()
+      : "2024-01-01T00:00:00Z";
 
-    // Mark trial as redeemed
-    await supabaseAdmin
-      .from("promotion_redemptions")
-      .upsert({
-        app_id: APP_ID,
-        user_id: userId,
-        promo_key: "trial_7days"
-      }, { onConflict: "app_id,user_id,promo_key" });
+    if (isEligibleForTrial) {
+      await supabaseAdmin
+        .from("promotion_redemptions")
+        .upsert({
+          app_id: APP_ID,
+          user_id: userId,
+          promo_key: "trial_7days"
+        }, { onConflict: "app_id,user_id,promo_key" });
+    }
 
     const { data: healed } = await supabaseAdmin
       .from("entitlements")
       .update({ 
         plan: "trial", 
-        status: "active", 
+        status: isEligibleForTrial ? "active" : "inactive", 
         expires_at: null, 
         trial_ends_at: finalTrialEndsAt 
       })
@@ -261,7 +259,7 @@ export async function GET() {
   const expiresMs = ent.expires_at ? new Date(ent.expires_at).getTime() : null;
 
   const isTrialActive = ent.plan === 'trial' && ent.status === 'active' && (trialEndsMs === null || trialEndsMs > nowMs);
-  const isPaidActive = ent.plan !== 'free' && ent.plan !== 'trial' && (ent.status === 'active' || ent.status === 'trialing') && (expiresMs === null || expiresMs > nowMs);
+  const isPaidActive = ent.plan !== 'trial' && (ent.status === 'active' || ent.status === 'trialing') && (expiresMs === null || expiresMs > nowMs);
   
   const canUseApp = isTrialActive || isPaidActive;
 

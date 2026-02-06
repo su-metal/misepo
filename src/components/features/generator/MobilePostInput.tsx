@@ -459,7 +459,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         className={`xl:hidden h-8 px-4 rounded-full text-white text-[9px] font-black uppercase tracking-[0.1em] shadow-lg active:scale-95 transition-all flex items-center gap-1.5 border border-white/20 ${plan?.canUseApp === false ? 'bg-[#E88BA3] shadow-red-500/20' : 'bg-sunset shadow-orange-500/20'}`}
                                     >
                                         <SparklesIcon className="w-2.5 h-2.5" />
-                                        {plan?.canUseApp === false ? 'Trial Expired' : (plan?.plan === 'free' || plan?.plan === 'trial' ? 'Go Pro' : 'Upgrade')}
+                                        {plan?.canUseApp === false ? 'Trial Expired' : (plan?.plan === 'trial' ? 'Go Pro' : 'Upgrade')}
                                     </a>
                                 )}
 

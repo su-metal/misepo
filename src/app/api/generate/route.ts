@@ -103,14 +103,14 @@ export async function POST(req: Request) {
         effectiveEnt = created;
         console.log(`[GenerateAPI] Auto-initialized trial for new user ${userId}`);
       } else {
-        // Not eligible for trial and no entitlement: fallback to inactive free (should rarely happen)
+        // Not eligible for trial and no entitlement: fallback to inactive trial
         const { data: created, error: createErr } = await supabaseAdmin
           .from("entitlements")
           .upsert(
             {
               app_id: APP_ID,
               user_id: userId,
-              plan: "free",
+              plan: "trial",
               status: "inactive",
               expires_at: null,
               trial_ends_at: null,
@@ -197,10 +197,10 @@ export async function POST(req: Request) {
         else if (planName === 'professional') monthlyLimit = 300;
         else if (planName === 'monthly' || planName === 'yearly') monthlyLimit = 300; // Legacy plans
         
-        // Free/Trial users: 5 per day
-        const isFreeOrTrial = (planName === 'free' || status === 'trialing') && !monthlyLimit;
+        // Trial users: 5 per day
+        const isTrial = (planName === 'trial' || status === 'trialing') && !monthlyLimit;
         
-        if (isFreeOrTrial && totalTodayCredits + cost > 5) {
+        if (isTrial && totalTodayCredits + cost > 5) {
             return NextResponse.json({ ok: false, error: "daily_limit_reached", limit: 5, current: totalTodayCredits }, { status: 403 });
         }
         
