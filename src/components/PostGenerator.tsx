@@ -60,7 +60,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
   const [isPresetModalOpen, setIsPresetModalOpen] = React.useState(false);
   const [isSavingPreset, setIsSavingPreset] = React.useState(false);
   const [mobileActiveTab, setMobileActiveTab] = React.useState<'home' | 'history' | 'learning' | 'settings'>('home');
-  const [mobileStep, setMobileStep] = React.useState<'platform' | 'select_mode' | 'input' | 'confirm' | 'result'>('platform');
+  const [mobileStep, setMobileStep] = React.useState<'platform' | 'input' | 'confirm' | 'result'>('platform');
   const [closeDrawerTrigger, setCloseDrawerTrigger] = React.useState(0);
   const [openDrawerTrigger, setOpenDrawerTrigger] = React.useState(0);
   const [selectionTrigger, setSelectionTrigger] = React.useState(0);
