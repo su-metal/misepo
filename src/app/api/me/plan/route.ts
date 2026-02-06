@@ -75,10 +75,8 @@ export async function GET() {
 
   // 4. Auto-initialize Trial for new users (instead of returning 404 or creating 'free')
   if (!ent && isEligibleForTrial) {
-    const jstOffset = 9 * 60 * 60 * 1000;
-    const nowJST = new Date(Date.now() + jstOffset);
-    const endsAtJST = new Date(nowJST.getTime() + (7 * 24 * 60 * 60 * 1000));
-    const finalTrialEndsAt = new Date(endsAtJST.getTime() - jstOffset).toISOString();
+    const trialDurationDays = 7;
+    const finalTrialEndsAt = new Date(Date.now() + trialDurationDays * 24 * 60 * 60 * 1000).toISOString();
 
     // Mark trial as redeemed
     await supabaseAdmin
@@ -148,13 +146,10 @@ export async function GET() {
   // --- SELF-HEALING: Populate missing trial_ends_at for existing trial users ---
   if (ent.plan === 'trial' && !ent.trial_ends_at) {
     console.log(`[PlanAPI] Healing missing trial_ends_at for user ${userId}`);
-    let finalTrialEndsAt = "2024-01-01T00:00:00Z"; // Default to expired
+    let finalTrialEndsAt = "2024-01-01T00:00:00Z"; // 実質的な期限切れとして扱う過去の日付
     
     if (isEligibleForTrial) {
-      const jstOffset = 9 * 60 * 60 * 1000;
-      const nowJST = new Date(Date.now() + jstOffset);
-      const endsAtJST = new Date(nowJST.getTime() + (7 * 24 * 60 * 60 * 1000));
-      finalTrialEndsAt = new Date(endsAtJST.getTime() - jstOffset).toISOString();
+      finalTrialEndsAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
 
       // Mark trial as redeemed
       await supabaseAdmin
@@ -223,10 +218,7 @@ export async function GET() {
           let newTrialEndsAt = ent.trial_ends_at;
           if (!newTrialEndsAt) {
             if (isEligibleForTrial) {
-              const jstOffset = 9 * 60 * 60 * 1000;
-              const nowJST = new Date(Date.now() + jstOffset);
-              const endsAtJST = new Date(nowJST.getTime() + (7 * 24 * 60 * 60 * 1000));
-              newTrialEndsAt = new Date(endsAtJST.getTime() - jstOffset).toISOString();
+              newTrialEndsAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
               
               // Mark trial as redeemed
               await supabaseAdmin

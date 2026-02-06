@@ -19,7 +19,7 @@ export function useStartFlow() {
   const errorCode = searchParams.get("error_code");
   const errorDescription = searchParams.get("error_description");
 
-  const [intent, setIntent] = useState<"trial" | "login" | null>(null);
+  const [intent, setIntent] = useState<"trial" | "login" | "free_trial" | null>(null);
   const [initialPlan, setInitialPlan] = useState<"entry" | "standard" | "professional">("standard");
 
   useEffect(() => {
@@ -63,10 +63,16 @@ export function useStartFlow() {
     }
   }, [router, initialPlan]);
 
-  const startGoogleLogin = async (nextIntent: "trial" | "login", nextPlan: "entry" | "standard" | "professional" = "standard") => {
-    if (isLoggedIn && nextIntent === "trial") {
-      goCheckout(nextPlan);
-      return;
+  const startGoogleLogin = async (nextIntent: "trial" | "login" | "free_trial", nextPlan: "entry" | "standard" | "professional" = "standard") => {
+    if (isLoggedIn) {
+      if (nextIntent === "free_trial") {
+        router.replace("/generate");
+        return;
+      }
+      if (nextIntent === "trial") {
+        goCheckout(nextPlan);
+        return;
+      }
     }
 
     if (typeof window !== "undefined") {
@@ -165,6 +171,13 @@ export function useStartFlow() {
 
         if (intent === "trial") {
           goCheckout(initialPlan);
+          return;
+        }
+
+        if (intent === "free_trial" && !allowed) {
+          // もし無料トライアルインテントなのに権限がない場合（＝体験済み）
+          // 無理にStripeには送らず、スタート画面でエラー（または現状提示）とする
+          setLoading(false);
           return;
         }
         

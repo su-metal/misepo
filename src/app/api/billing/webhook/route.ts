@@ -102,26 +102,6 @@ export async function POST(req: Request) {
         customerId,
       });
 
-      // ---- Record Trial Redemption if applicable ----
-      const trialDays = Number(session?.metadata?.trial_days ?? "0");
-      const trialPromoKey = session?.metadata?.trial_promo_key;
-
-      if (trialDays > 0 && trialPromoKey && appId && userId) {
-        await recordPromotion({
-          userId,
-          appId,
-          promoKey: trialPromoKey,
-          stripeCustomerId: customerId,
-          stripeSubscriptionId: subId,
-          stripeInvoiceId: "trial_started", // No real invoice yet for trial start
-          stripeEventId: event.id,
-          metadata: {
-            is_trial: true,
-            trial_days: trialDays,
-            session_id: session.id,
-          },
-        });
-      }
     }
 
     if (
