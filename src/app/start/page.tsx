@@ -140,7 +140,7 @@ function StartPageContent() {
                 </p>
                 <button
                   className="w-full max-w-sm mx-auto py-6 bg-white text-[#1823ff] rounded-[2rem] font-black text-xl md:text-2xl shadow-2xl shadow-black/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-4 group"
-                  onClick={() => startGoogleLogin("trial", "standard")}
+                  onClick={() => startGoogleLogin("free_trial" as any, "standard")}
                   disabled={loading}
                 >
                   {loading ? <div className="w-6 h-6 border-[4px] border-[#1823ff]/20 border-t-[#1823ff] rounded-full animate-spin" /> : (

@@ -35,7 +35,7 @@ export async function GET(request: Request) {
     }
   }
 
-  const next = searchParams.get("next") ?? (intent === "trial" ? "/start" : "/generate");
+  const next = searchParams.get("next") ?? ((intent === "trial" || intent === "free_trial") ? "/start" : "/generate");
   const redirectUrl = new URL(next, origin);
   redirectUrl.searchParams.set("intent", intent);
 
