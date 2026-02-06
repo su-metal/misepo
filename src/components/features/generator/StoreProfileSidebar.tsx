@@ -65,18 +65,20 @@ export const StoreProfileSidebar: React.FC<StoreProfileSidebarProps> = ({ storeP
                                     <span className="text-[9px] font-black uppercase tracking-wider">Current Plan</span>
                                 </div>
                                 <div className="text-sm font-black text-[#2b2b2f]">
-                                    {plan.plan === 'entry' ? 'Entry' :
-                                        plan.plan === 'standard' ? 'Standard' :
-                                            plan.plan === 'professional' ? 'Professional' :
-                                                plan.plan === 'pro' || plan.plan === 'monthly' || plan.plan === 'yearly' ? 'Pro' :
-                                                    plan.plan === 'premium' ? 'Premium' :
-                                                        plan.plan || 'Free'}
+                                    {plan.canUseApp === false ? 'Trial Expired' : (
+                                        plan.plan === 'entry' ? 'Entry' :
+                                            plan.plan === 'standard' ? 'Standard' :
+                                                plan.plan === 'professional' ? 'Professional' :
+                                                    plan.plan === 'pro' || plan.plan === 'monthly' || plan.plan === 'yearly' ? 'Pro' :
+                                                        plan.plan === 'premium' ? 'Premium' :
+                                                            plan.plan || 'Free'
+                                    )}
                                 </div>
                             </div>
                             {plan?.plan !== 'professional' && plan?.plan !== 'monthly' && plan?.plan !== 'yearly' && plan?.plan !== 'pro' && (
                                 <a
                                     href="/start?upgrade=true"
-                                    className="px-3 py-1.5 rounded-xl bg-[#2b2b2f] text-white hover:opacity-90 transition-all text-[9px] font-black uppercase tracking-widest shadow-md active:scale-95"
+                                    className={`px-3 py-1.5 rounded-xl text-white hover:opacity-90 transition-all text-[9px] font-black uppercase tracking-widest shadow-md active:scale-95 ${plan.canUseApp === false ? 'bg-[#E88BA3]' : 'bg-[#2b2b2f]'}`}
                                 >
                                     Upgrade
                                 </a>
