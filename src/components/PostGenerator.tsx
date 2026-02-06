@@ -89,6 +89,12 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
   };
 
   const handleGenerate = () => {
+    if (plan && plan.canUseApp === false) {
+      if (confirm('トライアル期間が終了しました。引き続きご利用いただくにはプランのアップグレードが必要です。アップグレード画面に移動しますか？')) {
+        onOpenLogin();
+      }
+      return;
+    }
     flow.performGeneration(flow.platforms).then(() => {
       setTimeout(() => {
         resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });

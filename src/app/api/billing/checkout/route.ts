@@ -95,7 +95,7 @@ export async function POST(req: Request) {
           {
             user_id: userId,
             app_id: appId,
-            plan: entitlement?.plan ?? "free",
+            plan: entitlement?.plan ?? plan,
             status: entitlement?.status ?? "inactive",
             billing_provider: "stripe",
             stripe_customer_id: customerId,
@@ -145,26 +145,9 @@ export async function POST(req: Request) {
     let discounts: Stripe.Checkout.SessionCreateParams.Discount[] | undefined;
 
     // ---- 7-day trial (restricted to new users only)
-    const TRIAL_PROMO_KEY = "trial_7days";
-    let trialDaysToApply = 0;
-
-    // Trial eligibility: user has never redeemed trial before
-    // (removed plan check - now only checks redemption history)
-    if (TRIAL_DAYS > 0) {
-      const { data: trialRedemption, error: trialRedemptionErr } = await supabaseAdmin
-        .from("promotion_redemptions")
-        .select("id")
-        .eq("app_id", appId)
-        .eq("user_id", userId)
-        .eq("promo_key", TRIAL_PROMO_KEY)
-        .maybeSingle();
-
-      if (trialRedemptionErr) throw new Error(trialRedemptionErr.message);
-
-      if (!trialRedemption) {
-        trialDaysToApply = TRIAL_DAYS;
-      }
-    }
+    // Stripe-level trial is disabled to prevent auto-transition.
+    // Users get their 7-day trial automatically on first login (DB-level, no card required).
+    const trialDaysToApply = 0;
 
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
@@ -194,8 +177,8 @@ export async function POST(req: Request) {
           app_id: appId,
           plan,
           // promo_key removed
-          trial_days: trialDaysToApply > 0 ? String(trialDaysToApply) : "0",
-          trial_promo_key: TRIAL_PROMO_KEY,
+          trial_days: "0",
+          trial_promo_key: "none",
         },
       },
 
@@ -204,8 +187,8 @@ export async function POST(req: Request) {
         app_id: appId,
         plan,
         // promo_key removed
-        trial_days: trialDaysToApply > 0 ? String(trialDaysToApply) : "0",
-        trial_promo_key: TRIAL_PROMO_KEY,
+        trial_days: "0",
+        trial_promo_key: "none",
       },
     });
 

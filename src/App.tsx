@@ -478,64 +478,30 @@ function App() {
 
 
         <main className="flex-1 overflow-y-auto overflow-x-hidden">
-          {isLoggedIn && !plan.canUseApp ? (
-            <div className="relative h-full">
-              <TrialEndedBarrier
-                usageCount={plan.usage || 0}
-                onUpgrade={handleUpgrade}
-              />
-              <div className="opacity-10 pointer-events-none blur-sm h-full">
-                <PostGenerator
-                  storeProfile={storeProfile!}
-                  onSaveProfile={handleOnboardingSave}
-                  onRefreshTraining={fetchTrainingItems}
-                  isLoggedIn={isLoggedIn}
-                  onOpenLogin={() => router.push('/start')}
-                  presets={presets}
-                  refreshPresets={fetchPresets}
-                  onGenerateSuccess={handleGenerateSuccess}
-                  onTaskComplete={() => { /* no-op */ }}
-                  trainingItems={trainingItems}
-                  onToggleFavorite={handleToggleTraining}
-                  restorePost={activeHistoryItem}
-                  onOpenGuide={() => setShowGuide(true)}
-                  onOpenSettings={() => {
-                    setActiveHistoryItem(null);
-                    setIsSettingsOpen(true);
-                  }}
-                  onOpenHistory={() => setIsSidebarOpen(true)}
-                  onLogout={logout}
-                  plan={plan}
-                  refreshPlan={refreshPlan}
-                />
-              </div>
-            </div>
-          ) : (
-            <PostGenerator
-              storeProfile={storeProfile!}
-              onSaveProfile={handleOnboardingSave}
-              onRefreshTraining={fetchTrainingItems}
-              isLoggedIn={isLoggedIn}
-              onOpenLogin={() => router.push('/start')}
-              presets={presets}
-              refreshPresets={fetchPresets}
-              onGenerateSuccess={handleGenerateSuccess}
-              onTaskComplete={() => { /* no-op */ }}
-              trainingItems={trainingItems}
-              onToggleFavorite={handleToggleTraining}
-              restorePost={activeHistoryItem}
-              onOpenGuide={() => setShowGuide(true)}
-              onOpenSettings={() => {
-                setActiveHistoryItem(null);
-                setIsSettingsOpen(true);
-              }}
-              onOpenHistory={() => setIsSidebarOpen(true)}
-              onLogout={logout}
-              plan={plan}
-              refreshPlan={refreshPlan}
-              restoreTrigger={restoreTrigger}
-            />
-          )}
+          <PostGenerator
+            storeProfile={storeProfile!}
+            onSaveProfile={handleOnboardingSave}
+            onRefreshTraining={fetchTrainingItems}
+            isLoggedIn={isLoggedIn}
+            onOpenLogin={() => router.push('/start')}
+            presets={presets}
+            refreshPresets={fetchPresets}
+            onGenerateSuccess={handleGenerateSuccess}
+            onTaskComplete={() => { /* no-op */ }}
+            trainingItems={trainingItems}
+            onToggleFavorite={handleToggleTraining}
+            restorePost={activeHistoryItem}
+            onOpenGuide={() => setShowGuide(true)}
+            onOpenSettings={() => {
+              setActiveHistoryItem(null);
+              setIsSettingsOpen(true);
+            }}
+            onOpenHistory={() => setIsSidebarOpen(true)}
+            onLogout={logout}
+            plan={plan}
+            refreshPlan={refreshPlan}
+            restoreTrigger={restoreTrigger}
+          />
         </main>
       </div>
 
