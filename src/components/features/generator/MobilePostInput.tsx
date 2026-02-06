@@ -411,7 +411,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
             {/* Step 1: Home (Platform Grid) */}
             <div className={`flex flex-col min-h-screen h-full overflow-hidden relative transition-all duration-500 ${isStepDrawerOpen ? 'blur-md scale-[0.98] opacity-60' : 'opacity-100'}`}>
-                <div className="flex-1 flex flex-col p-4 pt-[max(clamp(0.75rem,2vh,1.5rem),env(safe-area-inset-top))] pb-[clamp(2.5rem,8vh,5rem)] safe-area-bottom overflow-y-auto no-scrollbar">
+                <div className="flex-1 flex flex-col p-4 pt-[max(clamp(0.75rem,2vh,1.5rem),env(safe-area-inset-top))] pb-[calc(env(safe-area-inset-bottom)+160px)] safe-area-bottom overflow-y-auto no-scrollbar">
                     {/* High-Design Header - Magazine Style Date & Minimal Avatar */}
                     <div className="flex items-start justify-between mb-2 px-1">
                         {/* Typography Date Display - Interactive Trigger */}
@@ -563,9 +563,9 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                     const isActive = platforms.includes(p);
                                     const details = getPlatformDetails(p, isActive);
                                     let bentoClass = '';
-                                    if (p === Platform.Instagram) bentoClass = 'row-span-2 min-h-[220px]';
-                                    else if (p === Platform.GoogleMaps) bentoClass = 'col-span-2 min-h-[126px]';
-                                    else bentoClass = 'min-h-[110px]';
+                                    if (p === Platform.Instagram) bentoClass = 'row-span-2 min-h-[clamp(200px,30vh,300px)]';
+                                    else if (p === Platform.GoogleMaps) bentoClass = 'col-span-2 min-h-[clamp(120px,18vh,180px)]';
+                                    else bentoClass = 'min-h-[clamp(100px,14vh,150px)]';
 
                                     const brandColor = p === Platform.Instagram ? '#D23877' :
                                         p === Platform.X ? '#111827' :
