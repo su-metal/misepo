@@ -110,6 +110,24 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
         }
     }, [mobileStep, isStepDrawerOpen, isCalendarOpen, onMobileResultOpen]);
 
+    React.useEffect(() => {
+        if (typeof window === 'undefined') return;
+        const mediaQuery = window.matchMedia('(min-height: 700px)');
+        const handleChange = (event: MediaQueryListEvent) => setIsTallViewport(event.matches);
+        setIsTallViewport(mediaQuery.matches);
+
+        if (mediaQuery.addEventListener) {
+            mediaQuery.addEventListener('change', handleChange);
+            return () => mediaQuery.removeEventListener('change', handleChange);
+        }
+
+        mediaQuery.addListener(handleChange);
+        return () => mediaQuery.removeListener(handleChange);
+    }, []);
+
+    const [isTallViewport, setIsTallViewport] = React.useState(false);
+
+
     // Handle Restore from History
     React.useEffect(() => {
         if (restoreTrigger && restoreTrigger > 0) {
@@ -492,7 +510,9 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                         </div>
                     </div>
 
-                    <div className="flex items-center justify-between px-[clamp(0.75rem,3vw,1rem)] mt-[clamp(0.75rem,2.5vw,1.75rem)] mb-0">
+                    <div
+                        className={`flex items-center justify-between px-[clamp(0.75rem,3vw,1rem)] mt-[clamp(0.75rem,2.5vw,1.75rem)] mb-0 ${isTallViewport ? 'pt-[clamp(0.9rem,3vw,1.25rem)]' : ''}`}
+                    >
                         <div className="flex flex-col gap-0.5 items-start">
                             <h2 className="text-[13px] font-black text-[#2b2b2f] tracking-tight">投稿先を選択</h2>
                             <p className="text-[10px] text-[#b0b0b0] font-bold uppercase tracking-[0.2em]">Select your canvas</p>
@@ -916,7 +936,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                                 if (onQuestionChange) onQuestionChange('');
                                                                 if (onTopicPromptChange) onTopicPromptChange('');
                                                             }}
-                                                            className="absolute top-4 right-4 w-7 h-7 rounded-full bg-white/80 border border-slate-200 flex items-center justify-center text-slate-400 hover:text-[#2b2b2f] shadow-sm transition-all opacity-100 active:scale-90"
+                                                            className="absolute top-4 right-4 w-10 h-10 -m-1.5 rounded-full bg-white/80 border border-slate-200 flex items-center justify-center text-slate-400 hover:text-[#2b2b2f] shadow-sm transition-all opacity-100 active:scale-90 z-20"
                                                             title="質問を閉じる"
                                                         >
                                                             <CloseIcon className="w-3.5 h-3.5" />
@@ -926,7 +946,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                                 <SparklesIcon className="w-4 h-4 text-white" />
                                                             </div>
                                                             <div className="flex flex-col gap-1">
-                                                                <span className="text-[10px] font-black text-[#C084FC] uppercase tracking-wider opacity-60">Sommelier Question</span>
+                                                                <span className="text-[10px] font-black text-[#C084FC] uppercase tracking-wider opacity-60 pointer-events-none">Sommelier Question</span>
                                                                 <p className="text-[15px] font-bold text-[#2b2b2f] leading-relaxed italic">
                                                                     「{question}」
                                                                 </p>
@@ -1077,7 +1097,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                                     className={`
                                                             flex-shrink-0 px-4 py-2 rounded-xl font-bold text-[11px] transition-all active:scale-95 border whitespace-nowrap
                                                                         ${targetAudiences?.includes(target)
-                                                                            ? 'bg-[#0071b9] text-white border-[#0071b9] shadow-md'
+                                                                            ? 'bg-[#2b2b2f] text-white border-[#2b2b2f] shadow-md'
                                                                             : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300'
                                                                         }
                                                         `}
@@ -1140,7 +1160,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                     <div className="flex overflow-x-auto gap-3 pb-2 pt-2 -mx-2 px-3 no-scrollbar scrollbar-hide">
                                                         <button
                                                             onClick={() => onApplyPreset({ id: 'plain-ai' } as any)}
-                                                            className={`flex-shrink-0 px-8 py-3 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] transition-all duration-500 shadow-sm border ${activePresetId === 'plain-ai' ? 'bg-[#0071b9] text-white border-[#0071b9] scale-105 active:scale-95 shadow-lg' : 'bg-[#edeff1] border-slate-100 text-slate-400 hover:text-[#2b2b2f]'}`}
+                                                            className={`flex-shrink-0 px-8 py-3 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] transition-all duration-500 shadow-sm border ${activePresetId === 'plain-ai' ? 'bg-[#2b2b2f] text-white border-[#2b2b2f] scale-105 active:scale-95 shadow-lg' : 'bg-[#edeff1] border-slate-100 text-slate-400 hover:text-[#2b2b2f]'}`}
                                                         >
                                                             AI標準
                                                         </button>
@@ -1214,8 +1234,8 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                                                         onClick={() => onToneChange(t.id)}
                                                                                         className="relative z-10 flex flex-col items-center group w-full first:items-start last:items-end"
                                                                                     >
-                                                                                        <div className={`w-3 h-3 rounded-full border-2 transition-all duration-300 ${isActive ? 'bg-[#0071b9] border-[#0071b9] scale-110 shadow-[0_0_10px_rgba(99,102,241,0.5)]' : 'bg-white border-slate-200'}`} />
-                                                                                        <span className={`absolute -bottom-4 text-[8px] font-black transition-colors duration-300 whitespace-nowrap ${isActive ? 'text-[#0071b9]' : 'text-slate-400'}`}>
+                                                                                        <div className={`w-3 h-3 rounded-full border-2 transition-all duration-300 ${isActive ? 'bg-[#2b2b2f] border-[#2b2b2f] scale-110 shadow-[0_0_10px_rgba(99,102,241,0.5)]' : 'bg-white border-slate-200'}`} />
+                                                                                        <span className={`absolute -bottom-4 text-[8px] font-black transition-colors duration-300 whitespace-nowrap ${isActive ? 'text-[#2b2b2f]' : 'text-slate-400'}`}>
                                                                                             {t.label}
                                                                                         </span>
                                                                                     </button>
@@ -1243,8 +1263,8 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                                                         onClick={() => onLengthChange(l.id)}
                                                                                         className="relative z-10 flex flex-col items-center group w-full first:items-start last:items-end"
                                                                                     >
-                                                                                        <div className={`w-3 h-3 rounded-full border-2 transition-all duration-300 ${isActive ? 'bg-[#0071b9] border-[#0071b9] scale-110 shadow-[0_0_10px_rgba(99,102,241,0.5)]' : 'bg-white border-slate-200'}`} />
-                                                                                        <span className={`absolute -bottom-4 text-[8px] font-black transition-colors duration-300 whitespace-nowrap ${isActive ? 'text-[#0071b9]' : 'text-slate-400'}`}>
+                                                                                        <div className={`w-3 h-3 rounded-full border-2 transition-all duration-300 ${isActive ? 'bg-[#2b2b2f] border-[#2b2b2f] scale-110 shadow-[0_0_10px_rgba(99,102,241,0.5)]' : 'bg-white border-slate-200'}`} />
+                                                                                        <span className={`absolute -bottom-4 text-[8px] font-black transition-colors duration-300 whitespace-nowrap ${isActive ? 'text-[#2b2b2f]' : 'text-slate-400'}`}>
                                                                                             {l.label}
                                                                                         </span>
                                                                                     </button>
@@ -1288,7 +1308,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                         ) : (
                                                             <>
                                                                 <span className="text-white text-base font-black uppercase tracking-[0.3em]">
-                                                                    投稿プランを生成
+                                                                    投稿文を生成
                                                                 </span>
                                                             </>
                                                         )}

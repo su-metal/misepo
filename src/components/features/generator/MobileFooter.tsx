@@ -196,22 +196,6 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
                             `}>Home</span>
                         </button>
                         <button
-                            onClick={() => onTabChange('learning')}
-                            className={`flex flex-col items-center gap-1.5 transition-all active:scale-95 ${isConfirmStep ? 'opacity-40 grayscale pointer-events-none' : ''}`}
-                        >
-                            <CustomAvatar active={activeTab === 'learning'} />
-                            <span className={`
-                                text-[9px] font-black uppercase tracking-[0.1em] transition-all
-                                ${activeTab === 'learning' ? 'text-[#2b2b2f]' : 'text-slate-400'}
-                            `}>Style</span>
-                        </button>
-                    </div>
-
-                    <div className="flex-1 min-w-[100px]" />
-
-                    {/* Right Side Items */}
-                    <div className="flex items-center justify-end gap-2 w-[150px]">
-                        <button
                             onClick={() => onTabChange('history')}
                             className={`flex flex-col items-center gap-1.5 transition-all active:scale-95 ${isConfirmStep ? 'opacity-40 grayscale pointer-events-none' : ''}`}
                         >
@@ -220,6 +204,22 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
                                 text-[9px] font-black uppercase tracking-[0.1em] transition-all
                                 ${activeTab === 'history' ? 'text-[#2b2b2f]' : 'text-slate-400'}
                             `}>History</span>
+                        </button>
+                    </div>
+
+                    <div className="flex-1 min-w-[100px]" />
+
+                    {/* Right Side Items */}
+                    <div className="flex items-center justify-end gap-2 w-[150px]">
+                        <button
+                            onClick={() => onTabChange('learning')}
+                            className={`flex flex-col items-center gap-1.5 transition-all active:scale-95 ${isConfirmStep ? 'opacity-40 grayscale pointer-events-none' : ''}`}
+                        >
+                            <CustomAvatar active={activeTab === 'learning'} />
+                            <span className={`
+                                text-[9px] font-black uppercase tracking-[0.1em] transition-all
+                                ${activeTab === 'learning' ? 'text-[#2b2b2f]' : 'text-slate-400'}
+                            `}>Style</span>
                         </button>
                         <button
                             onClick={() => onTabChange('settings')}

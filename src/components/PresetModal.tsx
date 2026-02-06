@@ -297,17 +297,21 @@ const SampleSlider = ({
                   )}
                 </div>
 
-                <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0">
+                <div className="flex items-center gap-2 translate-y-0 opacity-100 transition-all">
                   <button
                     onClick={() => onEdit(item)}
-                    className="p-3 text-[#2b2b2f]/50 hover:text-[#2b2b2f] hover:bg-slate-100 rounded-2xl transition-all border border-transparent hover:border-slate-200"
+                    className="p-3 text-slate-400 hover:text-[#2b2b2f] hover:bg-slate-100 rounded-2xl transition-all border border-transparent hover:border-slate-200"
                     title="詳細を表示"
                   >
                     <BookOpenIcon className="w-5 h-5" />
                   </button>
                   <button
-                    onClick={() => onDelete(item)}
-                    className="p-3 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-2xl transition-all border border-transparent hover:border-rose-100"
+                    onClick={() => {
+                      if (window.confirm('この学習データを削除してもよろしいですか？')) {
+                        onDelete(item);
+                      }
+                    }}
+                    className="p-3 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-2xl transition-all border border-transparent hover:border-rose-100"
                     title="削除"
                   >
                     <TrashIcon className="w-5 h-5" />
@@ -997,6 +1001,16 @@ const PresetModal: React.FC<PresetModalProps> = ({
           }}
         />
 
+        <div className="flex justify-center pt-2">
+          <button
+            onClick={() => handleResetStyleForMode(mode)}
+            disabled={isResetting}
+            className="flex items-center gap-2 px-6 py-3 text-slate-300 hover:text-rose-400 hover:bg-rose-50/50 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] transition-all active:scale-95 disabled:opacity-30"
+          >
+            <RotateCcwIcon className={`w-3.5 h-3.5 ${isResetting ? 'animate-spin' : ''}`} />
+            <span>解析結果をリセット</span>
+          </button>
+        </div>
       </div>
     );
 
@@ -1071,17 +1085,6 @@ const PresetModal: React.FC<PresetModalProps> = ({
           <p className="text-[11px] text-slate-400 font-bold px-4 leading-relaxed">
             ※AIが媒体ごとに抽出した指示内容を直接編集できます。こだわりがある場合はここを書き換えて保存してください。
           </p>
-
-          <div className="flex justify-center pt-2">
-            <button
-              onClick={() => handleResetStyleForMode(mode)}
-              disabled={isResetting}
-              className="flex items-center gap-2 px-6 py-3 text-slate-300 hover:text-rose-400 hover:bg-rose-50/50 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] transition-all active:scale-95 disabled:opacity-30"
-            >
-              <RotateCcwIcon className={`w-3.5 h-3.5 ${isResetting ? 'animate-spin' : ''}`} />
-              <span>解析結果をリセット</span>
-            </button>
-          </div>
         </div>
       );
     };
@@ -1321,16 +1324,16 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
       <div className="w-full h-full md:max-w-7xl md:max-h-[850px] bg-white md:rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-500 relative z-10 flex flex-col border border-stone-200">
         {/* Header */}
-        <div className="p-8 md:p-10 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-slate-100 text-[#2b2b2f] flex items-center justify-center shadow-sm">
-              {viewingSampleId ? <BookOpenIcon className="w-6 h-6" /> : <MagicWandIcon className="w-6 h-6" />}
+        <div className="p-6 md:p-10 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+          <div className="flex items-center gap-3 md:gap-4">
+            <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-slate-100 text-[#2b2b2f] flex items-center justify-center shadow-sm">
+              {viewingSampleId ? <BookOpenIcon className="w-5 h-5 md:w-6 md:h-6" /> : <MagicWandIcon className="w-5 h-5 md:w-6 md:h-6" />}
             </div>
             <div>
-              <h3 className="font-black text-xl text-[#2b2b2f] tracking-tight">
+              <h3 className="font-black text-lg md:text-xl text-[#2b2b2f] tracking-tight">
                 {viewingSampleId ? '学習データの詳細' : '新しい学習データ'}
               </h3>
-              <p className="text-[13px] font-bold text-slate-500 uppercase tracking-widest">スタイルの学習</p>
+              <p className="text-[11px] md:text-[13px] font-bold text-slate-500 uppercase tracking-widest">スタイルの学習</p>
             </div>
           </div>
           <button
@@ -1338,33 +1341,33 @@ const PresetModal: React.FC<PresetModalProps> = ({
               setExpandingPlatform(null);
               setViewingSampleId(null);
             }}
-            className="p-3 text-stone-300 hover:text-stone-900 transition-colors"
+            className="p-2 md:p-3 text-stone-300 hover:text-stone-900 transition-colors"
           >
-            <CloseIcon className="w-7 h-7" />
+            <CloseIcon className="w-6 h-6 md:w-7 md:h-7" />
           </button>
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-10 space-y-8 no-scrollbar">
+        <div className="flex-1 overflow-y-auto p-6 md:p-10 space-y-6 md:space-y-8 no-scrollbar">
           <div className="space-y-4">
             <div className="flex items-center justify-between px-2">
               <div className="space-y-1">
-                <h4 className="font-black text-[#2b2b2f] tracking-tight text-[16px]">
+                <h4 className="font-black text-[#2b2b2f] tracking-tight text-[15px] md:text-[16px]">
                   {learningMode === 'sns' ? '普段の投稿文を入力' : '過去の返信内容を入力'}
                 </h4>
-                <p className="text-[12px] text-slate-500 font-bold">
+                <p className="text-[11px] md:text-[12px] text-slate-500 font-bold leading-tight">
                   {learningMode === 'sns' ? 'X, Instagram, LINEなどの投稿をそのまま貼り付けてください。' : 'Googleマップでの口コミへの返信文を貼り付けてください。'}
                 </p>
               </div>
-              <span className={`text-[11px] font-black px-3 py-1 rounded-full uppercase tracking-widest ${learningMode === 'sns' ? 'bg-slate-100 text-[#2b2b2f]' : 'bg-[#00b900] text-white'} `}>
+              <span className={`text-[10px] md:text-[11px] font-black px-2.5 py-1 rounded-full uppercase tracking-widest flex-shrink-0 ${learningMode === 'sns' ? 'bg-slate-100 text-[#2b2b2f]' : 'bg-[#00b900] text-white'} `}>
                 {learningMode === 'sns' ? 'SNS用' : 'マップ返信用'}
               </span>
             </div>
 
             {learningMode === 'sns' && (
-              <div className="flex flex-col gap-3 p-6 bg-slate-50 rounded-3xl border border-slate-100">
-                <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">適用対象のSNSを選択</p>
-                <div className="flex gap-2">
+              <div className="flex flex-col gap-2 p-3 md:p-6 bg-slate-50 rounded-2xl md:rounded-3xl border border-slate-100">
+                <p className="text-[10px] md:text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">適用対象のSNSを選択</p>
+                <div className="grid grid-cols-3 gap-2">
                   {[Platform.X, Platform.Instagram, Platform.Line].map((p) => {
                     const isActive = selectedPlatforms.includes(p);
                     const Icon = p === Platform.X ? XIcon : p === Platform.Instagram ? InstagramIcon : LineIcon;
@@ -1409,20 +1412,26 @@ const PresetModal: React.FC<PresetModalProps> = ({
                             setSelectedPlatforms(newPlatforms);
                           }
                         }}
-                        className={`flex-1 py-4 px-6 rounded-2xl border-2 transition-all flex items-center justify-center gap-3 font-black text-[13px] ${isActive ? 'bg-white border-[#2b2b2f] shadow-[0_10px_25px_rgba(0,0,0,0.1)]' : 'bg-white border-slate-100 hover:border-slate-300'} `}
+                        className={`w-full py-2.5 md:py-4 px-1 md:px-6 rounded-xl md:rounded-2xl border-2 transition-all flex items-center justify-center gap-1.5 md:gap-3 font-black text-[12px] md:text-[13px] ${isActive ? 'bg-white border-[#2b2b2f] shadow-lg' : 'bg-white border-slate-100 hover:border-slate-300'} `}
                       >
                         {p === Platform.Line ? (
                           <LineIcon
-                            className={`w-5 h-5 ${isActive ? 'text-[#2b2b2f]' : 'text-slate-300'}`}
+                            className={`w-5 h-5 shrink-0 ${isActive ? 'text-[#2b2b2f]' : 'text-slate-300'}`}
                             isActive={isActive}
                             textFill="#ffffff"
                             color={isActive ? '#2b2b2f' : '#d1d5db'}
                             activeTextFill="#ffffff"
                           />
                         ) : (
-                          <Icon className={`w-5 h-5 ${isActive ? 'text-[#2b2b2f]' : 'text-slate-300'}`} />
+                          <Icon className={`w-5 h-5 shrink-0 ${isActive ? 'text-[#2b2b2f]' : 'text-slate-300'}`} />
                         )}
-                        <span className={`${isActive ? 'text-[#2b2b2f]' : 'text-slate-400'}`}>{p === Platform.X ? 'X' : p === Platform.Instagram ? 'Insta' : 'LINE'}</span>
+                        <span className={`hidden lg:block truncate ${isActive ? 'text-[#2b2b2f]' : 'text-slate-400'}`}>
+                          {p === Platform.X ? 'X' : p === Platform.Instagram ? 'Insta' : 'LINE'}
+                        </span>
+                        {/* Show short label only on mid-sized screens if needed, otherwise hidden */}
+                        <span className={`hidden md:inline-block lg:hidden truncate ${isActive ? 'text-[#2b2b2f]' : 'text-slate-400'}`}>
+                          {p === Platform.X ? 'X' : p === Platform.Instagram ? 'IG' : 'LN'}
+                        </span>
                       </button>
                     );
                   })}
@@ -1439,9 +1448,9 @@ const PresetModal: React.FC<PresetModalProps> = ({
                   <button
                     onClick={() => fileInputRef.current?.click()}
                     disabled={isAnalyzingScreenshot}
-                    className="flex items-center gap-2.5 text-[13px] font-black text-[#2b2b2f] hover:opacity-70 disabled:opacity-50"
+                    className="flex items-center gap-2 text-[12px] md:text-[13px] font-black text-[#2b2b2f] hover:opacity-70 disabled:opacity-50"
                   >
-                    <TieIcon className="w-4 h-4" />
+                    <TieIcon className="w-3.5 h-3.5 md:w-4 md:h-4" />
                     スクショ解析
                   </button>
                   <button
@@ -1453,16 +1462,16 @@ const PresetModal: React.FC<PresetModalProps> = ({
                       setIsSanitizing(false);
                     }}
                     disabled={isSanitizing || !modalText.trim() || isAnalyzingScreenshot}
-                    className="flex items-center gap-2.5 text-[13px] font-black text-[#2b2b2f] hover:opacity-70 disabled:opacity-30"
+                    className="flex items-center gap-2 text-[12px] md:text-[13px] font-black text-[#2b2b2f] hover:opacity-70 disabled:opacity-30"
                   >
-                    <SparklesIcon className="w-4 h-4" />
+                    <SparklesIcon className="w-3.5 h-3.5 md:w-4 md:h-4" />
                     AI伏せ字
                   </button>
                 </div>
               )}
             </div>
 
-            <div className="bg-slate-50 border border-slate-200 rounded-[2.5rem] p-8 relative overflow-hidden shadow-inner">
+            <div className="bg-slate-50 border border-slate-200 rounded-[1.5rem] md:rounded-[2.5rem] p-5 md:p-8 relative overflow-hidden shadow-inner">
               {isAnalyzingScreenshot && (
                 <div className="absolute inset-0 z-10 bg-white/60 backdrop-blur-sm flex items-center justify-center animate-in fade-in duration-300">
                   <div className="flex flex-col items-center gap-4">
@@ -1481,31 +1490,31 @@ const PresetModal: React.FC<PresetModalProps> = ({
                 placeholder={learningMode === 'sns'
                   ? "ここに過去のInstagramやXの投稿文を貼り付けてください。\n\nAIがあなたの言葉遣いや「お店らしさ」を学習し、より自然な提案ができるようになります。"
                   : "過去にGoogleマップで返信した文章を貼り付けてください。\n\nお客様への丁寧な言葉遣いや、大切にしている想いをAIが学習します。"}
-                className="w-full min-h-[300px] bg-transparent outline-none text-[#2b2b2f] font-bold leading-relaxed placeholder-slate-300 resize-none no-scrollbar text-[18px]"
+                className="w-full min-h-[250px] md:min-h-[300px] bg-transparent outline-none text-[#2b2b2f] font-bold leading-relaxed placeholder-slate-300 resize-none no-scrollbar text-[16px] md:text-[18px]"
               />
             </div>
           </div>
         </div>
 
-        <div className="p-8 border-t border-slate-100 flex justify-end bg-white">
+        <div className="p-6 md:p-8 border-t border-slate-100 flex justify-end bg-white">
           {viewingSampleId ? (
             <button
               onClick={() => {
                 setExpandingPlatform(null);
                 setViewingSampleId(null);
               }}
-              className="w-full md:w-auto px-12 py-5 bg-[#2b2b2f] text-white rounded-[2rem] font-black text-[14px] tracking-[0.2em] shadow-xl hover:bg-black active:scale-95 transition-all flex items-center justify-center gap-3"
+              className="w-full md:w-auto px-10 md:px-12 py-4 md:py-5 bg-[#2b2b2f] text-white rounded-xl md:rounded-[2rem] font-black text-[13px] md:text-[14px] tracking-[0.2em] shadow-xl hover:bg-black active:scale-95 transition-all flex items-center justify-center gap-3"
             >
-              <CloseIcon className="w-5 h-5" />
+              <CloseIcon className="w-4 h-4 md:w-5 md:h-5" />
               <span>閉じる</span>
             </button>
           ) : (
             <button
               onClick={() => handleToggleTrainingInternal(modalText, activeTrainingPlatforms)}
               disabled={isTrainingLoading || !modalText.trim() || !isPlatformSelectionReady}
-              className="w-full md:w-auto px-12 py-5 bg-[#2b2b2f] text-white rounded-[2rem] font-black text-[14px] tracking-[0.2em] shadow-xl hover:bg-black active:scale-95 transition-all disabled:opacity-30 flex items-center justify-center gap-3"
+              className="w-full md:w-auto px-10 md:px-12 py-4 md:py-5 bg-[#2b2b2f] text-white rounded-xl md:rounded-[2rem] font-black text-[13px] md:text-[14px] tracking-[0.2em] shadow-xl hover:bg-black active:scale-95 transition-all disabled:opacity-30 flex items-center justify-center gap-3"
             >
-              {isTrainingLoading ? <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <SaveIcon className="w-5 h-5" />}
+              {isTrainingLoading ? <div className="w-4 h-4 md:w-5 md:h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <SaveIcon className="w-4 h-4 md:w-5 md:h-5" />}
               <span>学習データを保存</span>
             </button>
           )}
