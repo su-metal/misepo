@@ -817,7 +817,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             )}
 
                             {/* Drawer Content - Redesigned for Sticky Actions */}
-                            <div className="flex-1 flex flex-col min-h-0 overflow-hidden relative">
+                            <div className="flex-1 flex flex-col min-h-0 overflow-visible relative">
                                 {mobileStep === 'input' && (
                                     <div className="flex-1 flex flex-col min-h-0 animate-in fade-in zoom-in-95 duration-700">
 
@@ -854,7 +854,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         )}
 
                                         {/* 2. Middle Scrollable Area (Main Text inputs) */}
-                                        <div className="flex-1 overflow-y-auto px-8 py-2">
+                                        <div className="flex-1 min-h-0 overflow-y-auto px-8 py-2 pb-6 no-scrollbar scrollbar-hide">
                                             <div className="w-full relative py-2 mb-4">
                                                 {/* AI Inspiration Deck for "AI Standard" */}
                                                 <InspirationDeck
@@ -960,31 +960,23 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                     </button>
                                                 )}
                                             </div>
-                                        </div>
 
-                                        {/* 3. Sticky Action Footer */}
-                                        <div
-                                            className="px-6 py-8 safe-area-bottom border-t border-slate-50 flex-shrink-0 flex flex-col gap-4 shadow-[0_-10px_30px_rgba(0,0,0,0.02)] z-[210] relative"
-                                            style={{
-                                                backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.05) 5%, rgba(255,255,255,0.8) 30%, rgba(255,255,255,1) 70%)'
-                                            }}
-                                        >
-
-                                            {!isListening && (
+                                            {/* 3. Sticky Action Footer */}
+                                            <div className="sticky bottom-0 px-0 pt-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] border-t border-slate-100 flex flex-col gap-4 shadow-[0_-10px_40px_rgba(0,0,0,0.04)] z-[260] bg-white/95 backdrop-blur-xl">
                                                 <button
                                                     onClick={() => {
                                                         setMobileStep('confirm');
                                                     }}
-                                                    disabled={!inputText.trim()}
-                                                    className={`w-full py-5 rounded-[28px] font-black text-sm uppercase tracking-[0.2em] shadow-xl active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer ${inputText.trim()
-                                                        ? 'bg-[#2b2b2f] text-white'
-                                                        : 'bg-[#edeff1] text-slate-300 cursor-not-allowed shadow-none'
+                                                    disabled={isListening || !inputText.trim()}
+                                                    className={`w-full py-5 rounded-[28px] font-black text-sm uppercase tracking-[0.2em] shadow-xl active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer ${isListening || !inputText.trim()
+                                                        ? 'bg-[#edeff1] text-slate-300 cursor-not-allowed shadow-none'
+                                                        : 'bg-[#2b2b2f] text-white'
                                                         }`}
                                                 >
                                                     確認画面へ
                                                     <ChevronRightIcon className="w-5 h-5" />
                                                 </button>
-                                            )}
+                                            </div>
                                         </div>
                                     </div>
                                 )}
