@@ -529,7 +529,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         name: 'Instagram',
                                         tagline: 'Visual Story',
                                         sub: '世界観と統一感',
-                                        icon: <InstagramIcon className="w-7 h-7" isActive={isActive} />,
+                                        icon: <InstagramIcon className="w-10 h-10" isActive={isActive} />,
                                         color: 'from-purple-500/10 to-pink-500/10'
                                     };
                                     case Platform.X: return {
@@ -550,7 +550,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         name: 'Google Maps',
                                         tagline: 'Local Search',
                                         sub: '店舗集客とMEO対策',
-                                        icon: <GoogleMapsIcon className="w-7 h-7" isActive={isActive} />,
+                                        icon: <GoogleMapsIcon className="w-10 h-10" isActive={isActive} />,
                                         color: 'from-blue-500/10 to-red-500/10'
                                     };
                                     default: return { name: '', tagline: '', sub: '', icon: null, color: '' };
@@ -590,6 +590,47 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             style={cardStyle}
                                             whileHover={{ y: -2 }}
                                         >
+                                            {/* Decorative Background Elements */}
+                                            {p === Platform.Instagram && (
+                                                <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                                                    <div className={`absolute top-12 -right-4 text-[40px] font-black tracking-tighter vertical-text opacity-[0.03] ${isActive ? 'text-white' : 'text-[#2b2b2f]'} select-none`} style={{ writingMode: 'vertical-rl' }}>
+                                                        CREATIVE STUDIO
+                                                    </div>
+                                                    <div className={`absolute top-6 right-6 px-2 py-0.5 rounded-md border text-[7px] font-black tracking-widest uppercase ${isActive ? 'border-white/20 text-white/40' : 'border-slate-200 text-slate-300'}`}>
+                                                        REEL / STORY
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {p === Platform.X && (
+                                                <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                                                    <div className={`absolute bottom-4 right-4 px-2 py-0.5 rounded-md border text-[7px] font-black tracking-widest uppercase ${isActive ? 'border-white/20 text-white/40' : 'border-slate-200 text-slate-300'}`}>
+                                                        FEED / TREND
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {p === Platform.Line && (
+                                                <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                                                    {/* Subtle Chat Bubble Silhouette */}
+                                                    <div className={`absolute -bottom-4 -right-4 w-24 h-24 rounded-full border-[10px] opacity-[0.03] ${isActive ? 'border-white' : 'border-[#2b2b2f]'}`} />
+                                                </div>
+                                            )}
+
+                                            {p === Platform.GoogleMaps && (
+                                                <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                                                    <div className={`absolute -bottom-2 -right-4 text-[50px] font-black tracking-tighter opacity-[0.03] ${isActive ? 'text-white' : 'text-[#2b2b2f]'} select-none whitespace-nowrap`}>
+                                                        LOCAL INDEX
+                                                    </div>
+                                                    {/* Abstract Route Line */}
+                                                    <svg className={`absolute top-0 right-0 w-48 h-full opacity-[0.07] ${isActive ? 'text-white' : 'text-slate-400'}`} viewBox="0 0 200 100" fill="none">
+                                                        <path d="M180 20 C 140 20, 140 80, 100 80 C 60 80, 60 20, 20 20" stroke="currentColor" strokeWidth="2" strokeDasharray="4 4" />
+                                                        <circle cx="180" cy="20" r="3" fill="currentColor" />
+                                                        <rect x="15" y="15" width="10" height="10" stroke="currentColor" strokeWidth="2" />
+                                                    </svg>
+                                                </div>
+                                            )}
+
                                             <div className={contentClass}>
                                                 <div className="flex justify-between items-start">
                                                     <div className="transition-all duration-500 group-hover:scale-110" style={{ color: isActive ? '#ffffff' : brandColor }}>
