@@ -255,6 +255,13 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
               onPlusClick={() => {
                 setMobileActiveTab('home');
                 if (flow.platforms.length === 0) flow.handleSetActivePlatform(Platform.Instagram);
+
+                // If we already have results (generation completed), reset the input for a new start.
+                // If no results yet, keep the input as it might be a draft.
+                if (flow.resultGroups.length > 0) {
+                  flow.handleResetAll(true); // true to keep currently selected platforms
+                }
+
                 setOpenDrawerTrigger(prev => prev + 1);
               }}
               onGenerate={handleGenerate}

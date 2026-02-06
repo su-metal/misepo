@@ -785,7 +785,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             </span>
                                         </div>
                                         {/* Forward Step (To Results) - Matches Back Button Style */}
-                                        {generatedResults.length > 0 && mobileStep !== 'result' && (
+                                        {generatedResults.length > 0 && mobileStep !== 'result' && inputText.trim() && (
                                             <button
                                                 onClick={() => setMobileStep(mobileStep === 'input' ? 'confirm' : 'result')}
                                                 className="w-12 h-12 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center shadow-sm active:scale-90 transition-all"
@@ -1271,14 +1271,14 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             >
                                                 <button
                                                     onClick={onGenerate}
-                                                    disabled={isGenerating}
+                                                    disabled={isGenerating || !inputText.trim()}
                                                     className={`
                                                         w-full group relative overflow-hidden rounded-[32px] py-6
                                                         flex items-center justify-center
                                                         transition-all duration-500 active:scale-95 cursor-pointer
                                                         ${isGenerating
-                                                            ? 'bg-slate-100 cursor-not-allowed'
-                                                            : 'bg-[#2b2b2f] shadow-[0_20px_50px_rgba(0,0,0,0.15)] hover:scale-[1.02]'
+                                                            ? 'bg-slate-100 cursor-not-allowed text-slate-300'
+                                                            : 'bg-[#2b2b2f] shadow-[0_20px_50px_rgba(0,0,0,0.15)] hover:scale-[1.02] text-white'
                                                         }
                                                     `}
                                                 >
