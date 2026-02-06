@@ -25,10 +25,6 @@ export async function POST(req: Request) {
       throw new Error("Missing required Stripe Price IDs in environment variables");
     }
 
-    const TRIAL_DAYS = Number(process.env.STRIPE_TRIAL_DAYS ?? "7");
-    if (!Number.isFinite(TRIAL_DAYS) || TRIAL_DAYS < 0 || TRIAL_DAYS > 365) {
-      throw new Error("invalid STRIPE_TRIAL_DAYS");
-    }
 
 
     // ---- request
@@ -144,11 +140,6 @@ export async function POST(req: Request) {
     // ---- discount removed as per request
     let discounts: Stripe.Checkout.SessionCreateParams.Discount[] | undefined;
 
-    // ---- 7-day trial (restricted to new users only)
-    // Stripe-level trial is disabled to prevent auto-transition.
-    // Users get their 7-day trial automatically on first login (DB-level, no card required).
-    const trialDaysToApply = 0;
-
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
       line_items: [{ price: priceId, quantity: 1 }],
@@ -157,28 +148,12 @@ export async function POST(req: Request) {
       success_url: successUrl,
       cancel_url: cancelUrl,
       client_reference_id: userId,
-      custom_text: {
-        submit: {
-          message: `${
-            trialDaysToApply > 0 
-              ? `本日より${trialDaysToApply}日間は無料でご利用いただけます。` 
-              : ""
-          }`.trim() || undefined
-        }
-      },
-
-      // 推奨：支払い方法は最初に回収（payment_method_collection は指定しない）
-      // payment_method_collection: "if_required", // ←カードなしトライアルにしたい時だけ
 
       subscription_data: {
-        ...(trialDaysToApply > 0 ? { trial_period_days: trialDaysToApply } : {}),
         metadata: {
           user_id: userId,
           app_id: appId,
           plan,
-          // promo_key removed
-          trial_days: "0",
-          trial_promo_key: "none",
         },
       },
 
@@ -186,9 +161,6 @@ export async function POST(req: Request) {
         user_id: userId,
         app_id: appId,
         plan,
-        // promo_key removed
-        trial_days: "0",
-        trial_promo_key: "none",
       },
     });
 
