@@ -79,7 +79,7 @@ export async function validateAiAccess(
     const { data: created, error: createErr } = await supabaseAdmin
       .from("entitlements")
       .upsert(
-        { app_id: APP_ID, user_id: userId, plan: "free", status: "inactive" },
+        { app_id: APP_ID, user_id: userId, plan: "trial", status: "inactive" },
         { onConflict: "user_id,app_id" }
       )
       .select("plan,status,expires_at,trial_ends_at")

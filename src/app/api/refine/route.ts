@@ -39,7 +39,7 @@ export async function POST(req: Request) {
         {
           app_id: APP_ID,
           user_id: user.id,
-          plan: "free",
+          plan: "trial",
           status: "inactive",
           expires_at: null,
           trial_ends_at: null,

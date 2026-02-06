@@ -35,32 +35,10 @@ export async function GET() {
     return NextResponse.json({ ok: false, error: entErr.message }, { status: 500 });
   }
 
-  let effectiveEnt = ent ?? null;
+  const effectiveEnt = ent ?? null;
+  // If no entitlement found, return empty history (new or reset user)
   if (!effectiveEnt) {
-    const { data: created, error: createErr } = await supabaseAdmin
-      .from("entitlements")
-      .upsert(
-        {
-          app_id: APP_ID,
-          user_id: user.id,
-          plan: "free",
-          status: "inactive",
-          expires_at: null,
-          trial_ends_at: null,
-        },
-        { onConflict: "user_id,app_id" }
-      )
-      .select("plan,status,expires_at,trial_ends_at")
-      .single();
-
-    if (createErr) {
-      return NextResponse.json(
-        { ok: false, error: createErr.message },
-        { status: 500 }
-      );
-    }
-
-    effectiveEnt = created;
+    return NextResponse.json({ ok: true, history: [] });
   }
 
   // Allow all logged-in users to view their history
@@ -174,32 +152,9 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: entErr.message }, { status: 500 });
   }
 
-  let effectiveEnt = ent ?? null;
+  const effectiveEnt = ent ?? null;
   if (!effectiveEnt) {
-    const { data: created, error: createErr } = await supabaseAdmin
-      .from("entitlements")
-      .upsert(
-        {
-          app_id: APP_ID,
-          user_id: user.id,
-          plan: "free",
-          status: "inactive",
-          expires_at: null,
-          trial_ends_at: null,
-        },
-        { onConflict: "user_id,app_id" }
-      )
-      .select("plan,status,expires_at,trial_ends_at")
-      .single();
-
-    if (createErr) {
-      return NextResponse.json(
-        { ok: false, error: createErr.message },
-        { status: 500 }
-      );
-    }
-
-    effectiveEnt = created;
+    return NextResponse.json({ ok: false, error: "Access denied: No subscription found" }, { status: 403 });
   }
 
   const canUseApp = computeCanUseApp(effectiveEnt);

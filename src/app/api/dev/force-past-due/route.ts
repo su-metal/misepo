@@ -31,7 +31,7 @@ export async function POST(req: Request) {
       {
         user_id: userId,
         app_id: appId,
-        plan: "free",
+        plan: "trial",
         status: "past_due",
         expires_at: null,
         billing_provider: "stripe",
