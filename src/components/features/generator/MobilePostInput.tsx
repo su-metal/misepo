@@ -110,6 +110,24 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
         }
     }, [mobileStep, isStepDrawerOpen, isCalendarOpen, onMobileResultOpen]);
 
+    React.useEffect(() => {
+        if (typeof window === 'undefined') return;
+        const mediaQuery = window.matchMedia('(min-height: 700px)');
+        const handleChange = (event: MediaQueryListEvent) => setIsTallViewport(event.matches);
+        setIsTallViewport(mediaQuery.matches);
+
+        if (mediaQuery.addEventListener) {
+            mediaQuery.addEventListener('change', handleChange);
+            return () => mediaQuery.removeEventListener('change', handleChange);
+        }
+
+        mediaQuery.addListener(handleChange);
+        return () => mediaQuery.removeListener(handleChange);
+    }, []);
+
+    const [isTallViewport, setIsTallViewport] = React.useState(false);
+
+
     // Handle Restore from History
     React.useEffect(() => {
         if (restoreTrigger && restoreTrigger > 0) {
@@ -492,7 +510,9 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                         </div>
                     </div>
 
-                    <div className="flex items-center justify-between px-[clamp(0.75rem,3vw,1rem)] mt-[clamp(0.75rem,2.5vw,1.75rem)] mb-0">
+                    <div
+                        className={`flex items-center justify-between px-[clamp(0.75rem,3vw,1rem)] mt-[clamp(0.75rem,2.5vw,1.75rem)] mb-0 ${isTallViewport ? 'pt-[clamp(0.9rem,3vw,1.25rem)]' : ''}`}
+                    >
                         <div className="flex flex-col gap-0.5 items-start">
                             <h2 className="text-[13px] font-black text-[#2b2b2f] tracking-tight">投稿先を選択</h2>
                             <p className="text-[10px] text-[#b0b0b0] font-bold uppercase tracking-[0.2em]">Select your canvas</p>
