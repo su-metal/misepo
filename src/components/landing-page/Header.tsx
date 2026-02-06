@@ -35,7 +35,7 @@ export const Header = ({ isMenuOpen, setIsMenuOpen, loginWithGoogle, user }: Hea
     }, []);
 
     return (
-        <header className={`fixed w-full z-50 transition-all duration-500 ${scrolled ? 'bg-white/95 border-b border-slate-100 shadow-xl shadow-slate-200/20 backdrop-blur-md py-4' : 'bg-transparent py-6'}`}>
+        <header className={`fixed w-full z-50 transition-all duration-500 ${scrolled ? 'bg-white/95 border-b border-slate-100 shadow-xl shadow-slate-200/20 md:backdrop-blur-md py-4' : 'bg-transparent py-6'}`}>
             <div className="max-w-7xl mx-auto px-6">
                 <div className="flex justify-between items-center h-14">
                     <div className="flex items-center gap-3 cursor-pointer group" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>

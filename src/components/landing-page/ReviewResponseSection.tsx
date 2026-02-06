@@ -3,7 +3,7 @@ import React from 'react';
 import { Icons } from '../LandingPageIcons';
 
 const NoiseOverlay = () => (
-    <div className="absolute inset-0 pointer-events-none opacity-[0.15] mix-blend-overlay" style={{
+    <div className="absolute inset-0 pointer-events-none opacity-[0.15] mix-blend-overlay hidden md:block" style={{
         backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
     }} />
 );
@@ -14,8 +14,8 @@ export const ReviewResponseSection = () => {
             <NoiseOverlay />
 
             {/* Background Decorations */}
-            <div className="absolute top-20 right-10 w-96 h-96 bg-[#1823ff]/10 rounded-full blur-[120px] pointer-events-none" />
-            <div className="absolute bottom-10 left-10 w-80 h-80 bg-[#1823ff]/5 rounded-full blur-[100px] pointer-events-none" />
+            <div className="absolute top-20 right-10 w-96 h-96 bg-[#1823ff]/10 rounded-full blur-[120px] pointer-events-none hidden md:block" />
+            <div className="absolute bottom-10 left-10 w-80 h-80 bg-[#1823ff]/5 rounded-full blur-[100px] pointer-events-none hidden md:block" />
 
             <div className="max-w-6xl mx-auto px-6 relative z-10">
                 <div className="grid md:grid-cols-2 gap-16 items-center">
