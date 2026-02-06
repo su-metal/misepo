@@ -185,15 +185,38 @@ export async function GET() {
           
           if (updated) ent = updated;
         }
-      } else if (ent.plan !== 'free' && ent.plan !== 'trial' && (!ent.billing_reference_id || !ent.billing_reference_id.startsWith('promo_'))) {
           // ✅ 有料プラン設定なのにStripeにサブスクがない場合、trialに引き戻す（手動付与プロモ等を除く）
           console.log(`[PlanAPI] Resetting user ${userId} to trial (No Stripe sub found but DB says ${ent.plan})`);
+          
+          let newTrialEndsAt = ent.trial_ends_at;
+          if (!newTrialEndsAt) {
+            if (isEligibleForTrial) {
+              const jstOffset = 9 * 60 * 60 * 1000;
+              const nowJST = new Date(Date.now() + jstOffset);
+              const endsAtJST = new Date(nowJST.getTime() + (7 * 24 * 60 * 60 * 1000));
+              newTrialEndsAt = new Date(endsAtJST.getTime() - jstOffset).toISOString();
+              
+              // Mark trial as redeemed
+              await supabaseAdmin
+                .from("promotion_redemptions")
+                .upsert({
+                  app_id: APP_ID,
+                  user_id: userId,
+                  promo_key: "trial_7days"
+                }, { onConflict: "app_id,user_id,promo_key" });
+            } else {
+              // 既に属性があったが日付がなかった場合は過去日付にして「期限切れ」にする
+              newTrialEndsAt = "2024-01-01T00:00:00Z";
+            }
+          }
+
           const { data: reverted } = await supabaseAdmin
             .from("entitlements")
             .update({
               plan: 'trial',
               status: 'active',
               expires_at: null,
+              trial_ends_at: newTrialEndsAt,
               billing_reference_id: null
             })
             .eq("user_id", userId)
