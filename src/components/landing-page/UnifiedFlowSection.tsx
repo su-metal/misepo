@@ -1,5 +1,6 @@
 "use client";
 import React from 'react';
+import Image from 'next/image';
 import { Icons } from '../LandingPageIcons';
 
 export const UnifiedFlowSection = ({ isMobile = false }: { isMobile?: boolean }) => {
@@ -64,7 +65,14 @@ export const UnifiedFlowSection = ({ isMobile = false }: { isMobile?: boolean })
                                     <div className="relative overflow-hidden aspect-[4/3] transition-transform duration-700 group-hover:scale-[1.02]" style={{
                                         borderRadius: item.align === 'left' ? '120px 40px 120px 40px' : '40px 120px 40px 120px'
                                     }}>
-                                        <img src={item.img} alt={item.title} className="w-full h-full object-cover" />
+                                        <Image
+                                            src={item.img}
+                                            alt={item.title}
+                                            fill
+                                            sizes="(max-width: 768px) 90vw, 500px"
+                                            quality={70}
+                                            className="object-cover"
+                                        />
                                         <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors" />
                                     </div>
 

@@ -1,5 +1,6 @@
 "use client";
 import React from 'react';
+import Image from 'next/image';
 import { Icons } from '../LandingPageIcons';
 
 const NoiseOverlay = () => (
@@ -54,11 +55,14 @@ export const AppScreensSection = ({ isMobile = false }: { isMobile?: boolean }) 
                         <div className="min-w-[280px] md:w-full md:max-w-[320px] group transition-all duration-700 hover:-translate-y-4 snap-center">
                             <div className="relative aspect-[9/19] rounded-[3rem] bg-[#282d32] p-2 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.3)] border-4 border-[#3a3f45]">
                                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-6 bg-[#282d32] rounded-b-2xl z-20" />
-                                <div className="w-full h-full overflow-hidden rounded-[2.5rem] bg-white">
-                                    <img
+                                <div className="w-full h-full overflow-hidden rounded-[2.5rem] bg-white relative">
+                                    <Image
                                         src="/misepo_input_screen.jpg"
                                         alt="App Generation Support"
-                                        className="w-full h-full object-cover object-top"
+                                        fill
+                                        sizes="(max-width: 768px) 80vw, 320px"
+                                        quality={70}
+                                        className="object-cover object-top"
                                     />
                                 </div>
                             </div>
@@ -72,11 +76,14 @@ export const AppScreensSection = ({ isMobile = false }: { isMobile?: boolean }) 
                         <div className="min-w-[280px] md:w-full md:max-w-[320px] group transition-all duration-700 hover:-translate-y-4 md:translate-y-12 snap-center">
                             <div className="relative aspect-[9/19] rounded-[3rem] bg-[#282d32] p-2 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.3)] border-4 border-[#3a3f45]">
                                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-6 bg-[#282d32] rounded-b-2xl z-20" />
-                                <div className="w-full h-full overflow-hidden rounded-[2.5rem] bg-white">
-                                    <img
+                                <div className="w-full h-full overflow-hidden rounded-[2.5rem] bg-white relative">
+                                    <Image
                                         src="/misepo_topic_sommelier.jpg"
                                         alt="Content Calendar"
-                                        className="w-full h-full object-cover object-top"
+                                        fill
+                                        sizes="(max-width: 768px) 80vw, 320px"
+                                        quality={70}
+                                        className="object-cover object-top"
                                     />
                                 </div>
                             </div>
@@ -90,11 +97,14 @@ export const AppScreensSection = ({ isMobile = false }: { isMobile?: boolean }) 
                         <div className="min-w-[280px] md:w-full md:max-w-[320px] group transition-all duration-700 hover:-translate-y-4 snap-center">
                             <div className="relative aspect-[9/19] rounded-[3rem] bg-[#282d32] p-2 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.3)] border-4 border-[#3a3f45]">
                                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-6 bg-[#282d32] rounded-b-2xl z-20" />
-                                <div className="w-full h-full overflow-hidden rounded-[2.5rem] bg-white">
-                                    <img
+                                <div className="w-full h-full overflow-hidden rounded-[2.5rem] bg-white relative">
+                                    <Image
                                         src="/misepo_profile_selection.jpg"
                                         alt="AI Learning View"
-                                        className="w-full h-full object-cover object-top"
+                                        fill
+                                        sizes="(max-width: 768px) 80vw, 320px"
+                                        quality={70}
+                                        className="object-cover object-top"
                                     />
                                 </div>
                             </div>

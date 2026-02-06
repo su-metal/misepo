@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { Icons } from './LandingPageIcons';
 import HeroSection from './HeroSection';
 import { Header } from './landing-page/Header';
 import { BenefitSection } from './landing-page/BenefitSection';
@@ -18,17 +17,13 @@ import { AppScreensSection } from './landing-page/AppScreensSection';
 import { ReviewResponseSection } from './landing-page/ReviewResponseSection';
 import { Footer } from './landing-page/Footer';
 
-export default function LandingPage() {
-  const { user, loginWithGoogle } = useAuth();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const demoScenarios = [
-    {
-      id: "instagram",
-      label: "Instagram投稿",
-      modeBadge: "Instagram Mode",
-      input: "ドーナツ新作３種登場。ハニーディップ、トリプルチョコ、パイ生地ドーナツ。一律２８０円。売り切れ次第終了。",
-      result: `✨ミセポドーナツから、待望の新作ドーナツが3種類登場しました！✨
+const demoScenarios = [
+  {
+    id: "instagram",
+    label: "Instagram投稿",
+    modeBadge: "Instagram Mode",
+    input: "ドーナツ新作３種登場。ハニーディップ、トリプルチョコ、パイ生地ドーナツ。一律２８０円。売り切れ次第終了。",
+    result: `✨ミセポドーナツから、待望の新作ドーナツが3種類登場しました！✨
 
 まずご紹介するのは、優しい甘さが広がる「ハニーディップ」。ふんわりとした生地とハニーの組み合わせは、まさに至福の味わいです。🐻
 
@@ -50,25 +45,25 @@ open11:00-close 17:00
 〒150-0000 東京都渋谷区神南1-0-0 ミセポビル2F
 
 #misepocafe #渋谷カフェ #表参道カフェ #東京グルメ #新作ドーナツ #ドーナツ #カフェ巡り`
-    },
-    {
-      id: "google_maps",
-      label: "クチコミ返信",
-      modeBadge: "Google Maps Mode",
-      input: "「初めて来ましたが、ドーナツがふわふわで最高でした！コーヒーも深みがあって好みです。また来ます！」",
-      result: `初めてのご来店、そして温かいお言葉をいただき、誠にありがとうございます。
+  },
+  {
+    id: "google_maps",
+    label: "クチコミ返信",
+    modeBadge: "Google Maps Mode",
+    input: "「初めて来ましたが、ドーナツがふわふわで最高でした！コーヒーも深みがあって好みです。また来ます！」",
+    result: `初めてのご来店、そして温かいお言葉をいただき、誠にありがとうございます。
 
 当店のドーナツの「ふわふわ」とした食感と、丁寧に淹れたコーヒーの「深み」をお気に召していただけたとのこと、大変嬉しく存じます。お客様にゆったりとした時間をお過ごしいただけるよう、一つ一つ心を込めてご用意しております。
 
 「また来ます！」とのお言葉、何よりの励みになります。季節の移ろいとともに、また違った味わいや雰囲気をお楽しみいただけるかと存じます。ぜひ、またミセポドーナツで穏やかなひとときをお過ごしください。心よりお待ちしております。
 `
-    },
-    {
-      id: "line",
-      label: "公式LINE配信",
-      modeBadge: "LINE Mode",
-      input: "「冬の期間限定ホットチョコドーナツが明日からスタート！LINE友だち限定で50円引きクーポンも。」を魅力的に。",
-      result: `冬の訪れを告げる✨
+  },
+  {
+    id: "line",
+    label: "公式LINE配信",
+    modeBadge: "LINE Mode",
+    input: "「冬の期間限定ホットチョコドーナツが明日からスタート！LINE友だち限定で50円引きクーポンも。」を魅力的に。",
+    result: `冬の訪れを告げる✨
 ＼＼☃️期間限定ホットチョコドーナツ☃️／／
 明日からついにスタートしますよ～👀🎉
 
@@ -85,13 +80,13 @@ LINE友だち限定で、このホットチョコドーナツが
 
 ぜひ、温かいドーナツで素敵な冬のひとときを過ごしてください🛒
 　↓　↓　↓　↓　↓ 🛍️`
-    },
-    {
-      id: "casual",
-      label: "お知らせ (ラフ)",
-      modeBadge: "Announcement Mode",
-      input: "「明日は機材メンテナンスのため15時閉店です。ごめんね！」を親しみやすい感じで。",
-      result: `【お知らせ】
+  },
+  {
+    id: "casual",
+    label: "お知らせ (ラフ)",
+    modeBadge: "Announcement Mode",
+    input: "「明日は機材メンテナンスのため15時閉店です。ごめんね！」を親しみやすい感じで。",
+    result: `【お知らせ】
 いつもミセポドーナツをご利用いただき、誠にありがとうございます！
 
 明日、〇月〇日(〇)は、より美味しいドーナツと快適な空間をご提供するため、機材メンテナンスを実施いたします。
@@ -99,8 +94,12 @@ LINE友だち限定で、このホットチョコドーナツが
 つきましては、誠に勝手ながら明日の営業時間を15時閉店とさせていただきます。ご迷惑をおかけしますが、何卒ご理解とご協力をお願い申し上げます。
 
 翌日からは通常通り営業いたしますので、皆様のご来店を心よりお待ちしております😊☕`
-    }
-  ];
+  }
+];
+
+export default function LandingPage() {
+  const { user, loginWithGoogle } = useAuth();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const [activeScenarioIdx, setActiveScenarioIdx] = useState(0);
   const [isDemoGenerating, setIsDemoGenerating] = useState(false);
@@ -116,11 +115,8 @@ LINE友だち限定で、このホットチョコドーナツが
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
     window.addEventListener('resize', checkMobile);
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handleScroll);
     return () => {
       window.removeEventListener('resize', checkMobile);
-      window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
@@ -145,7 +141,7 @@ LINE友だち限定で、このホットチョコドーナツが
 
   return (
     <div className="min-h-screen bg-[#f0eae4] text-[#282d32] font-inter selection:bg-[#1823ff] selection:text-white">
-      <Header scrolled={scrolled} isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} loginWithGoogle={loginWithGoogle} user={user} />
+      <Header isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} loginWithGoogle={loginWithGoogle} user={user} />
       <HeroSection />
       <ExperienceSection isMobile={isMobile} />
       <AppScreensSection isMobile={isMobile} />
