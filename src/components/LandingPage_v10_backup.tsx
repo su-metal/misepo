@@ -172,7 +172,7 @@ open11:00-close 17:00
 
   return (
     <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-[#F5CC6D]">
-      <Header scrolled={scrolled} isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} loginWithGoogle={loginWithGoogle} user={user} />
+      <Header isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} loginWithGoogle={loginWithGoogle} user={user} />
       <HeroSection />
       <ProblemSection problems={problems} isMobile={isMobile} />
       <UnifiedFlowSection />
