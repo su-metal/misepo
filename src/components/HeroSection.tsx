@@ -39,7 +39,7 @@ export default function HeroSection() {
                 {/* 1. Headline - Top on Mobile, Top Left on PC */}
                 <div className="relative flex flex-col items-start text-left mb-[-20px] lg:mb-0 z-20 lg:col-start-1 lg:row-start-1 w-full">
                     <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/50 backdrop-blur-md border border-[#1823ff]/10 rounded-full mb-8 shadow-sm">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#1823ff] animate-pulse" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#1823ff] md:animate-pulse" />
                         <span className="text-[10px] font-bold text-[#1823ff] uppercase tracking-[0.2em]">Your Alter Ego for SNS</span>
                     </div>
 
