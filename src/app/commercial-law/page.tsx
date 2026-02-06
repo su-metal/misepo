@@ -3,7 +3,7 @@ import LegalLayout from '@/components/LegalLayout';
 
 export default function CommercialLawPage() {
     return (
-        <LegalLayout title="特定商取引法に基づく表記" lastUpdated="2026年1月19日">
+        <LegalLayout title="特定商取引法に基づく表記" lastUpdated="2026年2月6日">
             <div className="overflow-hidden border border-gray-200 rounded-lg">
                 <table className="min-w-full divide-y divide-gray-200">
                     <tbody className="bg-white divide-y divide-gray-200">
@@ -60,9 +60,10 @@ export default function CommercialLawPage() {
                             <th className="px-6 py-4 bg-gray-50 text-left text-sm font-bold text-gray-700">
                                 商品代金
                             </th>
-                            <td className="px-6 py-4 text-sm text-gray-900">
-                                Proプラン：月額 1,980円（税込）
-                                （月間300回生成可能）
+                            <td className="px-6 py-4 text-sm text-gray-900 whitespace-pre-line">
+                                Entryプラン：月額 980円（税込） （月間50回生成可能）{"\n"}
+                                Standardプラン：月額 1,980円（税込） （月間150回生成可能）{"\n"}
+                                Professionalプラン：月額 2,980円（税込） （月間300回生成可能）
                             </td>
                         </tr>
                         <tr>
