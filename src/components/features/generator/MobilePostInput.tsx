@@ -855,7 +855,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
                                         {/* 2. Middle Scrollable Area (Main Text inputs) */}
                                         {/* Keep extra bottom padding so content won't be hidden under the fixed action area. */}
-                                        <div className="flex-1 min-h-0 overflow-y-auto px-8 py-2 pb-[190px] no-scrollbar scrollbar-hide">
+                                        <div className="flex-1 min-h-0 overflow-y-auto px-8 py-2 pb-[190px] sm:pb-[160px] no-scrollbar scrollbar-hide">
                                             <div className="w-full relative py-2 mb-4">
                                                 {/* AI Inspiration Deck for "AI Standard" */}
                                                 <InspirationDeck
@@ -967,7 +967,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         {/* 3. Fixed Action Area (Bottom) */}
                                         <div className="absolute bottom-0 left-0 right-0 z-[250] flex flex-col items-center pointer-events-auto">
                                             <div
-                                                className="w-full px-8 pt-6 pb-[calc(env(safe-area-inset-bottom)+44px)] flex flex-col items-center gap-4 relative bg-white/95 backdrop-blur-xl border-t border-slate-100"
+                                                className="w-full px-8 pt-6 pb-[calc(env(safe-area-inset-bottom)+44px)] sm:pb-[calc(env(safe-area-inset-bottom)+24px)] flex flex-col items-center gap-4 relative bg-white/95 backdrop-blur-xl border-t border-slate-100"
                                                 style={{
                                                     backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.9) 45%, rgba(255,255,255,1) 100%)',
                                                     backgroundRepeat: 'no-repeat'
@@ -1001,7 +1001,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                 {mobileStep === 'confirm' && (
                                     <div className="flex-1 relative min-h-0 flex flex-col animate-in fade-in slide-in-from-bottom-10 duration-700">
                                         {/* Scrollable Preview and Settings */}
-                                        <div className="flex-1 overflow-y-auto px-8 py-4 pb-[190px] space-y-4 no-scrollbar scrollbar-hide">
+                                        <div className="flex-1 overflow-y-auto px-8 py-4 pb-[190px] sm:pb-[160px] space-y-4 no-scrollbar scrollbar-hide">
                                             <div className="flex flex-col gap-4">
                                                 {/* Preview Box - Brand Style */}
                                                 <div className="bg-[#edeff1] border border-slate-100 rounded-[40px] p-8 min-h-[180px] relative shadow-sm overflow-hidden group">
@@ -1263,7 +1263,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         {/* Step 3 Sticky Action Area - Fixed for Hitbox and Layout accuracy */}
                                         <div className="absolute bottom-0 left-0 right-0 z-[250] flex flex-col items-center pointer-events-auto">
                                             <div
-                                                className="w-full px-8 pt-6 pb-[calc(env(safe-area-inset-bottom)+44px)] flex flex-col items-center gap-4 relative bg-white/95 backdrop-blur-xl border-t border-slate-100"
+                                                className="w-full px-8 pt-6 pb-[calc(env(safe-area-inset-bottom)+44px)] sm:pb-[calc(env(safe-area-inset-bottom)+24px)] flex flex-col items-center gap-4 relative bg-white/95 backdrop-blur-xl border-t border-slate-100"
                                                 style={{
                                                     backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.9) 45%, rgba(255,255,255,1) 100%)',
                                                     backgroundRepeat: 'no-repeat'
