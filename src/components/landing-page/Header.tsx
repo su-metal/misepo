@@ -1,15 +1,39 @@
-import React from 'react';
+"use client";
+import React, { useEffect, useState } from 'react';
 import { Icons } from '../LandingPageIcons';
 
 interface HeaderProps {
-    scrolled: boolean;
     isMenuOpen: boolean;
     setIsMenuOpen: (open: boolean) => void;
     loginWithGoogle: (type: 'login' | 'signup') => void;
     user: any;
 }
 
-export const Header = ({ scrolled, isMenuOpen, setIsMenuOpen, loginWithGoogle, user }: HeaderProps) => {
+export const Header = ({ isMenuOpen, setIsMenuOpen, loginWithGoogle, user }: HeaderProps) => {
+    const [scrolled, setScrolled] = useState(false);
+
+    useEffect(() => {
+        let ticking = false;
+        let lastScrolled = scrolled;
+
+        const onScroll = () => {
+            if (ticking) return;
+            ticking = true;
+            window.requestAnimationFrame(() => {
+                const next = window.scrollY > 20;
+                if (next !== lastScrolled) {
+                    lastScrolled = next;
+                    setScrolled(next);
+                }
+                ticking = false;
+            });
+        };
+
+        onScroll();
+        window.addEventListener('scroll', onScroll, { passive: true });
+        return () => window.removeEventListener('scroll', onScroll);
+    }, []);
+
     return (
         <header className={`fixed w-full z-50 transition-all duration-500 ${scrolled ? 'bg-white/95 border-b border-slate-100 shadow-xl shadow-slate-200/20 backdrop-blur-md py-4' : 'bg-transparent py-6'}`}>
             <div className="max-w-7xl mx-auto px-6">

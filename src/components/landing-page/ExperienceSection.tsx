@@ -1,6 +1,6 @@
 "use client";
 import React from 'react';
-import { Icons } from '../LandingPageIcons';
+import Image from 'next/image';
 
 const NoiseOverlay = () => (
     <div className="absolute inset-0 pointer-events-none opacity-[0.4] mix-blend-overlay hidden md:block" style={{
@@ -54,9 +54,13 @@ export const ExperienceSection = ({ isMobile = false }: { isMobile?: boolean }) 
                         <div className="flex-1 order-1 md:order-2 relative">
                             <div className="absolute -top-10 -right-10 w-64 h-64 bg-white/10 rounded-full blur-[80px]" />
                             <div className="relative group transition-transform duration-500 hover:scale-[1.02]">
-                                <img
+                                <Image
                                     src="/shop_owner_smartphone_cafe_1769987142891.png"
                                     alt="Shop Owner"
+                                    width={900}
+                                    height={1200}
+                                    sizes="(max-width: 768px) 90vw, 450px"
+                                    quality={70}
                                     className="w-full max-w-[450px] rounded-[48px] shadow-2xl rotate-[-3deg] transform-gpu border-4 border-white/10"
                                 />
                                 <div className="absolute inset-0 rounded-[48px] ring-1 ring-white/20" />
@@ -76,9 +80,13 @@ export const ExperienceSection = ({ isMobile = false }: { isMobile?: boolean }) 
                     <div className="flex flex-col md:flex-row items-center justify-between gap-16">
                         <div className="w-full md:w-5/12 relative">
                             <div className="relative group transition-transform duration-500 hover:scale-[1.02]">
-                                <img
+                                <Image
                                     src="/delicious_pastry_coffee_close_up_1769987156597.png"
                                     alt="Experience"
+                                    width={1200}
+                                    height={900}
+                                    sizes="(max-width: 768px) 90vw, 450px"
+                                    quality={70}
                                     className="w-full rounded-[48px] shadow-2xl rotate-[3deg] transform-gpu border-4 border-white/10"
                                 />
                                 <div className="absolute inset-0 rounded-[48px] ring-1 ring-white/20" />
@@ -108,9 +116,13 @@ export const ExperienceSection = ({ isMobile = false }: { isMobile?: boolean }) 
                         </div>
                         <div className="w-full md:w-6/12 order-1 md:order-2 relative">
                             <div className="relative group transition-transform duration-500 rotate-[-5deg] hover:rotate-0 hover:scale-[1.02]">
-                                <img
+                                <Image
                                     src="/shop_customer_greeting_experience_1769987174470.png"
                                     alt="Communication"
+                                    width={1200}
+                                    height={900}
+                                    sizes="(max-width: 768px) 90vw, 520px"
+                                    quality={70}
                                     className="w-full rounded-[48px] shadow-2xl transform-gpu border-4 border-white/10"
                                 />
                                 <div className="absolute inset-0 rounded-[48px] ring-1 ring-white/20" />
