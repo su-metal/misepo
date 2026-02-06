@@ -78,9 +78,24 @@ export async function POST(req: Request) {
 
     // ---- ensure customer
     let customerId = entitlement?.stripe_customer_id ?? null;
+    
+    // --- SELF-HEALING: Verify existing customer exists in Stripe ---
+    if (customerId) {
+      try {
+        await stripe.customers.retrieve(customerId);
+      } catch (err: any) {
+        if (err.code === 'resource_missing' || err.status === 404 || err.message?.includes("No such customer")) {
+          console.log(`[CheckoutAPI] Customer ${customerId} not found in Stripe. Clearing and re-creating...`);
+          customerId = null; // Mark as null to trigger re-creation below
+        } else {
+          throw err; // Re-throw other errors
+        }
+      }
+    }
+
     if (!customerId) {
       const customer = await stripe.customers.create({
-        email: userEmail, // Set user email
+        email: userEmail || undefined,
         metadata: { user_id: userId, app_id: appId },
       });
       customerId = customer.id;

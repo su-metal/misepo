@@ -522,10 +522,10 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                         <div className="flex items-center gap-3 bg-[#edeff1] px-4 py-2 rounded-2xl border border-slate-100 shadow-sm active:scale-95 transition-all cursor-pointer select-none"
                             onClick={onToggleMultiGen}>
                             <div className="flex flex-col items-end">
-                                <span className={`text-[9px] font-black tracking-widest uppercase leading-none mb-0.5 ${isMultiGen ? 'text-[#2b2b2f]' : 'text-[#A0A0A0]'}`}>
+                                <span className={`text-[11px] font-black tracking-widest uppercase leading-none mb-0.5 ${isMultiGen ? 'text-[#2b2b2f]' : 'text-[#A0A0A0]'}`}>
                                     {isMultiGen ? 'ON' : 'OFF'}
                                 </span>
-                                <span className="text-[8px] font-bold text-[#A0A0A0] leading-none whitespace-nowrap">同時生成</span>
+                                <span className="text-[10px] font-bold text-[#A0A0A0] leading-none whitespace-nowrap">同時生成 <span className="text-[9px] font-black text-[#2b2b2f] opacity-60 ml-0.5">(2回分)</span></span>
                             </div>
                             <div className={`
                                 relative w-10 h-5 rounded-full transition-all duration-300
@@ -1308,7 +1308,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                         ) : (
                                                             <>
                                                                 <span className="text-white text-base font-black uppercase tracking-[0.3em]">
-                                                                    投稿文を生成
+                                                                    投稿文を生成 <span className="text-[10px] opacity-70 align-middle ml-1">{isMultiGen ? '2回分' : '1回分'}</span>
                                                                 </span>
                                                             </>
                                                         )}

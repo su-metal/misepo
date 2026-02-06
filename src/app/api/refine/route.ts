@@ -115,11 +115,70 @@ export async function POST(req: Request) {
 
   console.debug("Refining content for user", user.id);
 
+  // --- Usage Limit Check ---
+  const { startOfToday, startOfMonth } = require("@/lib/dateUtils").getJSTDateRange();
+  const { data: recentRuns } = await supabaseAdmin
+    .from("ai_runs")
+    .select("run_type, created_at")
+    .eq("user_id", user.id)
+    .eq("app_id", APP_ID)
+    .in("run_type", ["generation", "multi-gen", "refine"])
+    .gte("created_at", startOfMonth);
+
+  if (recentRuns) {
+      const cost = 1;
+      const totalMonthCredits = recentRuns.reduce((sum: number, run: any) => sum + (run.run_type === 'multi-gen' ? 2 : 1), 0);
+      const totalTodayCredits = recentRuns
+          .filter((run: any) => run.created_at >= startOfToday)
+          .reduce((sum: number, run: any) => sum + (run.run_type === 'multi-gen' ? 2 : 1), 0);
+          
+      const planName = effectiveEnt?.plan;
+      const status = effectiveEnt?.status;
+      
+      let monthlyLimit = 0;
+      if (planName === 'entry') monthlyLimit = 50;
+      else if (planName === 'standard') monthlyLimit = 150;
+      else if (planName === 'professional') monthlyLimit = 300;
+      else if (planName === 'monthly' || planName === 'yearly') monthlyLimit = 300;
+      
+      const isTrial = (planName === 'trial' || status === 'trialing') && !monthlyLimit;
+      
+      if (isTrial && totalTodayCredits + cost > 5) {
+          return NextResponse.json({ ok: false, error: "daily_limit_reached" }, { status: 403 });
+      }
+      if (monthlyLimit > 0 && (status === 'active' || status === 'trialing')) {
+          if (totalMonthCredits + cost > monthlyLimit) {
+              return NextResponse.json({ ok: false, error: "monthly_limit_reached" }, { status: 403 });
+          }
+      }
+  }
+
+  // --- Record usage ---
+  const { data: runData, error: runError } = await supabaseAdmin
+    .from("ai_runs")
+    .insert({
+      app_id: APP_ID,
+      user_id: user.id,
+      run_type: "refine",
+    })
+    .select("id")
+    .single();
+
+  if (runError || !runData) {
+    console.error("[REFINE] Failed to create run record:", runError);
+    return NextResponse.json({ ok: false, error: "Failed to record generation" }, { status: 500 });
+  }
+
+  const savedRunId = runData.id;
+
   try {
     const result = await refineContent(profile, config, currentContent, instruction);
     return NextResponse.json({ ok: true, result });
   } catch (e: any) {
     console.error("Refine error:", e);
+    if (savedRunId) {
+      await supabaseAdmin.from("ai_runs").delete().eq("id", savedRunId);
+    }
     return NextResponse.json(
       { ok: false, error: "Internal Server Error" },
       { status: 500 }

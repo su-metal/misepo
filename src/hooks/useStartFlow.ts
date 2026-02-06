@@ -100,13 +100,32 @@ export function useStartFlow() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
     
-    const handleFocus = () => {
+    // 強制的にリセットする関数
+    const resetStates = () => {
       setIsRedirecting(false);
       setLoading(false);
     };
 
+    const handleFocus = () => resetStates();
+    const handlePageShow = (e: PageTransitionEvent) => {
+      // 戻るボタンやウィンドウ復元時にも確実にリセット
+      resetStates();
+    };
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        resetStates();
+      }
+    };
+
     window.addEventListener('focus', handleFocus);
-    return () => window.removeEventListener('focus', handleFocus);
+    window.addEventListener('pageshow', handlePageShow);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+      window.removeEventListener('pageshow', handlePageShow);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, []);
 
   useEffect(() => {

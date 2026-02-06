@@ -60,7 +60,7 @@ export default function HeroSection() {
                             >
                                 <Image
                                     src={src}
-                                    alt={`MisePo App ${index + 1}`}
+                                    alt={index === 0 ? "MisePo アプリ画面 - インスタグラム投稿作成" : index === 1 ? "MisePo アプリ画面 - クチコミ返信作成" : "MisePo アプリ画面 - LINE配信作成"}
                                     fill
                                     className="object-cover"
                                     priority={index === 0}
