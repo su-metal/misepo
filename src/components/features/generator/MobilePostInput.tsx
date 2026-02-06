@@ -982,7 +982,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                         transition-all duration-500 active:scale-95 cursor-pointer
                                                         ${isListening || !inputText.trim()
                                                             ? 'bg-slate-100 cursor-not-allowed shadow-none text-slate-300'
-                                                            : 'bg-[#2b2b2f] shadow-[0_15px_45px_rgba(0,0,0,0.15)] text-white'
+                                                            : 'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 shadow-[0_15px_45px_rgba(99,102,241,0.25)] text-white hover:scale-[1.02]'
                                                         }
                                                     `}
                                                 >
@@ -990,7 +990,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                         <span className="text-base font-black uppercase tracking-[0.3em] drop-shadow-sm">
                                                             確認画面へ
                                                         </span>
-                                                        <ChevronRightIcon className="w-5 h-5" />
+                                                        <ChevronRightIcon className="w-5 h-5 animate-arrow-flow" />
                                                     </div>
                                                 </button>
                                             </div>
@@ -1076,7 +1076,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                                     onClick={() => handleTargetAudienceToggle(target)}
                                                                     className={`
                                                             flex-shrink-0 px-4 py-2 rounded-xl font-bold text-[11px] transition-all active:scale-95 border whitespace-nowrap
-                                                            ${targetAudiences?.includes(target)
+                                                                        ${targetAudiences?.includes(target)
                                                                             ? 'bg-[#2b2b2f] text-white border-[#2b2b2f] shadow-md'
                                                                             : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300'
                                                                         }
@@ -1126,21 +1126,21 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                                         type="checkbox"
                                                                         checked={isDefaultStyleEnabled}
                                                                         onChange={(e) => setIsDefaultStyleEnabled(e.target.checked)}
-                                                                        className="peer appearance-none w-3.5 h-3.5 rounded border border-[#666666] checked:bg-[var(--pop-violet-main)] checked:border-[var(--pop-violet-main)] transition-all"
+                                                                        className="peer appearance-none w-3.5 h-3.5 rounded border border-[#666666] checked:bg-[#2b2b2f] checked:border-[#2b2b2f] transition-all"
                                                                     />
                                                                     <svg className="absolute w-2.5 h-2.5 text-white opacity-0 peer-checked:opacity-100 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="4">
                                                                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                                                                     </svg>
                                                                 </div>
-                                                                <span className="text-[9px] font-bold text-[#A0A0A0] group-hover/label:text-white transition-colors">デフォルトに設定</span>
+                                                                <span className="text-[9px] font-bold text-[#A0A0A0] group-hover/label:text-stone-600 transition-colors">デフォルトに設定</span>
                                                             </label>
                                                         </div>
-                                                        <button onClick={onOpenPresetModal} className="text-[10px] font-black text-[var(--pop-violet-main)] uppercase tracking-widest bg-[var(--pop-violet-card)] px-3 py-1 rounded-full border border-white/10 hover:bg-white/10 transition-all">編集</button>
+                                                        <button onClick={onOpenPresetModal} className="text-[10px] font-black text-[#2b2b2f] uppercase tracking-widest bg-white px-3 py-1 rounded-full border border-slate-100 hover:bg-slate-50 transition-all">編集</button>
                                                     </div>
                                                     <div className="flex overflow-x-auto gap-3 pb-2 pt-2 -mx-2 px-3 no-scrollbar scrollbar-hide">
                                                         <button
                                                             onClick={() => onApplyPreset({ id: 'plain-ai' } as any)}
-                                                            className={`flex-shrink-0 px-8 py-3 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] transition-all duration-500 shadow-sm border ${activePresetId === 'plain-ai' ? 'bg-[#2b2b2f] text-white border-[#2b2b2f] scale-105 active:scale-95 shadow-black/10' : 'bg-[#edeff1] border-slate-100 text-slate-400 hover:text-[#2b2b2f]'}`}
+                                                            className={`flex-shrink-0 px-8 py-3 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] transition-all duration-500 shadow-sm border ${activePresetId === 'plain-ai' ? 'bg-[#2b2b2f] text-white border-[#2b2b2f] scale-105 active:scale-95 shadow-lg' : 'bg-[#edeff1] border-slate-100 text-slate-400 hover:text-[#2b2b2f]'}`}
                                                         >
                                                             AI標準
                                                         </button>
@@ -1150,7 +1150,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                                 <button
                                                                     key={p.id}
                                                                     onClick={() => onApplyPreset(p)}
-                                                                    className={`flex-shrink-0 px-8 py-3 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] transition-all duration-500 shadow-sm border truncate max-w-[160px] ${isSelected ? 'bg-[#2b2b2f] text-white border-[#2b2b2f] scale-105 active:scale-95 shadow-black/10' : 'bg-[#edeff1] border-slate-100 text-slate-400 hover:text-[#2b2b2f]'}`}
+                                                                    className={`flex-shrink-0 px-8 py-3 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] transition-all duration-500 shadow-sm border truncate max-w-[160px] ${isSelected ? 'bg-[#2b2b2f] text-white border-[#2b2b2f] scale-105 active:scale-95 shadow-lg' : 'bg-[#edeff1] border-slate-100 text-slate-400 hover:text-[#2b2b2f]'}`}
                                                                 >
                                                                     {p.name}
                                                                 </button>
@@ -1214,8 +1214,8 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                                                         onClick={() => onToneChange(t.id)}
                                                                                         className="relative z-10 flex flex-col items-center group w-full first:items-start last:items-end"
                                                                                     >
-                                                                                        <div className={`w-3 h-3 rounded-full border-2 transition-all duration-300 ${isActive ? 'bg-[#2b2b2f] border-[#2b2b2f] scale-110' : 'bg-white border-slate-200'}`} />
-                                                                                        <span className={`absolute -bottom-4 text-[8px] font-black transition-colors duration-300 whitespace-nowrap ${isActive ? 'text-[#2b2b2f]' : 'text-slate-400'}`}>
+                                                                                        <div className={`w-3 h-3 rounded-full border-2 transition-all duration-300 ${isActive ? 'bg-indigo-500 border-indigo-500 scale-110 shadow-[0_0_10px_rgba(99,102,241,0.5)]' : 'bg-white border-slate-200'}`} />
+                                                                                        <span className={`absolute -bottom-4 text-[8px] font-black transition-colors duration-300 whitespace-nowrap ${isActive ? 'text-indigo-600' : 'text-slate-400'}`}>
                                                                                             {t.label}
                                                                                         </span>
                                                                                     </button>
@@ -1243,8 +1243,8 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                                                         onClick={() => onLengthChange(l.id)}
                                                                                         className="relative z-10 flex flex-col items-center group w-full first:items-start last:items-end"
                                                                                     >
-                                                                                        <div className={`w-3 h-3 rounded-full border-2 transition-all duration-300 ${isActive ? 'bg-[#2b2b2f] border-[#2b2b2f] scale-110' : 'bg-white border-slate-200'}`} />
-                                                                                        <span className={`absolute -bottom-4 text-[8px] font-black transition-colors duration-300 whitespace-nowrap ${isActive ? 'text-[#2b2b2f]' : 'text-slate-400'}`}>
+                                                                                        <div className={`w-3 h-3 rounded-full border-2 transition-all duration-300 ${isActive ? 'bg-indigo-500 border-indigo-500 scale-110 shadow-[0_0_10px_rgba(99,102,241,0.5)]' : 'bg-white border-slate-200'}`} />
+                                                                                        <span className={`absolute -bottom-4 text-[8px] font-black transition-colors duration-300 whitespace-nowrap ${isActive ? 'text-indigo-600' : 'text-slate-400'}`}>
                                                                                             {l.label}
                                                                                         </span>
                                                                                     </button>
@@ -1276,16 +1276,21 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                         w-full group relative overflow-hidden rounded-[32px] py-6
                                                         flex items-center justify-center
                                                         transition-all duration-500 active:scale-95 cursor-pointer
-                                                        ${isGenerating ? 'bg-slate-100 cursor-not-allowed' : 'bg-[#2b2b2f] shadow-[0_15px_45px_rgba(0,0,0,0.15)]'}
+                                                        ${isGenerating
+                                                            ? 'bg-slate-100 cursor-not-allowed'
+                                                            : 'bg-[#2b2b2f] shadow-[0_20px_50px_rgba(0,0,0,0.15)] hover:scale-[1.02]'
+                                                        }
                                                     `}
                                                 >
                                                     <div className="relative flex items-center justify-center gap-3">
                                                         {isGenerating ? (
-                                                            <div className="w-6 h-6 border-3 border-[#2b2b2f]/20 border-t-[#2b2b2f] rounded-full animate-spin" />
+                                                            <div className="w-6 h-6 border-3 border-orange-200 border-t-white rounded-full animate-spin" />
                                                         ) : (
-                                                            <span className="text-white text-base font-black uppercase tracking-[0.3em] drop-shadow-sm">
-                                                                投稿案を作成する
-                                                            </span>
+                                                            <>
+                                                                <span className="text-white text-base font-black uppercase tracking-[0.3em]">
+                                                                    魔法の投稿プランを生成 ✨
+                                                                </span>
+                                                            </>
                                                         )}
                                                     </div>
                                                 </button>
