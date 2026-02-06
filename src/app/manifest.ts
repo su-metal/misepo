@@ -4,12 +4,12 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: 'MisePo',
     short_name: 'MisePo',
-    description: '店舗向けAI投稿作成アシスタント',
+    description: '飲食店・美容室特化のSNS投稿作成AIアシスタント',
     start_url: '/generate',
     display: 'standalone',
     scope: '/',
-    background_color: '#000000',
-    theme_color: '#000000',
+    background_color: '#f0eae4',
+    theme_color: '#1823ff',
     icons: [
       {
         src: '/icon-192x192.png',

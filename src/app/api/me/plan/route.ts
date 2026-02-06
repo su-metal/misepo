@@ -210,7 +210,8 @@ export async function GET() {
           
           if (updated) ent = updated;
         }
-          // ✅ 有料プラン設定なのにStripeにサブスクがない場合、trialに引き戻す（手動付与プロモ等を除く）
+      } else {
+          // 有料プラン設定なのにStripeにサブスクがない場合、trialに引き戻す
           console.log(`[PlanAPI] Resetting user ${userId} to trial (No Stripe sub found but DB says ${ent.plan})`);
           
           let newTrialEndsAt = ent.trial_ends_at;
@@ -227,7 +228,6 @@ export async function GET() {
                   promo_key: "trial_7days"
                 }, { onConflict: "app_id,user_id,promo_key" });
             } else {
-              // 既に属性があったが日付がなかった場合は過去日付にして「期限切れ」にする
               newTrialEndsAt = "2024-01-01T00:00:00Z";
             }
           }
@@ -247,9 +247,20 @@ export async function GET() {
             .single();
           
           if (reverted) ent = reverted;
-        }
-    } catch (e) {
-      console.error("[PlanAPI] Stripe healing failed:", e);
+      }
+    } catch (e: any) {
+      if (e.code === 'resource_missing' || e.status === 404 || e.message?.includes("No such customer")) {
+        console.log(`[PlanAPI] Customer ${ent.stripe_customer_id} not found in Stripe. Purging from DB...`);
+        await supabaseAdmin
+          .from("entitlements")
+          .update({ stripe_customer_id: null, billing_reference_id: null })
+          .eq("user_id", userId)
+          .eq("app_id", APP_ID);
+        ent.stripe_customer_id = null;
+        ent.billing_reference_id = null;
+      } else {
+        console.error("[PlanAPI] Stripe healing failed:", e);
+      }
     }
   }
 
@@ -297,6 +308,7 @@ export async function GET() {
       .select("run_type")
       .eq("user_id", userId)
       .eq("app_id", APP_ID)
+      .in("run_type", ["generation", "multi-gen", "refine"])
       .gte("created_at", usageStartTime);
     if (usageData) usage = usageData.reduce((acc, curr) => acc + (curr.run_type === 'multi-gen' ? 2 : 1), 0);
   } else {
@@ -307,6 +319,7 @@ export async function GET() {
       .select("run_type")
       .eq("user_id", userId)
       .eq("app_id", APP_ID)
+      .in("run_type", ["generation", "multi-gen", "refine"])
       .gte("created_at", startOfToday);
     if (usageData) usage = usageData.reduce((acc, curr) => acc + (curr.run_type === 'multi-gen' ? 2 : 1), 0);
   }

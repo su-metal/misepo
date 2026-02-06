@@ -173,7 +173,7 @@ export async function POST(req: Request) {
       .select("run_type, created_at")
       .eq("user_id", userId)
       .eq("app_id", APP_ID)
-      .in("run_type", ["generation", "multi-gen"])
+      .in("run_type", ["generation", "multi-gen", "refine"])
       .gte("created_at", startOfMonth);
 
     if (countErr) {

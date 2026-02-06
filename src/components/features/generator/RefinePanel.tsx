@@ -70,7 +70,7 @@ export const RefinePanel: React.FC<RefinePanelProps> = ({
                         ) : (
                             <MagicWandIcon className="w-3.5 h-3.5" />
                         )}
-                        調整する
+                        調整する (1回分)
                     </button>
                 </div>
             </div>
