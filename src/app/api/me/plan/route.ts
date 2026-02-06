@@ -112,6 +112,39 @@ export async function GET() {
     return NextResponse.json({ ok: false, error: "no_plan_selected" }, { status: 404, headers: NO_STORE_HEADERS });
   }
 
+  // --- SELF-HEALING: Convert 'free' plan users to trial if eligible ---
+  if (ent.plan === 'free' && isEligibleForTrial) {
+    console.log(`[PlanAPI] Healing 'free' user ${userId} to trial`);
+    const jstOffset = 9 * 60 * 60 * 1000;
+    const nowJST = new Date(Date.now() + jstOffset);
+    const endsAtJST = new Date(nowJST.getTime() + (7 * 24 * 60 * 60 * 1000));
+    const finalTrialEndsAt = new Date(endsAtJST.getTime() - jstOffset).toISOString();
+
+    // Mark trial as redeemed
+    await supabaseAdmin
+      .from("promotion_redemptions")
+      .upsert({
+        app_id: APP_ID,
+        user_id: userId,
+        promo_key: "trial_7days"
+      }, { onConflict: "app_id,user_id,promo_key" });
+
+    const { data: healed } = await supabaseAdmin
+      .from("entitlements")
+      .update({ 
+        plan: "trial", 
+        status: "active", 
+        expires_at: null, 
+        trial_ends_at: finalTrialEndsAt 
+      })
+      .eq("user_id", userId)
+      .eq("app_id", APP_ID)
+      .select("plan,status,expires_at,trial_ends_at,billing_reference_id,stripe_customer_id")
+      .single();
+    
+    if (healed) ent = healed;
+  }
+
   // --- SELF-HEALING: Check for Stripe ---
   if (ent.stripe_customer_id) {
     try {

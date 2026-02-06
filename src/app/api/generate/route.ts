@@ -60,30 +60,69 @@ export async function POST(req: Request) {
 
     effectiveEnt = ent ?? null;
     if (!effectiveEnt) {
-      const { data: created, error: createErr } = await supabaseAdmin
-        .from("entitlements")
-        .upsert(
-          {
+      // 3. TRIAL ELIGIBILITY CHECK
+      const { data: trialRedemption } = await supabaseAdmin
+        .from("promotion_redemptions")
+        .select("id")
+        .eq("app_id", APP_ID)
+        .eq("user_id", userId)
+        .eq("promo_key", "trial_7days")
+        .maybeSingle();
+
+      const isEligibleForTrial = !trialRedemption;
+
+      if (isEligibleForTrial) {
+        const jstOffset = 9 * 60 * 60 * 1000;
+        const nowJST = new Date(Date.now() + jstOffset);
+        const endsAtJST = new Date(nowJST.getTime() + (7 * 24 * 60 * 60 * 1000));
+        const finalTrialEndsAt = new Date(endsAtJST.getTime() - jstOffset).toISOString();
+
+        // Mark trial as redeemed
+        await supabaseAdmin
+          .from("promotion_redemptions")
+          .insert({
             app_id: APP_ID,
             user_id: userId,
-            plan: "free",
-            status: "inactive",
-            expires_at: null,
-            trial_ends_at: null,
-          },
-          { onConflict: "user_id,app_id" }
-        )
-        .select("plan,status,expires_at,trial_ends_at")
-        .single();
+            promo_key: "trial_7days"
+          });
 
-      if (createErr) {
-        return NextResponse.json(
-          { ok: false, error: createErr.message },
-          { status: 500 }
-        );
+        const { data: created, error: createErr } = await supabaseAdmin
+          .from("entitlements")
+          .upsert({ 
+            app_id: APP_ID, 
+            user_id: userId, 
+            plan: "trial", 
+            status: "active", 
+            expires_at: null, 
+            trial_ends_at: finalTrialEndsAt 
+          }, { onConflict: "user_id,app_id" })
+          .select("plan,status,expires_at,trial_ends_at")
+          .single();
+
+        if (createErr) return NextResponse.json({ ok: false, error: createErr.message }, { status: 500 });
+        effectiveEnt = created;
+        console.log(`[GenerateAPI] Auto-initialized trial for new user ${userId}`);
+      } else {
+        // Not eligible for trial and no entitlement: fallback to inactive free (should rarely happen)
+        const { data: created, error: createErr } = await supabaseAdmin
+          .from("entitlements")
+          .upsert(
+            {
+              app_id: APP_ID,
+              user_id: userId,
+              plan: "free",
+              status: "inactive",
+              expires_at: null,
+              trial_ends_at: null,
+            },
+            { onConflict: "user_id,app_id" }
+          )
+          .select("plan,status,expires_at,trial_ends_at")
+          .single();
+
+        if (createErr) return NextResponse.json({ ok: false, error: createErr.message }, { status: 500 });
+        effectiveEnt = created;
       }
-
-      effectiveEnt = created;
     }
 
     const canUseApp = computeCanUseApp(effectiveEnt);
