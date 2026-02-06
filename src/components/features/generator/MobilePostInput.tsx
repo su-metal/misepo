@@ -359,8 +359,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
             setIsOmakaseLoading(false);
             setMobileStep('input');
             setIsStepDrawerOpen(true);
-            // Always reset and pre-fill with a magic prompt for Omakase Mode
-            onInputTextChange("✨ AIおまかせ生成：今日のおすすめやお店の雰囲気に合わせて、魅力的な文章を考えて！");
+            onInputTextChange("");
         }, 800);
     }, [platforms.length, onPlatformToggle, onQuestionChange, onTopicPromptChange, onApplyPreset, onInputTextChange]);
 
@@ -493,7 +492,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                         </div>
                     </div>
 
-                    <div className="flex items-center justify-between px-2 mt-2 mb-0">
+                    <div className="flex items-center justify-between px-2 mt-8 mb-0">
                         <div className="flex flex-col gap-0.5 items-start">
                             <h2 className="text-[13px] font-black text-[#2b2b2f] tracking-tight">投稿先を選択</h2>
                             <p className="text-[10px] text-[#b0b0b0] font-bold uppercase tracking-[0.2em]">Select your canvas</p>
@@ -821,7 +820,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                     isVisible={
                                                         isOmakaseMode &&
                                                         activePresetId === 'plain-ai' &&
-                                                        (!inputText || inputText.startsWith("✨ AIおまかせ生成")) &&
+                                                        !inputText &&
                                                         !isGoogleMaps
                                                     }
                                                     cachedCards={cachedInspirationCards}
@@ -840,28 +839,44 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                         {isGoogleMaps ? 'Googleマップの口コミを貼り付けてください' : '今日はどんなことを伝えますか？'}
                                                     </p>
 
-                                                    {/* AI Consultation Pill - Redesigned for Input Integration */}
+                                                    {/* AI Consultation Pill - Redesigned for Input Integration with Toggle */}
                                                     <div className="flex justify-center mt-4">
                                                         <button
-                                                            onClick={!isAIDisabled ? handleOmakaseStart : undefined}
+                                                            onClick={!isAIDisabled ? (isOmakaseMode ? () => setIsOmakaseMode(false) : handleOmakaseStart) : undefined}
                                                             disabled={isAIDisabled}
                                                             className={`
                                                                 flex items-center gap-2 px-5 py-2 rounded-full border shadow-sm transition-all active:scale-95
                                                                 ${isAIDisabled
                                                                     ? 'bg-slate-50 border-slate-100 text-slate-300 opacity-60 grayscale cursor-not-allowed'
-                                                                    : 'bg-white border-violet-100 text-violet-500 hover:border-violet-200 hover:bg-violet-50'
+                                                                    : (isOmakaseMode
+                                                                        ? 'bg-[#2b2b2f] border-[#2b2b2f] text-white hover:bg-black/80'
+                                                                        : 'bg-white border-violet-100 text-violet-500 hover:border-violet-200 hover:bg-violet-50'
+                                                                    )
                                                                 }
                                                             `}
                                                         >
-                                                            <div className={`w-5 h-5 rounded-lg flex items-center justify-center ${isAIDisabled ? 'bg-slate-200' : 'bg-gradient-to-br from-violet-500 to-fuchsia-500'} shadow-sm`}>
-                                                                <SparklesIcon className="w-3 h-3 text-white" />
+                                                            <div className={`w-5 h-5 rounded-lg flex items-center justify-center ${isAIDisabled ? 'bg-slate-200' : (isOmakaseMode ? 'bg-white/20' : 'bg-gradient-to-br from-violet-500 to-fuchsia-500')} shadow-sm`}>
+                                                                {isOmakaseMode ? <CloseIcon className="w-3 h-3 text-white" /> : <SparklesIcon className="w-3 h-3 text-white" />}
                                                             </div>
-                                                            <span className="text-[11px] font-black tracking-tight">{isAIDisabled ? 'AI相談 非対応' : 'AIトピック・ソムリエに相談'}</span>
+                                                            <span className="text-[11px] font-black tracking-tight">
+                                                                {isAIDisabled ? 'AI相談 非対応' : (isOmakaseMode ? '相談を閉じる' : 'AIトピック・ソムリエに相談')}
+                                                            </span>
                                                         </button>
                                                     </div>
                                                 </div>
                                                 {question && (
-                                                    <div className="mb-6 p-6 bg-[#edeff1] border border-slate-100 rounded-[32px] animate-in slide-in-from-top-4 duration-500">
+                                                    <div className="mb-6 p-6 bg-[#edeff1] border border-slate-100 rounded-[32px] animate-in slide-in-from-top-4 duration-500 relative group">
+                                                        {/* Individual Close Button for Question */}
+                                                        <button
+                                                            onClick={() => {
+                                                                if (onQuestionChange) onQuestionChange('');
+                                                                if (onTopicPromptChange) onTopicPromptChange('');
+                                                            }}
+                                                            className="absolute top-4 right-4 w-7 h-7 rounded-full bg-white/80 border border-slate-200 flex items-center justify-center text-slate-400 hover:text-[#2b2b2f] shadow-sm transition-all opacity-100 active:scale-90"
+                                                            title="質問を閉じる"
+                                                        >
+                                                            <CloseIcon className="w-3.5 h-3.5" />
+                                                        </button>
                                                         <div className="flex gap-3 items-start">
                                                             <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#80CAFF] via-[#C084FC] to-[#F87171] flex items-center justify-center flex-shrink-0 mt-0.5">
                                                                 <SparklesIcon className="w-4 h-4 text-white" />
