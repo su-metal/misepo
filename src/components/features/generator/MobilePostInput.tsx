@@ -564,7 +564,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                     const details = getPlatformDetails(p, isActive);
                                     let bentoClass = '';
                                     if (p === Platform.Instagram) bentoClass = 'row-span-2 h-[235px]';
-                                    else if (p === Platform.GoogleMaps) bentoClass = 'col-span-2 h-[111px]';
+                                    else if (p === Platform.GoogleMaps) bentoClass = 'col-span-2 h-[126px]';
                                     else bentoClass = 'h-[111px]';
 
                                     const brandColor = p === Platform.Instagram ? '#D23877' :
@@ -579,6 +579,8 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         '--tw-ring-offset-color': '#ffffff',
                                     } : {} as React.CSSProperties;
 
+                                    const contentClass = `absolute inset-0 px-5 py-4 flex flex-col ${p === Platform.X ? 'justify-center gap-1.5' : 'justify-between'}`;
+
                                     return (
                                         <motion.div
                                             key={p}
@@ -588,7 +590,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             style={cardStyle}
                                             whileHover={{ y: -2 }}
                                         >
-                                            <div className="absolute inset-0 px-5 py-4 flex flex-col justify-between">
+                                            <div className={contentClass}>
                                                 <div className="flex justify-between items-start">
                                                     <div className="transition-all duration-500 group-hover:scale-110" style={{ color: isActive ? '#ffffff' : brandColor }}>
                                                         {details.icon}
