@@ -7,9 +7,9 @@ export default function HeroSection() {
     const [activeImage, setActiveImage] = useState(0);
 
     const images = [
-        '/misepo_hero_hand_phone_1769997838406.png',
-        '/misepo_hero_emo_strawberry_parfait_1770000553590.png',
-        '/misepo_hero_hand_phone_side_1769998079370.png'
+        '/hero_composite_v3.jpg',
+        '/hero_v4.jpg',
+        '/hero_v5.png'
     ];
 
     useEffect(() => {
