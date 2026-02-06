@@ -407,10 +407,10 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     const secondaryAudienceList = TARGET_AUDIENCES.filter(t => !primaryAudienceList.includes(t));
 
     return (
-        <div className="flex flex-col min-h-screen h-full justify-between relative overflow-hidden font-inter bg-white" style={{ backgroundColor: 'white', minHeight: '100vh' }}>
+        <div className="flex flex-col h-full min-h-0 justify-between relative overflow-hidden font-inter bg-white" style={{ backgroundColor: 'white' }}>
 
             {/* Step 1: Home (Platform Grid) */}
-            <div className={`flex flex-col min-h-screen h-full overflow-hidden relative transition-all duration-500 ${isStepDrawerOpen ? 'blur-md scale-[0.98] opacity-60' : 'opacity-100'}`}>
+            <div className={`flex flex-col h-full min-h-0 overflow-hidden relative transition-all duration-500 ${isStepDrawerOpen ? 'blur-md scale-[0.98] opacity-60' : 'opacity-100'}`}>
                 <div className="flex-1 flex flex-col p-4 pt-[max(clamp(0.75rem,2vh,1.5rem),env(safe-area-inset-top))] pb-[calc(env(safe-area-inset-bottom)+160px)] safe-area-bottom overflow-y-auto no-scrollbar">
                     {/* High-Design Header - Magazine Style Date & Minimal Avatar */}
                     <div className="flex items-start justify-between mb-2 px-1">
@@ -982,9 +982,9 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                 )}
 
                                 {mobileStep === 'confirm' && (
-                                    <div className="flex-1 relative min-h-0 animate-in fade-in slide-in-from-bottom-10 duration-700">
+                                    <div className="flex-1 relative min-h-0 flex flex-col animate-in fade-in slide-in-from-bottom-10 duration-700">
                                         {/* Scrollable Preview and Settings */}
-                                        <div className="absolute inset-0 overflow-y-auto px-8 py-4 pb-[240px] space-y-4 no-scrollbar scrollbar-hide">
+                                        <div className="flex-1 overflow-y-auto px-8 py-4 pb-[120px] space-y-4 no-scrollbar scrollbar-hide">
                                             <div className="flex flex-col gap-4">
                                                 {/* Preview Box - Brand Style */}
                                                 <div className="bg-[#edeff1] border border-slate-100 rounded-[40px] p-8 min-h-[180px] relative shadow-sm overflow-hidden group">
@@ -1238,14 +1238,45 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                                 </div>
                                                             )}
                                                         </div>
-
                                                         {/* Store Supplement removed from here - now appears after Custom Prompt */}
                                                     </div>
                                                 )}
                                             </div>
                                         </div>
+                                        {/* Step 3 Sticky Action Area - Fixed for Hitbox and Layout accuracy */}
+                                        <div className="absolute bottom-0 left-0 right-0 z-[250] flex flex-col items-center pointer-events-auto">
+                                            <div
+                                                className="w-full px-8 pt-6 pb-[max(1rem,env(safe-area-inset-bottom))] flex flex-col items-center gap-4 relative bg-white/95 backdrop-blur-xl border-t border-slate-100"
+                                                style={{
+                                                    backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.9) 45%, rgba(255,255,255,1) 100%)',
+                                                    backgroundRepeat: 'no-repeat'
+                                                }}
+                                            >
+                                                <button
+                                                    onClick={onGenerate}
+                                                    disabled={isGenerating}
+                                                    className={`
+                                                        w-full group relative overflow-hidden rounded-[32px] py-6
+                                                        flex items-center justify-center
+                                                        transition-all duration-500 active:scale-95 cursor-pointer
+                                                        ${isGenerating ? 'bg-slate-100 cursor-not-allowed' : 'bg-[#2b2b2f] shadow-[0_15px_45px_rgba(0,0,0,0.15)]'}
+                                                    `}
+                                                >
+                                                    <div className="relative flex items-center justify-center gap-3">
+                                                        {isGenerating ? (
+                                                            <div className="w-6 h-6 border-3 border-[#2b2b2f]/20 border-t-[#2b2b2f] rounded-full animate-spin" />
+                                                        ) : (
+                                                            <span className="text-white text-base font-black uppercase tracking-[0.3em] drop-shadow-sm">
+                                                                投稿案を作成する
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
                                 )}
+
                                 {mobileStep === 'result' && (
                                     <div className="flex-1 overflow-x-hidden overflow-y-auto pb-4 animate-in fade-in slide-in-from-bottom-10 duration-700 px-0">
                                         <PostResultTabs
@@ -1274,44 +1305,6 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                     </div>
                                 )}
                             </div>
-
-                            {/* Step 3 Sticky Action Area - Fixed for Hitbox and Layout accuracy */}
-                            {mobileStep === 'confirm' && (
-                                <div className="absolute bottom-0 left-0 right-0 z-[150] flex flex-col items-center">
-                                    {/* Gradient Fade Border */}
-                                    {/* Gradient fade removed */}
-
-                                    {/* Opaque Background with Content */}
-                                    <div
-                                        className="w-full px-8 pt-24 pb-[24px] flex flex-col items-center gap-4 relative"
-                                        style={{
-                                            backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 30%, rgba(255,255,255,1) 60%)',
-                                            backgroundRepeat: 'no-repeat'
-                                        }}
-                                    >
-                                        <button
-                                            onClick={onGenerate}
-                                            disabled={isGenerating}
-                                            className={`
-                                            w-full group relative overflow-hidden rounded-[32px] py-6
-                                            flex items-center justify-center
-                                            transition-all duration-500 active:scale-95 cursor-pointer
-                                            ${isGenerating ? 'bg-slate-100 cursor-not-allowed' : 'bg-[#2b2b2f] shadow-[0_15px_45px_rgba(0,0,0,0.15)]'}
-                                        `}
-                                        >
-                                            <div className="relative flex items-center justify-center gap-3">
-                                                {isGenerating ? (
-                                                    <div className="w-6 h-6 border-3 border-[#2b2b2f]/20 border-t-[#2b2b2f] rounded-full animate-spin" />
-                                                ) : (
-                                                    <span className="text-white text-base font-black uppercase tracking-[0.3em] drop-shadow-sm">
-                                                        投稿案を作成する
-                                                    </span>
-                                                )}
-                                            </div>
-                                        </button>
-                                    </div>
-                                </div>
-                            )}
                         </div>
                     </div>
                 )}
