@@ -7,8 +7,8 @@ export const BenefitSection = ({ isMobile = false }: { isMobile?: boolean }) => 
     return (
         <section className="py-24 md:py-48 relative overflow-hidden bg-gradient-to-b from-[#f0eae4] via-white to-[#eef2ff]">
             {/* Background Soft Blobs */}
-            <div className="absolute top-0 right-[-10%] w-[50%] h-[50%] bg-[#ffeff5] rounded-full blur-[120px] opacity-60" />
-            <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#eef2ff] rounded-full blur-[100px] opacity-60" />
+            <div className="absolute top-0 right-[-10%] w-[50%] h-[50%] bg-[#ffeff5] rounded-full blur-[120px] opacity-60 hidden md:block" />
+            <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#eef2ff] rounded-full blur-[100px] opacity-60 hidden md:block" />
 
             <div className="max-w-7xl mx-auto px-6 relative z-10">
                 <div className={`flex flex-col mb-24 ${isMobile ? 'items-start text-left' : 'items-center text-center'}`}>
