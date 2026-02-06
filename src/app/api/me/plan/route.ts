@@ -145,6 +145,38 @@ export async function GET() {
     if (healed) ent = healed;
   }
 
+  // --- SELF-HEALING: Populate missing trial_ends_at for existing trial users ---
+  if (ent.plan === 'trial' && !ent.trial_ends_at) {
+    console.log(`[PlanAPI] Healing missing trial_ends_at for user ${userId}`);
+    let finalTrialEndsAt = "2024-01-01T00:00:00Z"; // Default to expired
+    
+    if (isEligibleForTrial) {
+      const jstOffset = 9 * 60 * 60 * 1000;
+      const nowJST = new Date(Date.now() + jstOffset);
+      const endsAtJST = new Date(nowJST.getTime() + (7 * 24 * 60 * 60 * 1000));
+      finalTrialEndsAt = new Date(endsAtJST.getTime() - jstOffset).toISOString();
+
+      // Mark trial as redeemed
+      await supabaseAdmin
+        .from("promotion_redemptions")
+        .upsert({
+          app_id: APP_ID,
+          user_id: userId,
+          promo_key: "trial_7days"
+        }, { onConflict: "app_id,user_id,promo_key" });
+    }
+
+    const { data: updated } = await supabaseAdmin
+      .from("entitlements")
+      .update({ trial_ends_at: finalTrialEndsAt })
+      .eq("user_id", userId)
+      .eq("app_id", APP_ID)
+      .select("plan,status,expires_at,trial_ends_at,billing_reference_id,stripe_customer_id")
+      .single();
+    
+    if (updated) ent = updated;
+  }
+
   // --- SELF-HEALING: Check for Stripe ---
   if (ent.stripe_customer_id) {
     try {
