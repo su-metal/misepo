@@ -59,7 +59,7 @@ export interface PostInputFormProps {
     resetTrigger?: number;
     closeDrawerTrigger?: number; // New prop for closing drawer without reset
     openDrawerTrigger?: number; // New prop for opening drawer explicitly
-    targetStep?: 'platform' | 'input' | 'confirm' | 'result'; // New prop for specifying initial step
+    targetStep?: 'platform' | 'select_mode' | 'input' | 'confirm' | 'result'; // New prop for specifying initial step
     // Result related props
     generatedResults?: any[]; // Using any[] here to avoid circular or complex import issues if needed, but GeneratedResult is better.
     activeResultTab?: number;
@@ -82,12 +82,13 @@ export interface PostInputFormProps {
     isAutoFormatting?: { [key: string]: boolean };
     onCopy?: (text: string) => void;
     onMobileResultOpen?: (isOpen: boolean) => void;
-    onStepChange?: (step: 'platform' | 'input' | 'confirm' | 'result') => void;
+    onStepChange?: (step: 'platform' | 'select_mode' | 'input' | 'confirm' | 'result') => void;
     restoreTrigger?: number;
     onOpenOnboarding?: () => void;
     onOpenSettings?: () => void;
     targetAudiences?: string[];
     onTargetAudiencesChange?: (audiences: string[]) => void;
+    onAIStart?: (fn: () => void) => void;
 }
 
 export const AVATAR_OPTIONS = [

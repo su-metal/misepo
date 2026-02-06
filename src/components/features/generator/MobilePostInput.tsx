@@ -6,7 +6,7 @@ import { getPlatformIcon } from './utils';
 import {
     AutoSparklesIcon, MagicWandIcon, MicIcon, EraserIcon, InfoIcon,
     SparklesIcon, RotateCcwIcon, InstagramIcon, LineIcon, GoogleMapsIcon, ChevronRightIcon, CloseIcon, StarIcon,
-    LockIcon
+    LockIcon, PencilIcon
 } from '../../Icons';
 import { MobileCalendarOverlay } from './MobileCalendarOverlay';
 import { TrendEvent } from './TrendData';
@@ -47,14 +47,15 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     onOpenSettings, targetStep,
     targetAudiences, onTargetAudiencesChange,
     question, onQuestionChange,
-    topicPrompt, onTopicPromptChange
+    topicPrompt, onTopicPromptChange,
+    onAIStart
 }) => {
     const textareaRef = React.useRef<HTMLTextAreaElement>(null);
     const dateObj = new Date();
     const day = dateObj.getDate();
     const month = dateObj.toLocaleString('en-US', { month: 'short' }).toUpperCase();
     const weekday = dateObj.toLocaleString('en-US', { weekday: 'short' }).toUpperCase();
-    const [mobileStep, setMobileStep] = React.useState<'platform' | 'input' | 'confirm' | 'result'>('platform');
+    const [mobileStep, setMobileStep] = React.useState<'platform' | 'select_mode' | 'input' | 'confirm' | 'result'>('platform');
     const [isStepDrawerOpen, setIsStepDrawerOpen] = React.useState(false);
 
     const [isPromptExpanded, setIsPromptExpanded] = React.useState(true);
@@ -68,6 +69,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
         return localStorage.getItem('misepo_use_default_audience') === 'true';
     });
     const [isOmakaseMode, setIsOmakaseMode] = React.useState(false);
+    const isAIDisabled = platforms.includes(Platform.GoogleMaps);
 
 
 
@@ -140,7 +142,9 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
             setIsOmakaseMode(false);
             if (onQuestionChange) onQuestionChange('');
             if (onTopicPromptChange) onTopicPromptChange('');
-            setMobileStep(targetStep === 'confirm' ? 'confirm' : 'input');
+
+            // Default to mode selection unless specified
+            setMobileStep(targetStep === 'confirm' ? 'confirm' : 'select_mode');
             setIsStepDrawerOpen(true);
         }
     }, [openDrawerTrigger]);
@@ -337,7 +341,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
         }
     };
 
-    const handleOmakaseStart = () => {
+    const handleOmakaseStart = React.useCallback(() => {
         setIsOmakaseMode(true);
         setIsOmakaseLoading(true);
         onApplyPreset({ id: 'plain-ai' } as any); // Force AI Standard preset
@@ -358,7 +362,14 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
             // Always reset and pre-fill with a magic prompt for Omakase Mode
             onInputTextChange("✨ AIおまかせ生成：今日のおすすめやお店の雰囲気に合わせて、魅力的な文章を考えて！");
         }, 800);
-    };
+    }, [platforms.length, onPlatformToggle, onQuestionChange, onTopicPromptChange, onApplyPreset, onInputTextChange]);
+
+    // Register AI trigger for parent access (MobileFooter)
+    React.useEffect(() => {
+        if (onAIStart) {
+            onAIStart(handleOmakaseStart);
+        }
+    }, [onAIStart, handleOmakaseStart]);
 
     const handleBackStep = () => {
         if (mobileStep === 'result') {
@@ -366,6 +377,8 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
         } else if (mobileStep === 'confirm') {
             setMobileStep('input');
         } else if (mobileStep === 'input') {
+            setMobileStep('select_mode');
+        } else if (mobileStep === 'select_mode') {
             setIsStepDrawerOpen(false);
             setMobileStep('platform');
         }
@@ -606,34 +619,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             )}
                                         </motion.div>
                                     );
-                                }),
-                                <motion.div
-                                    key="ai_omakase"
-                                    className="relative rounded-[30px] col-span-2 overflow-hidden cursor-pointer border border-violet-100 bg-gradient-to-br from-violet-50/50 to-white h-[80px] transition-all duration-300 group hover:shadow-[0_12px_30px_rgba(139,92,246,0.1)] active:scale-[0.98]"
-                                    onClick={handleOmakaseStart}
-                                    whileTap={{ scale: 0.96 }}
-                                    whileHover={{ y: -2 }}
-                                >
-                                    <div className="absolute inset-0 border border-violet-200/50 rounded-[30px] pointer-events-none" />
-                                    <div className="absolute inset-0 px-5 py-3 flex items-center justify-between">
-                                        <div className="flex items-center gap-4">
-                                            <div className="p-2 bg-violet-600 rounded-xl shadow-lg shadow-violet-200 transition-transform duration-500 group-hover:rotate-12">
-                                                <SparklesIcon className="w-4 h-4 text-white" />
-                                            </div>
-                                            <div className="flex flex-col">
-                                                <div className="text-[9px] font-black text-violet-500 uppercase tracking-[0.2em] leading-none mb-1">
-                                                    AI PRESET
-                                                </div>
-                                                <div className="text-base font-black text-slate-800 leading-none tracking-tight">
-                                                    AIおまかせ生成
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="text-[10px] font-bold text-slate-400 tracking-tight pr-2">
-                                            最適な投稿をAIが提案
-                                        </div>
-                                    </div>
-                                </motion.div>
+                                })
                             ];
                         })()}
                     </div>
@@ -752,10 +738,10 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         </button>
                                         <div className="flex flex-col">
                                             <h3 className="text-[17px] font-black text-[#2b2b2f] tracking-tight leading-none mb-1">
-                                                {mobileStep === 'input' ? '投稿内容を入力' : mobileStep === 'confirm' ? '投稿内容の確認' : '生成完了'}
+                                                {mobileStep === 'select_mode' ? '投稿方法の選択' : mobileStep === 'input' ? '投稿内容を入力' : mobileStep === 'confirm' ? '投稿内容の確認' : '生成完了'}
                                             </h3>
                                             <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] leading-none">
-                                                {mobileStep === 'input' ? 'STEP 2 / 3' : mobileStep === 'confirm' ? 'STEP 3 / 3' : 'SUCCESS!'}
+                                                {mobileStep === 'select_mode' ? 'STEP 2 / 4' : mobileStep === 'input' ? 'STEP 3 / 4' : mobileStep === 'confirm' ? 'STEP 4 / 4' : 'SUCCESS!'}
                                             </span>
                                         </div>
                                         {/* Forward Step (To Results) - Matches Back Button Style */}
@@ -792,6 +778,66 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
                             {/* Drawer Content - Redesigned for Sticky Actions */}
                             <div className="flex-1 flex flex-col min-h-0 overflow-hidden relative">
+                                {mobileStep === 'select_mode' && (
+                                    <div className="flex-1 flex flex-col p-8 pt-4 animate-in fade-in zoom-in-95 duration-700">
+                                        <div className="flex flex-col gap-1 mb-8">
+                                            <h4 className="text-[20px] font-black text-[#2b2b2f] tracking-tight">作成方法を選んでください</h4>
+                                            <p className="text-[12px] font-bold text-slate-400">AIに相談するか、自分で入力するか選択できます</p>
+                                        </div>
+
+                                        <div className="flex flex-col gap-4">
+                                            {/* AI Mode Selection Card (Recommended) */}
+                                            <button
+                                                onClick={!isAIDisabled ? handleOmakaseStart : undefined}
+                                                disabled={isAIDisabled}
+                                                className={`
+                                                    relative group p-[2px] rounded-[32px] overflow-hidden shadow-xl active:scale-95 transition-all
+                                                    ${isAIDisabled ? 'bg-slate-200 grayscale cursor-not-allowed opacity-60' : 'bg-gradient-to-br from-violet-500 via-fuchsia-500 to-sunset'}
+                                                `}
+                                            >
+                                                <div className="relative bg-white rounded-[30px] p-6 flex items-center gap-5">
+                                                    <div className={`w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg ${isAIDisabled ? 'bg-slate-300' : 'bg-gradient-to-br from-[#A37B51] via-[#C5A079] to-[#D4AF37]'}`}>
+                                                        <SparklesIcon className="w-9 h-9 text-white" />
+                                                    </div>
+                                                    <div className="flex-1 text-left">
+                                                        <div className="flex items-center gap-2 mb-1">
+                                                            <span className="text-[18px] font-black text-[#2b2b2f]">AIソムリエに相談</span>
+                                                            {!isAIDisabled ? (
+                                                                <div className="px-2 py-0.5 rounded-full bg-violet-100 border border-violet-200">
+                                                                    <span className="text-[8px] font-black text-violet-600 uppercase tracking-widest">推奨</span>
+                                                                </div>
+                                                            ) : (
+                                                                <div className="px-2 py-0.5 rounded-full bg-slate-100 border border-slate-200">
+                                                                    <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">非対応</span>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                        <p className="text-[11px] font-bold text-slate-400 leading-tight">
+                                                            {isAIDisabled ? 'Google Mapsは現在AIおまかせ生成に対応していません' : '独自の美学を持つAIが最適な構成を提案します'}
+                                                        </p>
+                                                    </div>
+                                                    <ChevronRightIcon className="w-5 h-5 text-slate-300" />
+                                                </div>
+                                            </button>
+
+                                            {/* Manual Mode Selection Card */}
+                                            <button
+                                                onClick={() => setMobileStep('input')}
+                                                className="relative bg-[#edeff1] p-6 rounded-[32px] flex items-center gap-5 border border-slate-100 active:scale-95 transition-all"
+                                            >
+                                                <div className="w-16 h-16 rounded-2xl bg-white flex items-center justify-center shadow-sm border border-slate-200">
+                                                    <PencilIcon className="w-8 h-8 text-slate-400" />
+                                                </div>
+                                                <div className="flex-1 text-left">
+                                                    <span className="text-[18px] font-black text-[#2b2b2f] block mb-1">自分で内容を入力</span>
+                                                    <p className="text-[11px] font-bold text-slate-400 leading-tight">書きたい内容が決まっている場合はこちら</p>
+                                                </div>
+                                                <ChevronRightIcon className="w-5 h-5 text-slate-300" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+
                                 {mobileStep === 'input' && (
                                     <div className="flex-1 flex flex-col min-h-0 animate-in fade-in zoom-in-95 duration-700">
 
