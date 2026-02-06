@@ -1001,6 +1001,16 @@ const PresetModal: React.FC<PresetModalProps> = ({
           }}
         />
 
+        <div className="flex justify-center pt-2">
+          <button
+            onClick={() => handleResetStyleForMode(mode)}
+            disabled={isResetting}
+            className="flex items-center gap-2 px-6 py-3 text-slate-300 hover:text-rose-400 hover:bg-rose-50/50 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] transition-all active:scale-95 disabled:opacity-30"
+          >
+            <RotateCcwIcon className={`w-3.5 h-3.5 ${isResetting ? 'animate-spin' : ''}`} />
+            <span>解析結果をリセット</span>
+          </button>
+        </div>
       </div>
     );
 
@@ -1075,17 +1085,6 @@ const PresetModal: React.FC<PresetModalProps> = ({
           <p className="text-[11px] text-slate-400 font-bold px-4 leading-relaxed">
             ※AIが媒体ごとに抽出した指示内容を直接編集できます。こだわりがある場合はここを書き換えて保存してください。
           </p>
-
-          <div className="flex justify-center pt-2">
-            <button
-              onClick={() => handleResetStyleForMode(mode)}
-              disabled={isResetting}
-              className="flex items-center gap-2 px-6 py-3 text-slate-300 hover:text-rose-400 hover:bg-rose-50/50 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] transition-all active:scale-95 disabled:opacity-30"
-            >
-              <RotateCcwIcon className={`w-3.5 h-3.5 ${isResetting ? 'animate-spin' : ''}`} />
-              <span>解析結果をリセット</span>
-            </button>
-          </div>
         </div>
       );
     };
