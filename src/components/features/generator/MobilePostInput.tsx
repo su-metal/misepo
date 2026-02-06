@@ -458,8 +458,8 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
                             {/* High-Contrast Credit Design with Gauge */}
                             {plan && typeof plan.usage !== 'undefined' && typeof plan.limit !== 'undefined' && (
-                                <div className="flex flex-col items-end gap-1 scale-90 origin-right">
-                                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#edeff1] text-[#2b2b2f] border border-slate-100 shadow-sm overflow-hidden relative">
+                                <div className="flex flex-col items-end gap-1">
+                                    <div className="w-full max-w-[190px] flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#edeff1] text-[#2b2b2f] border border-slate-100 shadow-sm overflow-hidden relative">
                                         <span className="text-[8px] font-black text-[#2b2b2f]/40 uppercase tracking-widest mr-1">CREDITS</span>
                                         <span className="text-sm font-black text-[#2b2b2f] leading-none">
                                             {Math.max(0, plan.limit - plan.usage)}
@@ -469,13 +469,13 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         {/* Subtle Gauge Background */}
                                         <div className="absolute bottom-0 left-0 h-[2px] bg-slate-100 w-full" />
                                         {/* Active Gauge Fill */}
-                                        <div
+                                        {/* <div
                                             className="absolute bottom-0 left-0 h-[2px] bg-[#4338CA] transition-all duration-1000"
                                             style={{ width: `${(Math.max(0, plan.limit - plan.usage) / plan.limit) * 100}%` }}
-                                        />
+                                        /> */}
                                     </div>
-                                    <div className="flex gap-1 pr-1 items-center justify-between w-full">
-                                        <div className="flex gap-1">
+                                    <div className="w-full max-w-[190px] flex items-center">
+                                        <div className="w-full flex justify-between gap-1">
                                             {Array.from({ length: 5 }).map((_, i) => (
                                                 <div
                                                     key={i}
