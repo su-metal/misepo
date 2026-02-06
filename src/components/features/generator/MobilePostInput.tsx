@@ -6,7 +6,7 @@ import { getPlatformIcon } from './utils';
 import {
     AutoSparklesIcon, MagicWandIcon, MicIcon, EraserIcon, InfoIcon,
     SparklesIcon, RotateCcwIcon, InstagramIcon, LineIcon, GoogleMapsIcon, ChevronRightIcon, CloseIcon, StarIcon,
-    LockIcon
+    LockIcon, PencilIcon
 } from '../../Icons';
 import { MobileCalendarOverlay } from './MobileCalendarOverlay';
 import { TrendEvent } from './TrendData';
@@ -47,7 +47,8 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     onOpenSettings, targetStep,
     targetAudiences, onTargetAudiencesChange,
     question, onQuestionChange,
-    topicPrompt, onTopicPromptChange
+    topicPrompt, onTopicPromptChange,
+    onAIStart
 }) => {
     const textareaRef = React.useRef<HTMLTextAreaElement>(null);
     const dateObj = new Date();
@@ -68,6 +69,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
         return localStorage.getItem('misepo_use_default_audience') === 'true';
     });
     const [isOmakaseMode, setIsOmakaseMode] = React.useState(false);
+    const isAIDisabled = platforms.includes(Platform.GoogleMaps);
 
 
 
@@ -140,6 +142,8 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
             setIsOmakaseMode(false);
             if (onQuestionChange) onQuestionChange('');
             if (onTopicPromptChange) onTopicPromptChange('');
+
+            // Default to mode selection unless specified
             setMobileStep(targetStep === 'confirm' ? 'confirm' : 'input');
             setIsStepDrawerOpen(true);
         }
@@ -337,7 +341,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
         }
     };
 
-    const handleOmakaseStart = () => {
+    const handleOmakaseStart = React.useCallback(() => {
         setIsOmakaseMode(true);
         setIsOmakaseLoading(true);
         onApplyPreset({ id: 'plain-ai' } as any); // Force AI Standard preset
@@ -355,10 +359,16 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
             setIsOmakaseLoading(false);
             setMobileStep('input');
             setIsStepDrawerOpen(true);
-            // Always reset and pre-fill with a magic prompt for Omakase Mode
-            onInputTextChange("✨ AIおまかせ生成：今日のおすすめやお店の雰囲気に合わせて、魅力的な文章を考えて！");
+            onInputTextChange("");
         }, 800);
-    };
+    }, [platforms.length, onPlatformToggle, onQuestionChange, onTopicPromptChange, onApplyPreset, onInputTextChange]);
+
+    // Register AI trigger for parent access (MobileFooter)
+    React.useEffect(() => {
+        if (onAIStart) {
+            onAIStart(handleOmakaseStart);
+        }
+    }, [onAIStart, handleOmakaseStart]);
 
     const handleBackStep = () => {
         if (mobileStep === 'result') {
@@ -482,7 +492,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                         </div>
                     </div>
 
-                    <div className="flex items-center justify-between px-2 mt-2 mb-0">
+                    <div className="flex items-center justify-between px-2 mt-8 mb-0">
                         <div className="flex flex-col gap-0.5 items-start">
                             <h2 className="text-[13px] font-black text-[#2b2b2f] tracking-tight">投稿先を選択</h2>
                             <p className="text-[10px] text-[#b0b0b0] font-bold uppercase tracking-[0.2em]">Select your canvas</p>
@@ -554,7 +564,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                     const details = getPlatformDetails(p, isActive);
                                     let bentoClass = '';
                                     if (p === Platform.Instagram) bentoClass = 'row-span-2 h-[235px]';
-                                    else if (p === Platform.GoogleMaps) bentoClass = 'col-span-2 h-[111px]';
+                                    else if (p === Platform.GoogleMaps) bentoClass = 'col-span-2 h-[126px]';
                                     else bentoClass = 'h-[111px]';
 
                                     const brandColor = p === Platform.Instagram ? '#D23877' :
@@ -569,6 +579,8 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         '--tw-ring-offset-color': '#ffffff',
                                     } : {} as React.CSSProperties;
 
+                                    const contentClass = `absolute inset-0 px-5 py-4 flex flex-col ${p === Platform.X ? 'justify-center gap-1.5' : 'justify-between'}`;
+
                                     return (
                                         <motion.div
                                             key={p}
@@ -578,7 +590,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             style={cardStyle}
                                             whileHover={{ y: -2 }}
                                         >
-                                            <div className="absolute inset-0 px-5 py-4 flex flex-col justify-between">
+                                            <div className={contentClass}>
                                                 <div className="flex justify-between items-start">
                                                     <div className="transition-all duration-500 group-hover:scale-110" style={{ color: isActive ? '#ffffff' : brandColor }}>
                                                         {details.icon}
@@ -606,34 +618,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                             )}
                                         </motion.div>
                                     );
-                                }),
-                                <motion.div
-                                    key="ai_omakase"
-                                    className="relative rounded-[30px] col-span-2 overflow-hidden cursor-pointer border border-violet-100 bg-gradient-to-br from-violet-50/50 to-white h-[80px] transition-all duration-300 group hover:shadow-[0_12px_30px_rgba(139,92,246,0.1)] active:scale-[0.98]"
-                                    onClick={handleOmakaseStart}
-                                    whileTap={{ scale: 0.96 }}
-                                    whileHover={{ y: -2 }}
-                                >
-                                    <div className="absolute inset-0 border border-violet-200/50 rounded-[30px] pointer-events-none" />
-                                    <div className="absolute inset-0 px-5 py-3 flex items-center justify-between">
-                                        <div className="flex items-center gap-4">
-                                            <div className="p-2 bg-violet-600 rounded-xl shadow-lg shadow-violet-200 transition-transform duration-500 group-hover:rotate-12">
-                                                <SparklesIcon className="w-4 h-4 text-white" />
-                                            </div>
-                                            <div className="flex flex-col">
-                                                <div className="text-[9px] font-black text-violet-500 uppercase tracking-[0.2em] leading-none mb-1">
-                                                    AI PRESET
-                                                </div>
-                                                <div className="text-base font-black text-slate-800 leading-none tracking-tight">
-                                                    AIおまかせ生成
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="text-[10px] font-bold text-slate-400 tracking-tight pr-2">
-                                            最適な投稿をAIが提案
-                                        </div>
-                                    </div>
-                                </motion.div>
+                                })
                             ];
                         })()}
                     </div>
@@ -755,7 +740,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                 {mobileStep === 'input' ? '投稿内容を入力' : mobileStep === 'confirm' ? '投稿内容の確認' : '生成完了'}
                                             </h3>
                                             <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] leading-none">
-                                                {mobileStep === 'input' ? 'STEP 2 / 3' : mobileStep === 'confirm' ? 'STEP 3 / 3' : 'SUCCESS!'}
+                                                {mobileStep === 'input' ? 'STEP 1 / 3' : mobileStep === 'confirm' ? 'STEP 2 / 3' : 'SUCCESS!'}
                                             </span>
                                         </div>
                                         {/* Forward Step (To Results) - Matches Back Button Style */}
@@ -837,7 +822,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                     isVisible={
                                                         isOmakaseMode &&
                                                         activePresetId === 'plain-ai' &&
-                                                        (!inputText || inputText.startsWith("✨ AIおまかせ生成")) &&
+                                                        !inputText &&
                                                         !isGoogleMaps
                                                     }
                                                     cachedCards={cachedInspirationCards}
@@ -850,14 +835,50 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                                     }}
                                                 />
 
-                                                <div className="text-center space-y-2 mb-6">
+                                                <div className="text-center space-y-2 mb-6 relative">
                                                     <h4 className="text-xl font-bold text-[#2b2b2f]">{isGoogleMaps ? 'Review Reply' : 'New Post'}</h4>
                                                     <p className="text-sm text-slate-400">
                                                         {isGoogleMaps ? 'Googleマップの口コミを貼り付けてください' : '今日はどんなことを伝えますか？'}
                                                     </p>
+
+                                                    {/* AI Consultation Pill - Redesigned for Input Integration with Toggle */}
+                                                    <div className="flex justify-center mt-4">
+                                                        <button
+                                                            onClick={!isAIDisabled ? (isOmakaseMode ? () => setIsOmakaseMode(false) : handleOmakaseStart) : undefined}
+                                                            disabled={isAIDisabled}
+                                                            className={`
+                                                                flex items-center gap-2 px-5 py-2 rounded-full border shadow-sm transition-all active:scale-95
+                                                                ${isAIDisabled
+                                                                    ? 'bg-slate-50 border-slate-100 text-slate-300 opacity-60 grayscale cursor-not-allowed'
+                                                                    : (isOmakaseMode
+                                                                        ? 'bg-[#2b2b2f] border-[#2b2b2f] text-white hover:bg-black/80'
+                                                                        : 'bg-white border-violet-100 text-violet-500 hover:border-violet-200 hover:bg-violet-50'
+                                                                    )
+                                                                }
+                                                            `}
+                                                        >
+                                                            <div className={`w-5 h-5 rounded-lg flex items-center justify-center ${isAIDisabled ? 'bg-slate-200' : (isOmakaseMode ? 'bg-white/20' : 'bg-gradient-to-br from-violet-500 to-fuchsia-500')} shadow-sm`}>
+                                                                {isOmakaseMode ? <CloseIcon className="w-3 h-3 text-white" /> : <SparklesIcon className="w-3 h-3 text-white" />}
+                                                            </div>
+                                                            <span className="text-[11px] font-black tracking-tight">
+                                                                {isAIDisabled ? 'AI相談 非対応' : (isOmakaseMode ? '相談を閉じる' : 'AIトピック・ソムリエに相談')}
+                                                            </span>
+                                                        </button>
+                                                    </div>
                                                 </div>
                                                 {question && (
-                                                    <div className="mb-6 p-6 bg-[#edeff1] border border-slate-100 rounded-[32px] animate-in slide-in-from-top-4 duration-500">
+                                                    <div className="mb-6 p-6 bg-[#edeff1] border border-slate-100 rounded-[32px] animate-in slide-in-from-top-4 duration-500 relative group">
+                                                        {/* Individual Close Button for Question */}
+                                                        <button
+                                                            onClick={() => {
+                                                                if (onQuestionChange) onQuestionChange('');
+                                                                if (onTopicPromptChange) onTopicPromptChange('');
+                                                            }}
+                                                            className="absolute top-4 right-4 w-7 h-7 rounded-full bg-white/80 border border-slate-200 flex items-center justify-center text-slate-400 hover:text-[#2b2b2f] shadow-sm transition-all opacity-100 active:scale-90"
+                                                            title="質問を閉じる"
+                                                        >
+                                                            <CloseIcon className="w-3.5 h-3.5" />
+                                                        </button>
                                                         <div className="flex gap-3 items-start">
                                                             <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#80CAFF] via-[#C084FC] to-[#F87171] flex items-center justify-center flex-shrink-0 mt-0.5">
                                                                 <SparklesIcon className="w-4 h-4 text-white" />

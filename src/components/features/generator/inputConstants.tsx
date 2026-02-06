@@ -88,6 +88,7 @@ export interface PostInputFormProps {
     onOpenSettings?: () => void;
     targetAudiences?: string[];
     onTargetAudiencesChange?: (audiences: string[]) => void;
+    onAIStart?: (fn: () => void) => void;
 }
 
 export const AVATAR_OPTIONS = [
