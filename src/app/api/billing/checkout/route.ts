@@ -152,19 +152,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: false, error: "already_active" }, { status: 400 });
     }
 
-    // ---- check for auto-applied coupon
-    const STARTER_COUPON =
-      process.env.STRIPE_COUPON_STARTER_MONTHLY ??
-      process.env.STRIPE_COUPON_FIRST_MONTH_1000OFF ??
-      null;
-
-    let discounts: Stripe.Checkout.SessionCreateParams.Discount[] | undefined = 
-      STARTER_COUPON ? [{ coupon: STARTER_COUPON }] : undefined;
-
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
       line_items: [{ price: priceId, quantity: 1 }],
-      discounts,
+      allow_promotion_codes: true, // ユーザーが自分でクーポンコードを入力できるように変更
       customer: customerId,
       success_url: successUrl,
       cancel_url: cancelUrl,
