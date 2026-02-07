@@ -62,16 +62,19 @@ export const StoreProfileSidebar: React.FC<StoreProfileSidebarProps> = ({ storeP
                             <div className="flex flex-col gap-0.5">
                                 <div className="flex items-center gap-1.5 mb-1 text-[#2b2b2f]/40">
                                     <CrownIcon className="w-3 h-3" />
-                                    <span className="text-[9px] font-black uppercase tracking-wider">Current Plan</span>
+                                    <span className="text-[10px] font-black tracking-wider">現在のプラン</span>
                                 </div>
                                 <div className="text-sm font-black text-[#2b2b2f]">
-                                    {plan.canUseApp === false ? 'Trial Expired' : (
-                                        plan.plan === 'entry' ? 'Entry' :
-                                            plan.plan === 'standard' ? 'Standard' :
-                                                plan.plan === 'professional' ? 'Professional' :
-                                                    plan.plan === 'pro' || plan.plan === 'monthly' || plan.plan === 'yearly' ? 'Pro' :
-                                                        plan.plan === 'premium' ? 'Premium' :
-                                                            plan.plan || 'Free'
+                                    {plan.canUseApp === false ? (
+                                        plan.plan === 'trial' ? 'お試し (期限切れ)' : '期限切れ'
+                                    ) : (
+                                        plan.plan === 'trial' ? 'お試し期間' :
+                                            plan.plan === 'entry' ? 'Entry' :
+                                                plan.plan === 'standard' ? 'Standard' :
+                                                    plan.plan === 'professional' ? 'Professional' :
+                                                        plan.plan === 'pro' || plan.plan === 'monthly' || plan.plan === 'yearly' ? 'Pro' :
+                                                            plan.plan === 'premium' ? 'Premium' :
+                                                                plan.plan ? (plan.plan.charAt(0).toUpperCase() + plan.plan.slice(1)) : 'Free'
                                     )}
                                 </div>
                             </div>
@@ -80,7 +83,7 @@ export const StoreProfileSidebar: React.FC<StoreProfileSidebarProps> = ({ storeP
                                     href="/upgrade"
                                     className={`px-3 py-1.5 rounded-xl text-white hover:opacity-90 transition-all text-[9px] font-black uppercase tracking-widest shadow-md active:scale-95 ${plan.canUseApp === false ? 'bg-[#E88BA3]' : 'bg-[#2b2b2f]'}`}
                                 >
-                                    Upgrade
+                                    プランを変更
                                 </a>
                             )}
                         </div>
@@ -91,7 +94,7 @@ export const StoreProfileSidebar: React.FC<StoreProfileSidebarProps> = ({ storeP
                                 <div className="flex justify-between items-end">
                                     <div className="flex items-center gap-1.5 text-[#2b2b2f]/40">
                                         <ActivityIcon className="w-3 h-3" />
-                                        <span className="text-[9px] font-black uppercase tracking-widest">Usage</span>
+                                        <span className="text-[10px] font-black tracking-widest">今月の残り</span>
                                     </div>
                                     <div className="text-xs font-black flex items-baseline gap-1 text-[#2b2b2f]">
                                         <span> {Math.max(0, plan.limit - plan.usage)}</span>
@@ -114,7 +117,7 @@ export const StoreProfileSidebar: React.FC<StoreProfileSidebarProps> = ({ storeP
             <div className="flex-1 bg-white border border-slate-100 shadow-sm rounded-[32px] p-6 flex flex-col gap-4 relative overflow-hidden group">
                 <div className="flex items-center gap-2 mb-2">
                     <DatabaseIcon className="w-4 h-4 text-[#2b2b2f]/40" />
-                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#2b2b2f]/40">Context Data</span>
+                    <span className="text-[10px] font-black tracking-[0.1em] text-[#2b2b2f]/40">分析のベース情報</span>
                 </div>
 
                 <div className="space-y-4 relative z-10 flex-1 flex flex-col min-h-0">

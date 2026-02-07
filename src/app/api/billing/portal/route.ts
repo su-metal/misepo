@@ -6,12 +6,14 @@ import { env } from "@/lib/env";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 const APP_ID = env.APP_ID;
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL
-  ? process.env.NEXT_PUBLIC_APP_URL.replace(/\/$/, "")
-  : null;
-
 const getSafeReturnUrl = async (request: Request) => {
-  if (!BASE_URL) throw new Error("missing NEXT_PUBLIC_APP_URL");
+  // Determine baseUrl dynamically from request headers/URL, fallback to env
+  const host = request.headers.get("host");
+  const protocol = request.headers.get("x-forwarded-proto") || "https";
+  const origin = request.headers.get("origin");
+  const baseUrl = (origin || (host ? `${protocol}://${host}` : process.env.NEXT_PUBLIC_APP_URL))?.replace(/\/$/, "");
+
+  if (!baseUrl) throw new Error("missing base URL");
 
   let candidate: string | null = null;
   try {
@@ -23,23 +25,23 @@ const getSafeReturnUrl = async (request: Request) => {
     // Ignore invalid JSON and fall back to BASE_URL.
   }
 
-  if (!candidate) return `${BASE_URL}/generate?pwa=true`;
+  if (!candidate) return `${baseUrl}/generate?pwa=true`;
 
   if (candidate.startsWith("/")) {
-    return `${BASE_URL}${candidate}`;
+    return `${baseUrl}${candidate}`;
   }
 
   try {
     const candidateUrl = new URL(candidate);
-    const baseUrl = new URL(BASE_URL);
-    if (candidateUrl.origin === baseUrl.origin) {
+    const baseUrlObj = new URL(baseUrl);
+    if (candidateUrl.origin === baseUrlObj.origin) {
       return candidateUrl.toString();
     }
   } catch {
-    // Ignore invalid URLs and fall back to BASE_URL.
+    // Ignore invalid URLs and fall back to baseUrl.
   }
 
-  return `${BASE_URL}/generate?pwa=true`;
+  return `${baseUrl}/generate?pwa=true`;
 };
 
 export async function POST(request: Request) {

@@ -1,5 +1,5 @@
 const tables = ['ai_run_records', 'feedbacks', 'app_user_profiles', 'device_sessions'];
-const KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind6aW5pbXhpa2NpaGRxcWR2cHBhIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NzEwMTAxNiwiZXhwIjoyMDgyNjc3MDE2fQ.f3meiHxBIps8_md9p1NuKZr7N8WgheT-i3bLp47XBqI";
+const KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 async function run() {
   for (const table of tables) {
