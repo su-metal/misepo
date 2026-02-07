@@ -13,6 +13,7 @@ export const revalidate = 0;
 
 import { getJSTDateRange } from "@/lib/dateUtils";
 import { getPlanFromPriceId } from "@/lib/billing/plans";
+import { getUserUsage } from "@/lib/billing/usage";
 
 export async function GET() {
   const cookieStore = await cookies();
@@ -303,25 +304,15 @@ export async function GET() {
       }
     }
 
-    const { data: usageData } = await supabaseAdmin
-      .from("ai_runs")
-      .select("run_type")
-      .eq("user_id", userId)
-      .eq("app_id", APP_ID)
-      .in("run_type", ["generation", "multi-gen", "refine"])
-      .gte("created_at", usageStartTime);
-    if (usageData) usage = usageData.reduce((acc, curr) => acc + (curr.run_type === 'multi-gen' ? 2 : 1), 0);
+    usage = await getUserUsage(userId, APP_ID, 'monthly', usageStartTime);
   } else {
     limit = 5;
     usage_period = 'daily';
-    const { data: usageData } = await supabaseAdmin
-      .from("ai_runs")
-      .select("run_type")
-      .eq("user_id", userId)
-      .eq("app_id", APP_ID)
-      .in("run_type", ["generation", "multi-gen", "refine"])
-      .gte("created_at", startOfToday);
-    if (usageData) usage = usageData.reduce((acc, curr) => acc + (curr.run_type === 'multi-gen' ? 2 : 1), 0);
+    let trialStartTime = null;
+    if (ent.trial_ends_at) {
+      trialStartTime = new Date(new Date(ent.trial_ends_at).getTime() - (7 * 24 * 60 * 60 * 1000)).toISOString();
+    }
+    usage = await getUserUsage(userId, APP_ID, 'daily', trialStartTime);
   }
 
   return NextResponse.json({

@@ -6,6 +6,8 @@ import { createClient } from "@/lib/supabase/server";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { env } from "@/lib/env";
 import { computeCanUseApp } from "@/lib/entitlements/canUseApp";
+import { getJSTDateRange } from "@/lib/dateUtils";
+import { getUserUsage } from "@/lib/billing/usage";
 
 const APP_ID = env.APP_ID;
 
@@ -22,7 +24,7 @@ export async function POST(req: Request) {
 
   const { data: ent, error: entErr } = await supabaseAdmin
     .from("entitlements")
-    .select("plan,status,expires_at,trial_ends_at")
+    .select("plan,status,expires_at,trial_ends_at,billing_reference_id")
     .eq("app_id", APP_ID)
     .eq("user_id", user.id)
     .maybeSingle();
@@ -46,7 +48,7 @@ export async function POST(req: Request) {
         },
         { onConflict: "user_id,app_id" }
       )
-      .select("plan,status,expires_at,trial_ends_at")
+      .select("plan,status,expires_at,trial_ends_at,billing_reference_id")
       .single();
 
     if (createErr) {
@@ -56,7 +58,7 @@ export async function POST(req: Request) {
       );
     }
 
-    effectiveEnt = created;
+    effectiveEnt = created as any;
   }
 
   const canUseApp = computeCanUseApp(effectiveEnt);
@@ -116,40 +118,52 @@ export async function POST(req: Request) {
   console.debug("Refining content for user", user.id);
 
   // --- Usage Limit Check ---
-  const { startOfToday, startOfMonth } = require("@/lib/dateUtils").getJSTDateRange();
-  const { data: recentRuns } = await supabaseAdmin
-    .from("ai_runs")
-    .select("run_type, created_at")
-    .eq("user_id", user.id)
-    .eq("app_id", APP_ID)
-    .in("run_type", ["generation", "multi-gen", "refine"])
-    .gte("created_at", startOfMonth);
+  const { startOfMonth } = getJSTDateRange();
+  
+  // Plan-based limits
+  const planName = effectiveEnt?.plan;
+  const status = effectiveEnt?.status;
+  const isPro = !!(planName === 'entry' || planName === 'standard' || planName === 'professional' || planName === 'monthly' || planName === 'yearly' || planName === 'pro');
 
-  if (recentRuns) {
-      const cost = 1;
-      const totalMonthCredits = recentRuns.reduce((sum: number, run: any) => sum + (run.run_type === 'multi-gen' ? 2 : 1), 0);
-      const totalTodayCredits = recentRuns
-          .filter((run: any) => run.created_at >= startOfToday)
-          .reduce((sum: number, run: any) => sum + (run.run_type === 'multi-gen' ? 2 : 1), 0);
-          
-      const planName = effectiveEnt?.plan;
-      const status = effectiveEnt?.status;
-      
-      let monthlyLimit = 0;
-      if (planName === 'entry') monthlyLimit = 50;
-      else if (planName === 'standard') monthlyLimit = 150;
-      else if (planName === 'professional') monthlyLimit = 300;
-      else if (planName === 'monthly' || planName === 'yearly') monthlyLimit = 300;
-      
-      const isTrial = (planName === 'trial' || status === 'trialing') && !monthlyLimit;
-      
-      if (isTrial && totalTodayCredits + cost > 5) {
-          return NextResponse.json({ ok: false, error: "daily_limit_reached" }, { status: 403 });
-      }
-      if (monthlyLimit > 0 && (status === 'active' || status === 'trialing')) {
-          if (totalMonthCredits + cost > monthlyLimit) {
-              return NextResponse.json({ ok: false, error: "monthly_limit_reached" }, { status: 403 });
+  let usage = 0;
+  let limit = 0;
+  const cost = 1;
+
+  if (isPro && (status === 'active' || status === 'trialing' || status === 'past_due')) {
+      if (planName === 'entry') limit = 50;
+      else if (planName === 'standard') limit = 150;
+      else if (planName === 'professional' || planName === 'monthly' || planName === 'yearly' || planName === 'pro') limit = 300;
+
+      let usageStartTime = startOfMonth;
+      if (effectiveEnt.billing_reference_id && effectiveEnt.billing_reference_id.startsWith('sub_')) {
+          try {
+              const Stripe = require("stripe");
+              const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+              const sub: any = await stripe.subscriptions.retrieve(effectiveEnt.billing_reference_id);
+              const effectiveStart = sub.current_period_start ?? sub.billing_cycle_anchor ?? sub.start_date;
+              if (effectiveStart) {
+                  usageStartTime = new Date(effectiveStart * 1000).toISOString();
+              }
+          } catch (e) {
+              console.error("[RefineAPI] Stripe subscription retrieval failed:", e);
           }
+      }
+      usage = await getUserUsage(user.id, APP_ID, 'monthly', usageStartTime);
+
+      if (usage + cost > limit) {
+          return NextResponse.json({ ok: false, error: "monthly_limit_reached" }, { status: 403 });
+      }
+  } else {
+      limit = 5;
+      let trialStartTime = null;
+      if (effectiveEnt?.trial_ends_at) {
+          // トライアル開始時刻（終了の7日前）を起点にする
+          trialStartTime = new Date(new Date(effectiveEnt.trial_ends_at).getTime() - (7 * 24 * 60 * 60 * 1000)).toISOString();
+      }
+      usage = await getUserUsage(user.id, APP_ID, 'daily', trialStartTime);
+      
+      if (usage + cost > limit) {
+          return NextResponse.json({ ok: false, error: "daily_limit_reached" }, { status: 403 });
       }
   }
 
