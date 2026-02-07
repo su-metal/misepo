@@ -439,7 +439,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     const secondaryAudienceList = TARGET_AUDIENCES.filter(t => !primaryAudienceList.includes(t));
 
     return (
-        <div className="flex flex-col h-full min-h-0 justify-between relative overflow-hidden font-inter bg-white" style={{ backgroundColor: 'white' }}>
+        <div className="flex flex-col h-full min-h-0 justify-between relative overflow-hidden font-inter bg-gradient-to-br from-white to-[#f5f2ff]">
 
             {/* Step 1: Home (Platform Grid) */}
             <div className={`flex flex-col h-full min-h-0 overflow-hidden relative transition-all duration-500 ${isStepDrawerOpen ? 'blur-md scale-[0.98] opacity-60' : 'opacity-100'}`}>
@@ -797,7 +797,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                         }} />
 
                         {/* Sliding Panel (Light Theme) */}
-                        <div className={`absolute bottom-0 left-0 right-0 bg-white border-t border-slate-100 rounded-t-[54px] shadow-[0_-20px_60px_rgba(0,0,0,0.08)] animate-nyoki flex flex-col ${mobileStep === 'platform' ? 'h-[88%]' : 'h-[96%]'} ${mobileStep === 'result' ? 'pb-8 safe-area-bottom' : 'pb-0'} z-[200]`}>
+                        <div className={`absolute bottom-0 left-0 right-0 bg-gradient-to-b from-white to-[#f8f6ff] border-t border-slate-100 rounded-t-[54px] shadow-[0_-20px_60px_rgba(0,0,0,0.08)] animate-nyoki flex flex-col ${mobileStep === 'platform' ? 'h-[88%]' : 'h-[96%]'} ${mobileStep === 'result' ? 'pb-8 safe-area-bottom' : 'pb-0'} z-[200]`}>
                             {/* Drag Handle */}
                             <div className="w-full flex justify-center py-6">
                                 <div className="w-16 h-1.5 bg-[#2b2b2f]/10 rounded-full" />
@@ -857,7 +857,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
                                         {/* 1. Top Fixed Header Section */}
                                         {!isGoogleMaps && (
-                                            <div className="flex-shrink-0 flex justify-center py-4 bg-white z-10 border-b border-slate-50">
+                                            <div className="flex-shrink-0 flex justify-center py-4 bg-transparent z-10">
                                                 <button
                                                     onClick={toggleVoiceInput}
                                                     className={`relative w-28 h-28 rounded-full flex-shrink-0 flex items-center justify-center transition-all duration-700 ${isListening ? 'scale-110' : 'hover:scale-105'}`}
