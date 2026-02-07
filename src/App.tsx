@@ -38,6 +38,7 @@ function App() {
   const [restoreTrigger, setRestoreTrigger] = useState(0);
   const [showAccountSettings, setShowAccountSettings] = useState(false);
   const [initDone, setInitDone] = useState(false);
+  const alertShownRef = React.useRef(false);
 
   // Training Replacement State
   const [replacementModal, setReplacementModal] = useState<{
@@ -200,7 +201,9 @@ function App() {
   // --- Success Message Handling ---
   const searchParams = useSearchParams();
   useEffect(() => {
-    if (searchParams.get('success') === '1') {
+    const isSuccess = searchParams.get('success') === '1';
+    if (isSuccess && !alertShownRef.current) {
+      alertShownRef.current = true;
       // Small timeout to ensure the UI is ready
       setTimeout(() => {
         alert('決済が完了しました！全ての機能がご利用いただけます。');
@@ -210,6 +213,9 @@ function App() {
         // Refresh plan to reflect new status
         refreshPlan();
       }, 500);
+    } else if (!isSuccess) {
+      // Reset ref when we are on a different page/state
+      alertShownRef.current = false;
     }
   }, [searchParams, refreshPlan]);
 

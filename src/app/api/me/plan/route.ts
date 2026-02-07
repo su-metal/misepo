@@ -38,7 +38,7 @@ export async function GET() {
 
   const userId = userData.user.id;
 
-  // 1. Ensure Profile exists (Foreign Key safety)
+  // 1. Ensure Profile & App exist (Foreign Key safety)
   const { data: profile } = await supabaseAdmin
     .from("profiles")
     .select("user_id")
@@ -50,6 +50,24 @@ export async function GET() {
       .from("profiles")
       .upsert({ user_id: userId }, { onConflict: "user_id", ignoreDuplicates: true });
   }
+
+  // Auto-register APP_ID if missing
+    const { data: appData } = await supabaseAdmin
+      .from("apps")
+      .select("app_id")
+      .eq("app_id", APP_ID)
+      .maybeSingle();
+
+    if (!appData) {
+      const APP_NAME = process.env.APP_NAME || (APP_ID === 'misepo' ? 'MisePo' : 'MisePo Dev');
+      const { error: appErr } = await supabaseAdmin
+        .from("apps")
+        .insert({ app_id: APP_ID, name: APP_NAME });
+      
+      if (appErr) {
+        console.error(`[PlanAPI] Failed to auto-create app ${APP_ID}:`, appErr);
+      }
+    }
 
   // 2. Load Entitlement
   let { data: ent, error: readErr } = await supabaseAdmin
@@ -174,29 +192,6 @@ export async function GET() {
   // --- SELF-HEALING: Check for Stripe ---
   let stripeCustomerId = ent.stripe_customer_id;
   
-  if (!stripeCustomerId && userData.user.email) {
-    // If we don't have a customer ID, try to find one by email
-    console.log(`[PlanAPI] No customer ID for ${userId}, searching by email...`);
-    try {
-      const customers = await stripe.customers.list({
-        email: userData.user.email,
-        limit: 1
-      });
-      if (customers.data.length > 0) {
-        stripeCustomerId = customers.data[0].id;
-        console.log(`[PlanAPI] Found Stripe customer ${stripeCustomerId} for email ${userData.user.email}`);
-        // Save it for future use
-        await supabaseAdmin
-          .from("entitlements")
-          .update({ stripe_customer_id: stripeCustomerId })
-          .eq("user_id", userId)
-          .eq("app_id", APP_ID);
-      }
-    } catch (e) {
-      console.error("[PlanAPI] Stripe customer lookup by email failed:", e);
-    }
-  }
-
   if (stripeCustomerId) {
     try {
       const subs = await stripe.subscriptions.list({
@@ -209,12 +204,16 @@ export async function GET() {
         const sub: any = subs.data[0];
         const priceId = sub.items.data[0]?.price?.id;
         const subPlanFromPrice = getPlanFromPriceId(priceId);
-        // ✅ ALWAYS prioritize Price ID over metadata as the source of truth for the paid plan
-        const subPlan = subPlanFromPrice || sub.metadata.plan || "entry";
         
-        // Always heal if there's a status mismatch or a plan mismatch
-        if (!ent.billing_reference_id || sub.status !== ent.status || subPlan !== ent.plan) {
-          console.log(`[PlanAPI] Healing triggered: DB(${ent.plan}/${ent.status}) -> Stripe(${subPlan}/${sub.status})`);
+        // ✅ 修正: Stripe側のメタデータを確認し、現在の APP_ID と一致する場合のみ同期する
+        // これがないと、同じメールアドレスの別環境（本番/開発）のデータが混ざってしまいます。
+        const stripeAppId = sub.metadata?.app_id;
+        if (stripeAppId && stripeAppId !== APP_ID) {
+           console.log(`[PlanAPI] Ignoring Stripe sub ${sub.id} because app_id mismatch: Stripe(${stripeAppId}) vs Current(${APP_ID})`);
+           // 別のアプリのサブスクなので、ここでは何もしない（同期しない）
+        } else if (!ent.billing_reference_id || sub.status !== ent.status || (subPlanFromPrice && subPlanFromPrice !== ent.plan)) {
+          console.log(`[PlanAPI] Healing triggered: DB(${ent.plan}/${ent.status}) -> Stripe(${subPlanFromPrice}/${sub.status})`);
+          const subPlan = subPlanFromPrice || sub.metadata.plan || "entry";
           const newExpiresAt = sub.cancel_at ? new Date(sub.cancel_at * 1000).toISOString() : 
                                sub.current_period_end ? new Date(sub.current_period_end * 1000).toISOString() : 
                                null;
@@ -238,6 +237,7 @@ export async function GET() {
         }
       } else {
           // 有料プラン設定なのにStripeにサブスクがない場合、trialに引き戻す
+          // ※ 本番と開発で APP_ID を分けていれば、ここでモード違いによる誤作動は起きません
           console.log(`[PlanAPI] Resetting user ${userId} to trial (No Stripe sub found but DB says ${ent.plan})`);
           
           let newTrialEndsAt = ent.trial_ends_at;
