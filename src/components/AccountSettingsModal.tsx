@@ -34,7 +34,10 @@ const AccountSettingsModal: React.FC<AccountSettingsModalProps> = ({ user, plan,
     const handleOpenPortal = async () => {
         setIsPortalLoading(true);
         try {
-            const returnUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+            let returnUrl = `${window.location.origin}${window.location.pathname}`;
+            // Append flag to trigger plan check
+            returnUrl += (returnUrl.includes('?') ? '&' : '?') + 'success=portal_update';
+
             const res = await fetch('/api/billing/portal', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
