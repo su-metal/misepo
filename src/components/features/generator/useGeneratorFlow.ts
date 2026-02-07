@@ -352,10 +352,16 @@ export function useGeneratorFlow(props: {
     if (plan.limit !== undefined && plan.usage !== undefined) {
       if (plan.usage + cost > plan.limit) {
         if (plan.usage_period === 'daily') {
-          alert(`本日の生成制限（${plan.limit}回）に達しました。明日またご利用いただけます。`);
+          if (cost > 1 && (plan.limit - plan.usage) === 1) {
+            alert(`本日の残り生成回数は1回です。同時生成（2つのプラットフォーム）には2回分必要なため、1つずつ生成いただくか、明日またご利用ください。`);
+          } else {
+            alert(`本日の生成制限（${plan.limit}回）に達しました。明日またご利用いただけます。`);
+          }
         } else {
           const isMaxPlan = plan.plan === 'professional' || plan.plan === 'monthly' || plan.plan === 'yearly' || plan.plan === 'pro';
-          if (isMaxPlan) {
+          if (cost > 1 && (plan.limit - plan.usage) === 1) {
+            alert(`今月の残りクレジットは1回分です。同時生成には2回分必要なため、1つずつ生成してください。`);
+          } else if (isMaxPlan) {
             alert(`今月の生成制限（${plan.limit}回）に達しました。来月までお待ちいただくか、お問い合わせください。`);
           } else {
             if (confirm(`今月の生成制限（${plan.limit}回）に達しました。プランをアップグレードしてすぐに制限を解除しますか？`)) {
