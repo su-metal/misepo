@@ -40,9 +40,17 @@ export async function POST(req: Request) {
     }
 
     const userId = data.user.id;
-    const userEmail = data.user.email; // Get user email
+    const userEmail = data.user.email;
     const appId = APP_ID;
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "");
+
+    // Determine baseUrl dynamically from request origin/host if possible, falling back to env
+    const host = req.headers.get("host");
+    const protocol = req.headers.get("x-forwarded-proto") || "https";
+    const origin = req.headers.get("origin");
+    
+    // Prioritize origin header, then host header, then environment variable
+    const baseUrl = (origin || (host ? `${protocol}://${host}` : process.env.NEXT_PUBLIC_APP_URL))?.replace(/\/$/, "");
+    
     const successUrl = `${baseUrl}/generate?pwa=true&success=1`;
     const cancelUrl = `${baseUrl}/billing/cancel?pwa=true`;
 
