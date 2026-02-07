@@ -132,13 +132,14 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
                                                     <SparklesIcon className="w-3.5 h-3.5 text-[#C084FC]" />
                                                     <span className="text-[10px] font-black uppercase tracking-[0.1em] text-slate-500">Premium Access</span>
                                                 </div>
-                                                <button
-                                                    onClick={() => { router.push('/start?upgrade=true'); toggleOpen(); }}
+                                                <a
+                                                    href="/upgrade"
+                                                    onClick={toggleOpen}
                                                     className="px-4 py-1.5 bg-[#2b2b2f] text-white rounded-full font-black text-[9px] uppercase tracking-wider hover:bg-black transition-all active:scale-95 shadow-md shadow-black/10 flex items-center gap-1.5"
                                                 >
                                                     Upgrade
                                                     <ChevronDownIcon className="w-3 h-3 -rotate-90" />
-                                                </button>
+                                                </a>
                                             </div>
 
                                             <div className="flex justify-between items-end mb-2">

@@ -161,7 +161,7 @@ const AccountSettingsModal: React.FC<AccountSettingsModalProps> = ({ user, plan,
 
                                 {plan?.plan !== 'professional' && plan?.plan !== 'monthly' && plan?.plan !== 'yearly' && plan?.plan !== 'pro' && (
                                     <div className="flex justify-start">
-                                        <a href="/start?upgrade=true" className="px-6 py-2.5 text-[10px] font-black rounded-full transition-all uppercase tracking-widest shadow-lg bg-[#7F5AF0] text-white hover:bg-[#6c4bd6] hover:scale-105 active:scale-95">
+                                        <a href="/upgrade" className="px-6 py-2.5 text-[10px] font-black rounded-full transition-all uppercase tracking-widest shadow-lg bg-[#7F5AF0] text-white hover:bg-[#6c4bd6] hover:scale-105 active:scale-95">
                                             {plan?.plan === 'trial' ? 'Upgrade' : 'Plan UP'}
                                         </a>
                                     </div>

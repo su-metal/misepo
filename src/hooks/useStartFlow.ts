@@ -3,7 +3,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { UserPlan } from '@/types';
 
-export function useStartFlow() {
+export function useStartFlow(options: { skipRedirect?: boolean } = {}) {
+  const { skipRedirect = false } = options;
   const router = useRouter();
   const searchParams = useSearchParams();
   const supabase = useMemo(() => createClient(), []);
@@ -174,7 +175,7 @@ export function useStartFlow() {
             return;
           }
 
-          if (isUpgrade || isOutOfCredits || isSwitch) {
+          if (skipRedirect || isUpgrade || isOutOfCredits || isSwitch) {
             setLoading(false);
             setIsLoggedIn(true);
             return;
