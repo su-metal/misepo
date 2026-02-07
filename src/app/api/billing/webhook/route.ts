@@ -185,6 +185,27 @@ export async function POST(req: Request) {
         fallbackAppId
       );
       if (userId) {
+        // ✅ INVOICE SUCCEEDED: 確実に Subscription ID があるので、ここでも Entitlement を更新してあげる（補完）
+        const subId = getInvoiceSubscriptionId(invoice);
+        if (subId && appId) {
+           // Plan 判別は少々簡易になるが、Metadata や Invoice Line から推定
+           const lineItem: any = invoice.lines?.data?.[0];
+           const priceId = lineItem?.price?.id;
+           const subPlanFromPrice = getPlanFromPriceId(priceId);
+           const plan = subPlanFromPrice || invoice.metadata?.plan || "standard"; // fallback proper default
+
+           await upsertEntitlement({
+            userId,
+            appId,
+            plan,
+            status: 'active', // Payment succeeded means active usually
+            expiresAt: null, // update on sub event or next sync
+            trialEndsAt: null,
+            billingRef: subId,
+            customerId: typeof invoice.customer === "string" ? invoice.customer : invoice.customer?.id ?? null,
+          });
+        }
+
         const isPromoApplied = isIntroPromo(invoice);
         if (isPromoApplied && appId) {
           await recordPromotion({
