@@ -172,10 +172,35 @@ export async function GET() {
   }
 
   // --- SELF-HEALING: Check for Stripe ---
-  if (ent.stripe_customer_id) {
+  let stripeCustomerId = ent.stripe_customer_id;
+  
+  if (!stripeCustomerId && userData.user.email) {
+    // If we don't have a customer ID, try to find one by email
+    console.log(`[PlanAPI] No customer ID for ${userId}, searching by email...`);
+    try {
+      const customers = await stripe.customers.list({
+        email: userData.user.email,
+        limit: 1
+      });
+      if (customers.data.length > 0) {
+        stripeCustomerId = customers.data[0].id;
+        console.log(`[PlanAPI] Found Stripe customer ${stripeCustomerId} for email ${userData.user.email}`);
+        // Save it for future use
+        await supabaseAdmin
+          .from("entitlements")
+          .update({ stripe_customer_id: stripeCustomerId })
+          .eq("user_id", userId)
+          .eq("app_id", APP_ID);
+      }
+    } catch (e) {
+      console.error("[PlanAPI] Stripe customer lookup by email failed:", e);
+    }
+  }
+
+  if (stripeCustomerId) {
     try {
       const subs = await stripe.subscriptions.list({
-        customer: ent.stripe_customer_id,
+        customer: stripeCustomerId,
         status: 'all',
         limit: 1,
       });
@@ -290,12 +315,19 @@ export async function GET() {
     limit = monthlyLimit;
     usage_period = 'monthly';
 
-    // ✅ プラン開始日（Stripeの現在の期間開始日）を基準にすることで、アップグレード直後のクレジットを「満タン」にする
+    // ✅ プラン開始日（Stripeの現在の期間開始日 または 契約作成日 の新しい方）を基準にする
+    // これにより、アップグレード直後のクレジットを「満タン」にする（過去のトライアル使用分をカウントしない）
     let usageStartTime = startOfMonth;
+
     if (ent.billing_reference_id && ent.billing_reference_id.startsWith('sub_')) {
       try {
         const sub: any = await stripe.subscriptions.retrieve(ent.billing_reference_id);
-        const effectiveStart = sub.current_period_start ?? sub.billing_cycle_anchor ?? sub.start_date;
+        const effectiveStart = Math.max(
+          sub.current_period_start || 0, 
+          sub.start_date || 0, 
+          sub.created || 0
+        );
+        
         if (effectiveStart) {
           usageStartTime = new Date(effectiveStart * 1000).toISOString();
         }

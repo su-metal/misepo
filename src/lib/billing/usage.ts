@@ -34,7 +34,7 @@ export async function getUserUsage(
 
   const { data, error } = await supabaseAdmin
     .from("ai_runs")
-    .select("run_type")
+    .select("run_type, created_at")
     .eq("user_id", userId)
     .eq("app_id", appId)
     .in("run_type", ["generation", "multi-gen", "refine"])
