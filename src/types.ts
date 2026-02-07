@@ -157,6 +157,15 @@ export interface TrendEvent {
     hashtags: string[];
     isRecommended: boolean;
 }
+export interface DailyContext {
+    date: string; // "YYYY-MM-DD"
+    region: string; // "東京都", "愛知県豊橋市" など
+    weather?: string;
+    temperature?: string;
+    events?: string[];
+    localNews?: string[];
+}
+
 export interface TopicTemplate {
   title: string;
   description: string;
