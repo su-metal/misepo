@@ -35,7 +35,7 @@ interface PostGeneratorProps {
   onOpenHistory?: () => void;
   onLogout: () => void;
   plan: UserPlan;
-  refreshPlan?: () => Promise<void>;
+  refreshPlan?: (loggedInOverride?: boolean) => Promise<any>;
   resetResultsTrigger?: number;
   shouldShowTour?: boolean;
   restoreTrigger?: number;

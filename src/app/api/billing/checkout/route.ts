@@ -52,6 +52,7 @@ export async function POST(req: Request) {
     const baseUrl = (origin || (host ? `${protocol}://${host}` : process.env.NEXT_PUBLIC_APP_URL))?.replace(/\/$/, "");
     
     const successUrl = `${baseUrl}/generate?pwa=true&success=1`;
+    const portalReturnUrl = `${baseUrl}/generate?pwa=true&success=portal_update`; // Use specific flag for portal exit
     const cancelUrl = `${baseUrl}/billing/cancel?pwa=true`;
 
     // ---- load entitlement (DB is source of truth)
@@ -133,7 +134,7 @@ export async function POST(req: Request) {
         // Redirect to Stripe Billing Portal for plan change (Subscription Update flow)
         const session = await stripe.billingPortal.sessions.create({
           customer: customerId,
-          return_url: successUrl,
+          return_url: portalReturnUrl,
           flow_data: {
             type: 'subscription_update',
             subscription_update: {
@@ -148,7 +149,7 @@ export async function POST(req: Request) {
         try {
           const session = await stripe.billingPortal.sessions.create({
             customer: customerId,
-            return_url: successUrl,
+            return_url: portalReturnUrl,
           });
           return NextResponse.json({ ok: true, url: session.url });
         } catch (innerErr: any) {

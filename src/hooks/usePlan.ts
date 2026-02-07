@@ -45,7 +45,7 @@ export function usePlan(user: any) {
 
       const data = await res.json();
       if (data.ok) {
-        setPlan({
+        const newPlan = {
           isPro: !!data.isPro,
           canUseApp: !!data.canUseApp,
           eligibleForTrial: !!data.eligibleForTrial,
@@ -55,7 +55,9 @@ export function usePlan(user: any) {
           usage: data.usage,
           limit: data.limit,
           usage_period: data.usage_period
-        });
+        };
+        setPlan(newPlan);
+        return newPlan;
       }
     } catch (err) {
       // Downgrade to warn to avoid cluttering error monitoring for network flakes

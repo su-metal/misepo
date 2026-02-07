@@ -201,23 +201,37 @@ function App() {
   // --- Success Message Handling ---
   const searchParams = useSearchParams();
   useEffect(() => {
-    const isSuccess = searchParams.get('success') === '1';
-    if (isSuccess && !alertShownRef.current) {
+    const successType = searchParams.get('success');
+    if (!successType || alertShownRef.current) return;
+
+    if (successType === '1') {
       alertShownRef.current = true;
-      // Small timeout to ensure the UI is ready
       setTimeout(() => {
         alert('決済が完了しました！全ての機能がご利用いただけます。');
-        // Clean up URL without refreshing
         const newUrl = window.location.pathname;
         window.history.replaceState({}, '', newUrl);
-        // Refresh plan to reflect new status
         refreshPlan();
       }, 500);
-    } else if (!isSuccess) {
-      // Reset ref when we are on a different page/state
+    } else if (successType === 'portal_update') {
+      alertShownRef.current = true;
+      // Capture current plan to compare later
+      const oldPlanName = plan?.plan;
+
+      setTimeout(async () => {
+        const updatedPlan = await refreshPlan();
+        // Only show alert if the plan string actually changed
+        if (updatedPlan && updatedPlan.plan !== oldPlanName) {
+          alert('プランの更新が完了しました！');
+        }
+
+        const newUrl = window.location.pathname;
+        window.history.replaceState({}, '', newUrl);
+      }, 500);
+    } else {
+      // Reset ref when we are on a clean URL
       alertShownRef.current = false;
     }
-  }, [searchParams, refreshPlan]);
+  }, [searchParams, refreshPlan, plan]);
 
   // REMOVED: legacy redirect to /start when plan expires. 
   // We now handle this by showing the TrialEndedBarrier on the dashboard.
