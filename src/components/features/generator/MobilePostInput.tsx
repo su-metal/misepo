@@ -469,7 +469,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                             <div className="flex items-center gap-3">
                                 {plan?.plan !== 'professional' && plan?.plan !== 'monthly' && plan?.plan !== 'yearly' && plan?.plan !== 'pro' && (
                                     <a
-                                        href="/start?upgrade=true"
+                                        href="/upgrade"
                                         className={`xl:hidden h-8 px-4 rounded-full text-white text-[9px] font-black uppercase tracking-[0.1em] shadow-lg active:scale-95 transition-all flex items-center gap-1.5 border border-white/20 ${plan?.canUseApp === false ? 'bg-[#E88BA3] shadow-red-500/20' : 'bg-sunset shadow-orange-500/20'}`}
                                     >
                                         <SparklesIcon className="w-2.5 h-2.5" />

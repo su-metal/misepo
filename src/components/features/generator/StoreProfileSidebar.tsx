@@ -77,7 +77,7 @@ export const StoreProfileSidebar: React.FC<StoreProfileSidebarProps> = ({ storeP
                             </div>
                             {plan?.plan !== 'professional' && plan?.plan !== 'monthly' && plan?.plan !== 'yearly' && plan?.plan !== 'pro' && (
                                 <a
-                                    href="/start?upgrade=true"
+                                    href="/upgrade"
                                     className={`px-3 py-1.5 rounded-xl text-white hover:opacity-90 transition-all text-[9px] font-black uppercase tracking-widest shadow-md active:scale-95 ${plan.canUseApp === false ? 'bg-[#E88BA3]' : 'bg-[#2b2b2f]'}`}
                                 >
                                     Upgrade
