@@ -152,8 +152,14 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: false, error: "already_active" }, { status: 400 });
     }
 
-    // ---- discount removed as per request
-    let discounts: Stripe.Checkout.SessionCreateParams.Discount[] | undefined;
+    // ---- check for auto-applied coupon
+    const STARTER_COUPON =
+      process.env.STRIPE_COUPON_STARTER_MONTHLY ??
+      process.env.STRIPE_COUPON_FIRST_MONTH_1000OFF ??
+      null;
+
+    let discounts: Stripe.Checkout.SessionCreateParams.Discount[] | undefined = 
+      STARTER_COUPON ? [{ coupon: STARTER_COUPON }] : undefined;
 
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
