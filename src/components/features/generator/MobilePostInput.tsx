@@ -1004,9 +1004,9 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         {/* 3. Fixed Action Area (Bottom) */}
                                         <div className="absolute bottom-0 left-0 right-0 z-[250] flex flex-col items-center pointer-events-auto">
                                             <div
-                                                className="w-full px-8 pt-6 pb-[calc(env(safe-area-inset-bottom)+44px)] sm:pb-[calc(env(safe-area-inset-bottom)+24px)] flex flex-col items-center gap-4 relative bg-white/95 backdrop-blur-xl border-t border-slate-100"
+                                                className="w-full px-8 pt-6 pb-[calc(env(safe-area-inset-bottom)+44px)] sm:pb-[calc(env(safe-area-inset-bottom)+24px)] flex flex-col items-center gap-4 relative bg-white/40 backdrop-blur-xl border-t border-slate-100"
                                                 style={{
-                                                    backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.9) 45%, rgba(255,255,255,1) 100%)',
+                                                    backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(245,242,255,0.8) 45%, rgba(245,242,255,1) 100%)',
                                                     backgroundRepeat: 'no-repeat'
                                                 }}
                                             >
@@ -1300,9 +1300,9 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                                         {/* Step 3 Sticky Action Area - Fixed for Hitbox and Layout accuracy */}
                                         <div className="absolute bottom-0 left-0 right-0 z-[250] flex flex-col items-center pointer-events-auto">
                                             <div
-                                                className="w-full px-8 pt-6 pb-[calc(env(safe-area-inset-bottom)+44px)] sm:pb-[calc(env(safe-area-inset-bottom)+24px)] flex flex-col items-center gap-4 relative bg-white/95 backdrop-blur-xl border-t border-slate-100"
+                                                className="w-full px-8 pt-6 pb-[calc(env(safe-area-inset-bottom)+44px)] sm:pb-[calc(env(safe-area-inset-bottom)+24px)] flex flex-col items-center gap-4 relative bg-white/40 backdrop-blur-xl border-t border-slate-100"
                                                 style={{
-                                                    backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.9) 45%, rgba(255,255,255,1) 100%)',
+                                                    backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(245,242,255,0.8) 45%, rgba(245,242,255,1) 100%)',
                                                     backgroundRepeat: 'no-repeat'
                                                 }}
                                             >

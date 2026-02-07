@@ -78,7 +78,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
         switch (platform) {
             case Platform.X:
                 return {
-                    icon: <div className="w-10 h-10 bg-[#2b2b2f] rounded-xl flex items-center justify-center text-white text-xl font-black shadow-sm border border-black/10">𝕏</div>,
+                    icon: <div className="w-10 h-10 bg-[#2b2b2f] rounded-xl flex items-center justify-center text-white text-xl font-black shadow-sm border border-black/10">X</div>,
                     label: 'X',
                     actionColor: "bg-[#2b2b2f] text-white shadow-[0_8px_20px_rgba(0,0,0,0.1)] border border-black/5",
                     actionLabel: "Xで投稿する",
@@ -208,10 +208,6 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
     return (
         <>
             {refiningKey ? (
-                /* 
-                 * EXCLUSIVE REFINE MODE
-                 * Hide everything else and focus purely on AI Refinement
-                 */
                 <div className="flex-1 p-8 lg:p-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
                     {(() => {
                         const [gIdx, iIdx] = refiningKey.split('-').map(Number);
@@ -228,14 +224,10 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                 </div>
             ) : (
                 <div className={`space-y-8 animate-in fade-in duration-700 ${results.length === 0 ? 'hidden md:block' : ''}`}>
-                    {/* Main Results Container - Premium Layout */}
-                    <div className="text-[#2b2b2f] flex flex-col min-h-[600px] group/main transition-all duration-700 w-full max-w-6xl mx-auto bg-white md:rounded-[54px] rounded-none md:border border-slate-100 md:shadow-premium relative overflow-hidden">
-
-                        {/* Background Decor in Container */}
+                    <div className="text-[#2b2b2f] flex flex-col min-h-[600px] group/main transition-all duration-700 w-full max-w-6xl mx-auto bg-white/60 backdrop-blur-md md:rounded-[54px] rounded-none md:border border-slate-100 md:shadow-premium relative overflow-hidden">
                         <div className="absolute -top-24 -right-24 w-64 h-64 bg-[#80CAFF]/5 rounded-full blur-[60px] pointer-events-none" />
                         <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-[#F87171]/5 rounded-full blur-[60px] pointer-events-none" />
 
-                        {/* Integrated Tab Navigation Header (Premium Light) */}
                         {results.length > 0 && (
                             <div className="flex items-center w-full border-b border-slate-50 bg-slate-50/50 py-2 px-2 overflow-x-auto no-scrollbar">
                                 {results.map((res, idx) => {
@@ -253,8 +245,6 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                                             <div className={`transition-transform duration-300 ${isSelected ? 'scale-110' : 'scale-100'}`}>
                                                 {getTabIcon(res.platform, isSelected)}
                                             </div>
-
-                                            {/* Premium Indicator Bar */}
                                             <div className={`absolute bottom-0 left-1/2 -translate-x-1/2 h-1 rounded-full bg-current transition-all duration-500
                                                 ${isSelected ? 'w-8 opacity-100' : 'w-0 opacity-0'}
                                             `} style={{ color: activeColor }} />
@@ -264,7 +254,6 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                             </div>
                         )}
 
-                        {/* Results Content Area */}
                         <div className="flex-1">
                             {results.length === 0 ? (
                                 <div className="p-12 h-full flex flex-col items-center justify-center text-center space-y-10 animate-in fade-in zoom-in-95 duration-1000">
@@ -381,7 +370,6 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                 </div>
             )}
 
-            {/* Preview Modal */}
             {previewState && (
                 <PostPreviewModal
                     isOpen={previewState.isOpen}
@@ -390,10 +378,7 @@ export const PostResultTabs: React.FC<PostResultTabsProps> = ({
                     text={previewState.text}
                     storeProfile={storeProfile}
                     onChange={(newText) => {
-                        // Update the local preview state so the modal stays in sync
                         setPreviewState(prev => prev ? { ...prev, text: newText } : null);
-
-                        // Use the stored indices for reliable updates
                         onManualEdit(previewState.gIdx, previewState.iIdx, newText);
                     }}
                 />
