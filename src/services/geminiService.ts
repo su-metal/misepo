@@ -11,6 +11,7 @@ import {
   RiskTier,
   Tone,
   TopicTemplate,
+  DailyContext,
 } from "../types";
 
 import crypto from 'crypto';
@@ -925,6 +926,77 @@ const trendSchema = {
     required: ["trends"]
 };
 
+const dailyContextSchema = {
+    type: Type.OBJECT,
+    properties: {
+        weather: { type: Type.STRING },
+        temperature: { type: Type.STRING },
+        events: { type: Type.ARRAY, items: { type: Type.STRING } },
+        localNews: { type: Type.ARRAY, items: { type: Type.STRING } }
+    },
+    required: ["weather", "temperature", "events", "localNews"]
+};
+
+export const generateDailyContext = async (
+    date: string,
+    region: string
+): Promise<DailyContext> => {
+    const modelName = "models/gemini-2.5-flash-lite";
+    const ai = getServerAI();
+
+    const systemInstruction = `
+あなたは地域のSNSマーケティングを支援する「地域情報アナリスト」です。
+指定された「日付（2026年想定）」と「地域（市区町村）」に基づき、その日のSNS発信に役立つコンテキストを生成してください。
+
+【最重要：ハルシネーション（嘘）の防止】
+1. **イベントの捏造禁止**: その「日付」にその「市区町村」で開催されることが【確実】な公式行事、記念日のみを挙げてください。「〜の場合」といった推測は厳禁。
+2. **地域精度の厳守**: 指定された市町村から遠い（例：豊橋市に対して名古屋や愛知池）話題は【絶対に】含めないでください。
+3. **不確実な情報の扱い**: 確実なイベントがない場合は、eventsを空のリストにしてください。
+4. **季節の風景 (localNews)**: 特定のイベント名ではなく、「梅が咲き始める時期」「花粉が飛び始める」といった、季節に確実に見られる情景を記述してください。
+
+【項目別指示】
+- **天気・気温**: 統計的な傾向を記述。
+- **行事 (events)**: 日付固定のものを優先。
+- **ローカルニュース (localNews)**: 旬の食材、地域の気候特性など、嘘になりにくい情報を記述。
+
+全て【日本語】で出力してください。JSON形式のみ。
+`;
+
+    const userPrompt = `日付: ${date}, 地域: ${region} の情報を生成してください。`;
+
+    try {
+        const response = await ai.models.generateContent({
+            model: modelName,
+            contents: [{ role: "user", parts: [{ text: userPrompt }] }],
+            config: {
+                systemInstruction,
+                responseMimeType: "application/json",
+                responseSchema: dailyContextSchema,
+                temperature: 0.1,
+            },
+        });
+
+        const result = await response;
+        const parsed = JSON.parse(result.text);
+
+        return {
+            date,
+            region,
+            ...parsed
+        } as DailyContext;
+    } catch (e: any) {
+        console.error("[GEMINI DAILY CONTEXT ERROR]", e);
+        return {
+            date,
+            region,
+            weather: "不明",
+            temperature: "不明",
+            events: [],
+            localNews: []
+        };
+    }
+};
+
 export const generateTrendCalendar = async (
     year: number, 
     startMonth: number, 
@@ -1652,5 +1724,79 @@ export const generateInspirationCards = async (
         icon: "✨"
       }
     ];
+  }
+};
+
+/**
+ * Layer 3: ソムリエの問いかけ (Sommelier Question) の生成
+ * ユーザーが特定のトピックを選択した際、またはリスト構築時に
+ * 「今日ならではの事実」を盛り込んだ問いかけを作成します。
+ */
+export const generateSommelierQuestion = async (
+  profile: StoreProfile,
+  topic: { title: string; description: string },
+  context?: DailyContext
+): Promise<{ question: string; refinedPrompt: string }> => {
+  const modelName = "models/gemini-2.5-flash-lite";
+  const ai = getServerAI();
+
+  const systemInstruction = `
+あなたはSNS投稿作成を支援する「AIトピック・ソムリエ」です。
+店主のプロフィールと、選択されたトピック、そして「今日の状況（天気・行事等）」を元に、店主から具体的な事実を引き出すための**【インタビュー質問】**を1問作成してください。
+
+【出力構造のルール】
+1. **導入 (Context)**: 「今日は${context?.weather || 'いい天気'}ですね」「${context?.events?.[0] || '季節の節目'}ということで...」といった、店主への共感から始めてください。
+2. **接続 (Bridge)**: 導入から、選択されたトピック（${topic.title}）へ自然につなげてください。
+3. **深掘り (Deep Dive/Question)**: 「${topic.description}」に関連して、店主しか知り得ない具体的な事実（今日のおすすめ、こだわり、お客様の様子など）を聞き出す質問をしてください。
+
+【制約】
+- **SNS投稿文ではありません**。店主への語りかけ（インタビュー）に徹してください。
+- 合計2〜3文（100文字以内）で、具体的かつ答えやすくしてください。
+- **事実の検証**: 渡された DailyContext の情報（天気や行事）が、一般的な常識や季節感と乖離している、または「開催される場合」といった曖昧な表現が含まれる場合は、その情報を無視し、無難な「季節の挨拶」や「業界の鉄板ネタ」に切り替えてください。嘘の情報を元に問いかけることは【厳禁】です。
+- 出力は JSON 形式で {'question': '...', 'refinedPrompt': '...'} としてください。
+- 'refinedPrompt' には、店主の回答を受け取った後にSNS投稿を生成する際の「追加の文脈指示」を含めてください。
+`;
+
+  const userPrompt = `
+【店主のプロフィール】
+店舗名: ${profile.name}
+業種: ${profile.industry}
+説明: ${profile.description}
+
+【選択されたトピック】
+タイトル: ${topic.title}
+内容: ${topic.description}
+
+【今日の状況 (DailyContext)】
+日付: ${context?.date}
+天気: ${context?.weather}
+行事: ${context?.events?.join(', ')}
+地域ニュース: ${context?.localNews?.join(', ')}
+`;
+
+  try {
+    const response = await ai.models.generateContent({
+      model: modelName,
+      contents: [{ role: "user", parts: [{ text: userPrompt }] }],
+      config: {
+        systemInstruction,
+        responseMimeType: "application/json",
+        temperature: 0.7,
+      },
+    });
+
+    const result = await response;
+    const parsed = JSON.parse(result.text);
+
+    return {
+      question: parsed.question || "こちらの話題で投稿を作成しましょう。具体的なエピソードはありますか？",
+      refinedPrompt: parsed.refinedPrompt || `話題：${topic.title}。${topic.description}`
+    };
+  } catch (e) {
+    console.error("[SOMMELIER QUESTION ERROR]", e);
+    return {
+      question: "こちらの話題で投稿を作成しましょう。具体的なエピソードはありますか？",
+      refinedPrompt: `話題：${topic.title}。${topic.description}`
+    };
   }
 };

@@ -525,7 +525,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                     </div>
 
                     <div
-                        className={`flex items-center justify-between px-[clamp(0.75rem,3vw,1rem)] mt-[clamp(0.75rem,2.5vw,1.75rem)] mb-0 ${isTallViewport ? 'pt-[clamp(0.9rem,3vw,1.25rem)]' : ''}`}
+                        className={`flex items-center justify-between px-[clamp(0.75rem,3vw,1rem)] mt-[clamp(0.75rem,2.5vw,0.75rem)] mb-0 ${isTallViewport ? 'pt-[clamp(0.9rem,3vw,1.25rem)]' : ''}`}
                     >
                         <div className="flex flex-col gap-0.5 items-start">
                             <h2 className="text-[13px] font-black text-[#2b2b2f] tracking-tight">投稿先を選択</h2>

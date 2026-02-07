@@ -1,10 +1,31 @@
 
 import { NextRequest, NextResponse } from 'next/server';
-import { generateTrendCalendar } from '@/services/geminiService';
+import { generateTrendCalendar, generateDailyContext } from '@/services/geminiService';
+import { getCachedDailyContext, saveDailyContextToCache } from '@/lib/dailyContextCache';
 
 export const maxDuration = 60; // Allow longer timeout for AI generation
 
-// Helper to handle both GET and POST logic
+// Helper to handle DailyContext (Weather, Events, etc.)
+async function handleDailyContextRequest(date: string, region?: string, force: boolean = false) {
+  if (!region) return null;
+  
+  // 1. Check Cache
+  if (!force) {
+    const cached = await getCachedDailyContext(date, region);
+    if (cached) return cached;
+  }
+  
+  // 2. Generate
+  console.log(`[API/Trends] Generating DailyContext for ${date} in ${region} (Force: ${force})`);
+  const context = await generateDailyContext(date, region);
+  
+  // 3. Save Cache
+  saveDailyContextToCache(context).catch(err => console.error("DailyContext Cache write error:", err));
+  
+  return context;
+}
+
+// Helper to handle both GET and POST logic for Trends
 async function handleTrendsRequest(params: {
   year: number;
   month: number;
@@ -12,14 +33,19 @@ async function handleTrendsRequest(params: {
   force: boolean;
   industry?: string;
   description?: string;
+  region?: string;
+  date?: string;
 }) {
-  const { year, month, duration, force, industry, description } = params;
+  const { year, month, duration, force, industry, description, region, date } = params;
   
-  // 1. Check Global Cache First (Hit/Miss)
+  // 1. Get DailyContext if possible (always try to include in response for sommelier)
+  const todayStr = date || new Date().toISOString().split('T')[0];
+  const dailyContext = await handleDailyContextRequest(todayStr, region, force);
+
+  // 2. Check Global Cache for Trends
   let cachedTrends: any[] = [];
   let missingMonth = false;
   
-  // Dynamic import to avoid build issues on client-side
   const { getCachedTrends, saveTrendsToCache } = await import('@/lib/trendCache');
   
   if (!force) {
@@ -42,16 +68,14 @@ async function handleTrendsRequest(params: {
     }
 
     if (!missingMonth && cachedTrends.length > 0) {
-      console.log(`[API/Trends] Cache HIT for ${year}-${month}`);
-      return { trends: cachedTrends };
+      return { trends: cachedTrends, dailyContext };
     }
   }
 
-  console.log(`[API/Trends] Cache MISS. Generating fresh trends...`);
   const trends = await generateTrendCalendar(year, month, duration, industry, description);
   saveTrendsToCache(trends, industry).catch(err => console.error("Cache write error:", err));
   
-  return { trends };
+  return { trends, dailyContext };
 }
 
 export async function GET(req: NextRequest) {
@@ -63,12 +87,14 @@ export async function GET(req: NextRequest) {
     const force = searchParams.get('force') === 'true';
     const industry = searchParams.get('industry') || undefined;
     const description = searchParams.get('description') || undefined;
+    const region = searchParams.get('region') || undefined;
+    const date = searchParams.get('date') || undefined;
 
     if (isNaN(year) || isNaN(month) || isNaN(duration)) {
       return NextResponse.json({ error: 'Invalid parameters' }, { status: 400 });
     }
 
-    const result = await handleTrendsRequest({ year, month, duration, force, industry, description });
+    const result = await handleTrendsRequest({ year, month, duration, force, industry, description, region, date });
     return NextResponse.json(result);
   } catch (error: any) {
     console.error("[API/Trends] GET Error:", error);
@@ -82,7 +108,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json().catch(() => ({}));
-    const { year, month, duration, force, industry, description } = body;
+    const { year, month, duration, force, industry, description, region, date } = body;
 
     if (!year || !month) {
       return NextResponse.json({ error: 'Missing year or month' }, { status: 400 });
@@ -94,7 +120,9 @@ export async function POST(req: NextRequest) {
       duration: parseInt(String(duration || 3)), 
       force: !!force, 
       industry, 
-      description 
+      description,
+      region,
+      date
     });
     return NextResponse.json(result);
   } catch (error: any) {
