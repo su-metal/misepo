@@ -77,7 +77,7 @@ export const PostPreviewModal: React.FC<PostPreviewModalProps> = ({
 
                 <div className="flex-1 bg-white overflow-y-auto no-scrollbar relative z-10">
                     {/* Platform Specific Preview */}
-                    <div className="flex justify-center px-4 py-12">
+                    <div className="flex flex-col items-center justify-center min-h-full px-4 py-12">
 
                         {/* Instagram Preview */}
                         {platform === Platform.Instagram && (
