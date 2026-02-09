@@ -7,9 +7,10 @@ export default function ReleaseVisualPage() {
     const [uploadedImage, setUploadedImage] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    // デフォルトのキャッチコピー（AI訴求は控えめに）
+    // デフォルトのキャッチコピー
+    const [leadCopy, setLeadCopy] = useState("Instagram・Googleマップ・LINEの投稿を、AIで最短10秒。");
     const [mainCopy, setMainCopy] = useState("もう、SNS投稿で\n悩まない。");
-    const [subCopy, setSubCopy] = useState("お店専用の、\n投稿作成アシスタント。");
+    const [subCopy, setSubCopy] = useState("Instagramの投稿も、Googleマップのクチコミ返信も。\n複数媒体の発信を一括サポート。AIでお店の魅力を最大化。");
     const [footerCopy, setFooterCopy] = useState("\\ Web & PWA で配信開始 /");
     const [isExporting, setIsExporting] = useState(false); // エクスポート時用（点線枠消しなど）
 
@@ -72,27 +73,50 @@ export default function ReleaseVisualPage() {
                         <div className="w-full max-w-6xl flex items-center justify-between gap-12">
 
                             {/* LEFT: Copy Area */}
-                            <div className="flex-1 flex flex-col gap-8 z-10">
+                            <div className="flex-1 flex flex-col gap-4 z-10 min-w-0">
+                                {/* Lead Copy */}
+                                <div className="relative group/edit">
+                                    {!isExporting && <div className="absolute -inset-2 border-2 border-dashed border-blue-300/50 rounded-lg pointer-events-none opacity-0 group-hover/edit:opacity-100 transition-opacity" />}
+                                    <textarea
+                                        value={leadCopy}
+                                        onChange={(e) => setLeadCopy(e.target.value)}
+                                        className="w-full bg-transparent text-base lg:text-lg font-bold text-stone-500 tracking-wide focus:outline-none resize-none overflow-hidden placeholder-stone-300 whitespace-pre-wrap"
+                                        rows={1}
+                                        spellCheck={false}
+                                        onInput={(e) => {
+                                            const target = e.target as HTMLTextAreaElement;
+                                            target.style.height = 'auto';
+                                            target.style.height = `${target.scrollHeight}px`;
+                                        }}
+                                        ref={(ref) => {
+                                            if (ref) {
+                                                ref.style.height = 'auto';
+                                                ref.style.height = `${ref.scrollHeight}px`;
+                                            }
+                                        }}
+                                    />
+                                </div>
+
                                 {/* Main Copy */}
                                 <div className="relative group/edit">
                                     {!isExporting && <div className="absolute -inset-4 border-2 border-dashed border-blue-300/50 rounded-lg pointer-events-none opacity-0 group-hover/edit:opacity-100 transition-opacity" />}
                                     <textarea
                                         value={mainCopy}
                                         onChange={(e) => setMainCopy(e.target.value)}
-                                        className="w-full bg-transparent text-5xl lg:text-7xl font-black text-[#2b2b2f] leading-tight focus:outline-none resize-none overflow-hidden placeholder-stone-300 drop-shadow-sm whitespace-pre-wrap"
+                                        className="w-full bg-transparent text-4xl lg:text-6xl font-black text-[#2b2b2f] leading-tight focus:outline-none resize-none overflow-hidden placeholder-stone-300 drop-shadow-sm whitespace-pre-wrap -ml-[2px]"
                                         rows={2}
                                         spellCheck={false}
                                     />
                                 </div>
 
                                 {/* Sub Copy */}
-                                <div className="relative group/edit w-fit">
-                                    {!isExporting && <div className="absolute -inset-4 border-2 border-dashed border-blue-300/50 rounded-lg pointer-events-none opacity-0 group-hover/edit:opacity-100 transition-opacity" />}
+                                <div className="relative group/edit">
+                                    {!isExporting && <div className="absolute -inset-2 border-2 border-dashed border-blue-300/50 rounded-lg pointer-events-none opacity-0 group-hover/edit:opacity-100 transition-opacity" />}
                                     <textarea
                                         value={subCopy}
                                         onChange={(e) => setSubCopy(e.target.value)}
-                                        className="w-full bg-transparent text-xl lg:text-2xl font-bold text-stone-500 leading-relaxed focus:outline-none resize-none overflow-hidden placeholder-stone-300 whitespace-pre-wrap"
-                                        rows={2}
+                                        className="w-full bg-transparent text-lg lg:text-xl font-bold text-stone-500 leading-relaxed focus:outline-none resize-none overflow-hidden placeholder-stone-300 whitespace-pre-wrap"
+                                        rows={3}
                                         spellCheck={false}
                                     />
                                 </div>
