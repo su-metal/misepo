@@ -182,9 +182,9 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
 
 
                 {/* Navigation Items Container */}
-                <div className={`absolute inset-0 flex items-center px-6 pt-1 ${isDrawerOpen ? 'pointer-events-none' : 'pointer-events-auto'}`}>
+                <div className={`absolute inset-0 flex items-center px-8 pt-1 ${isDrawerOpen ? 'pointer-events-none' : 'pointer-events-auto'}`}>
                     {/* Left Side Items */}
-                    <div className="flex items-center justify-center gap-6 w-[130px]">
+                    <div className="flex items-center justify-center gap-7 w-[130px]">
                         <button
                             onClick={() => onTabChange('home')}
                             className={`flex flex-col items-center gap-1.5 transition-all active:scale-95 ${isConfirmStep ? 'opacity-40 grayscale pointer-events-none' : ''}`}
@@ -193,7 +193,7 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
                             <span className={`
                                 text-[9px] font-black uppercase tracking-[0.1em] transition-all
                                 ${activeTab === 'home' ? 'text-[#2b2b2f]' : 'text-slate-400'}
-                            `}>Home</span>
+                            `}>ホーム</span>
                         </button>
                         <button
                             onClick={() => onTabChange('history')}
@@ -203,14 +203,14 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
                             <span className={`
                                 text-[9px] font-black uppercase tracking-[0.1em] transition-all
                                 ${activeTab === 'history' ? 'text-[#2b2b2f]' : 'text-slate-400'}
-                            `}>History</span>
+                            `}>履歴</span>
                         </button>
                     </div>
 
                     <div className="flex-1 min-w-[100px]" />
 
                     {/* Right Side Items */}
-                    <div className="flex items-center justify-end gap-2 w-[150px]">
+                    <div className="flex items-center justify-end gap-7 w-[150px]">
                         <button
                             onClick={() => onTabChange('learning')}
                             className={`flex flex-col items-center gap-1.5 transition-all active:scale-95 ${isConfirmStep ? 'opacity-40 grayscale pointer-events-none' : ''}`}
@@ -219,7 +219,7 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
                             <span className={`
                                 text-[9px] font-black uppercase tracking-[0.1em] transition-all
                                 ${activeTab === 'learning' ? 'text-[#2b2b2f]' : 'text-slate-400'}
-                            `}>Style</span>
+                            `}>スタイル</span>
                         </button>
                         <button
                             onClick={() => onTabChange('settings')}
@@ -229,7 +229,7 @@ export const MobileFooter: React.FC<MobileFooterProps> = ({
                             <span className={`
                                 text-[9px] font-black uppercase tracking-[0.1em] transition-all
                                 ${activeTab === 'settings' ? 'text-[#2b2b2f]' : 'text-slate-400'}
-                            `}>Settings</span>
+                            `}>設定</span>
                         </button>
                     </div>
                 </div>

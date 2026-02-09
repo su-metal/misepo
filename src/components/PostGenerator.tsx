@@ -16,6 +16,7 @@ import { MobileFooter } from './features/generator/MobileFooter';
 import { PostInputFormProps } from './features/generator/inputConstants';
 import { StoreProfileSidebar } from './features/generator/StoreProfileSidebar';
 import { TrendSidebar } from './features/generator/TrendSidebar';
+import { MobileCalendarOverlay } from './features/generator/MobileCalendarOverlay';
 
 interface PostGeneratorProps {
   storeProfile: StoreProfile;
@@ -58,6 +59,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
   });
 
   const [isPresetModalOpen, setIsPresetModalOpen] = React.useState(false);
+  const [isCalendarOpen, setIsCalendarOpen] = React.useState(false);
   const [isSavingPreset, setIsSavingPreset] = React.useState(false);
   const [mobileActiveTab, setMobileActiveTab] = React.useState<'home' | 'history' | 'learning' | 'settings'>('home');
   const [mobileStep, setMobileStep] = React.useState<'platform' | 'input' | 'confirm' | 'result'>('platform');
@@ -150,7 +152,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
       <div className="flex flex-row items-center justify-center gap-6 xl:gap-12 w-full max-w-[1600px] px-0 sm:px-4 relative z-10">
 
         {/* Left Sidebar (PC Only) */}
-        <div className="hidden xl:block h-[85vh] max-h-[850px] shrink-0">
+        <div className={`hidden xl:block h-[85vh] max-h-[850px] shrink-0 transition-opacity duration-300 ${isCalendarOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
           <StoreProfileSidebar storeProfile={storeProfile} plan={plan} />
         </div>
 
@@ -243,6 +245,8 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
               targetAudiences={flow.targetAudiences}
               onTargetAudiencesChange={flow.setTargetAudiences}
               targetStep={mobileStep}
+              isCalendarOpen={isCalendarOpen}
+              onCalendarToggle={setIsCalendarOpen}
             />
           </div>
 
@@ -279,7 +283,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
         </div>
 
         {/* Right Sidebar (PC Only) */}
-        <div className="hidden xl:block h-[85vh] max-h-[850px] shrink-0">
+        <div className={`hidden xl:block h-[85vh] max-h-[850px] shrink-0 transition-opacity duration-300 ${isCalendarOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
           <TrendSidebar
             onSelectEvent={(event) => {
               flow.setInputText(`【話題のネタ】\n${event.title}\n${event.prompt}`);
@@ -331,6 +335,36 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
           onCancel={() => setShowOnboarding(false)}
         />
       )}
+
+      {/* Mobile Calendar Overlay (Moved to root for correct stack context) */}
+      <div className="fixed inset-0 pointer-events-none z-[99999]">
+        <div className="pointer-events-auto">
+          <MobileCalendarOverlay
+            isOpen={isCalendarOpen}
+            onClose={() => setIsCalendarOpen(false)}
+            onSelectEvent={(event) => {
+              // Handle Trend Strategy Launch from Overlay
+              setIsCalendarOpen(false);
+              if (flow.platforms.length === 0) {
+                flow.handlePlatformToggle(Platform.Instagram);
+                flow.handlePlatformToggle(Platform.X);
+              }
+              if (flow.setQuestion) flow.setQuestion('');
+              if (flow.setTopicPrompt) flow.setTopicPrompt('');
+
+              setTimeout(() => {
+                setMobileStep('confirm');
+                setOpenDrawerTrigger(prev => prev + 1);
+                const strategyPrompt = `✨ ${event.title} (${event.date}) の生成指示：\n${event.prompt}\n\nおすすめハッシュタグ: ${event.hashtags.join(' ')}`;
+                flow.setInputText(strategyPrompt);
+              }, 800);
+            }}
+            industry={storeProfile.industry}
+            description={storeProfile.description}
+            isGoogleMaps={(flow.platforms[0] || Platform.Instagram) === Platform.GoogleMaps}
+          />
+        </div>
+      </div>
     </div>
   );
 };

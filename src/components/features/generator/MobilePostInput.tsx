@@ -48,7 +48,9 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     targetAudiences, onTargetAudiencesChange,
     question, onQuestionChange,
     topicPrompt, onTopicPromptChange,
-    onAIStart
+    onAIStart,
+    isCalendarOpen = false,
+    onCalendarToggle
 }) => {
     const textareaRef = React.useRef<HTMLTextAreaElement>(null);
     const questionContainerRef = React.useRef<HTMLDivElement>(null);
@@ -62,7 +64,6 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
     const [isPromptExpanded, setIsPromptExpanded] = React.useState(true);
     const [isAudienceExpanded, setIsAudienceExpanded] = React.useState(false);
     const [isOmakaseLoading, setIsOmakaseLoading] = React.useState(false);
-    const [isCalendarOpen, setIsCalendarOpen] = React.useState(false);
     const [isDefaultStyleEnabled, setIsDefaultStyleEnabled] = React.useState(() => {
         return localStorage.getItem('misepo_use_default_preset') === 'true';
     });
@@ -74,27 +75,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
 
 
 
-    // Handle Calendar Strategy Launch
-    const handleTrendStrategy = (event: TrendEvent) => {
-        setIsCalendarOpen(false);
-        setIsOmakaseMode(false);
-        // Start Omakase-like flow but with context
-        setIsOmakaseLoading(true);
-        if (platforms.length === 0) {
-            onPlatformToggle(Platform.Instagram);
-            onPlatformToggle(Platform.X);
-        }
-        if (onQuestionChange) onQuestionChange('');
-        if (onTopicPromptChange) onTopicPromptChange('');
-        setTimeout(() => {
-            setIsOmakaseLoading(false);
-            setMobileStep('confirm');
-            setIsStepDrawerOpen(true);
-            // Pre-fill context
-            const strategyPrompt = `✨ ${event.title} (${event.date}) の生成指示：\n${event.prompt}\n\nおすすめハッシュタグ: ${event.hashtags.join(' ')}`;
-            onInputTextChange(strategyPrompt);
-        }, 800);
-    };
+    // Handle Calendar Strategy Launch (Removed: now handled in parent PostGenerator)
 
     // Notify parent about step changes
     React.useEffect(() => {
@@ -447,7 +428,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                     {/* High-Design Header - Magazine Style Date & Minimal Avatar */}
                     <div className="flex items-start justify-between mb-2 px-1">
                         {/* Typography Date Display - Interactive Trigger */}
-                        <div className="flex flex-col cursor-pointer active:scale-95 transition-transform" onClick={() => setIsCalendarOpen(true)}>
+                        <div className="flex flex-col cursor-pointer active:scale-95 transition-transform" onClick={() => onCalendarToggle && onCalendarToggle(true)}>
                             <span className="text-[10px] font-black text-[#2b2b2f]/60 uppercase tracking-[0.4em] ml-1 mb-1 z-10 relative flex items-center gap-1">
                                 misepo <span className="bg-[#2b2b2f]/5 px-1 rounded text-[8px] tracking-normal text-[#2b2b2f]/80">HUB</span>
                             </span>
@@ -771,17 +752,7 @@ export const MobilePostInput: React.FC<PostInputFormProps> = ({
                 </div>
             </div>
 
-            {/* Trend Calendar Overlay */}
-
-            {/* Trend Calendar Overlay */}
-            < MobileCalendarOverlay
-                isOpen={isCalendarOpen}
-                onClose={() => setIsCalendarOpen(false)}
-                onSelectEvent={handleTrendStrategy}
-                industry={storeProfile?.industry}
-                description={storeProfile?.description}
-                isGoogleMaps={isGoogleMaps}
-            />
+            {/* Trend Calendar Overlay (Removed: now handled in parent PostGenerator) */}
 
             {/* Bottom Sheet Drawer - Monochrome Style */}
             {

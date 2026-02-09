@@ -89,6 +89,8 @@ export interface PostInputFormProps {
     targetAudiences?: string[];
     onTargetAudiencesChange?: (audiences: string[]) => void;
     onAIStart?: (fn: () => void) => void;
+    isCalendarOpen?: boolean;
+    onCalendarToggle?: (isOpen: boolean) => void;
 }
 
 export const AVATAR_OPTIONS = [

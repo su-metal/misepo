@@ -8,7 +8,11 @@ export const PostInputForm: React.FC<PostInputFormProps> = (props) => {
     // Layout and container styling will be handled by the parent (PostGenerator)
     return (
         <div className="h-full w-full">
-            <MobilePostInput {...props} />
+            <MobilePostInput
+                {...props}
+                isCalendarOpen={props.isCalendarOpen}
+                onCalendarToggle={props.onCalendarToggle}
+            />
         </div>
     );
 };
