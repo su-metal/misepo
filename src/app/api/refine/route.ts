@@ -8,8 +8,10 @@ import { env } from "@/lib/env";
 import { computeCanUseApp } from "@/lib/entitlements/canUseApp";
 import { getJSTDateRange } from "@/lib/dateUtils";
 import { getUserUsage } from "@/lib/billing/usage";
+import Stripe from "stripe";
 
 const APP_ID = env.APP_ID;
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export async function POST(req: Request) {
   const supabase = await createClient();
@@ -137,8 +139,6 @@ export async function POST(req: Request) {
       let usageStartTime = startOfMonth;
       if (effectiveEnt.billing_reference_id && effectiveEnt.billing_reference_id.startsWith('sub_')) {
           try {
-              const Stripe = require("stripe");
-              const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
               const sub: any = await stripe.subscriptions.retrieve(effectiveEnt.billing_reference_id);
               const effectiveStart = sub.current_period_start ?? sub.billing_cycle_anchor ?? sub.start_date;
               if (effectiveStart) {

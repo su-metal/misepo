@@ -123,12 +123,12 @@ export async function GET() {
 
     if (createErr) return NextResponse.json({ ok: false, error: createErr.message }, { status: 500, headers: NO_STORE_HEADERS });
     ent = created;
-    console.log(`[PlanAPI] Auto-initialized trial for user ${userId} (eligible: ${isEligibleForTrial})`);
+    console.info(`[PlanAPI] Auto-initialized trial for user ${userId} (eligible: ${isEligibleForTrial})`);
   }
 
   // --- SELF-HEALING: Convert 'free' plan users to trial if eligible (Legacy cleanup) ---
   if (ent.plan === 'free') {
-    console.log(`[PlanAPI] Healing 'free' user ${userId} to trial`);
+    console.info(`[PlanAPI] Healing 'free' user ${userId} to trial`);
     const trialDurationDays = 7;
     const finalTrialEndsAt = isEligibleForTrial 
       ? new Date(Date.now() + trialDurationDays * 24 * 60 * 60 * 1000).toISOString()
@@ -162,7 +162,7 @@ export async function GET() {
 
   // --- SELF-HEALING: Populate missing trial_ends_at for existing trial users ---
   if (ent.plan === 'trial' && !ent.trial_ends_at) {
-    console.log(`[PlanAPI] Healing missing trial_ends_at for user ${userId}`);
+    console.info(`[PlanAPI] Healing missing trial_ends_at for user ${userId}`);
     let finalTrialEndsAt = "2024-01-01T00:00:00Z"; // 実質的な期限切れとして扱う過去の日付
     
     if (isEligibleForTrial) {
@@ -209,10 +209,10 @@ export async function GET() {
         // これがないと、同じメールアドレスの別環境（本番/開発）のデータが混ざってしまいます。
         const stripeAppId = sub.metadata?.app_id;
         if (stripeAppId && stripeAppId !== APP_ID) {
-           console.log(`[PlanAPI] Ignoring Stripe sub ${sub.id} because app_id mismatch: Stripe(${stripeAppId}) vs Current(${APP_ID})`);
+           console.info(`[PlanAPI] Ignoring Stripe sub ${sub.id} because app_id mismatch: Stripe(${stripeAppId}) vs Current(${APP_ID})`);
            // 別のアプリのサブスクなので、ここでは何もしない（同期しない）
         } else if (!ent.billing_reference_id || sub.status !== ent.status || (subPlanFromPrice && subPlanFromPrice !== ent.plan)) {
-          console.log(`[PlanAPI] Healing triggered: DB(${ent.plan}/${ent.status}) -> Stripe(${subPlanFromPrice}/${sub.status})`);
+          console.info(`[PlanAPI] Healing triggered: DB(${ent.plan}/${ent.status}) -> Stripe(${subPlanFromPrice}/${sub.status})`);
           const subPlan = subPlanFromPrice || sub.metadata.plan || "entry";
           const newExpiresAt = sub.cancel_at ? new Date(sub.cancel_at * 1000).toISOString() : 
                                sub.current_period_end ? new Date(sub.current_period_end * 1000).toISOString() : 
@@ -238,7 +238,7 @@ export async function GET() {
       } else {
           // 有料プラン設定なのにStripeにサブスクがない場合、trialに引き戻す
           // ※ 本番と開発で APP_ID を分けていれば、ここでモード違いによる誤作動は起きません
-          console.log(`[PlanAPI] Resetting user ${userId} to trial (No Stripe sub found but DB says ${ent.plan})`);
+          console.info(`[PlanAPI] Resetting user ${userId} to trial (No Stripe sub found but DB says ${ent.plan})`);
           
           let newTrialEndsAt = ent.trial_ends_at;
           if (!newTrialEndsAt) {
@@ -276,7 +276,7 @@ export async function GET() {
       }
     } catch (e: any) {
       if (e.code === 'resource_missing' || e.status === 404 || e.message?.includes("No such customer")) {
-        console.log(`[PlanAPI] Customer ${ent.stripe_customer_id} not found in Stripe. Purging from DB...`);
+        console.info(`[PlanAPI] Customer ${ent.stripe_customer_id} not found in Stripe. Purging from DB...`);
         await supabaseAdmin
           .from("entitlements")
           .update({ stripe_customer_id: null, billing_reference_id: null })

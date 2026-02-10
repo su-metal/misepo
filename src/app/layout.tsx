@@ -58,11 +58,6 @@ const jsonLd = {
     "@type": "Offer",
     "price": "980",
     "priceCurrency": "JPY"
-  },
-  "aggregateRating": {
-    "@type": "AggregateRating",
-    "ratingValue": "4.8",
-    "ratingCount": "120"
   }
 };
 
@@ -81,20 +76,6 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Montserrat:wght@800;900&family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@400;500;600;700&display=swap" rel="stylesheet" />
         {/* Theme color managed via viewport export */}
 
-        {/* Import Map for external dependencies if not using package.json dependencies */}
-        <script type="importmap" dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "imports": {
-              "@google/genai": "https://esm.sh/@google/genai@^1.34.0",
-              "react-dom/client": "https://esm.sh/react-dom@^19.2.3/client",
-              "react/": "https://esm.sh/react@^19.2.3/",
-              "react": "https://esm.sh/react@^19.2.3",
-              "react-dom": "https://esm.sh/react-dom@^19.2.3",
-              "react-dom/": "https://esm.sh/react-dom@^19.2.3/"
-            }
-          })
-        }} />
-
         {/* Google Analytics (gtag.js) */}
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-XN6G9DC24K"></script>
         <script dangerouslySetInnerHTML={{
@@ -108,16 +89,7 @@ export default function RootLayout({
 
         <script src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`} async defer></script>
 
-        {/* Google Analytics (gtag.js) */}
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-XN6G9DC24K"></script>
-        <script dangerouslySetInnerHTML={{
-          __html: `
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-XN6G9DC24K');
-          `
-        }} />
+
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

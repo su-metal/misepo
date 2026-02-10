@@ -24,7 +24,6 @@ export async function GET() {
     error,
   } = await supabase.auth.getUser();
 
-  console.log("[presets GET] auth result user_id=", user?.id ?? null, "error=", error?.message ?? null);
 
   if (error || !user) {
     return NextResponse.json({ ok: false, error: "unauthorized" });
@@ -38,7 +37,6 @@ export async function GET() {
     .order("sort_order", { ascending: true })
     .order("created_at", { ascending: true });
 
-  console.log("[presets GET] user.id=", user.id, "fetchErr=", fetchErr?.message ?? null, "rows=", (data ?? []).length);
 
   if (fetchErr) {
     return NextResponse.json({ ok: false, error: fetchErr.message });

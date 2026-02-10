@@ -16,7 +16,7 @@ async function handleDailyContextRequest(date: string, region?: string, force: b
   }
   
   // 2. Generate
-  console.log(`[API/Trends] Generating DailyContext for ${date} in ${region} (Force: ${force})`);
+  console.debug(`[API/Trends] Generating DailyContext for ${date} in ${region} (Force: ${force})`);
   const context = await generateDailyContext(date, region);
   
   // 3. Save Cache
