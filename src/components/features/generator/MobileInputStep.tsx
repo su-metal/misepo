@@ -106,30 +106,32 @@ export const MobileInputStep: React.FC<MobileInputStepProps> = ({
                             {isGoogleMaps ? 'Googleマップの口コミを貼り付けてください' : '今日はどんなことを伝えますか？'}
                         </p>
 
-                        {/* AI Consultation Pill */}
-                        <div className="flex justify-center mt-4">
-                            <button
-                                onClick={!isAIDisabled ? (isOmakaseMode ? () => setIsOmakaseMode(false) : handleOmakaseStart) : undefined}
-                                disabled={isAIDisabled}
-                                className={`
-                                    flex items-center gap-2 px-5 py-2 rounded-full border shadow-sm transition-all active:scale-95
-                                    ${isAIDisabled
-                                        ? 'bg-slate-50 border-slate-100 text-slate-300 opacity-60 grayscale cursor-not-allowed'
-                                        : (isOmakaseMode
-                                            ? 'bg-[#2b2b2f] border-[#2b2b2f] text-white hover:bg-black/80'
-                                            : 'bg-white border-stone-200 text-[#2b2b2f] hover:border-stone-300 hover:bg-stone-50'
-                                        )
-                                    }
-                                `}
-                            >
-                                <div className={`w-5 h-5 rounded-lg flex items-center justify-center ${isAIDisabled ? 'bg-slate-200' : (isOmakaseMode ? 'bg-white/20' : 'bg-stone-800')} shadow-sm`}>
-                                    {isOmakaseMode ? <CloseIcon className="w-3 h-3 text-white" /> : <SparklesIcon className="w-3 h-3 text-white" />}
-                                </div>
-                                <span className="text-[11px] font-black tracking-tight">
-                                    {isAIDisabled ? 'AI相談 非対応' : (isOmakaseMode ? '相談を閉じる' : 'AIトピック・ソムリエに相談')}
-                                </span>
-                            </button>
-                        </div>
+                        {/* AI Consultation Pill - Hidden when image is selected */}
+                        {!selectedImage && (
+                            <div className="flex justify-center mt-4">
+                                <button
+                                    onClick={!isAIDisabled ? (isOmakaseMode ? () => setIsOmakaseMode(false) : handleOmakaseStart) : undefined}
+                                    disabled={isAIDisabled}
+                                    className={`
+                                        flex items-center gap-2 px-5 py-2 rounded-full border shadow-sm transition-all active:scale-95
+                                        ${isAIDisabled
+                                            ? 'bg-slate-50 border-slate-100 text-slate-300 opacity-60 grayscale cursor-not-allowed'
+                                            : (isOmakaseMode
+                                                ? 'bg-[#2b2b2f] border-[#2b2b2f] text-white hover:bg-black/80'
+                                                : 'bg-white border-stone-200 text-[#2b2b2f] hover:border-stone-300 hover:bg-stone-50'
+                                            )
+                                        }
+                                    `}
+                                >
+                                    <div className={`w-5 h-5 rounded-lg flex items-center justify-center ${isAIDisabled ? 'bg-slate-200' : (isOmakaseMode ? 'bg-white/20' : 'bg-stone-800')} shadow-sm`}>
+                                        {isOmakaseMode ? <CloseIcon className="w-3 h-3 text-white" /> : <SparklesIcon className="w-3 h-3 text-white" />}
+                                    </div>
+                                    <span className="text-[11px] font-black tracking-tight">
+                                        {isAIDisabled ? 'AI相談 非対応' : (isOmakaseMode ? '相談を閉じる' : 'AIトピック・ソムリエに相談')}
+                                    </span>
+                                </button>
+                            </div>
+                        )}
                     </div>
                     {question && (
                         <div
@@ -161,76 +163,80 @@ export const MobileInputStep: React.FC<MobileInputStepProps> = ({
                         </div>
                     )}
 
-                    <AutoResizingTextarea
-                        value={inputText}
-                        onChange={(e) => onInputTextChange(e.target.value)}
-                        placeholder={question ? "こちらの質問への答えを短く入力してください..." : (isGoogleMaps ? "こちらにお客様からの口コミを貼り付けてください。丁寧な返信案をいくつか作成します。" : "「旬の食材が入荷した」「雨の日限定の割引をする」など、短いメモ書きでも大丈夫ですよ。")}
-                        className="w-full min-h-[220px] p-8 pb-16 bg-[#edeff1] border border-slate-100 rounded-[40px] text-lg font-bold leading-relaxed focus:outline-none focus:border-slate-200 transition-all placeholder:text-slate-300 text-[#2b2b2f] resize-none overflow-hidden"
-                    />
-
-                    {/* Image Preview Overlay */}
+                    {/* Image Preview - Moved relative to avoid overlap */}
                     {selectedImage && (
-                        <div className="absolute bottom-20 left-8 animate-in fade-in zoom-in duration-300">
-                            <div className="relative group">
+                        <div className="mb-4 animate-in fade-in zoom-in duration-300 flex justify-start pl-2">
+                            <div className="relative group inline-block">
                                 <img
                                     src={selectedImage}
                                     alt="Selected"
-                                    className="w-20 h-20 object-cover rounded-2xl shadow-lg border-2 border-white"
+                                    className="w-24 h-24 object-cover rounded-2xl shadow-lg border-2 border-white"
                                 />
                                 <button
                                     onClick={() => onImageChange?.(null, null)}
-                                    className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-[#F87171] text-white flex items-center justify-center shadow-md active:scale-90 transition-transform"
+                                    className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-[#F87171] text-white flex items-center justify-center shadow-md active:scale-90 transition-transform z-10"
                                 >
-                                    <CloseIcon className="w-3 h-3" />
+                                    <CloseIcon className="w-3.5 h-3.5" />
                                 </button>
                             </div>
                         </div>
                     )}
 
-                    <div className="absolute bottom-6 left-6 flex items-center gap-3">
-                        <input
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
-                            id="camera-input"
-                            onChange={(e) => {
-                                const file = e.target.files?.[0];
-                                if (file) {
-                                    const reader = new FileReader();
-                                    reader.onloadend = () => {
-                                        const base64 = reader.result as string;
-                                        onImageChange?.(base64, file.type);
-                                    };
-                                    reader.readAsDataURL(file);
-                                }
-                            }}
+                    <div className="relative">
+                        <AutoResizingTextarea
+                            value={inputText}
+                            onChange={(e) => onInputTextChange(e.target.value)}
+                            placeholder={question ? "こちらの質問への答えを短く入力してください..." : (isGoogleMaps ? "こちらにお客様からの口コミを貼り付けてください。丁寧な返信案をいくつか作成します。" : "「旬の食材が入荷した」「雨の日限定の割引をする」など、短いメモ書きでも大丈夫ですよ。")}
+                            className="w-full min-h-[220px] p-8 pb-16 bg-[#edeff1] border border-slate-100 rounded-[40px] text-lg font-bold leading-relaxed focus:outline-none focus:border-slate-200 transition-all placeholder:text-slate-300 text-[#2b2b2f] resize-none overflow-hidden"
                         />
-                        <label
-                            htmlFor="camera-input"
-                            className={`w-12 h-12 rounded-full flex items-center justify-center transition-all shadow-md cursor-pointer ${selectedImage ? 'bg-[#2b2b2f] text-white' : 'bg-[#edeff1] text-[#2b2b2f] active:scale-95'}`}
-                        >
-                            <CameraIcon className="w-6 h-6" />
-                        </label>
 
-                        {isGoogleMaps && (
-                            <button
-                                onClick={toggleVoiceInput}
-                                className={`w-12 h-12 rounded-full flex items-center justify-center transition-all shadow-md ${isListening ? 'bg-[#4338CA] text-white animate-pulse' : 'bg-[#edeff1] text-[#2b2b2f]'}`}
+                        {/* Camera & Mic Buttons inside the textarea bottom area */}
+                        <div className="absolute bottom-6 left-6 flex items-center gap-3">
+                            <input
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
+                                id="camera-input"
+                                onClick={(e) => { (e.target as HTMLInputElement).value = ''; }}
+                                onChange={(e) => {
+                                    const file = e.target.files?.[0];
+                                    if (file) {
+                                        const reader = new FileReader();
+                                        reader.onloadend = () => {
+                                            const base64 = reader.result as string;
+                                            onImageChange?.(base64, file.type);
+                                        };
+                                        reader.readAsDataURL(file);
+                                    }
+                                }}
+                            />
+                            <label
+                                htmlFor="camera-input"
+                                className={`w-12 h-12 rounded-full flex items-center justify-center transition-all shadow-md cursor-pointer ${selectedImage ? 'bg-[#2b2b2f] text-white' : 'bg-white text-[#2b2b2f] active:scale-95'}`}
                             >
-                                <MicIcon className="w-6 h-6" />
+                                <CameraIcon className="w-6 h-6" />
+                            </label>
+
+                            {isGoogleMaps && (
+                                <button
+                                    onClick={toggleVoiceInput}
+                                    className={`w-12 h-12 rounded-full flex items-center justify-center transition-all shadow-md ${isListening ? 'bg-[#4338CA] text-white animate-pulse' : 'bg-white text-[#2b2b2f]'}`}
+                                >
+                                    <MicIcon className="w-6 h-6" />
+                                </button>
+                            )}
+                        </div>
+
+                        {inputText && (
+                            <button
+                                onClick={() => onInputTextChange("")}
+                                className="absolute bottom-6 right-6 w-12 h-12 rounded-full bg-white border border-slate-100 flex items-center justify-center shadow-md active:scale-95 transition-all text-slate-400 hover:text-[#2b2b2f]"
+                                title="入力をクリア"
+                            >
+                                <EraserIcon className="w-6 h-6" />
                             </button>
                         )}
                     </div>
-
-                    {inputText && (
-                        <button
-                            onClick={() => onInputTextChange("")}
-                            className="absolute bottom-6 right-6 w-12 h-12 rounded-full bg-[#edeff1] border border-slate-100 flex items-center justify-center shadow-md active:scale-95 transition-all text-slate-400 hover:text-[#2b2b2f]"
-                            title="入力をクリア"
-                        >
-                            <EraserIcon className="w-6 h-6" />
-                        </button>
-                    )}
                 </div>
 
             </div>

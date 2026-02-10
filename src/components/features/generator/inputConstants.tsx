@@ -84,6 +84,7 @@ export interface PostInputFormProps {
     onMobileResultOpen?: (isOpen: boolean) => void;
     onStepChange?: (step: 'platform' | 'input' | 'confirm' | 'result') => void;
     restoreTrigger?: number;
+    initialStepOnRestore?: 'input' | 'result';
     onOpenOnboarding?: () => void;
     onOpenSettings?: () => void;
     targetAudiences?: string[];

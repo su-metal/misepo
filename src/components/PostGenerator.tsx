@@ -236,6 +236,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
               onMobileResultOpen={setIsMobileResultOpen}
               onStepChange={setMobileStep}
               restoreTrigger={restoreTrigger}
+              initialStepOnRestore={restorePost ? (restorePost.results.length > 0 ? 'result' : 'input') : undefined}
               closeDrawerTrigger={closeDrawerTrigger}
               openDrawerTrigger={openDrawerTrigger}
               onOpenOnboarding={() => setShowOnboarding(true)}
@@ -269,11 +270,9 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
                 setMobileActiveTab('home');
                 if (flow.platforms.length === 0) flow.handleSetActivePlatform(Platform.Instagram);
 
-                // If we already have results (generation completed), reset the input for a new start.
-                // If no results yet, keep the input as it might be a draft.
-                if (flow.resultGroups.length > 0) {
-                  flow.handleResetAll(true); // true to keep currently selected platforms
-                }
+                // Always reset input when clicking 'New Post' (Plus button) to ensure a fresh start.
+                // Pass true to keep the currently selected platform.
+                flow.handleResetAll(true);
 
                 setOpenDrawerTrigger(prev => prev + 1);
               }}
