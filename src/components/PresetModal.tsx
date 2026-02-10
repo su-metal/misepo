@@ -429,6 +429,12 @@ const PresetModal: React.FC<PresetModalProps> = ({
           }
         }
       }
+    } else {
+      // RESET for new profile
+      setName('');
+      setAvatar('shop');
+      setCustomPrompts({});
+      setTempNewSamples([]);
     }
   }, [selectedPresetId, presets]);
 
@@ -438,6 +444,10 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
   const handleStartNew = () => {
     setSelectedPresetId(null);
+    setName('');
+    setAvatar('shop');
+    setCustomPrompts({});
+    setTempNewSamples([]);
     setMobileView('edit');
   };
 
@@ -602,8 +612,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
       let finalCustomPrompts = overridePrompts ? { ...overridePrompts } : { ...customPrompts };
 
       // Compute relatedItems first for analysis
-      const relatedItems = selectedPresetId
-        ? trainingItems.filter(item => item.presetId === selectedPresetId)
+      const relatedItems = (overrideId || selectedPresetId)
+        ? trainingItems.filter(item => item.presetId === (overrideId || selectedPresetId))
         : tempNewSamples;
 
       // Auto-analyze during save if manual update
