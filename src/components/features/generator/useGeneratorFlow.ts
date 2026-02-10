@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { 
-  Platform, PostPurpose, GoogleMapPurpose, Tone, Length, 
+  Platform, PostPurpose, GoogleMapPurpose, Tone, ReplyDepth, Length, 
   StoreProfile, GenerationConfig, GeneratedPost, Preset, GeneratedResult, TrainingItem, UserPlan
 } from '../../../types';
 import { DEMO_SAMPLE_TEXT, LOADING_TIPS } from '../../../constants';
@@ -39,6 +39,7 @@ export function useGeneratorFlow(props: {
   const [gmapPurpose, setGmapPurpose] = useState<GoogleMapPurpose>(GoogleMapPurpose.Auto);
   const [starRating, setStarRating] = useState<number | null>(null);
   const [tone, setTone] = useState<Tone>(Tone.Standard);
+  const [replyDepth, setReplyDepth] = useState<ReplyDepth>(ReplyDepth.Standard);
   const [length, setLength] = useState<Length>(Length.Medium);
   const [inputText, setInputText] = useState('');
   const [xConstraint140, setXConstraint140] = useState<boolean>(true);
@@ -402,7 +403,8 @@ export function useGeneratorFlow(props: {
       const config: GenerationConfig = {
         platform: p,
         purpose,
-        tone,
+        tone: p === Platform.GoogleMaps ? Tone.Standard : tone,
+        replyDepth: p === Platform.GoogleMaps ? replyDepth : undefined,
         length,
         inputText,
         question,
@@ -757,6 +759,7 @@ export function useGeneratorFlow(props: {
     gmapPurpose, setGmapPurpose,
     starRating, onStarRatingChange: handleStarRatingChange,
     tone, setTone: handleToneChange,
+    replyDepth, setReplyDepth,
     length, setLength,
     inputText, setInputText,
     loading, resultGroups,

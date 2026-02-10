@@ -10,6 +10,7 @@ import {
   GoogleMapPurpose,
   RiskTier,
   Tone,
+  ReplyDepth,
   TopicTemplate,
   DailyContext,
 } from "../types";
@@ -132,6 +133,14 @@ const GMAP_PURPOSE_PROMPTS: Record<string, string> = {
   [GoogleMapPurpose.Info]: "口コミへの返信の中に、営業時間やサービス内容などの最新情報を盛り込んでください。"
 };
 
+// Reply Depth Prompts for Google Maps reviews
+const REPLY_DEPTH_PROMPTS = {
+  [ReplyDepth.Light]: "**LIGHT MODE (あっさり)**: Keep response EXTREMELY BRIEF (1-2 sentences MAX). Express gratitude ONLY. Do NOT reference specific details from the review. Example: '温かいお言葉をありがとうございます。またのご来店をお待ちしております。'",
+  [ReplyDepth.Standard]: "**STANDARD MODE (バランス)**: Response should be moderate length (2-3 sentences). Acknowledge the MAIN POINT of the review briefly, then express gratitude. Do NOT address every detail. Example: 'お料理をお楽しみいただけたようで嬉しく思います。またのご来店を心よりお待ちしております。'",
+  [ReplyDepth.Deep]: "**DEEP MODE (丁寧)**: Response should be DETAILED and COMPREHENSIVE (4-6 sentences). You MUST address EVERY specific point mentioned in the review individually. Reference exact details like dish names, service aspects, atmosphere comments. Show you read the entire review carefully. Example: 'パスタとデザートをお褒めいただきありがとうございます。スタッフの対応についてもお気に召していただけて大変嬉しく思います。雰囲気づくりにも力を入れておりますので...'"
+};
+
+
 const GMAP_NEGATIVE_CONSTRAINTS = `
 - **免責表現の禁止**: 以下の表現、またはそれに類する「許しを請う」「言い訳をする」ような表現は**絶対に**使用しないでください。
   - 「何卒ご容赦いただけますようお願い申し上げます」
@@ -244,7 +253,23 @@ export const generateContent = async (
       medium: shouldBoost ? { target: '400-500', min: 380, max: 600 } : (isX ? { target: '250-300', min: 200, max: 350 } : { target: '300-400', min: 280, max: 450 }),
       long: shouldBoost ? { target: '650-850', min: 600, max: 1100 } : (isX ? { target: '500-600', min: 450, max: 700 } : { target: '500-650', min: 450, max: 750 })
     };
-    const t = targets[config.length as keyof typeof targets] || targets.medium;
+    const t = (() => {
+      const base = targets[config.length as keyof typeof targets] || targets.medium;
+      // For Google Maps, override length based on replyDepth
+      if (isGMap && config.replyDepth) {
+        switch (config.replyDepth) {
+          case ReplyDepth.Light:
+            return { target: '50-100', min: 30, max: 120 };
+          case ReplyDepth.Standard:
+            return { target: '120-200', min: 100, max: 250 };
+          case ReplyDepth.Deep:
+            return { target: '250-400', min: 200, max: 500 };
+          default:
+            return base;
+        }
+      }
+      return base;
+    })();
 
     // Platform-Specific Persona Logic: Parse the JSON container if present
     let activePersonaYaml = "";
@@ -345,13 +370,17 @@ export const generateContent = async (
       - **Structure & Flow**: Follow the sequence and **CTA (Call to Action)** style analyzed in the style guide.
       - **Variety & Repetition**: Avoid repetitive patterns unless noted as a habit. Maintain emoji density as described.
       - **CRITICAL LENGTH RULE**: **Length** is determined by **Volume Control** below, NOT by the samples. If the samples are long but the user asks for 'Short', you MUST write a short post in the *style* of the samples.
-    - **Volume Control**: Strictly follow the requested **Length: ${config.length}**. 
+    - **Volume Control**: ${isGMap && config.replyDepth ? `Strictly follow the **Reply Depth: ${config.replyDepth}**.
+      - **Target Character Counts (Google Maps Reply)**:
+        - **あっさり (Light)**: 50-100 chars (1-2 sentences MAX). ${config.replyDepth === ReplyDepth.Light ? '← **ACTIVE**' : ''}
+        - **バランス (Standard)**: 120-200 chars (2-3 sentences). ${config.replyDepth === ReplyDepth.Standard ? '← **ACTIVE**' : ''}
+        - **丁寧 (Deep)**: 250-400 chars (4-6 sentences). ${config.replyDepth === ReplyDepth.Deep ? '← **ACTIVE**' : ''}` : `Strictly follow the requested **Length: ${config.length}**. 
       - **Target Character Counts**:
         - **Short**: **Concise but Sufficient** (Range: ${targets.short.target} chars).
           - **Constraint**: Minimum ${targets.short.min} characters. Max ${targets.short.max} characters.
           - **Layout**: Use moderate line breaks for readability. 1 empty line between distinct points.
         - **Medium**: Standard (Target: ${targets.medium.target} chars. Max ${targets.medium.max}).
-        - **Long**: Detailed (Target: ${targets.long.target} chars. Max ${targets.long.max}).
+        - **Long**: Detailed (Target: ${targets.long.target} chars. Max ${targets.long.max}).`}
     - **Platform Bias**: **IGNORE** all standard "polite" norms for ${config.platform}. The <learning_samples> are the absolute truth for the owner's voice. **NOTE**: Mandatory structural rules (like LINE's 3-balloon and '---' format) still apply; reproduction of the owner's style should happen *within* each segment.
     - **Target Audience**: ${(() => {
         const targetAudienceStr = config.targetAudience || profile.targetAudience;
@@ -475,7 +504,12 @@ DO NOT use stiff business boilerplate like "誠にありがとうございます
         if (isGMap) {
             const purposeStr = GMAP_PURPOSE_PROMPTS[config.gmapPurpose || config.purpose as GoogleMapPurpose] || GMAP_PURPOSE_PROMPTS[GoogleMapPurpose.Auto];
             const factInstruction = config.storeSupplement ? `\n- **FACTUAL CORE**: You MUST incorporate the specific details provided in <owner_explanation>. These facts are the most important content of the reply.` : '';
-            return `${styleInstruction}${factInstruction}${targetInstruction}\n\nTask: The <user_input> is a customer review. Generate a REPLY from the owner based on this purpose: "${purposeStr}". ${lengthWarning}`;
+            
+            const depthInstruction = config.replyDepth 
+                ? `\n- **REPLY DEPTH**: ${REPLY_DEPTH_PROMPTS[config.replyDepth] || REPLY_DEPTH_PROMPTS[ReplyDepth.Standard]}`
+                : `\n- **REPLY DEPTH**: ${REPLY_DEPTH_PROMPTS[ReplyDepth.Standard]}`;
+
+            return `${styleInstruction}${factInstruction}${targetInstruction}${depthInstruction}\n\nTask: The <user_input> is a customer review. Generate a REPLY from the owner based on this purpose: "${purposeStr}". ${lengthWarning}`;
         }
         
         const postPurposeStr = POST_PURPOSE_PROMPTS[config.purpose as PostPurpose] || POST_PURPOSE_PROMPTS[PostPurpose.Auto];

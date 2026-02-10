@@ -177,6 +177,8 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
               onToneChange={flow.setTone}
               length={flow.length}
               onLengthChange={flow.setLength}
+              replyDepth={flow.replyDepth}
+              onReplyDepthChange={flow.setReplyDepth}
               inputText={flow.inputText}
               onInputTextChange={flow.setInputText}
               question={flow.question}

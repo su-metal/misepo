@@ -6,7 +6,7 @@ import {
     AutoSparklesIcon, RotateCcwIcon, StarIcon
 } from '../../Icons';
 import {
-    TONES, LENGTHS
+    TONES, LENGTHS, REPLY_DEPTHS
 } from './inputConstants';
 import { TARGET_AUDIENCES } from '../../../constants';
 
@@ -37,6 +37,7 @@ export const MobileConfirmStep: React.FC<MobileConfirmStepProps> = ({
 }) => {
     const {
         platform, inputText, tone, onToneChange, length, onLengthChange,
+        replyDepth, onReplyDepthChange,
         starRating, onStarRatingChange,
         isGenerating, onGenerate, isMultiGen, isStyleLocked,
         presets, activePresetId, onApplyPreset, onOpenPresetModal,
@@ -81,7 +82,7 @@ export const MobileConfirmStep: React.FC<MobileConfirmStepProps> = ({
                                             <StarIcon
                                                 className={`w-7 h-7 transition-all ${star <= (starRating || 0)
                                                     ? 'text-[#FFD166] fill-[#FFD166] drop-shadow-sm'
-                                                    : 'text-slate-200'
+                                                    : 'text-slate-300'
                                                     }`}
                                             />
                                         </button>
@@ -245,23 +246,23 @@ export const MobileConfirmStep: React.FC<MobileConfirmStepProps> = ({
                         <div className="mt-8 px-2 space-y-8">
                             {/* Settings Grid - Monochrome */}
                             <div className="flex gap-8 mb-4">
-                                {/* Tone Slider - Hide if Locked */}
+                                {/* Tone Slider (or Reply Depth for GMap) */}
                                 {!isStyleLocked && (
                                     <div className="flex-1 flex flex-col gap-3">
                                         <div className="flex items-center justify-between px-1">
                                             <div className="flex items-center gap-1.5">
-                                                <span className="text-[8px] font-black text-[#666666] uppercase tracking-[0.2em]">トーン</span>
+                                                <span className="text-[8px] font-black text-[#666666] uppercase tracking-[0.2em]">{isGoogleMaps ? '返信の丁寧さ' : 'トーン'}</span>
                                             </div>
                                         </div>
                                         <div className="relative px-1 pt-1 pb-2">
                                             <div className="absolute top-[6px] left-1 right-1 h-[1.5px] bg-slate-100" />
                                             <div className="relative flex justify-between items-center h-3">
-                                                {TONES.map((t) => {
-                                                    const isActive = tone === t.id;
+                                                {(isGoogleMaps ? REPLY_DEPTHS : TONES).map((t) => {
+                                                    const isActive = isGoogleMaps ? (replyDepth === t.id) : (tone === t.id);
                                                     return (
                                                         <button
                                                             key={t.id}
-                                                            onClick={() => onToneChange(t.id)}
+                                                            onClick={() => isGoogleMaps && onReplyDepthChange ? onReplyDepthChange(t.id as any) : onToneChange(t.id as any)}
                                                             className="relative z-10 flex flex-col items-center group w-full first:items-start last:items-end"
                                                         >
                                                             <div className={`w-3 h-3 rounded-full border-2 transition-all duration-300 ${isActive ? 'bg-[#2b2b2f] border-[#2b2b2f] scale-110 shadow-[0_0_10px_rgba(99,102,241,0.5)]' : 'bg-white border-slate-200'}`} />
@@ -277,7 +278,7 @@ export const MobileConfirmStep: React.FC<MobileConfirmStepProps> = ({
                                 )}
 
                                 {/* Length Slider */}
-                                {!isX && (
+                                {!isX && !isGoogleMaps && (
                                     <div className="flex-1 flex flex-col gap-3">
                                         <div className="flex items-center justify-between px-1">
                                             <span className="text-[8px] font-black text-[#666666] uppercase tracking-[0.2em]">長さ</span>

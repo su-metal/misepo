@@ -40,6 +40,12 @@ export enum Tone {
   Casual = 'casual' // もっと親しみ
 }
 
+export enum ReplyDepth {
+  Light = 'light',   // あっさり
+  Standard = 'standard', // バランス
+  Deep = 'deep',     // 丁寧
+}
+
 export enum Length {
   Short = 'short',
   Medium = 'medium',
@@ -76,6 +82,7 @@ export interface GenerationConfig {
   storeSupplement?: string; // Google Maps only
   customPrompt?: string; // User's manual instructions
   presetPrompt?: string; // System instructions from the active preset
+  replyDepth?: ReplyDepth; // New: Reply depth for Google Maps
 
   // Decoration Control
   includeSymbols?: boolean; // Whether to include decorative symbols
