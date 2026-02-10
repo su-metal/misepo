@@ -186,10 +186,10 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                     <span className="truncate max-w-[80px]">{item.profile.name}</span>
                   </div>
                 )}
-                {item.config.platforms.includes(Platform.GoogleMaps) && item.config.replyDepth ? (
+                {item.config.platforms.includes(Platform.GoogleMaps) ? (
                   <div className="flex items-center gap-1 text-[10px] font-bold text-slate-400 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-100/50">
                     <span className="opacity-50">丁寧さ:</span>
-                    <span>{replyDepthLabels[item.config.replyDepth] || item.config.replyDepth}</span>
+                    <span>{replyDepthLabels[item.config.replyDepth as string] || 'バランス'}</span>
                   </div>
                 ) : (
                   <>
