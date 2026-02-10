@@ -74,13 +74,24 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
     });
   }, [history]);
 
-  const getPlatformIcon = (p: Platform, className?: string) => {
-    const iconClass = className || "w-3 h-3 text-slate-400";
+  const getPlatformIcon = (p: Platform, className?: string, isColored?: boolean) => {
+    let iconClass = className || "w-3 h-3 text-slate-400";
+
+    if (isColored) {
+      const base = className || "w-3 h-3";
+      switch (p) {
+        case Platform.X: iconClass = `${base} text-black`; break;
+        case Platform.Instagram: iconClass = `${base} text-[#E4405F]`; break;
+        case Platform.GoogleMaps: iconClass = `${base} text-[#4285F4]`; break;
+        case Platform.Line: iconClass = `${base} text-[#06C755]`; break;
+      }
+    }
+
     switch (p) {
       case Platform.X: return <XIcon className={iconClass} />;
       case Platform.Instagram: return <InstagramIcon className={iconClass} />;
       case Platform.GoogleMaps: return <GoogleMapsIcon className={iconClass} />;
-      case Platform.Line: return <LineIcon className={iconClass} color="currentColor" textFill="white" />;
+      case Platform.Line: return <LineIcon className={iconClass} color={isColored ? "#06C755" : "currentColor"} textFill="white" />;
       default: return null;
     }
   };
@@ -96,6 +107,12 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
     short: '短め',
     medium: '普通',
     long: '長め'
+  };
+
+  const replyDepthLabels: Record<string, string> = {
+    light: 'あっさり',
+    standard: 'バランス',
+    deep: '丁寧'
   };
 
   // Define supported platforms for regeneration suggestions
@@ -140,8 +157,8 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
             <div className="flex items-center justify-between pointer-events-none pr-10">
               <div className="flex -space-x-2">
                 {item.config.platforms.map((p, pIdx) => (
-                  <div key={`${p}-${pIdx}`} className="w-8 h-8 rounded-full flex items-center justify-center bg-white border border-slate-100 shadow-sm group-hover:border-slate-200 transition-colors">
-                    {getPlatformIcon(p, "w-3.5 h-3.5 text-slate-400 group-hover:text-[#2b2b2f] transition-colors")}
+                  <div key={`${p}-${pIdx}`} className="w-8 h-8 rounded-full flex items-center justify-center bg-white border border-slate-100 shadow-sm transition-colors">
+                    {getPlatformIcon(p, "w-4 h-4", true)}
                   </div>
                 ))}
               </div>
@@ -169,19 +186,28 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                     <span className="truncate max-w-[80px]">{item.profile.name}</span>
                   </div>
                 )}
-                <div className="flex items-center gap-1 text-[10px] font-bold text-slate-400 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-100/50">
-                  <span className="opacity-50">口調:</span>
-                  <span>{toneLabels[item.config.tone] || item.config.tone}</span>
-                </div>
-                <div className="flex items-center gap-1 text-[10px] font-bold text-slate-400 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-100/50">
-                  <span className="opacity-50">長さ:</span>
-                  <span>{lengthLabels[item.config.length] || item.config.length}</span>
-                </div>
+                {item.config.platforms.includes(Platform.GoogleMaps) && item.config.replyDepth ? (
+                  <div className="flex items-center gap-1 text-[10px] font-bold text-slate-400 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-100/50">
+                    <span className="opacity-50">丁寧さ:</span>
+                    <span>{replyDepthLabels[item.config.replyDepth] || item.config.replyDepth}</span>
+                  </div>
+                ) : (
+                  <>
+                    <div className="flex items-center gap-1 text-[10px] font-bold text-slate-400 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-100/50">
+                      <span className="opacity-50">口調:</span>
+                      <span>{toneLabels[item.config.tone] || item.config.tone}</span>
+                    </div>
+                    <div className="flex items-center gap-1 text-[10px] font-bold text-slate-400 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-100/50">
+                      <span className="opacity-50">長さ:</span>
+                      <span>{lengthLabels[item.config.length] || item.config.length}</span>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
 
             {/* Create for other SNS Section */}
-            {unusedPlatforms.length > 0 && (
+            {unusedPlatforms.length > 0 && !usedPlatforms.has(Platform.GoogleMaps) && (
               <div
                 className="mt-2 pt-3 border-t border-slate-100 flex items-center gap-3"
                 onClick={(e) => e.stopPropagation()} // Prevent card click
