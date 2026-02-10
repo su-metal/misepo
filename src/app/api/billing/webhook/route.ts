@@ -42,7 +42,7 @@ export async function POST(req: Request) {
   const fallbackAppId = env.APP_ID;
 
   // --- Stripe webhook dedupe（二重処理防止） ---
-  console.log("[stripe] Received event:", event.id, event.type);
+  console.info("[stripe] Received event:", event.id, event.type);
   const { error: dedupeErr } = await supabaseAdmin
     .from("stripe_events")
     .insert({
@@ -53,7 +53,7 @@ export async function POST(req: Request) {
 
   if (dedupeErr) {
     if (dedupeErr.message?.includes("duplicate key")) {
-      console.log("[stripe] deduped event:", event.id, event.type);
+      console.info("[stripe] deduped event:", event.id, event.type);
       return NextResponse.json({ ok: true, deduped: true });
     }
     throw new Error(dedupeErr.message);
@@ -172,9 +172,9 @@ export async function POST(req: Request) {
           billingRef: sub?.id ?? null,
           customerId,
         });
-        console.log(`[webhook] Subscription deleted for user ${userId}: ${sub.id}`);
+        console.info(`[webhook] Subscription deleted for user ${userId}: ${sub.id}`);
       } else {
-        console.log(`[webhook] Ignoring delete event for old subscription ${sub.id}. Current: ${currentEnt?.billing_reference_id}`);
+        console.info(`[webhook] Ignoring delete event for old subscription ${sub.id}. Current: ${currentEnt?.billing_reference_id}`);
       }
     }
 
@@ -266,7 +266,7 @@ async function upsertEntitlement(params: {
 }) {
   const { userId, appId, plan, status, expiresAt, billingRef, trialEndsAt } = params;
 
-  console.log(`[webhook] Upserting entitlement for ${userId}. Plan: ${plan}, Status: ${status}, Ref: ${billingRef}`);
+  console.info(`[webhook] Upserting entitlement for ${userId}. Plan: ${plan}, Status: ${status}, Ref: ${billingRef}`);
 
   const payload: Record<string, unknown> = {
     user_id: userId,

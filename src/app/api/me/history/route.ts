@@ -45,8 +45,6 @@ export async function GET() {
   // (removed strict canUseApp check to support trial and free users)
 
   // Query through ai_runs with join to ai_run_records (foreign key relationship)
-  console.log("[HISTORY FETCH] Querying:", { app_id: APP_ID, user_id: user.id });
-  
   const { data, error: historyErr } = await supabaseAdmin
     .from("ai_runs")
     .select("id, run_type, created_at, is_pinned, ai_run_records(input, output)")
@@ -100,18 +98,6 @@ export async function GET() {
         profile: rec?.input?.profile, // Snapshot of the profile
         results: rec?.output ?? [],
       };
-      
-      // Debug: Log the first history entry to see data structure
-      if (row.id && process.env.NODE_ENV === 'development') {
-        console.log('[HISTORY DEBUG] Entry structure:', {
-          id: row.id,
-          outputType: typeof rec?.output,
-          outputIsArray: Array.isArray(rec?.output),
-          outputSample: rec?.output,
-          platforms: storedConfig?.platforms,
-        });
-      }
-      
       return historyEntry;
     });
 

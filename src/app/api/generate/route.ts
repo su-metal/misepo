@@ -8,8 +8,10 @@ import { env } from "@/lib/env";
 import { computeCanUseApp } from "@/lib/entitlements/canUseApp";
 import { getJSTDateRange } from "@/lib/dateUtils";
 import { getUserUsage } from "@/lib/billing/usage";
+import Stripe from "stripe";
 
 const APP_ID = env.APP_ID;
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export const maxDuration = 60; // 60 seconds (requires Pro plan on Vercel)
 export const dynamic = "force-dynamic";
@@ -102,7 +104,7 @@ export async function POST(req: Request) {
 
         if (createErr) return NextResponse.json({ ok: false, error: createErr.message }, { status: 500 });
         effectiveEnt = created;
-        console.log(`[GenerateAPI] Auto-initialized trial for new user ${userId}`);
+        console.info(`[GenerateAPI] Auto-initialized trial for new user ${userId}`);
       } else {
         // Not eligible for trial and no entitlement: fallback to inactive trial
         const { data: created, error: createErr } = await supabaseAdmin
@@ -181,8 +183,6 @@ export async function POST(req: Request) {
         let usageStartTime = startOfMonth;
         if (effectiveEnt.billing_reference_id && effectiveEnt.billing_reference_id.startsWith('sub_')) {
             try {
-                const Stripe = require("stripe");
-                const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
                 const sub: any = await stripe.subscriptions.retrieve(effectiveEnt.billing_reference_id);
                 const effectiveStart = sub.current_period_start ?? sub.billing_cycle_anchor ?? sub.start_date;
                 if (effectiveStart) {
@@ -268,7 +268,7 @@ export async function POST(req: Request) {
 
         // FALLBACK LOGIC: 
         if (presetId && !hasLearningSamples) {
-            console.log(`[LEARNING] Fallback to Omakase for ${config.platform} (No learning data)`);
+            console.info(`[LEARNING] Fallback to Omakase for ${config.platform} (No learning data)`);
             config.presetPrompt = undefined;
             config.persona_yaml = null;
         } else {
@@ -335,6 +335,4 @@ export async function POST(req: Request) {
         { status: 500 }
       );
     }
-
-  return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
 }

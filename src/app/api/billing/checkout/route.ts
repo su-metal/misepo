@@ -94,7 +94,7 @@ export async function POST(req: Request) {
         await stripe.customers.retrieve(customerId);
       } catch (err: any) {
         if (err.code === 'resource_missing' || err.status === 404 || err.message?.includes("No such customer")) {
-          console.log(`[CheckoutAPI] Customer ${customerId} not found in Stripe. Clearing and re-creating...`);
+          console.info(`[CheckoutAPI] Customer ${customerId} not found in Stripe. Clearing and re-creating...`);
           customerId = null; // Mark as null to trigger re-creation below
         } else {
           throw err; // Re-throw other errors
