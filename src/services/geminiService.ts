@@ -368,6 +368,13 @@ export const generateContent = async (
       - **AI BIAS REMOVAL**: **EXTERMINATE** the AI's natural tendency to be polite, helpful, or friendly (e.g., adding "〜ねっ", "〜よ〜", "〜😊"). If the samples are rough, blunt, or eccentric, YOU must be rough, blunt, or eccentric.
       - **CRITICAL**: Use ONLY the sentence endings and nuances found in the samples or <persona_rules>. Do NOT add generic "marketing-style" or feminine endings if not explicitly present.
       - **Structure & Flow**: Follow the sequence and **CTA (Call to Action)** style analyzed in the style guide.
+      - **ENDING VARIETY (CRITICAL)**:
+        - **BAN REPETITIVE ENDINGS**: Do NOT end consecutive sentences with the same form (e.g., "〜ください。" followed by "〜ください。").
+        - **LIMIT "PLEASE"**: Use request forms like "〜ください" sparingly (max once per post). Instead, use diverse endings:
+          - Invitation ("〜してみませんか", "〜お待ちしております")
+          - Assumption/Agreement ("〜ですね", "〜でしょう")
+          - Noun ending (体言止め) for rhythm (e.g., "春の訪れを感じる一皿。")
+          - Emotive ("〜と嬉しいです", "〜が楽しみです")
       - **Variety & Repetition**: Avoid repetitive patterns unless noted as a habit. Maintain emoji density as described.
       - **CRITICAL LENGTH RULE**: **Length** is determined by **Volume Control** below, NOT by the samples. If the samples are long but the user asks for 'Short', you MUST write a short post in the *style* of the samples.
     - **Volume Control**: ${isGMap && config.replyDepth ? `Strictly follow the **Reply Depth: ${config.replyDepth}**.

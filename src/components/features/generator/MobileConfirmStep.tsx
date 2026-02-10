@@ -170,7 +170,7 @@ export const MobileConfirmStep: React.FC<MobileConfirmStepProps> = ({
                     <div className="flex flex-col gap-4">
                         <div className="flex items-center justify-between px-2">
                             <div className="flex items-center gap-3">
-                                <span className="text-[11px] font-black text-[#2b2b2f] uppercase tracking-[0.2em]">スタイルを選ぶ</span>
+                                <span className="text-[13px] font-black text-[#2b2b2f] uppercase tracking-[0.2em]">スタイルを選ぶ</span>
                                 <label className="flex items-center gap-1.5 cursor-pointer group/label">
                                     <div className="relative flex items-center justify-center">
                                         <input
@@ -183,7 +183,7 @@ export const MobileConfirmStep: React.FC<MobileConfirmStepProps> = ({
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                                         </svg>
                                     </div>
-                                    <span className="text-[9px] font-bold text-[#A0A0A0] group-hover/label:text-stone-600 transition-colors">デフォルトに設定</span>
+                                    <span className="text-[12px] font-bold text-[#A0A0A0] group-hover/label:text-stone-600 transition-colors">デフォルトに設定</span>
                                 </label>
                             </div>
                             <button onClick={onOpenPresetModal} className="text-[10px] font-black text-[#2b2b2f] uppercase tracking-widest bg-white px-3 py-1 rounded-full border border-slate-100 hover:bg-slate-50 transition-all">編集</button>
@@ -215,7 +215,7 @@ export const MobileConfirmStep: React.FC<MobileConfirmStepProps> = ({
                         <div className="bg-[#edeff1] px-6 py-4 rounded-[32px] border border-slate-100 flex flex-col gap-2 shadow-sm active:border-slate-200 transition-colors">
                             <div className="flex items-center gap-1.5">
                                 <AutoSparklesIcon className="w-3 h-3 text-[var(--pop-violet-main)]" />
-                                <span className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">追加指示（任意）</span>
+                                <span className="text-[12px] font-black text-slate-400 uppercase tracking-[0.2em]">追加指示（任意）</span>
                             </div>
                             <AutoResizingTextarea
                                 value={customPrompt}
@@ -230,7 +230,7 @@ export const MobileConfirmStep: React.FC<MobileConfirmStepProps> = ({
                     {isGoogleMaps && (
                         <div className="my-2">
                             <div className="bg-[#edeff1] px-6 py-4 rounded-[32px] border border-slate-100 flex flex-col gap-2 shadow-sm">
-                                <span className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">補足情報 / 当日の事情</span>
+                                <span className="text-[12px] font-black text-slate-400 uppercase tracking-[0.2em]">補足情報 / 当日の事情</span>
                                 <AutoResizingTextarea
                                     value={storeSupplement}
                                     onChange={(e) => onStoreSupplementChange(e.target.value)}
@@ -245,13 +245,13 @@ export const MobileConfirmStep: React.FC<MobileConfirmStepProps> = ({
                     {(!isStyleLocked || !isX) && (
                         <div className="mt-8 px-2 space-y-8">
                             {/* Settings Grid - Monochrome */}
-                            <div className="flex gap-8 mb-4">
+                            <div className="flex flex-col gap-10 mb-8">
                                 {/* Tone Slider (or Reply Depth for GMap) */}
                                 {!isStyleLocked && (
                                     <div className="flex-1 flex flex-col gap-3">
                                         <div className="flex items-center justify-between px-1">
                                             <div className="flex items-center gap-1.5">
-                                                <span className="text-[8px] font-black text-[#666666] uppercase tracking-[0.2em]">{isGoogleMaps ? '返信の丁寧さ' : 'トーン'}</span>
+                                                <span className="text-[13px] font-black text-[#666666] uppercase tracking-[0.2em]">{isGoogleMaps ? '返信の丁寧さ' : 'トーン'}</span>
                                             </div>
                                         </div>
                                         <div className="relative px-1 pt-1 pb-2">
@@ -266,7 +266,7 @@ export const MobileConfirmStep: React.FC<MobileConfirmStepProps> = ({
                                                             className="relative z-10 flex flex-col items-center group w-full first:items-start last:items-end"
                                                         >
                                                             <div className={`w-3 h-3 rounded-full border-2 transition-all duration-300 ${isActive ? 'bg-[#2b2b2f] border-[#2b2b2f] scale-110 shadow-[0_0_10px_rgba(99,102,241,0.5)]' : 'bg-white border-slate-200'}`} />
-                                                            <span className={`absolute -bottom-4 text-[8px] font-black transition-colors duration-300 whitespace-nowrap ${isActive ? 'text-[#2b2b2f]' : 'text-slate-400'}`}>
+                                                            <span className={`absolute -bottom-5 text-[11px] font-black transition-colors duration-300 whitespace-nowrap ${isActive ? 'text-[#2b2b2f]' : 'text-slate-400'}`}>
                                                                 {t.label}
                                                             </span>
                                                         </button>
@@ -281,7 +281,7 @@ export const MobileConfirmStep: React.FC<MobileConfirmStepProps> = ({
                                 {!isX && !isGoogleMaps && (
                                     <div className="flex-1 flex flex-col gap-3">
                                         <div className="flex items-center justify-between px-1">
-                                            <span className="text-[8px] font-black text-[#666666] uppercase tracking-[0.2em]">長さ</span>
+                                            <span className="text-[13px] font-black text-[#666666] uppercase tracking-[0.2em]">長さ</span>
                                         </div>
                                         <div className="relative px-1 pt-1 pb-2">
                                             <div className="absolute top-[6px] left-1 right-1 h-[1.5px] bg-slate-100" />
@@ -295,7 +295,7 @@ export const MobileConfirmStep: React.FC<MobileConfirmStepProps> = ({
                                                             className="relative z-10 flex flex-col items-center group w-full first:items-start last:items-end"
                                                         >
                                                             <div className={`w-3 h-3 rounded-full border-2 transition-all duration-300 ${isActive ? 'bg-[#2b2b2f] border-[#2b2b2f] scale-110 shadow-[0_0_10px_rgba(99,102,241,0.5)]' : 'bg-white border-slate-200'}`} />
-                                                            <span className={`absolute -bottom-4 text-[8px] font-black transition-colors duration-300 whitespace-nowrap ${isActive ? 'text-[#2b2b2f]' : 'text-slate-400'}`}>
+                                                            <span className={`absolute -bottom-5 text-[11px] font-black transition-colors duration-300 whitespace-nowrap ${isActive ? 'text-[#2b2b2f]' : 'text-slate-400'}`}>
                                                                 {l.label}
                                                             </span>
                                                         </button>
