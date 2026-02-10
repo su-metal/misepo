@@ -25,11 +25,12 @@ export function useGeneratorFlow(props: {
   refreshPlan?: () => Promise<void>;
   trainingItems: TrainingItem[];
   plan: UserPlan;
+  restoreTrigger?: number;
 }) {
   const { 
     storeProfile, isLoggedIn, onOpenLogin, onGenerateSuccess, 
     onTaskComplete, favorites, onToggleFavorite, restorePost, resetResultsTrigger, refreshPlan,
-    plan
+    plan, restoreTrigger
   } = props;
 
   // --- State ---
@@ -683,7 +684,7 @@ export function useGeneratorFlow(props: {
       setRefineText("");
 
     }
-  }, [restorePost]);
+  }, [restorePost, restoreTrigger]);
 
   // Demo text logic removed as /generate is now auth-only
 

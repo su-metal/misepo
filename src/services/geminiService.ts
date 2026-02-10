@@ -494,10 +494,11 @@ export const generateContent = async (
 
 
 
-  <constraints>
-    - **No Fabrication**: Do NOT invent ingredients (e.g., "mochi", "matcha") or prices unless explicitly stated in the <user_input>.
     - **Expansion (Show, Don't Tell)**: You MAY expand on sensory details (smell, texture, atmosphere) implied by the input, but do not add new factual elements.
     - **Episode Separation**: Do NOT use specific episodes or proper nouns from the examples. Only steal the "Style".
+    - **META_REFERENCE_BAN (CRITICAL)**: **NEVER** mention the source of information.
+      - **PROHIBITED**: "画像にある通り", "写真の通り", "画像にございます通り", "メモによれば".
+      - **RULE**: Treat facts from images or explanations as your OWN knowledge. Write naturally as if you are simply announcing the facts.
   </constraints>
 
   ${languageRule}
@@ -643,6 +644,9 @@ DO NOT use stiff business boilerplate like "誠にありがとうございます
         - **Rule**: ${isX ? 'On X, use symbols/accents for headers (sandwiches), bullet points, and sentence endings. No line dividers.' : 'Actively use "sandwich" patterns (e.g. ＼ ✧ Title ✧ ／). Use symbols (𓍯, ✧) as bullet points for lists. Append symbols (✧, ꕤ) to the end of key sentences.'}
         - **Note**: Use these symbols frequently for visual appeal ${!config.includeEmojis ? 'INSTEAD of emojis' : 'in addition to emojis'}.` : (isGMap && hasPersona) ? "Strictly follow the symbol patterns from the samples." : "Do NOT use decorative symbols or flashy brackets. Use standard punctuation only."}
     - **Layout**: ${config.length === 'short' ? "Concise. Group related sentences." : "Natural Reading Flow. Group semantically related sentences into small blocks (2-3 lines). Insert empty lines ONLY between distinct topics or after a strong hook. Avoid robotic 'one sentence per line' formatting."}
+    - **META_REFERENCE_BAN (CRITICAL)**: **NEVER** mention that information comes from an image, photo, or provided text.
+      - **BANNED**: "画像にあります通り", "写真の通り", "画像の内容に基づき", "画像にございます通り".
+      - **GOAL**: State the facts directly as the store's announcement.
   </rules>
 
   ${profile.aiAnalysis ? `<store_background>\n${profile.aiAnalysis}\n</store_background>` : ""}
