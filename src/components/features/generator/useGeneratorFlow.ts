@@ -53,6 +53,10 @@ export function useGeneratorFlow(props: {
   const [question, setQuestion] = useState<string | undefined>(undefined);
   const [topicPrompt, setTopicPrompt] = useState<string | undefined>(undefined);
   
+  // Photo-to-Post
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedImageMimeType, setSelectedImageMimeType] = useState<string | null>(null);
+  
   // Initialize target audiences from store profile
   useEffect(() => {
       if (storeProfile?.targetAudience) {
@@ -415,7 +419,9 @@ export function useGeneratorFlow(props: {
         post_samples: currentPostSamples,
         presetId: activePresetId || undefined,
         gmapPurpose: (p === Platform.GoogleMaps) ? gmapPurpose : undefined,
-        targetAudience: targetAudiences.length > 0 ? targetAudiences.join(', ') : undefined
+        targetAudience: targetAudiences.length > 0 ? targetAudiences.join(', ') : undefined,
+        image: selectedImage,
+        mimeType: selectedImageMimeType
       };
       return config;
     });
@@ -487,7 +493,9 @@ export function useGeneratorFlow(props: {
           xConstraint140, includeSymbols, includeEmojis,
           instagramFooter: (targetPlatforms.includes(Platform.Instagram) && includeFooter) ? storeProfile.instagramFooter : undefined,
           presetId: activePresetId || undefined,
-          gmapPurpose: targetPlatforms.includes(Platform.GoogleMaps) ? gmapPurpose : undefined
+          gmapPurpose: targetPlatforms.includes(Platform.GoogleMaps) ? gmapPurpose : undefined,
+          image: selectedImage,
+          mimeType: selectedImageMimeType
         };
 
         onGenerateSuccess({
@@ -738,6 +746,8 @@ export function useGeneratorFlow(props: {
     setRefiningKey(null);
     setRefineText("");
     setActivePresetId('plain-ai');
+    setSelectedImage(null);
+    setSelectedImageMimeType(null);
   }, []);
 
   return {
@@ -783,5 +793,13 @@ export function useGeneratorFlow(props: {
     onToggleFavorite,
     isStyleLocked,
     handleResetAll,
+    selectedImage,
+    setSelectedImage,
+    selectedImageMimeType,
+    setSelectedImageMimeType,
+    handleImageChange: (image: string | null, mimeType: string | null) => {
+      setSelectedImage(image);
+      setSelectedImageMimeType(mimeType);
+    }
   };
 }

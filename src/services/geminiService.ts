@@ -577,14 +577,18 @@ DO NOT use stiff business boilerplate like "誠にありがとうございます
     Output a JSON object with:
     - "analysis": Brief context analysis.
     - "posts": An array of generated post strings. 
-    **CRITICAL RULES FOR "posts" ARRAY:**
-    1. **ONE MESSAGE = ONE STRING**. Do not split a single post (e.g. Title + Body + Footer) into multiple strings.
-    2. Even if the post has line breaks or multiple paragraphs, it must be contained within a SINGLE string element.
-    3. If multiple variations are requested, return [ "Variation 1 full text", "Variation 2 full text" ].
-    4. **NEVER** return [ "Title", "Body", "Footer" ]. This is wrong.
-    5. **NEVER** split the post based on empty lines.
-  </task>
-</system_instruction>
+      5. **NEVER** split the post based on empty lines.
+    </task>
+
+    ${config.image ? `
+    <visual_context>
+      An image has been provided with this request. 
+      **STRICT INSTRUCTION**: You MUST analyze the subjects, colors, atmosphere, and details in the image.
+      Use the visual information as the PRIMARY source for the post's content (e.g., describe the food's appearance, the store's lighting, or the specific items shown).
+      Combine this visual evidence with the user's <user_input> to create a cohesive and authentic post.
+    </visual_context>
+    ` : ""}
+  </system_instruction>
 `;
   };
 
@@ -650,9 +654,26 @@ DO NOT use stiff business boilerplate like "誠にありがとうございます
 
     let response;
     try {
+        const parts: any[] = [{ text: userPrompt }];
+        
+        if (config.image && config.mimeType) {
+            // Remove data:image/xxx;base64, prefix if present
+            const base64Data = config.image.includes('base64,') 
+                ? config.image.split('base64,')[1] 
+                : config.image;
+            
+            parts.push({
+                inlineData: {
+                    mimeType: config.mimeType,
+                    data: base64Data
+                }
+            });
+            console.debug(`[GEMINI] Multi-modal generation active. Image attached (${config.mimeType}).`);
+        }
+
         response = await ai.models.generateContent({
           model: modelName,
-          contents: [{ role: "user", parts: [{ text: userPrompt }] }],
+          contents: [{ role: "user", parts }],
           config: requestConfig,
         });
     } catch (e: any) {

@@ -247,6 +247,9 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
               targetStep={mobileStep}
               isCalendarOpen={isCalendarOpen}
               onCalendarToggle={setIsCalendarOpen}
+              selectedImage={flow.selectedImage}
+              selectedImageMimeType={flow.selectedImageMimeType}
+              onImageChange={flow.handleImageChange}
             />
           </div>
 

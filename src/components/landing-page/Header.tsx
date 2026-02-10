@@ -45,8 +45,8 @@ export const Header = ({ isMenuOpen, setIsMenuOpen, loginWithGoogle, user }: Hea
                         </div>
                     </div>
                     <nav className="hidden md:flex items-center space-x-12">
-                        {['お悩み', '機能', 'デモ', '料金', 'FAQ'].map((item, i) => (
-                            <a key={item} href={['#problem', '#features', '#demo', '#pricing', '#faq'][i]} className="text-[10px] font-black text-slate-400 hover:text-[#1823ff] transition-colors relative group tracking-[0.2em] uppercase">
+                        {['お悩み', '機能', 'デモ', '料金', 'ブログ', 'FAQ'].map((item, i) => (
+                            <a key={item} href={['#problem', '#features', '#demo', '#pricing', '/blog', '#faq'][i]} className="text-[13px] font-black text-slate-400 hover:text-[#1823ff] transition-colors relative group tracking-[0.1em] uppercase">
                                 {item}
                             </a>
                         ))}
@@ -79,8 +79,8 @@ export const Header = ({ isMenuOpen, setIsMenuOpen, loginWithGoogle, user }: Hea
             {isMenuOpen && (
                 <div className="md:hidden absolute top-full left-4 right-4 bg-white shadow-2xl rounded-[32px] border border-slate-100 mt-2 overflow-hidden">
                     <div className="px-6 py-8 space-y-2">
-                        {['お悩み', '機能', 'デモ', '料金'].map((item, i) => (
-                            <a key={item} href={['#problem', '#features', '#demo', '#pricing'][i]} className="block px-4 py-3 text-lg font-black text-[#282d32] hover:bg-slate-50 rounded-xl transition-all" onClick={() => setIsMenuOpen(false)}>{item.toUpperCase()}</a>
+                        {['お悩み', '機能', 'デモ', '料金', 'ブログ'].map((item, i) => (
+                            <a key={item} href={['#problem', '#features', '#demo', '#pricing', '/blog'][i]} className="block px-4 py-3 text-lg font-black text-[#282d32] hover:bg-slate-50 rounded-xl transition-all" onClick={() => setIsMenuOpen(false)}>{item.toUpperCase()}</a>
                         ))}
                         <div className="pt-6 flex flex-col gap-3">
                             {user ? (

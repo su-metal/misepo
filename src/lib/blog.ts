@@ -28,10 +28,14 @@ export function getAllPosts(): PostData[] {
       const fileContents = fs.readFileSync(fullPath, 'utf8');
       const matterResult = matter(fileContents);
 
+      const date = matterResult.data.date instanceof Date 
+        ? matterResult.data.date.toISOString().split('T')[0] 
+        : String(matterResult.data.date || '');
+
       return {
         slug,
         title: matterResult.data.title,
-        date: matterResult.data.date,
+        date,
         description: matterResult.data.description,
         content: matterResult.content,
         category: matterResult.data.category || 'その他',
@@ -50,10 +54,14 @@ export function getPostBySlug(slug: string): PostData | null {
     const fileContents = fs.readFileSync(fullPath, 'utf8');
     const matterResult = matter(fileContents);
 
+    const date = matterResult.data.date instanceof Date 
+      ? matterResult.data.date.toISOString().split('T')[0] 
+      : String(matterResult.data.date || '');
+
     return {
       slug,
       title: matterResult.data.title,
-      date: matterResult.data.date,
+      date,
       description: matterResult.data.description,
       content: matterResult.content,
       category: matterResult.data.category || 'その他',

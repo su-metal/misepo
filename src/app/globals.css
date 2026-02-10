@@ -633,3 +633,57 @@ nextjs-portal {
         animation: none !important;
     }
 }
+
+/* Note-style Blog Typography */
+.blog-content {
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+.blog-rich-text {
+  font-family: 'Noto Sans JP', sans-serif;
+  line-height: 1.8;
+  letter-spacing: 0.02em;
+  color: #1a1a1c; /* Keep dark black for readability */
+  font-size: 1.05rem;
+  font-weight: 400;
+}
+
+@media (max-width: 768px) {
+  .blog-rich-text {
+    font-size: 1.1rem; /* Slightly larger on mobile */
+    line-height: 1.85;
+  }
+}
+
+.blog-rich-text p {
+  margin-bottom: 2.2rem;
+  color: #1a1a1c;
+}
+
+.blog-rich-text h2 {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-weight: 900;
+  font-size: 2rem;
+  margin-top: 4rem;
+  margin-bottom: 2rem;
+  letter-spacing: -0.02em;
+  line-height: 1.4;
+}
+
+.blog-rich-text h3 {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-weight: 800;
+  font-size: 1.5rem;
+  margin-top: 3rem;
+  margin-bottom: 1.5rem;
+}
+
+.blog-rich-text strong {
+  font-weight: 700;
+  background: linear-gradient(transparent 70%, rgba(99, 102, 241, 0.1) 70%);
+}
+
+.blog-rich-text li {
+  margin-bottom: 1rem;
+  padding-left: 0.5rem;
+}

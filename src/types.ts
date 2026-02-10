@@ -91,6 +91,10 @@ export interface GenerationConfig {
   targetAudience?: string; // Target audience override for this specific post
   question?: string; // Sommelier Question (Q&A mode)
   topicPrompt?: string; // The selected topic instruction (Q&A mode)
+  
+  // Photo-to-Post (Base64 data)
+  image?: string | null;
+  mimeType?: string | null;
 }
 
 export interface GeneratedResult {

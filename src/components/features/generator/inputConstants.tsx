@@ -91,6 +91,11 @@ export interface PostInputFormProps {
     onAIStart?: (fn: () => void) => void;
     isCalendarOpen?: boolean;
     onCalendarToggle?: (isOpen: boolean) => void;
+
+    // Photo-to-Post
+    selectedImage?: string | null;
+    selectedImageMimeType?: string | null;
+    onImageChange?: (image: string | null, mimeType: string | null) => void;
 }
 
 export const AVATAR_OPTIONS = [

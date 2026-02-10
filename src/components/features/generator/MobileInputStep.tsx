@@ -3,7 +3,7 @@ import { Platform } from '../../../types';
 import { usePostInput } from './PostInputContext';
 import { AutoResizingTextarea } from './AutoResizingTextarea';
 import {
-    MicIcon, EraserIcon, SparklesIcon, CloseIcon, ChevronRightIcon
+    MicIcon, EraserIcon, SparklesIcon, CloseIcon, ChevronRightIcon, CameraIcon
 } from '../../Icons';
 import { InspirationDeck } from './InspirationDeck';
 
@@ -37,7 +37,7 @@ export const MobileInputStep: React.FC<MobileInputStepProps> = ({
     const {
         platforms, platform, inputText, onInputTextChange,
         question, onQuestionChange, topicPrompt, onTopicPromptChange,
-        storeProfile, activePresetId
+        storeProfile, activePresetId, selectedImage, onImageChange
     } = usePostInput();
 
     const isGoogleMaps = platform === Platform.GoogleMaps;
@@ -165,17 +165,62 @@ export const MobileInputStep: React.FC<MobileInputStepProps> = ({
                         value={inputText}
                         onChange={(e) => onInputTextChange(e.target.value)}
                         placeholder={question ? "こちらの質問への答えを短く入力してください..." : (isGoogleMaps ? "こちらにお客様からの口コミを貼り付けてください。丁寧な返信案をいくつか作成します。" : "「旬の食材が入荷した」「雨の日限定の割引をする」など、短いメモ書きでも大丈夫ですよ。")}
-                        className="w-full min-h-[220px] p-8 bg-[#edeff1] border border-slate-100 rounded-[40px] text-lg font-bold leading-relaxed focus:outline-none focus:border-slate-200 transition-all placeholder:text-slate-300 text-[#2b2b2f] resize-none overflow-hidden"
+                        className="w-full min-h-[220px] p-8 pb-16 bg-[#edeff1] border border-slate-100 rounded-[40px] text-lg font-bold leading-relaxed focus:outline-none focus:border-slate-200 transition-all placeholder:text-slate-300 text-[#2b2b2f] resize-none overflow-hidden"
                     />
 
-                    {isGoogleMaps && (
-                        <button
-                            onClick={toggleVoiceInput}
-                            className={`absolute bottom-6 left-6 w-12 h-12 rounded-full flex items-center justify-center transition-all shadow-md ${isListening ? 'bg-[#4338CA] text-white animate-pulse' : 'bg-[#edeff1] text-[#2b2b2f]'}`}
-                        >
-                            <MicIcon className="w-6 h-6" />
-                        </button>
+                    {/* Image Preview Overlay */}
+                    {selectedImage && (
+                        <div className="absolute bottom-20 left-8 animate-in fade-in zoom-in duration-300">
+                            <div className="relative group">
+                                <img
+                                    src={selectedImage}
+                                    alt="Selected"
+                                    className="w-20 h-20 object-cover rounded-2xl shadow-lg border-2 border-white"
+                                />
+                                <button
+                                    onClick={() => onImageChange?.(null, null)}
+                                    className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-[#F87171] text-white flex items-center justify-center shadow-md active:scale-90 transition-transform"
+                                >
+                                    <CloseIcon className="w-3 h-3" />
+                                </button>
+                            </div>
+                        </div>
                     )}
+
+                    <div className="absolute bottom-6 left-6 flex items-center gap-3">
+                        <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            id="camera-input"
+                            onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                    const reader = new FileReader();
+                                    reader.onloadend = () => {
+                                        const base64 = reader.result as string;
+                                        onImageChange?.(base64, file.type);
+                                    };
+                                    reader.readAsDataURL(file);
+                                }
+                            }}
+                        />
+                        <label
+                            htmlFor="camera-input"
+                            className={`w-12 h-12 rounded-full flex items-center justify-center transition-all shadow-md cursor-pointer ${selectedImage ? 'bg-[#2b2b2f] text-white' : 'bg-[#edeff1] text-[#2b2b2f] active:scale-95'}`}
+                        >
+                            <CameraIcon className="w-6 h-6" />
+                        </label>
+
+                        {isGoogleMaps && (
+                            <button
+                                onClick={toggleVoiceInput}
+                                className={`w-12 h-12 rounded-full flex items-center justify-center transition-all shadow-md ${isListening ? 'bg-[#4338CA] text-white animate-pulse' : 'bg-[#edeff1] text-[#2b2b2f]'}`}
+                            >
+                                <MicIcon className="w-6 h-6" />
+                            </button>
+                        )}
+                    </div>
 
                     {inputText && (
                         <button
