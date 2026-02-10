@@ -209,6 +209,56 @@ const scoreRisk = (starRating: number, text: string): RiskAnalysisResult => {
   return { score, tier, signals };
 };
 
+/**
+ * Parse business hours from instagramFooter text.
+ * Expected formats: "🕐 10時00分〜19時00分", "10:00〜19:00", "10時〜19時" etc.
+ * Returns { open: number, close: number } in 24h format, or null if not found.
+ */
+const parseBusinessHours = (footer?: string): { open: number; close: number } | null => {
+  if (!footer) return null;
+  // Match patterns like "10時00分〜19時00分", "10:00〜19:00", "10時〜19時"
+  const match = footer.match(/(\d{1,2})[時:](\d{0,2})[分]?\s*[〜~ー\-－→]\s*(\d{1,2})[時:](\d{0,2})/);
+  if (!match) return null;
+  const open = parseInt(match[1], 10);
+  const close = parseInt(match[3], 10);
+  if (isNaN(open) || isNaN(close)) return null;
+  return { open, close };
+};
+
+/**
+ * Get time-aware context for prompt injection.
+ * Returns time info only if within business hours (from instagramFooter or default 7-21).
+ * Returns null if outside business hours (user is likely preparing content for later).
+ */
+const getTimeContext = (instagramFooter?: string): { time: string; phase: string } | null => {
+  // Use JST (UTC+9)
+  const now = new Date();
+  const jstOffset = 9 * 60 * 60 * 1000;
+  const jstNow = new Date(now.getTime() + jstOffset);
+  const hours = jstNow.getUTCHours();
+  const minutes = jstNow.getUTCMinutes();
+  const timeStr = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+
+  // Determine business hours from footer or use default
+  const biz = parseBusinessHours(instagramFooter) || { open: 7, close: 21 };
+
+  // Check if current time is outside business hours → return null (no time context)
+  if (hours < biz.open || hours >= biz.close) {
+    return null;
+  }
+
+  // Within business hours → provide phase context
+  let phase = "";
+  if (hours >= 5 && hours < 10) phase = "早朝・午前中（開店準備、1日の始まり）";
+  else if (hours >= 10 && hours < 12) phase = "午前中・ランチ前（もうすぐランチ、開店直後）";
+  else if (hours >= 12 && hours < 14) phase = "ランチタイム・お昼時";
+  else if (hours >= 14 && hours < 17) phase = "午後・ティータイム（ひと息、夕方の準備）";
+  else if (hours >= 17 && hours < 22) phase = "夕方・夜・ディナータイム（仕事帰り、団らん、晩酌）";
+  else phase = "深夜・夜更け（1日の締めくくり、静かな時間）";
+
+  return { time: timeStr, phase };
+};
+
 function getServerAI() {
   const apiKey = process.env.GEMINI_API_KEY; // ← サーバ専用。NEXT_PUBLICは使わない
   if (!apiKey) throw new Error("Missing API_KEY in server env (.env.local)");
@@ -323,6 +373,7 @@ export const generateContent = async (
         .map((s, i) => `<sample id="${i + 1}">\n${s.length > 500 ? s.slice(0, 500) + '...' : s}\n</sample>`)
         .join("\n");
 
+    const timeContext = !isGMap ? getTimeContext(profile.instagramFooter) : null;
 
     if (hasPersona) {
         const languageRule = config.language && config.language !== 'Japanese'
@@ -334,6 +385,11 @@ export const generateContent = async (
 
         return `
 <system_instruction>
+  ${timeContext ? `<time_context>
+  - CURRENT_TIME: ${timeContext.time} (JST)
+  - CURRENT_PHASE: ${timeContext.phase}
+  - INSTRUCTION: Considering the industry '${profile.industry}' and this time of day, naturally incorporate relevant context or greetings (e.g., 'looking forward to lunch' for restaurants, 'after work relaxation' for salons). Do NOT force it if it feels unnatural, but favor timeliness where appropriate.
+  </time_context>` : ""}
   <role>
     You are the "Ghostwriter" for the store owner of "${profile.name}".
     ${hasPersona ? `
@@ -345,15 +401,25 @@ export const generateContent = async (
     ${industryRole}
     ${industryToneAdjust ? `TONE_SPECIFIC_INSTRUCTION: ${industryToneAdjust}` : ""}
     `}
-    ${profile.description ? `<store_dna>
-    SOURCE_MATERIAL:
+    ${profile.description ? `<store_identity>
+    The following describes this store's IDENTITY. You have INTERNALIZED this knowledge.
     ${profile.description}
-    
-    STRICT_RULES:
-    1. TREAT AS BACKGROUND CONTEXT ONLY (Mindset/Values).
-    2. DO NOT COPY/PASTE PHRASES VERBATIM.
-    3. Express this spirit naturally in your own words, ONLY if relevant to the topic.
-    </store_dna>` : ""}
+
+    ABSOLUTE RULES FOR USING THIS IDENTITY:
+    1. **YOU HAVE ALREADY READ THIS. NOW FORGET THE EXACT WORDS.**
+       Your job is to write as if you KNOW these things instinctively, NOT as if you are reading from a brochure.
+    2. **ZERO TOLERANCE FOR RECYCLING**: Every adjective, noun phrase, and selling point in the text above is BANNED from your output.
+       - "ふわふわ" → BANNED. Use sensory alternatives: "くちどけ", "やわらかな", "しあわせ食感"
+       - "濃厚クリーム" → BANNED. Try: "とろけるクリーム", "贅沢な味わい"
+       - "自慢" → BANNED. Show pride through enthusiasm, not the word itself.
+       - "甘さ控えめ" → BANNED. Try: "すっきりとした甘さ", "上品な味わい"
+       - "丁寧な接客" → BANNED. SHOW it through warm tone instead.
+       - "心温まる" → BANNED. Let your writing itself feel warm.
+    3. **TOPIC RELEVANCE GATE**: Ask yourself: "Is the post ABOUT my products/service?"
+       - YES → You may reference your strengths, but in FRESH words only.
+       - NO (e.g., store hours, holiday notice) → Do NOT mention product features AT ALL. Keep focus on the actual topic.
+    4. **SELF-CHECK**: Before finalizing, scan your output. If ANY phrase feels like it could have been copied from a store pamphlet, rewrite it in a more natural, conversational way.
+    </store_identity>` : ""}
     Your goal is to completely mimic the owner's writing style based on the provided samples.
   </role>
 
@@ -361,7 +427,7 @@ export const generateContent = async (
     - **ROLE DEFINITION**:
       - Use **<persona_rules>** (YAML) to define the **Core Personality** (Dialect, Tone, Spirit).
       - Use **<learning_samples>** to define the **Structural Format** (Line breaks, Emoji density, Footer style).
-- **Tone & Rhythm**: Mimic the sentence endings and tone. 
+      - **Tone & Rhythm**: Mimic the sentence endings and tone. 
       - **STRICT RATIO ADHERENCE**: If the style guide specifies a ratio (e.g., "A represents 10%, B represents 60%"), you MUST mathematically reflect this. If a pattern is 10%, use it only once per 10 sentences. Do NOT over-apply a signature ending.
       - **NEGATIVE CONSTRAINTS**: If the guide states a form is "NOT used" (e.g., "ですます調は一切見られない"), you MUST NOT use it. One violation makes the output invalid.
       - **NO SUFFIX HALLUCINATION**: Do NOT append casual suffixes (like "〜っ") to every sentence just to mimic the "vibe". Only use them where they naturally occur in the samples.
@@ -438,15 +504,14 @@ export const generateContent = async (
 
   <process_step>
     1. **Analyze**: 
-       - Read the <user_input> (Review). Identify customer sentiment and specific points.
-       - **CRITICAL**: Read the <owner_explanation> (if provided). These are the **absolute facts** regarding the situation.
+       - Read the <user_input> (Review). Identify customer sentiment.
+       - **CRITICAL**: Read the <owner_explanation> (if provided). These are the **absolute facts**.
     2. **Synthesize**: 
        - Combine the "What happened" from <owner_explanation> with the "How it's said" (Voice/Tone) from <learning_samples>.
     3. **Respond (Don't Echo)**: Do NOT simply repeat factual statements. **Acknowledge** them with empathy.
     4. **Expand**: Add sensory details or store background while weaving in the facts from <owner_explanation>.
     5. **Draft**: Write the reply. Ensure the specific details in <owner_explanation> are the core of the message.
   </process_step>
-</system_instruction>
 
 <context_data>
   ${profile.aiAnalysis ? `<store_background>\n${profile.aiAnalysis}\n</store_background>` : ""}
@@ -554,12 +619,17 @@ DO NOT use stiff business boilerplate like "誠にありがとうございます
 
     return `
 <system_instruction>
+  ${timeContext ? `<time_context>
+  - CURRENT_TIME: ${timeContext.time} (JST)
+  - CURRENT_PHASE: ${timeContext.phase}
+  - INSTRUCTION: Considering the industry '${profile.industry}' and this time of day, naturally incorporate relevant context or greetings (e.g., 'looking forward to lunch' for restaurants, 'after work relaxation' for salons). Do NOT force it if it feels unnatural, but favor timeliness where appropriate.
+  </time_context>` : ""}
   <role>
     ${isGMap ? `You are the owner of "${profile.name}". Reply to customer reviews on Google Maps while strictly maintaining your unique voice.` : `You are the SNS manager for "${profile.name}". Create an attractive post for ${config.platform}.`}
   </role>
 
   <rules>
-    ${profile.aiAnalysis ? `- **Store Context**: Use the information in <store_background> as the underlying persona and setting. Do not state these facts explicitly as a list, but let them influence the "flavor" and "expertise" of the writing.` : ""}
+    ${profile.aiAnalysis ? `- **Store Context**: The text in <store_background> is your INTERNAL KNOWLEDGE about the store. **NEVER quote or paraphrase it directly.** Instead, let it shape your perspective and expertise naturally. If the source says "丁寧な接客と心温まるおもてなし", do NOT write those words — instead, SHOW that warmth through your tone and word choices. Only reference store traits when directly relevant to the topic.` : ""}
     - Language: ${config.language || 'Japanese'}
     - Length: ${config.length} (Target: ${t.target} chars. Min: ${t.min} chars)
     - Tone: ${config.tone} (${TONE_RULES[config.tone] || TONE_RULES[Tone.Standard]})
@@ -590,6 +660,14 @@ DO NOT use stiff business boilerplate like "誠にありがとうございます
   ${config.customPrompt ? `<custom_instructions>\n${config.customPrompt}\n</custom_instructions>` : ""}
 
   <task>
+    <holiday_logic>
+      **IF TOPIC IS "HOLIDAYS"**:
+      1. **CHECK INTERVAl**: Are dates consecutive (Long Vacation) or scattered (Regular)?
+      2. **REGULAR HOLIDAYS**:
+         - **BAN**: "お休み明け" (after the break), "来月もお待ちしております" (See you next month).
+         - **USE**: "営業日にお待ちしております" (See you on open days).
+      3. **LAYOUT**: Greeting -> Dates List -> Closing. Dates MUST be in the middle.
+    </holiday_logic>
     ${(() => {
         const lengthStr = t.target;
         const minVal = t.min;
@@ -629,6 +707,12 @@ DO NOT use stiff business boilerplate like "誠にありがとうございます
       Combine this visual evidence with the user's <user_input> to create a cohesive and authentic post.
     </visual_context>
     ` : ""}
+    <final_enforcement>
+      SANDWICH DEFENSE ACTIVATED:
+      1. **STORE DESCRIPTION CHECK**: Did you copy/paste any phrases from <store_identity> or <store_background>? -> **REWRITE IMMEDIATELY**.
+      2. **RELEVANCE CHECK**: Did you insert product details into an unrelated topic (e.g. holiday notice)? -> **DELETE THEM**.
+      3. **TONE CHECK**: Does it possess the *spirit* of the samples without copying their *content*? -> **MUST BE YES**.
+    </final_enforcement>
   </system_instruction>
 `;
   };
