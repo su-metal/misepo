@@ -135,9 +135,9 @@ const GMAP_PURPOSE_PROMPTS: Record<string, string> = {
 
 // Reply Depth Prompts for Google Maps reviews
 const REPLY_DEPTH_PROMPTS = {
-  [ReplyDepth.Light]: "**LIGHT MODE (あっさり)**: Keep response EXTREMELY BRIEF (1-2 sentences MAX). Express gratitude ONLY. Do NOT reference specific details from the review. Example: '温かいお言葉をありがとうございます。またのご来店をお待ちしております。'",
-  [ReplyDepth.Standard]: "**STANDARD MODE (バランス)**: Response should be moderate length (2-3 sentences). Acknowledge the MAIN POINT of the review briefly, then express gratitude. Do NOT address every detail. Example: 'お料理をお楽しみいただけたようで嬉しく思います。またのご来店を心よりお待ちしております。'",
-  [ReplyDepth.Deep]: "**DEEP MODE (丁寧)**: Response should be DETAILED and COMPREHENSIVE (4-6 sentences). You MUST address EVERY specific point mentioned in the review individually. Reference exact details like dish names, service aspects, atmosphere comments. Show you read the entire review carefully. Example: 'パスタとデザートをお褒めいただきありがとうございます。スタッフの対応についてもお気に召していただけて大変嬉しく思います。雰囲気づくりにも力を入れておりますので...'"
+  [ReplyDepth.Light]: "**LIGHT MODE (あっさり)**: Keep the response polite and concise. Express gratitude and maintain a professional yet sincere tone. Focus on the core positive sentiment.",
+  [ReplyDepth.Standard]: "**STANDARD MODE (バランス)**: Response should be moderate length. Acknowledge the main points of the review and express sincere gratitude. Maintain a balanced and helpful tone.",
+  [ReplyDepth.Deep]: "**DEEP MODE (丁寧)**: Response should be detailed and comprehensive. You MUST address the specific points mentioned in the review. Show that you have read and appreciated the feedback carefully, expressing warmth and a commitment to service."
 };
 
 
@@ -466,16 +466,15 @@ export const generateContent = async (
       - **PUNCTUATION**:
         - **REMOVE PERIOD BEFORE EMOJI**: Unless the <voice_style_reference_only> explicitly use "。😊", generally remove the period before an emoji. Write "〜です😊" instead of "〜です。😊".
         - **NO EMOJI AFTER PERIOD**: **NEVER** place an emoji immediately after a Japanese period (。). Always ensure the period is the final character if used after a sentence. (e.g., "〜です。😊" is PROHIBITED. Use "〜です😊" or "〜です。" instead.)
-      - **CRITICAL LENGTH RULE**: **Length** is determined by **Volume Control** below, NOT by the samples. If the samples are long but the user asks for 'Short', you MUST write a short post in the *style* of the samples.
-    - **Volume Control**: ${isGMap && config.replyDepth ? `Strictly follow the **Reply Depth: ${config.replyDepth}**.
+      - **Volume Control**: ${isGMap && config.replyDepth ? `Strictly follow the **Reply Depth: ${config.replyDepth}**.
       - **Target Character Counts (Google Maps Reply)**:
-        - **あっさり (Light)**: 50-100 chars (1-2 sentences MAX). ${config.replyDepth === ReplyDepth.Light ? '← **ACTIVE**' : ''}
-        - **バランス (Standard)**: 120-200 chars (2-3 sentences). ${config.replyDepth === ReplyDepth.Standard ? '← **ACTIVE**' : ''}
-        - **丁寧 (Deep)**: 250-400 chars (4-6 sentences). ${config.replyDepth === ReplyDepth.Deep ? '← **ACTIVE**' : ''}` : `Strictly follow the requested **Length: ${config.length}**. 
+        - **あっさり (Light)**: 50-100 chars. ${config.replyDepth === ReplyDepth.Light ? '← **ACTIVE**' : ''}
+        - **バランス (Standard)**: 120-200 chars. ${config.replyDepth === ReplyDepth.Standard ? '← **ACTIVE**' : ''}
+        - **丁寧 (Deep)**: 250-400 chars. ${config.replyDepth === ReplyDepth.Deep ? '← **ACTIVE**' : ''}` : `Strictly follow the requested **Length: ${config.length}**. 
       - **Target Character Counts**:
         - **Short**: **Concise but Sufficient** (Range: ${targets.short.target} chars).
-          - **Constraint**: Minimum ${targets.short.min} characters. Max ${targets.short.max} characters.
-          - **Layout**: Use moderate line breaks for readability. 1 empty line between distinct points.
+        - **Constraint**: Minimum ${targets.short.min} characters. Max ${targets.short.max} characters.
+        - **Layout**: Use moderate line breaks for readability. 1 empty line between distinct points.
         - **Medium**: Standard (Target: ${targets.medium.target} chars. Max ${targets.medium.max}).
         - **Long**: Detailed (Target: ${targets.long.target} chars. Max ${targets.long.max}).`}
     - **Platform Bias**: **IGNORE** all standard "polite" norms for ${config.platform}. The <voice_style_reference_only> are the absolute truth for the owner's voice. **NOTE**: Mandatory structural rules (like LINE's 3-balloon and '---' format) still apply; reproduction of the owner's style should happen *within* each segment.
@@ -726,7 +725,12 @@ DO NOT use stiff business boilerplate like "誠にありがとうございます
                 else if (r === 3) ratingInstruction = `\n- **RATING CONTEXT**: The user gave an **AVERAGE RATING (3/5)**. Be polite, professional, and thank them for the feedback while addressing any mixed feelings.`;
                 else ratingInstruction = `\n- **RATING CONTEXT**: The user gave a **HIGH RATING (${r}/5)**. Express warmth, gratitude, and joy. Thank them for the high praise.`;
             }
-            return `The <user_input> is a customer review. ${ratingInstruction} Generate a REPLY from the owner. ${factInstruction} ${lengthWarning}`;
+
+            const depthInstruction = config.replyDepth 
+                ? `\n- **REPLY DEPTH**: ${REPLY_DEPTH_PROMPTS[config.replyDepth] || REPLY_DEPTH_PROMPTS[ReplyDepth.Standard]}`
+                : `\n- **REPLY DEPTH**: ${REPLY_DEPTH_PROMPTS[ReplyDepth.Standard]}`;
+
+            return `The <user_input> is a customer review. ${ratingInstruction}${depthInstruction} Generate a REPLY from the owner. ${factInstruction} ${lengthWarning}`;
         }
         
         if (isLine) return `Generate a HIGH-CONVERSION LINE message for REPEATERS.
