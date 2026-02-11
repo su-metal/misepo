@@ -370,7 +370,7 @@ export const generateContent = async (
 
     const formattedLearningSamples = validSamples
         .slice(0, 5) // Hard cap at 5 recent posts per generation
-        .map((s, i) => `<sample id="${i + 1}">\n${s.length > 500 ? s.slice(0, 500) + '...' : s}\n</sample>`)
+        .map((s, i) => `<sample id="${i + 1}">\n<!-- WARNING: STYLE SAMPLE ONLY. IGNORE FACTS/NAMES/LOCATIONS INSIDE. -->\n${s.length > 500 ? s.slice(0, 500) + '...' : s}\n</sample>`)
         .join("\n");
 
     const timeContext = !isGMap ? getTimeContext(profile.instagramFooter) : null;
@@ -419,6 +419,11 @@ export const generateContent = async (
        - YES → You may reference your strengths, but in FRESH words only.
        - NO (e.g., store hours, holiday notice) → Do NOT mention product features AT ALL. Keep focus on the actual topic.
     4. **SELF-CHECK**: Before finalizing, scan your output. If ANY phrase feels like it could have been copied from a store pamphlet, rewrite it in a more natural, conversational way.
+    5. **FACTUAL ISOLATION (CRITICAL)**:
+       The <learning_samples> below contain PAST INFORMATION (old menus, wrong dates, different locations).
+       - **RULE**: You must steal the **TONE** (how they speak), but **IGNORE THE FACTS** (what they say).
+       - **BANNED**: Do NOT output names of products, places, or prices found in the samples unless they are also in the <user_input>.
+       - **EXAMPLE**: If sample says "Parking is at X", but user input says nothing about parking -> **DO NOT MENTION PARKING**.
     </store_identity>` : ""}
     Your goal is to completely mimic the owner's writing style based on the provided samples.
   </role>
@@ -428,6 +433,9 @@ export const generateContent = async (
       - Use **<persona_rules>** (YAML) to define the **Core Personality** (Dialect, Tone, Spirit).
       - Use **<learning_samples>** to define the **Structural Format** (Line breaks, Emoji density, Footer style).
       - **Tone & Rhythm**: Mimic the sentence endings and tone. 
+      - **FACTUAL ISOLATION**:
+        - **ABSOLUTE PROHIBITION**: Do NOT reference specific nouns (Person names, specific dish names, place names) from the samples.
+        - **REASONING**: The samples are from the PAST. The facts are OBSOLETE. Only the <user_input> and <owner_explanation> contain TRUE FACTS for this post.
       - **STRICT RATIO ADHERENCE**: If the style guide specifies a ratio (e.g., "A represents 10%, B represents 60%"), you MUST mathematically reflect this. If a pattern is 10%, use it only once per 10 sentences. Do NOT over-apply a signature ending.
       - **NEGATIVE CONSTRAINTS**: If the guide states a form is "NOT used" (e.g., "ですます調は一切見られない"), you MUST NOT use it. One violation makes the output invalid.
       - **NO SUFFIX HALLUCINATION**: Do NOT append casual suffixes (like "〜っ") to every sentence just to mimic the "vibe". Only use them where they naturally occur in the samples.
@@ -442,6 +450,8 @@ export const generateContent = async (
           - Noun ending (体言止め) for rhythm (e.g., "春の訪れを感じる一皿。")
           - Emotive ("〜と嬉しいです", "〜が楽しみです")
       - **Variety & Repetition**: Avoid repetitive patterns unless noted as a habit. Maintain emoji density as described.
+      - **PUNCTUATION**:
+        - **REMOVE PERIOD BEFORE EMOJI**: Unless the <learning_samples> explicitly use "。😊", generally remove the period before an emoji. Write "〜です😊" instead of "〜です。😊".
       - **CRITICAL LENGTH RULE**: **Length** is determined by **Volume Control** below, NOT by the samples. If the samples are long but the user asks for 'Short', you MUST write a short post in the *style* of the samples.
     - **Volume Control**: ${isGMap && config.replyDepth ? `Strictly follow the **Reply Depth: ${config.replyDepth}**.
       - **Target Character Counts (Google Maps Reply)**:
@@ -600,6 +610,7 @@ DO NOT use stiff business boilerplate like "誠にありがとうございます
     - Prioritize friendlier/casual tones found in samples over industry standard formal etiquette.
     - If the owner uses emojis (😊, ♪, etc.) in the samples, YOU MUST USE THEM.
     - **Anti-Boilerplate**: NEVER use stiff phrases like "心より感謝申し上げます" or "ご不便をおかけしました" if the owner uses softer, natural language in the samples.
+    - **FACTUAL ISOLATION**: NEVER use proper nouns (menu items, staff names, location details) found in samples. They are obsolete.
   </task>
 
   ${activePersonaYaml ? `
@@ -716,6 +727,7 @@ DO NOT use stiff business boilerplate like "誠にありがとうございます
       1. **STORE DESCRIPTION CHECK**: Did you copy/paste any phrases from <store_identity> or <store_background>? -> **REWRITE IMMEDIATELY**.
       2. **RELEVANCE CHECK**: Did you insert product details into an unrelated topic (e.g. holiday notice)? -> **DELETE THEM**.
       3. **TONE CHECK**: Does it possess the *spirit* of the samples without copying their *content*? -> **MUST BE YES**.
+      4. **FACTUAL LEAKAGE CHECK**: Did you mention a specific "Parking location", "Cake name", or "Price" that appears in <learning_samples> but NOT in <user_input>? -> **DELETE IT IMMEDIATELY**.
     </final_enforcement>
   </system_instruction>
 `;
