@@ -147,6 +147,7 @@ export function mapHistoryEntry(entry: any): GeneratedPost {
       language: rawConfig.language || 'Japanese',
       storeSupplement: rawConfig.storeSupplement || rawConfig.store_supplement,
       customPrompt: rawConfig.customPrompt || rawConfig.custom_prompt,
+      userCustomPrompt: rawConfig.userCustomPrompt || rawConfig.user_custom_prompt,
       replyDepth: rawConfig.replyDepth || rawConfig.reply_depth,
       includeSymbols: rawConfig.includeSymbols,
       includeEmojis: rawConfig.includeEmojis,

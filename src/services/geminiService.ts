@@ -370,8 +370,9 @@ export const generateContent = async (
 
     const formattedLearningSamples = validSamples
         .slice(0, 5) // Hard cap at 5 recent posts per generation
-        .map((s, i) => `<sample id="${i + 1}">\n<!-- WARNING: STYLE SAMPLE ONLY. IGNORE FACTS/NAMES/LOCATIONS INSIDE. -->\n${s.length > 500 ? s.slice(0, 500) + '...' : s}\n</sample>`)
+        .map((s, i) => `<sample id="${i + 1}">\n${s.length > 500 ? s.slice(0, 500) + '...' : s}\n</sample>`)
         .join("\n");
+
 
     const timeContext = !isGMap ? getTimeContext(profile.instagramFooter) : null;
 
@@ -394,7 +395,7 @@ export const generateContent = async (
     You are the "Ghostwriter" for the store owner of "${profile.name}".
     ${hasPersona ? `
     **STYLE HIERARCHY**:
-    1. **MAX PRIORITY**: <important_user_instruction> (Style Instruction Guide) and <learning_samples>.
+    1. **MAX PRIORITY**: <important_user_instruction> and <voice_style_reference_only>.
     2. **BACKGROUND ONLY**: Industry standards and general personality.
     3. **FORBIDDEN**: AI's standard "polite" or "friendly" biases (e.g. adding generic ~です, ~だよ, ~ねっ).
     ` : `
@@ -431,11 +432,14 @@ export const generateContent = async (
   <style_guidelines>
     - **ROLE DEFINITION**:
       - Use **<persona_rules>** (YAML) to define the **Core Personality** (Dialect, Tone, Spirit).
-      - Use **<learning_samples>** to define the **Structural Format** (Line breaks, Emoji density, Footer style).
+      - Use **<voice_style_reference_only>** to define the **Structural Format** (Line breaks, Emoji density).
       - **Tone & Rhythm**: Mimic the sentence endings and tone. 
-      - **FACTUAL ISOLATION**:
-        - **ABSOLUTE PROHIBITION**: Do NOT reference specific nouns (Person names, specific dish names, place names) from the samples.
-        - **REASONING**: The samples are from the PAST. The facts are OBSOLETE. Only the <user_input> and <owner_explanation> contain TRUE FACTS for this post.
+      - **FACTUAL ISOLATION (ABSOLUTE)**:
+        - The <voice_style_reference_only> section contains **FICTIONAL / OBSOLETE** data.
+        - **TOPIC RELEVANCE GATE**: Before writing any specific detail (e.g. "Parking info", "Menu item"), ask: "Is this in the <user_input>?"
+          - IF NO -> **DELETE IT**. Even if it is in the samples.
+          - IF YES -> You may use it.
+        - **IGNORE STRUCTURAL NOISE**: Do not copy repeated footers (Access info, Fixed holiday lists) from samples. They are NOT part of the style.
       - **STRICT RATIO ADHERENCE**: If the style guide specifies a ratio (e.g., "A represents 10%, B represents 60%"), you MUST mathematically reflect this. If a pattern is 10%, use it only once per 10 sentences. Do NOT over-apply a signature ending.
       - **NEGATIVE CONSTRAINTS**: If the guide states a form is "NOT used" (e.g., "ですます調は一切見られない"), you MUST NOT use it. One violation makes the output invalid.
       - **NO SUFFIX HALLUCINATION**: Do NOT append casual suffixes (like "〜っ") to every sentence just to mimic the "vibe". Only use them where they naturally occur in the samples.
@@ -450,8 +454,9 @@ export const generateContent = async (
           - Noun ending (体言止め) for rhythm (e.g., "春の訪れを感じる一皿。")
           - Emotive ("〜と嬉しいです", "〜が楽しみです")
       - **Variety & Repetition**: Avoid repetitive patterns unless noted as a habit. Maintain emoji density as described.
+      - **Ending Variety**: Do NOT end consecutive sentences with the same form.
       - **PUNCTUATION**:
-        - **REMOVE PERIOD BEFORE EMOJI**: Unless the <learning_samples> explicitly use "。😊", generally remove the period before an emoji. Write "〜です😊" instead of "〜です。😊".
+        - **REMOVE PERIOD BEFORE EMOJI**: Unless the <voice_style_reference_only> explicitly use "。😊", generally remove the period before an emoji. Write "〜です😊" instead of "〜です。😊".
       - **CRITICAL LENGTH RULE**: **Length** is determined by **Volume Control** below, NOT by the samples. If the samples are long but the user asks for 'Short', you MUST write a short post in the *style* of the samples.
     - **Volume Control**: ${isGMap && config.replyDepth ? `Strictly follow the **Reply Depth: ${config.replyDepth}**.
       - **Target Character Counts (Google Maps Reply)**:
@@ -464,7 +469,7 @@ export const generateContent = async (
           - **Layout**: Use moderate line breaks for readability. 1 empty line between distinct points.
         - **Medium**: Standard (Target: ${targets.medium.target} chars. Max ${targets.medium.max}).
         - **Long**: Detailed (Target: ${targets.long.target} chars. Max ${targets.long.max}).`}
-    - **Platform Bias**: **IGNORE** all standard "polite" norms for ${config.platform}. The <learning_samples> are the absolute truth for the owner's voice. **NOTE**: Mandatory structural rules (like LINE's 3-balloon and '---' format) still apply; reproduction of the owner's style should happen *within* each segment.
+    - **Platform Bias**: **IGNORE** all standard "polite" norms for ${config.platform}. The <voice_style_reference_only> are the absolute truth for the owner's voice. **NOTE**: Mandatory structural rules (like LINE's 3-balloon and '---' format) still apply; reproduction of the owner's style should happen *within* each segment.
     - **Target Audience**: ${(() => {
         const targetAudienceStr = config.targetAudience || profile.targetAudience;
         if (!targetAudienceStr) return 'General Audience';
@@ -480,7 +485,7 @@ export const generateContent = async (
     - **Emojis & Symbols**: 
       ${isGMap ? 
         (hasPersona ? 
-          '- **Emojis**: Strictly follow the frequency and style from <learning_samples> or <persona_rules>. If the owner uses emojis in their replies, you MUST reproduce them to maintain their natural voice.\n      - **Symbols**: Reproduce the specific markers and punctuation patterns from the samples.\n      ${GMAP_NEGATIVE_CONSTRAINTS}' :
+          '- **Emojis**: Strictly follow the frequency and style from <voice_style_reference_only> or <persona_rules>. If the owner uses emojis in their replies, you MUST reproduce them to maintain their natural voice.\n      - **Symbols**: Reproduce the specific markers and punctuation patterns from the samples.\n      ${GMAP_NEGATIVE_CONSTRAINTS}' :
           '- **Emojis**: Basically, DO NOT use emojis for Google Maps as it is a professional public space. Maintain a calm, text-only appearance unless specified otherwise.\n      - **Symbols**: Use standard Japanese punctuation. Avoid decorative symbols.\n      ${GMAP_NEGATIVE_CONSTRAINTS}'
         ) : 
         `- **Emojis**: ${hasPersona ? 'Strictly follow patterns from samples.' : (config.includeEmojis ? `Select emojis that perfectly match the post's content and the industry (${profile.industry}). Prioritize variety and situational relevance (e.g., seasonal items, specific products, or relevant activities) over generic symbols to ensure a natural and engaging selection.` : 'DO NOT use any emojis.')}
@@ -489,7 +494,7 @@ export const generateContent = async (
         - **Dividers**: ${isX ? '**DISABLED for X**. Do NOT use line dividers on X.' : '𓂃𓂃𓂃, ⋆┈┈┈┈┈┈┈┈┈┈⋆, ──────────── (Use 1-2 sets to separate sections)'} 
         - **Rule**: ${isX ? 'On X, use symbols/accents for headers (sandwiches) and sentence endings. No line dividers.' : 'Actively use "sandwich" patterns for headers (e.g. ＼ ✧ Title ✧ ／). Use symbols (𓍯, ✧) for bullet points. Add 1-2 symbols (✧, ꕤ) at the end of impactful sentences.'}` : 'DO NOT use decorative symbols or flashy brackets.')}`
       }
-    - **Line Breaks**: **NEVER** insert line breaks in the middle of a grammatical phrase or word (e.g., don't split "ご来店いただき" across lines). Maintain natural reading flow. Avoid "auto-formatting for mobile" unless the <learning_samples> explicitly use that specific rhythm.
+    - **Line Breaks**: **NEVER** insert line breaks in the middle of a grammatical phrase or word (e.g., don't split "ご来店いただき" across lines). Maintain natural reading flow. Avoid "auto-formatting for mobile" unless the <voice_style_reference_only> explicitly use that specific rhythm.
     - **Platform Rules**:
       - Platform: ${config.platform}
       ${isLine ? `- Style: **LINE Official Account (Repeater Focus)**.
@@ -518,7 +523,7 @@ export const generateContent = async (
        - Read the <user_input> (Review). Identify customer sentiment.
        - **CRITICAL**: Read the <owner_explanation> (if provided). These are the **absolute facts**.
     2. **Synthesize**: 
-       - Combine the "What happened" from <owner_explanation> with the "How it's said" (Voice/Tone) from <learning_samples>.
+       - Combine the "What happened" from <owner_explanation> with the "How it's said" (Voice/Tone) from <voice_style_reference_only>.
     3. **Respond (Don't Echo)**: Do NOT simply repeat factual statements. **Acknowledge** them with empathy.
     4. **Expand**: Add sensory details or store background while weaving in the facts from <owner_explanation>.
     5. **Draft**: Write the reply. Ensure the specific details in <owner_explanation> are the core of the message.
@@ -539,7 +544,7 @@ export const generateContent = async (
     } else {
         // Fallback Mode: Full samples (max 5)
         console.log("[LEARNING] Injected raw learning samples (No YAML available)");
-        return `<learning_samples>\n${formattedLearningSamples}\n</learning_samples>`;
+        return `<voice_style_reference_only>\n<!-- These are STYLE SAMPLES. The content is FICTION/PAST. Do NOT use facts from here. -->\n${formattedLearningSamples}\n</voice_style_reference_only>`;
     }
   })() : ""}
 </context_data>
@@ -570,7 +575,7 @@ export const generateContent = async (
         const styleInstruction = isGMap 
           ? `**CORE VOICE REPRODUCTION**: You MUST prioritize the owner's idiosyncratic voice (sentence endings, specific slang, and emotional tone) found in <learning_samples> or <persona_rules> ABOVE all other rules. 
 DO NOT use stiff business boilerplate like "誠にありがとうございます" if the owner uses friendlier forms like "ありがとうございます😊" in the samples. DO NOT switch to standard formal Japanese just because it is Google Maps.`
-          : `**STRICT STYLE REPRODUCTION**: You MUST prioritize the sentence endings and decorative patterns from <learning_samples> above all else, while following the purpose below.`;
+          : `**STRICT STYLE REPRODUCTION**: You MUST prioritize the sentence endings and decorative patterns from <voice_style_reference_only> above all else, while following the purpose below.`;
 
         const targetAudienceStr = config.targetAudience || profile.targetAudience;
         let targetInstruction = "";
@@ -606,7 +611,7 @@ DO NOT use stiff business boilerplate like "誠にありがとうございます
     - "analysis": Brief context analysis.
     - "posts": An array of generated post strings. 
     **VOICE_PRIORITY**:
-    If <learning_samples> are present, the owner's voice in those samples MUST be reproduced 100%. 
+    If <voice_style_reference_only> are present, the owner's voice in those samples MUST be reproduced 100%. 
     - Prioritize friendlier/casual tones found in samples over industry standard formal etiquette.
     - If the owner uses emojis (😊, ♪, etc.) in the samples, YOU MUST USE THEM.
     - **Anti-Boilerplate**: NEVER use stiff phrases like "心より感謝申し上げます" or "ご不便をおかけしました" if the owner uses softer, natural language in the samples.
@@ -616,7 +621,7 @@ DO NOT use stiff business boilerplate like "誠にありがとうございます
   ${activePersonaYaml ? `
   <persona_rules>
     The following rules represent the owner's "Style DNA" specifically for ${config.platform}.
-    ${hasPersona ? "**NOTE**: Treat these as secondary personality traits. <important_user_instruction> and <learning_samples> ALWAYS override these if there is a conflict." : ""}
+    ${hasPersona ? "**NOTE**: Treat these as secondary personality traits. <important_user_instruction> and <voice_style_reference_only> ALWAYS override these if there is a conflict." : ""}
     Strictly follow the **core_voice** defined here:
     ${activePersonaYaml}
   </persona_rules>
@@ -727,7 +732,7 @@ DO NOT use stiff business boilerplate like "誠にありがとうございます
       1. **STORE DESCRIPTION CHECK**: Did you copy/paste any phrases from <store_identity> or <store_background>? -> **REWRITE IMMEDIATELY**.
       2. **RELEVANCE CHECK**: Did you insert product details into an unrelated topic (e.g. holiday notice)? -> **DELETE THEM**.
       3. **TONE CHECK**: Does it possess the *spirit* of the samples without copying their *content*? -> **MUST BE YES**.
-      4. **FACTUAL LEAKAGE CHECK**: Did you mention a specific "Parking location", "Cake name", or "Price" that appears in <learning_samples> but NOT in <user_input>? -> **DELETE IT IMMEDIATELY**.
+      4. **FACTUAL LEAKAGE CHECK**: Did you mention a specific "Parking location", "Cake name", or "Price" that appears in <voice_style_reference_only> but NOT in <user_input>? -> **DELETE IT IMMEDIATELY**.
     </final_enforcement>
   </system_instruction>
 `;

@@ -414,6 +414,7 @@ export function useGeneratorFlow(props: {
         language,
         storeSupplement,
         customPrompt: combinedPrompt, // Send combined instructions
+        userCustomPrompt: userPrompt, // Save clean user input for history
         presetPrompt: systemPrompt, // Keep original for reference if needed
         xConstraint140,
         includeSymbols,
@@ -667,7 +668,22 @@ export function useGeneratorFlow(props: {
       setLength(restorePost.config.length);
       setInputText(restorePost.config.inputText);
       setStarRating(restorePost.config.starRating ?? null);
-      setCustomPrompt(restorePost.config.customPrompt || '');
+
+      // Restore custom prompt (Handle legacy vs new separated structure)
+      if (restorePost.config.userCustomPrompt !== undefined) {
+          // New format: Use the clean user input
+          setCustomPrompt(restorePost.config.userCustomPrompt);
+      } else {
+          // Legacy format: Try to strip system prompt if present
+          let text = restorePost.config.customPrompt || '';
+          const system = restorePost.config.presetPrompt;
+          if (system && text.startsWith(system)) {
+              // Remove system prompt and any leading newlines/spacing
+              text = text.substring(system.length).trim();
+          }
+          setCustomPrompt(text);
+      }
+      
       setActivePresetId(restorePost.config.presetId || 'plain-ai');
       // Set includeFooter to false since restored results already have footer embedded
       setIncludeFooter(false);

@@ -81,6 +81,7 @@ export interface GenerationConfig {
   language?: string;
   storeSupplement?: string; // Google Maps only
   customPrompt?: string; // User's manual instructions
+  userCustomPrompt?: string; // New: User input only (separated from combined prompt)
   presetPrompt?: string; // System instructions from the active preset
   replyDepth?: ReplyDepth; // New: Reply depth for Google Maps
 
