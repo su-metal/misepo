@@ -242,7 +242,7 @@ export const MobileConfirmStep: React.FC<MobileConfirmStepProps> = ({
                     )}
 
                     {/* Fine-tuning Settings (Tone, Length) */}
-                    {(!isStyleLocked || (!isX && !isGoogleMaps)) && (
+                    {(isGoogleMaps || !isStyleLocked || !isX) && (
                         <div className="mt-8 px-2 space-y-8">
                             {/* Settings Grid - Monochrome */}
                             <div className="flex flex-col gap-10 mb-8">
@@ -255,7 +255,7 @@ export const MobileConfirmStep: React.FC<MobileConfirmStepProps> = ({
                                     </div>
 
                                     {/* Lock Message or Missing Data Warning */}
-                                    {isStyleLocked ? (
+                                    {(isStyleLocked && !isGoogleMaps) ? (
                                         <div className="bg-[#f0f9ff] border border-[#bae6fd] rounded-xl p-4 flex items-center gap-3 text-[#0369a1]">
                                             <div className="bg-white p-1.5 rounded-full shadow-sm shrink-0">
                                                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -269,13 +269,13 @@ export const MobileConfirmStep: React.FC<MobileConfirmStepProps> = ({
                                         </div>
                                     ) : (
                                         <>
-                                            {activePresetId && activePresetId !== 'plain-ai' && (
+                                            {!isGoogleMaps && activePresetId && activePresetId !== 'plain-ai' && (
                                                 <div className="mb-3 bg-[#fff7ed] border border-[#fed7aa] rounded-xl p-3 flex items-start gap-2 text-[#c2410c]">
                                                     <svg className="w-4 h-4 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                                                     </svg>
                                                     <div className="flex flex-col">
-                                                        <span className="text-[10px] font-bold leading-tight">このプラットフォーム用の学習データが不足しています。標準のトーン設定が有効です。</span>
+                                                        <span className="text-[10px] font-bold leading-tight">このプラットフォーム用の学習データが不足しています。標準のトーン設定を使用します。</span>
                                                     </div>
                                                 </div>
                                             )}
