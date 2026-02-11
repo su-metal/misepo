@@ -90,10 +90,11 @@ export function useGeneratorFlow(props: {
   const isStyleLocked = !!activePresetId && activePresetId !== 'plain-ai' && (() => {
       const items = props.trainingItems || [];
       return platforms.some(p => 
-          items.some(t => 
-              t.presetId === activePresetId && 
-              (t.platform === p || t.platform === Platform.General)
-          )
+          items.some(t => {
+              const itemPlatforms = t.platform.split(',').map(s => s.trim());
+              return t.presetId === activePresetId && 
+              (itemPlatforms.includes(p) || itemPlatforms.includes(Platform.General));
+          })
       );
   })();
 
