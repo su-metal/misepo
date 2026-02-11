@@ -5,6 +5,7 @@ import {
 } from '../../../types';
 import { DEMO_SAMPLE_TEXT, LOADING_TIPS } from '../../../constants';
 import { insertInstagramFooter, removeInstagramFooter } from './utils';
+import { cleanUserInstruction } from '../../../lib/historyUtils';
 
 export interface ResultGroup {
   platform: Platform;
@@ -494,7 +495,9 @@ export function useGeneratorFlow(props: {
           purpose: postPurpose,
           postPurpose, tone, length, inputText,
           starRating: starRating ?? undefined,
-          language, storeSupplement, customPrompt,
+          customPrompt: batchConfigs[0]?.userCustomPrompt || '', // Use clean user input from config
+          userCustomPrompt: batchConfigs[0]?.userCustomPrompt || '',
+          presetPrompt: batchConfigs[0]?.presetPrompt || '', // Store system prompt separately
           xConstraint140, includeSymbols, includeEmojis,
           instagramFooter: (targetPlatforms.includes(Platform.Instagram) && includeFooter) ? storeProfile.instagramFooter : undefined,
           presetId: activePresetId || undefined,
@@ -671,19 +674,18 @@ export function useGeneratorFlow(props: {
       setStarRating(restorePost.config.starRating ?? null);
 
       // Restore custom prompt (Handle legacy vs new separated structure)
-      if (restorePost.config.userCustomPrompt !== undefined) {
-          // New format: Use the clean user input
-          setCustomPrompt(restorePost.config.userCustomPrompt);
-      } else {
-          // Legacy format: Try to strip system prompt if present
-          let text = restorePost.config.customPrompt || '';
-          const system = restorePost.config.presetPrompt;
-          if (system && text.startsWith(system)) {
-              // Remove system prompt and any leading newlines/spacing
-              text = text.substring(system.length).trim();
-          }
-          setCustomPrompt(text);
+      // Prioritize userCustomPrompt if available, otherwise fall back to customPrompt (and clean it)
+      const rawUserPrompt = restorePost.config.userCustomPrompt || restorePost.config.customPrompt || '';
+      const system = restorePost.config.presetPrompt;
+      
+      let text = rawUserPrompt;
+      if (system && text.startsWith(system)) {
+          // Legacy format where they were merged: remove system prompt
+          text = text.substring(system.length).trim();
       }
+      
+      // Safety: always clean for display to remove any accidental technical leaks
+      setCustomPrompt(text);
       
       setActivePresetId(restorePost.config.presetId || 'plain-ai');
       // Set includeFooter to false since restored results already have footer embedded

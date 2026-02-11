@@ -14,6 +14,7 @@ import {
   MessageSquareIcon,
   SparklesIcon
 } from './Icons';
+import { cleanUserInstruction, hasActualUserInstruction } from '../lib/historyUtils';
 import { UI } from '../constants';
 
 interface HistorySidebarProps {
@@ -164,7 +165,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                 ))}
               </div>
               <div className="flex items-center gap-2">
-                {item.config.customPrompt && (
+                {hasActualUserInstruction(item.config.customPrompt) && (
                   <div className="flex items-center gap-1 px-2 py-0.5 bg-amber-50 rounded-full border border-amber-100/50" title="追加指示あり">
                     <SparklesIcon className="w-2.5 h-2.5 text-amber-500" />
                   </div>
