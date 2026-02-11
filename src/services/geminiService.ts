@@ -508,9 +508,9 @@ export const generateContent = async (
       - Platform: ${config.platform}
       ${isLine ? `- Style: **LINE Official Account (Repeater Focus)**.
         - **Context**: Written for "Friends" (existing customers). High-impact, re-engagement oriented.
-        - **Tone**: Close distance, skip self-introductions. Ensure a warm but efficient communication.
+        ${activePersonaYaml ? "" : `- **Tone**: Close distance, skip self-introductions. Ensure a warm but efficient communication.
         - **Value**: Focus on direct benefits like "Limited Offers", "Coupons", or "Booking Status". Avoid low-value diary-like updates to prevent "Blocking".
-        - **Layout**: Concise chat style. Use 1-2 symbols (e.g. ＼ ✧ ／) for headers. Prioritize vertical readability with short, rhythmic sentences.` : ''}
+        - **Layout**: Concise chat style. Use 1-2 symbols (e.g. ＼ ✧ ／) for headers. Prioritize vertical readability with short, rhythmic sentences.`}` : ''}
     - **Readability & Vertical Flow**: Avoid long, dense blocks of text. Use line breaks (newlines) frequently—ideally after every sentence, emoji, or when shifting topics. Ensure a rhythmic, vertical flow that is easy to scan on a vertical mobile screen.
       - Length: ${config.length}
       - Language: ${config.language || 'Japanese'}
@@ -610,9 +610,18 @@ DO NOT use stiff business boilerplate like "誠にありがとうございます
         }
         
         const postPurposeStr = POST_PURPOSE_PROMPTS[config.purpose as PostPurpose] || POST_PURPOSE_PROMPTS[PostPurpose.Auto];
-        if (config.platform === Platform.Line) return `${styleInstruction}${targetInstruction}\n\nTask: Generate a LINE message. Purpose: "${postPurposeStr}". Flow: 1. Hook, 2. Details, 3. Action. ${lengthWarning} **VISUAL**: Use emoji-sandwiched headers. **LAYOUT**: Prioritize a clean vertical flow with frequent line breaks.`;
-        if (config.platform === Platform.Instagram) return `${styleInstruction}${targetInstruction}\n\nTask: Generate an attractive Instagram post. Purpose: "${postPurposeStr}". **FLOW**: 1. Hook (Price/Benefit in 1st-3rd line), 2. Story/Details, 3. CTA (Call to Action). ${lengthWarning}`;
-        if (config.platform === Platform.X) return `${styleInstruction}${targetInstruction}\n\nTask: Generate a high-engagement X (Twitter) post. Purpose: "${postPurposeStr}". **STYLE**: Immediacy (e.g. "焼き上がりました！", "あと少し！"). Conversational. Conclude with a light question or interaction trigger. ${lengthWarning}`;
+        if (config.platform === Platform.Line) {
+            const flow = activePersonaYaml ? "" : ". Flow: 1. Hook, 2. Details, 3. Action. **VISUAL**: Use emoji-sandwiched headers. **LAYOUT**: Prioritize a clean vertical flow with frequent line breaks.";
+            return `${styleInstruction}${targetInstruction}\n\nTask: Generate a LINE message. Purpose: "${postPurposeStr}"${flow}. ${lengthWarning}`;
+        }
+        if (config.platform === Platform.Instagram) {
+            const flow = activePersonaYaml ? "" : ". **FLOW**: 1. Hook (Price/Benefit in 1st-3rd line), 2. Story/Details, 3. CTA (Call to Action)";
+            return `${styleInstruction}${targetInstruction}\n\nTask: Generate an attractive Instagram post. Purpose: "${postPurposeStr}"${flow}. ${lengthWarning}`;
+        }
+        if (config.platform === Platform.X) {
+            const flow = activePersonaYaml ? "" : ". **STYLE**: Immediacy (e.g. \"焼き上がりました！\", \"あと少し！\"). Conversational. Conclude with a light question or interaction trigger";
+            return `${styleInstruction}${targetInstruction}\n\nTask: Generate a high-engagement X (Twitter) post. Purpose: "${postPurposeStr}"${flow}. ${lengthWarning}`;
+        }
 
         return `${styleInstruction}${targetInstruction}\n\nTask: Generate an attractive post for ${config.platform}. Purpose: "${postPurposeStr}". ${lengthWarning}`;
     })()}
