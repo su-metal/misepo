@@ -38,7 +38,8 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
   onOpenLogin,
   onDelete,
   onTogglePin,
-  onSelectPlatform
+  onSelectPlatform,
+  presets
 }) => {
   React.useEffect(() => {
     if (isOpen) {
@@ -195,7 +196,13 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                   <>
                     <div className="flex items-center gap-1 text-[10px] font-bold text-slate-400 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-100/50">
                       <span className="opacity-50">口調:</span>
-                      <span>{toneLabels[item.config.tone] || item.config.tone}</span>
+                      <span>{(() => {
+                        if (item.config.presetId && item.config.presetId !== 'plain-ai') {
+                          const preset = presets?.find(p => p.id === item.config.presetId);
+                          if (preset) return preset.name;
+                        }
+                        return toneLabels[item.config.tone] || item.config.tone;
+                      })()}</span>
                     </div>
                     <div className="flex items-center gap-1 text-[10px] font-bold text-slate-400 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-100/50">
                       <span className="opacity-50">長さ:</span>

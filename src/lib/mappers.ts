@@ -153,6 +153,7 @@ export function mapHistoryEntry(entry: any): GeneratedPost {
       includeEmojis: rawConfig.includeEmojis,
       xConstraint140: rawConfig.xConstraint140,
       instagramFooter: rawConfig.instagramFooter,
+      presetId: rawConfig.presetId || rawConfig.preset_id,
     },
     results: normalizeResults(rawResults, fallbackPlatform),
     isPinned: typeof entry.isPinned === 'boolean' ? entry.isPinned : Boolean(entry.is_pinned || rawConfig.isPinned),
