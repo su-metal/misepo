@@ -430,6 +430,7 @@ export const generateContent = async (
   </role>
 
   <style_guidelines>
+    **【重要・句点ルール】絵文字を使用する場合、その直前や直後に句点（。）を置くことは【厳禁】です。絵文字で文を終える場合は句点を省略し、句点を打つ場合は絵文字を置かないでください（例：〜です😊 / 〜です。）。**
     - **ROLE DEFINITION**:
       - Use **<persona_rules>** (YAML) to define the **Core Personality** (Dialect, Tone, Spirit).
       - Use **<voice_style_reference_only>** to define the **Structural Format** (Line breaks, Emoji density).
@@ -446,6 +447,13 @@ export const generateContent = async (
       - **AI BIAS REMOVAL**: **EXTERMINATE** the AI's natural tendency to be polite, helpful, or friendly (e.g., adding "〜ねっ", "〜よ〜", "〜😊"). If the samples are rough, blunt, or eccentric, YOU must be rough, blunt, or eccentric.
       - **CRITICAL**: Use ONLY the sentence endings and nuances found in the samples or <persona_rules>. Do NOT add generic "marketing-style" or feminine endings if not explicitly present.
       - **Structure & Flow**: Follow the sequence and **CTA (Call to Action)** style analyzed in the style guide.
+      ${hasPersona ? `
+      - **MSG ENDING LOGIC (STRICT - PERSONA MODE)**:
+        1. **USE ONLY SAMPLED ENDINGS (Priority 1)**: You MUST predominantly use the sentence endings found in <learning_samples> or <persona_rules>.
+        2. **NO FABRICATION (Priority 2)**: Do NOT use "〜ね", "〜よ", "〜よね", "〜ですね", "〜ですよ", "〜ん" UNLESS they explicitly appear in the samples.
+           - *Conflict Resolution*: If the desire to be "friendly" conflicts with the samples (which are "blunt"), BE BLUNT.
+        3. **MINIMAL INFERENCE (Priority 3)**: If samples are insufficient (e.g. too short), you may infer the missing tone based on the available data, but stick to the simplest grammatical forms (e.g. 〜です/〜ます). Do NOT add emotional particles.
+      ` : `
       - **ENDING VARIETY (CRITICAL)**:
         - **BAN REPETITIVE ENDINGS**: Do NOT end consecutive sentences with the same form (e.g., "〜ください。" followed by "〜ください。").
         - **LIMIT "PLEASE"**: Use request forms like "〜ください" sparingly (max once per post). Instead, use diverse endings:
@@ -454,7 +462,7 @@ export const generateContent = async (
           - Noun ending (体言止め) for rhythm (e.g., "春の訪れを感じる一皿。")
           - Emotive ("〜と嬉しいです", "〜が楽しみです")
       - **Variety & Repetition**: Avoid repetitive patterns unless noted as a habit. Maintain emoji density as described.
-      - **Ending Variety**: Do NOT end consecutive sentences with the same form.
+      `}      - **Ending Variety**: Do NOT end consecutive sentences with the same form.
       - **PUNCTUATION**:
         - **REMOVE PERIOD BEFORE EMOJI**: Unless the <voice_style_reference_only> explicitly use "。😊", generally remove the period before an emoji. Write "〜です😊" instead of "〜です。😊".
         - **NO EMOJI AFTER PERIOD**: **NEVER** place an emoji immediately after a Japanese period (。). Always ensure the period is the final character if used after a sentence. (e.g., "〜です。😊" is PROHIBITED. Use "〜です😊" or "〜です。" instead.)
@@ -627,6 +635,11 @@ DO NOT use stiff business boilerplate like "誠にありがとうございます
     ${activePersonaYaml}
   </persona_rules>
   ` : ""}
+
+  **【再掲：重要制約】**
+  - 文章の最後に絵文字を使用する場合、句点（。）を併用することは【厳禁】です。
+  - 「〜です。😊」や「〜です😊。」といった混在は一切行わず、必ず「〜です😊」または「〜です。」のいずれかに統一してください。
+</system_instruction>
 `;
     }
 
@@ -647,6 +660,7 @@ DO NOT use stiff business boilerplate like "誠にありがとうございます
   </role>
 
   <rules>
+    **【重要・句点ルール】絵文字を使用する場合、その直前や直後に句点（。）を置くことは【厳禁】です。絵文字で文を終える場合は句点を省略し、句点を打つ場合は絵文字を置かないでください（例：〜です😊 / 〜です。）。**
     ${profile.aiAnalysis ? `- **Store Context**: The text in <store_background> is your INTERNAL KNOWLEDGE about the store. **NEVER quote or paraphrase it directly.** Instead, let it shape your perspective and expertise naturally. If the source says "丁寧な接客と心温まるおもてなし", do NOT write those words — instead, SHOW that warmth through your tone and word choices. Only reference store traits when directly relevant to the topic.` : ""}
     - Language: ${config.language || 'Japanese'}
     - Length: ${config.length} (Target: ${t.target} chars. Min: ${t.min} chars)
@@ -735,7 +749,11 @@ DO NOT use stiff business boilerplate like "誠にありがとうございます
       3. **TONE CHECK**: Does it possess the *spirit* of the samples without copying their *content*? -> **MUST BE YES**.
       4. **FACTUAL LEAKAGE CHECK**: Did you mention a specific "Parking location", "Cake name", or "Price" that appears in <voice_style_reference_only> but NOT in <user_input>? -> **DELETE IT IMMEDIATELY**.
     </final_enforcement>
-  </system_instruction>
+
+  **【再掲：重要制約】**
+  - 文章の最後に絵文字を使用する場合、句点（。）を併用することは【厳禁】です。
+  - 「〜です。😊」や「〜です😊。」といった混在は一切行わず、必ず「〜です😊」または「〜です。」のいずれかに統一してください。
+</system_instruction>
 `;
   };
 
@@ -1490,7 +1508,8 @@ const styleGuideSchema = {
         [Platform.Line]: { type: Type.STRING },
         [Platform.GoogleMaps]: { type: Type.STRING },
     },
-    // No "required" fields because some records might be missing certain platforms
+    // AI is encouraged to provide results for all platforms even if they say "No samples"
+    required: [Platform.X, Platform.Instagram, Platform.Line, Platform.GoogleMaps],
 };
 
   const systemInstruction = `
