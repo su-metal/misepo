@@ -457,6 +457,7 @@ export const generateContent = async (
       - **Ending Variety**: Do NOT end consecutive sentences with the same form.
       - **PUNCTUATION**:
         - **REMOVE PERIOD BEFORE EMOJI**: Unless the <voice_style_reference_only> explicitly use "。😊", generally remove the period before an emoji. Write "〜です😊" instead of "〜です。😊".
+        - **NO EMOJI AFTER PERIOD**: **NEVER** place an emoji immediately after a Japanese period (。). Always ensure the period is the final character if used after a sentence. (e.g., "〜です。😊" is PROHIBITED. Use "〜です😊" or "〜です。" instead.)
       - **CRITICAL LENGTH RULE**: **Length** is determined by **Volume Control** below, NOT by the samples. If the samples are long but the user asks for 'Short', you MUST write a short post in the *style* of the samples.
     - **Volume Control**: ${isGMap && config.replyDepth ? `Strictly follow the **Reply Depth: ${config.replyDepth}**.
       - **Target Character Counts (Google Maps Reply)**:
