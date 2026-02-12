@@ -1,5 +1,5 @@
 import React from 'react';
-import { PostPurpose, GoogleMapPurpose, Tone, Length, Platform, Preset, UserPlan, StoreProfile } from '../../../types';
+import { PostPurpose, GoogleMapPurpose, Tone, ReplyDepth, Length, Platform, Preset, UserPlan, StoreProfile } from '../../../types';
 import {
     MegaphoneIcon, BookOpenIcon, LightbulbIcon, ChatHeartIcon,
     AutoSparklesIcon, HandHeartIcon, ApologyIcon, InfoIcon, SparklesIcon,
@@ -84,6 +84,7 @@ export interface PostInputFormProps {
     onMobileResultOpen?: (isOpen: boolean) => void;
     onStepChange?: (step: 'platform' | 'input' | 'confirm' | 'result') => void;
     restoreTrigger?: number;
+    initialStepOnRestore?: 'input' | 'result';
     onOpenOnboarding?: () => void;
     onOpenSettings?: () => void;
     targetAudiences?: string[];
@@ -91,6 +92,13 @@ export interface PostInputFormProps {
     onAIStart?: (fn: () => void) => void;
     isCalendarOpen?: boolean;
     onCalendarToggle?: (isOpen: boolean) => void;
+
+    // Photo-to-Post
+    selectedImage?: string | null;
+    selectedImageMimeType?: string | null;
+    onImageChange?: (image: string | null, mimeType: string | null) => void;
+    replyDepth?: ReplyDepth;
+    onReplyDepthChange?: (depth: ReplyDepth) => void;
 }
 
 export const AVATAR_OPTIONS = [
@@ -134,6 +142,12 @@ export const TONES = [
     { id: Tone.Formal, label: 'きっちり' },
     { id: Tone.Standard, label: '標準' },
     { id: Tone.Friendly, label: '親しみ' },
+];
+
+export const REPLY_DEPTHS = [
+    { id: ReplyDepth.Light, label: 'あっさり', description: '感謝のみ' },
+    { id: ReplyDepth.Standard, label: 'バランス', description: '要点言及' },
+    { id: ReplyDepth.Deep, label: '丁寧', description: '全件言及' },
 ];
 
 export const LENGTHS = [

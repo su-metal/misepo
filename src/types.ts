@@ -40,6 +40,12 @@ export enum Tone {
   Casual = 'casual' // もっと親しみ
 }
 
+export enum ReplyDepth {
+  Light = 'light',   // あっさり
+  Standard = 'standard', // バランス
+  Deep = 'deep',     // 丁寧
+}
+
 export enum Length {
   Short = 'short',
   Medium = 'medium',
@@ -75,7 +81,9 @@ export interface GenerationConfig {
   language?: string;
   storeSupplement?: string; // Google Maps only
   customPrompt?: string; // User's manual instructions
+  userCustomPrompt?: string; // New: User input only (separated from combined prompt)
   presetPrompt?: string; // System instructions from the active preset
+  replyDepth?: ReplyDepth; // New: Reply depth for Google Maps
 
   // Decoration Control
   includeSymbols?: boolean; // Whether to include decorative symbols
@@ -91,6 +99,10 @@ export interface GenerationConfig {
   targetAudience?: string; // Target audience override for this specific post
   question?: string; // Sommelier Question (Q&A mode)
   topicPrompt?: string; // The selected topic instruction (Q&A mode)
+  
+  // Photo-to-Post (Base64 data)
+  image?: string | null;
+  mimeType?: string | null;
 }
 
 export interface GeneratedResult {

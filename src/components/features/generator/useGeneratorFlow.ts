@@ -1,10 +1,11 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { 
-  Platform, PostPurpose, GoogleMapPurpose, Tone, Length, 
+  Platform, PostPurpose, GoogleMapPurpose, Tone, ReplyDepth, Length, 
   StoreProfile, GenerationConfig, GeneratedPost, Preset, GeneratedResult, TrainingItem, UserPlan
 } from '../../../types';
 import { DEMO_SAMPLE_TEXT, LOADING_TIPS } from '../../../constants';
 import { insertInstagramFooter, removeInstagramFooter } from './utils';
+import { cleanUserInstruction } from '../../../lib/historyUtils';
 
 export interface ResultGroup {
   platform: Platform;
@@ -25,11 +26,12 @@ export function useGeneratorFlow(props: {
   refreshPlan?: () => Promise<void>;
   trainingItems: TrainingItem[];
   plan: UserPlan;
+  restoreTrigger?: number;
 }) {
   const { 
     storeProfile, isLoggedIn, onOpenLogin, onGenerateSuccess, 
     onTaskComplete, favorites, onToggleFavorite, restorePost, resetResultsTrigger, refreshPlan,
-    plan
+    plan, restoreTrigger
   } = props;
 
   // --- State ---
@@ -39,6 +41,7 @@ export function useGeneratorFlow(props: {
   const [gmapPurpose, setGmapPurpose] = useState<GoogleMapPurpose>(GoogleMapPurpose.Auto);
   const [starRating, setStarRating] = useState<number | null>(null);
   const [tone, setTone] = useState<Tone>(Tone.Standard);
+  const [replyDepth, setReplyDepth] = useState<ReplyDepth>(ReplyDepth.Standard);
   const [length, setLength] = useState<Length>(Length.Medium);
   const [inputText, setInputText] = useState('');
   const [xConstraint140, setXConstraint140] = useState<boolean>(true);
@@ -52,6 +55,10 @@ export function useGeneratorFlow(props: {
   const [targetAudiences, setTargetAudiences] = useState<string[]>([]);
   const [question, setQuestion] = useState<string | undefined>(undefined);
   const [topicPrompt, setTopicPrompt] = useState<string | undefined>(undefined);
+  
+  // Photo-to-Post
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedImageMimeType, setSelectedImageMimeType] = useState<string | null>(null);
   
   // Initialize target audiences from store profile
   useEffect(() => {
@@ -84,10 +91,11 @@ export function useGeneratorFlow(props: {
   const isStyleLocked = !!activePresetId && activePresetId !== 'plain-ai' && (() => {
       const items = props.trainingItems || [];
       return platforms.some(p => 
-          items.some(t => 
-              t.presetId === activePresetId && 
-              (t.platform === p || t.platform === Platform.General)
-          )
+          items.some(t => {
+              const itemPlatforms = t.platform.split(',').map(s => s.trim());
+              return t.presetId === activePresetId && 
+              (itemPlatforms.includes(p) || itemPlatforms.includes(Platform.General));
+          })
       );
   })();
 
@@ -398,7 +406,8 @@ export function useGeneratorFlow(props: {
       const config: GenerationConfig = {
         platform: p,
         purpose,
-        tone,
+        tone: p === Platform.GoogleMaps ? Tone.Standard : tone,
+        replyDepth: p === Platform.GoogleMaps ? replyDepth : undefined,
         length,
         inputText,
         question,
@@ -407,6 +416,7 @@ export function useGeneratorFlow(props: {
         language,
         storeSupplement,
         customPrompt: combinedPrompt, // Send combined instructions
+        userCustomPrompt: userPrompt, // Save clean user input for history
         presetPrompt: systemPrompt, // Keep original for reference if needed
         xConstraint140,
         includeSymbols,
@@ -415,7 +425,9 @@ export function useGeneratorFlow(props: {
         post_samples: currentPostSamples,
         presetId: activePresetId || undefined,
         gmapPurpose: (p === Platform.GoogleMaps) ? gmapPurpose : undefined,
-        targetAudience: targetAudiences.length > 0 ? targetAudiences.join(', ') : undefined
+        targetAudience: targetAudiences.length > 0 ? targetAudiences.join(', ') : undefined,
+        image: selectedImage,
+        mimeType: selectedImageMimeType
       };
       return config;
     });
@@ -483,11 +495,15 @@ export function useGeneratorFlow(props: {
           purpose: postPurpose,
           postPurpose, tone, length, inputText,
           starRating: starRating ?? undefined,
-          language, storeSupplement, customPrompt,
+          customPrompt: batchConfigs[0]?.userCustomPrompt || '', // Use clean user input from config
+          userCustomPrompt: batchConfigs[0]?.userCustomPrompt || '',
+          presetPrompt: batchConfigs[0]?.presetPrompt || '', // Store system prompt separately
           xConstraint140, includeSymbols, includeEmojis,
           instagramFooter: (targetPlatforms.includes(Platform.Instagram) && includeFooter) ? storeProfile.instagramFooter : undefined,
           presetId: activePresetId || undefined,
-          gmapPurpose: targetPlatforms.includes(Platform.GoogleMaps) ? gmapPurpose : undefined
+          gmapPurpose: targetPlatforms.includes(Platform.GoogleMaps) ? gmapPurpose : undefined,
+          image: selectedImage,
+          mimeType: selectedImageMimeType
         };
 
         onGenerateSuccess({
@@ -656,7 +672,21 @@ export function useGeneratorFlow(props: {
       setLength(restorePost.config.length);
       setInputText(restorePost.config.inputText);
       setStarRating(restorePost.config.starRating ?? null);
-      setCustomPrompt(restorePost.config.customPrompt || '');
+
+      // Restore custom prompt (Handle legacy vs new separated structure)
+      // Prioritize userCustomPrompt if available, otherwise fall back to customPrompt (and clean it)
+      const rawUserPrompt = restorePost.config.userCustomPrompt || restorePost.config.customPrompt || '';
+      const system = restorePost.config.presetPrompt;
+      
+      let text = rawUserPrompt;
+      if (system && text.startsWith(system)) {
+          // Legacy format where they were merged: remove system prompt
+          text = text.substring(system.length).trim();
+      }
+      
+      // Safety: always clean for display to remove any accidental technical leaks
+      setCustomPrompt(text);
+      
       setActivePresetId(restorePost.config.presetId || 'plain-ai');
       // Set includeFooter to false since restored results already have footer embedded
       setIncludeFooter(false);
@@ -673,7 +703,7 @@ export function useGeneratorFlow(props: {
       setRefineText("");
 
     }
-  }, [restorePost]);
+  }, [restorePost, restoreTrigger]);
 
   // Demo text logic removed as /generate is now auth-only
 
@@ -738,6 +768,8 @@ export function useGeneratorFlow(props: {
     setRefiningKey(null);
     setRefineText("");
     setActivePresetId('plain-ai');
+    setSelectedImage(null);
+    setSelectedImageMimeType(null);
   }, []);
 
   return {
@@ -747,6 +779,7 @@ export function useGeneratorFlow(props: {
     gmapPurpose, setGmapPurpose,
     starRating, onStarRatingChange: handleStarRatingChange,
     tone, setTone: handleToneChange,
+    replyDepth, setReplyDepth,
     length, setLength,
     inputText, setInputText,
     loading, resultGroups,
@@ -783,5 +816,13 @@ export function useGeneratorFlow(props: {
     onToggleFavorite,
     isStyleLocked,
     handleResetAll,
+    selectedImage,
+    setSelectedImage,
+    selectedImageMimeType,
+    setSelectedImageMimeType,
+    handleImageChange: (image: string | null, mimeType: string | null) => {
+      setSelectedImage(image);
+      setSelectedImageMimeType(mimeType);
+    }
   };
 }

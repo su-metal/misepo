@@ -55,7 +55,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
   const flow = useGeneratorFlow({
     storeProfile, isLoggedIn, onOpenLogin,
     onGenerateSuccess, onTaskComplete, favorites, onToggleFavorite, restorePost,
-    resetResultsTrigger, refreshPlan, trainingItems, plan
+    resetResultsTrigger, refreshPlan, trainingItems, plan, restoreTrigger
   });
 
   const [isPresetModalOpen, setIsPresetModalOpen] = React.useState(false);
@@ -177,6 +177,8 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
               onToneChange={flow.setTone}
               length={flow.length}
               onLengthChange={flow.setLength}
+              replyDepth={flow.replyDepth}
+              onReplyDepthChange={flow.setReplyDepth}
               inputText={flow.inputText}
               onInputTextChange={flow.setInputText}
               question={flow.question}
@@ -236,6 +238,7 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
               onMobileResultOpen={setIsMobileResultOpen}
               onStepChange={setMobileStep}
               restoreTrigger={restoreTrigger}
+              initialStepOnRestore={restorePost ? (restorePost.results.length > 0 ? 'result' : 'input') : undefined}
               closeDrawerTrigger={closeDrawerTrigger}
               openDrawerTrigger={openDrawerTrigger}
               onOpenOnboarding={() => setShowOnboarding(true)}
@@ -247,6 +250,9 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
               targetStep={mobileStep}
               isCalendarOpen={isCalendarOpen}
               onCalendarToggle={setIsCalendarOpen}
+              selectedImage={flow.selectedImage}
+              selectedImageMimeType={flow.selectedImageMimeType}
+              onImageChange={flow.handleImageChange}
             />
           </div>
 
@@ -266,11 +272,9 @@ const PostGenerator: React.FC<PostGeneratorProps> = (props) => {
                 setMobileActiveTab('home');
                 if (flow.platforms.length === 0) flow.handleSetActivePlatform(Platform.Instagram);
 
-                // If we already have results (generation completed), reset the input for a new start.
-                // If no results yet, keep the input as it might be a draft.
-                if (flow.resultGroups.length > 0) {
-                  flow.handleResetAll(true); // true to keep currently selected platforms
-                }
+                // Always reset input when clicking 'New Post' (Plus button) to ensure a fresh start.
+                // Pass true to keep the currently selected platform.
+                flow.handleResetAll(true);
 
                 setOpenDrawerTrigger(prev => prev + 1);
               }}

@@ -12,6 +12,16 @@ export default function BlogPage() {
 
     return (
         <div className="min-h-screen pt-24 pb-20 px-4 md:px-8 max-w-6xl mx-auto">
+            <Link
+                href="/"
+                className="inline-flex items-center text-[#2b2b2f]/40 hover:text-blue-600 font-bold text-sm mb-12 transition-colors group"
+            >
+                <svg className="w-4 h-4 mr-2 transition-transform group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M7 16l-4-4m0 0l4-4m-4 4h18" />
+                </svg>
+                BACK TO HOME
+            </Link>
+
             <div className="text-center mb-16">
                 <h1 className="text-4xl md:text-5xl font-black text-[#2b2b2f] mb-4 font-montserrat tracking-tight">
                     BLOG

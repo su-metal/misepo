@@ -38,6 +38,7 @@ export const Footer = () => {
                                 <li><a href="/#flow" className="text-slate-300 hover:text-white transition-colors flex items-center gap-2 group"><span className="w-1.5 h-px bg-[#1823ff] group-hover:w-3 transition-all" />使い方</a></li>
                                 <li><a href="/#demo" className="text-slate-300 hover:text-white transition-colors flex items-center gap-2 group"><span className="w-1.5 h-px bg-[#1823ff] group-hover:w-3 transition-all" />デモ</a></li>
                                 <li><a href="/#pricing" className="text-slate-300 hover:text-white transition-colors flex items-center gap-2 group"><span className="w-1.5 h-px bg-[#1823ff] group-hover:w-3 transition-all" />料金</a></li>
+                                <li><a href="/blog" className="text-slate-300 hover:text-white transition-colors flex items-center gap-2 group"><span className="w-1.5 h-px bg-[#1823ff] group-hover:w-3 transition-all" />ブログ</a></li>
                             </ul>
                         </div>
                         <div className="space-y-8">

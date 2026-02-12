@@ -55,9 +55,7 @@ export function normalizeResults(raw: any, fallbackPlatform: Platform): Generate
       if (typeof r === 'string') {
         addResult(fallbackPlatform, [r]);
       } else if (r && typeof r === 'object') {
-        // Handle both 'data' (normalized) and 'posts' (raw from gemini)
         const content = r.data || r.posts; 
-        // IMPROVED: Ensure platform is explicitly extracted from each result object
         const platform = r.platform || fallbackPlatform;
         if (content) {
             addResult(platform, Array.isArray(content) ? content : [content]);
@@ -65,15 +63,41 @@ export function normalizeResults(raw: any, fallbackPlatform: Platform): Generate
       }
     });
   }
-  // Handle structured object (from Gemini service result: { analysis, posts })
+  // Handle structured object (e.g., from Gemini service or keyed by platform)
   else if (raw && typeof raw === 'object') {
-    // Check if this is a results wrapper with array inside
+    // 1. Nested results array
     if (Array.isArray(raw.results)) {
-      // Recursively process the nested results array
       return normalizeResults(raw.results, fallbackPlatform);
     }
+    // 2. Direct posts array
     if (Array.isArray(raw.posts)) {
       addResult(fallbackPlatform, raw.posts);
+    }
+    // 3. Object keyed by platform (e.g., { "Instagram": ["..."], "X": ["..."] })
+    else {
+      let foundPlatforms = false;
+      Object.keys(raw).forEach(key => {
+        const normalizedKey = key.toLowerCase();
+        const data = raw[key];
+        // Check if key looks like a platform name
+        if (['instagram', 'x', 'twitter', 'line', 'googlemaps', 'google maps'].includes(normalizedKey)) {
+          if (Array.isArray(data)) {
+            addResult(key, data);
+            foundPlatforms = true;
+          } else if (typeof data === 'string') {
+            addResult(key, [data]);
+            foundPlatforms = true;
+          }
+        }
+      });
+      
+      // 4. Just an arbitrary object with data/posts
+      if (!foundPlatforms) {
+        if (raw.data || raw.posts) {
+          const content = raw.data || raw.posts;
+          addResult(raw.platform || fallbackPlatform, Array.isArray(content) ? content : [content]);
+        }
+      }
     }
   }
 
@@ -123,10 +147,13 @@ export function mapHistoryEntry(entry: any): GeneratedPost {
       language: rawConfig.language || 'Japanese',
       storeSupplement: rawConfig.storeSupplement || rawConfig.store_supplement,
       customPrompt: rawConfig.customPrompt || rawConfig.custom_prompt,
+      userCustomPrompt: rawConfig.userCustomPrompt || rawConfig.user_custom_prompt,
+      replyDepth: rawConfig.replyDepth || rawConfig.reply_depth,
       includeSymbols: rawConfig.includeSymbols,
       includeEmojis: rawConfig.includeEmojis,
       xConstraint140: rawConfig.xConstraint140,
       instagramFooter: rawConfig.instagramFooter,
+      presetId: rawConfig.presetId || rawConfig.preset_id,
     },
     results: normalizeResults(rawResults, fallbackPlatform),
     isPinned: typeof entry.isPinned === 'boolean' ? entry.isPinned : Boolean(entry.is_pinned || rawConfig.isPinned),

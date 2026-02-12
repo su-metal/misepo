@@ -10,6 +10,7 @@ import {
   GoogleMapPurpose,
   RiskTier,
   Tone,
+  ReplyDepth,
   TopicTemplate,
   DailyContext,
 } from "../types";
@@ -132,6 +133,14 @@ const GMAP_PURPOSE_PROMPTS: Record<string, string> = {
   [GoogleMapPurpose.Info]: "口コミへの返信の中に、営業時間やサービス内容などの最新情報を盛り込んでください。"
 };
 
+// Reply Depth Prompts for Google Maps reviews
+const REPLY_DEPTH_PROMPTS = {
+  [ReplyDepth.Light]: "**LIGHT MODE (あっさり)**: Keep the response polite and concise. Express gratitude and maintain a professional yet sincere tone. Focus on the core positive sentiment.",
+  [ReplyDepth.Standard]: "**STANDARD MODE (バランス)**: Response should be moderate length. Acknowledge the main points of the review and express sincere gratitude. Maintain a balanced and helpful tone.",
+  [ReplyDepth.Deep]: "**DEEP MODE (丁寧)**: Response should be detailed and comprehensive. You MUST address the specific points mentioned in the review. Show that you have read and appreciated the feedback carefully, expressing warmth and a commitment to service."
+};
+
+
 const GMAP_NEGATIVE_CONSTRAINTS = `
 - **免責表現の禁止**: 以下の表現、またはそれに類する「許しを請う」「言い訳をする」ような表現は**絶対に**使用しないでください。
   - 「何卒ご容赦いただけますようお願い申し上げます」
@@ -200,6 +209,56 @@ const scoreRisk = (starRating: number, text: string): RiskAnalysisResult => {
   return { score, tier, signals };
 };
 
+/**
+ * Parse business hours from instagramFooter text.
+ * Expected formats: "🕐 10時00分〜19時00分", "10:00〜19:00", "10時〜19時" etc.
+ * Returns { open: number, close: number } in 24h format, or null if not found.
+ */
+const parseBusinessHours = (footer?: string): { open: number; close: number } | null => {
+  if (!footer) return null;
+  // Match patterns like "10時00分〜19時00分", "10:00〜19:00", "10時〜19時"
+  const match = footer.match(/(\d{1,2})[時:](\d{0,2})[分]?\s*[〜~ー\-－→]\s*(\d{1,2})[時:](\d{0,2})/);
+  if (!match) return null;
+  const open = parseInt(match[1], 10);
+  const close = parseInt(match[3], 10);
+  if (isNaN(open) || isNaN(close)) return null;
+  return { open, close };
+};
+
+/**
+ * Get time-aware context for prompt injection.
+ * Returns time info only if within business hours (from instagramFooter or default 7-21).
+ * Returns null if outside business hours (user is likely preparing content for later).
+ */
+const getTimeContext = (instagramFooter?: string): { time: string; phase: string } | null => {
+  // Use JST (UTC+9)
+  const now = new Date();
+  const jstOffset = 9 * 60 * 60 * 1000;
+  const jstNow = new Date(now.getTime() + jstOffset);
+  const hours = jstNow.getUTCHours();
+  const minutes = jstNow.getUTCMinutes();
+  const timeStr = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+
+  // Determine business hours from footer or use default
+  const biz = parseBusinessHours(instagramFooter) || { open: 7, close: 21 };
+
+  // Check if current time is outside business hours → return null (no time context)
+  if (hours < biz.open || hours >= biz.close) {
+    return null;
+  }
+
+  // Within business hours → provide phase context
+  let phase = "";
+  if (hours >= 5 && hours < 10) phase = "早朝・午前中（開店準備、1日の始まり）";
+  else if (hours >= 10 && hours < 12) phase = "午前中・ランチ前（もうすぐランチ、開店直後）";
+  else if (hours >= 12 && hours < 14) phase = "ランチタイム・お昼時";
+  else if (hours >= 14 && hours < 17) phase = "午後・ティータイム（ひと息、夕方の準備）";
+  else if (hours >= 17 && hours < 22) phase = "夕方・夜・ディナータイム（仕事帰り、団らん、晩酌）";
+  else phase = "深夜・夜更け（1日の締めくくり、静かな時間）";
+
+  return { time: timeStr, phase };
+};
+
 function getServerAI() {
   const apiKey = process.env.GEMINI_API_KEY; // ← サーバ専用。NEXT_PUBLICは使わない
   if (!apiKey) throw new Error("Missing API_KEY in server env (.env.local)");
@@ -244,7 +303,23 @@ export const generateContent = async (
       medium: shouldBoost ? { target: '400-500', min: 380, max: 600 } : (isX ? { target: '250-300', min: 200, max: 350 } : { target: '300-400', min: 280, max: 450 }),
       long: shouldBoost ? { target: '650-850', min: 600, max: 1100 } : (isX ? { target: '500-600', min: 450, max: 700 } : { target: '500-650', min: 450, max: 750 })
     };
-    const t = targets[config.length as keyof typeof targets] || targets.medium;
+    const t = (() => {
+      const base = targets[config.length as keyof typeof targets] || targets.medium;
+      // For Google Maps, override length based on replyDepth
+      if (isGMap && config.replyDepth) {
+        switch (config.replyDepth) {
+          case ReplyDepth.Light:
+            return { target: '50-100', min: 30, max: 120 };
+          case ReplyDepth.Standard:
+            return { target: '120-200', min: 100, max: 250 };
+          case ReplyDepth.Deep:
+            return { target: '250-400', min: 200, max: 500 };
+          default:
+            return base;
+        }
+      }
+      return base;
+    })();
 
     // Platform-Specific Persona Logic: Parse the JSON container if present
     let activePersonaYaml = "";
@@ -299,6 +374,8 @@ export const generateContent = async (
         .join("\n");
 
 
+    const timeContext = !isGMap ? getTimeContext(profile.instagramFooter) : null;
+
     if (hasPersona) {
         const languageRule = config.language && config.language !== 'Japanese'
             ? `\n<language_rule>\nGenerate the content in **${config.language}**. Even if the language is different, reproduce the store owner's character (friendliness, passion, expertise, etc.) from the samples within the context of ${config.language}.\n</language_rule>`
@@ -309,50 +386,98 @@ export const generateContent = async (
 
         return `
 <system_instruction>
+  ${timeContext ? `<time_context>
+  - CURRENT_TIME: ${timeContext.time} (JST)
+  - CURRENT_PHASE: ${timeContext.phase}
+  - INSTRUCTION: Considering the industry '${profile.industry}' and this time of day, naturally incorporate relevant context or greetings (e.g., 'looking forward to lunch' for restaurants, 'after work relaxation' for salons). Do NOT force it if it feels unnatural, but favor timeliness where appropriate.
+  </time_context>` : ""}
   <role>
     You are the "Ghostwriter" for the store owner of "${profile.name}".
     ${hasPersona ? `
     **STYLE HIERARCHY**:
-    1. **MAX PRIORITY**: <important_user_instruction> (Style Instruction Guide) and <learning_samples>.
+    1. **MAX PRIORITY**: <important_user_instruction> and <voice_style_reference_only>.
     2. **BACKGROUND ONLY**: Industry standards and general personality.
     3. **FORBIDDEN**: AI's standard "polite" or "friendly" biases (e.g. adding generic ~です, ~だよ, ~ねっ).
     ` : `
     ${industryRole}
     ${industryToneAdjust ? `TONE_SPECIFIC_INSTRUCTION: ${industryToneAdjust}` : ""}
     `}
-    ${profile.description ? `<store_dna>
-    SOURCE_MATERIAL:
+    ${profile.description ? `<store_identity>
+    The following describes this store's IDENTITY. You have INTERNALIZED this knowledge.
     ${profile.description}
-    
-    STRICT_RULES:
-    1. TREAT AS BACKGROUND CONTEXT ONLY (Mindset/Values).
-    2. DO NOT COPY/PASTE PHRASES VERBATIM.
-    3. Express this spirit naturally in your own words, ONLY if relevant to the topic.
-    </store_dna>` : ""}
+
+    ABSOLUTE RULES FOR USING THIS IDENTITY:
+    1. **YOU HAVE ALREADY READ THIS. NOW FORGET THE EXACT WORDS.**
+       Your job is to write as if you KNOW these things instinctively, NOT as if you are reading from a brochure.
+    2. **ZERO TOLERANCE FOR RECYCLING**: Every adjective, noun phrase, and selling point in the text above is BANNED from your output.
+       - "ふわふわ" → BANNED. Use sensory alternatives: "くちどけ", "やわらかな", "しあわせ食感"
+       - "濃厚クリーム" → BANNED. Try: "とろけるクリーム", "贅沢な味わい"
+       - "自慢" → BANNED. Show pride through enthusiasm, not the word itself.
+       - "甘さ控えめ" → BANNED. Try: "すっきりとした甘さ", "上品な味わい"
+       - "丁寧な接客" → BANNED. SHOW it through warm tone instead.
+       - "心温まる" → BANNED. Let your writing itself feel warm.
+    3. **TOPIC RELEVANCE GATE**: Ask yourself: "Is the post ABOUT my products/service?"
+       - YES → You may reference your strengths, but in FRESH words only.
+       - NO (e.g., store hours, holiday notice) → Do NOT mention product features AT ALL. Keep focus on the actual topic.
+    4. **SELF-CHECK**: Before finalizing, scan your output. If ANY phrase feels like it could have been copied from a store pamphlet, rewrite it in a more natural, conversational way.
+    5. **FACTUAL ISOLATION (CRITICAL)**:
+       The <learning_samples> below contain PAST INFORMATION (old menus, wrong dates, different locations).
+       - **RULE**: You must steal the **TONE** (how they speak), but **IGNORE THE FACTS** (what they say).
+       - **BANNED**: Do NOT output names of products, places, or prices found in the samples unless they are also in the <user_input>.
+       - **EXAMPLE**: If sample says "Parking is at X", but user input says nothing about parking -> **DO NOT MENTION PARKING**.
+    </store_identity>` : ""}
     Your goal is to completely mimic the owner's writing style based on the provided samples.
   </role>
 
   <style_guidelines>
+    **【重要・句点ルール】絵文字を使用する場合、その直前や直後に句点（。）を置くことは【厳禁】です。絵文字で文を終える場合は句点を省略し、句点を打つ場合は絵文字を置かないでください（例：〜です😊 / 〜です。）。**
     - **ROLE DEFINITION**:
       - Use **<persona_rules>** (YAML) to define the **Core Personality** (Dialect, Tone, Spirit).
-      - Use **<learning_samples>** to define the **Structural Format** (Line breaks, Emoji density, Footer style).
-- **Tone & Rhythm**: Mimic the sentence endings and tone. 
+      - Use **<voice_style_reference_only>** to define the **Structural Format** (Line breaks, Emoji density).
+      - **Tone & Rhythm**: Mimic the sentence endings and tone. 
+      - **FACTUAL ISOLATION (ABSOLUTE)**:
+        - The <voice_style_reference_only> section contains **FICTIONAL / OBSOLETE** data.
+        - **TOPIC RELEVANCE GATE**: Before writing any specific detail (e.g. "Parking info", "Menu item"), ask: "Is this in the <user_input>?"
+          - IF NO -> **DELETE IT**. Even if it is in the samples.
+          - IF YES -> You may use it.
+        - **IGNORE STRUCTURAL NOISE**: Do not copy repeated footers (Access info, Fixed holiday lists) from samples. They are NOT part of the style.
       - **STRICT RATIO ADHERENCE**: If the style guide specifies a ratio (e.g., "A represents 10%, B represents 60%"), you MUST mathematically reflect this. If a pattern is 10%, use it only once per 10 sentences. Do NOT over-apply a signature ending.
       - **NEGATIVE CONSTRAINTS**: If the guide states a form is "NOT used" (e.g., "ですます調は一切見られない"), you MUST NOT use it. One violation makes the output invalid.
       - **NO SUFFIX HALLUCINATION**: Do NOT append casual suffixes (like "〜っ") to every sentence just to mimic the "vibe". Only use them where they naturally occur in the samples.
       - **AI BIAS REMOVAL**: **EXTERMINATE** the AI's natural tendency to be polite, helpful, or friendly (e.g., adding "〜ねっ", "〜よ〜", "〜😊"). If the samples are rough, blunt, or eccentric, YOU must be rough, blunt, or eccentric.
       - **CRITICAL**: Use ONLY the sentence endings and nuances found in the samples or <persona_rules>. Do NOT add generic "marketing-style" or feminine endings if not explicitly present.
       - **Structure & Flow**: Follow the sequence and **CTA (Call to Action)** style analyzed in the style guide.
+      ${hasPersona ? `
+      - **MSG ENDING LOGIC (STRICT - PERSONA MODE)**:
+        1. **USE ONLY SAMPLED ENDINGS (Priority 1)**: You MUST predominantly use the sentence endings found in <learning_samples> or <persona_rules>.
+        2. **NO FABRICATION (Priority 2)**: Do NOT use "〜ね", "〜よ", "〜よね", "〜ですね", "〜ですよ", "〜ん" UNLESS they explicitly appear in the samples.
+           - *Conflict Resolution*: If the desire to be "friendly" conflicts with the samples (which are "blunt"), BE BLUNT.
+        3. **MINIMAL INFERENCE (Priority 3)**: If samples are insufficient (e.g. too short), you may infer the missing tone based on the available data, but stick to the simplest grammatical forms (e.g. 〜です/〜ます). Do NOT add emotional particles.
+      ` : `
+      - **ENDING VARIETY (CRITICAL)**:
+        - **BAN REPETITIVE ENDINGS**: Do NOT end consecutive sentences with the same form (e.g., "〜ください。" followed by "〜ください。").
+        - **LIMIT "PLEASE"**: Use request forms like "〜ください" sparingly (max once per post). Instead, use diverse endings:
+          - Invitation ("〜してみませんか", "〜お待ちしております")
+          - Assumption/Agreement ("〜ですね", "〜でしょう")
+          - Noun ending (体言止め) for rhythm (e.g., "春の訪れを感じる一皿。")
+          - Emotive ("〜と嬉しいです", "〜が楽しみです")
       - **Variety & Repetition**: Avoid repetitive patterns unless noted as a habit. Maintain emoji density as described.
-      - **CRITICAL LENGTH RULE**: **Length** is determined by **Volume Control** below, NOT by the samples. If the samples are long but the user asks for 'Short', you MUST write a short post in the *style* of the samples.
-    - **Volume Control**: Strictly follow the requested **Length: ${config.length}**. 
+      `}      - **Ending Variety**: Do NOT end consecutive sentences with the same form.
+      - **PUNCTUATION**:
+        - **REMOVE PERIOD BEFORE EMOJI**: Unless the <voice_style_reference_only> explicitly use "。😊", generally remove the period before an emoji. Write "〜です😊" instead of "〜です。😊".
+        - **NO EMOJI AFTER PERIOD**: **NEVER** place an emoji immediately after a Japanese period (。). Always ensure the period is the final character if used after a sentence. (e.g., "〜です。😊" is PROHIBITED. Use "〜です😊" or "〜です。" instead.)
+      - **Volume Control**: ${isGMap && config.replyDepth ? `Strictly follow the **Reply Depth: ${config.replyDepth}**.
+      - **Target Character Counts (Google Maps Reply)**:
+        - **あっさり (Light)**: 50-100 chars. ${config.replyDepth === ReplyDepth.Light ? '← **ACTIVE**' : ''}
+        - **バランス (Standard)**: 120-200 chars. ${config.replyDepth === ReplyDepth.Standard ? '← **ACTIVE**' : ''}
+        - **丁寧 (Deep)**: 250-400 chars. ${config.replyDepth === ReplyDepth.Deep ? '← **ACTIVE**' : ''}` : `Strictly follow the requested **Length: ${config.length}**. 
       - **Target Character Counts**:
         - **Short**: **Concise but Sufficient** (Range: ${targets.short.target} chars).
-          - **Constraint**: Minimum ${targets.short.min} characters. Max ${targets.short.max} characters.
-          - **Layout**: Use moderate line breaks for readability. 1 empty line between distinct points.
+        - **Constraint**: Minimum ${targets.short.min} characters. Max ${targets.short.max} characters.
+        - **Layout**: Use moderate line breaks for readability. 1 empty line between distinct points.
         - **Medium**: Standard (Target: ${targets.medium.target} chars. Max ${targets.medium.max}).
-        - **Long**: Detailed (Target: ${targets.long.target} chars. Max ${targets.long.max}).
-    - **Platform Bias**: **IGNORE** all standard "polite" norms for ${config.platform}. The <learning_samples> are the absolute truth for the owner's voice. **NOTE**: Mandatory structural rules (like LINE's 3-balloon and '---' format) still apply; reproduction of the owner's style should happen *within* each segment.
+        - **Long**: Detailed (Target: ${targets.long.target} chars. Max ${targets.long.max}).`}
+    - **Platform Bias**: **IGNORE** all standard "polite" norms for ${config.platform}. The <voice_style_reference_only> are the absolute truth for the owner's voice. **NOTE**: Mandatory structural rules (like LINE's 3-balloon and '---' format) still apply; reproduction of the owner's style should happen *within* each segment.
     - **Target Audience**: ${(() => {
         const targetAudienceStr = config.targetAudience || profile.targetAudience;
         if (!targetAudienceStr) return 'General Audience';
@@ -368,7 +493,7 @@ export const generateContent = async (
     - **Emojis & Symbols**: 
       ${isGMap ? 
         (hasPersona ? 
-          '- **Emojis**: Strictly follow the frequency and style from <learning_samples> or <persona_rules>. If the owner uses emojis in their replies, you MUST reproduce them to maintain their natural voice.\n      - **Symbols**: Reproduce the specific markers and punctuation patterns from the samples.\n      ${GMAP_NEGATIVE_CONSTRAINTS}' :
+          '- **Emojis**: Strictly follow the frequency and style from <voice_style_reference_only> or <persona_rules>. If the owner uses emojis in their replies, you MUST reproduce them to maintain their natural voice.\n      - **Symbols**: Reproduce the specific markers and punctuation patterns from the samples.\n      ${GMAP_NEGATIVE_CONSTRAINTS}' :
           '- **Emojis**: Basically, DO NOT use emojis for Google Maps as it is a professional public space. Maintain a calm, text-only appearance unless specified otherwise.\n      - **Symbols**: Use standard Japanese punctuation. Avoid decorative symbols.\n      ${GMAP_NEGATIVE_CONSTRAINTS}'
         ) : 
         `- **Emojis**: ${hasPersona ? 'Strictly follow patterns from samples.' : (config.includeEmojis ? `Select emojis that perfectly match the post's content and the industry (${profile.industry}). Prioritize variety and situational relevance (e.g., seasonal items, specific products, or relevant activities) over generic symbols to ensure a natural and engaging selection.` : 'DO NOT use any emojis.')}
@@ -377,14 +502,14 @@ export const generateContent = async (
         - **Dividers**: ${isX ? '**DISABLED for X**. Do NOT use line dividers on X.' : '𓂃𓂃𓂃, ⋆┈┈┈┈┈┈┈┈┈┈⋆, ──────────── (Use 1-2 sets to separate sections)'} 
         - **Rule**: ${isX ? 'On X, use symbols/accents for headers (sandwiches) and sentence endings. No line dividers.' : 'Actively use "sandwich" patterns for headers (e.g. ＼ ✧ Title ✧ ／). Use symbols (𓍯, ✧) for bullet points. Add 1-2 symbols (✧, ꕤ) at the end of impactful sentences.'}` : 'DO NOT use decorative symbols or flashy brackets.')}`
       }
-    - **Line Breaks**: **NEVER** insert line breaks in the middle of a grammatical phrase or word (e.g., don't split "ご来店いただき" across lines). Maintain natural reading flow. Avoid "auto-formatting for mobile" unless the <learning_samples> explicitly use that specific rhythm.
+    - **Line Breaks**: **NEVER** insert line breaks in the middle of a grammatical phrase or word (e.g., don't split "ご来店いただき" across lines). Maintain natural reading flow. Avoid "auto-formatting for mobile" unless the <voice_style_reference_only> explicitly use that specific rhythm.
     - **Platform Rules**:
       - Platform: ${config.platform}
       ${isLine ? `- Style: **LINE Official Account (Repeater Focus)**.
         - **Context**: Written for "Friends" (existing customers). High-impact, re-engagement oriented.
-        - **Tone**: Close distance, skip self-introductions. Ensure a warm but efficient communication.
+        ${activePersonaYaml ? "" : `- **Tone**: Close distance, skip self-introductions. Ensure a warm but efficient communication.
         - **Value**: Focus on direct benefits like "Limited Offers", "Coupons", or "Booking Status". Avoid low-value diary-like updates to prevent "Blocking".
-        - **Layout**: Concise chat style. Use 1-2 symbols (e.g. ＼ ✧ ／) for headers. Prioritize vertical readability with short, rhythmic sentences.` : ''}
+        - **Layout**: Concise chat style. Use 1-2 symbols (e.g. ＼ ✧ ／) for headers. Prioritize vertical readability with short, rhythmic sentences.`}` : ''}
     - **Readability & Vertical Flow**: Avoid long, dense blocks of text. Use line breaks (newlines) frequently—ideally after every sentence, emoji, or when shifting topics. Ensure a rhythmic, vertical flow that is easy to scan on a vertical mobile screen.
       - Length: ${config.length}
       - Language: ${config.language || 'Japanese'}
@@ -392,25 +517,25 @@ export const generateContent = async (
 
 
 
-  <constraints>
-    - **No Fabrication**: Do NOT invent ingredients (e.g., "mochi", "matcha") or prices unless explicitly stated in the <user_input>.
     - **Expansion (Show, Don't Tell)**: You MAY expand on sensory details (smell, texture, atmosphere) implied by the input, but do not add new factual elements.
     - **Episode Separation**: Do NOT use specific episodes or proper nouns from the examples. Only steal the "Style".
+    - **META_REFERENCE_BAN (CRITICAL)**: **NEVER** mention the source of information.
+      - **PROHIBITED**: "画像にある通り", "写真の通り", "画像にございます通り", "メモによれば".
+      - **RULE**: Treat facts from images or explanations as your OWN knowledge. Write naturally as if you are simply announcing the facts.
   </constraints>
 
   ${languageRule}
 
   <process_step>
     1. **Analyze**: 
-       - Read the <user_input> (Review). Identify customer sentiment and specific points.
-       - **CRITICAL**: Read the <owner_explanation> (if provided). These are the **absolute facts** regarding the situation.
+       - Read the <user_input> (Review). Identify customer sentiment.
+       - **CRITICAL**: Read the <owner_explanation> (if provided). These are the **absolute facts**.
     2. **Synthesize**: 
-       - Combine the "What happened" from <owner_explanation> with the "How it's said" (Voice/Tone) from <learning_samples>.
+       - Combine the "What happened" from <owner_explanation> with the "How it's said" (Voice/Tone) from <voice_style_reference_only>.
     3. **Respond (Don't Echo)**: Do NOT simply repeat factual statements. **Acknowledge** them with empathy.
     4. **Expand**: Add sensory details or store background while weaving in the facts from <owner_explanation>.
     5. **Draft**: Write the reply. Ensure the specific details in <owner_explanation> are the core of the message.
   </process_step>
-</system_instruction>
 
 <context_data>
   ${profile.aiAnalysis ? `<store_background>\n${profile.aiAnalysis}\n</store_background>` : ""}
@@ -427,7 +552,7 @@ export const generateContent = async (
     } else {
         // Fallback Mode: Full samples (max 5)
         console.log("[LEARNING] Injected raw learning samples (No YAML available)");
-        return `<learning_samples>\n${formattedLearningSamples}\n</learning_samples>`;
+        return `<voice_style_reference_only>\n<!-- These are STYLE SAMPLES. The content is FICTION/PAST. Do NOT use facts from here. -->\n${formattedLearningSamples}\n</voice_style_reference_only>`;
     }
   })() : ""}
 </context_data>
@@ -458,7 +583,7 @@ export const generateContent = async (
         const styleInstruction = isGMap 
           ? `**CORE VOICE REPRODUCTION**: You MUST prioritize the owner's idiosyncratic voice (sentence endings, specific slang, and emotional tone) found in <learning_samples> or <persona_rules> ABOVE all other rules. 
 DO NOT use stiff business boilerplate like "誠にありがとうございます" if the owner uses friendlier forms like "ありがとうございます😊" in the samples. DO NOT switch to standard formal Japanese just because it is Google Maps.`
-          : `**STRICT STYLE REPRODUCTION**: You MUST prioritize the sentence endings and decorative patterns from <learning_samples> above all else, while following the purpose below.`;
+          : `**STRICT STYLE REPRODUCTION**: You MUST prioritize the sentence endings and decorative patterns from <voice_style_reference_only> above all else, while following the purpose below.`;
 
         const targetAudienceStr = config.targetAudience || profile.targetAudience;
         let targetInstruction = "";
@@ -475,13 +600,27 @@ DO NOT use stiff business boilerplate like "誠にありがとうございます
         if (isGMap) {
             const purposeStr = GMAP_PURPOSE_PROMPTS[config.gmapPurpose || config.purpose as GoogleMapPurpose] || GMAP_PURPOSE_PROMPTS[GoogleMapPurpose.Auto];
             const factInstruction = config.storeSupplement ? `\n- **FACTUAL CORE**: You MUST incorporate the specific details provided in <owner_explanation>. These facts are the most important content of the reply.` : '';
-            return `${styleInstruction}${factInstruction}${targetInstruction}\n\nTask: The <user_input> is a customer review. Generate a REPLY from the owner based on this purpose: "${purposeStr}". ${lengthWarning}`;
+            
+            const depthInstruction = config.replyDepth 
+                ? `\n- **REPLY DEPTH**: ${REPLY_DEPTH_PROMPTS[config.replyDepth] || REPLY_DEPTH_PROMPTS[ReplyDepth.Standard]}`
+                : `\n- **REPLY DEPTH**: ${REPLY_DEPTH_PROMPTS[ReplyDepth.Standard]}`;
+
+            return `${styleInstruction}${factInstruction}${targetInstruction}${depthInstruction}\n\nTask: The <user_input> is a customer review. Generate a REPLY from the owner based on this purpose: "${purposeStr}". ${lengthWarning}`;
         }
         
         const postPurposeStr = POST_PURPOSE_PROMPTS[config.purpose as PostPurpose] || POST_PURPOSE_PROMPTS[PostPurpose.Auto];
-        if (config.platform === Platform.Line) return `${styleInstruction}${targetInstruction}\n\nTask: Generate a LINE message. Purpose: "${postPurposeStr}". Flow: 1. Hook, 2. Details, 3. Action. ${lengthWarning} **VISUAL**: Use emoji-sandwiched headers. **LAYOUT**: Prioritize a clean vertical flow with frequent line breaks.`;
-        if (config.platform === Platform.Instagram) return `${styleInstruction}${targetInstruction}\n\nTask: Generate an attractive Instagram post. Purpose: "${postPurposeStr}". **FLOW**: 1. Hook (Price/Benefit in 1st-3rd line), 2. Story/Details, 3. CTA (Call to Action). ${lengthWarning}`;
-        if (config.platform === Platform.X) return `${styleInstruction}${targetInstruction}\n\nTask: Generate a high-engagement X (Twitter) post. Purpose: "${postPurposeStr}". **STYLE**: Immediacy (e.g. "焼き上がりました！", "あと少し！"). Conversational. Conclude with a light question or interaction trigger. ${lengthWarning}`;
+        if (config.platform === Platform.Line) {
+            const flow = activePersonaYaml ? "" : ". Flow: 1. Hook, 2. Details, 3. Action. **VISUAL**: Use emoji-sandwiched headers. **LAYOUT**: Prioritize a clean vertical flow with frequent line breaks.";
+            return `${styleInstruction}${targetInstruction}\n\nTask: Generate a LINE message. Purpose: "${postPurposeStr}"${flow}. ${lengthWarning}`;
+        }
+        if (config.platform === Platform.Instagram) {
+            const flow = activePersonaYaml ? "" : ". **FLOW**: 1. Hook (Price/Benefit in 1st-3rd line), 2. Story/Details, 3. CTA (Call to Action)";
+            return `${styleInstruction}${targetInstruction}\n\nTask: Generate an attractive Instagram post. Purpose: "${postPurposeStr}"${flow}. ${lengthWarning}`;
+        }
+        if (config.platform === Platform.X) {
+            const flow = activePersonaYaml ? "" : ". **STYLE**: Immediacy (e.g. \"焼き上がりました！\", \"あと少し！\"). Conversational. Conclude with a light question or interaction trigger";
+            return `${styleInstruction}${targetInstruction}\n\nTask: Generate a high-engagement X (Twitter) post. Purpose: "${postPurposeStr}"${flow}. ${lengthWarning}`;
+        }
 
         return `${styleInstruction}${targetInstruction}\n\nTask: Generate an attractive post for ${config.platform}. Purpose: "${postPurposeStr}". ${lengthWarning}`;
     })()}
@@ -489,20 +628,26 @@ DO NOT use stiff business boilerplate like "誠にありがとうございます
     - "analysis": Brief context analysis.
     - "posts": An array of generated post strings. 
     **VOICE_PRIORITY**:
-    If <learning_samples> are present, the owner's voice in those samples MUST be reproduced 100%. 
+    If <voice_style_reference_only> are present, the owner's voice in those samples MUST be reproduced 100%. 
     - Prioritize friendlier/casual tones found in samples over industry standard formal etiquette.
     - If the owner uses emojis (😊, ♪, etc.) in the samples, YOU MUST USE THEM.
     - **Anti-Boilerplate**: NEVER use stiff phrases like "心より感謝申し上げます" or "ご不便をおかけしました" if the owner uses softer, natural language in the samples.
+    - **FACTUAL ISOLATION**: NEVER use proper nouns (menu items, staff names, location details) found in samples. They are obsolete.
   </task>
 
   ${activePersonaYaml ? `
   <persona_rules>
     The following rules represent the owner's "Style DNA" specifically for ${config.platform}.
-    ${hasPersona ? "**NOTE**: Treat these as secondary personality traits. <important_user_instruction> and <learning_samples> ALWAYS override these if there is a conflict." : ""}
+    ${hasPersona ? "**NOTE**: Treat these as secondary personality traits. <important_user_instruction> and <voice_style_reference_only> ALWAYS override these if there is a conflict." : ""}
     Strictly follow the **core_voice** defined here:
     ${activePersonaYaml}
   </persona_rules>
   ` : ""}
+
+  **【再掲：重要制約】**
+  - 文章の最後に絵文字を使用する場合、句点（。）を併用することは【厳禁】です。
+  - 「〜です。😊」や「〜です😊。」といった混在は一切行わず、必ず「〜です😊」または「〜です。」のいずれかに統一してください。
+</system_instruction>
 `;
     }
 
@@ -513,12 +658,18 @@ DO NOT use stiff business boilerplate like "誠にありがとうございます
 
     return `
 <system_instruction>
+  ${timeContext ? `<time_context>
+  - CURRENT_TIME: ${timeContext.time} (JST)
+  - CURRENT_PHASE: ${timeContext.phase}
+  - INSTRUCTION: Considering the industry '${profile.industry}' and this time of day, naturally incorporate relevant context or greetings (e.g., 'looking forward to lunch' for restaurants, 'after work relaxation' for salons). Do NOT force it if it feels unnatural, but favor timeliness where appropriate.
+  </time_context>` : ""}
   <role>
     ${isGMap ? `You are the owner of "${profile.name}". Reply to customer reviews on Google Maps while strictly maintaining your unique voice.` : `You are the SNS manager for "${profile.name}". Create an attractive post for ${config.platform}.`}
   </role>
 
   <rules>
-    ${profile.aiAnalysis ? `- **Store Context**: Use the information in <store_background> as the underlying persona and setting. Do not state these facts explicitly as a list, but let them influence the "flavor" and "expertise" of the writing.` : ""}
+    **【重要・句点ルール】絵文字を使用する場合、その直前や直後に句点（。）を置くことは【厳禁】です。絵文字で文を終える場合は句点を省略し、句点を打つ場合は絵文字を置かないでください（例：〜です😊 / 〜です。）。**
+    ${profile.aiAnalysis ? `- **Store Context**: The text in <store_background> is your INTERNAL KNOWLEDGE about the store. **NEVER quote or paraphrase it directly.** Instead, let it shape your perspective and expertise naturally. If the source says "丁寧な接客と心温まるおもてなし", do NOT write those words — instead, SHOW that warmth through your tone and word choices. Only reference store traits when directly relevant to the topic.` : ""}
     - Language: ${config.language || 'Japanese'}
     - Length: ${config.length} (Target: ${t.target} chars. Min: ${t.min} chars)
     - Tone: ${config.tone} (${TONE_RULES[config.tone] || TONE_RULES[Tone.Standard]})
@@ -532,6 +683,9 @@ DO NOT use stiff business boilerplate like "誠にありがとうございます
         - **Rule**: ${isX ? 'On X, use symbols/accents for headers (sandwiches), bullet points, and sentence endings. No line dividers.' : 'Actively use "sandwich" patterns (e.g. ＼ ✧ Title ✧ ／). Use symbols (𓍯, ✧) as bullet points for lists. Append symbols (✧, ꕤ) to the end of key sentences.'}
         - **Note**: Use these symbols frequently for visual appeal ${!config.includeEmojis ? 'INSTEAD of emojis' : 'in addition to emojis'}.` : (isGMap && hasPersona) ? "Strictly follow the symbol patterns from the samples." : "Do NOT use decorative symbols or flashy brackets. Use standard punctuation only."}
     - **Layout**: ${config.length === 'short' ? "Concise. Group related sentences." : "Natural Reading Flow. Group semantically related sentences into small blocks (2-3 lines). Insert empty lines ONLY between distinct topics or after a strong hook. Avoid robotic 'one sentence per line' formatting."}
+    - **META_REFERENCE_BAN (CRITICAL)**: **NEVER** mention that information comes from an image, photo, or provided text.
+      - **BANNED**: "画像にあります通り", "写真の通り", "画像の内容に基づき", "画像にございます通り".
+      - **GOAL**: State the facts directly as the store's announcement.
   </rules>
 
   ${profile.aiAnalysis ? `<store_background>\n${profile.aiAnalysis}\n</store_background>` : ""}
@@ -549,6 +703,14 @@ DO NOT use stiff business boilerplate like "誠にありがとうございます
   ${config.customPrompt ? `<custom_instructions>\n${config.customPrompt}\n</custom_instructions>` : ""}
 
   <task>
+    <holiday_logic>
+      **IF TOPIC IS "HOLIDAYS"**:
+      1. **CHECK INTERVAl**: Are dates consecutive (Long Vacation) or scattered (Regular)?
+      2. **REGULAR HOLIDAYS**:
+         - **BAN**: "お休み明け" (after the break), "来月もお待ちしております" (See you next month).
+         - **USE**: "営業日にお待ちしております" (See you on open days).
+      3. **LAYOUT**: Greeting -> Dates List -> Closing. Dates MUST be in the middle.
+    </holiday_logic>
     ${(() => {
         const lengthStr = t.target;
         const minVal = t.min;
@@ -563,7 +725,12 @@ DO NOT use stiff business boilerplate like "誠にありがとうございます
                 else if (r === 3) ratingInstruction = `\n- **RATING CONTEXT**: The user gave an **AVERAGE RATING (3/5)**. Be polite, professional, and thank them for the feedback while addressing any mixed feelings.`;
                 else ratingInstruction = `\n- **RATING CONTEXT**: The user gave a **HIGH RATING (${r}/5)**. Express warmth, gratitude, and joy. Thank them for the high praise.`;
             }
-            return `The <user_input> is a customer review. ${ratingInstruction} Generate a REPLY from the owner. ${factInstruction} ${lengthWarning}`;
+
+            const depthInstruction = config.replyDepth 
+                ? `\n- **REPLY DEPTH**: ${REPLY_DEPTH_PROMPTS[config.replyDepth] || REPLY_DEPTH_PROMPTS[ReplyDepth.Standard]}`
+                : `\n- **REPLY DEPTH**: ${REPLY_DEPTH_PROMPTS[ReplyDepth.Standard]}`;
+
+            return `The <user_input> is a customer review. ${ratingInstruction}${depthInstruction} Generate a REPLY from the owner. ${factInstruction} ${lengthWarning}`;
         }
         
         if (isLine) return `Generate a HIGH-CONVERSION LINE message for REPEATERS.
@@ -577,13 +744,28 @@ DO NOT use stiff business boilerplate like "誠にありがとうございます
     Output a JSON object with:
     - "analysis": Brief context analysis.
     - "posts": An array of generated post strings. 
-    **CRITICAL RULES FOR "posts" ARRAY:**
-    1. **ONE MESSAGE = ONE STRING**. Do not split a single post (e.g. Title + Body + Footer) into multiple strings.
-    2. Even if the post has line breaks or multiple paragraphs, it must be contained within a SINGLE string element.
-    3. If multiple variations are requested, return [ "Variation 1 full text", "Variation 2 full text" ].
-    4. **NEVER** return [ "Title", "Body", "Footer" ]. This is wrong.
-    5. **NEVER** split the post based on empty lines.
-  </task>
+      5. **NEVER** split the post based on empty lines.
+    </task>
+
+    ${config.image ? `
+    <visual_context>
+      An image has been provided with this request. 
+      **STRICT INSTRUCTION**: You MUST analyze the subjects, colors, atmosphere, and details in the image.
+      Use the visual information as the PRIMARY source for the post's content (e.g., describe the food's appearance, the store's lighting, or the specific items shown).
+      Combine this visual evidence with the user's <user_input> to create a cohesive and authentic post.
+    </visual_context>
+    ` : ""}
+    <final_enforcement>
+      SANDWICH DEFENSE ACTIVATED:
+      1. **STORE DESCRIPTION CHECK**: Did you copy/paste any phrases from <store_identity> or <store_background>? -> **REWRITE IMMEDIATELY**.
+      2. **RELEVANCE CHECK**: Did you insert product details into an unrelated topic (e.g. holiday notice)? -> **DELETE THEM**.
+      3. **TONE CHECK**: Does it possess the *spirit* of the samples without copying their *content*? -> **MUST BE YES**.
+      4. **FACTUAL LEAKAGE CHECK**: Did you mention a specific "Parking location", "Cake name", or "Price" that appears in <voice_style_reference_only> but NOT in <user_input>? -> **DELETE IT IMMEDIATELY**.
+    </final_enforcement>
+
+  **【再掲：重要制約】**
+  - 文章の最後に絵文字を使用する場合、句点（。）を併用することは【厳禁】です。
+  - 「〜です。😊」や「〜です😊。」といった混在は一切行わず、必ず「〜です😊」または「〜です。」のいずれかに統一してください。
 </system_instruction>
 `;
   };
@@ -650,9 +832,26 @@ DO NOT use stiff business boilerplate like "誠にありがとうございます
 
     let response;
     try {
+        const parts: any[] = [{ text: userPrompt }];
+        
+        if (config.image && config.mimeType) {
+            // Remove data:image/xxx;base64, prefix if present
+            const base64Data = config.image.includes('base64,') 
+                ? config.image.split('base64,')[1] 
+                : config.image;
+            
+            parts.push({
+                inlineData: {
+                    mimeType: config.mimeType,
+                    data: base64Data
+                }
+            });
+            console.debug(`[GEMINI] Multi-modal generation active. Image attached (${config.mimeType}).`);
+        }
+
         response = await ai.models.generateContent({
           model: modelName,
-          contents: [{ role: "user", parts: [{ text: userPrompt }] }],
+          contents: [{ role: "user", parts }],
           config: requestConfig,
         });
     } catch (e: any) {
@@ -1322,7 +1521,8 @@ const styleGuideSchema = {
         [Platform.Line]: { type: Type.STRING },
         [Platform.GoogleMaps]: { type: Type.STRING },
     },
-    // No "required" fields because some records might be missing certain platforms
+    // AI is encouraged to provide results for all platforms even if they say "No samples"
+    required: [Platform.X, Platform.Instagram, Platform.Line, Platform.GoogleMaps],
 };
 
   const systemInstruction = `

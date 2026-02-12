@@ -16,7 +16,7 @@ export const MobilePostInput: React.FC = () => {
         onApplyPreset, presets, activePresetId,
         isGenerating, hasResults = false, generatedResults = [],
         onMobileResultOpen, onStepChange, resetTrigger,
-        restoreTrigger, closeDrawerTrigger, openDrawerTrigger, targetStep,
+        restoreTrigger, initialStepOnRestore, closeDrawerTrigger, openDrawerTrigger, targetStep,
         onAIStart, isCalendarOpen = false, onCalendarToggle,
         question, onQuestionChange, topicPrompt, onTopicPromptChange,
         refiningKey, storeProfile,
@@ -92,10 +92,10 @@ export const MobilePostInput: React.FC = () => {
     // Handle Restore from History
     React.useEffect(() => {
         if (restoreTrigger && restoreTrigger > 0) {
-            setMobileStep('result');
+            setMobileStep(initialStepOnRestore || 'result');
             setIsStepDrawerOpen(true);
         }
-    }, [restoreTrigger]);
+    }, [restoreTrigger, initialStepOnRestore]);
 
     // Handle Reset from parent
     React.useEffect(() => {

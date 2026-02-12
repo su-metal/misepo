@@ -71,15 +71,24 @@ export default async function BlogPostPage({ params }: Props) {
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
             />
 
-            <Link
-                href="/blog"
-                className="inline-flex items-center text-[#2b2b2f]/40 hover:text-blue-600 font-bold text-sm mb-12 transition-colors group"
-            >
-                <svg className="w-4 h-4 mr-2 transition-transform group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M7 16l-4-4m0 0l4-4m-4 4h18" />
-                </svg>
-                BACK TO BLOG
-            </Link>
+            <div className="flex items-center gap-6 mb-12">
+                <Link
+                    href="/blog"
+                    className="inline-flex items-center text-[#2b2b2f]/40 hover:text-blue-600 font-bold text-sm transition-colors group"
+                >
+                    <svg className="w-4 h-4 mr-2 transition-transform group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M7 16l-4-4m0 0l4-4m-4 4h18" />
+                    </svg>
+                    BACK TO BLOG
+                </Link>
+                <span className="text-[#2b2b2f]/10 text-sm font-black">•</span>
+                <Link
+                    href="/"
+                    className="text-[#2b2b2f]/40 hover:text-blue-600 font-bold text-sm transition-colors"
+                >
+                    HOME
+                </Link>
+            </div>
 
             <div className="mb-12">
                 <div className="flex items-center gap-3 mb-6">
@@ -107,12 +116,11 @@ export default async function BlogPostPage({ params }: Props) {
             </div>
 
             <div className="prose prose-lg prose-slate max-w-none prose-headings:text-[#2b2b2f] prose-headings:font-black prose-p:text-[#2b2b2f]/70 prose-a:text-blue-600 prose-strong:text-[#2b2b2f]">
-                {/* Simple Markdown rendering using dangerouslySetInnerHTML for this stage */}
-                {/* In a production app, we would use a library like react-markdown or mdx */}
                 <div
-                    className="blog-content space-y-6"
+                    className="blog-rich-text"
                     dangerouslySetInnerHTML={{
                         __html: post.content
+                            .replace(/^■ (.*)/gm, '<h2 class="text-3xl font-black mt-12 mb-6">$1</h2>')
                             .replace(/## (.*)/g, '<h2 class="text-3xl font-black mt-12 mb-6">$1</h2>')
                             .replace(/### (.*)/g, '<h3 class="text-2xl font-bold mt-8 mb-4">$1</h3>')
                             .replace(/\*\*(.*)\*\*/g, '<strong class="font-bold">$1</strong>')
@@ -138,6 +146,6 @@ export default async function BlogPostPage({ params }: Props) {
                     </Link>
                 </div>
             </div>
-        </article>
+        </article >
     );
 }

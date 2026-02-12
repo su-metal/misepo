@@ -429,6 +429,12 @@ const PresetModal: React.FC<PresetModalProps> = ({
           }
         }
       }
+    } else {
+      // RESET for new profile
+      setName('');
+      setAvatar('shop');
+      setCustomPrompts({});
+      setTempNewSamples([]);
     }
   }, [selectedPresetId, presets]);
 
@@ -438,6 +444,10 @@ const PresetModal: React.FC<PresetModalProps> = ({
 
   const handleStartNew = () => {
     setSelectedPresetId(null);
+    setName('');
+    setAvatar('shop');
+    setCustomPrompts({});
+    setTempNewSamples([]);
     setMobileView('edit');
   };
 
@@ -540,19 +550,29 @@ const PresetModal: React.FC<PresetModalProps> = ({
           const platforms = [Platform.X, Platform.Instagram, Platform.Line, Platform.GoogleMaps];
           platforms.forEach(p => {
             if (parsed[p]) {
-              newPrompts[p] = parsed[p].trim();
-              updated = true;
+              const val = parsed[p].trim();
+              // Prevent overwriting with empty strings or "No samples" noise
+              if (val && val !== '該当サンプルなし' && val.length > 10) {
+                newPrompts[p] = val;
+                updated = true;
+              }
             }
           });
 
           // Special handling for SNS 'General' alias
           if (modeToUse === 'sns') {
             if (parsed.General) {
-              newPrompts['General'] = parsed.General.trim();
-              updated = true;
+              const val = parsed.General.trim();
+              if (val && val !== '該当サンプルなし' && val.length > 10) {
+                newPrompts['General'] = val;
+                updated = true;
+              }
             } else if (parsed[Platform.X]) {
-              newPrompts['General'] = parsed[Platform.X].trim();
-              updated = true;
+              const val = parsed[Platform.X].trim();
+              if (val && val !== '該当サンプルなし' && val.length > 10) {
+                newPrompts['General'] = val;
+                updated = true;
+              }
             }
           }
         }
@@ -560,15 +580,17 @@ const PresetModal: React.FC<PresetModalProps> = ({
         // Fallback for plain text response
         if (!updated && typeof data.instruction === 'string' && !data.instruction.trim().startsWith('{')) {
           const text = data.instruction.trim();
-          if (modeToUse === 'sns') {
-            newPrompts['General'] = text;
-            newPrompts[Platform.X] = text;
-            newPrompts[Platform.Instagram] = text;
-            newPrompts[Platform.Line] = text;
-          } else {
-            newPrompts[Platform.GoogleMaps] = text;
+          if (text && text !== '該当サンプルなし' && text.length > 10) {
+            if (modeToUse === 'sns') {
+              newPrompts['General'] = text;
+              newPrompts[Platform.X] = text;
+              newPrompts[Platform.Instagram] = text;
+              newPrompts[Platform.Line] = text;
+            } else {
+              newPrompts[Platform.GoogleMaps] = text;
+            }
+            updated = true;
           }
-          updated = true;
         }
 
         if (updated) {
@@ -602,8 +624,8 @@ const PresetModal: React.FC<PresetModalProps> = ({
       let finalCustomPrompts = overridePrompts ? { ...overridePrompts } : { ...customPrompts };
 
       // Compute relatedItems first for analysis
-      const relatedItems = selectedPresetId
-        ? trainingItems.filter(item => item.presetId === selectedPresetId)
+      const relatedItems = (overrideId || selectedPresetId)
+        ? trainingItems.filter(item => item.presetId === (overrideId || selectedPresetId))
         : tempNewSamples;
 
       // Auto-analyze during save if manual update

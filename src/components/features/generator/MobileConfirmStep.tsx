@@ -6,7 +6,7 @@ import {
     AutoSparklesIcon, RotateCcwIcon, StarIcon
 } from '../../Icons';
 import {
-    TONES, LENGTHS
+    TONES, LENGTHS, REPLY_DEPTHS
 } from './inputConstants';
 import { TARGET_AUDIENCES } from '../../../constants';
 
@@ -37,6 +37,7 @@ export const MobileConfirmStep: React.FC<MobileConfirmStepProps> = ({
 }) => {
     const {
         platform, inputText, tone, onToneChange, length, onLengthChange,
+        replyDepth, onReplyDepthChange,
         starRating, onStarRatingChange,
         isGenerating, onGenerate, isMultiGen, isStyleLocked,
         presets, activePresetId, onApplyPreset, onOpenPresetModal,
@@ -81,7 +82,7 @@ export const MobileConfirmStep: React.FC<MobileConfirmStepProps> = ({
                                             <StarIcon
                                                 className={`w-7 h-7 transition-all ${star <= (starRating || 0)
                                                     ? 'text-[#FFD166] fill-[#FFD166] drop-shadow-sm'
-                                                    : 'text-slate-200'
+                                                    : 'text-slate-300'
                                                     }`}
                                             />
                                         </button>
@@ -169,7 +170,7 @@ export const MobileConfirmStep: React.FC<MobileConfirmStepProps> = ({
                     <div className="flex flex-col gap-4">
                         <div className="flex items-center justify-between px-2">
                             <div className="flex items-center gap-3">
-                                <span className="text-[11px] font-black text-[#2b2b2f] uppercase tracking-[0.2em]">スタイルを選ぶ</span>
+                                <span className="text-[13px] font-black text-[#2b2b2f] uppercase tracking-[0.2em]">スタイルを選ぶ</span>
                                 <label className="flex items-center gap-1.5 cursor-pointer group/label">
                                     <div className="relative flex items-center justify-center">
                                         <input
@@ -182,7 +183,7 @@ export const MobileConfirmStep: React.FC<MobileConfirmStepProps> = ({
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                                         </svg>
                                     </div>
-                                    <span className="text-[9px] font-bold text-[#A0A0A0] group-hover/label:text-stone-600 transition-colors">デフォルトに設定</span>
+                                    <span className="text-[12px] font-bold text-[#A0A0A0] group-hover/label:text-stone-600 transition-colors">デフォルトに設定</span>
                                 </label>
                             </div>
                             <button onClick={onOpenPresetModal} className="text-[10px] font-black text-[#2b2b2f] uppercase tracking-widest bg-white px-3 py-1 rounded-full border border-slate-100 hover:bg-slate-50 transition-all">編集</button>
@@ -214,7 +215,7 @@ export const MobileConfirmStep: React.FC<MobileConfirmStepProps> = ({
                         <div className="bg-[#edeff1] px-6 py-4 rounded-[32px] border border-slate-100 flex flex-col gap-2 shadow-sm active:border-slate-200 transition-colors">
                             <div className="flex items-center gap-1.5">
                                 <AutoSparklesIcon className="w-3 h-3 text-[var(--pop-violet-main)]" />
-                                <span className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">追加指示（任意）</span>
+                                <span className="text-[12px] font-black text-slate-400 uppercase tracking-[0.2em]">追加指示（任意）</span>
                             </div>
                             <AutoResizingTextarea
                                 value={customPrompt}
@@ -229,7 +230,7 @@ export const MobileConfirmStep: React.FC<MobileConfirmStepProps> = ({
                     {isGoogleMaps && (
                         <div className="my-2">
                             <div className="bg-[#edeff1] px-6 py-4 rounded-[32px] border border-slate-100 flex flex-col gap-2 shadow-sm">
-                                <span className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">補足情報 / 当日の事情</span>
+                                <span className="text-[12px] font-black text-slate-400 uppercase tracking-[0.2em]">補足情報 / 当日の事情</span>
                                 <AutoResizingTextarea
                                     value={storeSupplement}
                                     onChange={(e) => onStoreSupplementChange(e.target.value)}
@@ -241,46 +242,73 @@ export const MobileConfirmStep: React.FC<MobileConfirmStepProps> = ({
                     )}
 
                     {/* Fine-tuning Settings (Tone, Length) */}
-                    {(!isStyleLocked || !isX) && (
+                    {(isGoogleMaps || !isStyleLocked || !isX) && (
                         <div className="mt-8 px-2 space-y-8">
                             {/* Settings Grid - Monochrome */}
-                            <div className="flex gap-8 mb-4">
-                                {/* Tone Slider - Hide if Locked */}
-                                {!isStyleLocked && (
-                                    <div className="flex-1 flex flex-col gap-3">
-                                        <div className="flex items-center justify-between px-1">
-                                            <div className="flex items-center gap-1.5">
-                                                <span className="text-[8px] font-black text-[#666666] uppercase tracking-[0.2em]">トーン</span>
-                                            </div>
-                                        </div>
-                                        <div className="relative px-1 pt-1 pb-2">
-                                            <div className="absolute top-[6px] left-1 right-1 h-[1.5px] bg-slate-100" />
-                                            <div className="relative flex justify-between items-center h-3">
-                                                {TONES.map((t) => {
-                                                    const isActive = tone === t.id;
-                                                    return (
-                                                        <button
-                                                            key={t.id}
-                                                            onClick={() => onToneChange(t.id)}
-                                                            className="relative z-10 flex flex-col items-center group w-full first:items-start last:items-end"
-                                                        >
-                                                            <div className={`w-3 h-3 rounded-full border-2 transition-all duration-300 ${isActive ? 'bg-[#2b2b2f] border-[#2b2b2f] scale-110 shadow-[0_0_10px_rgba(99,102,241,0.5)]' : 'bg-white border-slate-200'}`} />
-                                                            <span className={`absolute -bottom-4 text-[8px] font-black transition-colors duration-300 whitespace-nowrap ${isActive ? 'text-[#2b2b2f]' : 'text-slate-400'}`}>
-                                                                {t.label}
-                                                            </span>
-                                                        </button>
-                                                    );
-                                                })}
-                                            </div>
+                            <div className="flex flex-col gap-10 mb-8">
+                                {/* Tone Slider (or Reply Depth for GMap) */}
+                                <div className="flex-1 flex flex-col gap-3">
+                                    <div className="flex items-center justify-between px-1">
+                                        <div className="flex items-center gap-1.5">
+                                            <span className="text-[13px] font-black text-[#666666] uppercase tracking-[0.2em]">{isGoogleMaps ? '返信の丁寧さ' : 'トーン'}</span>
                                         </div>
                                     </div>
-                                )}
+
+                                    {/* Lock Message or Missing Data Warning */}
+                                    {(isStyleLocked && !isGoogleMaps) ? (
+                                        <div className="bg-[#f0f9ff] border border-[#bae6fd] rounded-xl p-4 flex items-center gap-3 text-[#0369a1]">
+                                            <div className="bg-white p-1.5 rounded-full shadow-sm shrink-0">
+                                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                                </svg>
+                                            </div>
+                                            <div className="flex flex-col">
+                                                <span className="text-[11px] font-bold">スタイル適用中</span>
+                                                <span className="text-[10px] opacity-80 leading-tight">学習データに基づいて自動調整されます</span>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <>
+                                            {!isGoogleMaps && activePresetId && activePresetId !== 'plain-ai' && (
+                                                <div className="mb-3 bg-[#fff7ed] border border-[#fed7aa] rounded-xl p-3 flex items-start gap-2 text-[#c2410c]">
+                                                    <svg className="w-4 h-4 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                                    </svg>
+                                                    <div className="flex flex-col">
+                                                        <span className="text-[10px] font-bold leading-tight">このプラットフォーム用の学習データが不足しています。標準のトーン設定を使用します。</span>
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            <div className="relative px-1 pt-1 pb-2">
+                                                <div className="absolute top-[6px] left-1 right-1 h-[1.5px] bg-slate-100" />
+                                                <div className="relative flex justify-between items-center h-3">
+                                                    {(isGoogleMaps ? REPLY_DEPTHS : TONES).map((t) => {
+                                                        const isActive = isGoogleMaps ? (replyDepth === t.id) : (tone === t.id);
+                                                        return (
+                                                            <button
+                                                                key={t.id}
+                                                                onClick={() => isGoogleMaps && onReplyDepthChange ? onReplyDepthChange(t.id as any) : onToneChange(t.id as any)}
+                                                                className="relative z-10 flex flex-col items-center group w-full first:items-start last:items-end"
+                                                            >
+                                                                <div className={`w-3 h-3 rounded-full border-2 transition-all duration-300 ${isActive ? 'bg-[#2b2b2f] border-[#2b2b2f] scale-110 shadow-[0_0_10px_rgba(99,102,241,0.5)]' : 'bg-white border-slate-200'}`} />
+                                                                <span className={`absolute -bottom-5 text-[11px] font-black transition-colors duration-300 whitespace-nowrap ${isActive ? 'text-[#2b2b2f]' : 'text-slate-400'}`}>
+                                                                    {t.label}
+                                                                </span>
+                                                            </button>
+                                                        );
+                                                    })}
+                                                </div>
+                                            </div>
+                                        </>
+                                    )}
+                                </div>
 
                                 {/* Length Slider */}
-                                {!isX && (
+                                {!isX && !isGoogleMaps && (
                                     <div className="flex-1 flex flex-col gap-3">
                                         <div className="flex items-center justify-between px-1">
-                                            <span className="text-[8px] font-black text-[#666666] uppercase tracking-[0.2em]">長さ</span>
+                                            <span className="text-[13px] font-black text-[#666666] uppercase tracking-[0.2em]">長さ</span>
                                         </div>
                                         <div className="relative px-1 pt-1 pb-2">
                                             <div className="absolute top-[6px] left-1 right-1 h-[1.5px] bg-slate-100" />
@@ -294,7 +322,7 @@ export const MobileConfirmStep: React.FC<MobileConfirmStepProps> = ({
                                                             className="relative z-10 flex flex-col items-center group w-full first:items-start last:items-end"
                                                         >
                                                             <div className={`w-3 h-3 rounded-full border-2 transition-all duration-300 ${isActive ? 'bg-[#2b2b2f] border-[#2b2b2f] scale-110 shadow-[0_0_10px_rgba(99,102,241,0.5)]' : 'bg-white border-slate-200'}`} />
-                                                            <span className={`absolute -bottom-4 text-[8px] font-black transition-colors duration-300 whitespace-nowrap ${isActive ? 'text-[#2b2b2f]' : 'text-slate-400'}`}>
+                                                            <span className={`absolute -bottom-5 text-[11px] font-black transition-colors duration-300 whitespace-nowrap ${isActive ? 'text-[#2b2b2f]' : 'text-slate-400'}`}>
                                                                 {l.label}
                                                             </span>
                                                         </button>

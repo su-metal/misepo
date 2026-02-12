@@ -470,6 +470,31 @@ function App() {
         onOpenLogin={() => router.push('/start')}
         presets={presets}
         onTogglePin={handleTogglePin}
+        onSelectPlatform={(post, platform) => {
+          // Context Recovery for Photo-to-Post:
+          // If the original input text was empty (likely a photo post) and we have results,
+          // use the previous result as the prompt for the new platform to preserve context.
+          let nextInputText = post.config.inputText;
+          if (!nextInputText.trim() && post.results && post.results.length > 0) {
+            const previousContent = post.results[0].data[0];
+            if (previousContent) {
+              nextInputText = `【画像投稿の再利用】\n以下の内容を元にリライトしてください。\n\n${previousContent}`;
+            }
+          }
+
+          const specificPost = {
+            ...post,
+            config: {
+              ...post.config,
+              platforms: [platform],
+              inputText: nextInputText // Apply the recovered text
+            },
+            results: [] // Clear results for the new platform draft
+          };
+          setActiveHistoryItem(specificPost);
+          setRestoreTrigger(Date.now());
+          setIsSidebarOpen(false);
+        }}
       />
 
       <SettingsSidebar

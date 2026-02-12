@@ -14,6 +14,7 @@ import {
   MessageSquareIcon,
   SparklesIcon
 } from './Icons';
+import { cleanUserInstruction, hasActualUserInstruction } from '../lib/historyUtils';
 import { UI } from '../constants';
 
 interface HistorySidebarProps {
@@ -26,6 +27,7 @@ interface HistorySidebarProps {
   onDelete: (id: string) => void;
   presets?: Preset[];
   onTogglePin: (id: string, isPinned: boolean) => Promise<void>;
+  onSelectPlatform?: (post: GeneratedPost, platform: Platform) => void;
 }
 
 const HistorySidebar: React.FC<HistorySidebarProps> = ({
@@ -36,7 +38,9 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
   toggleOpen,
   onOpenLogin,
   onDelete,
-  onTogglePin
+  onTogglePin,
+  onSelectPlatform,
+  presets
 }) => {
   React.useEffect(() => {
     if (isOpen) {
@@ -72,13 +76,24 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
     });
   }, [history]);
 
-  const getPlatformIcon = (p: Platform, className?: string) => {
-    const iconClass = className || "w-3 h-3 text-slate-400";
+  const getPlatformIcon = (p: Platform, className?: string, isColored?: boolean) => {
+    let iconClass = className || "w-3 h-3 text-slate-400";
+
+    if (isColored) {
+      const base = className || "w-3 h-3";
+      switch (p) {
+        case Platform.X: iconClass = `${base} text-black`; break;
+        case Platform.Instagram: iconClass = `${base} text-[#E4405F]`; break;
+        case Platform.GoogleMaps: iconClass = `${base} text-[#4285F4]`; break;
+        case Platform.Line: iconClass = `${base} text-[#06C755]`; break;
+      }
+    }
+
     switch (p) {
       case Platform.X: return <XIcon className={iconClass} />;
       case Platform.Instagram: return <InstagramIcon className={iconClass} />;
       case Platform.GoogleMaps: return <GoogleMapsIcon className={iconClass} />;
-      case Platform.Line: return <LineIcon className={iconClass} color="currentColor" textFill="white" />;
+      case Platform.Line: return <LineIcon className={iconClass} color={isColored ? "#06C755" : "currentColor"} textFill="white" />;
       default: return null;
     }
   };
@@ -96,10 +111,25 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
     long: '長め'
   };
 
+  const replyDepthLabels: Record<string, string> = {
+    light: 'あっさり',
+    standard: 'バランス',
+    deep: '丁寧'
+  };
+
+  // Define supported platforms for regeneration suggestions
+  const supportedPlatforms = [Platform.Instagram, Platform.X, Platform.Line];
+
   const renderHistoryItem = (item: GeneratedPost, idx: number) => {
     const firstResult = pickFirstText(item);
     const previewText = (firstResult && firstResult.trim()) || item.config.inputText || "...";
     const dateLabel = new Date(item.timestamp).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+
+    // Identify which platforms were used for this generation
+    const usedPlatforms = new Set(item.config.platforms);
+
+    // Identify which platforms are available for "Create for other SNS"
+    const unusedPlatforms = supportedPlatforms.filter(p => !usedPlatforms.has(p));
 
     return (
       <div
@@ -107,14 +137,10 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
         className="group relative animate-in fade-in slide-in-from-right-8 duration-500"
         style={{ animationDelay: `${idx * 40}ms` }}
       >
-        <button
-          onClick={() => {
-            onSelect(item);
-            toggleOpen();
-          }}
-          className={`w-full text-left rounded-[28px] transition-all duration-500 relative overflow-hidden flex flex-col gap-3 active:scale-[0.98] ${item.isPinned
-            ? 'bg-white p-[1.5px] shadow-[0_15px_40px_rgba(128,202,255,0.12)] ring-1 ring-[#80CAFF]/30'
-            : 'bg-white p-6 border border-slate-300/80 shadow-[0_20px_50px_rgba(0,0,0,0.06)] md:border-slate-200/60 md:shadow-[0_10px_30px_rgba(0,0,0,0.04)] md:hover:-translate-y-1 md:hover:border-slate-300/80 md:hover:shadow-[0_20px_50px_rgba(0,0,0,0.06)]'
+        <div
+          className={`w-full text-left rounded-[28px] transition-all duration-500 relative overflow-hidden flex flex-col gap-3 ${item.isPinned
+            ? 'bg-white p-[1.5px] shadow-[0_15px_40px_rgba(128,202,255,0.12)] ring-1 ring-[#80CAFF]/80'
+            : 'bg-white border-2 border-slate-200 shadow-[0_4px_20px_rgba(0,0,0,0.08)] hover:border-slate-300 hover:shadow-[0_10px_30px_rgba(0,0,0,0.12)]'
             }`}
         >
           {/* Subtle Inner Glow for Pinned */}
@@ -122,28 +148,35 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
             <div className="absolute inset-0 bg-gradient-to-tr from-[#80CAFF]/5 via-[#C084FC]/5 to-[#F87171]/5 pointer-events-none" />
           )}
 
-          <div className={`relative w-full h-full flex flex-col gap-4 ${item.isPinned ? 'bg-white rounded-[27px] p-6' : ''}`}>
-            <div className="flex items-center justify-between">
+          <div
+            className={`relative w-full h-full flex flex-col gap-4 ${item.isPinned ? 'bg-white rounded-[27px] p-6' : 'p-6 pb-5'}`}
+            onClick={() => {
+              onSelect(item);
+              toggleOpen();
+            }}
+            style={{ cursor: 'pointer' }}
+          >
+            <div className="flex items-center justify-between pointer-events-none pr-10">
               <div className="flex -space-x-2">
                 {item.config.platforms.map((p, pIdx) => (
-                  <div key={`${p}-${pIdx}`} className="w-8 h-8 rounded-full flex items-center justify-center bg-white border border-slate-100 shadow-sm group-hover:border-slate-200 transition-colors">
-                    {getPlatformIcon(p, "w-3.5 h-3.5 text-slate-400 group-hover:text-[#2b2b2f] transition-colors")}
+                  <div key={`${p}-${pIdx}`} className="w-8 h-8 rounded-full flex items-center justify-center bg-white border border-slate-100 shadow-sm transition-colors">
+                    {getPlatformIcon(p, "w-4 h-4", true)}
                   </div>
                 ))}
               </div>
               <div className="flex items-center gap-2">
-                {item.config.customPrompt && (
+                {hasActualUserInstruction(item.config.customPrompt) && (
                   <div className="flex items-center gap-1 px-2 py-0.5 bg-amber-50 rounded-full border border-amber-100/50" title="追加指示あり">
                     <SparklesIcon className="w-2.5 h-2.5 text-amber-500" />
                   </div>
                 )}
-                <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em]">
+                <span className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">
                   {dateLabel}
                 </span>
               </div>
             </div>
 
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2 pointer-events-none">
               <p className="text-sm text-black font-bold tracking-tight line-clamp-2 leading-relaxed transition-colors md:text-[#2b2b2f] md:group-hover:text-black pr-12">
                 {previewText}
               </p>
@@ -155,26 +188,63 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
                     <span className="truncate max-w-[80px]">{item.profile.name}</span>
                   </div>
                 )}
-                <div className="flex items-center gap-1 text-[10px] font-bold text-slate-400 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-100/50">
-                  <span className="opacity-50">口調:</span>
-                  <span>{toneLabels[item.config.tone] || item.config.tone}</span>
-                </div>
-                <div className="flex items-center gap-1 text-[10px] font-bold text-slate-400 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-100/50">
-                  <span className="opacity-50">長さ:</span>
-                  <span>{lengthLabels[item.config.length] || item.config.length}</span>
-                </div>
+                {item.config.platforms.includes(Platform.GoogleMaps) ? (
+                  <div className="flex items-center gap-1 text-[10px] font-bold text-slate-400 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-100/50">
+                    <span className="opacity-50">丁寧さ:</span>
+                    <span>{replyDepthLabels[item.config.replyDepth as string] || 'バランス'}</span>
+                  </div>
+                ) : (
+                  <>
+                    <div className="flex items-center gap-1 text-[10px] font-bold text-slate-400 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-100/50">
+                      <span className="opacity-50">口調:</span>
+                      <span>{(() => {
+                        if (item.config.presetId && item.config.presetId !== 'plain-ai') {
+                          const preset = presets?.find(p => p.id === item.config.presetId);
+                          if (preset) return preset.name;
+                        }
+                        return toneLabels[item.config.tone] || item.config.tone;
+                      })()}</span>
+                    </div>
+                    <div className="flex items-center gap-1 text-[10px] font-bold text-slate-400 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-100/50">
+                      <span className="opacity-50">長さ:</span>
+                      <span>{lengthLabels[item.config.length] || item.config.length}</span>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
+
+            {/* Create for other SNS Section */}
+            {unusedPlatforms.length > 0 && !usedPlatforms.has(Platform.GoogleMaps) && (
+              <div
+                className="mt-2 pt-3 border-t border-slate-100 flex items-center gap-3"
+                onClick={(e) => e.stopPropagation()} // Prevent card click
+              >
+                <span className="text-[9px] font-black text-slate-400 uppercase tracking-wider">他のSNSで作成:</span>
+                <div className="flex gap-2">
+                  {unusedPlatforms.map(p => (
+                    <button
+                      key={p}
+                      onClick={() => onSelectPlatform && onSelectPlatform(item, p)}
+                      className="w-7 h-7 rounded-full flex items-center justify-center bg-slate-50 border border-slate-200 hover:bg-slate-100 hover:border-slate-300 hover:scale-105 active:scale-95 transition-all"
+                      title={`${p}で作成`}
+                    >
+                      {getPlatformIcon(p, "w-3 h-3 text-slate-400")}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
-        </button>
+        </div>
 
         {/* Floating Actions */}
-        <div className={`absolute bottom-6 right-6 flex flex-row md:flex-col gap-2 transition-all duration-500 z-30 ${item.isPinned ? 'opacity-100' : 'opacity-100 md:opacity-0 md:group-hover:opacity-100 md:translate-x-2 md:group-hover:translate-x-0'}`}>
+        <div className={`absolute top-6 right-6 flex flex-row md:flex-col gap-0.5 transition-all duration-500 z-30 ${item.isPinned ? 'opacity-100' : 'opacity-100 md:opacity-0 md:group-hover:opacity-100 md:translate-x-2 md:group-hover:translate-x-0'}`}>
           <button
             onClick={(e) => { e.stopPropagation(); onTogglePin(item.id, !item.isPinned); }}
-            className={`w-8.5 h-8.5 flex items-center justify-center transition-all ${item.isPinned
+            className={`w-8 h-8 flex items-center justify-center transition-all ${item.isPinned
               ? 'text-[#C084FC]'
-              : 'text-slate-200 hover:text-[#2b2b2f] hover:scale-110'
+              : 'text-slate-300 hover:text-[#2b2b2f] hover:scale-110'
               }`}
             title={item.isPinned ? "ピン留めを解除" : "ピン留めして保護"}
           >
@@ -186,7 +256,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({
               e.stopPropagation();
               onDelete(item.id);
             }}
-            className="w-8.5 h-8.5 flex items-center justify-center text-slate-200 hover:text-rose-500 hover:scale-110 transition-all font-black"
+            className="w-8 h-8 flex items-center justify-center text-slate-300 hover:text-rose-500 hover:scale-110 transition-all font-black"
             title="履歴を削除"
           >
             <TrashIcon className="w-4 h-4" />
