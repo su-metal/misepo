@@ -4,8 +4,12 @@ import { createServerClient } from "@supabase/ssr";
 
 export async function middleware(req: NextRequest) {
   // Canonical host enforcement: apex -> www
-  const hostHeader = req.headers.get("host") ?? "";
-  const hostname = hostHeader.split(":")[0].toLowerCase();
+  const hostHeader =
+    req.headers.get("x-forwarded-host") ??
+    req.headers.get("host") ??
+    req.nextUrl.host ??
+    "";
+  const hostname = hostHeader.split(",")[0].trim().split(":")[0].toLowerCase();
   if (hostname === "misepo.jp") {
     const redirectUrl = req.nextUrl.clone();
     redirectUrl.protocol = "https:";
