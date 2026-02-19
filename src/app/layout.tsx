@@ -2,20 +2,49 @@
 import React from 'react';
 import './globals.css';
 import type { Metadata } from 'next';
+import { Inter, Montserrat, Noto_Sans_JP, Noto_Serif_JP } from 'next/font/google';
+
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '900'],
+  display: 'swap',
+  variable: '--font-inter',
+});
+
+const montserrat = Montserrat({
+  subsets: ['latin'],
+  weight: ['800', '900'],
+  display: 'swap',
+  variable: '--font-montserrat',
+});
+
+const notoSansJP = Noto_Sans_JP({
+  subsets: ['latin'],
+  weight: ['400', '500', '700', '900'],
+  display: 'swap',
+  variable: '--font-noto-sans-jp',
+});
+
+const notoSerifJP = Noto_Serif_JP({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  display: 'swap',
+  variable: '--font-noto-serif-jp',
+});
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.misepo.jp"),
   title: "MisePo (ミセポ) - 店舗向けAI投稿作成アシスタント",
   description: "飲食店や美容室などの実店舗に特化したAI投稿作成ツール。数行のメモから、お店の「らしさ」を活かしたSNS投稿やGoogleマップのクチコミ返信を10秒で生成します。",
   keywords: ["MisePo", "ミセポ", "店舗集客", "SNS運用", "AI投稿作成", "インスタ運用", "MEO対策", "クチコミ返信", "飲食店集客", "美容室集客"],
   authors: [{ name: "MisePo Team" }],
   robots: "index, follow",
   alternates: {
-    canonical: "https://misepo.jp",
+    canonical: "./",
   },
   openGraph: {
     title: "MisePo (ミセポ) - 店舗向けAI投稿作成アシスタント",
     description: "飲食店や美容室などの実店舗に特化したAI投稿作成ツール。数行のメモから、お店の「らしさ」を活かしたSNS投稿を生成。",
-    url: "https://misepo.jp",
     siteName: "MisePo",
     images: [
       {
@@ -41,25 +70,64 @@ import { Viewport } from 'next';
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
   themeColor: '#E8F1F2',
   viewportFit: 'cover',
 };
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
-  "name": "MisePo (ミセポ)",
-  "operatingSystem": "Web, Android, iOS",
-  "applicationCategory": "BusinessApplication",
-  "description": "飲食店や美容室などの実店舗に特化したAI投稿作成ツール。SNS投稿やGoogleマップのクチコミ返信を自動生成します。",
-  "offers": {
-    "@type": "Offer",
-    "price": "980",
-    "priceCurrency": "JPY"
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "MisePo (ミセポ)",
+    "operatingSystem": "Web, Android, iOS",
+    "applicationCategory": "BusinessApplication",
+    "url": "https://www.misepo.jp",
+    "description": "飲食店や美容室などの実店舗に特化したAI投稿作成ツール。SNS投稿やGoogleマップのクチコミ返信を自動生成します。",
+    "offers": [
+      { "@type": "Offer", "name": "Entry", "price": "980", "priceCurrency": "JPY" },
+      { "@type": "Offer", "name": "Standard", "price": "1980", "priceCurrency": "JPY" },
+      { "@type": "Offer", "name": "Professional", "price": "2980", "priceCurrency": "JPY" }
+    ]
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "AIだと不自然な文章になりませんか？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "お手本となる投稿を登録するだけで、あなたの口癖や語尾まで再現します。フォロワーからも「いつも通りですね」と言われるほど自然な文章が生成されるため、AI特有の堅苦しさはありません。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "操作が難しそうです...",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "メモを1行打つだけです。LINEでメッセージを送るのと変わりません。PWA技術により0.5秒で起動するため、忙しい現場でもストレスなく使えます。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "他店と同じような文章になりませんか？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "ご安心ください。あらかじめ「熱い店長」「親しみやすいスタッフ」など、あなた自身で設定した独自のペルソナに基づいて文章を生成します。お店のカラーに合わせた専用の文体を登録できるため、他店とは被らない唯一無二の個性がしっかり出せます。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "生成された文章はそのまま使えますか？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "はい、完成度が高いのでそのままコピーペーストして投稿できます。さらにこだわりたい方は、少しだけ手を加えることで、より『自分らしさ』を出せます。"
+        }
+      }
+    ]
   }
-};
+];
 
 import { Feedback } from '../components/Feedback';
 
@@ -69,11 +137,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ja">
+    <html lang="ja" className={`${inter.variable} ${montserrat.variable} ${notoSansJP.variable} ${notoSerifJP.variable}`}>
       <head>
-        {/* Tailwind via CDN for compatibility with existing styling approach without build setup */}
-        <script src="https://cdn.tailwindcss.com"></script>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Montserrat:wght@800;900&family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@400;500;600;700&display=swap" rel="stylesheet" />
         {/* Theme color managed via viewport export */}
 
         {/* Google Analytics (gtag.js) */}
@@ -90,10 +155,13 @@ export default function RootLayout({
         <script src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`} async defer></script>
 
 
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
+        {jsonLd.map((ld, i) => (
+          <script
+            key={i}
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }}
+          />
+        ))}
       </head>
       <body className="relative">
         {/* Global Atmosphere Background */}

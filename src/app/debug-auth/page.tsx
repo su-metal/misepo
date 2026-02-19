@@ -3,6 +3,15 @@
 import { createClient } from "@/lib/supabase/client";
 
 export default function DebugAuthPage() {
+  if (process.env.NODE_ENV === "production") {
+    return (
+      <main style={{ padding: 24 }}>
+        <h1>Not Found</h1>
+        <p>This page is not available.</p>
+      </main>
+    );
+  }
+
   const supabase = createClient();
 
   const showUid = async () => {

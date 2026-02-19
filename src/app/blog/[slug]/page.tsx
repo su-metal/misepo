@@ -56,7 +56,7 @@ export default async function BlogPostPage({ params }: Props) {
         "@type": "BlogPosting",
         "headline": post.title,
         "description": post.description,
-        "image": post.image ? [`https://misepo.jp${post.image}`] : [],
+        "image": post.image ? [`https://www.misepo.jp${post.image}`] : [],
         "datePublished": post.date,
         "author": {
             "@type": "Organization",

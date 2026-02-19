@@ -8,6 +8,7 @@ import { env } from "@/lib/env";
 import { computeCanUseApp } from "@/lib/entitlements/canUseApp";
 import { getJSTDateRange } from "@/lib/dateUtils";
 import { getUserUsage } from "@/lib/billing/usage";
+import { checkRateLimit } from "@/lib/api/rateLimit";
 import Stripe from "stripe";
 
 const APP_ID = env.APP_ID;
@@ -33,6 +34,15 @@ export async function POST(req: Request) {
   }
 
   const userId = user.id;
+
+  // --- Rate Limit Check ---
+  const rl = checkRateLimit(`generate:${userId}`, 15, 60_000);
+  if (!rl.success) {
+    return NextResponse.json(
+      { ok: false, error: "Too many requests. Please try again later." },
+      { status: 429, headers: { 'Retry-After': '60' } }
+    );
+  }
 
   let body: Record<string, unknown>;
   try {

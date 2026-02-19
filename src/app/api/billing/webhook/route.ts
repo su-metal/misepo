@@ -33,8 +33,9 @@ export async function POST(req: Request) {
       process.env.STRIPE_WEBHOOK_SECRET!
     );
   } catch (err: any) {
+    console.error("[stripe] Signature verification failed:", err.message);
     return NextResponse.json(
-      { ok: false, error: `signature error: ${err.message}` },
+      { ok: false, error: "webhook verification failed" },
       { status: 400 }
     );
   }
