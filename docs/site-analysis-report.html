@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MisePo サイト分析レポート</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #242836;
+    --border: #2e3344;
+    --text: #e4e7ef;
+    --text-muted: #8b90a0;
+    --accent: #60a5fa;
+    --accent-glow: rgba(96,165,250,0.15);
+    --red: #f87171;
+    --red-bg: rgba(248,113,113,0.1);
+    --orange: #fb923c;
+    --orange-bg: rgba(251,146,60,0.1);
+    --yellow: #fbbf24;
+    --yellow-bg: rgba(251,191,36,0.1);
+    --green: #4ade80;
+    --green-bg: rgba(74,222,128,0.1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    padding: 0;
+  }
+
+  .hero {
+    background: linear-gradient(135deg, #1e2a4a 0%, #0f1117 50%, #1a1025 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 60px 40px 50px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at 30% 50%, rgba(96,165,250,0.06) 0%, transparent 50%),
+                radial-gradient(circle at 70% 50%, rgba(192,132,252,0.04) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .hero h1 {
+    font-size: 2.4rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+    position: relative;
+  }
+  .hero h1 span { color: var(--accent); }
+  .hero .subtitle {
+    color: var(--text-muted);
+    font-size: 1rem;
+    position: relative;
+  }
+  .hero .meta {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    position: relative;
+  }
+  .hero .meta span { display: flex; align-items: center; gap: 6px; }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px;
+  }
+
+  /* Score overview */
+  .score-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 48px;
+  }
+  .score-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .score-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .score-card.seo::before { background: linear-gradient(90deg, var(--orange), var(--yellow)); }
+  .score-card.design::before { background: linear-gradient(90deg, var(--yellow), var(--green)); }
+  .score-card.security::before { background: linear-gradient(90deg, var(--red), var(--orange)); }
+  .score-card .score-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+  .score-card .score-value {
+    font-size: 3rem;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .score-card.seo .score-value { color: var(--orange); }
+  .score-card.design .score-value { color: var(--yellow); }
+  .score-card.security .score-value { color: var(--red); }
+  .score-card .score-max { color: var(--text-muted); font-size: 0.85rem; }
+
+  /* Section */
+  .section {
+    margin-bottom: 48px;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+  .section-icon.seo { background: var(--orange-bg); }
+  .section-icon.design { background: var(--yellow-bg); }
+  .section-icon.security { background: var(--red-bg); }
+  .section-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+  }
+
+  /* Issue cards */
+  .issue {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 16px;
+    transition: border-color 0.2s;
+  }
+  .issue:hover { border-color: var(--accent); }
+  .issue-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .severity {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 3px 10px;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+  .severity.critical { background: var(--red-bg); color: var(--red); }
+  .severity.high { background: var(--orange-bg); color: var(--orange); }
+  .severity.medium { background: var(--yellow-bg); color: var(--yellow); }
+  .severity.low { background: var(--green-bg); color: var(--green); }
+  .issue-title {
+    font-weight: 700;
+    font-size: 1.05rem;
+  }
+  .issue-body {
+    color: var(--text-muted);
+    font-size: 0.92rem;
+    margin-bottom: 14px;
+  }
+  .issue-body code {
+    background: var(--surface2);
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    color: var(--accent);
+    font-family: 'Fira Code', 'Consolas', monospace;
+  }
+  .recommendation {
+    background: var(--accent-glow);
+    border-left: 3px solid var(--accent);
+    padding: 12px 16px;
+    border-radius: 0 8px 8px 0;
+    font-size: 0.88rem;
+  }
+  .recommendation strong { color: var(--accent); }
+
+  pre {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    overflow-x: auto;
+    font-size: 0.82rem;
+    line-height: 1.6;
+    margin: 10px 0;
+    font-family: 'Fira Code', 'Consolas', monospace;
+    color: var(--text-muted);
+  }
+
+  /* Summary */
+  .summary-box {
+    background: linear-gradient(135deg, var(--surface) 0%, var(--surface2) 100%);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+  }
+  .summary-box h2 {
+    font-size: 1.3rem;
+    margin-bottom: 16px;
+  }
+  .priority-list {
+    list-style: none;
+    counter-reset: priority;
+  }
+  .priority-list li {
+    counter-increment: priority;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .priority-list li:last-child { border-bottom: none; }
+  .priority-list li::before {
+    content: counter(priority);
+    background: var(--accent);
+    color: var(--bg);
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .footer {
+    text-align: center;
+    padding: 40px 24px;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 768px) {
+    .score-grid { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 1.6rem; }
+    .hero .meta { flex-direction: column; gap: 8px; }
+    .container { padding: 24px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1><span>MisePo</span> サイト分析レポート</h1>
+  <p class="subtitle">SEO / デザイン・UI / セキュリティ 総合診断</p>
+  <div class="meta">
+    <span>&#128197; 2026年2月15日</span>
+    <span>&#127760; https://www.misepo.jp</span>
+    <span>&#9881; Next.js 16 + Supabase + Stripe</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- Score Overview -->
+  <div class="score-grid">
+    <div class="score-card seo">
+      <div class="score-label">SEO</div>
+      <div class="score-value">58</div>
+      <div class="score-max">/ 100</div>
+    </div>
+    <div class="score-card design">
+      <div class="score-label">Design / UI</div>
+      <div class="score-value">68</div>
+      <div class="score-max">/ 100</div>
+    </div>
+    <div class="score-card security">
+      <div class="score-label">Security</div>
+      <div class="score-value">45</div>
+      <div class="score-max">/ 100</div>
+    </div>
+  </div>
+
+  <!-- ==================== SEO ==================== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon seo">&#128270;</div>
+      <h2 class="section-title">SEO の課題点</h2>
+    </div>
+
+    <div class="issue">
+      <div class="issue-top">
+        <span class="severity critical">Critical</span>
+        <span class="issue-title">Tailwind CSS を CDN 経由でロードしている</span>
+      </div>
+      <div class="issue-body">
+        <code>&lt;script src="https://cdn.tailwindcss.com"&gt;</code> はレンダリングをブロックする JavaScript です。
+        Google の Core Web Vitals（LCP・FID）に直接悪影響を及ぼし、検索順位低下の原因になります。
+        Tailwind 公式も「本番環境では CDN を使わないでください」と明記しています。
+      </div>
+      <div class="recommendation">
+        <strong>改善案:</strong> <code>npm install -D tailwindcss @tailwindcss/postcss</code> でビルド時にCSSを生成する構成に移行してください。
+        Next.js であれば <code>postcss.config.js</code> に <code>@tailwindcss/postcss</code> を追加するだけで対応可能です。
+        これにより JS のパース・実行が不要になり、FCP/LCP が大幅に改善します。
+      </div>
+    </div>
+
+    <div class="issue">
+      <div class="issue-top">
+        <span class="severity high">High</span>
+        <span class="issue-title">Google Fonts の同期読み込み</span>
+      </div>
+      <div class="issue-body">
+        4つのフォントファミリー（Inter, Montserrat, Noto Sans JP, Noto Serif JP）を1つの <code>&lt;link&gt;</code> タグで同期的に読み込んでおり、
+        レンダリングブロッキングが発生します。特に Noto Sans JP / Noto Serif JP は日本語フォントで容量が大きく影響が顕著です。
+      </div>
+      <div class="recommendation">
+        <strong>改善案:</strong> Next.js の <code>next/font/google</code> を使用してください。自動的にフォントがセルフホストされ、
+        <code>font-display: swap</code> も適用されます。使用していないフォントウェイトの削除も検討してください。
+<pre>import { Inter, Noto_Sans_JP } from 'next/font/google';
+const inter = Inter({ subsets: ['latin'], display: 'swap' });
+const notoSansJP = Noto_Sans_JP({ subsets: ['latin'], display: 'swap' });</pre>
+      </div>
+    </div>
+
+    <div class="issue">
+      <div class="issue-top">
+        <span class="severity high">High</span>
+        <span class="issue-title">canonical URL の不一致</span>
+      </div>
+      <div class="issue-body">
+        canonical が <code>https://misepo.jp</code>（www なし）に設定されていますが、
+        実際のサイトは <code>https://www.misepo.jp</code> で提供されています。
+        sitemap.xml 内の URL も <code>https://misepo.jp</code> です。
+        www あり・なしの不統一は重複コンテンツとみなされ、SEO 評価が分散するリスクがあります。
+      </div>
+      <div class="recommendation">
+        <strong>改善案:</strong> どちらかに統一し、もう一方から 301 リダイレクトを設定してください。
+        Vercel の場合はプロジェクト設定の「Domains」で <code>www.misepo.jp</code> をプライマリに設定し、
+        <code>misepo.jp</code> からリダイレクトする構成が推奨です。canonical と sitemap も統一してください。
+      </div>
+    </div>
+
+    <div class="issue">
+      <div class="issue-top">
+        <span class="severity high">High</span>
+        <span class="issue-title">画像の alt 属性の欠落（トップページ）</span>
+      </div>
+      <div class="issue-body">
+        トップページのヒーロー画像やフィーチャーセクションの画像に alt 属性がありません。
+        画像検索からの流入機会を失い、WCAG 2.1 Level A（アクセシビリティ基準）にも違反しています。
+        なお、ブログページの画像には適切な alt が設定されており、対応方針は確立しています。
+      </div>
+      <div class="recommendation">
+        <strong>改善案:</strong> すべての <code>&lt;Image&gt;</code> コンポーネントに、内容を説明する日本語の alt テキストを追加してください。
+        装飾目的の画像には <code>alt=""</code> と <code>role="presentation"</code> を明示的に指定してください。
+      </div>
+    </div>
+
+    <div class="issue">
+      <div class="issue-top">
+        <span class="severity medium">Medium</span>
+        <span class="issue-title">構造化データ（JSON-LD）が不十分</span>
+      </div>
+      <div class="issue-body">
+        <code>SoftwareApplication</code> スキーマは実装されていますが、<code>AggregateRating</code>、
+        複数プランの <code>Offers</code> 配列、<code>FAQPage</code> スキーマが欠落しています。
+        FAQ セクションがあるのに <code>FAQPage</code> マークアップがないのはリッチリザルト獲得の機会損失です。
+      </div>
+      <div class="recommendation">
+        <strong>改善案:</strong> FAQ セクションに <code>FAQPage</code> スキーマを追加し、料金プランを <code>Offers</code> 配列で表現してください。
+<pre>{
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "無料で使えますか？",
+      "acceptedAnswer": { "@type": "Answer", "text": "..." } }
+  ]
+}</pre>
+      </div>
+    </div>
+
+    <div class="issue">
+      <div class="issue-top">
+        <span class="severity medium">Medium</span>
+        <span class="issue-title">ブログ記事が少なく更新頻度が低い</span>
+      </div>
+      <div class="issue-body">
+        sitemap には 6 件のブログ記事しかなく、更新頻度は monthly 設定です。
+        ターゲットキーワード（飲食店集客、美容室SNS運用、MEO対策 等）に対するコンテンツカバレッジが不足しています。
+      </div>
+      <div class="recommendation">
+        <strong>改善案:</strong> 「飲食店 SNS 投稿 コツ」「美容室 インスタ 集客」「Google マップ クチコミ 返信」など
+        ロングテールキーワードをターゲットにした記事を週1本ペースで公開することを推奨します。
+        sitemap の changefreq を <code>weekly</code> に変更してください。
+      </div>
+    </div>
+
+    <div class="issue">
+      <div class="issue-top">
+        <span class="severity medium">Medium</span>
+        <span class="issue-title">見出し階層（Heading Hierarchy）の不整合</span>
+      </div>
+      <div class="issue-body">
+        トップページに H1 が 2 つ存在します（「想いを、一瞬で言葉に。」「SOCIAL MEDIA, ENJOYED.」）。
+        H1 は 1 ページにつき 1 つが推奨であり、複数あると主題が曖昧になります。
+        また、一部のセクションで H2 → H4 のように飛ばしている箇所があります。
+      </div>
+      <div class="recommendation">
+        <strong>改善案:</strong> H1 をメインキャッチコピー 1 つに絞り、サブコピーは H2 または
+        <code>&lt;p class="tagline"&gt;</code> に変更してください。見出しレベルは H1 → H2 → H3 の順序を厳守してください。
+      </div>
+    </div>
+
+    <div class="issue">
+      <div class="issue-top">
+        <span class="severity low">Low</span>
+        <span class="issue-title">Google Maps API の全ページ読み込み</span>
+      </div>
+      <div class="issue-body">
+        <code>layout.tsx</code> で Google Maps Places API を全ページに読み込んでいますが、
+        実際に使用するのは特定のページのみです。不要なページでの外部スクリプトのロードはパフォーマンスを低下させます。
+      </div>
+      <div class="recommendation">
+        <strong>改善案:</strong> Google Maps API の読み込みを必要なページ（コンポーネント）だけに限定してください。
+        <code>next/script</code> の <code>strategy="lazyOnload"</code> と動的 import を組み合わせると効果的です。
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== DESIGN / UI ==================== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon design">&#127912;</div>
+      <h2 class="section-title">デザイン・UI の課題点</h2>
+    </div>
+
+    <div class="issue">
+      <div class="issue-top">
+        <span class="severity high">High</span>
+        <span class="issue-title">user-scalable=no によるアクセシビリティ違反</span>
+      </div>
+      <div class="issue-body">
+        <code>viewport</code> に <code>userScalable: false</code> と <code>maximumScale: 1</code> が設定されており、
+        ユーザーによるピンチズームが無効化されています。これは WCAG 2.1 Level AA の「1.4.4 テキストのサイズ変更」に違反し、
+        視覚障害や老眼のユーザーにとって深刻なバリアになります。
+      </div>
+      <div class="recommendation">
+        <strong>改善案:</strong> <code>layout.tsx</code> の viewport 設定から <code>userScalable: false</code> と
+        <code>maximumScale: 1</code> を削除してください。
+<pre>export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  // maximumScale と userScalable を削除
+  themeColor: '#E8F1F2',
+  viewportFit: 'cover',
+};</pre>
+      </div>
+    </div>
+
+    <div class="issue">
+      <div class="issue-top">
+        <span class="severity high">High</span>
+        <span class="issue-title">ARIA 属性・ロール指定の不足</span>
+      </div>
+      <div class="issue-body">
+        インタラクティブ要素（デモのタブ切り替え、FAQ のアコーディオン、モーダル等）に
+        <code>role</code>、<code>aria-label</code>、<code>aria-expanded</code> 等の属性がありません。
+        スクリーンリーダーユーザーにとって操作不能な状態です。
+      </div>
+      <div class="recommendation">
+        <strong>改善案:</strong> タブには <code>role="tablist"</code>/<code>role="tab"</code>/<code>role="tabpanel"</code>、
+        FAQ アコーディオンには <code>aria-expanded</code>、ボタンには <code>aria-label</code> を追加してください。
+        Headless UI や Radix UI 等のアクセシブルなコンポーネントライブラリの導入も検討してください。
+      </div>
+    </div>
+
+    <div class="issue">
+      <div class="issue-top">
+        <span class="severity medium">Medium</span>
+        <span class="issue-title">セマンティック HTML の不足</span>
+      </div>
+      <div class="issue-body">
+        ページ構造が <code>&lt;div&gt;</code> ベースで構築されており、<code>&lt;header&gt;</code>、
+        <code>&lt;nav&gt;</code>、<code>&lt;main&gt;</code>、<code>&lt;article&gt;</code>、<code>&lt;footer&gt;</code>
+        等のセマンティック要素の使用が限定的です。これは SEO とアクセシビリティの両方に影響します。
+      </div>
+      <div class="recommendation">
+        <strong>改善案:</strong> ランドマーク要素を適切に使用してください。
+        ナビゲーションは <code>&lt;nav&gt;</code>、メインコンテンツは <code>&lt;main&gt;</code>、
+        各セクションは <code>&lt;section aria-labelledby="..."&gt;</code> で構造化してください。
+      </div>
+    </div>
+
+    <div class="issue">
+      <div class="issue-top">
+        <span class="severity medium">Medium</span>
+        <span class="issue-title">ヒーロー画像のサイズが過大</span>
+      </div>
+      <div class="issue-body">
+        ヒーロー画像が最大幅 3840px で提供されています。Next.js の <code>&lt;Image&gt;</code> コンポーネントで
+        最適化されていますが、<code>sizes</code> 属性が適切に設定されていない可能性があり、
+        モバイルで不必要に大きな画像をダウンロードするリスクがあります。
+      </div>
+      <div class="recommendation">
+        <strong>改善案:</strong> <code>sizes</code> 属性を明示的に設定してください。
+<pre>&lt;Image
+  src="/hero.jpg"
+  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
+  priority
+  alt="MisePo - AIで店舗のSNS投稿を作成"
+/&gt;</pre>
+      </div>
+    </div>
+
+    <div class="issue">
+      <div class="issue-top">
+        <span class="severity medium">Medium</span>
+        <span class="issue-title">背景アニメーション（Glow Orbs）のパフォーマンス影響</span>
+      </div>
+      <div class="issue-body">
+        <code>layout.tsx</code> で 3 つの大きな Glow Orb（最大 60vw）に <code>blur(120px)</code> と
+        <code>animate-pulse-slow</code> が適用されています。<code>will-change</code> は設定されていますが、
+        ローエンドデバイスでは GPU メモリを圧迫し、スクロール性能が低下する可能性があります。
+      </div>
+      <div class="recommendation">
+        <strong>改善案:</strong> <code>prefers-reduced-motion</code> メディアクエリでアニメーションを無効化するオプションを提供してください。
+        また、モバイルでは Orb のサイズと blur 値を縮小するレスポンシブ対応を検討してください。
+<pre>@media (prefers-reduced-motion: reduce) {
+  .glow-orb { animation: none !important; }
+}</pre>
+      </div>
+    </div>
+
+    <div class="issue">
+      <div class="issue-top">
+        <span class="severity low">Low</span>
+        <span class="issue-title">フォーカスインジケーターの不足</span>
+      </div>
+      <div class="issue-body">
+        キーボード操作時のフォーカスインジケーター（アウトライン）が Tailwind のデフォルトリセットで
+        非表示にされている可能性があります。キーボードユーザーにとって現在位置の把握が困難です。
+      </div>
+      <div class="recommendation">
+        <strong>改善案:</strong> <code>focus-visible</code> を利用したカスタムフォーカスリングを設定してください。
+<pre>*:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SECURITY ==================== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon security">&#128274;</div>
+      <h2 class="section-title">セキュリティの課題点</h2>
+    </div>
+
+    <div class="issue">
+      <div class="issue-top">
+        <span class="severity critical">Critical</span>
+        <span class="issue-title">セキュリティヘッダーが未設定</span>
+      </div>
+      <div class="issue-body">
+        <code>Content-Security-Policy</code>、<code>X-Frame-Options</code>、<code>X-Content-Type-Options</code>、
+        <code>Strict-Transport-Security</code>、<code>Permissions-Policy</code> 等のセキュリティヘッダーが
+        一切設定されていません。コードベース内にもヘッダー設定のコードが見つかりませんでした。
+        XSS、クリックジャッキング、MIME スニッフィング等の攻撃に対する防御が欠如しています。
+      </div>
+      <div class="recommendation">
+        <strong>改善案:</strong> <code>next.config.js</code>（または <code>next.config.ts</code>）にセキュリティヘッダーを追加してください。
+<pre>// next.config.ts
+const securityHeaders = [
+  { key: 'X-Frame-Options', value: 'DENY' },
+  { key: 'X-Content-Type-Options', value: 'nosniff' },
+  { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+  { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+  { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
+  { key: 'Content-Security-Policy', value: "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://www.googletagmanager.com https://maps.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://*.supabase.co https://www.google-analytics.com;" }
+];
+
+export default {
+  async headers() {
+    return [{ source: '/(.*)', headers: securityHeaders }];
+  }
+};</pre>
+      </div>
+    </div>
+
+    <div class="issue">
+      <div class="issue-top">
+        <span class="severity critical">Critical</span>
+        <span class="issue-title">Google Maps API キーがクライアントサイドに露出</span>
+      </div>
+      <div class="issue-body">
+        <code>layout.tsx:90</code> で <code>NEXT_PUBLIC_GOOGLE_MAPS_API_KEY</code> がHTML に直接埋め込まれています。
+        このキーはブラウザの DevTools から誰でも取得可能で、不正利用（クォータ消費・課金攻撃）のリスクがあります。
+      </div>
+      <div class="recommendation">
+        <strong>改善案:</strong> Google Cloud Console で以下の制限を設定してください：<br>
+        (1) <strong>HTTP リファラー制限</strong>: <code>*.misepo.jp/*</code> のみ許可<br>
+        (2) <strong>API 制限</strong>: Maps JavaScript API と Places API のみ有効化<br>
+        (3) <strong>日次クォータ上限</strong>: 想定使用量の 2〜3 倍に設定<br>
+        (4) 請求アラートを設定して異常な使用量を検知してください。
+      </div>
+    </div>
+
+    <div class="issue">
+      <div class="issue-top">
+        <span class="severity high">High</span>
+        <span class="issue-title">API レート制限が未実装</span>
+      </div>
+      <div class="issue-body">
+        AI 生成系の API エンドポイント（<code>/api/ai/analyze-persona</code>、<code>/api/generate</code>、
+        <code>/api/ai/inspiration</code> 等）にレート制限が設定されていません。
+        認証済みユーザーが大量リクエストを送信し、Gemini API のクォータや課金を消費させる攻撃が可能です。
+      </div>
+      <div class="recommendation">
+        <strong>改善案:</strong> Vercel の Edge Middleware または <code>upstash/ratelimit</code> を使って
+        IP + ユーザーID ベースのレート制限を導入してください。
+<pre>import { Ratelimit } from '@upstash/ratelimit';
+import { Redis } from '@upstash/redis';
+
+const ratelimit = new Ratelimit({
+  redis: Redis.fromEnv(),
+  limiter: Ratelimit.slidingWindow(10, '1 m'), // 1分間に10回
+});</pre>
+      </div>
+    </div>
+
+    <div class="issue">
+      <div class="issue-top">
+        <span class="severity high">High</span>
+        <span class="issue-title">Tailwind CDN が XSS のリスクを増大</span>
+      </div>
+      <div class="issue-body">
+        Tailwind の CDN 版は <code>&lt;script&gt;</code> タグで動的に CSS を生成するため、
+        Content-Security-Policy の <code>unsafe-inline</code> と <code>unsafe-eval</code> が必要になります。
+        これにより CSP の効果が大幅に低下し、XSS 攻撃時の被害範囲が拡大します。
+      </div>
+      <div class="recommendation">
+        <strong>改善案:</strong> SEO の項目でも指摘した通り、Tailwind をビルド時コンパイルに移行することで、
+        <code>unsafe-eval</code> が不要になり、CSP を厳格に設定できます。これはセキュリティ面でも最も効果的な改善です。
+      </div>
+    </div>
+
+    <div class="issue">
+      <div class="issue-top">
+        <span class="severity medium">Medium</span>
+        <span class="issue-title">Webhook エラーメッセージの詳細露出</span>
+      </div>
+      <div class="issue-body">
+        <code>/api/billing/webhook</code> で Stripe 署名検証エラー時に <code>err.message</code> を
+        そのままレスポンスに含めています（<code>signature error: ${err.message}</code>）。
+        内部実装の詳細が攻撃者に漏洩する可能性があります。
+      </div>
+      <div class="recommendation">
+        <strong>改善案:</strong> エラーレスポンスは汎用メッセージにし、詳細はサーバーログにのみ出力してください。
+<pre>} catch (err: any) {
+  console.error("[stripe] Signature verification failed:", err.message);
+  return NextResponse.json(
+    { ok: false, error: "webhook verification failed" },
+    { status: 400 }
+  );
+}</pre>
+      </div>
+    </div>
+
+    <div class="issue">
+      <div class="issue-top">
+        <span class="severity medium">Medium</span>
+        <span class="issue-title">Supabase Admin クライアントの使用箇所に注意</span>
+      </div>
+      <div class="issue-body">
+        <code>supabaseAdmin</code>（サービスロールキー使用）が Webhook ハンドラーで使われています。
+        サービスロールキーは RLS（Row Level Security）をバイパスするため、
+        入力値の検証が不十分な場合にデータ改ざんのリスクがあります。
+      </div>
+      <div class="recommendation">
+        <strong>改善案:</strong> Admin クライアントの使用は必要最小限に留め、
+        Webhook 内の <code>userId</code> 等のパラメータに対して追加の検証（Stripe のメタデータとの照合等）を実装してください。
+        また、<code>supabaseAdmin</code> の import が API Route 以外に漏れていないか定期的に確認してください。
+      </div>
+    </div>
+
+    <div class="issue">
+      <div class="issue-top">
+        <span class="severity low">Low</span>
+        <span class="issue-title">開発用エンドポイントの残存</span>
+      </div>
+      <div class="issue-body">
+        <code>/api/dev/force-past-due</code> や <code>/debug-auth</code> 等の開発・デバッグ用エンドポイントが
+        本番コードに含まれています。これらが本番環境でアクセス可能な場合、不正操作に利用されるリスクがあります。
+      </div>
+      <div class="recommendation">
+        <strong>改善案:</strong> 開発用エンドポイントは環境変数で制御するか、本番ビルドから除外してください。
+<pre>// route.ts 冒頭に追加
+if (process.env.NODE_ENV === 'production') {
+  return NextResponse.json({ error: 'Not found' }, { status: 404 });
+}</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SUMMARY ==================== -->
+  <div class="summary-box">
+    <h2>&#9889; 優先対応ロードマップ</h2>
+    <ol class="priority-list">
+      <li>
+        <div>
+          <strong>Tailwind CSS をビルド時コンパイルに移行</strong>
+          <div style="color: var(--text-muted); font-size: 0.88rem; margin-top: 4px;">
+            SEO（Core Web Vitals 改善）・セキュリティ（CSP 強化）・パフォーマンスの 3 領域に同時に効果があり、最も費用対効果が高い施策です。
+          </div>
+        </div>
+      </li>
+      <li>
+        <div>
+          <strong>セキュリティヘッダーの追加</strong>
+          <div style="color: var(--text-muted); font-size: 0.88rem; margin-top: 4px;">
+            next.config に数行追加するだけで、XSS・クリックジャッキング・MIME スニッフィング等の攻撃を防御できます。工数が少なく即効性があります。
+          </div>
+        </div>
+      </li>
+      <li>
+        <div>
+          <strong>Google Maps API キーの制限設定 + レート制限の導入</strong>
+          <div style="color: var(--text-muted); font-size: 0.88rem; margin-top: 4px;">
+            API の不正利用による金銭的被害を防止します。API キー制限は Google Cloud Console で即座に対応可能です。
+          </div>
+        </div>
+      </li>
+      <li>
+        <div>
+          <strong>アクセシビリティの改善（viewport + alt + ARIA）</strong>
+          <div style="color: var(--text-muted); font-size: 0.88rem; margin-top: 4px;">
+            user-scalable=no の削除、画像の alt テキスト追加、ARIA 属性の追加を段階的に実施してください。
+          </div>
+        </div>
+      </li>
+      <li>
+        <div>
+          <strong>canonical URL と sitemap の www 統一</strong>
+          <div style="color: var(--text-muted); font-size: 0.88rem; margin-top: 4px;">
+            SEO 評価の分散を防ぎます。Vercel のドメイン設定と合わせて対応してください。
+          </div>
+        </div>
+      </li>
+      <li>
+        <div>
+          <strong>next/font への移行 + 構造化データの拡充</strong>
+          <div style="color: var(--text-muted); font-size: 0.88rem; margin-top: 4px;">
+            フォント読み込みの最適化と FAQPage スキーマの追加で、検索結果の表示品質を向上させます。
+          </div>
+        </div>
+      </li>
+      <li>
+        <div>
+          <strong>開発用エンドポイントの保護 + エラーメッセージの最適化</strong>
+          <div style="color: var(--text-muted); font-size: 0.88rem; margin-top: 4px;">
+            本番環境での情報漏洩リスクを低減します。小規模な修正で対応可能です。
+          </div>
+        </div>
+      </li>
+    </ol>
+  </div>
+
+</div>
+
+<div class="footer">
+  Generated by Claude Code &mdash; MisePo Site Analysis Report &mdash; 2026-02-15
+</div>
+
+</body>
+</html>

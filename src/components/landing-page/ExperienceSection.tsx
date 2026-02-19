@@ -56,7 +56,7 @@ export const ExperienceSection = ({ isMobile = false }: { isMobile?: boolean }) 
                             <div className="relative group transition-transform duration-500 hover:scale-[1.02]">
                                 <Image
                                     src="/shop_owner_smartphone_cafe_1769987142891.png"
-                                    alt="Shop Owner"
+                                    alt="スマートフォンでMisePoを使う店舗オーナー"
                                     width={900}
                                     height={1200}
                                     sizes="(max-width: 768px) 90vw, 450px"
@@ -82,7 +82,7 @@ export const ExperienceSection = ({ isMobile = false }: { isMobile?: boolean }) 
                             <div className="relative group transition-transform duration-500 hover:scale-[1.02]">
                                 <Image
                                     src="/delicious_pastry_coffee_close_up_1769987156597.png"
-                                    alt="Experience"
+                                    alt="丁寧に焼き上げたペストリーとコーヒー"
                                     width={1200}
                                     height={900}
                                     sizes="(max-width: 768px) 90vw, 450px"
@@ -118,7 +118,7 @@ export const ExperienceSection = ({ isMobile = false }: { isMobile?: boolean }) 
                             <div className="relative group transition-transform duration-500 rotate-[-5deg] hover:rotate-0 hover:scale-[1.02]">
                                 <Image
                                     src="/shop_customer_greeting_experience_1769987174470.png"
-                                    alt="Communication"
+                                    alt="店舗スタッフとお客様の温かい交流シーン"
                                     width={1200}
                                     height={900}
                                     sizes="(max-width: 768px) 90vw, 520px"

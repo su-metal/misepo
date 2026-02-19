@@ -34,13 +34,15 @@ export const FAQSection = ({ faqs, openFaq, setOpenFaq, isMobile = false }: { fa
                             <button
                                 onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
                                 className="w-full p-8 md:p-12 flex items-center justify-between text-left group"
+                                aria-expanded={openFaq === idx}
+                                aria-controls={`faq-answer-${idx}`}
                             >
                                 <span className={`text-xl md:text-2xl font-black pr-8 transition-colors ${openFaq === idx ? 'text-[#1823ff]' : 'text-[#282d32]'}`}>{faq.q}</span>
                                 <div className={`w-10 h-10 rounded-full border flex items-center justify-center transition-all duration-500 ${openFaq === idx ? 'rotate-180 bg-[#1823ff] text-white border-[#1823ff]' : 'border-slate-200 text-slate-300 group-hover:border-[#1823ff]/30 group-hover:text-[#1823ff]'}`}>
                                     <Icons.ChevronDown size={20} />
                                 </div>
                             </button>
-                            <div className={`overflow-hidden transition-all duration-500 ${openFaq === idx ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                            <div id={`faq-answer-${idx}`} role="region" aria-labelledby={`faq-question-${idx}`} className={`overflow-hidden transition-all duration-500 ${openFaq === idx ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
                                 <div className="p-8 md:p-12 pt-0">
                                     <div className="h-px bg-slate-100 w-full mb-8" />
                                     <p className="text-lg md:text-xl font-bold text-slate-500 leading-relaxed">

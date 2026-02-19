@@ -58,7 +58,7 @@ export const AppScreensSection = ({ isMobile = false }: { isMobile?: boolean }) 
                                 <div className="w-full h-full overflow-hidden rounded-[2.5rem] bg-white relative">
                                     <Image
                                         src="/misepo_input_screen.jpg"
-                                        alt="App Generation Support"
+                                        alt="MisePo投稿作成画面 - メモから投稿文を生成"
                                         fill
                                         sizes="(max-width: 768px) 80vw, 320px"
                                         quality={70}
@@ -79,7 +79,7 @@ export const AppScreensSection = ({ isMobile = false }: { isMobile?: boolean }) 
                                 <div className="w-full h-full overflow-hidden rounded-[2.5rem] bg-white relative">
                                     <Image
                                         src="/misepo_topic_sommelier.jpg"
-                                        alt="Content Calendar"
+                                        alt="MisePoトピックソムリエ - AIが投稿テーマを提案"
                                         fill
                                         sizes="(max-width: 768px) 80vw, 320px"
                                         quality={70}
@@ -100,7 +100,7 @@ export const AppScreensSection = ({ isMobile = false }: { isMobile?: boolean }) 
                                 <div className="w-full h-full overflow-hidden rounded-[2.5rem] bg-white relative">
                                     <Image
                                         src="/misepo_profile_selection.jpg"
-                                        alt="AI Learning View"
+                                        alt="MisePoプロフィール選択画面 - お店の個性をAIが学習"
                                         fill
                                         sizes="(max-width: 768px) 80vw, 320px"
                                         quality={70}

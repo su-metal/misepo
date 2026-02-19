@@ -4,6 +4,7 @@ import { supabaseAdmin } from "@/lib/supabase/admin";
 import { env } from "@/lib/env";
 import { computeCanUseApp } from "@/lib/entitlements/canUseApp";
 import { User } from "@supabase/supabase-js";
+import { checkRateLimit } from "@/lib/api/rateLimit";
 
 const APP_ID = env.APP_ID;
 
@@ -57,6 +58,18 @@ export async function validateAiAccess(
   }
 
   const userId = user.id;
+
+  // --- Rate Limit Check (per user, 20 requests per minute) ---
+  const rl = checkRateLimit(`ai:${userId}`, 20, 60_000);
+  if (!rl.success) {
+    return {
+      user, entitlement: null,
+      errorResponse: NextResponse.json(
+        { error: "Too many requests. Please try again later." },
+        { status: 429, headers: { 'Retry-After': '60' } }
+      )
+    };
+  }
 
   // --- Entitlement Check ---
   const { data: ent, error: entErr } = await supabaseAdmin
