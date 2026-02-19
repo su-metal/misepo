@@ -3,6 +3,16 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 
 export async function middleware(req: NextRequest) {
+  // Canonical host enforcement: apex -> www
+  const hostHeader = req.headers.get("host") ?? "";
+  const hostname = hostHeader.split(":")[0].toLowerCase();
+  if (hostname === "misepo.jp") {
+    const redirectUrl = req.nextUrl.clone();
+    redirectUrl.protocol = "https:";
+    redirectUrl.hostname = "www.misepo.jp";
+    return NextResponse.redirect(redirectUrl, 308);
+  }
+
   // NextResponse を先に作る（ここにCookieを書き戻す）
   const baseResponse = NextResponse.next({
     request: { headers: req.headers },
