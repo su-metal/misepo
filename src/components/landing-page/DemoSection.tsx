@@ -38,8 +38,10 @@ export const DemoSection = ({
 
             <div className="max-w-7xl mx-auto px-6 relative z-10">
                 <div className="flex flex-col items-start mb-24">
-                    <span className="text-[10px] font-black text-white/70 uppercase tracking-[0.2em] mb-8 px-4 py-2 bg-white/10 rounded-full border border-white/20 backdrop-blur-md">Interactive Demo</span>
                     <h2 className={`font-black tracking-tighter leading-[0.85] text-white ${isMobile ? 'text-5xl' : 'text-7xl md:text-8xl lg:text-[5rem]'}`}>
+                        <span className="block text-[10px] font-black text-white/70 uppercase tracking-[0.2em] mb-8 px-4 py-2 bg-white/10 rounded-full border border-white/20 backdrop-blur-md w-fit normal-case" style={{ fontSize: '10px', letterSpacing: '0.2em' }}>
+                            AI投稿生成デモ — 口コミ返信・インスタ投稿を体験
+                        </span>
                         今すぐ、<br />
                         <span className="text-white opacity-60">試してみる。</span>
                     </h2>

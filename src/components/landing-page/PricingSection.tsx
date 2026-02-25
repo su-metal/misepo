@@ -8,8 +8,10 @@ export const PricingSection = ({ isMobile = false }: { isMobile?: boolean }) => 
             <div className="max-w-7xl mx-auto px-6 relative z-10">
                 {/* Part 1: Value Proposition */}
                 <div className="flex flex-col items-start mb-12 md:mb-16">
-                    <span className="text-[10px] font-black text-[#1823ff] uppercase tracking-[0.2em] mb-6 px-4 py-2 bg-[#1823ff]/5 rounded-full border border-[#1823ff]/10">Cost Performance</span>
                     <h2 className={`font-black tracking-tighter leading-[0.9] text-[#282d32] ${isMobile ? 'text-5xl' : 'text-7xl md:text-8xl lg:text-[5rem]'}`}>
+                        <span className="block text-[10px] font-black text-[#1823ff] uppercase tracking-[0.2em] mb-6 px-4 py-2 bg-[#1823ff]/5 rounded-full border border-[#1823ff]/10 w-fit normal-case" style={{ fontSize: '10px', letterSpacing: '0.2em' }}>
+                            SNS運用代行と比べてみる
+                        </span>
                         より高い、<br />
                         <span className="text-gradient-primary">価値を。</span>
                     </h2>
@@ -47,8 +49,10 @@ export const PricingSection = ({ isMobile = false }: { isMobile?: boolean }) => 
 
                 {/* Part 2: Pricing Details */}
                 <div className={`flex flex-col mb-24 pt-24 border-t border-slate-200 ${isMobile ? 'items-start text-left' : 'items-center text-center'}`}>
-                    <span className="text-[10px] font-black text-[#1823ff] uppercase tracking-[0.2em] mb-8 px-4 py-2 bg-[#1823ff]/5 rounded-full border border-[#1823ff]/10 inline-block">Plan Details</span>
                     <h2 className={`font-black text-[#282d32] tracking-tighter leading-[0.9] mb-8 ${isMobile ? 'text-5xl' : 'text-7xl md:text-8xl lg:text-[5rem]'}`}>
+                        <span className="block text-[10px] font-black text-[#1823ff] uppercase tracking-[0.2em] mb-8 px-4 py-2 bg-[#1823ff]/5 rounded-full border border-[#1823ff]/10 w-fit normal-case" style={{ fontSize: '10px', letterSpacing: '0.2em' }}>
+                            飲食店・美容院向けSNS運用ツールの料金プラン
+                        </span>
                         シンプルな、<br />
                         <span className="text-gradient-primary">料金プラン。</span>
                     </h2>

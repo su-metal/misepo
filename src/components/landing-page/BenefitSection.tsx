@@ -12,8 +12,10 @@ export const BenefitSection = ({ isMobile = false }: { isMobile?: boolean }) => 
 
             <div className="max-w-7xl mx-auto px-6 relative z-10">
                 <div className={`flex flex-col mb-24 ${isMobile ? 'items-start text-left' : 'items-center text-center'}`}>
-                    <span className="text-[10px] font-black text-[#1823ff] uppercase tracking-[0.2em] mb-8 px-4 py-2 bg-white rounded-full border border-[#1823ff]/10 shadow-sm">The New Standard</span>
                     <h2 className={`font-black text-[#282d32] tracking-tighter leading-[0.85] ${isMobile ? 'text-5xl' : 'text-7xl md:text-8xl lg:text-[5rem]'}`}>
+                        <span className="block text-[10px] font-black text-[#1823ff] uppercase tracking-[0.2em] mb-8 px-4 py-2 bg-white rounded-full border border-[#1823ff]/10 shadow-sm w-fit normal-case" style={{ fontSize: '10px', letterSpacing: '0.2em' }}>
+                            実店舗SNSをAIで自動化する5つのメリット
+                        </span>
                         SNSを、<br />
                         <span className="text-gradient-primary">お店の資産に。</span>
                     </h2>
@@ -83,13 +85,6 @@ export const BenefitSection = ({ isMobile = false }: { isMobile?: boolean }) => 
                     </div>
 
                     {[
-                        {
-                            title: "Googleマップ口コミ返信AI",
-                            desc: "誠実で温かい返信文をAIが丁寧に下書き。MEO対策とファンづくりを同時に実現します。",
-                            icon: "MapPin",
-                            color: "text-[#FF9F1C]",
-                            bg: "bg-[#FF9F1C]/5"
-                        },
                         {
                             title: "AIおまかせ生成",
                             desc: "数行のメモから、各SNSに最適なトーンの投稿文を数秒で作成します。",

@@ -34,34 +34,41 @@ const notoSerifJP = Noto_Serif_JP({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.misepo.jp"),
-  title: "MisePo (ミセポ) - 店舗向けAI投稿作成アシスタント",
-  description: "飲食店や美容室などの実店舗に特化したAI投稿作成ツール。数行のメモから、お店の「らしさ」を活かしたSNS投稿やGoogleマップのクチコミ返信を10秒で生成します。",
-  keywords: ["MisePo", "ミセポ", "店舗集客", "SNS運用", "AI投稿作成", "インスタ運用", "MEO対策", "クチコミ返信", "飲食店集客", "美容室集客"],
+  title: "美容院・飲食店のSNS投稿＆口コミ返信をAI自動作成 | MisePo（ミセポ）",
+  description: "美容院・飲食店・カフェなど実店舗向けSNS運用AIツール。Googleマップの口コミ返信・インスタ投稿文をメモ一行から10秒で自動生成。7日間無料体験。",
+  keywords: [
+    "美容院 インスタ 投稿 例文",
+    "Google口コミ 返信 テンプレート",
+    "飲食店 SNS 集客",
+    "悪い口コミ 返信",
+    "MEO対策",
+    "口コミ返信 自動生成",
+    "インスタ投稿 自動生成",
+    "MisePo",
+    "ミセポ",
+    "店舗集客",
+    "SNS運用 AI",
+    "美容室集客",
+    "飲食店集客",
+    "クチコミ返信 AI",
+    "SNS投稿 自動化",
+  ],
   authors: [{ name: "MisePo Team" }],
   robots: "index, follow",
   alternates: {
-    canonical: "./",
+    canonical: "https://www.misepo.jp",
   },
   openGraph: {
-    title: "MisePo (ミセポ) - 店舗向けAI投稿作成アシスタント",
-    description: "飲食店や美容室などの実店舗に特化したAI投稿作成ツール。数行のメモから、お店の「らしさ」を活かしたSNS投稿を生成。",
-    siteName: "MisePo",
-    images: [
-      {
-        url: "/og-image.png", // Ensure this exists or the user can add it later
-        width: 1200,
-        height: 630,
-        alt: "MisePo - 店舗向けAI投稿作成アシスタント",
-      },
-    ],
+    title: "美容院・飲食店のSNS投稿＆口コミ返信をAI自動作成 | MisePo（ミセポ）",
+    description: "美容院・飲食店・カフェなど実店舗向けSNS運用AIツール。Googleマップの口コミ返信・インスタ投稿文をメモ一行から10秒で自動生成。",
+    siteName: "MisePo（ミセポ）",
     locale: "ja_JP",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "MisePo (ミセポ) - 店舗向けAI投稿作成アシスタント",
-    description: "数行のメモからお店のSNS投稿を10秒で生成。実店舗特化のAIアシスタント。",
-    images: ["/og-image.png"],
+    title: "美容院・飲食店のSNS投稿＆口コミ返信をAI自動作成 | MisePo（ミセポ）",
+    description: "美容院・飲食店向けSNS運用AIツール。Google口コミ返信・インスタ投稿をメモ一行から10秒で自動生成。",
   },
 };
 
@@ -123,6 +130,22 @@ const jsonLd = [
         "acceptedAnswer": {
           "@type": "Answer",
           "text": "はい、完成度が高いのでそのままコピーペーストして投稿できます。さらにこだわりたい方は、少しだけ手を加えることで、より『自分らしさ』を出せます。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "美容院のGoogle口コミ返信はどうやって書けばいいですか？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Google口コミへの返信は、感謝の言葉・具体的な言及・再来店の促しの3点を含めるのが基本です。MisePoなら口コミ内容を貼り付けるだけで、誠実で温かみのある返信文を10秒で自動生成します。★1〜2の低評価口コミへの対応文も、炎上リスクを回避した言葉選びで生成できます。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "飲食店のインスタグラム投稿ネタが思いつかないときはどうすればいいですか？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "「今日のランチ」「新メニュー入荷」「雨の日サービス」など一言メモするだけで、MisePoがお店の雰囲気に合ったインスタグラム投稿文を自動生成します。ハッシュタグも自動で提案するため、ネタ切れや投稿内容に悩む時間をゼロにできます。"
         }
       }
     ]

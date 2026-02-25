@@ -21,10 +21,10 @@ export const ReviewResponseSection = () => {
                 <div className="grid md:grid-cols-2 gap-16 items-center">
                     {/* Left: Text Content */}
                     <div className="order-2 md:order-1">
-                        <span className="text-[10px] font-black text-[#1823ff] uppercase tracking-[0.2em] mb-8 px-4 py-2 bg-[#1823ff]/5 rounded-full border border-[#1823ff]/10 inline-block">
-                            Review Response AI
-                        </span>
                         <h2 className="text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter leading-[0.9] text-[#282d32] mb-8">
+                            <span className="block text-[10px] font-black text-[#1823ff] uppercase tracking-[0.2em] mb-8 px-4 py-2 bg-[#1823ff]/5 rounded-full border border-[#1823ff]/10 w-fit normal-case" style={{ fontSize: '10px', letterSpacing: '0.2em' }}>
+                                Google口コミ返信をAIが自動生成 — 返信時間90%削減
+                            </span>
                             口コミ返信も、<br />
                             <span className="text-gradient-primary">AIにおまかせ。</span>
                         </h2>
@@ -53,44 +53,38 @@ export const ReviewResponseSection = () => {
                         </div>
                     </div>
 
-                    {/* Right: Visual Mock */}
-                    <div className="order-1 md:order-2 relative">
-                        <div className="bg-white rounded-[3rem] p-8 md:p-12 shadow-2xl shadow-[#1823ff]/10 border border-slate-100">
-                            {/* Google Maps Review Card Mock */}
-                            <div className="space-y-6">
-                                {/* Review Header */}
-                                <div className="flex items-center gap-4 pb-6 border-b border-slate-100">
-                                    <div className="w-12 h-12 rounded-full bg-slate-200" />
-                                    <div className="flex-1">
-                                        <div className="h-4 w-32 bg-slate-200 rounded mb-2" />
-                                        <div className="flex gap-1">
-                                            {[...Array(5)].map((_, i) => (
-                                                <Icons.Star key={i} size={16} fill="#FFB800" className="text-[#FFB800]" />
-                                            ))}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Review Text */}
-                                <div className="space-y-2">
-                                    <div className="h-3 w-full bg-slate-100 rounded" />
-                                    <div className="h-3 w-5/6 bg-slate-100 rounded" />
-                                    <div className="h-3 w-4/6 bg-slate-100 rounded" />
-                                </div>
-
-                                {/* AI Response */}
-                                <div className="bg-gradient-to-br from-[#1823ff]/5 to-[#1823ff]/10 rounded-2xl p-6 border-2 border-[#1823ff]/20 relative">
-                                    <div className="absolute -top-3 left-6 px-3 py-1 bg-[#1823ff] text-white text-[10px] font-black rounded-full flex items-center gap-1">
-                                        <Icons.Sparkles size={10} />
-                                        AI下書き
-                                    </div>
-                                    <div className="space-y-2 mt-2">
-                                        <div className="h-3 w-full bg-[#1823ff]/20 rounded" />
-                                        <div className="h-3 w-full bg-[#1823ff]/20 rounded" />
-                                        <div className="h-3 w-3/4 bg-[#1823ff]/20 rounded" />
+                    {/* Right: Before / After 実例 */}
+                    <div className="order-1 md:order-2 relative space-y-6">
+                        {/* Before: 受け取った★2口コミ */}
+                        <div className="bg-white rounded-[2rem] p-6 border border-slate-100 shadow-lg">
+                            <div className="flex items-center gap-3 pb-4 border-b border-slate-100 mb-4">
+                                <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-xs font-black text-slate-400">T.K</div>
+                                <div>
+                                    <p className="text-sm font-black text-[#282d32]">T. Kobayashi</p>
+                                    <div className="flex gap-0.5 mt-0.5">
+                                        {[...Array(2)].map((_, i) => (
+                                            <Icons.Star key={i} size={12} fill="#FFB800" className="text-[#FFB800]" />
+                                        ))}
+                                        {[...Array(3)].map((_, i) => (
+                                            <Icons.Star key={i + 2} size={12} fill="none" className="text-slate-300" />
+                                        ))}
                                     </div>
                                 </div>
                             </div>
+                            <p className="text-sm font-bold text-slate-500 leading-relaxed">
+                                「待ち時間が長く、スタッフの対応も少し冷たい印象でした。また行くかどうか迷っています。」
+                            </p>
+                        </div>
+
+                        {/* After: AI生成返信 */}
+                        <div className="bg-gradient-to-br from-[#1823ff]/5 to-[#1823ff]/10 rounded-[2rem] p-6 border-2 border-[#1823ff]/20 relative">
+                            <div className="absolute -top-3 left-6 px-3 py-1 bg-[#1823ff] text-white text-[10px] font-black rounded-full flex items-center gap-2">
+                                <Icons.Sparkles size={10} />
+                                MisePo AI返信 — 生成時間: 約8秒
+                            </div>
+                            <p className="text-sm font-bold text-[#282d32] leading-relaxed mt-2">
+                                この度はご来店いただきありがとうございます。お待ちいただいた上に、スタッフの対応でもご不満をおかけしてしまい、誠に申し訳ございませんでした。いただいたご意見をスタッフ全員で共有し、お待たせしない案内とより温かい接客を徹底してまいります。またの機会がございましたら、ぜひ再度お越しいただければ幸いです。
+                            </p>
                         </div>
                     </div>
                 </div>
