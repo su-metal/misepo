@@ -38,14 +38,17 @@ export default function HeroSection() {
             <div className="max-w-6xl mx-auto w-full px-6 flex flex-col items-center lg:grid lg:grid-cols-2 lg:gap-x-12 lg:items-center relative z-10">
                 {/* 1. Headline - Top on Mobile, Top Left on PC */}
                 <div className="relative flex flex-col items-start text-left mb-[-20px] lg:mb-0 z-20 lg:col-start-1 lg:row-start-1 w-full">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/50 backdrop-blur-md border border-[#1823ff]/10 rounded-full mb-8 shadow-sm">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#1823ff] md:animate-pulse" />
-                        <span className="text-[10px] font-bold text-[#1823ff] uppercase tracking-[0.2em]">Your Alter Ego for SNS</span>
-                    </div>
-
-                    <h1 className="text-5xl md:text-7xl lg:text-[7.5rem] font-black tracking-tighter leading-[0.95] text-[#282d32]">
-                        想いを、<br />
-                        <span className="text-gradient-primary">一瞬で言葉に。</span>
+                    <h1 className="flex flex-col items-start">
+                        {/* SEOキーワードバッジ（H1の一部として機能） */}
+                        <span className="inline-flex items-center gap-2 px-3 py-1 bg-white/50 backdrop-blur-md border border-[#1823ff]/10 rounded-full mb-8 shadow-sm">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#1823ff] md:animate-pulse" />
+                            <span className="text-[10px] font-bold text-[#1823ff] uppercase tracking-[0.2em]">美容院・飲食店向けSNS投稿＆口コミ返信AI</span>
+                        </span>
+                        {/* ビジュアルコピー（デザイン維持） */}
+                        <span className="text-5xl md:text-7xl lg:text-[7.5rem] font-black tracking-tighter leading-[0.95] text-[#282d32]">
+                            想いを、<br />
+                            <span className="text-gradient-primary">一瞬で言葉に。</span>
+                        </span>
                     </h1>
                 </div>
 

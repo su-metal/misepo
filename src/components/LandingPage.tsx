@@ -7,15 +7,15 @@ import { Header } from './landing-page/Header';
 import { BenefitSection } from './landing-page/BenefitSection';
 import { UnifiedFlowSection } from './landing-page/UnifiedFlowSection';
 import { DemoSection } from './landing-page/DemoSection';
-import { PWASection } from './landing-page/PWASection';
-
 import { PricingSection } from './landing-page/PricingSection';
 import { FAQSection } from './landing-page/FAQSection';
 import { CTASection } from './landing-page/CTASection';
-import { ExperienceSection } from './landing-page/ExperienceSection';
 import { AppScreensSection } from './landing-page/AppScreensSection';
 import { ReviewResponseSection } from './landing-page/ReviewResponseSection';
+import { ProblemSection } from './landing-page/ProblemSection';
+import { TestimonialsSection } from './landing-page/TestimonialsSection';
 import { Footer } from './landing-page/Footer';
+import { Icons } from './LandingPageIcons';
 
 const demoScenarios = [
   {
@@ -139,11 +139,42 @@ export default function LandingPage() {
     { q: "生成された文章はそのまま使えますか？", a: "はい、完成度が高いのでそのままコピーペーストして投稿できます。さらにこだわりたい方は、少しだけ手を加えることで、より『自分らしさ』を出せます。" },
   ];
 
+  const problems = [
+    {
+      icon: <Icons.MessageCircle size={24} />,
+      title: '毎日投稿のネタが\n思い浮かばない',
+      desc: '営業後に「今日は何を投稿しよう...」と悩んで、結局何もしないまま終わっている。',
+      bg: 'bg-white',
+      delay: 0,
+    },
+    {
+      icon: <Icons.Star size={24} />,
+      title: '悪い口コミへの\n返信が怖い',
+      desc: '★1のレビューをもらったとき、何と返せばいいか分からず放置してしまっている。',
+      bg: 'bg-white',
+      delay: 0.1,
+    },
+    {
+      icon: <Icons.TrendingUp size={24} />,
+      title: '投稿しても\n集客につながらない',
+      desc: 'インスタをやっているのにフォロワーが増えず、来店数にも変化がない。',
+      bg: 'bg-white',
+      delay: 0.2,
+    },
+    {
+      icon: <Icons.Users size={24} />,
+      title: 'スタッフに任せると\nトーンが揃わない',
+      desc: '投稿者によって文体がバラバラで、お店のブランドイメージが統一できていない。',
+      bg: 'bg-white',
+      delay: 0.3,
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-[#f0eae4] text-[#282d32] font-inter selection:bg-[#1823ff] selection:text-white">
       <Header isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} loginWithGoogle={loginWithGoogle} user={user} />
       <HeroSection />
-      <ExperienceSection isMobile={isMobile} />
+      <ProblemSection problems={problems} isMobile={isMobile} />
       <AppScreensSection isMobile={isMobile} />
       <UnifiedFlowSection isMobile={isMobile} />
       <ReviewResponseSection />
@@ -157,9 +188,8 @@ export default function LandingPage() {
         isMobile={isMobile}
       />
       <BenefitSection isMobile={isMobile} />
-      <PWASection isMobile={isMobile} />
-
       <PricingSection isMobile={isMobile} />
+      <TestimonialsSection isMobile={isMobile} />
       <FAQSection faqs={faqs} openFaq={openFaq} setOpenFaq={setOpenFaq} isMobile={isMobile} />
       <CTASection isMobile={isMobile} />
       <Footer />
