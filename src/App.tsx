@@ -515,7 +515,7 @@ function App() {
           setShowGuide(true);
         }}
         onLogout={logout}
-        storeProfile={storeProfile}
+        storeProfile={storeProfile || GUEST_PROFILE}
         plan={plan}
       />
 
@@ -524,7 +524,7 @@ function App() {
 
         <main className="flex-1 overflow-y-auto overflow-x-hidden">
           <PostGenerator
-            storeProfile={storeProfile!}
+            storeProfile={storeProfile || GUEST_PROFILE}
             onSaveProfile={handleOnboardingSave}
             onRefreshTraining={fetchTrainingItems}
             isLoggedIn={isLoggedIn}
