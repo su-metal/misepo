@@ -38,6 +38,26 @@ export async function GET() {
 
   const userId = userData.user.id;
 
+  // --- デモモード時のクレジット制限バイパス ---
+  const isDemoMode = cookieStore.get("demo-mode")?.value === "true";
+  if (isDemoMode) {
+    console.info(`[PlanAPI] Demo mode detected for user ${userId}. Granting infinite credits.`);
+    return NextResponse.json({
+      ok: true,
+      app_id: APP_ID,
+      plan: "pro",
+      status: "active",
+      expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+      trial_ends_at: null,
+      canUseApp: true,
+      isPro: true,
+      eligibleForTrial: false,
+      limit: 1000,
+      usage: 0,
+      usage_period: 'monthly',
+    }, { headers: NO_STORE_HEADERS });
+  }
+
   // 1. Ensure Profile & App exist (Foreign Key safety)
   const { data: profile } = await supabaseAdmin
     .from("profiles")

@@ -1,0 +1,186 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e6]:
+          - heading "生成履歴" [level=2] [ref=e7]
+          - paragraph [ref=e8]: 過去に作成した全ての投稿案
+        - button "Close menu" [ref=e9]:
+          - img [ref=e10]
+      - generic [ref=e13]:
+        - generic [ref=e15]:
+          - img [ref=e17]
+          - generic [ref=e22]: Saved Results
+        - generic [ref=e24]:
+          - img [ref=e26]
+          - heading "ログインが必要です" [level=3] [ref=e29]
+          - paragraph [ref=e30]: 履歴を安全に保存・同期するには、アカウントへのログインが必要です。
+          - button "ログイン / 新規登録" [ref=e31]
+      - paragraph [ref=e33]: © 2026 MisePo
+    - generic [ref=e34]:
+      - generic [ref=e35]:
+        - generic [ref=e36]:
+          - heading "Settings" [level=2] [ref=e37]
+          - paragraph [ref=e38]: Application Settings
+        - button [ref=e39]:
+          - img [ref=e40]
+      - generic [ref=e44]:
+        - img [ref=e46]
+        - heading "ログインが必要です" [level=3] [ref=e49]
+        - paragraph [ref=e50]: 設定を変更するにはログイン、または新規登録を行ってください。
+        - button "Login / Register" [ref=e51]
+      - generic [ref=e52]:
+        - generic [ref=e53]:
+          - link "Terms" [ref=e54] [cursor=pointer]:
+            - /url: /terms
+          - link "Privacy" [ref=e55] [cursor=pointer]:
+            - /url: /privacy
+          - link "Legal Notice" [ref=e56] [cursor=pointer]:
+            - /url: /commercial-law
+        - paragraph [ref=e57]: © 2026 MisePo
+    - main [ref=e59]:
+      - generic [ref=e65]:
+        - generic [ref=e67]:
+          - generic [ref=e68]:
+            - generic [ref=e69] [cursor=pointer]:
+              - generic [ref=e70]:
+                - text: misepo
+                - generic [ref=e71]: HUB
+              - generic [ref=e72]:
+                - generic [ref=e73]: "28"
+                - generic [ref=e74]:
+                  - generic [ref=e75]: FEB
+                  - generic [ref=e76]: SAT
+              - paragraph [ref=e78]:
+                - text: カレンダー見る
+                - img [ref=e79]
+            - generic [ref=e81]:
+              - generic [ref=e82]:
+                - link "Upgrade" [ref=e83] [cursor=pointer]:
+                  - /url: /upgrade
+                  - img [ref=e84]
+                  - text: Upgrade
+                - generic [ref=e89] [cursor=pointer]: サ
+              - generic [ref=e91]:
+                - generic [ref=e92]: CREDITS
+                - generic [ref=e93]: "0"
+                - generic [ref=e94]: / 0
+          - generic [ref=e103]:
+            - generic [ref=e104]:
+              - heading "投稿先を選択" [level=2] [ref=e105]
+              - paragraph [ref=e106]: Select your canvas
+            - generic [ref=e108] [cursor=pointer]:
+              - generic [ref=e109]: "OFF"
+              - generic [ref=e110]: 同時生成 (2回分)
+          - generic [ref=e113]:
+            - generic [ref=e114] [cursor=pointer]:
+              - generic:
+                - generic: CREATIVE STUDIO
+                - generic: REEL / STORY
+              - generic [ref=e115]:
+                - img [ref=e118]
+                - generic [ref=e121]:
+                  - generic [ref=e122]: Visual Story
+                  - heading "Instagram" [level=3] [ref=e123]
+                  - paragraph [ref=e124]: 世界観と統一感
+              - img [ref=e126]
+            - generic [ref=e128] [cursor=pointer]:
+              - generic:
+                - generic: FEED / TREND
+              - generic [ref=e129]:
+                - generic [ref=e131]: 𝕏
+                - generic [ref=e132]:
+                  - generic [ref=e133]: Real-time
+                  - heading "X" [level=3] [ref=e134]
+                  - paragraph [ref=e135]: 拡散と交流
+            - generic [ref=e137] [cursor=pointer]:
+              - img [ref=e140]
+              - generic [ref=e143]:
+                - generic [ref=e144]: Messages
+                - heading "LINE" [level=3] [ref=e145]
+                - paragraph [ref=e146]: リピーター獲得
+            - generic [ref=e147] [cursor=pointer]:
+              - generic:
+                - generic: LOCAL INDEX
+                - img
+              - generic [ref=e148]:
+                - img [ref=e151]
+                - generic [ref=e154]:
+                  - generic [ref=e155]: Local Search
+                  - heading "Google Maps" [level=3] [ref=e156]
+                  - paragraph [ref=e157]: 店舗集客とMEO対策
+        - generic [ref=e160]:
+          - generic [ref=e163]:
+            - generic [ref=e164]:
+              - button [ref=e165]:
+                - img [ref=e166]
+              - generic [ref=e168]:
+                - heading "投稿内容の確認" [level=3] [ref=e169]
+                - generic [ref=e170]: STEP 2 / 3
+            - generic [ref=e171]:
+              - img [ref=e173]
+              - button [ref=e176]:
+                - img [ref=e177]
+          - generic [ref=e181]:
+            - generic [ref=e183]:
+              - generic [ref=e184]:
+                - generic [ref=e190]: 入力内容の確認
+                - generic [ref=e191]: 新作の栗パフェ、明日から開始。
+                - button [ref=e192]:
+                  - img [ref=e193]
+              - generic [ref=e196]:
+                - generic [ref=e197]:
+                  - generic [ref=e198]:
+                    - generic [ref=e199]: ターゲット設定
+                    - generic [ref=e200] [cursor=pointer]:
+                      - generic [ref=e201]:
+                        - checkbox "デフォルトに設定" [ref=e202]
+                        - img
+                      - generic [ref=e203]: デフォルトに設定
+                  - generic [ref=e204]: ※複数選択可
+                - generic [ref=e205]:
+                  - button "全般" [ref=e206]
+                  - button "＋ 他のターゲット" [ref=e207]:
+                    - generic [ref=e208]: ＋ 他のターゲット
+              - generic [ref=e209]:
+                - generic [ref=e210]:
+                  - generic [ref=e211]:
+                    - generic [ref=e212]: スタイルを選ぶ
+                    - generic [ref=e213] [cursor=pointer]:
+                      - generic [ref=e214]:
+                        - checkbox "デフォルトに設定" [ref=e215]
+                        - img
+                      - generic [ref=e216]: デフォルトに設定
+                  - button "編集" [ref=e217]
+                - button "AI標準" [ref=e219]
+              - generic [ref=e221]:
+                - generic [ref=e222]:
+                  - img [ref=e223]
+                  - generic [ref=e225]: 追加指示（任意）
+                - textbox "AIへの具体的なお願いはこちらに..." [ref=e226]
+              - generic [ref=e228]:
+                - generic [ref=e229]:
+                  - generic [ref=e232]: トーン
+                  - generic [ref=e235]:
+                    - button "きっちり" [ref=e236]:
+                      - generic [ref=e238]: きっちり
+                    - button "標準" [ref=e239]:
+                      - generic [ref=e241]: 標準
+                    - button "親しみ" [ref=e242]:
+                      - generic [ref=e244]: 親しみ
+                - generic [ref=e245]:
+                  - generic [ref=e247]: 長さ
+                  - generic [ref=e250]:
+                    - button "短め" [ref=e251]:
+                      - generic [ref=e253]: 短め
+                    - button "標準" [ref=e254]:
+                      - generic [ref=e256]: 標準
+                    - button "長め" [ref=e257]:
+                      - generic [ref=e259]: 長め
+            - button "投稿文を生成 1回分" [active] [ref=e262] [cursor=pointer]:
+              - generic [ref=e264]: 投稿文を生成 1回分
+  - alert [ref=e265]
+```

@@ -70,6 +70,9 @@ export const metadata: Metadata = {
     title: "美容院・飲食店のSNS投稿＆口コミ返信をAI自動作成 | MisePo（ミセポ）",
     description: "美容院・飲食店向けSNS運用AIツール。Google口コミ返信・インスタ投稿をメモ一行から10秒で自動生成。",
   },
+  verification: {
+    google: "8zTL7T7KtbJZzTAjbzFat_HvBTDj9qIlFGcsJ8LxBCI",
+  },
 };
 
 import { Viewport } from 'next';

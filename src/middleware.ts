@@ -60,6 +60,10 @@ export async function middleware(req: NextRequest) {
 
   // 未ログインユーザーのガード
   if (!user && pathname === '/generate') {
+    // デモ録画やE2Eテスト時のバイパス処理
+    const isDemoMode = req.cookies.get('demo-mode')?.value === 'true';
+    if (isDemoMode) return applyPendingCookies(baseResponse);
+    
     const redirectUrl = new URL('/start', req.url);
     return applyPendingCookies(NextResponse.redirect(redirectUrl, 307));
   }

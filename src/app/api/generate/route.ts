@@ -1,5 +1,6 @@
 // app/api/generate/route.ts
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { generateContent } from "@/services/geminiService";
 import type { StoreProfile, GenerationConfig } from "@/types";
 import { createClient } from "@/lib/supabase/server";
@@ -138,7 +139,9 @@ export async function POST(req: Request) {
       }
     }
 
-    const canUseApp = computeCanUseApp(effectiveEnt);
+    const cookieStore = await cookies();
+    const isDemoMode = cookieStore.get("demo-mode")?.value === "true";
+    const canUseApp = isDemoMode || computeCanUseApp(effectiveEnt);
 
     if (!canUseApp) {
       return NextResponse.json(
@@ -205,12 +208,18 @@ export async function POST(req: Request) {
         usage = await getUserUsage(userId, APP_ID, 'monthly', usageStartTime);
 
         if (usage + cost > limit) {
-            return NextResponse.json({ 
-                ok: false, 
-                error: "monthly_limit_reached", 
-                limit, 
-                current: usage 
-            }, { status: 403 });
+            const cookieStore = await cookies();
+            const isDemoMode = cookieStore.get("demo-mode")?.value === "true";
+            if (!isDemoMode) {
+              return NextResponse.json({ 
+                  ok: false, 
+                  error: "monthly_limit_reached", 
+                  limit, 
+                  current: usage 
+              }, { status: 403 });
+            } else {
+              console.info(`[GenerateAPI] Demo mode bypass monthly limit for user ${userId}.`);
+            }
         }
     } else {
         // Trial/Free users: 5 per day
@@ -223,7 +232,13 @@ export async function POST(req: Request) {
         usage = await getUserUsage(userId, APP_ID, 'daily', trialStartTime);
 
         if (usage + cost > limit) {
-            return NextResponse.json({ ok: false, error: "daily_limit_reached", limit, current: usage }, { status: 403 });
+            const cookieStore = await cookies();
+            const isDemoMode = cookieStore.get("demo-mode")?.value === "true";
+            if (!isDemoMode) {
+              return NextResponse.json({ ok: false, error: "daily_limit_reached", limit, current: usage }, { status: 403 });
+            } else {
+              console.info(`[GenerateAPI] Demo mode bypass daily limit for user ${userId}.`);
+            }
         }
     }
 

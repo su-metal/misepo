@@ -6,7 +6,11 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "demo:record": "playwright test tests/e2e/demo/misepo-demo.spec.ts -c playwright.demo.config.ts",
+    "remotion:preview": "remotion studio remotion/Root.tsx",
+    "remotion:render": "remotion render remotion/Root.tsx PromoVideo public/remotion/out/misepo-promo.mp4",
+    "generate:promo": "npm run demo:record && npm run remotion:render"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",
@@ -20,9 +24,12 @@
     "next": "^16.1.1",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
+    "remotion": "^4.0.429",
     "stripe": "^20.1.2"
   },
   "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "@remotion/cli": "^4.0.429",
     "@tailwindcss/postcss": "^4.1.18",
     "@types/node": "^22.14.0",
     "@types/react": "19.2.8",
