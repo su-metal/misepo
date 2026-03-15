@@ -120,12 +120,13 @@ export default async function BlogPostPage({ params }: Props) {
                     className="blog-rich-text"
                     dangerouslySetInnerHTML={{
                         __html: post.content
+                            .replace(/\r\n/g, '\n')
                             .replace(/^■ (.*)/gm, '<h2 class="text-3xl font-black mt-12 mb-6">$1</h2>')
                             .replace(/## (.*)/g, '<h2 class="text-3xl font-black mt-12 mb-6">$1</h2>')
                             .replace(/### (.*)/g, '<h3 class="text-2xl font-bold mt-8 mb-4">$1</h3>')
                             .replace(/\*\*(.*)\*\*/g, '<strong class="font-bold">$1</strong>')
                             .replace(/- (.*)/g, '<li class="ml-6 list-disc">$1</li>')
-                            .split('\n\n')
+                            .split(/\n\n+/)
                             .map(p => p.startsWith('<') ? p : `<p class="leading-relaxed whitespace-pre-wrap">${p}</p>`)
                             .join('')
                     }}
