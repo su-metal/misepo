@@ -1,6 +1,6 @@
 ---
 title: 「AIっぽさ」を卒業する。忙しい店主がSNSに「自分の体温」を宿らせるためのリライト術
-date: 2026-03-07
+date: "2026-03-07"
 description: AIで作成した投稿文がどこか無機質に感じていませんか？忙しい店主がAIを賢く使いながら、自分だけの「人間味」を宿らせるための具体的なリライト術を解説します。
 category: SNS運用
 image: /images/blog/craftsmanship_desk_concept_1772879266112.png

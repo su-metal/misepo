@@ -28,9 +28,14 @@ export function getAllPosts(): PostData[] {
       const fileContents = fs.readFileSync(fullPath, 'utf8');
       const matterResult = matter(fileContents);
 
-      const date = matterResult.data.date instanceof Date 
+      let date = matterResult.data.date instanceof Date 
         ? matterResult.data.date.toISOString().split('T')[0] 
         : String(matterResult.data.date || '');
+      
+      // Ensure date is in YYYY-MM-DD format if possible, otherwise use today
+      if (!date || isNaN(new Date(date).getTime())) {
+        date = new Date().toISOString().split('T')[0];
+      }
 
       return {
         slug,
@@ -54,9 +59,13 @@ export function getPostBySlug(slug: string): PostData | null {
     const fileContents = fs.readFileSync(fullPath, 'utf8');
     const matterResult = matter(fileContents);
 
-    const date = matterResult.data.date instanceof Date 
+    let date = matterResult.data.date instanceof Date 
       ? matterResult.data.date.toISOString().split('T')[0] 
       : String(matterResult.data.date || '');
+
+    if (!date || isNaN(new Date(date).getTime())) {
+      date = new Date().toISOString().split('T')[0];
+    }
 
     return {
       slug,
